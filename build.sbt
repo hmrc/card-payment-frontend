@@ -23,7 +23,7 @@ lazy val microservice = Project("card-payment-frontend", file("."))
     scalacOptions += "-Wconf:cat=unused-imports&src=html/.*:s",
     pipelineStages := Seq(gzip),
   )
-  .settings(PlayKeys.playDefaultPort := 10154)
+  .settings(PlayKeys.playDefaultPort := 10155)
   .settings(commands ++= SbtCommands.commands)
   .settings(CodeCoverageSettings.settings *)
   .settings(SbtUpdatesSettings.sbtUpdatesSettings *)
