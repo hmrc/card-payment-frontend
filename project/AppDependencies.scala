@@ -1,5 +1,6 @@
 import sbt.*
 
+//format: OFF
 object AppDependencies {
 
   private val bootstrapVersion = "9.5.0"
@@ -10,9 +11,9 @@ object AppDependencies {
   )
 
   val test: Seq[ModuleID] = Seq[ModuleID](
-    "uk.gov.hmrc" %% "bootstrap-test-play-30" % bootstrapVersion % Test,
-    "org.jsoup" % "jsoup" % "1.18.1" % Test
-  )
+    "uk.gov.hmrc" %% "bootstrap-test-play-30" % bootstrapVersion,
+    "org.jsoup"   %  "jsoup"                  % "1.18.1"
+  ).map( _ % Test )
 
   val it: Seq[ModuleID] = Seq.empty[ModuleID]
 }
