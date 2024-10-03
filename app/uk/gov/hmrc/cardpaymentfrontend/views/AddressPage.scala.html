@@ -22,11 +22,13 @@
 @hint1: String = @{messages("address.hint.l1")}
 @hint2: String = @{messages("address.hint.l2")}
 
-
 @layout(pageTitle = Some(heading)) {
-    <h1 class="govuk-heading-xl">@heading</h1>
-    <p class="govuk-body">@hint1</p>
-    <p class="govuk-body">@hint2</p>
+  <fieldset class="govuk-fieldset" aria-describedby="fieldset-hint">
+  <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+      <h1 class="govuk-fieldset__heading">@heading</h1>
+  </legend>
+  <p class="govuk-hint govuk-!-margin-bottom-2" id="fieldset-hint" > @hint1 <span> @hint2 </span></p>
+  </fieldset>
 }
 
 @{
