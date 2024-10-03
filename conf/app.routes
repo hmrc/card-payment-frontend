@@ -1,5 +1,5 @@
 # microservice specific routes
 
 ->         /hmrc-frontend           hmrcfrontend.Routes
-GET        /                        uk.gov.hmrc.cardpaymentfrontend.controllers.HelloWorldController.helloWorld
+GET        /email-address           uk.gov.hmrc.cardpaymentfrontend.controllers.EmailController.renderPage
 GET        /assets/*file            controllers.Assets.versioned(path = "/public", file: Asset)

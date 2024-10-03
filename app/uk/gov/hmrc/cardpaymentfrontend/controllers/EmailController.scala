@@ -16,21 +16,20 @@
 
 package uk.gov.hmrc.cardpaymentfrontend.controllers
 
-import uk.gov.hmrc.cardpaymentfrontend.views.html.HelloWorldPage
-import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import uk.gov.hmrc.cardpaymentfrontend.views.html.EmailAddressPage
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
+
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.Future
 
 @Singleton
-class HelloWorldController @Inject() (
-    mcc:            MessagesControllerComponents,
-    helloWorldPage: HelloWorldPage
-)
-  extends FrontendController(mcc) {
+class EmailController @Inject() (
+    mcc:              MessagesControllerComponents,
+    emailAddressPage: EmailAddressPage
+) extends FrontendController(mcc) {
 
-  val helloWorld: Action[AnyContent] = Action.async { implicit request =>
-    Future.successful(Ok(helloWorldPage()))
+  val renderPage: Action[AnyContent] = Action { implicit request =>
+    Ok(emailAddressPage())
   }
 
 }

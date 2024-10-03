@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,17 +12,26 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@this(layout: Layout)
+package uk.gov.hmrc.cardpaymentfrontend.testsupport
 
-@()(implicit request: RequestHeader, messages: Messages)
+import org.scalatest._
+import org.scalatest.concurrent.{Eventually, IntegrationPatience, ScalaFutures}
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.diagrams.Diagrams
 
-@layout(pageTitle = Some("card-payment-frontend")) {
-    <h1 class="govuk-heading-xl">card-payment-frontend</h1>
-    <p class="govuk-body">@{messages("service.text")}</p>
-}
+object RichMatchers extends RichMatchers
 
-@{
-    //$COVERAGE-OFF$
-}
+trait RichMatchers
+  extends Matchers
+  with Diagrams
+  with TryValues
+  with EitherValues
+  with OptionValues
+  with AppendedClues
+  with ScalaFutures
+  with Inside
+  with Eventually
+  with IntegrationPatience
+

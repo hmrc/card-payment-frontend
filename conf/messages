@@ -1,2 +1,4 @@
 service.name = card-payment-frontend
 service.text = This is your new service
+
+emailaddress.heading = What is your email address? (optional)

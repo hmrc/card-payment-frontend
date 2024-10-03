@@ -14,21 +14,16 @@
  * limitations under the License.
  *@
 
-@import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcStandardPage
-@import uk.gov.hmrc.hmrcfrontend.views.viewmodels.hmrcstandardpage.HmrcStandardPageParams
+@this(layout: Layout)
 
-@this(
-  hmrcStandardPage: HmrcStandardPage
-)
+@()(implicit request: RequestHeader, messages: Messages)
 
-@(pageTitle: Option[String] = None)(contentBlock: Html)(implicit request: RequestHeader, messages: Messages)
+@heading = @{messages("emailaddress.heading")}
 
-@hmrcStandardPage(
-  HmrcStandardPageParams(
-    pageTitle = pageTitle,
-    isWelshTranslationAvailable = true
-  )
-)(contentBlock)
+@layout(pageTitle = Some(heading)) {
+    <h1 class="govuk-heading-xl">@heading</h1>
+    <p class="govuk-body">@{messages("service.text")}</p>
+}
 
 @{
     //$COVERAGE-OFF$
