@@ -16,8 +16,10 @@
 
 package uk.gov.hmrc.cardpaymentfrontend.controllers
 
+import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.cardpaymentfrontend.forms.EmailAddressForm
+import uk.gov.hmrc.cardpaymentfrontend.models.EmailAddress
 import uk.gov.hmrc.cardpaymentfrontend.views.Views
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
@@ -31,6 +33,17 @@ class EmailAddressController @Inject() (
 
   val renderPage: Action[AnyContent] = Action { implicit request =>
     Ok(views.emailAddressPage(EmailAddressForm.form()))
+  }
+
+  val submit: Action[AnyContent] = Action { implicit request =>
+    EmailAddressForm.form()
+      .bindFromRequest()
+      .fold(
+        (formWithErrors: Form[EmailAddress]) => BadRequest(views.emailAddressPage(form = formWithErrors)),
+        { _ =>
+          Ok("Happy with the email entered")
+        }
+      )
   }
 
 }

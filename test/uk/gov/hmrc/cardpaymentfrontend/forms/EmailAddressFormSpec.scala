@@ -16,11 +16,39 @@
 
 package uk.gov.hmrc.cardpaymentfrontend.forms
 
+import play.api.data.{Form, FormError}
+import uk.gov.hmrc.cardpaymentfrontend.models.EmailAddress
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.UnitSpec
 
 class EmailAddressFormSpec extends UnitSpec {
 
-  "" in {
+  val form: Form[EmailAddress] = EmailAddressForm.form()
 
+  "EmailAddressForm" - {
+    "should not throw errors when valid form submitted" in {
+      val result: Form[EmailAddress] = form.bind(Map("email-address" -> "blah@blah.com"))
+      result.hasErrors shouldBe false
+      result.errors shouldBe List.empty[String]
+    }
+    "should not throw errors when valid form submitted but with spaces either side" in {
+      val result: Form[EmailAddress] = form.bind(Map("email-address" -> "  blah@blah.com  "))
+      result.hasErrors shouldBe false
+      result.errors shouldBe List.empty[String]
+    }
+    "should not throw errors when empty form submitted" in {
+      val result: Form[EmailAddress] = form.bind(Map("email-address" -> ""))
+      result.hasErrors shouldBe false
+      result.errors shouldBe List.empty[String]
+    }
+    "should not throw errors when just spaces submitted" in {
+      val result: Form[EmailAddress] = form.bind(Map("email-address" -> "  "))
+      result.hasErrors shouldBe false
+      result.errors shouldBe List.empty[String]
+    }
+    "should throw error when an invalid email is entered" in {
+      val result: Form[EmailAddress] = form.bind(Map("email-address" -> "not_a_valid_email"))
+      result.hasErrors shouldBe true
+      result.errors shouldBe List(FormError("email-address", List("email-address.error.invalid")))
+    }
   }
 }

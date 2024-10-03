@@ -126,6 +126,10 @@ class EmailAddressControllerSpec extends ItSpec {
         link.text() shouldBe "A yw’r dudalen hon yn gweithio’n iawn? (yn agor tab newydd)"
         link.attr("target") shouldBe "_blank"
       }
+
+      "render the page with correct error message when an invalid email was entered" in {
+
+      }
     }
 
     "POST /email-address" - {
@@ -136,16 +140,42 @@ class EmailAddressControllerSpec extends ItSpec {
         def fakePostRequestInWelsh(formData: (String, String)*): FakeRequest[AnyContentAsFormUrlEncoded] =
           FakeRequest("POST", "/email-address").withFormUrlEncodedBody(formData: _*).withCookies(Cookie("PLAY_LANG", "cy"))
 
-      "should accept a valid email address to be submitted" in {
-
+      "should return 200 OK when a valid email address is submitted" in {
+        val validFormData = ("email-address", "blag@blah.com")
+        val result = systemUnderTest.submit(fakePostRequest(validFormData))
+        status(result) shouldBe Status.OK
+        contentAsString(result) shouldBe "Happy with the email entered"
       }
 
-      "should allow for no email address to be submitted" in {
-
+      "should return 200 OK when no email address to be submitted" in {
+        val validFormData = ("email-address", "")
+        val result = systemUnderTest.submit(fakePostRequest(validFormData))
+        status(result) shouldBe Status.OK
+        contentAsString(result) shouldBe "Happy with the email entered"
       }
 
-      "should show an error when an invalid email address is submitted" in {
+      "should return a 400 BAD_REQUEST when an invalid email address is submitted" in {
+        val validFormData = ("email-address", "notALegitEmail")
+        val result = systemUnderTest.submit(fakePostRequest(validFormData))
+        status(result) shouldBe Status.BAD_REQUEST
+      }
 
+      "should return html containing the correct error messages when an invalid email address is submitted" in {
+        val validFormData = ("email-address", "notALegitEmail")
+        val result = systemUnderTest.submit(fakePostRequest(validFormData))
+        val document = Jsoup.parse(contentAsString(result))
+        document.select(".govuk-error-summary__title").text() shouldBe "There is a problem"
+        document.select(".govuk-error-summary__list").text() shouldBe "Enter a valid email address or leave it blank"
+        document.select(".govuk-error-summary__list").select("a").attr("href") shouldBe "#email-address"
+      }
+
+      "should return html containing the correct error messages in welsh when an invalid email address is submitted" in {
+        val validFormData = ("email-address", "notALegitEmail")
+        val result = systemUnderTest.submit(fakePostRequestInWelsh(validFormData))
+        val document = Jsoup.parse(contentAsString(result))
+        document.select(".govuk-error-summary__title").text() shouldBe "Mae problem wedi codi"
+        document.select(".govuk-error-summary__list").text() shouldBe "Nodwch gyfeiriad e-bost dilys neu gadew"
+        document.select(".govuk-error-summary__list").select("a").attr("href") shouldBe "#email-address"
       }
     }
   }

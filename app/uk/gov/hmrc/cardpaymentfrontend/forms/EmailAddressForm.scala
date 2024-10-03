@@ -21,16 +21,25 @@ import play.api.data.format.Formatter
 import play.api.data.{Form, FormError, Forms}
 import uk.gov.hmrc.cardpaymentfrontend.models.EmailAddress
 
+import scala.util.matching.Regex
+
 object EmailAddressForm {
+
+  val emailAddressKey: String = "email-address"
+
+  private val emailAddressRegex: Regex = """^[a-zA-Z0-9\.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$""".r
 
   def form(): Form[EmailAddress] = {
     val emailAddressMapping = Forms.of(new Formatter[EmailAddress]() {
-      override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], EmailAddress] = {
 
-        data.get(key).fold[Either[Seq[FormError], EmailAddress]] {
-          Left(Seq(FormError(key, "Messages.EnterP800ReferenceMessages.`Enter your P800 reference`.show")))
-        } { emailEntered: String =>
-          Right(EmailAddress(emailEntered))
+      override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], EmailAddress] = {
+        //trim first as we allow spaces either side for accessibility reasons.
+        data.get(key).map(_.trim) match {
+          case Some(email) =>
+            if (email.isBlank) Right(EmailAddress(email))
+            else if (email.matches(emailAddressRegex.regex)) Right(EmailAddress(email))
+            else Left(Seq(FormError(key, "email-address.error.invalid")))
+          case None => Right(EmailAddress(""))
         }
       }
 
@@ -39,7 +48,7 @@ object EmailAddressForm {
 
     Form(
       mapping = mapping(
-        "email-address" -> emailAddressMapping
+        emailAddressKey -> emailAddressMapping
       )(identity)(Some(_))
     )
   }

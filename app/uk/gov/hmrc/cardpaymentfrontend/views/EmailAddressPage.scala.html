@@ -14,28 +14,32 @@
  * limitations under the License.
  *@
 
+@import uk.gov.hmrc.cardpaymentfrontend.forms.EmailAddressForm
 @import uk.gov.hmrc.cardpaymentfrontend.models.EmailAddress
 @import uk.gov.hmrc.cardpaymentfrontend.views.html.Layout
-@import uk.gov.hmrc.govukfrontend.views.Aliases.{Button, Hint, Input, Label}
-@import uk.gov.hmrc.govukfrontend.views.html.components.{FormWithCSRF, GovukButton, GovukInput}
-@import uk.gov.hmrc.govukfrontend.views.Implicits.RichInput
+@import uk.gov.hmrc.govukfrontend.views.Aliases.{Button, ErrorSummary, Hint, Input, Label}
+@import uk.gov.hmrc.govukfrontend.views.html.components.{FormWithCSRF, GovukButton, GovukErrorSummary, GovukInput}
+@import uk.gov.hmrc.govukfrontend.views.Implicits.{RichFormErrors, RichInput}
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
 
 @this(
-        govukInput: GovukInput,
-        govukButton: GovukButton,
-        layout: Layout,
-        formWithCSRF: FormWithCSRF
+    errorSummary: GovukErrorSummary,
+    govukInput: GovukInput,
+    govukButton: GovukButton,
+    layout: Layout,
+    formWithCSRF: FormWithCSRF
 )
 
 @(form: Form[EmailAddress])(implicit request: RequestHeader, messages: Messages)
 
 @heading = @{messages("email-address.heading")}
-@key = @{"email-address"}
+@key = @{EmailAddressForm.emailAddressKey}
 
 @layout(pageTitle = Some(heading)) {
 
-    @formWithCSRF(action = uk.gov.hmrc.cardpaymentfrontend.controllers.routes.EmailAddressController.renderPage) {
+    @if(form.hasErrors) { @errorSummary(ErrorSummary(errorList = form.errors.asTextErrorLinks, title = Text(messages("error.there-is-a-problem")))) }
+
+    @formWithCSRF(action = uk.gov.hmrc.cardpaymentfrontend.controllers.routes.EmailAddressController.submit) {
         @govukInput(
             Input(
                 id = key,

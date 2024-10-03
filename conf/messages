@@ -1,7 +1,13 @@
 service.name = card-payment-frontend
 service.text = This is your new service
 
-continue = Continue
 
+## Non page specific
+continue = Continue
+error.there-is-a-problem = There is a problem
+
+
+## email address page
 email-address.heading = What is your email address? (optional)
 email-address.hint = We’ll only use this to confirm you sent a payment
+email-address.error.invalid = Enter a valid email address or leave it blank
