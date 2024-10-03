@@ -1,4 +1,7 @@
 service.name = card-payment-frontend
 service.text = This is your new service
 
-emailaddress.heading = What is your email address? (optional)
+continue = Continue
+
+email-address.heading = What is your email address? (optional)
+email-address.hint = We’ll only use this to confirm you sent a payment

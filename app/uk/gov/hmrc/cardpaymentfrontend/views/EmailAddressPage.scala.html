@@ -14,15 +14,53 @@
  * limitations under the License.
  *@
 
-@this(layout: Layout)
+@import uk.gov.hmrc.cardpaymentfrontend.models.EmailAddress
+@import uk.gov.hmrc.cardpaymentfrontend.views.html.Layout
+@import uk.gov.hmrc.govukfrontend.views.Aliases.{Button, Hint, Input, Label}
+@import uk.gov.hmrc.govukfrontend.views.html.components.{FormWithCSRF, GovukButton, GovukInput}
+@import uk.gov.hmrc.govukfrontend.views.Implicits.RichInput
+@import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
 
-@()(implicit request: RequestHeader, messages: Messages)
+@this(
+        govukInput: GovukInput,
+        govukButton: GovukButton,
+        layout: Layout,
+        formWithCSRF: FormWithCSRF
+)
 
-@heading = @{messages("emailaddress.heading")}
+@(form: Form[EmailAddress])(implicit request: RequestHeader, messages: Messages)
+
+@heading = @{messages("email-address.heading")}
+@key = @{"email-address"}
 
 @layout(pageTitle = Some(heading)) {
-    <h1 class="govuk-heading-xl">@heading</h1>
-    <p class="govuk-body">@{messages("service.text")}</p>
+
+    @formWithCSRF(action = uk.gov.hmrc.cardpaymentfrontend.controllers.routes.EmailAddressController.renderPage) {
+        @govukInput(
+            Input(
+                id = key,
+                name = key,
+                classes = "govuk-input--width-20",
+                label = Label(
+                    content = Text(heading),
+                    isPageHeading = true,
+                    classes = "govuk-label--xl govuk-!-margin-bottom-9"
+                ),
+                hint = Some(Hint(
+                    content = Text(messages("email-address.hint"))
+                )),
+                inputType = "email",
+                autocomplete = Some("off"),
+                spellcheck = Some(false)
+            ).withFormField(form(key))
+        )
+
+        @govukButton(Button(
+            id = Some("submit"),
+            content = Text(messages("continue"))
+        ))
+
+    }
 }
 
 @{

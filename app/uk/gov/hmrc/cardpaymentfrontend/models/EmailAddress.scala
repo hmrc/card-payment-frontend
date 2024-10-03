@@ -14,22 +14,12 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.cardpaymentfrontend.controllers
+package uk.gov.hmrc.cardpaymentfrontend.models
 
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import uk.gov.hmrc.cardpaymentfrontend.views.html.EmailAddressPage
-import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
+import play.api.libs.json.{Json, Format}
 
-import javax.inject.{Inject, Singleton}
+final case class EmailAddress(value: String) extends AnyVal
 
-@Singleton
-class EmailController @Inject() (
-    mcc:              MessagesControllerComponents,
-    emailAddressPage: EmailAddressPage
-) extends FrontendController(mcc) {
-
-  val renderPage: Action[AnyContent] = Action { implicit request =>
-    Ok(emailAddressPage())
-  }
-
+object EmailAddress {
+  implicit val format: Format[EmailAddress] = Json.valueFormat[EmailAddress]
 }
