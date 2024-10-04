@@ -23,9 +23,11 @@ import play.api.data.format.Formatter
 import play.api.data.validation.{Constraint, Invalid, Valid, ValidationError}
 import play.api.data.validation.Constraints.maxLength
 
+import scala.util.matching.Regex
+
 object AddressForm {
 
-  private[forms] val ukPostcodeRegex = "([Gg][Ii][Rr] 0[Aa]{2})|((([A-Za-z][0-9]{1,2})|(([A-Za-z][A-Ha-hJ-Yj-y][0-9]{1,2})|(([A-Za-z][0-9][A-Za-z])|([A-Za-z][A-Ha-hJ-Yj-y][0-9]?[A-Za-z]))))\\s?[0-9][A-Za-z]{2})"
+  private[forms] val ukPostcodeRegex: Regex = "([Gg][Ii][Rr] 0[Aa]{2})|((([A-Za-z][0-9]{1,2})|(([A-Za-z][A-Ha-hJ-Yj-y][0-9]{1,2})|(([A-Za-z][0-9][A-Za-z])|([A-Za-z][A-Ha-hJ-Yj-y][0-9]?[A-Za-z]))))\\s?[0-9][A-Za-z]{2})".r
 
   def form(): Form[Address] = Form(
     mapping(
@@ -73,7 +75,7 @@ object AddressForm {
       val selectedCountryIsGBR: Boolean = data("country").matches("GBR")
       if (selectedCountryIsGBR && postCode.isEmpty)
         Left(Seq(FormError("postcode", "error.empty.postcode")))
-      else if (selectedCountryIsGBR && !postCode.matches(ukPostcodeRegex))
+      else if (selectedCountryIsGBR && !postCode.matches(ukPostcodeRegex.regex))
         Left(Seq(FormError("postcode", "error.invalid.postcode")))
       else
         Right(postCode)

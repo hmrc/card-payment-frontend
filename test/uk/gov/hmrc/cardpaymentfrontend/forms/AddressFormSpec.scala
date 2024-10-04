@@ -9,6 +9,8 @@ import play.api.data.{Form, FormError}
 import uk.gov.hmrc.cardpaymentfrontend.models.Address
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.UnitSpec
 
+import scala.util.matching.Regex
+
 class AddressFormSpec extends UnitSpec {
 
   val form: Form[Address] = AddressForm.form()
@@ -109,5 +111,25 @@ class AddressFormSpec extends UnitSpec {
     }
 
   }
+
+  "AddressForm.ukPostcodeRegex" - {
+
+    val regex: Regex = AddressForm.ukPostcodeRegex
+
+    Seq("BN1 2TL", "BN12TL", "EC1A 1BB", "ZE1 0TF", "M1 1BE", "JE2 3QA").foreach{ postcode =>
+      s"should match a valid postcode: $postcode" in {
+        regex.matches(postcode) shouldEqual true
+      }
+    }
+
+    Seq("A1", "12 412", "", """\\s""", " BN1 2TL ", "GH FJU").foreach{ postcode =>
+      s"should not match an invalid postcode: $postcode" in {
+        regex.matches(postcode) shouldEqual false
+      }
+    }
+
+  }
+
+
 
 }
