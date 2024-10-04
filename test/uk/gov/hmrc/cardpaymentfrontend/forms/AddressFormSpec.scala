@@ -5,7 +5,7 @@
 
 package uk.gov.hmrc.cardpaymentfrontend.forms
 
-import play.api.data.Form
+import play.api.data.{Form, FormError}
 import uk.gov.hmrc.cardpaymentfrontend.models.Address
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.UnitSpec
 
@@ -60,13 +60,54 @@ class AddressFormSpec extends UnitSpec {
       result.errors shouldBe List.empty[String]
     }
 
+    "When country is empty, errors thrown for line1 and country only" in {
 
+      val validAddress: Map[String, String] = Map(
+        "line1" -> "",
+        "line2" -> "Some Cottage",
+        "city" -> "Nice Town",
+        "county" -> "Cool County",
+        "postcode" -> "",
+        "country" -> ""
+      )
 
-    "should not throw errors when valid form submitted but with spaces either side" in {
-      val result: Form[Address] = form.bind(Map("email-address" -> "  blah@blah.com  "))
-      result.hasErrors shouldBe false
-      result.errors shouldBe List.empty[String]
+      val result: Form[Address] = form.bind(validAddress)
+      result.hasErrors shouldBe true
+      result.errors shouldBe List(FormError("line1", List("error.invalid.addressline1")), FormError("country", List("error.required.country")))
     }
+
+    "When country is not GBR, errors thrown for line1 only" in {
+
+      val validAddress: Map[String, String] = Map(
+        "line1" -> "",
+        "line2" -> "Some Cottage",
+        "city" -> "Nice Town",
+        "county" -> "Cool County",
+        "postcode" -> "",
+        "country" -> "BMU"
+      )
+
+      val result: Form[Address] = form.bind(validAddress)
+      result.hasErrors shouldBe true
+      result.errors shouldBe List(FormError("line1", List("error.invalid.addressline1"), List()))
+    }
+
+    "When country is GBR, errors thrown for a missing postcode" in {
+
+      val validAddress: Map[String, String] = Map(
+        "line1" -> "20 Street Road",
+        "line2" -> "Some Cottage",
+        "city" -> "Nice Town",
+        "county" -> "Cool County",
+        "postcode" -> "",
+        "country" -> "GBR"
+      )
+
+      val result: Form[Address] = form.bind(validAddress)
+      result.hasErrors shouldBe true
+      result.errors shouldBe List(FormError("postcode", List("error.empty.postcode")))
+    }
+
   }
 
 }
