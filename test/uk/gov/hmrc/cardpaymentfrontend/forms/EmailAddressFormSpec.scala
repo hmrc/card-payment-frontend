@@ -20,6 +20,8 @@ import play.api.data.{Form, FormError}
 import uk.gov.hmrc.cardpaymentfrontend.models.EmailAddress
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.UnitSpec
 
+import scala.util.matching.Regex
+
 class EmailAddressFormSpec extends UnitSpec {
 
   val form: Form[EmailAddress] = EmailAddressForm.form()
@@ -49,6 +51,40 @@ class EmailAddressFormSpec extends UnitSpec {
       val result: Form[EmailAddress] = form.bind(Map("email-address" -> "not_a_valid_email"))
       result.hasErrors shouldBe true
       result.errors shouldBe List(FormError("email-address", List("email-address.error.invalid")))
+    }
+  }
+
+  s"EmailAddressForm.emailAddressRegex" - {
+
+    val regex: Regex = EmailAddressForm.emailAddressRegex
+
+    "should match a standard email address" in {
+      regex.matches("john.smith@ordinaryemail.com") shouldEqual true
+    }
+    "should reject an email address with an internal space" in {
+      regex.matches("john smith@ordinaryemail.com") shouldEqual false
+    }
+    "should reject an email address with nothing but whitespace" in {
+      regex.matches("\n\t   \r   ") shouldEqual false
+    }
+    "should reject an email address with the empty string" in {
+      regex.matches("") shouldEqual false
+    }
+    "should reject an email where there is no @ symbol" in {
+      regex.matches("johnsmithATordinaryemail.com") shouldEqual false
+    }
+    "should reject an email where there is more than one @" in {
+      regex.matches("johnsmith@abc@abc.com") shouldEqual false
+    }
+    "should reject an email where domain contains non alphanumerics" in {
+      regex.matches("johnsmith@!ordinaryemail.com") shouldEqual false
+    }
+    "should reject an email where there is no domain" in {
+      regex.matches("johnsmith@") shouldEqual false
+    }
+    "should reject an email where part of the domain is more than 63 characters" in {
+      val sixtyFourCharacters: String = (1 to 64).toList.map(_ => "a").mkString
+      regex.matches(s"johnsmith@$sixtyFourCharacters.com") shouldEqual false
     }
   }
 }
