@@ -17,7 +17,6 @@
 package uk.gov.hmrc.cardpaymentfrontend.config
 
 import javax.inject.{Inject, Singleton}
-
 import play.api.i18n.MessagesApi
 import play.api.mvc.RequestHeader
 import play.twirl.api.Html

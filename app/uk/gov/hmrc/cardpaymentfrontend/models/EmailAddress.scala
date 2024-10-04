@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,17 +12,14 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@this(layout: Layout)
+package uk.gov.hmrc.cardpaymentfrontend.models
 
-@()(implicit request: RequestHeader, messages: Messages)
+import play.api.libs.json.{Json, Format}
 
-@layout(pageTitle = Some("card-payment-frontend")) {
-    <h1 class="govuk-heading-xl">card-payment-frontend</h1>
-    <p class="govuk-body">@{messages("service.text")}</p>
-}
+final case class EmailAddress(value: String) extends AnyVal
 
-@{
-    //$COVERAGE-OFF$
+object EmailAddress {
+  implicit val format: Format[EmailAddress] = Json.valueFormat[EmailAddress]
 }

@@ -14,24 +14,30 @@
  * limitations under the License.
  *@
 
-@import uk.gov.hmrc.cardpaymentfrontend.config.AppConfig
 @import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcStandardPage
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.hmrcstandardpage.HmrcStandardPageParams
+@import uk.gov.hmrc.govukfrontend.views.Aliases.BackLink
+@import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcReportTechnicalIssueHelper
 
 @this(
-  appConfig: AppConfig,
-  hmrcStandardPage: HmrcStandardPage
+        hmrcStandardPage: HmrcStandardPage,
+        hmrcReportTechnicalIssueHelper: HmrcReportTechnicalIssueHelper
 )
 
-@(pageTitle: Option[String] = None)(contentBlock: Html)(implicit request: RequestHeader, messages: Messages)
+@(
+        pageTitle: Option[String] = None,
+        backLinkOverride: Option[BackLink] = None
+)(contentBlock: Html)(implicit request: RequestHeader, messages: Messages)
+
+@content = {
+    @contentBlock
+    @hmrcReportTechnicalIssueHelper()
+}
 
 @hmrcStandardPage(
   HmrcStandardPageParams(
-    pageTitle = pageTitle,
-    isWelshTranslationAvailable = appConfig.welshLanguageSupportEnabled
+      pageTitle = pageTitle,
+      isWelshTranslationAvailable = true,
+      backLink = if (backLinkOverride.isDefined) backLinkOverride else Some(BackLink.mimicsBrowserBackButtonViaJavaScript)
   )
-)(contentBlock)
-
-@{
-    //$COVERAGE-OFF$
-}
+)(content)
