@@ -126,10 +126,6 @@ class EmailAddressControllerSpec extends ItSpec {
         link.text() shouldBe "A yw’r dudalen hon yn gweithio’n iawn? (yn agor tab newydd)"
         link.attr("target") shouldBe "_blank"
       }
-
-      "render the page with correct error message when an invalid email was entered" in {
-
-      }
     }
 
     "POST /email-address" - {
