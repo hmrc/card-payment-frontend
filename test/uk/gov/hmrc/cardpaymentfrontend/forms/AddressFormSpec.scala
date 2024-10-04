@@ -9,6 +9,7 @@ import play.api.data.{Form, FormError}
 import uk.gov.hmrc.cardpaymentfrontend.models.Address
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.UnitSpec
 
+import scala.collection.immutable.ArraySeq
 import scala.util.matching.Regex
 
 class AddressFormSpec extends UnitSpec {
@@ -108,6 +109,30 @@ class AddressFormSpec extends UnitSpec {
       val result: Form[Address] = form.bind(validAddress)
       result.hasErrors shouldBe true
       result.errors shouldBe List(FormError("postcode", List("error.empty.postcode")))
+    }
+
+
+    "Throw errors when fields are too long" in {
+
+      def createLongString(limit: Int): String = (1 to limit).map(_ => "a").mkString
+
+      val invalidAddress: Map[String, String] = Map(
+        "line1" -> createLongString(51),
+        "line2" -> createLongString(51),
+        "city" -> createLongString(61),
+        "county" -> createLongString(61),
+        "postcode" -> "AA11 AA",
+        "country" -> "GBR"
+      )
+
+      val result: Form[Address] = form.bind(invalidAddress)
+      result.hasErrors shouldBe true
+      result.errors shouldBe List(
+        FormError("line1", List("error.maxLength"), ArraySeq(50)),
+        FormError("line2", List("error.maxLength"), ArraySeq(50)),
+        FormError("city", List("error.maxLength"), ArraySeq(60)),
+        FormError("county", List("error.maxLength"), ArraySeq(60))
+      )
     }
 
   }
