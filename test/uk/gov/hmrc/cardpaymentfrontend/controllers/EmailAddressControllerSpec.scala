@@ -170,7 +170,7 @@ class EmailAddressControllerSpec extends ItSpec {
         val result = systemUnderTest.submit(fakePostRequestInWelsh(validFormData))
         val document = Jsoup.parse(contentAsString(result))
         document.select(".govuk-error-summary__title").text() shouldBe "Mae problem wedi codi"
-        document.select(".govuk-error-summary__list").text() shouldBe "Nodwch gyfeiriad e-bost dilys neu gadew"
+        document.select(".govuk-error-summary__list").text() shouldBe "Nodwch gyfeiriad e-bost dilys neu gadewch yn wag"
         document.select(".govuk-error-summary__list").select("a").attr("href") shouldBe "#email-address"
       }
     }
