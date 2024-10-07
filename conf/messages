@@ -89,3 +89,11 @@ title.PfAlcoholDuty =
 email-address.heading = What is your email address? (optional)
 email-address.hint = We’ll only use this to confirm you sent a payment
 email-address.error.invalid = Enter a valid email address or leave it blank
+
+# card fees page
+card-fees.heading = Card fees
+card-fees.para1 = There is a non-refundable fee if you pay by corporate credit card or corporate debit card.
+card-fees.para2 = There is no fee if you pay by:
+card-fees.para3 = You cannot pay using a personal credit card.
+card-fees.para4 = Allow 3 working days for your payment to reach HMRC’s bank account.
+
