@@ -29,6 +29,7 @@ class AddressControllerSpec extends ItSpec {
   val systemUnderTest: AddressController = app.injector.instanceOf[AddressController]
 
   "Address Controller" - {
+
     "GET /address" - {
       val fakeGetRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/address")
       val fakeGetRequestInWelsh = FakeRequest("GET", "/email-address").withCookies(Cookie("PLAY_LANG", "cy"))

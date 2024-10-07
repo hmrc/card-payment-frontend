@@ -16,7 +16,10 @@
 
 package uk.gov.hmrc.cardpaymentfrontend.controllers
 
+import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import uk.gov.hmrc.cardpaymentfrontend.forms.AddressForm
+import uk.gov.hmrc.cardpaymentfrontend.models.Address
 import uk.gov.hmrc.cardpaymentfrontend.views.html.AddressPage
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
@@ -29,7 +32,18 @@ class AddressController @Inject() (
 ) extends FrontendController(mcc) {
 
   val renderPage: Action[AnyContent] = Action { implicit request =>
-    Ok(addressPage())
+    Ok(addressPage(AddressForm.form()))
+  }
+
+  val submit: Action[AnyContent] = Action { implicit request =>
+    AddressForm.form()
+      .bindFromRequest()
+      .fold(
+        (formWithErrors: Form[Address]) => BadRequest(addressPage(form = formWithErrors)),
+        { _ =>
+          Ok("Happy with the address entered")
+        }
+      )
   }
 
 }

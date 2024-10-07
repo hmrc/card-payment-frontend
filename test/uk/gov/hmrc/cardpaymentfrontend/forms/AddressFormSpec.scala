@@ -111,10 +111,9 @@ class AddressFormSpec extends UnitSpec {
       result.errors shouldBe List(FormError("postcode", List("error.empty.postcode")))
     }
 
-
     "Throw errors when fields are too long" in {
 
-      def createLongString(limit: Int): String = (1 to limit).map(_ => "a").mkString
+        def createLongString(limit: Int): String = (1 to limit).map(_ => "a").mkString
 
       val invalidAddress: Map[String, String] = Map(
         "line1" -> createLongString(51),
@@ -132,6 +131,27 @@ class AddressFormSpec extends UnitSpec {
         FormError("line2", List("error.maxLength"), ArraySeq(50)),
         FormError("city", List("error.maxLength"), ArraySeq(60)),
         FormError("county", List("error.maxLength"), ArraySeq(60))
+      )
+    }
+
+    "Should not accept emojis" in {
+
+      val invalidAddress: Map[String, String] = Map(
+        "line1" -> "🍗",
+        "line2" -> "🐸",
+        "city" -> "🍄",
+        "county" -> "🦕",
+        "postcode" -> "AA11 AA",
+        "country" -> "GBR"
+      )
+
+      val result: Form[Address] = form.bind(invalidAddress)
+      result.hasErrors shouldBe true
+      result.errors shouldBe List(
+        FormError("line1", List("error.invalid.char")),
+        FormError("line2", List("error.invalid.char")),
+        FormError("city", List("error.invalid.char")),
+        FormError("county", List("error.invalid.char"))
       )
     }
 
@@ -154,7 +174,5 @@ class AddressFormSpec extends UnitSpec {
     }
 
   }
-
-
 
 }
