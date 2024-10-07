@@ -89,3 +89,35 @@ title.PfAlcoholDuty =
 email-address.heading = What is your email address? (optional)
 email-address.hint = We’ll only use this to confirm you sent a payment
 email-address.error.invalid = Enter a valid email address or leave it blank
+
+#Address Page
+address.heading = Card billing address
+address.hint.l1 = This billing address must match the address your card is registered with.
+address.hint.l2 = If it does not, the payment will fail.
+
+
+address.collection.page.sub-heading = Billing address
+
+address.fieldname.line1 = Address line 1
+address.fieldname.line2 = Address line 2
+address.fieldname.city = Town or City
+address.fieldname.county = County
+address.fieldname.postcode = Postcode
+address.fieldname.country = Country
+
+
+
+address.country.select.message = Please select…
+address.optional = (optional)
+address.optional.non.uk.address = (optional for non-UK addresses)
+address.postcode.hint = If you are a non-UK resident, this is optional
+
+
+error.invalid.addressline1 = Enter the first line of the billing address
+error.invalid.postcode = Enter your postcode in the correct format
+error.empty.postcode = Enter your postcode
+error.required.postcode = Postcode is required
+error.required.country = Select a country
+error.invalid.emailaddress = Enter a valid email address or leave it blank
+error.constraint.emailaddress = Enter a valid email address or leave it blank
+error.invalid.char = Field contains an invalid character

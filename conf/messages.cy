@@ -89,3 +89,9 @@ title.PfAlcoholDuty =
 email-address.heading = Beth yw’ch cyfeiriad e-bost? (dewisol)
 email-address.hint = Byddwn ond yn defnyddio hwn i gadarnhau’ch bod wedi anfon taliad
 email-address.error.invalid = Nodwch gyfeiriad e-bost dilys neu gadewch yn wag
+
+#Address Page
+address.heading = Cyfeiriad bilio’r cerdyn
+address.hint.line1 = Eich cyfeiriad bilio yw’r cyfeiriad y gwnaethoch gofrestru eich cerdyn ag ef
+#Content needs checking. Not present in pay-frontend
+address.hint.line2 =
