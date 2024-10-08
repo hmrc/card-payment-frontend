@@ -24,7 +24,7 @@ import javax.inject.{Inject, Singleton}
 
 @Singleton
 class PaymentFailedController @Inject() (
-    mcc: MessagesControllerComponents,
+    mcc:               MessagesControllerComponents,
     paymentFailedPage: PaymentFailedPage
 ) extends FrontendController(mcc) {
 
