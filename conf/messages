@@ -99,9 +99,9 @@ address.hint.l2 = If it does not, the payment will fail.
 address.collection.page.sub-heading = Billing address
 
 address.fieldname.line1 = Address line 1
-address.fieldname.line2 = Address line 2
-address.fieldname.city = Town or City
-address.fieldname.county = County
+address.fieldname.line2 = Address line 2 (optional)
+address.fieldname.city = Town or City (optional)
+address.fieldname.county = County (optional)
 address.fieldname.postcode = Postcode
 address.fieldname.country = Country
 
