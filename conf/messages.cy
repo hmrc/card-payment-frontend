@@ -6,7 +6,6 @@ service.text = Dyma'ch gwasanaeth newydd
 continue = Yn eich blaen
 error.there-is-a-problem = Mae problem wedi codi
 
-
 ## page titles
 title.PfSa = Talu eich Hunanasesiad
 title.PfVat = Talu eich TAW
@@ -95,3 +94,26 @@ address.heading = Cyfeiriad bilio’r cerdyn
 address.hint.line1 = Eich cyfeiriad bilio yw’r cyfeiriad y gwnaethoch gofrestru eich cerdyn ag ef
 #Content needs checking. Not present in pay-frontend
 address.hint.line2 =
+
+address.fieldname.line1 = Cyfeiriad - llinell 1
+address.fieldname.line2 = Cyfeiriad - llinell 2
+address.fieldname.city = Tref neu ddinas
+address.fieldname.county = Sir
+address.fieldname.postcode = Cod post
+address.fieldname.country = Gwlad
+address.enter-emailaddress = Nodwch eich cyfeiriad e-bost
+address.emailaddress = Cyfeiriad e-bost
+address.emailaddress-hint = Os rhowch gyfeiriad e-bost, caiff ei ddefnyddio i anfon cadarnhad o’ch taliad atoch
+address.country.select.message = Dewiswch
+address.postcode.hint = Os ydych yn berson nad yw’n breswyl yn y DU, mae hyn yn ddewisol
+address.optional = (dewisol)
+address.optional.non.uk.address = (dewisol ar gyfer cyfeiriadau y tu allan i’r DU)
+
+error.invalid.addressline1 = Nodwch linell gyntaf y cyfeiriad bilio
+error.invalid.postcode = Nodwch eich cod post yn y fformat cywir
+error.empty.postcode = Nodwch eich cod post
+error.required.postcode = Nodwch god post dilys
+error.required.country = Dewiswch eich gwlad
+error.invalid.emailaddress = Nodwch gyfeiriad e-bost dilys neu gadewch yn wag
+error.constraint.emailaddress = Nodwch gyfeiriad e-bost dilys neu gadewch yn wag
+error.invalid.char = Mae’r maes yn cynnwys cymeriad annilys

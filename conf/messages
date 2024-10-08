@@ -106,11 +106,12 @@ address.fieldname.postcode = Postcode
 address.fieldname.country = Country
 
 
-
 address.country.select.message = Please select…
 address.optional = (optional)
 address.optional.non.uk.address = (optional for non-UK addresses)
 address.postcode.hint = If you are a non-UK resident, this is optional
+
+country-code.path = conf/country-codes-en.properties
 
 
 error.invalid.addressline1 = Enter the first line of the billing address

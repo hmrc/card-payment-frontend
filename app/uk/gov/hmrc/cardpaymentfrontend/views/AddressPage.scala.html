@@ -21,7 +21,7 @@
 @import uk.gov.hmrc.govukfrontend.views.Aliases.{Button, Text}
 @import uk.gov.hmrc.govukfrontend.views.html.components.implicits.RichFormErrors
 @import uk.gov.hmrc.govukfrontend.views.Aliases.Input
-@import uk.gov.hmrc.govukfrontend.views.Aliases.Hint
+@import uk.gov.hmrc.cardpaymentfrontend.models.Country
 @import uk.gov.hmrc.govukfrontend.views.Implicits.RichInput
 @import uk.gov.hmrc.cardpaymentfrontend.forms.AddressForm
 
@@ -34,7 +34,10 @@ layout: Layout,
 formWithCSRF: FormWithCSRF
 )
 
-@(form: Form[Address])(implicit request: RequestHeader, messages: Messages)
+@(
+        form: Form[Address],
+        countries: Seq[Country]
+)(implicit request: RequestHeader, messages: Messages)
 
 @heading= @{messages("address.heading")}
 @key = @{AddressForm.addressKey}
@@ -59,11 +62,11 @@ formWithCSRF: FormWithCSRF
     @formWithCSRF(action = uk.gov.hmrc.cardpaymentfrontend.controllers.routes.AddressController.submit) {
         @govukInput(
             Input(
-                id = s"$key.fieldname.line1",
-                name = s"$key.fieldname.line1",
+                id = "line1",
+                name = "line1",
                 classes = "govuk-input--width-20",
                 label = Label(
-                    content = Text("Address line 1")),
+                    content = Text(messages("address.line1"))),
                 inputType = "text",
                 autocomplete = Some("off"),
                 spellcheck = Some(false)
@@ -71,11 +74,11 @@ formWithCSRF: FormWithCSRF
         )
         @govukInput(
             Input(
-                id = s"$key.fieldname.line2",
-                name = s"$key.fieldname.line2",
+                id = "line2",
+                name = "line2",
                 classes = "govuk-input--width-20",
                 label = Label(
-                    content = Text("Address line 2 (optional)")),
+                    content = Text(messages("address.line2"))),
                 inputType = "text",
                 autocomplete = Some("off"),
                 spellcheck = Some(false)
@@ -83,11 +86,11 @@ formWithCSRF: FormWithCSRF
         )
         @govukInput(
             Input(
-                id = s"$key.fieldname.city",
-                name = s"$key.fieldname.city",
+                id = "city",
+                name = "city",
                 classes = "govuk-input--width-20",
                 label = Label(
-                    content = Text("Town or City (optional)")),
+                    content = Text(messages("address.city"))),
                 inputType = "text",
                 autocomplete = Some("off"),
                 spellcheck = Some(false)
@@ -95,11 +98,11 @@ formWithCSRF: FormWithCSRF
         )
         @govukInput(
             Input(
-                id = s"$key.fieldname.county",
+                id = "county",
                 name = s"$key.fieldname.county",
                 classes = "govuk-input--width-20",
                 label = Label(
-                    content = Text("County (optional)")),
+                    content = Text(messages("address.county"))),
                 inputType = "text",
                 autocomplete = Some("off"),
                 spellcheck = Some(false)
@@ -107,11 +110,11 @@ formWithCSRF: FormWithCSRF
         )
         @govukInput(
             Input(
-                id = s"$key.fieldname.postcode",
-                name = s"$key.fieldname.postcode",
+                id = "postcode",
+                name = "postcode",
                 classes = "govuk-input--width-20",
                 label = Label(
-                    content = Text("Postcode")),
+                    content = Text(messages("address.postcode"))),
                 inputType = "text",
                 autocomplete = Some("off"),
                 spellcheck = Some(false)
@@ -119,12 +122,15 @@ formWithCSRF: FormWithCSRF
         )
         @govukSelect(
             Select(
-                id = s"$key.fieldname.country",
-                name = s"$key.fieldname.country",
-                classes = "govuk-input--width-20",
-                value = Some("address.country.select.message"),
-                label = Label(
-                    content = Text("Country"))
+                id = "country",
+                name = "country",
+                classes = "govuk-select address-input-width",
+                label = Label(content = Text("Country")),
+                items = Seq(SelectItem(
+                    Some(""),
+                    text = messages("address.country.select.message"),
+
+                )) ++ countries.map(c => SelectItem(Some(c.code), c.name))
             )
         )
 

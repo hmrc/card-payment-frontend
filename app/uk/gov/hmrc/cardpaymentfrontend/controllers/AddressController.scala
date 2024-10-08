@@ -20,6 +20,7 @@ import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.cardpaymentfrontend.forms.AddressForm
 import uk.gov.hmrc.cardpaymentfrontend.models.Address
+import uk.gov.hmrc.cardpaymentfrontend.services.CountriesService
 import uk.gov.hmrc.cardpaymentfrontend.views.html.AddressPage
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
@@ -27,19 +28,20 @@ import javax.inject.{Inject, Singleton}
 
 @Singleton
 class AddressController @Inject() (
-    mcc:         MessagesControllerComponents,
-    addressPage: AddressPage
+    mcc:              MessagesControllerComponents,
+    addressPage:      AddressPage,
+    countriesService: CountriesService
 ) extends FrontendController(mcc) {
 
   val renderPage: Action[AnyContent] = Action { implicit request =>
-    Ok(addressPage(AddressForm.form()))
+    Ok(addressPage(AddressForm.form(), countriesService.getCountries))
   }
 
   val submit: Action[AnyContent] = Action { implicit request =>
     AddressForm.form()
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[Address]) => BadRequest(addressPage(form = formWithErrors)),
+        (formWithErrors: Form[Address]) => BadRequest(addressPage(form = formWithErrors, countriesService.getCountries)),
         { _ =>
           Ok("Happy with the address entered")
         }

@@ -166,8 +166,15 @@ class EmailAddressControllerSpec extends ItSpec {
       }
 
       "should return html containing the correct error messages in welsh when an invalid email address is submitted" in {
-        val validFormData = ("email-address", "notALegitEmail")
-        val result = systemUnderTest.submit(fakePostRequestInWelsh(validFormData))
+        val line1 = List(
+          ("email-address", "notALegitEmail"),
+          ("", ""),
+          ("", ""),
+          ("", ""),
+          ("", "")
+        )
+
+        val result = systemUnderTest.submit(fakePostRequestInWelsh(line1: _*))
         val document = Jsoup.parse(contentAsString(result))
         document.select(".govuk-error-summary__title").text() shouldBe "Mae problem wedi codi"
         document.select(".govuk-error-summary__list").text() shouldBe "Nodwch gyfeiriad e-bost dilys neu gadewch yn wag"

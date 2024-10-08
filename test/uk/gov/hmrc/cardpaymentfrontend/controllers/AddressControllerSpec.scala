@@ -18,10 +18,12 @@ package uk.gov.hmrc.cardpaymentfrontend.controllers
 
 import org.jsoup.Jsoup
 import play.api.http.Status
-import play.api.mvc.{AnyContentAsEmpty, Cookie}
+import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded, Cookie}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.ItSpec
+
+import scala.jdk.CollectionConverters.ListHasAsScala
 
 class AddressControllerSpec extends ItSpec {
 
@@ -70,6 +72,138 @@ class AddressControllerSpec extends ItSpec {
         val result = systemUnderTest.renderPage(fakeGetRequestInWelsh)
         val document = Jsoup.parse(contentAsString(result))
         document.selectXpath("//*[@id=\"main-content\"]/div/div/p[1]") contains "Eich cyfeiriad bilio yw’r cyfeiriad y gwnaethoch gofrestru eich cerdyn ag ef" withClue "Page hint wrong in welsh"
+      }
+
+    }
+
+    "POST /address" - {
+        def fakePostRequest(formData: (String, String)*): FakeRequest[AnyContentAsFormUrlEncoded] =
+          FakeRequest("POST", "/address").withFormUrlEncodedBody(formData: _*)
+
+        def fakePostRequestInWelsh(formData: (String, String)*): FakeRequest[AnyContentAsFormUrlEncoded] =
+          FakeRequest("POST", "/address").withFormUrlEncodedBody(formData: _*).withCookies(Cookie("PLAY_LANG", "cy"))
+
+      "should return 200 OK when a valid address is submitted" in {
+        val address = List(
+          ("line1", "20 Fake Cottage"),
+          ("line2", "Fake Street"),
+          ("city", "Imaginaryshire"),
+          ("county", "East Imaginationland"),
+          ("postcode", "IM2 4HJ"),
+          ("country", "GBR")
+        )
+        val result = systemUnderTest.submit(fakePostRequest(address: _*))
+        status(result) shouldBe Status.OK
+        contentAsString(result) shouldBe "Happy with the address entered"
+      }
+
+      "should return html containing the correct error messages when first line of address is missing" in {
+        val firstLineMissing = List(
+          ("line1", ""),
+          ("line2", "Fake Street"),
+          ("city", "Imaginaryshire"),
+          ("county", "East Imaginationland"),
+          ("postcode", "IM2 4HJ"),
+          ("country", "GBR")
+        )
+        val result = systemUnderTest.submit(fakePostRequest(firstLineMissing: _*))
+        val document = Jsoup.parse(contentAsString(result))
+        document.select(".govuk-error-summary__title").text() shouldBe "There is a problem"
+        document.select(".govuk-error-summary__list").text() shouldBe "Enter the first line of the billing address"
+        document.select(".govuk-error-summary__list").select("a").attr("href") shouldBe "#line1"
+      }
+
+      "should return html containing the correct error messages when postcode is missing" in {
+        val postcodeMissing = List(
+          ("line1", "20 Fake Cottage"),
+          ("line2", "Fake Street"),
+          ("city", "Imaginaryshire"),
+          ("county", "East Imaginationland"),
+          ("postcode", ""),
+          ("country", "GBR")
+        )
+        val result = systemUnderTest.submit(fakePostRequest(postcodeMissing: _*))
+        val document = Jsoup.parse(contentAsString(result))
+        document.select(".govuk-error-summary__title").text() shouldBe "There is a problem"
+        document.select(".govuk-error-summary__list").text() shouldBe "Enter your postcode"
+        document.select(".govuk-error-summary__list").select("a").attr("href") shouldBe "#postcode"
+      }
+
+      "should return html containing the correct error messages when no country selected" in {
+        val noCountrySelected = List(
+          ("line1", "20 Fake Cottage"),
+          ("line2", "Fake Street"),
+          ("city", "Imaginaryshire"),
+          ("county", "East Imaginationland"),
+          ("postcode", "IM2 4HJ"),
+          ("country", "")
+        )
+        val result = systemUnderTest.submit(fakePostRequest(noCountrySelected: _*))
+        val document = Jsoup.parse(contentAsString(result))
+        document.select(".govuk-error-summary__title").text() shouldBe "There is a problem"
+        document.select(".govuk-error-summary__list").text() shouldBe "Select a country"
+        document.select(".govuk-error-summary__list").select("a").attr("href") shouldBe "#country"
+      }
+
+      "should return a 400 BAD_REQUEST when an invalid address is submitted" in {
+        val postcodeMissing = List(
+          ("line1", "20 Fake Cottage"),
+          ("line2", "Fake Street"),
+          ("city", "Imaginaryshire"),
+          ("county", "East Imaginationland"),
+          ("postcode", "IM2 4HJ"),
+          ("country", "")
+        )
+        val result = systemUnderTest.submit(fakePostRequest(postcodeMissing: _*))
+        status(result) shouldBe Status.BAD_REQUEST
+      }
+
+      "should return html containing the correct error messages IN WELSH when first line of address is missing" in {
+        val firstLineMissing = List(
+          ("line1", ""),
+          ("line2", "Fake Street"),
+          ("city", "Imaginaryshire"),
+          ("county", "East Imaginationland"),
+          ("postcode", "IM2 4HJ"),
+          ("country", "GBR")
+        )
+        val result = systemUnderTest.submit(fakePostRequestInWelsh(firstLineMissing: _*))
+        val document = Jsoup.parse(contentAsString(result))
+        document.select(".govuk-error-summary__title").text() shouldBe "Mae problem wedi codi"
+        document.select(".govuk-error-summary__list").text() shouldBe "Nodwch linell gyntaf y cyfeiriad bilio"
+        document.select(".govuk-error-summary__list").select("a").attr("href") shouldBe "#line1"
+      }
+
+      "should return html containing the correct error messages IN WELSH when postcode is missing" in {
+        val postcodeMissing = List(
+          ("line1", "20 Fake Cottage"),
+          ("line2", "Fake Street"),
+          ("city", "Imaginaryshire"),
+          ("county", "East Imaginationland"),
+          ("postcode", ""),
+          ("country", "GBR")
+        )
+        val result = systemUnderTest.submit(fakePostRequestInWelsh(postcodeMissing: _*))
+        val document = Jsoup.parse(contentAsString(result))
+        document.select(".govuk-error-summary__title").text() shouldBe "Mae problem wedi codi"
+        document.select(".govuk-error-summary__list").text() shouldBe "Nodwch eich cod post"
+        document.select(".govuk-error-summary__list").select("a").attr("href") shouldBe "#postcode"
+      }
+
+      "should return html containing the correct error messages IN WELSH when no country selected" in {
+        val noCountrySelected = List(
+          ("line1", "20 Fake Cottage"),
+          ("line2", "Fake Street"),
+          ("city", "Imaginaryshire"),
+          ("county", "East Imaginationland"),
+          ("postcode", "IM2 4HJ"),
+          ("country", "")
+        )
+        val result = systemUnderTest.submit(fakePostRequestInWelsh(noCountrySelected: _*))
+        val document = Jsoup.parse(contentAsString(result))
+        document.select(".govuk-error-summary__title").text() shouldBe "Mae problem wedi codi"
+        document.select(".govuk-error-summary__list").text() shouldBe "Dewiswch eich gwlad"
+        document.select(".govuk-error-summary__list").select("a").attr("href") shouldBe "#country"
       }
 
     }
