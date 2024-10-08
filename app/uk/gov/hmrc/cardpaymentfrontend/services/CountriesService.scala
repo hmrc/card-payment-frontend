@@ -18,31 +18,50 @@ package uk.gov.hmrc.cardpaymentfrontend.services
 
 import uk.gov.hmrc.cardpaymentfrontend.models.Country
 import play.Environment
-import play.api.i18n.Messages
+import play.api.i18n._
 import play.api.mvc.Request
 import uk.gov.hmrc.cardpaymentfrontend.requests.RequestSupport
+import uk.gov.hmrc.cardpaymentfrontend.util.SafeEquals.EqualsOps
 
 import javax.inject.{Inject, Singleton}
 import scala.io.Source
 
 @Singleton
-class CountriesService @Inject() (requestSupport: RequestSupport, env: Environment) {
+class CountriesService @Inject() (requestSupport: RequestSupport, env: Environment)(implicit messagesApi: MessagesApi) {
 
   import requestSupport._
 
   private val pattern = "([A-Z]{3})=(.*)".r
 
-  def getCountriesListLang(implicit request: Request[_]): Seq[Country] = Source.fromFile(env.getFile(
-    Messages("country-code.path")
-  )).getLines().map {
-    case pattern(code, name) => Country(name = name, code = code)
-    case _                   => throw new RuntimeException("Failed to read country codes from environment file")
-  }.toSeq
+  private val countriesList: Seq[Country] = countrySeqFromFile("conf/country-codes-en.properties")
+
+  private val countriesListWelsh: Seq[Country] = countrySeqFromFile("conf/country-codes-cy.properties")
 
   def getCountries(implicit request: Request[_]): Seq[Country] = {
-    val UK: (Country) => Boolean = c => c.code == "GBR"
-    val countries = getCountriesListLang
+
+    val UK: (Country) => Boolean = c => c.code === "GBR"
+
+    val countries = request.lang.code match {
+      case "en" => countriesList
+      case "cy" => countriesListWelsh
+      case _    => throw new RuntimeException("Unknown Language from request, cannot derive country list")
+    }
     countries.filter(UK) ++ countries.filterNot(UK).sortWith((x, y) => x.name.compareTo(y.name) < 0)
+
+  }
+
+  private def countrySeqFromFile(filename: String): Seq[Country] = {
+
+    val sourceFromFile = Source.fromFile(env.getFile(filename))
+
+    val countries = sourceFromFile.getLines().map {
+      case pattern(code, name) => Country(name = name, code = code)
+      case _                   => throw new RuntimeException("Failed to read country codes from environment file")
+    }.toSeq
+
+    sourceFromFile.close()
+    countries
+
   }
 }
 

@@ -111,9 +111,6 @@ address.optional = (optional)
 address.optional.non.uk.address = (optional for non-UK addresses)
 address.postcode.hint = If you are a non-UK resident, this is optional
 
-country-code.path = conf/country-codes-en.properties
-
-
 error.invalid.addressline1 = Enter the first line of the billing address
 error.invalid.postcode = Enter your postcode in the correct format
 error.empty.postcode = Enter your postcode
