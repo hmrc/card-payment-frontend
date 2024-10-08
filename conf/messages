@@ -94,6 +94,8 @@ email-address.error.invalid = Enter a valid email address or leave it blank
 card-fees.heading = Card fees
 card-fees.para1 = There is a non-refundable fee if you pay by corporate credit card or corporate debit card.
 card-fees.para2 = There is no fee if you pay by:
+card-fees.para2.bank-account = bank account
 card-fees.para3 = You cannot pay using a personal credit card.
 card-fees.para4 = Allow 3 working days for your payment to reach HMRC’s bank account.
+card-fees.para2.bank-account = bank account
 
