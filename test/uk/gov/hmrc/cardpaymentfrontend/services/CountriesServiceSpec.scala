@@ -16,26 +16,21 @@
 
 package uk.gov.hmrc.cardpaymentfrontend.services
 
-import org.scalatest.concurrent.ScalaFutures
-import org.scalatest.matchers.should.Matchers
-import org.scalatest.wordspec.AnyWordSpec
-import org.scalatestplus.play.guice.GuiceOneServerPerSuite
-import play.api.mvc.{AnyContentAsFormUrlEncoded, Cookie}
+import play.api.mvc.{AnyContentAsEmpty, Cookie}
 import play.api.test.FakeRequest
+import uk.gov.hmrc.cardpaymentfrontend.testsupport.ItSpec
 
-class CountriesServiceSpec extends AnyWordSpec with Matchers with ScalaFutures with GuiceOneServerPerSuite {
+class CountriesServiceSpec extends ItSpec {
 
   private val service = app.injector.instanceOf[CountriesService]
 
-  def fakeGetRequest(formData: (String, String)*): FakeRequest[AnyContentAsFormUrlEncoded] =
-    FakeRequest("GET", "/address").withFormUrlEncodedBody(formData: _*)
+  def fakeGetRequest(): FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/address")
 
-  def fakeGetRequestInWelsh(formData: (String, String)*): FakeRequest[AnyContentAsFormUrlEncoded] =
-    FakeRequest("GET", "/address").withFormUrlEncodedBody(formData: _*).withCookies(Cookie("PLAY_LANG", "cy"))
+  def fakeGetRequestInWelsh(): FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/address").withCookies(Cookie("PLAY_LANG", "cy"))
 
-  "service" should {
+  "service" - {
 
-    "fetch country codes from government register for English" in {
+    "Return a sequence of country codes in English" in {
       val countries = service.getCountries(fakeGetRequest())
       countries.size shouldBe 249
       countries.headOption.map(_.code) shouldBe Some("GBR")
@@ -43,7 +38,7 @@ class CountriesServiceSpec extends AnyWordSpec with Matchers with ScalaFutures w
       countries.lastOption.map(_.code) shouldBe Some("ZWE")
     }
 
-    "fetch country codes from government register for Welsh" in {
+    "Return a sequence of country codes in Welsh" in {
       val countries = service.getCountries(fakeGetRequestInWelsh())
       countries.size shouldBe 249
       countries.headOption.map(_.code) shouldBe Some("GBR")
@@ -51,7 +46,7 @@ class CountriesServiceSpec extends AnyWordSpec with Matchers with ScalaFutures w
       countries.lastOption.map(_.code) shouldBe Some("GRL")
     }
 
-    "fetch country names from government register for English" in {
+    "Return a sequence of country names in English" in {
       val countries = service.getCountries(fakeGetRequest())
       countries.size shouldBe 249
       countries.headOption.map(_.name) shouldBe Some("United Kingdom")
@@ -59,7 +54,7 @@ class CountriesServiceSpec extends AnyWordSpec with Matchers with ScalaFutures w
       countries.lastOption.map(_.name) shouldBe Some("Zimbabwe")
     }
 
-    "fetch country names from government register for Welsh" in {
+    "Return a sequence of country names in Welsh" in {
       val countries = service.getCountries(fakeGetRequestInWelsh())
       countries.size shouldBe 249
       countries.headOption.map(_.name) shouldBe Some("Y Deyrnas Unedig")
