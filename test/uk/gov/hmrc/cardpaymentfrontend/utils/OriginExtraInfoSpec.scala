@@ -19,6 +19,7 @@ package uk.gov.hmrc.cardpaymentfrontend.utils
 import payapi.corcommon.model.Origins
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.ItSpec
 
+//Only a few tests here as this is intended to be replaced by a proper origin system in due course
 class OriginExtraInfoSpec extends ItSpec {
   private val systemUnderTest: OriginExtraInfo = app.injector.instanceOf[OriginExtraInfo]
 

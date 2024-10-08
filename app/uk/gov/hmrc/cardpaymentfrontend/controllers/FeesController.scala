@@ -22,14 +22,15 @@ import uk.gov.hmrc.cardpaymentfrontend.utils.OriginExtraInfo
 import uk.gov.hmrc.cardpaymentfrontend.views.html.FeesPage
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
-import javax.inject.Inject
+import javax.inject.{Inject, Singleton}
 
+@Singleton
 class FeesController @Inject() (
     originExtraInfo: OriginExtraInfo,
     mcc:             MessagesControllerComponents,
     feesPage:        FeesPage
 ) extends FrontendController(mcc) {
-  //A base case
+  //Note that when the Origin system is available this will be replaced with something more sensible
   def renderPage0(): Action[AnyContent] = Action { implicit request =>
     Ok(feesPage(
       originExtraInfo.paymentMethod(Origins.PfOther),

@@ -18,7 +18,7 @@ package uk.gov.hmrc.cardpaymentfrontend.utils
 
 import payapi.corcommon.model.{Origin, Origins}
 
-import javax.inject.Inject
+import javax.inject.{Inject, Singleton}
 trait PaymentMethod
 
 final case class Card() extends PaymentMethod
@@ -33,6 +33,8 @@ final case class PrintableDirectDebit() extends PaymentMethod
 
 final case class Bacs() extends PaymentMethod
 
+//Probably a temporary class
+@Singleton
 class OriginExtraInfo @Inject() () {
   def paymentMethod(origin: Origin): Set[PaymentMethod] = {
     origin match {
