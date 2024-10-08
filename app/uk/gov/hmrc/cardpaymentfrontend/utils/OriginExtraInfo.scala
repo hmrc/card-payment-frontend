@@ -114,8 +114,14 @@ class OriginExtraInfo @Inject() () {
       case Origins.PfAlcoholDuty            => Set(Card(), OpenBanking(), Bacs()) // DD also allowed but not in Payments
       case Origins.AlcoholDuty              => Set(Card(), OpenBanking(), Bacs()) // DD also allowed but not in Payments
     }
+
   }
 
   def openBankingAllowed(origin: Origin): Boolean = paymentMethod(origin).contains(OpenBanking())
+
+  def oneOffDirectDebitAllowed(origin: Origin): Boolean = paymentMethod(origin).contains(OneOffDirectDebit())
+
+  def variableDirectDebitAllowed(origin: Origin): Boolean = paymentMethod(origin).contains(VariableDirectDebit())
+
 }
 

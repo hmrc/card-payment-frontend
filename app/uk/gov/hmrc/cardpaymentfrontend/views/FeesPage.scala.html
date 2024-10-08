@@ -14,6 +14,7 @@
  * limitations under the License.
  *@
 
+@import uk.gov.hmrc.cardpaymentfrontend.models.AltPaymentLink
 @import uk.gov.hmrc.cardpaymentfrontend.views.html.Layout
 @import uk.gov.hmrc.cardpaymentfrontend.utils.{PaymentMethod, OpenBanking, VariableDirectDebit, OneOffDirectDebit}
 @import uk.gov.hmrc.govukfrontend.views.Aliases.{Button, ErrorSummary, Hint, Input, Label}
@@ -28,10 +29,7 @@
     formWithCSRF: FormWithCSRF
 )
 
-@(allowedPaymentMethods: Set[PaymentMethod],
-  bankLinkAction: (String, Call),
-  primaryDdLink:  Option[(String, Call)],
-  secondaryDdLink:  Option[(String, Call)])(implicit request: RequestHeader, messages: Messages)
+@(links: Seq[AltPaymentLink])(implicit request: RequestHeader, messages: Messages)
 
 
 @heading = @{messages("card-fees.heading")}
@@ -42,27 +40,9 @@
      <p id="para2" class="govuk-body">@messages("card-fees.para2")</p>
 
      <ul class="govuk-body">
-         @if(allowedPaymentMethods.contains(OpenBanking())) {
-            <li><a class="govuk-link" id="bank-account-link" href=@bankLinkAction._2.url>@bankLinkAction._1</a></li>
+         @links.map {alt =>
+           <li><a class="govuk-link" id=@alt.linkId href=@alt.href.url>@messages(alt.messageKey)</a></li>
          }
-
-         @if(allowedPaymentMethods.contains(VariableDirectDebit()) && !allowedPaymentMethods.contains(OneOffDirectDebit())) {
-            <li><a class="govuk-link" id="ddlink-1" href=@primaryDdLink.get._2.url>@primaryDdLink.get._1</a></li>
-         }
-
-         @if(!allowedPaymentMethods.contains(VariableDirectDebit()) && allowedPaymentMethods.contains(OneOffDirectDebit())) {
-             <li><a class="govuk-link" id="ddlink-1" href=@primaryDdLink.get._2.url>@primaryDdLink.get._1</a></li>
-         }
-
-         @if(allowedPaymentMethods.contains(VariableDirectDebit()) && allowedPaymentMethods.contains(OneOffDirectDebit())) {
-             @if(secondaryDdLink.isDefined) {
-                 <li><a class="govuk-link" id="ddlink-1-both-secondary" href=@secondaryDdLink.get._2.url>@secondaryDdLink.get._1</a></li>
-             }
-             @if(primaryDdLink.isDefined) {
-                 <li><a class="govuk-link" id="ddlink-1-both-primary" href=@primaryDdLink.get._2.url>@primaryDdLink.get._1</a></li>
-             }
-         }
-
      </ul>
 
      <p id="para3" class="govuk-body">@messages("card-fees.para3")</p>

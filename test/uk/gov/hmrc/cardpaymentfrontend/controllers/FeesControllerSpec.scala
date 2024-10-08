@@ -139,7 +139,7 @@ class FeesControllerSpec extends ItSpec {
       "when open banking is not allowed (example render0) there is no open banking content" in {
         val result = systemUnderTest.renderPage0()(fakeGetRequest)
         val document = Jsoup.parse(contentAsString(result))
-        val bankAccountLink = document.select("#bank-account-link")
+        val bankAccountLink = document.select("#open-banking-link")
         bankAccountLink.isEmpty shouldBe true
       }
 
@@ -147,24 +147,23 @@ class FeesControllerSpec extends ItSpec {
         val fakeGetRequest1: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/card-fees1")
         val result = systemUnderTest.renderPage1()(fakeGetRequest1)
         val document = Jsoup.parse(contentAsString(result))
-        val bankAccountLink = document.select("#bank-account-link")
-        bankAccountLink.text() shouldBe "bank account"
+        val bankAccountLink = document.select("#open-banking-link")
+        bankAccountLink.text() shouldBe "open banking"
       }
 
       "when variable direct debit is allowed and one off direct debit is not allowed (example render2) there is variable direct debit content" in {
         val fakeGetRequest2: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/card-fees2")
         val result = systemUnderTest.renderPage2()(fakeGetRequest2)
         val document = Jsoup.parse(contentAsString(result))
-        val variableDirectDebitLink = document.select("#ddlink-1")
+        val variableDirectDebitLink = document.select("#direct-debit-link")
         variableDirectDebitLink.text() shouldBe "direct debit"
-
       }
 
       "when variable direct debit is not allowed and one off direct debit is allowed (example render3) there is variable direct debit content" in {
         val fakeGetRequest3: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/card-fees3")
         val result = systemUnderTest.renderPage3()(fakeGetRequest3)
         val document = Jsoup.parse(contentAsString(result))
-        val variableDirectDebitLink = document.select("#ddlink-1")
+        val variableDirectDebitLink = document.select("#direct-debit-link")
         variableDirectDebitLink.text() shouldBe "direct debit"
       }
 
@@ -172,7 +171,7 @@ class FeesControllerSpec extends ItSpec {
         val fakeGetRequest4: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/card-fees4")
         val result = systemUnderTest.renderPage4()(fakeGetRequest4)
         val document = Jsoup.parse(contentAsString(result))
-        val variableDirectDebitLink = document.select("#ddlink-1-both-primary")
+        val variableDirectDebitLink = document.select("#direct-debit-link-both-primary")
         variableDirectDebitLink.text() shouldBe "direct debit"
       }
 
@@ -180,8 +179,8 @@ class FeesControllerSpec extends ItSpec {
         val fakeGetRequest5: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/card-fees5")
         val result = systemUnderTest.renderPage5()(fakeGetRequest5)
         val document = Jsoup.parse(contentAsString(result))
-        val variableDirectDebitLink = document.select("#ddlink-1-both-secondary")
-        variableDirectDebitLink.text() shouldBe "alt direct debit"
+        val variableDirectDebitLink = document.select("#direct-debit-link-both-secondary")
+        variableDirectDebitLink.text() shouldBe "direct debit"
       }
 
     }
