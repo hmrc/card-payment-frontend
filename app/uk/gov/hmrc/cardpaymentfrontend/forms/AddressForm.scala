@@ -33,6 +33,7 @@ object AddressForm {
 
   def form(): Form[Address] = Form(
     mapping(
+
       "line1" -> text.transform[String](_.trim, identity).verifying("error.invalid.addressline1", s => s.length > 0)
         .verifying(maxLength(50))
         .verifying(emojiConstraint("line1", "error.invalid.char")),

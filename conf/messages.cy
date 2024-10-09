@@ -92,8 +92,7 @@ email-address.error.invalid = Nodwch gyfeiriad e-bost dilys neu gadewch yn wag
 #Address Page
 address.heading = Cyfeiriad bilio’r cerdyn
 address.hint.line1 = Eich cyfeiriad bilio yw’r cyfeiriad y gwnaethoch gofrestru eich cerdyn ag ef
-#Content needs checking. Not present in pay-frontend
-address.hint.line2 =
+address.hint.line2 = Os nad yw’n cyd-fynd, bydd y taliad yn methu.
 
 address.fieldname.line1 = Cyfeiriad - llinell 1
 address.fieldname.line2 = Cyfeiriad - llinell 2

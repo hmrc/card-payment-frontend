@@ -69,7 +69,10 @@ formWithCSRF: FormWithCSRF
                     content = Text(messages("address.fieldname.line1"))),
                 inputType = "text",
                 autocomplete = Some("off"),
-                spellcheck = Some(false)
+                spellcheck = Some(false),
+                errorMessage = form.error("line1").map(e => ErrorMessage.errorMessageWithDefaultStringsTranslated(
+                    content = Text(messages(e.message))
+                )),
             ).withFormField(form(key))
         )
 
@@ -118,7 +121,10 @@ formWithCSRF: FormWithCSRF
                     content = Text(messages("address.fieldname.postcode"))),
                 inputType = "text",
                 autocomplete = Some("off"),
-                spellcheck = Some(false)
+                spellcheck = Some(false),
+                errorMessage = form.error("postcode").map(e => ErrorMessage.errorMessageWithDefaultStringsTranslated(
+                    content = Text(messages(e.message))
+                ))
             ).withFormField(form(key))
         )
         @govukSelect(
@@ -127,10 +133,12 @@ formWithCSRF: FormWithCSRF
                 name = "country",
                 classes = "govuk-select address-input-width",
                 label = Label(content = Text(messages("address.fieldname.country"))),
+                errorMessage = form.error("country").map(e => ErrorMessage.errorMessageWithDefaultStringsTranslated(
+                    content = Text(messages(e.message))
+                )),
                 items = Seq(SelectItem(
                     Some(""),
                     text = messages("address.country.select.message"),
-
                 )) ++ countries.map(c => SelectItem(Some(c.code), c.name))
             )
         )
