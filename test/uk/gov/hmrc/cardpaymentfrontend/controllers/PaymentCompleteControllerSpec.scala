@@ -106,15 +106,23 @@ class PaymentCompleteControllerSpec extends ItSpec {
           "Amount" -> "£12.34"
         )
 
-        keyValuePairsOfSummaryRows should contain theSameElementsInOrderAs (expectedSummaryListRows)
+        keyValuePairsOfSummaryRows should contain theSameElementsInOrderAs expectedSummaryListRows
       }
 
       //todo enhance this test to test this page for EVERY origin, some origins have bespoke behaviour/content.
       "render the summary list correctly in welsh" in {
-        pending
         val result = systemUnderTest.renderPage(fakeGetRequestInWelsh)
         val document = Jsoup.parse(contentAsString(result))
-        document.select("").html() shouldBe ""
+        val summaryListRows: List[Element] = document.select(".govuk-summary-list__row").asScala.toList
+        val keyValuePairsOfSummaryRows: List[(String, String)] =
+          summaryListRows.map(row => row.select(".govuk-summary-list__key").text() -> row.select(".govuk-summary-list__value").text())
+        val expectedSummaryListRows: List[(String, String)] = List(
+          "Treth" -> "Self assessment",
+          "Dyddiad" -> "7 October 2024",
+          "Swm" -> "£12.34"
+        )
+
+        keyValuePairsOfSummaryRows should contain theSameElementsInOrderAs expectedSummaryListRows
       }
 
       "render the print link correctly" in {

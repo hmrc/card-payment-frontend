@@ -95,6 +95,9 @@ email-address.error.invalid = Nodwch gyfeiriad e-bost dilys neu gadewch yn wag
 payment-complete.panel.title = Taliad wedi dod i law CThEM
 payment-complete.panel.content = Eich cyfeirnod talu<br><strong>{0}</strong>
 payment-complete.email.paragraph = Rydym wedi anfon e-bost cadarnhau <strong>{0}</strong>
+payment-complete.summary-list.tax = Treth
+payment-complete.summary-list.date = Dyddiad
+payment-complete.summary-list.amount = Swm
 payment-complete.print-link = Argraffwch cadarnhad o’ch taliad
 ##todo mods has bespoke content for print link, passengers shouldn't have one at all
 payment-complete.survey.title = Helpwch ni i wella ein gwasanaethau
