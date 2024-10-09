@@ -89,3 +89,18 @@ title.PfAlcoholDuty =
 email-address.heading = What is your email address? (optional)
 email-address.hint = We’ll only use this to confirm you sent a payment
 email-address.error.invalid = Enter a valid email address or leave it blank
+
+
+## Payment complete page
+payment-complete.panel.title = Payment received by HMRC
+payment-complete.panel.content = Your payment reference<br><strong>{0}</strong>
+payment-complete.email.paragraph = We have sent a confirmation email to <strong>{0}</strong>
+payment-complete.summary-list.tax = Tax
+payment-complete.summary-list.date = Date
+payment-complete.summary-list.amount = Amount
+payment-complete.print-link = Print your payment confirmation
+##todo mods has bespoke content for print link, passengers shouldn't have one at all
+payment-complete.survey.title = Help us improve our services
+payment-complete.survey.p1 = We use your feedback to make our services better.
+payment-complete.survey.p2.part1 = Tell us what you think of this service
+payment-complete.survey.p2.part2 = (takes 30 seconds)

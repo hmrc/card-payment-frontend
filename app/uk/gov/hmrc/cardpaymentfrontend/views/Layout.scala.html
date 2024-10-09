@@ -26,6 +26,7 @@
 
 @(
         pageTitle: Option[String] = None,
+        showBackLink: Boolean = true,
         backLinkOverride: Option[BackLink] = None
 )(contentBlock: Html)(implicit request: RequestHeader, messages: Messages)
 
@@ -38,6 +39,11 @@
   HmrcStandardPageParams(
       pageTitle = pageTitle,
       isWelshTranslationAvailable = true,
-      backLink = if (backLinkOverride.isDefined) backLinkOverride else Some(BackLink.mimicsBrowserBackButtonViaJavaScript)
+      backLink = {
+          if (showBackLink) {
+              if (backLinkOverride.isDefined) backLinkOverride else Some(BackLink.mimicsBrowserBackButtonViaJavaScript)
+          }
+          else None
+      }
   )
 )(content)
