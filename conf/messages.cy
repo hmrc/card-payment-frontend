@@ -94,8 +94,8 @@ address.heading = Cyfeiriad bilio’r cerdyn
 address.hint.l1 = Eich cyfeiriad bilio yw’r cyfeiriad y gwnaethoch gofrestru eich cerdyn ag ef
 address.hint.l2 = Os nad yw’n cyd-fynd, bydd y taliad yn methu.
 
-address.fieldname.line1 = Cyfeiriad - llinell 1 (dewisol)
-address.fieldname.line2 = Cyfeiriad - llinell 2
+address.fieldname.line1 = Cyfeiriad - llinell 1
+address.fieldname.line2 = Cyfeiriad - llinell 2 (dewisol)
 address.fieldname.city = Tref neu ddinas (dewisol)
 address.fieldname.county = Sir (dewisol)
 address.fieldname.postcode = Cod post
