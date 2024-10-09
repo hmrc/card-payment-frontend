@@ -72,6 +72,7 @@ formWithCSRF: FormWithCSRF
                 spellcheck = Some(false)
             ).withFormField(form(key))
         )
+
         @govukInput(
             Input(
                 id = "line2",
@@ -125,7 +126,7 @@ formWithCSRF: FormWithCSRF
                 id = "country",
                 name = "country",
                 classes = "govuk-select address-input-width",
-                label = Label(content = Text("address.fieldname.country")),
+                label = Label(content = Text(messages("address.fieldname.country"))),
                 items = Seq(SelectItem(
                     Some(""),
                     text = messages("address.country.select.message"),
