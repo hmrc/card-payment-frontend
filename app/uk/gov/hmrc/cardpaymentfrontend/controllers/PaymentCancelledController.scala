@@ -23,9 +23,9 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import javax.inject.Inject
 
 class PaymentCancelledController @Inject() (
-                                             mcc:                  MessagesControllerComponents,
-                                             paymentCancelledPage: PaymentCancelledPage
-                                           ) extends FrontendController(mcc) {
+    mcc:                  MessagesControllerComponents,
+    paymentCancelledPage: PaymentCancelledPage
+) extends FrontendController(mcc) {
 
   val renderPage: Action[AnyContent] = Action { implicit request =>
     //just hardcoded exitUrl for now, eventually we'll need some more functionality but that requires spj models etc.
