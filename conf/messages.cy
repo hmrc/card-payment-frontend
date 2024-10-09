@@ -91,16 +91,15 @@ email-address.error.invalid = Nodwch gyfeiriad e-bost dilys neu gadewch yn wag
 
 #Address Page
 address.heading = Cyfeiriad bilio’r cerdyn
-address.hint.line1 = Eich cyfeiriad bilio yw’r cyfeiriad y gwnaethoch gofrestru eich cerdyn ag ef
-address.hint.line2 = Os nad yw’n cyd-fynd, bydd y taliad yn methu.
+address.hint.l1 = Eich cyfeiriad bilio yw’r cyfeiriad y gwnaethoch gofrestru eich cerdyn ag ef
+address.hint.l2 = Os nad yw’n cyd-fynd, bydd y taliad yn methu.
 
-address.fieldname.line1 = Cyfeiriad - llinell 1
+address.fieldname.line1 = Cyfeiriad - llinell 1 (dewisol)
 address.fieldname.line2 = Cyfeiriad - llinell 2
-address.fieldname.city = Tref neu ddinas
-address.fieldname.county = Sir
+address.fieldname.city = Tref neu ddinas (dewisol)
+address.fieldname.county = Sir (dewisol)
 address.fieldname.postcode = Cod post
 address.fieldname.country = Gwlad
-address.enter-emailaddress = Nodwch eich cyfeiriad e-bost
 
 address.country.select.message = Dewiswch
 address.postcode.hint = Os ydych yn berson nad yw’n breswyl yn y DU, mae hyn yn ddewisol
