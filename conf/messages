@@ -95,9 +95,6 @@ address.heading = Card billing address
 address.hint.l1 = This billing address must match the address your card is registered with.
 address.hint.l2 = If it does not, the payment will fail.
 
-
-address.collection.page.sub-heading = Billing address
-
 address.fieldname.line1 = Address line 1
 address.fieldname.line2 = Address line 2 (optional)
 address.fieldname.city = Town or City (optional)
@@ -105,9 +102,7 @@ address.fieldname.county = County (optional)
 address.fieldname.postcode = Postcode
 address.fieldname.country = Country
 
-
 address.country.select.message = Please select…
-address.optional = (optional)
 address.optional.non.uk.address = (optional for non-UK addresses)
 address.postcode.hint = If you are a non-UK resident, this is optional
 

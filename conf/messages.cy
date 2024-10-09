@@ -101,8 +101,7 @@ address.fieldname.county = Sir
 address.fieldname.postcode = Cod post
 address.fieldname.country = Gwlad
 address.enter-emailaddress = Nodwch eich cyfeiriad e-bost
-address.emailaddress = Cyfeiriad e-bost
-address.emailaddress-hint = Os rhowch gyfeiriad e-bost, caiff ei ddefnyddio i anfon cadarnhad o’ch taliad atoch
+
 address.country.select.message = Dewiswch
 address.postcode.hint = Os ydych yn berson nad yw’n breswyl yn y DU, mae hyn yn ddewisol
 address.optional = (dewisol)
