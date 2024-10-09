@@ -89,3 +89,8 @@ title.PfAlcoholDuty =
 email-address.heading = Beth yw’ch cyfeiriad e-bost? (dewisol)
 email-address.hint = Byddwn ond yn defnyddio hwn i gadarnhau’ch bod wedi anfon taliad
 email-address.error.invalid = Nodwch gyfeiriad e-bost dilys neu gadewch yn wag
+
+payment-failed.heading = Taliad wedi methu
+payment-failed.subHeading = Nid oes taliad wedi’i dynnu o’ch cerdyn.
+
+

@@ -89,3 +89,16 @@ title.PfAlcoholDuty =
 email-address.heading = What is your email address? (optional)
 email-address.hint = We’ll only use this to confirm you sent a payment
 email-address.error.invalid = Enter a valid email address or leave it blank
+
+
+payment-failed.heading = Payment failed
+payment-failed.subHeading = No payment has been taken from your card.
+payment-failed.failed1 = The payment may have failed if:
+payment-failed.failed2 = there are not enough funds in your account
+payment-failed.failed3 = you entered invalid or expired card details
+payment-failed.failed4 = the address you gave does not match the one your card issuer has
+
+
+payment-failed.failedCheckAgain = Check the details you entered are correct or try a different card.
+
+

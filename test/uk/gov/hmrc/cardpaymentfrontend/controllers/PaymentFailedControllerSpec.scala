@@ -1,5 +1,6 @@
 package uk.gov.hmrc.cardpaymentfrontend.controllers
 
+import org.jsoup.Jsoup
 import play.api.http.Status
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
@@ -22,6 +23,14 @@ class PaymentFailedControllerSpec extends ItSpec {
         val result = systemUnderTest.renderPage(fakeGetRequest)
         status(result) shouldBe Status.OK
       }
+
+      "render the page with the sub heading correctly in English" in {
+        val result = systemUnderTest.renderPage(fakeGetRequest)
+        val document = Jsoup.parse(contentAsString(result))
+        document.selectXpath("//*[@id=\"main-content\"]/div/div/p[1]").text() shouldBe "No payment has been taken from your card."
+      }
+
+
 
     }
 

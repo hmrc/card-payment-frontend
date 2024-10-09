@@ -16,6 +16,7 @@
 
 @import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcStandardPage
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.hmrcstandardpage.HmrcStandardPageParams
+@import uk.gov.hmrc.govukfrontend.views.viewmodels.exitthispage.ExitThisPage
 @import uk.gov.hmrc.govukfrontend.views.Aliases.BackLink
 @import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcReportTechnicalIssueHelper
 
@@ -26,6 +27,7 @@
 
 @(
         pageTitle: Option[String] = None,
+        exitThisPage: Option[ExitThisPage] = None,
         backLinkOverride: Option[BackLink] = None
 )(contentBlock: Html)(implicit request: RequestHeader, messages: Messages)
 
@@ -37,6 +39,7 @@
 @hmrcStandardPage(
   HmrcStandardPageParams(
       pageTitle = pageTitle,
+      exitThisPage = exitThisPage,
       isWelshTranslationAvailable = true,
       backLink = if (backLinkOverride.isDefined) backLinkOverride else Some(BackLink.mimicsBrowserBackButtonViaJavaScript)
   )
