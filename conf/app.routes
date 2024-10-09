@@ -8,3 +8,6 @@ POST       /email-address           uk.gov.hmrc.cardpaymentfrontend.controllers.
 
 GET        /address                 uk.gov.hmrc.cardpaymentfrontend.controllers.AddressController.renderPage
 POST       /address                 uk.gov.hmrc.cardpaymentfrontend.controllers.AddressController.submit
+
+GET        /payment-complete        uk.gov.hmrc.cardpaymentfrontend.controllers.PaymentCompleteController.renderPage
+

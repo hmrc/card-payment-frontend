@@ -1,0 +1,94 @@
+@*
+ * Copyright 2024 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import uk.gov.hmrc.cardpaymentfrontend.views.html.Layout
+@import uk.gov.hmrc.govukfrontend.views.Aliases.{Key, SummaryList, Text, Value}
+@import uk.gov.hmrc.govukfrontend.views.html.components.{GovukPanel, GovukSummaryList, Panel}
+@import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
+@import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+@import uk.gov.hmrc.cardpaymentfrontend.models.EmailAddress
+
+@this(
+        govukPanel: GovukPanel,
+        govukSummaryList: GovukSummaryList,
+        layout: Layout
+)
+
+@(
+        taxReference: String,
+        taxType: String,
+        amountInPounds: String,
+        paymentDate: String,
+        maybeEmailAddress: Option[EmailAddress]
+)(implicit request: RequestHeader, messages: Messages)
+
+@heading = @{messages("payment-complete.panel.title")}
+
+@panelContent = @{Html(messages("payment-complete.panel.content", taxReference))}
+
+@maybeEmailContent = {
+    @maybeEmailAddress.fold(Html("")) { emailAddress =>
+        <p id="email-paragraph" class="govuk-body">
+            @Html(Messages("payment-complete.email.paragraph", emailAddress.value))
+        </p>
+    }
+}
+
+@layout(pageTitle = Some(heading), showBackLink = false) {
+
+    @govukPanel(Panel(
+        title = Text(heading),
+        content = HtmlContent(panelContent)
+    ))
+
+    @maybeEmailContent
+
+    @govukSummaryList(SummaryList(
+        Seq(
+            SummaryListRow(
+                Key(Text(messages("payment-complete.summary-list.tax"))),
+                Value(Text(messages(taxType)))
+            ),
+            SummaryListRow(
+                Key(Text(messages("payment-complete.summary-list.date"))),
+                Value(Text(messages(paymentDate)))
+            ),
+            SummaryListRow(
+                Key(Text(messages("payment-complete.summary-list.amount"))),
+                Value(Text(messages(amountInPounds)))
+            )
+        )
+    ))
+
+    <p id="print-link" class="govuk-body govuk-!-display-none-print">
+        <a href="javascript:window.print()" class="govuk-link">@Messages("payment-complete.print-link")</a>
+    </p>
+
+    <div id="survey-wrapper" class="govuk-!-display-none-print">
+        <h2 class="govuk-heading-m">@Messages("payment-complete.survey.title")</h2>
+        <p id="survey-content" class="govuk-body">@Messages("payment-complete.survey.p1")</p>
+        <p id="survey-link-wrapper" class="govuk-body">
+            @* TODO update the href to link out to payments-survey as it is done in pay-frontend, needs origins etc. OPS-12861 *@
+            <a class="govuk-link" href="ADD_ME">@Messages("payment-complete.survey.p2.part1")</a>
+            @Messages("payment-complete.survey.p2.part2")
+        </p>
+    </div>
+
+}
+
+@{
+    //$COVERAGE-OFF$
+}
