@@ -16,10 +16,12 @@
 
 @import uk.gov.hmrc.cardpaymentfrontend.views.html.Layout
 @import uk.gov.hmrc.govukfrontend.views.Aliases.{Button, ErrorSummary, Hint, Input, Label}
-@import uk.gov.hmrc.govukfrontend.views.html.components.GovukRadios
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 
 @this(
     layout: Layout
+//    govUkButton: GovukButton
 )
 
 @()(implicit request: RequestHeader, messages: Messages)
@@ -34,13 +36,16 @@
      <ul class="govuk-list--bullet govuk-!-static-padding-left-7">
        <li class="govuk-body">@{messages("payment-failed.failed2")}</li>
        <li class="govuk-body">@{messages("payment-failed.failed3")}</li>
+       <li class="govuk-body">@{messages("payment-failed.failed4")}</li>
      </ul>
    <p class="govuk-body">@{messages("payment-failed.failedCheckAgain")}</p>
 
+@*//    @button(Button(*@
+@*//        href = Some(controllers.routes.EmailAddressController.renderPage(Some(request.journey.traceId)).url),*@
+@*//        content = Text(messages("payment-failed.failedCheckDetails")),*@
+@*//        attributes = Map("id" -> "try-again", "data-journey-click" -> "Payment Unsuccessful:click:Try again")*@
+@*//    ))*@
 
-    <div>
-        Page rendered successfully
-    </div>
 }
 
 @{

@@ -98,7 +98,7 @@ payment-failed.failed2 = there are not enough funds in your account
 payment-failed.failed3 = you entered invalid or expired card details
 payment-failed.failed4 = the address you gave does not match the one your card issuer has
 
-
+payment-failed.failedCheckDetails = Check details and try again
 payment-failed.failedCheckAgain = Check the details you entered are correct or try a different card.
 
 
