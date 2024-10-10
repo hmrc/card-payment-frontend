@@ -136,3 +136,14 @@ payment-cancelled.p2 = Nid oes arian wedi’i gymryd allan o’ch cyfrif.
 payment-cancelled.enter-details-again.button = Nodwch eich manylion eto
 payment-cancelled.pay-another-way.link = Talu drwy ddull arall
 payment-cancelled.exit-without-paying.link = Gadewch heb dalu
+
+payment-failed.heading = Taliad wedi methu
+payment-failed.subHeading = Nid oes taliad wedi’i dynnu o’ch cerdyn.
+payment-failed.failed1 = Mae’n bosibl bod y taliad wedi methi oherwydd:
+payment-failed.failed2 = nid oes yna ddigon o arian yn eich cyfrif
+payment-failed.failed3 = rydych wedi nodi manylion cerdyn sy’n annilys neu sydd wedi dod i ben
+payment-failed.failed4 = nid yw’r cyfeiriad a roesoch i ni’n cyd-fynd â’r un sydd gan ddosbarthwr eich cerdyn
+
+payment-failed.failedCheckDetails = Gwiriwch y manylion a rhowch gynnig arall arni
+payment-failed.failedCheckAgain = Gwiriwch fod y manylion a nodwyd gennych yn gywir neu rhowch gynnig ar gerdyn gwahanol.
+
