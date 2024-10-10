@@ -41,8 +41,8 @@ formWithCSRF: FormWithCSRF
 
 @heading= @{messages("address.heading")}
 @key = @{AddressForm.addressKey}
-@hint1: String = @{messages("address.hint.l1")}
-@hint2: String = @{messages("address.hint.l2")}
+@hint1: String = @{messages("address.line1-hint")}
+@hint2: String = @{messages("address.line2-hint")}
 
 @layout(pageTitle = Some(heading)) {
 
@@ -66,7 +66,7 @@ formWithCSRF: FormWithCSRF
                 name = "line1",
                 classes = "govuk-input--width-20",
                 label = Label(
-                    content = Text(messages("address.fieldname.line1"))),
+                    content = Text(messages("address.field-name.line1"))),
                 inputType = "text",
                 autocomplete = Some("off"),
                 spellcheck = Some(false),
@@ -82,7 +82,7 @@ formWithCSRF: FormWithCSRF
                 name = "line2",
                 classes = "govuk-input--width-20",
                 label = Label(
-                    content = Text(messages("address.fieldname.line2"))),
+                    content = Text(messages("address.field-name.line2"))),
                 inputType = "text",
                 autocomplete = Some("off"),
                 spellcheck = Some(false)
@@ -94,7 +94,7 @@ formWithCSRF: FormWithCSRF
                 name = "city",
                 classes = "govuk-input--width-20",
                 label = Label(
-                    content = Text(messages("address.fieldname.city"))),
+                    content = Text(messages("address.field-name.city"))),
                 inputType = "text",
                 autocomplete = Some("off"),
                 spellcheck = Some(false)
@@ -106,7 +106,7 @@ formWithCSRF: FormWithCSRF
                 name = s"$key.fieldname.county",
                 classes = "govuk-input--width-20",
                 label = Label(
-                    content = Text(messages("address.fieldname.county"))),
+                    content = Text(messages("address.field-name.county"))),
                 inputType = "text",
                 autocomplete = Some("off"),
                 spellcheck = Some(false)
@@ -118,7 +118,7 @@ formWithCSRF: FormWithCSRF
                 name = "postcode",
                 classes = "govuk-input--width-20",
                 label = Label(
-                    content = Text(messages("address.fieldname.postcode"))),
+                    content = Text(messages("address.field-name.postcode"))),
                 inputType = "text",
                 autocomplete = Some("off"),
                 spellcheck = Some(false),
@@ -132,7 +132,7 @@ formWithCSRF: FormWithCSRF
                 id = "country",
                 name = "country",
                 classes = "govuk-select address-input-width",
-                label = Label(content = Text(messages("address.fieldname.country"))),
+                label = Label(content = Text(messages("address.field-name.country"))),
                 errorMessage = form.error("country").map(e => ErrorMessage.errorMessageWithDefaultStringsTranslated(
                     content = Text(messages(e.message))
                 )),

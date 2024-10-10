@@ -91,29 +91,29 @@ email-address.error.invalid = Nodwch gyfeiriad e-bost dilys neu gadewch yn wag
 
 ## Address Page
 address.heading = Cyfeiriad bilio’r cerdyn
-address.hint.l1 = Eich cyfeiriad bilio yw’r cyfeiriad y gwnaethoch gofrestru eich cerdyn ag ef
-address.hint.l2 = Os nad yw’n cyd-fynd, bydd y taliad yn methu.
+address.field-name.line1.hint = Eich cyfeiriad bilio yw’r cyfeiriad y gwnaethoch gofrestru eich cerdyn ag ef
+address.field-name.line2.hint = Os nad yw’n cyd-fynd, bydd y taliad yn methu.
 
-address.fieldname.line1 = Cyfeiriad - llinell 1
-address.fieldname.line2 = Cyfeiriad - llinell 2 (dewisol)
-address.fieldname.city = Tref neu ddinas (dewisol)
-address.fieldname.county = Sir (dewisol)
-address.fieldname.postcode = Cod post
-address.fieldname.country = Gwlad
+address.field-name.line1 = Cyfeiriad - llinell 1
+address.field-name.line2 = Cyfeiriad - llinell 2 (dewisol)
+address.field-name.city = Tref neu ddinas (dewisol)
+address.field-name.county = Sir (dewisol)
+address.field-name.postcode = Cod post
+address.field-name.country = Gwlad
 
 address.country.select.message = Dewiswch
 address.postcode.hint = Os ydych yn berson nad yw’n breswyl yn y DU, mae hyn yn ddewisol
 address.optional = (dewisol)
 address.optional.non.uk.address = (dewisol ar gyfer cyfeiriadau y tu allan i’r DU)
 
-error.invalid.addressline1 = Nodwch linell gyntaf y cyfeiriad bilio
-error.invalid.postcode = Nodwch eich cod post yn y fformat cywir
-error.empty.postcode = Nodwch eich cod post
-error.required.postcode = Nodwch god post dilys
-error.required.country = Dewiswch eich gwlad
-error.invalid.emailaddress = Nodwch gyfeiriad e-bost dilys neu gadewch yn wag
-error.constraint.emailaddress = Nodwch gyfeiriad e-bost dilys neu gadewch yn wag
-error.invalid.char = Mae’r maes yn cynnwys cymeriad annilys
+address.field-name.error.invalid.line1 = Nodwch linell gyntaf y cyfeiriad bilio
+address.field-name.error.invalid.postcode = Nodwch eich cod post yn y fformat cywir
+address.field-name.error.empty.postcode = Nodwch eich cod post
+address.field-name.error.required.postcode = Nodwch god post dilys
+address.field-name.error.required.country = Dewiswch eich gwlad
+address.field-name.error.invalid.emailaddress = Nodwch gyfeiriad e-bost dilys neu gadewch yn wag
+address.field-name.error.constraint.emailaddress = Nodwch gyfeiriad e-bost dilys neu gadewch yn wag
+address.field-name.error.invalid.char = Mae’r maes yn cynnwys cymeriad annilys
 
 ## payment complete page
 payment-complete.panel.title = Taliad wedi dod i law CThEM

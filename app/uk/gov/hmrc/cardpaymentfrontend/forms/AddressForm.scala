@@ -34,18 +34,18 @@ object AddressForm {
   def form(): Form[Address] = Form(
     mapping(
 
-      "line1" -> text.transform[String](_.trim, identity).verifying("error.invalid.addressline1", s => s.length > 0)
+      "line1" -> text.transform[String](_.trim, identity).verifying("address.field-name.error.invalid.line1", s => s.length > 0)
         .verifying(maxLength(50))
-        .verifying(emojiConstraint("line1", "error.invalid.char")),
+        .verifying(emojiConstraint("line1", "address.field-name.error.invalid.char")),
       "line2" -> optional(text.transform[String](_.trim, identity)
         .verifying(maxLength(50))
-        .verifying(emojiConstraint("line2", "error.invalid.char"))),
+        .verifying(emojiConstraint("line2", "address.field-name.error.invalid.char"))),
       "city" -> optional(text.transform[String](_.trim, identity)
         .verifying(maxLength(60))
-        .verifying(emojiConstraint("city", "error.invalid.char"))),
+        .verifying(emojiConstraint("city", "address.field-name.error.invalid.char"))),
       "county" -> optional(text.transform[String](_.trim, identity)
         .verifying(maxLength(60))
-        .verifying(emojiConstraint("county", "error.invalid.char"))),
+        .verifying(emojiConstraint("county", "address.field-name.error.invalid.char"))),
       "postcode" -> of(postcodeFormatter),
       "country" -> text.verifying(countryConstraint)
     )(Address.apply)(Address.unapply)
@@ -67,7 +67,7 @@ object AddressForm {
   }
 
   def countryConstraint: Constraint[String] = Constraint[String]("constraint.country") { o =>
-    if (o.isBlank) Invalid(ValidationError("error.required.country")) else if (o.trim.isEmpty) Invalid(ValidationError("error.required.country")) else Valid
+    if (o.isBlank) Invalid(ValidationError("address.field-name.error.required.country")) else if (o.trim.isEmpty) Invalid(ValidationError("address.field-name.error.required.country")) else Valid
   }
 
   val postcodeFormatter: Formatter[String] = new Formatter[String] {
@@ -77,9 +77,9 @@ object AddressForm {
       val postCode: String = data("postcode").filterNot(_.isWhitespace)
       val selectedCountryIsGBR: Boolean = data("country").matches("GBR")
       if (selectedCountryIsGBR && postCode.isEmpty)
-        Left(Seq(FormError("postcode", "error.empty.postcode")))
+        Left(Seq(FormError("postcode", "address.field-name.error.empty.postcode")))
       else if (selectedCountryIsGBR && !postCode.matches(ukPostcodeRegex.regex))
-        Left(Seq(FormError("postcode", "error.invalid.postcode")))
+        Left(Seq(FormError("postcode", "address.field-name.error.invalid.postcode")))
       else
         Right(postCode)
     }
