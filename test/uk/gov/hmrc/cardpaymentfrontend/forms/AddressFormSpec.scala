@@ -87,7 +87,7 @@ class AddressFormSpec extends UnitSpec {
 
       val result: Form[Address] = form.bind(validAddress)
       result.hasErrors shouldBe true
-      result.errors shouldBe List(FormError("line1", List("error.invalid.addressline1")), FormError("country", List("error.required.country")))
+      result.errors shouldBe List(FormError("line1", List("address.field-name.error.invalid.line1")), FormError("country", List("address.field-name.error.required.country")))
     }
 
     "When country is not GBR, errors thrown for line1 only" in {
@@ -103,7 +103,7 @@ class AddressFormSpec extends UnitSpec {
 
       val result: Form[Address] = form.bind(validAddress)
       result.hasErrors shouldBe true
-      result.errors shouldBe List(FormError("line1", List("error.invalid.addressline1"), List()))
+      result.errors shouldBe List(FormError("line1", List("address.field-name.error.invalid.line1"), List()))
     }
 
     "When country is GBR, errors thrown for a missing postcode" in {
@@ -119,7 +119,7 @@ class AddressFormSpec extends UnitSpec {
 
       val result: Form[Address] = form.bind(validAddress)
       result.hasErrors shouldBe true
-      result.errors shouldBe List(FormError("postcode", List("error.empty.postcode")))
+      result.errors shouldBe List(FormError("postcode", List("address.field-name.error.empty.postcode")))
     }
 
     "Throw errors when fields are too long" in {
@@ -159,10 +159,10 @@ class AddressFormSpec extends UnitSpec {
       val result: Form[Address] = form.bind(invalidAddress)
       result.hasErrors shouldBe true
       result.errors shouldBe List(
-        FormError("line1", List("error.invalid.char")),
-        FormError("line2", List("error.invalid.char")),
-        FormError("city", List("error.invalid.char")),
-        FormError("county", List("error.invalid.char"))
+        FormError("line1", List("address.field-name.error.invalid.char")),
+        FormError("line2", List("address.field-name.error.invalid.char")),
+        FormError("city", List("address.field-name.error.invalid.char")),
+        FormError("county", List("address.field-name.error.invalid.char"))
       )
     }
 
