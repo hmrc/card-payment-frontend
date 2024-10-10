@@ -22,5 +22,5 @@ import play.api.Configuration
 @Singleton
 class AppConfig @Inject() (config: Configuration) {
   val welshLanguageSupportEnabled: Boolean = config.getOptional[Boolean]("features.welsh-language-support").getOrElse(false)
-
+  val payAnotherWayLink: String = config.get[String]("urls.govuk.pay-another-way")
 }

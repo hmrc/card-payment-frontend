@@ -11,3 +11,4 @@ POST       /address                 uk.gov.hmrc.cardpaymentfrontend.controllers.
 
 GET        /payment-complete        uk.gov.hmrc.cardpaymentfrontend.controllers.PaymentCompleteController.renderPage
 
+GET        /payment-cancelled       uk.gov.hmrc.cardpaymentfrontend.controllers.PaymentCancelledController.renderPage

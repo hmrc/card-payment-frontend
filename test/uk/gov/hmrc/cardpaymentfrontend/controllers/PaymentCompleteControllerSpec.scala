@@ -29,7 +29,7 @@ import scala.jdk.CollectionConverters.ListHasAsScala
 
 class PaymentCompleteControllerSpec extends ItSpec {
 
-  "PaymentCompleteControllerSpec" - {
+  "PaymentCompleteController" - {
 
     val systemUnderTest = app.injector.instanceOf[PaymentCompleteController]
 
