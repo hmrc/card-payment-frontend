@@ -35,13 +35,14 @@ trait ItSpec extends AnyFreeSpecLike
   implicit val ec: ExecutionContext = scala.concurrent.ExecutionContext.Implicits.global
   implicit lazy val materializer: Materializer = app.materializer
 
-  private val testServerPort = 19001
+  private val testServerPort: Int = 19001
 
   protected lazy val configMap: Map[String, Any] = Map[String, Any](
     "play.http.router" -> "testOnlyDoNotUseInAppConf.Routes",
     "auditing.consumer.baseUri.port" -> self.wireMockPort,
     "auditing.enabled" -> false,
-    "auditing.traceRequests" -> false
+    "auditing.traceRequests" -> false,
+    "microservice.services.pay-api.port" -> self.wireMockPort
   )
 
   override def beforeEach(): Unit = {
