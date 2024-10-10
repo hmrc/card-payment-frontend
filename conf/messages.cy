@@ -106,4 +106,10 @@ payment-complete.survey.p2.part1 = Rhowch wybod i ni beth yw eich barn am y gwas
 payment-complete.survey.p2.part2 = (mae’n cymryd 30 eiliad)
 
 
-
+## Payment Cancelled page
+payment-cancelled.heading = Taliad wedi’i ganslo
+payment-cancelled.p1 = Rydych wedi canslo’ch taliad.
+payment-cancelled.p2 = Nid oes arian wedi’i gymryd allan o’ch cyfrif.
+payment-cancelled.enter-details-again.button = Nodwch eich manylion eto
+payment-cancelled.pay-another-way.link = Talu drwy ddull arall
+payment-cancelled.exit-without-paying.link = Gadewch heb dalu

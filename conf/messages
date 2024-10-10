@@ -85,7 +85,7 @@ title.AlcoholDuty =
 title.PfAlcoholDuty =
 
 
-## email address page
+## Email address page
 email-address.heading = What is your email address? (optional)
 email-address.hint = We’ll only use this to confirm you sent a payment
 email-address.error.invalid = Enter a valid email address or leave it blank
@@ -104,3 +104,12 @@ payment-complete.survey.title = Help us improve our services
 payment-complete.survey.p1 = We use your feedback to make our services better.
 payment-complete.survey.p2.part1 = Tell us what you think of this service
 payment-complete.survey.p2.part2 = (takes 30 seconds)
+
+
+## Payment Cancelled page
+payment-cancelled.heading = Payment cancelled
+payment-cancelled.p1 = You have cancelled your payment.
+payment-cancelled.p2 = No payment has been taken from your account.
+payment-cancelled.enter-details-again.button = Enter your details again
+payment-cancelled.pay-another-way.link = Pay another way
+payment-cancelled.exit-without-paying.link = Exit without paying
