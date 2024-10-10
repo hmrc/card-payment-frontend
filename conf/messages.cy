@@ -6,7 +6,6 @@ service.text = Dyma'ch gwasanaeth newydd
 continue = Yn eich blaen
 error.there-is-a-problem = Mae problem wedi codi
 
-
 ## page titles
 title.PfSa = Talu eich Hunanasesiad
 title.PfVat = Talu eich TAW
@@ -90,6 +89,31 @@ email-address.heading = Beth yw’ch cyfeiriad e-bost? (dewisol)
 email-address.hint = Byddwn ond yn defnyddio hwn i gadarnhau’ch bod wedi anfon taliad
 email-address.error.invalid = Nodwch gyfeiriad e-bost dilys neu gadewch yn wag
 
+## Address Page
+address.heading = Cyfeiriad bilio’r cerdyn
+address.field-name.line1.hint = Eich cyfeiriad bilio yw’r cyfeiriad y gwnaethoch gofrestru eich cerdyn ag ef
+address.field-name.line2.hint = Os nad yw’n cyd-fynd, bydd y taliad yn methu.
+
+address.field-name.line1 = Cyfeiriad - llinell 1
+address.field-name.line2 = Cyfeiriad - llinell 2 (dewisol)
+address.field-name.city = Tref neu ddinas (dewisol)
+address.field-name.county = Sir (dewisol)
+address.field-name.postcode = Cod post
+address.field-name.country = Gwlad
+
+address.country.select.message = Dewiswch
+address.postcode.hint = Os ydych yn berson nad yw’n breswyl yn y DU, mae hyn yn ddewisol
+address.optional = (dewisol)
+address.optional.non.uk.address = (dewisol ar gyfer cyfeiriadau y tu allan i’r DU)
+
+address.field-name.error.invalid.line1 = Nodwch linell gyntaf y cyfeiriad bilio
+address.field-name.error.invalid.postcode = Nodwch eich cod post yn y fformat cywir
+address.field-name.error.empty.postcode = Nodwch eich cod post
+address.field-name.error.required.postcode = Nodwch god post dilys
+address.field-name.error.required.country = Dewiswch eich gwlad
+address.field-name.error.invalid.emailaddress = Nodwch gyfeiriad e-bost dilys neu gadewch yn wag
+address.field-name.error.constraint.emailaddress = Nodwch gyfeiriad e-bost dilys neu gadewch yn wag
+address.field-name.error.invalid.char = Mae’r maes yn cynnwys cymeriad annilys
 
 ## payment complete page
 payment-complete.panel.title = Taliad wedi dod i law CThEM
@@ -104,7 +128,6 @@ payment-complete.survey.title = Helpwch ni i wella ein gwasanaethau
 payment-complete.survey.p1 = Rydym yn defnyddio’ch adborth i wella ein gwasanaethau.
 payment-complete.survey.p2.part1 = Rhowch wybod i ni beth yw eich barn am y gwasanaeth hwn
 payment-complete.survey.p2.part2 = (mae’n cymryd 30 eiliad)
-
 
 ## Payment Cancelled page
 payment-cancelled.heading = Taliad wedi’i ganslo

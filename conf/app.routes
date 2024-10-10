@@ -6,5 +6,9 @@ GET        /assets/*file            controllers.Assets.versioned(path = "/public
 GET        /email-address           uk.gov.hmrc.cardpaymentfrontend.controllers.EmailAddressController.renderPage
 POST       /email-address           uk.gov.hmrc.cardpaymentfrontend.controllers.EmailAddressController.submit
 
+GET        /address                 uk.gov.hmrc.cardpaymentfrontend.controllers.AddressController.renderPage
+POST       /address                 uk.gov.hmrc.cardpaymentfrontend.controllers.AddressController.submit
+
 GET        /payment-complete        uk.gov.hmrc.cardpaymentfrontend.controllers.PaymentCompleteController.renderPage
+
 GET        /payment-cancelled       uk.gov.hmrc.cardpaymentfrontend.controllers.PaymentCancelledController.renderPage

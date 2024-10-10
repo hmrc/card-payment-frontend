@@ -90,6 +90,30 @@ email-address.heading = What is your email address? (optional)
 email-address.hint = We’ll only use this to confirm you sent a payment
 email-address.error.invalid = Enter a valid email address or leave it blank
 
+## Address Page
+address.heading = Card billing address
+address.line1.hint = This billing address must match the address your card is registered with.
+address.line2.hint = If it does not, the payment will fail.
+
+address.field-name.line1 = Address line 1
+address.field-name.line2 = Address line 2 (optional)
+address.field-name.city = Town or City (optional)
+address.field-name.county = County (optional)
+address.field-name.postcode = Postcode
+address.field-name.country = Country
+
+address.country.select.message = Please select…
+address.optional.non.uk.address = (optional for non-UK addresses)
+address.postcode.hint = If you are a non-UK resident, this is optional
+
+address.field-name.error.invalid.line1 = Enter the first line of the billing address
+address.field-name.error.invalid.postcode = Enter your postcode in the correct format
+address.field-name.error.empty.postcode = Enter your postcode
+address.field-name.error.required.postcode = Postcode is required
+address.field-name.error.required.country = Select a country
+address.field-name.error.invalid.emailaddress = Enter a valid email address or leave it blank
+address.field-name.error.constraint.emailaddress = Enter a valid email address or leave it blank
+address.field-name.error.invalid.char = Field contains an invalid character
 
 ## Payment complete page
 payment-complete.panel.title = Payment received by HMRC
@@ -104,7 +128,6 @@ payment-complete.survey.title = Help us improve our services
 payment-complete.survey.p1 = We use your feedback to make our services better.
 payment-complete.survey.p2.part1 = Tell us what you think of this service
 payment-complete.survey.p2.part2 = (takes 30 seconds)
-
 
 ## Payment Cancelled page
 payment-cancelled.heading = Payment cancelled
