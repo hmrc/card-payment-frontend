@@ -96,3 +96,8 @@ card-fees.para1 = Bydd ffi na ellir ei had-dalu yn cael ei chodi os talwch â ch
 card-fees.para2 = Nid oes ffi yn cael ei chodi os talwch drwy un o’r dulliau canlynol:
 card-fees.para3 = Ni allwch dalu â cherdyn credyd personol.
 card-fees.para4 = Dylech ganiatáu 3 diwrnod gwaith i’ch taliad gyrraedd cyfrif banc CThEM.
+
+# check your answers page
+check-your-answers.heading = Gwirio’ch atebion
+PfSa.reference.title = Cyfeirnod Unigryw y Trethdalwr (UTR)
+

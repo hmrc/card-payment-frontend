@@ -14,7 +14,7 @@
  * limitations under the License.
  *@
 
-@import uk.gov.hmrc.cardpaymentfrontend.models.AltPaymentLink
+@import uk.gov.hmrc.cardpaymentfrontend.models.Link
 @import uk.gov.hmrc.cardpaymentfrontend.views.html.Layout
 @import uk.gov.hmrc.cardpaymentfrontend.utils.{PaymentMethod, OpenBanking, VariableDirectDebit, OneOffDirectDebit}
 @import uk.gov.hmrc.govukfrontend.views.Aliases.{Button, ErrorSummary, Hint, Input, Label}
@@ -29,7 +29,7 @@
     formWithCSRF: FormWithCSRF
 )
 
-@(links: Seq[AltPaymentLink])(implicit request: RequestHeader, messages: Messages)
+@(links: Seq[Link])(implicit request: RequestHeader, messages: Messages)
 
 
 @heading = @{messages("card-fees.heading")}

@@ -101,3 +101,10 @@ card-fees.para3 = You cannot pay using a personal credit card.
 card-fees.para4 = Allow 3 working days for your payment to reach HMRC’s bank account.
 card-fees.para2.bank-account = bank account
 
+# check your answers page
+check-your-answers.heading = Check your answers
+PfSa.reference.title = Unique Taxpayer Reference (UTR)
+PfSa.reference.change-link.text = Change
+PfSa.reference.email = Email
+PfSa.email.change-link.text = Enter an email address
+

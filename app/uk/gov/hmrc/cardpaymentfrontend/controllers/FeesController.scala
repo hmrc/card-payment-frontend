@@ -18,7 +18,7 @@ package uk.gov.hmrc.cardpaymentfrontend.controllers
 
 import payapi.corcommon.model.{Origin, Origins}
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
-import uk.gov.hmrc.cardpaymentfrontend.models.AltPaymentLink
+import uk.gov.hmrc.cardpaymentfrontend.models.Link
 import uk.gov.hmrc.cardpaymentfrontend.utils.OriginExtraInfo
 import uk.gov.hmrc.cardpaymentfrontend.views.html.FeesPage
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
@@ -31,14 +31,14 @@ class FeesController @Inject() (
     mcc:             MessagesControllerComponents,
     feesPage:        FeesPage
 ) extends FrontendController(mcc) {
-  private[controllers] def twoDirectDebitsPrimaryLink(origin: Origin): Option[AltPaymentLink] = {
+  private[controllers] def twoDirectDebitsPrimaryLink(origin: Origin): Option[Link] = {
     origin match {
-      case Origins.BtaEpayeBill => Some(AltPaymentLink(
+      case Origins.BtaEpayeBill => Some(Link(
         href       = Call("GET", "http://SomeDDUrl"),
         linkId     = "direct-debit-link-both-primary",
         messageKey = "card-fees.para2.direct-debit"
       ))
-      case Origins.PfMgd => Some(AltPaymentLink(
+      case Origins.PfMgd => Some(Link(
         href       = Call("GET", "http://SomeDDUrl"),
         linkId     = "direct-debit-link-both-primary",
         messageKey = "card-fees.para2.direct-debit"
@@ -47,14 +47,14 @@ class FeesController @Inject() (
     }
   }
 
-  private[controllers] def twoDirectDebitsSecondaryLink(origin: Origin): Option[AltPaymentLink] = {
+  private[controllers] def twoDirectDebitsSecondaryLink(origin: Origin): Option[Link] = {
     origin match {
-      case Origins.BtaEpayeBill => Some(AltPaymentLink(
+      case Origins.BtaEpayeBill => Some(Link(
         href       = Call("GET", "http://SomeDDUrl"),
         linkId     = "direct-debit-link-both-secondary",
         messageKey = "card-fees.para2.direct-debit"
       ))
-      case Origins.PfMgd => Some(AltPaymentLink(
+      case Origins.PfMgd => Some(Link(
         href       = Call("GET", "http://SomeDDUrl"),
         linkId     = "direct-debit-link-both-secondary",
         messageKey = "card-fees.para2.direct-debit"
@@ -62,9 +62,9 @@ class FeesController @Inject() (
       case _ => None
     }
   }
-  private[controllers] def altPaymentLinks(origin: Origin): Seq[AltPaymentLink] = {
+  private[controllers] def altPaymentLinks(origin: Origin): Seq[Link] = {
     val bacsLink = Seq(
-      AltPaymentLink(
+      Link(
         href       = Call("GET", "http://SomeURL"),
         linkId     = "bank-account-link-primary",
         messageKey = "card-fees.para2.bank-account"
@@ -72,33 +72,33 @@ class FeesController @Inject() (
     )
 
     val openBankingLink = if (originExtraInfo.openBankingAllowed(origin)) {
-      Seq(AltPaymentLink(
+      Seq(Link(
         href       = Call("GET", "http://SomeURLOpenBankingUrl"),
         linkId     = "open-banking-link",
         messageKey = "card-fees.para2.open-banking"
       ))
-    } else Seq.empty[AltPaymentLink]
+    } else Seq.empty[Link]
 
     val oneKindOfDDCondition: Boolean =
       (originExtraInfo.variableDirectDebitAllowed(origin) && !originExtraInfo.oneOffDirectDebitAllowed(origin)) ||
         (!originExtraInfo.variableDirectDebitAllowed(origin) && originExtraInfo.oneOffDirectDebitAllowed(origin))
 
     val oneKindOfDDlink = if (oneKindOfDDCondition) {
-      Seq(AltPaymentLink(
+      Seq(Link(
         href       = Call("GET", "http://SomeDDUrl"),
         linkId     = "direct-debit-link",
         messageKey = "card-fees.para2.direct-debit"
       ))
-    } else Seq.empty[AltPaymentLink]
+    } else Seq.empty[Link]
 
     val twoKindsOfDDPrimary = twoDirectDebitsPrimaryLink(origin) match {
       case Some(link) => Seq(link)
-      case None       => Seq.empty[AltPaymentLink]
+      case None       => Seq.empty[Link]
     }
 
     val twoKindsOfDDSecondary = twoDirectDebitsSecondaryLink(origin) match {
       case Some(link) => Seq(link)
-      case None       => Seq.empty[AltPaymentLink]
+      case None       => Seq.empty[Link]
     }
 
     bacsLink ++ openBankingLink ++ oneKindOfDDlink ++ twoKindsOfDDSecondary ++ twoKindsOfDDPrimary

@@ -23,7 +23,6 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers.status
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.ItSpec
 import play.api.test.Helpers._
-
 import scala.jdk.CollectionConverters.CollectionHasAsScala
 
 class FeesControllerSpec extends ItSpec {

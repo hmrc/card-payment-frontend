@@ -18,6 +18,6 @@ package uk.gov.hmrc.cardpaymentfrontend.models
 
 import play.api.mvc.Call
 
-final case class AltPaymentLink(href: Call, linkId: String, messageKey: String)
+final case class Link(href: Call, linkId: String, messageKey: String, visuallyHiddenMessageKey: Option[String] = None)
 
 //Not going over the wire so no JSON serialisation

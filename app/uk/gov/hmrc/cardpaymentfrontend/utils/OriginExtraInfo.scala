@@ -16,6 +16,7 @@
 
 package uk.gov.hmrc.cardpaymentfrontend.utils
 
+import uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins.{ExtendedOrigin, ExtendedPfSa, DefaultExtendedOrigin}
 import payapi.corcommon.model.{Origin, Origins}
 
 import javax.inject.{Inject, Singleton}
@@ -123,5 +124,11 @@ class OriginExtraInfo @Inject() () {
 
   def variableDirectDebitAllowed(origin: Origin): Boolean = paymentMethod(origin).contains(VariableDirectDebit())
 
+  def lift(origin: Origin): ExtendedOrigin = {
+    origin match {
+      case Origins.PfSa => new ExtendedPfSa()
+      case _            => new DefaultExtendedOrigin()
+    }
+  }
 }
 
