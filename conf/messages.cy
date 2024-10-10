@@ -111,5 +111,5 @@ payment-cancelled.heading = Taliad wedi’i ganslo
 payment-cancelled.p1 = Rydych wedi canslo’ch taliad.
 payment-cancelled.p2 = Nid oes arian wedi’i gymryd allan o’ch cyfrif.
 payment-cancelled.enter-details-again.button = Nodwch eich manylion eto
-payment-cancelled.pay-another-way.link = Talu mewn fford
+payment-cancelled.pay-another-way.link = Talu drwy ddull arall
 payment-cancelled.exit-without-paying.link = Gadewch heb dalu

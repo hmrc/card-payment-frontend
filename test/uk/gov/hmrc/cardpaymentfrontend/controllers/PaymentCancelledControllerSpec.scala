@@ -126,7 +126,7 @@ class PaymentCancelledControllerSpec extends ItSpec {
         val result = systemUnderTest.renderPage(fakeGetRequestInWelsh)
         val document = Jsoup.parse(contentAsString(result))
         val link = document.select("#pay-another-way-link")
-        link.text() shouldBe "Talu mewn fford"
+        link.text() shouldBe "Talu drwy ddull arall"
       }
 
       "the pay another way link should link to X" in {
