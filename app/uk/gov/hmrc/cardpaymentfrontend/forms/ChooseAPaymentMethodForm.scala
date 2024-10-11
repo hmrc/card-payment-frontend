@@ -16,4 +16,18 @@
 
 package uk.gov.hmrc.cardpaymentfrontend.forms
 
+import play.api.data.Form
+import play.api.data.Forms.{mapping, optional, text}
+
 final case class ChooseAPaymentMethodForm(chosenMethod: Option[String])
+
+object ChooseAPaymentMethodForm {
+
+  val form: Form[ChooseAPaymentMethodForm] = {
+    Form(mapping(
+      "payment_method" -> optional(text).verifying("card-fail-choice.error", _.nonEmpty)
+    )(ChooseAPaymentMethodForm.apply)(ChooseAPaymentMethodForm.unapply))
+  }
+
+}
+

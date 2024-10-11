@@ -15,13 +15,13 @@
  *@
 
 @import uk.gov.hmrc.cardpaymentfrontend.views.html.Layout
-@import uk.gov.hmrc.govukfrontend.views.Aliases.{Button, ErrorSummary, Hint, Input, Label}
+@import uk.gov.hmrc.govukfrontend.views.Aliases.Button
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 
 @this(
-    layout: Layout
-//    govUkButton: GovukButton
+    layout: Layout,
+    govukButton: GovukButton
 )
 
 @()(implicit request: RequestHeader, messages: Messages)
@@ -30,7 +30,7 @@
 
 @layout(pageTitle = Some(heading)) {
 
-   <p class="govuk-body">@{messages("payment-failed.subHeading")}</p>
+   <p class="govuk-body">@{messages("payment-failed.sub-heading")}</p>
 
    <p class="govuk-body">@{messages("payment-failed.failed1")}</p>
      <ul class="govuk-list--bullet govuk-!-static-padding-left-7">
@@ -38,18 +38,14 @@
        <li class="govuk-body">@{messages("payment-failed.failed3")}</li>
        <li class="govuk-body">@{messages("payment-failed.failed4")}</li>
      </ul>
-   <p class="govuk-body">@{messages("payment-failed.failedCheckAgain")}</p>
+   <p class="govuk-body">@{messages("payment-failed.failed-check-again")}</p>
 
-@*//    @button(Button(*@
-@*//        href = Some(controllers.routes.EmailAddressController.renderPage(Some(request.journey.traceId)).url),*@
-@*//        content = Text(messages("payment-failed.failedCheckDetails")),*@
-@*//        attributes = Map("id" -> "try-again", "data-journey-click" -> "Payment Unsuccessful:click:Try again")*@
-@*//    ))*@
 
-}
+    @govukButton(Button(
+        id = Some("submit"),
+        content = Text(messages("continue"))
+    ))
 
-@{
-    //$COVERAGE-OFF$
 }
 
 

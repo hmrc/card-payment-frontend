@@ -139,16 +139,16 @@ payment-cancelled.exit-without-paying.link = Exit without paying
 
 ## Payment Failed page
 payment-failed.heading = Payment failed
-payment-failed.subHeading = No payment has been taken from your card.
+payment-failed.sub-heading = No payment has been taken from your card.
 payment-failed.failed1 = The payment may have failed if:
 payment-failed.failed2 = there are not enough funds in your account
 payment-failed.failed3 = you entered invalid or expired card details
 payment-failed.failed4 = the address you gave does not match the one your card issuer has
-payment-failed.failedHeader = What do you want to do?
-payment-failed.failedGoToOpenBanking = Approve a payment to come straight from my bank account
-payment-failed.failedTryAgain = Try card payment again
+payment-failed.failed-header = What do you want to do?
+payment-failed.failed-go-to-open-banking = Approve a payment to come straight from my bank account
+payment-failed.failed-try-again = Try card payment again
 
-payment-failed.failedCheckDetails = Check details and try again
-payment-failed.failedCheckAgain = Check the details you entered are correct or try a different card.
+payment-failed.failed-check-details = Check details and try again
+payment-failed.failed-check-again = Check the details you entered are correct or try a different card.
 
 

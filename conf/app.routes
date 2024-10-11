@@ -1,18 +1,18 @@
 # microservice specific routes
 
-->         /hmrc-frontend           hmrcfrontend.Routes
-GET        /assets/*file            controllers.Assets.versioned(path = "/public", file: Asset)
+->         /hmrc-frontend                        hmrcfrontend.Routes
+GET        /assets/*file                         controllers.Assets.versioned(path = "/public", file: Asset)
 
-GET        /email-address           uk.gov.hmrc.cardpaymentfrontend.controllers.EmailAddressController.renderPage
-POST       /email-address           uk.gov.hmrc.cardpaymentfrontend.controllers.EmailAddressController.submit
+GET        /email-address                        uk.gov.hmrc.cardpaymentfrontend.controllers.EmailAddressController.renderPage
+POST       /email-address                        uk.gov.hmrc.cardpaymentfrontend.controllers.EmailAddressController.submit
 
-GET        /address                 uk.gov.hmrc.cardpaymentfrontend.controllers.AddressController.renderPage
-POST       /address                 uk.gov.hmrc.cardpaymentfrontend.controllers.AddressController.submit
+GET        /address                              uk.gov.hmrc.cardpaymentfrontend.controllers.AddressController.renderPage
+POST       /address                              uk.gov.hmrc.cardpaymentfrontend.controllers.AddressController.submit
 
-GET        /payment-complete        uk.gov.hmrc.cardpaymentfrontend.controllers.PaymentCompleteController.renderPage
+GET        /payment-complete                     uk.gov.hmrc.cardpaymentfrontend.controllers.PaymentCompleteController.renderPage
 
-GET        /payment-cancelled       uk.gov.hmrc.cardpaymentfrontend.controllers.PaymentCancelledController.renderPage
+GET        /payment-cancelled                    uk.gov.hmrc.cardpaymentfrontend.controllers.PaymentCancelledController.renderPage
 
-GET        /payment-failed          uk.gov.hmrc.cardpaymentfrontend.controllers.PaymentFailedController.renderPage
-POST       /payment-failed          uk.gov.hmrc.cardpaymentfrontend.controllers.PaymentFailedController.submit
-
+GET        /payment-failed                       uk.gov.hmrc.cardpaymentfrontend.controllers.PaymentFailedController.renderPage
+GET        /payment-failed-ob-available          uk.gov.hmrc.cardpaymentfrontend.controllers.PaymentFailedController.renderPageObAvailable
+POST       /payment-failed-ob-available          uk.gov.hmrc.cardpaymentfrontend.controllers.PaymentFailedController.submit

@@ -16,7 +16,9 @@
 
 package uk.gov.hmrc.cardpaymentfrontend.controllers
 
+import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import uk.gov.hmrc.cardpaymentfrontend.forms.ChooseAPaymentMethodForm
 import uk.gov.hmrc.cardpaymentfrontend.views.html.{PaymentFailedObAvailablePage, PaymentFailedPage}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
@@ -33,48 +35,25 @@ class PaymentFailedController @Inject() (
     Ok(paymentFailedPage())
   }
 
-  val submit: Action[AnyContent] = Action { implicit request =>
-    Ok(paymentFailedObAvailablePage())
+  val renderPageObAvailable: Action[AnyContent] = Action { implicit request =>
+    Ok(paymentFailedObAvailablePage(ChooseAPaymentMethodForm.form))
   }
 
-  //  private def selectViewForJourney(maybeTraceId: Option[TraceId], form: Form[ChooseAPaymentMethod], journey: Journey[JourneySpecificData], surveyUrl: Url)(implicit request: JourneyRequest[_]): Result = {
-  //    if (PaymentMethods.openBankingAllowed(journey.origin)) {
-  //      Ok(paymentFailedObAvailablePage(
-  //        maybeTraceId,
-  //        form,
-  //        journey._id,
-  //        journey.contentOptions.title,
-  //        journey.contentOptions.isWelshSupported,
-  //        surveyUrl,
-  //        journey.taxType
-  //      ))
-  //    } else
-  //      Ok(paymentFailedPage(
-  //        journey._id,
-  //        journey.contentOptions.title,
-  //        journey.contentOptions.isWelshSupported,
-  //        surveyUrl,
-  //        journey.taxType
-  //      ))
-  //  }
-  //
-  //  def submitChooseAPaymentMethod(maybeTraceId: Option[TraceId]): Action[AnyContent] = actions.journeyAction.async { implicit request =>
-  //    val journey = request.journey
-  //
-  //    Forms.chooseCardFailedOngoingPaymentMethod.bindFromRequest().fold(
-  //      formWithErrors => selectViewForJourney(maybeTraceId, formWithErrors, journey, Url(controllers.routes.SurveyController.startSurvey().url)),
-  //      {
-  //        case ChooseAPaymentMethod(Some(option)) =>
-  //          option match {
-  //            case "open-banking" => Redirect(controllers.routes.OpenBankingController.payByOpenBanking(maybeTraceId).url)
-  //            case "another-way"  => Redirect(controllers.routes.ChooseAWayToPayController.chooseAWayToPay(maybeTraceId).url)
-  //            case "try-again"    => Redirect(controllers.routes.EmailController.show(maybeTraceId).url)
-  //          }
-  //
-  //        case ChooseAPaymentMethod(_) =>
-  //          throw new RuntimeException(s"Unsupported chosenPaymentType ")
-  //      }
-  //    )
-  //  }
+  val submit: Action[AnyContent] = Action { implicit request =>
+    ChooseAPaymentMethodForm.form
+      .bindFromRequest()
+      .fold(
+        (formWithErrors: Form[ChooseAPaymentMethodForm]) => BadRequest(paymentFailedObAvailablePage(formWithErrors)),
+        { validForm: ChooseAPaymentMethodForm =>
+          validForm.chosenMethod match {
+            case Some("open-banking") => Ok("we need to go to OB here")
+            case Some("try-again")    => Redirect(uk.gov.hmrc.cardpaymentfrontend.controllers.routes.EmailAddressController.renderPage)
+            case Some(_)              => throw new RuntimeException("This should never happen, form should prevent this from occurring")
+            case None                 => throw new RuntimeException("This should never happen, form should prevent this from occurring")
+          }
+
+        }
+      )
+  }
 
 }

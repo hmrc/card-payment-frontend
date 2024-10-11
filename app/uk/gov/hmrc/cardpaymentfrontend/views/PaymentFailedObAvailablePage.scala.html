@@ -14,18 +14,15 @@
  * limitations under the License.
  *@
 
-@import uk.gov.hmrc.govukfrontend.views.Aliases._
-@import implicits.{RichFormErrors, RichRadios}
+@import uk.gov.hmrc.govukfrontend.views.Implicits.{RichFormErrors, RichRadios}
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import uk.gov.hmrc.cardpaymentfrontend.views.html.Layout
 @import uk.gov.hmrc.cardpaymentfrontend.forms.ChooseAPaymentMethodForm
 
 @this(
     formWithCsrf: FormWithCSRF,
-    button: GovukButton,
-    warning: GovukWarningText,
-    fieldset: GovukFieldset,
-    radios: GovukRadios,
+    govukButton: GovukButton,
+    govukRadios: GovukRadios,
     errorSummary: GovukErrorSummary,
     layout: Layout
 )
@@ -45,7 +42,7 @@
     }
 
     <h1 class="govuk-heading-xl">@{messages("payment-failed.heading")}</h1>
-    <p class="govuk-body govuk-!-padding-bottom-6">@{messages("payment-failed.subheading")}</p>
+    <p class="govuk-body govuk-!-padding-bottom-6">@{messages("payment-failed.sub-heading")}</p>
 
     @formWithCsrf(
         action = uk.gov.hmrc.cardpaymentfrontend.controllers.routes.PaymentFailedController.submit,
@@ -54,21 +51,21 @@
         Symbol("novalidate") -> "novalidate"
     ) {
 
-        @radios(Radios(
+        @govukRadios(Radios(
             fieldset = Some(Fieldset(
                 legend = Some(Legend(
-                    content = Text(messages("payment-failed.failedHeader")),
+                    content = Text(messages("payment-failed.failed-header")),
                     classes = "govuk-fieldset__legend--m govuk-body",
                     isPageHeading = true
                 ))
             )),
             name = "payment_method",
             items = Seq(
-                RadioItem(content = Text(messages("payment-failed.failedGoToOpenBanking")), value = Some("open-banking"),checked = false),
-                RadioItem(content = Text(messages("payment-failed.failedTryAgain")), value = Some("try-again"),checked = false)
+                RadioItem(content = Text(messages("payment-failed.failed-go-to-open-banking")), value = Some("open-banking"),checked = false),
+                RadioItem(content = Text(messages("payment-failed.failed-try-again")), value = Some("try-again"),checked = false)
             )).withFormField(form("payment_method")))
 
-        @button(Button(content = Text(Messages("global.continue")), attributes = Map("id" -> "next")))
+        @govukButton(Button(content = Text(Messages("global.continue")), attributes = Map("id" -> "next")))
     }
 
 }
