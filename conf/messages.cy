@@ -99,5 +99,8 @@ card-fees.para4 = Dylech ganiatáu 3 diwrnod gwaith i’ch taliad gyrraedd cyfri
 
 # check your answers page
 check-your-answers.heading = Gwirio’ch atebion
-PfSa.reference.title = Cyfeirnod Unigryw y Trethdalwr (UTR)
+pfsa.reference.title = Cyfeirnod Unigryw y Trethdalwr (UTR)
+pfsa.reference.change-link.text = Newid
+pfsa.email.title = Cyfeiriad e-bost ar gyfer y dderbynneb
+pfsa.email.supply-link.text = TBS
 

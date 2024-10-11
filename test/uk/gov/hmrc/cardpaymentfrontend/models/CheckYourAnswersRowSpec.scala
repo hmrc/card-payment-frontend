@@ -16,21 +16,88 @@
 
 package uk.gov.hmrc.cardpaymentfrontend.models
 
-import play.api.mvc.AnyContentAsEmpty
+import play.api.mvc.{AnyContentAsEmpty, Call, Cookie}
 import play.api.test.FakeRequest
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.ItSpec
 import play.api.i18n._
-import play.api.test.Helpers._
+import uk.gov.hmrc.govukfrontend.views.viewmodels.content.{Empty, HtmlContent, Text}
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{ActionItem, Actions, Key, SummaryListRow, Value}
 
 class CheckYourAnswersRowSpec extends ItSpec {
-  //private val systemUnderTest: CheckYourAnswersRow = app.injector.instanceOf[CheckYourAnswersRow]
+  def messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
+  val fakeGetRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/cya0")
+  val fakeGetRequestInWelsh: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/email-address").withCookies(Cookie("PLAY_LANG", "cy"))
 
   "summarise" - {
-    val fakeGetRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/cya0")
-    implicit val m: Messages = app.injector.instanceOf[Messages]
+    "will generate a minimum SummaryListRow from a minimum CheckYourAnswersRow" in {
+      implicit val messages: Messages = messagesApi.preferred(fakeGetRequest)
 
-    val checkYourAnswersRow: CheckYourAnswersRow = CheckYourAnswersRow("", None, None)
+      val checkYourAnswersRow: CheckYourAnswersRow = CheckYourAnswersRow("", None, None)
+      val result = CheckYourAnswersRow.summarise(checkYourAnswersRow)
+      result shouldBe SummaryListRow(Key(Text("")), Value(Empty))
+    }
+
+    "will generate a minimum SummaryListRow with a key from English messages if the key is set in CheckYourAnswersRow" in {
+      implicit val messages: Messages = messagesApi.preferred(fakeGetRequest)
+
+      val checkYourAnswersRow: CheckYourAnswersRow = CheckYourAnswersRow("pfsa.reference.title", None, None)
+      val result = CheckYourAnswersRow.summarise(checkYourAnswersRow)
+      result shouldBe SummaryListRow(Key(Text("Unique Taxpayer Reference (UTR)")), Value(Empty))
+    }
+
+    "will generate a minimum SummaryListRow with a key from Welsh messages if the key is set in CheckYourAnswersRow" in {
+      implicit val messages: Messages = messagesApi.preferred(fakeGetRequestInWelsh)
+
+      val checkYourAnswersRow: CheckYourAnswersRow = CheckYourAnswersRow("pfsa.reference.title", None, None)
+      val result = CheckYourAnswersRow.summarise(checkYourAnswersRow)
+      result shouldBe SummaryListRow(Key(Text("Cyfeirnod Unigryw y Trethdalwr (UTR)")), Value(Empty))
+    }
+
+    "will generate a SummaryListRow with a value if the value is set in CheckYourAnswersRow" in {
+      implicit val messages: Messages = messagesApi.preferred(fakeGetRequest)
+
+      val checkYourAnswersRow: CheckYourAnswersRow = CheckYourAnswersRow("pfsa.reference.title", Some("XARefExample"), None)
+      val result = CheckYourAnswersRow.summarise(checkYourAnswersRow)
+      result shouldBe SummaryListRow(Key(Text("Unique Taxpayer Reference (UTR)")), Value(Text("XARefExample")))
+    }
+
+    "will generate a  SummaryListRow with a link if the link is set in CheckYourAnswersRow" in {
+      implicit val messages: Messages = messagesApi.preferred(fakeGetRequest)
+
+      val checkYourAnswersRow: CheckYourAnswersRow =
+        CheckYourAnswersRow(
+          "pfsa.reference.title",
+          Some("XARefExample"),
+          Some(Link(Call("GET", "some-href"), "linkId", "pfsa.reference.change-link.text"))
+        )
+      val result = CheckYourAnswersRow.summarise(checkYourAnswersRow)
+      result shouldBe
+        SummaryListRow(
+          Key(Text("Unique Taxpayer Reference (UTR)")),
+          Value(Text("XARefExample")),
+          actions = Some(Actions(items = Seq(ActionItem(
+            "some-href",
+            Text("Change"),
+            attributes = Map("id" -> "linkId")
+          ))))
+        )
+    }
+  }
+
+  "will generate a  SummaryListRow with html content following the Missing Information UI pattern if the value is missing in CheckYourAnswersRow" in {
+    implicit val messages: Messages = messagesApi.preferred(fakeGetRequest)
+
+    val checkYourAnswersRow: CheckYourAnswersRow =
+      CheckYourAnswersRow(
+        "pfsa.reference.title",
+        None,
+        Some(Link(Call("GET", "some-href"), "linkId", "pfsa.reference.change-link.text"))
+      )
     val result = CheckYourAnswersRow.summarise(checkYourAnswersRow)
-    println(s"====== result: ${result.toString}")
+    result shouldBe
+      SummaryListRow(
+        Key(Text("Unique Taxpayer Reference (UTR)")),
+        Value(HtmlContent("""<a id="linkId" href="some-href" class="govuk-link">Change</a>"""))
+      )
   }
 }

@@ -34,7 +34,10 @@ object CheckYourAnswersRow {
             Actions(items = Seq(ActionItem(
               href               = changeLink.href.url,
               content            = Text(Messages(changeLink.messageKey)),
-              visuallyHiddenText = changeLink.visuallyHiddenMessageKey
+              visuallyHiddenText = changeLink.visuallyHiddenMessageKey,
+              attributes         = Map(
+                "id" -> changeLink.linkId
+              )
             )))
           )
           case None => None
@@ -43,7 +46,7 @@ object CheckYourAnswersRow {
       case None => SummaryListRow(
         key   = Key(content = Text(Messages(checkYourAnswerRow.titleMessageKey))),
         value = checkYourAnswerRow.changeLink match {
-          case Some(link) => Value(HtmlContent(s"""<a href="${link.href.url}" class="govuk-link">${messages(link.messageKey)}</a>"""))
+          case Some(link) => Value(HtmlContent(s"""<a id="${link.linkId}" href="${link.href.url}" class="govuk-link">${messages(link.messageKey)}</a>"""))
           case None       => Value()
         }
       )

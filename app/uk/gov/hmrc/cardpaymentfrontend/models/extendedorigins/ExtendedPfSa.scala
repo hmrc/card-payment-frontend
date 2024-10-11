@@ -26,21 +26,21 @@ class ExtendedPfSa extends ExtendedOrigin {
   def checkYourAnswersRows(): Seq[CheckYourAnswersRow] = {
     val referenceRow =
       CheckYourAnswersRow(
-        "PfSa.reference.title",
+        "pfsa.reference.title",
         Some("1097172564"),
         Some(Link(
           Call("GET", "this/that"),
-          "reference-change-link",
-          "PfSa.reference.change-link.text"
+          "pfsa-reference-change-link",
+          "pfsa.reference.change-link.text"
         ))
       )
     val emailRow = CheckYourAnswersRow(
-      "PfSa.reference.email",
+      "pfsa.email.title",
       None,
       Some(Link(
         Call("GET", "change/email"),
-        "reference-change-link",
-        "PfSa.email.change-link.text"
+        "pfsa-email-supply-link",
+        "pfsa.email.supply-link.text"
       ))
     )
     Seq(referenceRow, emailRow)

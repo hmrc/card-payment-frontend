@@ -30,7 +30,7 @@ class ChangeYourAnswerControllerSpec extends ItSpec {
 
   "GET /cya{x}" - {
     val fakeGetRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/cya0") //PfSa No email
-    val fakeGetRequestInWelsh: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/email-address").withCookies(Cookie("PLAY_LANG", "cy"))
+    val fakeGetRequestInWelsh: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/cya0").withCookies(Cookie("PLAY_LANG", "cy"))
 
     "should return 200 OK" in {
       val result = systemUnderTest.renderPage0()(fakeGetRequest)
@@ -89,6 +89,56 @@ class ChangeYourAnswerControllerSpec extends ItSpec {
       val document = Jsoup.parse(contentAsString(result))
       val textOfBody = document.select("body").text()
       textOfBody.contains("Cyfeirnod Unigryw y Trethdalwr (UTR)") shouldBe true
+    }
+
+    "render the reference value name of PfSa" in {
+      val result = systemUnderTest.renderPage0()(fakeGetRequest)
+      val document = Jsoup.parse(contentAsString(result))
+      val textOfBody = document.select("body").text()
+      textOfBody.contains("1097172564") shouldBe true
+    }
+
+    "render the reference change link text in English" in {
+      val result = systemUnderTest.renderPage0()(fakeGetRequest)
+      val document = Jsoup.parse(contentAsString(result))
+      val changeLink = document.select("#pfsa-reference-change-link").text()
+      changeLink shouldBe "Change"
+    }
+
+    "render the reference change link text in Welsh" in {
+      val result = systemUnderTest.renderPage0()(fakeGetRequestInWelsh)
+      val document = Jsoup.parse(contentAsString(result))
+      val changeLink = document.select("#pfsa-reference-change-link").text()
+      changeLink shouldBe "Newid"
+    }
+
+    "render the email address title of PfSa in English" in {
+      val result = systemUnderTest.renderPage0()(fakeGetRequest)
+      val document = Jsoup.parse(contentAsString(result))
+      val textOfBody = document.select("body").text()
+      textOfBody.contains("Email address") shouldBe true
+    }
+
+    "render the email address title of PfSa in Welsh" in {
+      val result = systemUnderTest.renderPage0()(fakeGetRequestInWelsh)
+      val document = Jsoup.parse(contentAsString(result))
+      val textOfBody = document.select("body").text()
+      textOfBody.contains("Cyfeiriad e-bost ar gyfer y dderbynneb") shouldBe true
+    }
+
+    "render the email supply link text in English" in {
+      val result = systemUnderTest.renderPage0()(fakeGetRequest)
+      val document = Jsoup.parse(contentAsString(result))
+      val changeLink = document.select("#pfsa-email-supply-link").text()
+      changeLink shouldBe "Enter email address"
+    }
+
+    "render the email supply link text in Welsh" in {
+      pending
+      val result = systemUnderTest.renderPage0()(fakeGetRequestInWelsh)
+      val document = Jsoup.parse(contentAsString(result))
+      val changeLink = document.select("#pfsa-email-supply-link").text()
+      changeLink shouldBe "???"
     }
   }
 }
