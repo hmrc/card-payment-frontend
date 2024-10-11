@@ -16,6 +16,39 @@
 
 package uk.gov.hmrc.cardpaymentfrontend.models
 
+import play.api.i18n.Messages
+import uk.gov.hmrc.govukfrontend.views.Aliases.{Key, SummaryListRow, Text, Value}
+import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{ActionItem, Actions}
+
 final case class CheckYourAnswersRow(titleMessageKey: String, value: Option[String], changeLink: Option[Link])
+
+object CheckYourAnswersRow {
+  def summarise(checkYourAnswerRow: CheckYourAnswersRow)(implicit messages: Messages): SummaryListRow = {
+    checkYourAnswerRow.value match {
+      case Some(value) => SummaryListRow(
+        key     = Key(content = Text(Messages(checkYourAnswerRow.titleMessageKey))),
+        value   = Value(content = Text(value)),
+        actions = checkYourAnswerRow.changeLink match {
+          case Some(changeLink) => Some(
+            Actions(items = Seq(ActionItem(
+              href               = changeLink.href.url,
+              content            = Text(Messages(changeLink.messageKey)),
+              visuallyHiddenText = changeLink.visuallyHiddenMessageKey
+            )))
+          )
+          case None => None
+        }
+      )
+      case None => SummaryListRow(
+        key   = Key(content = Text(Messages(checkYourAnswerRow.titleMessageKey))),
+        value = checkYourAnswerRow.changeLink match {
+          case Some(link) => Value(HtmlContent(s"""<a href="${link.href.url}" class="govuk-link">${messages(link.messageKey)}</a>"""))
+          case None       => Value()
+        }
+      )
+    }
+  }
+}
 
 //No Json as this is not going over the wire

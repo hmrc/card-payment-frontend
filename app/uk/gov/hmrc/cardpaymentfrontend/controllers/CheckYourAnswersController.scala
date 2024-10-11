@@ -19,14 +19,11 @@ package uk.gov.hmrc.cardpaymentfrontend.controllers
 import payapi.corcommon.model.{Origin, Origins}
 import play.api.i18n._
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import uk.gov.hmrc.cardpaymentfrontend.models.CheckYourAnswersRow
+import uk.gov.hmrc.cardpaymentfrontend.models.CheckYourAnswersRow.summarise
 import uk.gov.hmrc.cardpaymentfrontend.utils.OriginExtraInfo
 import uk.gov.hmrc.cardpaymentfrontend.views.html.CheckYourAnswersPage
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-import uk.gov.hmrc.govukfrontend.views.Aliases.{Key, SummaryList, SummaryListRow, Text, Value}
-import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
-import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{ActionItem, Actions}
-
+import uk.gov.hmrc.govukfrontend.views.Aliases.SummaryList
 import javax.inject.{Inject, Singleton}
 
 @Singleton()
@@ -35,32 +32,6 @@ class CheckYourAnswersController @Inject() (
     originExtraInfo:      OriginExtraInfo,
     checkYourAnswersPage: CheckYourAnswersPage
 ) extends FrontendController(mcc) {
-
-  def summarise(checkYourAnswerRow: CheckYourAnswersRow)(implicit messages: Messages): SummaryListRow = {
-    checkYourAnswerRow.value match {
-      case Some(value) => SummaryListRow(
-        key     = Key(content = Text(Messages(checkYourAnswerRow.titleMessageKey))),
-        value   = Value(content = Text(value)),
-        actions = checkYourAnswerRow.changeLink match {
-          case Some(changeLink) => Some(
-            Actions(items = Seq(ActionItem(
-              href               = changeLink.href.url,
-              content            = Text(Messages(changeLink.messageKey)),
-              visuallyHiddenText = changeLink.visuallyHiddenMessageKey
-            )))
-          )
-          case None => None
-        }
-      )
-      case None => SummaryListRow(
-        key   = Key(content = Text(Messages(checkYourAnswerRow.titleMessageKey))),
-        value = checkYourAnswerRow.changeLink match {
-          case Some(link) => Value(HtmlContent(s"""<a href="${link.href.url}" class="govuk-link">${messages(link.messageKey)}</a>"""))
-          case None       => Value()
-        }
-      )
-    }
-  }
 
   def renderPage(origin: Origin): Action[AnyContent] = Action { implicit request =>
     implicit val messages: Messages = request.messages

@@ -28,7 +28,7 @@ import scala.jdk.CollectionConverters.CollectionHasAsScala
 class ChangeYourAnswerControllerSpec extends ItSpec {
   private val systemUnderTest: CheckYourAnswersController = app.injector.instanceOf[CheckYourAnswersController]
 
-  "GET /card-fees" - {
+  "GET /cya{x}" - {
     val fakeGetRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/cya0") //PfSa No email
     val fakeGetRequestInWelsh: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/email-address").withCookies(Cookie("PLAY_LANG", "cy"))
 
@@ -75,6 +75,20 @@ class ChangeYourAnswerControllerSpec extends ItSpec {
       val backButton = document.select(".govuk-back-link")
       backButton.text() shouldBe "Yn ôl"
       backButton.attr("href") shouldBe "#"
+    }
+
+    "render the reference name of PfSa in English" in {
+      val result = systemUnderTest.renderPage0()(fakeGetRequest)
+      val document = Jsoup.parse(contentAsString(result))
+      val textOfBody = document.select("body").text()
+      textOfBody.contains("Unique Taxpayer Reference (UTR)") shouldBe true
+    }
+
+    "render the reference name of PfSa in Welsh" in {
+      val result = systemUnderTest.renderPage0()(fakeGetRequestInWelsh)
+      val document = Jsoup.parse(contentAsString(result))
+      val textOfBody = document.select("body").text()
+      textOfBody.contains("Cyfeirnod Unigryw y Trethdalwr (UTR)") shouldBe true
     }
   }
 }
