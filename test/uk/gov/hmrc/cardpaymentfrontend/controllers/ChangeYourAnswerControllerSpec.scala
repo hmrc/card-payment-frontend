@@ -112,6 +112,57 @@ class ChangeYourAnswerControllerSpec extends ItSpec {
       changeLink shouldBe "Newid"
     }
 
+    "render the amount title of PfSa in English" in {
+      val result = systemUnderTest.renderPage0()(fakeGetRequest)
+      val document = Jsoup.parse(contentAsString(result))
+      val textOfBody = document.select("body").text()
+      textOfBody.contains("Amount") shouldBe true
+    }
+
+    "render the amount title of PfSa in Welsh" in {
+      pending
+      val result = systemUnderTest.renderPage0()(fakeGetRequestInWelsh)
+      val document = Jsoup.parse(contentAsString(result))
+      val textOfBody = document.select("body").text()
+      textOfBody.contains("???") shouldBe true
+    }
+
+    "render the amount value of PfSa" in {
+      val result = systemUnderTest.renderPage0()(fakeGetRequest)
+      val document = Jsoup.parse(contentAsString(result))
+      val textOfBody = document.select("body").text()
+      textOfBody.contains("£600") shouldBe true
+    }
+
+    "render the amount change link text in English" in {
+      val result = systemUnderTest.renderPage0()(fakeGetRequest)
+      val document = Jsoup.parse(contentAsString(result))
+      val changeLink = document.select("#pfsa-amount-change-link").text()
+      changeLink shouldBe "Change"
+    }
+
+    "render the amount change link text in Welsh" in {
+      val result = systemUnderTest.renderPage0()(fakeGetRequestInWelsh)
+      val document = Jsoup.parse(contentAsString(result))
+      val changeLink = document.select("#pfsa-amount-change-link").text()
+      changeLink shouldBe "Newid"
+    }
+
+    "render the address name of PfSa in English" in {
+      val result = systemUnderTest.renderPage0()(fakeGetRequest)
+      val document = Jsoup.parse(contentAsString(result))
+      val textOfBody = document.select("body").text()
+      textOfBody.contains("Card billing address") shouldBe true
+    }
+
+    "render the address name of PfSa in Welsh" in {
+      pending
+      val result = systemUnderTest.renderPage0()(fakeGetRequestInWelsh)
+      val document = Jsoup.parse(contentAsString(result))
+      val textOfBody = document.select("body").text()
+      textOfBody.contains("???") shouldBe true
+    }
+
     "render the email address title of PfSa in English" in {
       val result = systemUnderTest.renderPage0()(fakeGetRequest)
       val document = Jsoup.parse(contentAsString(result))

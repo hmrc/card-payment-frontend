@@ -103,4 +103,7 @@ pfsa.reference.title = Cyfeirnod Unigryw y Trethdalwr (UTR)
 pfsa.reference.change-link.text = Newid
 pfsa.email.title = Cyfeiriad e-bost ar gyfer y dderbynneb
 pfsa.email.supply-link.text = TBS
+pfsa.amount.title = TBS
+pfsa.amount.change-link.text = Newid
+pfsa.address.title = TBS
 

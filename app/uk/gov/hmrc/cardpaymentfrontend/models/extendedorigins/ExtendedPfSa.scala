@@ -34,6 +34,27 @@ class ExtendedPfSa extends ExtendedOrigin {
           "pfsa.reference.change-link.text"
         ))
       )
+
+    val amountRow = CheckYourAnswersRow(
+      "pfsa.amount.title",
+      Some("£600"),
+      Some(Link(
+        Call("GET", "this/that"),
+        "pfsa-amount-change-link",
+        "pfsa.amount.change-link.text"
+      ))
+    )
+
+    val addressRow = CheckYourAnswersRow(
+      "pfsa.address.title",
+      Some("Address"),
+      Some(Link(
+        Call("GET", "this/that"),
+        "pfsa-address-change-link",
+        "pfsa.address.change-link.text"
+      ))
+    )
+
     val emailRow = CheckYourAnswersRow(
       "pfsa.email.title",
       None,
@@ -43,6 +64,6 @@ class ExtendedPfSa extends ExtendedOrigin {
         "pfsa.email.supply-link.text"
       ))
     )
-    Seq(referenceRow, emailRow)
+    Seq(referenceRow, amountRow, addressRow, emailRow)
   }
 }

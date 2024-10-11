@@ -107,5 +107,8 @@ pfsa.reference.title = Unique Taxpayer Reference (UTR)
 pfsa.reference.change-link.text = Change
 pfsa.email.title = Email address
 pfsa.email.supply-link.text = Enter email address
+pfsa.amount.title = Amount
+pfsa.amount.change-link.text = Change
+pfsa.address.title = Card billing address
 
 
