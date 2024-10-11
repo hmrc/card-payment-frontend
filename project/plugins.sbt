@@ -13,5 +13,4 @@ addSbtPlugin("org.scalariform"    %% "sbt-scalariform"    % "1.8.3")
 addSbtPlugin("com.timushev.sbt"   %  "sbt-updates"        % "0.6.3")
 addSbtPlugin("com.typesafe.sbt"   % "sbt-gzip"            % "1.0.2")
 addSbtPlugin("io.github.irundaia" % "sbt-sassify"         % "1.5.2")
-
-
+addDependencyTreePlugin
