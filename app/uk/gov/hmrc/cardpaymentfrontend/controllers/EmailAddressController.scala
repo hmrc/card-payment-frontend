@@ -18,8 +18,10 @@ package uk.gov.hmrc.cardpaymentfrontend.controllers
 
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import uk.gov.hmrc.cardpaymentfrontend.actions.{Actions, JourneyRequest}
 import uk.gov.hmrc.cardpaymentfrontend.forms.EmailAddressForm
 import uk.gov.hmrc.cardpaymentfrontend.models.EmailAddress
+import uk.gov.hmrc.cardpaymentfrontend.requests.RequestSupport
 import uk.gov.hmrc.cardpaymentfrontend.views.html.EmailAddressPage
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
@@ -27,15 +29,19 @@ import javax.inject.{Inject, Singleton}
 
 @Singleton
 class EmailAddressController @Inject() (
-    mcc:              MessagesControllerComponents,
-    emailAddressPage: EmailAddressPage
+    actions:          Actions,
+    requestSupport:   RequestSupport,
+    emailAddressPage: EmailAddressPage,
+    mcc:              MessagesControllerComponents
 ) extends FrontendController(mcc) {
 
-  val renderPage: Action[AnyContent] = Action { implicit request =>
+  import requestSupport._
+
+  val renderPage: Action[AnyContent] = actions.journeyAction { implicit journeyRequest: JourneyRequest[AnyContent] =>
     Ok(emailAddressPage(EmailAddressForm.form()))
   }
 
-  val submit: Action[AnyContent] = Action { implicit request =>
+  val submit: Action[AnyContent] = actions.journeyAction { implicit journeyRequest: JourneyRequest[AnyContent] =>
     EmailAddressForm.form()
       .bindFromRequest()
       .fold(
