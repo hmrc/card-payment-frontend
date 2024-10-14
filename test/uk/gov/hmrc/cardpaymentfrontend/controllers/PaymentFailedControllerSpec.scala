@@ -23,6 +23,8 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.ItSpec
 
+import scala.jdk.CollectionConverters.ListHasAsScala
+
 class PaymentFailedControllerSpec extends ItSpec {
 
   private val systemUnderTest: PaymentFailedController = app.injector.instanceOf[PaymentFailedController]
@@ -113,74 +115,56 @@ class PaymentFailedControllerSpec extends ItSpec {
       val fakeGetRequestInWelsh: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/payment-failed-ob-available").withCookies(Cookie("PLAY_LANG", "cy"))
 
       "should return 200 OK" in {
-        val result = systemUnderTest.renderPage(fakeGetRequest)
+        val result = systemUnderTest.renderPageObAvailable(fakeGetRequest)
         status(result) shouldBe Status.OK
       }
 
       "render the page with the correct sub heading in English" in {
-        val result = systemUnderTest.renderPage(fakeGetRequest)
+        val result = systemUnderTest.renderPageObAvailable(fakeGetRequest)
         val document = Jsoup.parse(contentAsString(result))
         document.selectXpath("//*[@id=\"main-content\"]/div/div/p[1]").text() shouldBe "No payment has been taken from your card."
       }
 
-      "render the page with the correct Radio Heading in English" in {
-        val result = systemUnderTest.renderPage(fakeGetRequest)
+      "render the page with the correct Radio Heading content in English" in {
+        val result = systemUnderTest.renderPageObAvailable(fakeGetRequest)
         val document = Jsoup.parse(contentAsString(result))
-        document.selectXpath("//*[@id=\"payment_method_form\"]/div/fieldset/legend/h1").text() shouldBe "The payment may have failed if:"
+        document.select(".govuk-fieldset__legend").text() shouldBe "What do you want to do?"
       }
 
-      "render the page with the correct line 2 in English" in {
-        val result = systemUnderTest.renderPage(fakeGetRequest)
-        val document = Jsoup.parse(contentAsString(result))
-        document.selectXpath("//*[@id=\"payment_method_form\"]/div/fieldset/div/div[1]/label").text() shouldBe "there are not enough funds in your account"
-      }
+      "render the page with the correct Radio contents in the correct order in English" in {
 
-      "render the page with the correct line 3 in English" in {
-        val result = systemUnderTest.renderPage(fakeGetRequest)
-        val document = Jsoup.parse(contentAsString(result))
-        document.selectXpath("//*[@id=\"main-content\"]/div/div/ul/li[2]").text() shouldBe "you entered invalid or expired card details"
-      }
+        val expectedContent = List("Approve a payment to come straight from my bank account", "Try card payment again")
 
-      "render the page with the correct line 4 in English" in {
-        val result = systemUnderTest.renderPage(fakeGetRequest)
+        val result = systemUnderTest.renderPageObAvailable(fakeGetRequest)
         val document = Jsoup.parse(contentAsString(result))
-        document.selectXpath("//*[@id=\"main-content\"]/div/div/ul/li[3]").text() shouldBe "the address you gave does not match the one your card issuer has"
-      }
+        val radios = document.select(".govuk-radios__item").asScala.toList
 
-      "render the page with the correct check again content in English" in {
-        val result = systemUnderTest.renderPage(fakeGetRequest)
-        val document = Jsoup.parse(contentAsString(result))
-        document.selectXpath("//*[@id=\"main-content\"]/div/div/ul/li[3]").text() shouldBe "the address you gave does not match the one your card issuer has"
+        radios.map(_.text()) should contain theSameElementsInOrderAs expectedContent
+
       }
 
       "render the page with the correct sub heading in Welsh" in {
-        val result = systemUnderTest.renderPage(fakeGetRequestInWelsh)
+        val result = systemUnderTest.renderPageObAvailable(fakeGetRequestInWelsh)
         val document = Jsoup.parse(contentAsString(result))
-        document.selectXpath("//*[@id=\"main-content\"]/div/div/p[1]").text() shouldBe "No payment has been taken from your card."
+        document.selectXpath("//*[@id=\"main-content\"]/div/div/p[1]").text() shouldBe "Nid oes taliad wedi’i dynnu o’ch cerdyn."
       }
 
-      "render the page with the correct line 1 in Welsh" in {
-        val result = systemUnderTest.renderPage(fakeGetRequestInWelsh)
+      "render the page with the correct Radio Heading content in Welsh" in {
+        val result = systemUnderTest.renderPageObAvailable(fakeGetRequestInWelsh)
         val document = Jsoup.parse(contentAsString(result))
-        document.selectXpath("//*[@id=\"main-content\"]/div/div/p[2]").text() shouldBe "The payment may have failed if:"
+        document.select(".govuk-fieldset__legend").text() shouldBe "Beth hoffech chi ei wneud?"
       }
 
-      "render the page with the correct line 2 in Welsh" in {
-        val result = systemUnderTest.renderPage(fakeGetRequestInWelsh)
-        val document = Jsoup.parse(contentAsString(result))
-        document.selectXpath("//*[@id=\"main-content\"]/div/div/ul/li[1]").text() shouldBe "there are not enough funds in your account"
-      }
+      "render the page with the correct Radio contents in the correct order in Welsh" in {
 
-      "render the page with the correct line 3 in Welsh" in {
-        val result = systemUnderTest.renderPage(fakeGetRequestInWelsh)
-        val document = Jsoup.parse(contentAsString(result))
-        document.selectXpath("//*[@id=\"main-content\"]/div/div/ul/li[2]").text() shouldBe "you entered invalid or expired card details"
-      }
+        val expectedContent = List("Cymeradwyo taliad i fynd yn syth o’m cyfrif banc", "Rhowch gynnig arall ar dalu drwy gerdyn")
 
-      "render the page with the correct line 4 in Welsh" in {
-        val result = systemUnderTest.renderPage(fakeGetRequestInWelsh)
+        val result = systemUnderTest.renderPageObAvailable(fakeGetRequestInWelsh)
         val document = Jsoup.parse(contentAsString(result))
-        document.selectXpath("//*[@id=\"main-content\"]/div/div/ul/li[3]").text() shouldBe "the address you gave does not match the one your card issuer has"
+        val radios = document.select(".govuk-radios__item").asScala.toList
+
+        radios.map(_.text()) should contain theSameElementsInOrderAs expectedContent
+
       }
 
     }
