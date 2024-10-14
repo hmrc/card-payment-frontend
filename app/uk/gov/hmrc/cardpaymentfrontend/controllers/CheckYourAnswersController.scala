@@ -41,4 +41,6 @@ class CheckYourAnswersController @Inject() (
   }
 
   def renderPage0(): Action[AnyContent] = renderPage(Origins.PfSa)
+
+  def renderPage1(): Action[AnyContent] = renderPage(Origins.PfVat)
 }

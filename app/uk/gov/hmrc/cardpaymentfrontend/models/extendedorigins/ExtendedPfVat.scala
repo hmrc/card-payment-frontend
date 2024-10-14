@@ -18,36 +18,36 @@ package uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins
 
 import play.api.mvc.Call
 import uk.gov.hmrc.cardpaymentfrontend.models.{CheckYourAnswersRow, Link}
-import uk.gov.hmrc.cardpaymentfrontend.utils.{Bacs, Card, OneOffDirectDebit, OpenBanking, PaymentMethod}
+import uk.gov.hmrc.cardpaymentfrontend.utils.{Bacs, Card, OpenBanking, PaymentMethod, VariableDirectDebit}
 
-class ExtendedPfSa extends ExtendedOrigin {
-  def paymentMethods(): Set[PaymentMethod] = Set(Card(), OpenBanking(), OneOffDirectDebit(), Bacs())
+class ExtendedPfVat extends ExtendedOrigin {
+  def paymentMethods(): Set[PaymentMethod] = Set(Card(), OpenBanking(), VariableDirectDebit(), Bacs())
 
   def checkYourAnswersRows(): Seq[CheckYourAnswersRow] = {
     val referenceRow =
       CheckYourAnswersRow(
-        "pfsa.reference.title",
-        Seq("1097172564"), //This would really come from the journey either pay-api or stored locally
+        "pfvat.reference.title",
+        Seq("999964805"), //This would really come from the journey either pay-api or stored locally
         Some(Link(
           Call("GET", "this/that"),
-          "pfsa-reference-change-link",
-          "pfsa.reference.change-link.text"
+          "pfvat-reference-change-link",
+          "pfvat.reference.change-link.text"
         ))
       )
 
     val amountRow = CheckYourAnswersRow(
-      "pfsa.amount.title",
+      "pfvat.amount.title",
       Seq("£600"),
       Some(Link(
         Call("GET", "this/that"),
-        "pfsa-amount-change-link",
-        "pfsa.amount.change-link.text"
+        "pfvat-amount-change-link",
+        "pfvat.amount.change-link.text"
       ))
     )
 
     val addressRow = CheckYourAnswersRow(
       "pfsa.address.title",
-      Seq("14 High St", "Beedington", "West Sussex", "RH12 0QR"), //This would really come from the journey either pay-api or stored locally
+      Seq("24 Andrews Close", "Warnington", "West Sussex", "BN11 7PG"), //This would really come from the journey either pay-api or stored locally
       Some(Link(
         Call("GET", "this/that"),
         "pfsa-address-change-link",
@@ -57,13 +57,14 @@ class ExtendedPfSa extends ExtendedOrigin {
 
     val emailRow = CheckYourAnswersRow(
       "pfsa.email.title",
-      Seq.empty,
+      Seq("fdobbs1972@gmail.com"),
       Some(Link(
         Call("GET", "change/email"),
-        "pfsa-email-supply-link",
-        "pfsa.email.supply-link.text"
+        "pfvat-email-change-link",
+        "pfvat.email.change-link.text"
       ))
     )
     Seq(referenceRow, amountRow, addressRow, emailRow)
   }
+
 }

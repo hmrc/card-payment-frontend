@@ -98,12 +98,23 @@ card-fees.para3 = Ni allwch dalu â cherdyn credyd personol.
 card-fees.para4 = Dylech ganiatáu 3 diwrnod gwaith i’ch taliad gyrraedd cyfrif banc CThEM.
 
 # check your answers page
+# some refactoring here to consolidate common phrases
 check-your-answers.heading = Gwirio’ch atebion
 pfsa.reference.title = Cyfeirnod Unigryw y Trethdalwr (UTR)
 pfsa.reference.change-link.text = Newid
 pfsa.email.title = Cyfeiriad e-bost ar gyfer y dderbynneb
 pfsa.email.supply-link.text = TBS
-pfsa.amount.title = TBS
+pfsa.amount.title = Cyfanswm i’w dalu
 pfsa.amount.change-link.text = Newid
-pfsa.address.title = TBS
+pfsa.address.title = Cyfeiriad bilio
+pfsa.address.change-link.text = Newid
+
+pfvat.reference.title = Rhif cofrestru TAW
+pfvat.reference.change-link.text = Newid
+pfvat.email.title = Cyfeiriad e-bost ar gyfer y dderbynneb
+pfvat.email.change-link.text = newid
+pfvat.amount.title = Cyfanswm i’w dalu
+pfvat.amount.change-link.text = Newid
+pfvat.address.title = Cyfeiriad bilio
+pfvat.address.change-link.text = Newid
 

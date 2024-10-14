@@ -102,6 +102,7 @@ card-fees.para4 = Allow 3 working days for your payment to reach HMRC’s bank a
 card-fees.para2.bank-account = bank account
 
 # check your answers page
+# some refactoring here to consolidate common phrases
 check-your-answers.heading = Check your answers
 pfsa.reference.title = Unique Taxpayer Reference (UTR)
 pfsa.reference.change-link.text = Change
@@ -110,5 +111,15 @@ pfsa.email.supply-link.text = Enter email address
 pfsa.amount.title = Amount
 pfsa.amount.change-link.text = Change
 pfsa.address.title = Card billing address
+pfsa.address.change-link.text = Change
+
+pfvat.reference.title = VAT registration number
+pfvat.reference.change-link.text = Change
+pfvat.email.title = Email address
+pfvat.email.change-link.text = Change
+pfvat.amount.title = Amount
+pfvat.amount.change-link.text = Change
+pfvat.address.title = Card billing address
+pfsa.address.change-link.text = Change
 
 

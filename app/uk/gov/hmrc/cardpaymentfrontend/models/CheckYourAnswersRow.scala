@@ -21,14 +21,15 @@ import uk.gov.hmrc.govukfrontend.views.Aliases.{Key, SummaryListRow, Text, Value
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{ActionItem, Actions}
 
-final case class CheckYourAnswersRow(titleMessageKey: String, value: Option[String], changeLink: Option[Link])
+final case class CheckYourAnswersRow(titleMessageKey: String, value: Seq[String], changeLink: Option[Link])
 
 object CheckYourAnswersRow {
+
   def summarise(checkYourAnswerRow: CheckYourAnswersRow)(implicit messages: Messages): SummaryListRow = {
     checkYourAnswerRow.value match {
-      case Some(value) => SummaryListRow(
+      case seqOfString if seqOfString.nonEmpty => SummaryListRow(
         key     = Key(content = Text(Messages(checkYourAnswerRow.titleMessageKey))),
-        value   = Value(content = Text(value)),
+        value   = Value(content = HtmlContent(seqOfString.mkString("</br>"))),
         actions = checkYourAnswerRow.changeLink match {
           case Some(changeLink) => Some(
             Actions(items = Seq(ActionItem(
@@ -43,7 +44,7 @@ object CheckYourAnswersRow {
           case None => None
         }
       )
-      case None => SummaryListRow(
+      case _ => SummaryListRow(
         key   = Key(content = Text(Messages(checkYourAnswerRow.titleMessageKey))),
         value = checkYourAnswerRow.changeLink match {
           case Some(link) => Value(HtmlContent(s"""<a id="${link.linkId}" href="${link.href.url}" class="govuk-link">${messages(link.messageKey)}</a>"""))

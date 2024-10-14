@@ -32,7 +32,7 @@ class CheckYourAnswersRowSpec extends ItSpec {
     "will generate a minimum SummaryListRow from a minimum CheckYourAnswersRow" in {
       implicit val messages: Messages = messagesApi.preferred(fakeGetRequest)
 
-      val checkYourAnswersRow: CheckYourAnswersRow = CheckYourAnswersRow("", None, None)
+      val checkYourAnswersRow: CheckYourAnswersRow = CheckYourAnswersRow("", Seq.empty, None)
       val result = CheckYourAnswersRow.summarise(checkYourAnswersRow)
       result shouldBe SummaryListRow(Key(Text("")), Value(Empty))
     }
@@ -40,7 +40,7 @@ class CheckYourAnswersRowSpec extends ItSpec {
     "will generate a minimum SummaryListRow with a key from English messages if the key is set in CheckYourAnswersRow" in {
       implicit val messages: Messages = messagesApi.preferred(fakeGetRequest)
 
-      val checkYourAnswersRow: CheckYourAnswersRow = CheckYourAnswersRow("pfsa.reference.title", None, None)
+      val checkYourAnswersRow: CheckYourAnswersRow = CheckYourAnswersRow("pfsa.reference.title", Seq.empty, None)
       val result = CheckYourAnswersRow.summarise(checkYourAnswersRow)
       result shouldBe SummaryListRow(Key(Text("Unique Taxpayer Reference (UTR)")), Value(Empty))
     }
@@ -48,7 +48,7 @@ class CheckYourAnswersRowSpec extends ItSpec {
     "will generate a minimum SummaryListRow with a key from Welsh messages if the key is set in CheckYourAnswersRow" in {
       implicit val messages: Messages = messagesApi.preferred(fakeGetRequestInWelsh)
 
-      val checkYourAnswersRow: CheckYourAnswersRow = CheckYourAnswersRow("pfsa.reference.title", None, None)
+      val checkYourAnswersRow: CheckYourAnswersRow = CheckYourAnswersRow("pfsa.reference.title", Seq.empty, None)
       val result = CheckYourAnswersRow.summarise(checkYourAnswersRow)
       result shouldBe SummaryListRow(Key(Text("Cyfeirnod Unigryw y Trethdalwr (UTR)")), Value(Empty))
     }
@@ -56,9 +56,17 @@ class CheckYourAnswersRowSpec extends ItSpec {
     "will generate a SummaryListRow with a value if the value is set in CheckYourAnswersRow" in {
       implicit val messages: Messages = messagesApi.preferred(fakeGetRequest)
 
-      val checkYourAnswersRow: CheckYourAnswersRow = CheckYourAnswersRow("pfsa.reference.title", Some("XARefExample"), None)
+      val checkYourAnswersRow: CheckYourAnswersRow = CheckYourAnswersRow("pfsa.reference.title", Seq("XARefExample"), None)
       val result = CheckYourAnswersRow.summarise(checkYourAnswersRow)
-      result shouldBe SummaryListRow(Key(Text("Unique Taxpayer Reference (UTR)")), Value(Text("XARefExample")))
+      result shouldBe SummaryListRow(Key(Text("Unique Taxpayer Reference (UTR)")), Value(HtmlContent("XARefExample")))
+    }
+
+    "will generate a SummaryListRow with a separated lines if the value is set as multiple strings in CheckYourAnswersRow" in {
+      implicit val messages: Messages = messagesApi.preferred(fakeGetRequest)
+
+      val checkYourAnswersRow: CheckYourAnswersRow = CheckYourAnswersRow("pfsa.reference.title", Seq("Line1", "Line2"), None)
+      val result = CheckYourAnswersRow.summarise(checkYourAnswersRow)
+      result shouldBe SummaryListRow(Key(Text("Unique Taxpayer Reference (UTR)")), Value(HtmlContent("Line1</br>Line2")))
     }
 
     "will generate a  SummaryListRow with a link if the link is set in CheckYourAnswersRow" in {
@@ -67,14 +75,14 @@ class CheckYourAnswersRowSpec extends ItSpec {
       val checkYourAnswersRow: CheckYourAnswersRow =
         CheckYourAnswersRow(
           "pfsa.reference.title",
-          Some("XARefExample"),
+          Seq("XARefExample"),
           Some(Link(Call("GET", "some-href"), "linkId", "pfsa.reference.change-link.text"))
         )
       val result = CheckYourAnswersRow.summarise(checkYourAnswersRow)
       result shouldBe
         SummaryListRow(
           Key(Text("Unique Taxpayer Reference (UTR)")),
-          Value(Text("XARefExample")),
+          Value(HtmlContent("XARefExample")),
           actions = Some(Actions(items = Seq(ActionItem(
             "some-href",
             Text("Change"),
@@ -90,7 +98,7 @@ class CheckYourAnswersRowSpec extends ItSpec {
     val checkYourAnswersRow: CheckYourAnswersRow =
       CheckYourAnswersRow(
         "pfsa.reference.title",
-        None,
+        Seq.empty,
         Some(Link(Call("GET", "some-href"), "linkId", "pfsa.reference.change-link.text"))
       )
     val result = CheckYourAnswersRow.summarise(checkYourAnswersRow)

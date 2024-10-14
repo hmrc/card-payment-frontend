@@ -14,4 +14,5 @@ GET        /card-fees4              uk.gov.hmrc.cardpaymentfrontend.controllers.
 GET        /card-fees5              uk.gov.hmrc.cardpaymentfrontend.controllers.FeesController.renderPage5
 
 GET        /cya0                    uk.gov.hmrc.cardpaymentfrontend.controllers.CheckYourAnswersController.renderPage0
+GET        /cya1                    uk.gov.hmrc.cardpaymentfrontend.controllers.CheckYourAnswersController.renderPage1
 
