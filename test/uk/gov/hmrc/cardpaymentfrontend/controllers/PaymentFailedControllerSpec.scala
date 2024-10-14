@@ -80,31 +80,31 @@ class PaymentFailedControllerSpec extends ItSpec {
       "render the page with the correct sub heading in Welsh" in {
         val result = systemUnderTest.renderPage(fakeGetRequestInWelsh)
         val document = Jsoup.parse(contentAsString(result))
-        document.selectXpath("//*[@id=\"main-content\"]/div/div/p[1]").text() shouldBe "No payment has been taken from your card."
+        document.selectXpath("//*[@id=\"main-content\"]/div/div/p[1]").text() shouldBe "Nid oes taliad wedi’i dynnu o’ch cerdyn."
       }
 
       "render the page with the correct line 1 in Welsh" in {
         val result = systemUnderTest.renderPage(fakeGetRequestInWelsh)
         val document = Jsoup.parse(contentAsString(result))
-        document.selectXpath("//*[@id=\"main-content\"]/div/div/p[2]").text() shouldBe "The payment may have failed if:"
+        document.selectXpath("//*[@id=\"main-content\"]/div/div/p[2]").text() shouldBe "Mae’n bosibl bod y taliad wedi methi oherwydd:"
       }
 
       "render the page with the correct line 2 in Welsh" in {
         val result = systemUnderTest.renderPage(fakeGetRequestInWelsh)
         val document = Jsoup.parse(contentAsString(result))
-        document.selectXpath("//*[@id=\"main-content\"]/div/div/ul/li[1]").text() shouldBe "there are not enough funds in your account"
+        document.selectXpath("//*[@id=\"main-content\"]/div/div/ul/li[1]").text() shouldBe "nid oes yna ddigon o arian yn eich cyfrif"
       }
 
       "render the page with the correct line 3 in Welsh" in {
         val result = systemUnderTest.renderPage(fakeGetRequestInWelsh)
         val document = Jsoup.parse(contentAsString(result))
-        document.selectXpath("//*[@id=\"main-content\"]/div/div/ul/li[2]").text() shouldBe "you entered invalid or expired card details"
+        document.selectXpath("//*[@id=\"main-content\"]/div/div/ul/li[2]").text() shouldBe "rydych wedi nodi manylion cerdyn sy’n annilys neu sydd wedi dod i ben"
       }
 
       "render the page with the correct line 4 in Welsh" in {
         val result = systemUnderTest.renderPage(fakeGetRequestInWelsh)
         val document = Jsoup.parse(contentAsString(result))
-        document.selectXpath("//*[@id=\"main-content\"]/div/div/ul/li[3]").text() shouldBe "the address you gave does not match the one your card issuer has"
+        document.selectXpath("//*[@id=\"main-content\"]/div/div/ul/li[3]").text() shouldBe "nid yw’r cyfeiriad a roesoch i ni’n cyd-fynd â’r un sydd gan ddosbarthwr eich cerdyn"
       }
 
     }
