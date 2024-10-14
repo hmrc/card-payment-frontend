@@ -144,7 +144,8 @@ payment-failed.failed1 = The payment may have failed if:
 payment-failed.failed2 = there are not enough funds in your account
 payment-failed.failed3 = you entered invalid or expired card details
 payment-failed.failed4 = the address you gave does not match the one your card issuer has
-payment-failed.failed-header = What do you want to do?
+
+payment-failed-ob-available.header = What do you want to do?
 payment-failed.failed-go-to-open-banking = Approve a payment to come straight from my bank account
 payment-failed.failed-try-again = Try card payment again
 

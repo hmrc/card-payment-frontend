@@ -54,7 +54,7 @@
         @govukRadios(Radios(
             fieldset = Some(Fieldset(
                 legend = Some(Legend(
-                    content = Text(messages("payment-failed.failed-header")),
+                    content = Text(messages("payment-failed-ob-available.header")),
                     classes = "govuk-fieldset__legend--m govuk-body",
                     isPageHeading = true
                 ))
@@ -65,7 +65,7 @@
                 RadioItem(content = Text(messages("payment-failed.failed-try-again")), value = Some("try-again"),checked = false)
             )).withFormField(form("payment_method")))
 
-        @govukButton(Button(content = Text(Messages("global.continue")), attributes = Map("id" -> "next")))
+        @govukButton(Button(content = Text(Messages("continue")), attributes = Map("id" -> "next")))
     }
 
 }

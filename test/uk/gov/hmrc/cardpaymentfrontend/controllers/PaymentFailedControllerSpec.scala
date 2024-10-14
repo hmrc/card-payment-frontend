@@ -18,10 +18,9 @@ package uk.gov.hmrc.cardpaymentfrontend.controllers
 
 import org.jsoup.Jsoup
 import play.api.http.Status
-import play.api.mvc.AnyContentAsEmpty
+import play.api.mvc.{AnyContentAsEmpty, Cookie}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import sttp.model.HeaderNames.Cookie
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.ItSpec
 
 class PaymentFailedControllerSpec extends ItSpec {
@@ -33,7 +32,7 @@ class PaymentFailedControllerSpec extends ItSpec {
     "GET /payment-failed" - {
 
       val fakeGetRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/payment-failed")
-      val fakeGetRequestInWelsh: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/email-address").withCookies(Cookie("PLAY_LANG", "cy"))
+      val fakeGetRequestInWelsh: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/payment-failed").withCookies(Cookie("PLAY_LANG", "cy"))
 
       "should return 200 OK" in {
         val result = systemUnderTest.renderPage(fakeGetRequest)
@@ -56,6 +55,84 @@ class PaymentFailedControllerSpec extends ItSpec {
         val result = systemUnderTest.renderPage(fakeGetRequest)
         val document = Jsoup.parse(contentAsString(result))
         document.selectXpath("//*[@id=\"main-content\"]/div/div/ul/li[1]").text() shouldBe "there are not enough funds in your account"
+      }
+
+      "render the page with the correct line 3 in English" in {
+        val result = systemUnderTest.renderPage(fakeGetRequest)
+        val document = Jsoup.parse(contentAsString(result))
+        document.selectXpath("//*[@id=\"main-content\"]/div/div/ul/li[2]").text() shouldBe "you entered invalid or expired card details"
+      }
+
+      "render the page with the correct line 4 in English" in {
+        val result = systemUnderTest.renderPage(fakeGetRequest)
+        val document = Jsoup.parse(contentAsString(result))
+        document.selectXpath("//*[@id=\"main-content\"]/div/div/ul/li[3]").text() shouldBe "the address you gave does not match the one your card issuer has"
+      }
+
+      "render the page with the correct check again content in English" in {
+        val result = systemUnderTest.renderPage(fakeGetRequest)
+        val document = Jsoup.parse(contentAsString(result))
+        document.selectXpath("//*[@id=\"main-content\"]/div/div/ul/li[3]").text() shouldBe "the address you gave does not match the one your card issuer has"
+      }
+
+      "render the page with the correct sub heading in Welsh" in {
+        val result = systemUnderTest.renderPage(fakeGetRequestInWelsh)
+        val document = Jsoup.parse(contentAsString(result))
+        document.selectXpath("//*[@id=\"main-content\"]/div/div/p[1]").text() shouldBe "No payment has been taken from your card."
+      }
+
+      "render the page with the correct line 1 in Welsh" in {
+        val result = systemUnderTest.renderPage(fakeGetRequestInWelsh)
+        val document = Jsoup.parse(contentAsString(result))
+        document.selectXpath("//*[@id=\"main-content\"]/div/div/p[2]").text() shouldBe "The payment may have failed if:"
+      }
+
+      "render the page with the correct line 2 in Welsh" in {
+        val result = systemUnderTest.renderPage(fakeGetRequestInWelsh)
+        val document = Jsoup.parse(contentAsString(result))
+        document.selectXpath("//*[@id=\"main-content\"]/div/div/ul/li[1]").text() shouldBe "there are not enough funds in your account"
+      }
+
+      "render the page with the correct line 3 in Welsh" in {
+        val result = systemUnderTest.renderPage(fakeGetRequestInWelsh)
+        val document = Jsoup.parse(contentAsString(result))
+        document.selectXpath("//*[@id=\"main-content\"]/div/div/ul/li[2]").text() shouldBe "you entered invalid or expired card details"
+      }
+
+      "render the page with the correct line 4 in Welsh" in {
+        val result = systemUnderTest.renderPage(fakeGetRequestInWelsh)
+        val document = Jsoup.parse(contentAsString(result))
+        document.selectXpath("//*[@id=\"main-content\"]/div/div/ul/li[3]").text() shouldBe "the address you gave does not match the one your card issuer has"
+      }
+
+    }
+
+    "GET /payment-failed-ob-available" - {
+
+      val fakeGetRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/payment-failed-ob-available")
+      val fakeGetRequestInWelsh: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/payment-failed-ob-available").withCookies(Cookie("PLAY_LANG", "cy"))
+
+      "should return 200 OK" in {
+        val result = systemUnderTest.renderPage(fakeGetRequest)
+        status(result) shouldBe Status.OK
+      }
+
+      "render the page with the correct sub heading in English" in {
+        val result = systemUnderTest.renderPage(fakeGetRequest)
+        val document = Jsoup.parse(contentAsString(result))
+        document.selectXpath("//*[@id=\"main-content\"]/div/div/p[1]").text() shouldBe "No payment has been taken from your card."
+      }
+
+      "render the page with the correct Radio Heading in English" in {
+        val result = systemUnderTest.renderPage(fakeGetRequest)
+        val document = Jsoup.parse(contentAsString(result))
+        document.selectXpath("//*[@id=\"payment_method_form\"]/div/fieldset/legend/h1").text() shouldBe "The payment may have failed if:"
+      }
+
+      "render the page with the correct line 2 in English" in {
+        val result = systemUnderTest.renderPage(fakeGetRequest)
+        val document = Jsoup.parse(contentAsString(result))
+        document.selectXpath("//*[@id=\"payment_method_form\"]/div/fieldset/div/div[1]/label").text() shouldBe "there are not enough funds in your account"
       }
 
       "render the page with the correct line 3 in English" in {
