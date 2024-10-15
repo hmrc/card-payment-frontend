@@ -104,6 +104,7 @@ card-fees.para2.bank-account = bank account
 # check your answers page
 # some refactoring here to consolidate common phrases
 check-your-answers.heading = Check your answers
+check-your-answers.your-ref = This payment will show in your bank as
 pfsa.reference.title = Unique Taxpayer Reference (UTR)
 pfsa.reference.change-link.text = Change
 pfsa.email.title = Email address

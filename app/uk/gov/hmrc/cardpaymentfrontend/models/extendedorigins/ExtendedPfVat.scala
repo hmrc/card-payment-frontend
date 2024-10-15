@@ -21,13 +21,14 @@ import uk.gov.hmrc.cardpaymentfrontend.models.{CheckYourAnswersRow, Link}
 import uk.gov.hmrc.cardpaymentfrontend.utils.{Bacs, Card, OpenBanking, PaymentMethod, VariableDirectDebit}
 
 class ExtendedPfVat extends ExtendedOrigin {
+  def reference(): String = "999964805"
   def paymentMethods(): Set[PaymentMethod] = Set(Card(), OpenBanking(), VariableDirectDebit(), Bacs())
 
   def checkYourAnswersRows(): Seq[CheckYourAnswersRow] = {
     val referenceRow =
       CheckYourAnswersRow(
         "pfvat.reference.title",
-        Seq("999964805"), //This would really come from the journey either pay-api or stored locally
+        Seq(reference()), //This would really come from the journey either pay-api or stored locally
         Some(Link(
           Call("GET", "this/that"),
           "pfvat-reference-change-link",

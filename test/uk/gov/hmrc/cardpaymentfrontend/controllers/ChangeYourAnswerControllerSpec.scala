@@ -191,5 +191,12 @@ class ChangeYourAnswerControllerSpec extends ItSpec {
       val changeLink = document.select("#pfsa-email-supply-link").text()
       changeLink shouldBe "???"
     }
+
+    "render a final reference line" in {
+      val result = systemUnderTest.renderPage0()(fakeGetRequest)
+      val document = Jsoup.parse(contentAsString(result))
+      val changeLink = document.select("#cya-final-ref").text()
+      changeLink shouldBe "This payment will show in your bank as 1097172564."
+    }
   }
 }

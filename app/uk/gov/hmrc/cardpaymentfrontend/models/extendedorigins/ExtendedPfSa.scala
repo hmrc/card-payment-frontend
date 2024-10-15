@@ -21,13 +21,14 @@ import uk.gov.hmrc.cardpaymentfrontend.models.{CheckYourAnswersRow, Link}
 import uk.gov.hmrc.cardpaymentfrontend.utils.{Bacs, Card, OneOffDirectDebit, OpenBanking, PaymentMethod}
 
 class ExtendedPfSa extends ExtendedOrigin {
+  def reference(): String = "1097172564" //This would really come from the journey either pay-api or stored locally
   def paymentMethods(): Set[PaymentMethod] = Set(Card(), OpenBanking(), OneOffDirectDebit(), Bacs())
 
   def checkYourAnswersRows(): Seq[CheckYourAnswersRow] = {
     val referenceRow =
       CheckYourAnswersRow(
         "pfsa.reference.title",
-        Seq("1097172564"), //This would really come from the journey either pay-api or stored locally
+        Seq(reference()),
         Some(Link(
           Call("GET", "this/that"),
           "pfsa-reference-change-link",

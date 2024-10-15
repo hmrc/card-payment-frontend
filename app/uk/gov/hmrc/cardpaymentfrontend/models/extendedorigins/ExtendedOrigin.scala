@@ -20,6 +20,7 @@ import uk.gov.hmrc.cardpaymentfrontend.models.CheckYourAnswersRow
 import uk.gov.hmrc.cardpaymentfrontend.utils.PaymentMethod
 
 trait ExtendedOrigin {
+  def reference(): String
   def paymentMethods(): Set[PaymentMethod]
   def checkYourAnswersRows(): Seq[CheckYourAnswersRow]
 
