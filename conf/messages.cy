@@ -100,6 +100,7 @@ card-fees.para4 = Dylech ganiatáu 3 diwrnod gwaith i’ch taliad gyrraedd cyfri
 # check your answers page
 # some refactoring here to consolidate common phrases
 check-your-answers.heading = Gwirio’ch atebion
+check-your-answers.your-ref = Bydd y taliad hwn yn dangos yn eich banc fel
 pfsa.reference.title = Cyfeirnod Unigryw y Trethdalwr (UTR)
 pfsa.reference.change-link.text = Newid
 pfsa.email.title = Cyfeiriad e-bost ar gyfer y dderbynneb

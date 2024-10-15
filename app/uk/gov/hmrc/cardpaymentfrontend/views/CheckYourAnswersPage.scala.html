@@ -36,7 +36,7 @@
 
    @summaryListComponent(summaryList)
 
-   <p id="cya-final-ref" class="govuk-body">@messages("check-your-answers.your-ref") @reference.</p>
+   <p id="cya-final-ref" class="govuk-body">@messages("check-your-answers.your-ref") <strong>@reference</strong>.</p>
 
    @formWithCSRF(action = uk.gov.hmrc.cardpaymentfrontend.controllers.routes.EmailAddressController.submit) {
       @govukButton(Button(
