@@ -24,9 +24,9 @@
     govukButton: GovukButton
 )
 
-@()(implicit request: RequestHeader, messages: Messages)
+@(taxType: String)(implicit request: RequestHeader, messages: Messages)
 
-@heading: String = @{messages("payment-failed.heading")}
+@heading= @{messages("payment-failed.heading")}
 
 @layout(pageTitle = Some(heading)) {
 
@@ -36,11 +36,11 @@
      <ul class="govuk-list--bullet govuk-!-static-padding-left-7">
        <li class="govuk-body">@{messages("payment-failed.failed2")}</li>
        <li class="govuk-body">@{messages("payment-failed.failed3")}</li>
-       <li class="govuk-body">@{messages("payment-failed.failed4")}</li>
+       @if(taxType != "pngr"){ <li class="govuk-body">@{messages("payment-failed.failed4")}</li> }
      </ul>
    <p class="govuk-body">@{messages("payment-failed.failed-check-again")}</p>
 
-    @govukButton(Button(content = Text(Messages("continue")), attributes = Map("id" -> "next")))
+    @govukButton(Button(content = Text(Messages("payment-failed.failed-check-details")), attributes = Map("id" -> "next")))
 
     <div><br></div>
 

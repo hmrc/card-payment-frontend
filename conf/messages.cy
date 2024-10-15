@@ -138,7 +138,6 @@ payment-cancelled.pay-another-way.link = Talu drwy ddull arall
 payment-cancelled.exit-without-paying.link = Gadewch heb dalu
 
 ## Payment Failed page
-
 payment-failed.heading = Taliad wedi methu
 payment-failed.sub-heading = Nid oes taliad wedi’i dynnu o’ch cerdyn.
 payment-failed.failed1 = Mae’n bosibl bod y taliad wedi methi oherwydd:

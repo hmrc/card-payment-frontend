@@ -32,7 +32,7 @@ class PaymentFailedController @Inject() (
 ) extends FrontendController(mcc) {
 
   val renderPage: Action[AnyContent] = Action { implicit request =>
-    Ok(paymentFailedPage())
+    Ok(paymentFailedPage(taxType = "Self Assessment"))
   }
 
   val renderPageObAvailable: Action[AnyContent] = Action { implicit request =>
