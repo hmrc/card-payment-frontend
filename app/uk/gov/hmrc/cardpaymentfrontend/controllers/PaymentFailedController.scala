@@ -32,7 +32,7 @@ class PaymentFailedController @Inject() (
 
   val renderPage: Action[AnyContent] = Action { implicit request =>
     // hard coded for now
-    Ok(paymentFailedPage(taxType = "Self Assessment", true, ChooseAPaymentMethodForm.form))
+    Ok(paymentFailedPage(taxType = "Self Assessment", false, ChooseAPaymentMethodForm.form))
   }
 
   val submit: Action[AnyContent] = Action { implicit request =>

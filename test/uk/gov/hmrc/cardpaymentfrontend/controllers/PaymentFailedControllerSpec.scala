@@ -21,6 +21,7 @@ import play.api.http.Status
 import play.api.mvc.{AnyContentAsEmpty, Cookie}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import uk.gov.hmrc.cardpaymentfrontend.forms.ChooseAPaymentMethodForm
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.ItSpec
 
 import scala.jdk.CollectionConverters.ListHasAsScala
@@ -115,24 +116,24 @@ class PaymentFailedControllerSpec extends ItSpec {
 
     }
 
-    "GET /payment-failed-ob-available" - {
+    "GET /payment-failed with Open Banking available as a Payment Method" - {
 
-      val fakeGetRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/payment-failed-ob-available")
-      val fakeGetRequestInWelsh: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/payment-failed-ob-available").withCookies(Cookie("PLAY_LANG", "cy"))
+      val fakeGetRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/payment-failed")
+      val fakeGetRequestInWelsh: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/payment-failed").withCookies(Cookie("PLAY_LANG", "cy"))
 
       "should return 200 OK" in {
-        val result = systemUnderTest.renderPageObAvailable(fakeGetRequest)
+        val result = systemUnderTest.renderPage()(fakeGetRequest)
         status(result) shouldBe Status.OK
       }
 
       "render the page with the correct sub heading in English" in {
-        val result = systemUnderTest.renderPageObAvailable(fakeGetRequest)
+        val result = systemUnderTest.renderPage(fakeGetRequest)
         val document = Jsoup.parse(contentAsString(result))
         document.selectXpath("//*[@id=\"main-content\"]/div/div/p[1]").text() shouldBe "No payment has been taken from your card."
       }
 
       "render the page with the correct Radio Heading content in English" in {
-        val result = systemUnderTest.renderPageObAvailable(fakeGetRequest)
+        val result = systemUnderTest.renderPage(fakeGetRequest)
         val document = Jsoup.parse(contentAsString(result))
         document.select(".govuk-fieldset__legend").text() shouldBe "What do you want to do?"
       }
@@ -141,7 +142,7 @@ class PaymentFailedControllerSpec extends ItSpec {
 
         val expectedContent = List("Approve a payment to come straight from my bank account", "Try card payment again")
 
-        val result = systemUnderTest.renderPageObAvailable(fakeGetRequest)
+        val result = systemUnderTest.renderPage(fakeGetRequest)
         val document = Jsoup.parse(contentAsString(result))
         val radios = document.select(".govuk-radios__item").asScala.toList
 
@@ -150,13 +151,13 @@ class PaymentFailedControllerSpec extends ItSpec {
       }
 
       "render the page with the correct sub heading in Welsh" in {
-        val result = systemUnderTest.renderPageObAvailable(fakeGetRequestInWelsh)
+        val result = systemUnderTest.renderPage(fakeGetRequestInWelsh)
         val document = Jsoup.parse(contentAsString(result))
         document.selectXpath("//*[@id=\"main-content\"]/div/div/p[1]").text() shouldBe "Nid oes taliad wedi’i dynnu o’ch cerdyn."
       }
 
       "render the page with the correct Radio Heading content in Welsh" in {
-        val result = systemUnderTest.renderPageObAvailable(fakeGetRequestInWelsh)
+        val result = systemUnderTest.renderPage(fakeGetRequestInWelsh)
         val document = Jsoup.parse(contentAsString(result))
         document.select(".govuk-fieldset__legend").text() shouldBe "Beth hoffech chi ei wneud?"
       }
@@ -165,7 +166,7 @@ class PaymentFailedControllerSpec extends ItSpec {
 
         val expectedContent = List("Cymeradwyo taliad i fynd yn syth o’m cyfrif banc", "Rhowch gynnig arall ar dalu drwy gerdyn")
 
-        val result = systemUnderTest.renderPageObAvailable(fakeGetRequestInWelsh)
+        val result = systemUnderTest.renderPage(fakeGetRequestInWelsh)
         val document = Jsoup.parse(contentAsString(result))
         val radios = document.select(".govuk-radios__item").asScala.toList
 
