@@ -32,6 +32,7 @@ class PaymentFailedController @Inject() (
 ) extends FrontendController(mcc) {
 
   val renderPage: Action[AnyContent] = Action { implicit request =>
+    // hard coded for now
     Ok(paymentFailedPage(taxType = "Self Assessment"))
   }
 

@@ -41,6 +41,12 @@ class PaymentFailedControllerSpec extends ItSpec {
         status(result) shouldBe Status.OK
       }
 
+      "include the hmrc layout" in {
+        val result = systemUnderTest.renderPage(fakeGetRequest)
+        val document = Jsoup.parse(contentAsString(result))
+        document.select("html").hasClass("govuk-template") shouldBe true withClue "no govuk template"
+      }
+
       "render the page with the correct sub heading in English" in {
         val result = systemUnderTest.renderPage(fakeGetRequest)
         val document = Jsoup.parse(contentAsString(result))

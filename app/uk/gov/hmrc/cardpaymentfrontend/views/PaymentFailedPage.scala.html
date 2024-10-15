@@ -40,7 +40,7 @@
      </ul>
    <p class="govuk-body">@{messages("payment-failed.failed-check-again")}</p>
 
-    @govukButton(Button(content = Text(Messages("payment-failed.failed-check-details")), attributes = Map("id" -> "next")))
+    @govukButton(Button(content = Text(Messages("payment-failed.failed-check-details")),  id = Some("submit")))
 
     <div><br></div>
 
