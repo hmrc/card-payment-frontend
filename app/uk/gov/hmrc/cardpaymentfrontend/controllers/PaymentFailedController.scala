@@ -19,32 +19,27 @@ package uk.gov.hmrc.cardpaymentfrontend.controllers
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.cardpaymentfrontend.forms.ChooseAPaymentMethodForm
-import uk.gov.hmrc.cardpaymentfrontend.views.html.{PaymentFailedObAvailablePage, PaymentFailedPage}
+import uk.gov.hmrc.cardpaymentfrontend.views.html.PaymentFailedPage
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
 import javax.inject.{Inject, Singleton}
 
 @Singleton
 class PaymentFailedController @Inject() (
-    mcc:                          MessagesControllerComponents,
-    paymentFailedPage:            PaymentFailedPage,
-    paymentFailedObAvailablePage: PaymentFailedObAvailablePage
+    mcc:               MessagesControllerComponents,
+    paymentFailedPage: PaymentFailedPage
 ) extends FrontendController(mcc) {
 
   val renderPage: Action[AnyContent] = Action { implicit request =>
     // hard coded for now
-    Ok(paymentFailedPage(taxType = "Self Assessment"))
-  }
-
-  val renderPageObAvailable: Action[AnyContent] = Action { implicit request =>
-    Ok(paymentFailedObAvailablePage(ChooseAPaymentMethodForm.form))
+    Ok(paymentFailedPage(taxType = "Self Assessment", true, ChooseAPaymentMethodForm.form))
   }
 
   val submit: Action[AnyContent] = Action { implicit request =>
     ChooseAPaymentMethodForm.form
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[ChooseAPaymentMethodForm]) => BadRequest(paymentFailedObAvailablePage(formWithErrors)),
+        (formWithErrors: Form[ChooseAPaymentMethodForm]) => BadRequest(paymentFailedPage(taxType = "Self Assessment", true, formWithErrors)),
         { validForm: ChooseAPaymentMethodForm =>
           validForm.chosenMethod match {
             case Some("open-banking") => Ok("we need to go to OB here")
