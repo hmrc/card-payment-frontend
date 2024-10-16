@@ -192,11 +192,18 @@ class ChangeYourAnswerControllerSpec extends ItSpec {
       changeLink shouldBe "???"
     }
 
-    "render a final reference line" in {
+    "render a final reference line in English" in {
       val result = systemUnderTest.renderPage0()(fakeGetRequest)
       val document = Jsoup.parse(contentAsString(result))
       val changeLink = document.select("#cya-final-ref").text()
       changeLink shouldBe "This payment will show in your bank as 1097172564."
+    }
+
+    "render a final reference line in Welsh" in {
+      val result = systemUnderTest.renderPage0()(fakeGetRequestInWelsh)
+      val document = Jsoup.parse(contentAsString(result))
+      val changeLink = document.select("#cya-final-ref").text()
+      changeLink shouldBe "Bydd y taliad hwn yn dangos yn eich banc fel 1097172564."
     }
   }
 }
