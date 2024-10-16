@@ -16,9 +16,12 @@
 
 package uk.gov.hmrc.cardpaymentfrontend.controllers
 
+import payapi.corcommon.model.{Origin, Origins}
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.cardpaymentfrontend.forms.ChooseAPaymentMethodForm
+import uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins.ExtendedOrigin
+import uk.gov.hmrc.cardpaymentfrontend.utils.{OpenBanking, OriginExtraInfo, PaymentMethod}
 import uk.gov.hmrc.cardpaymentfrontend.views.html.PaymentFailedPage
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
@@ -27,13 +30,19 @@ import javax.inject.{Inject, Singleton}
 @Singleton
 class PaymentFailedController @Inject() (
     mcc:               MessagesControllerComponents,
-    paymentFailedPage: PaymentFailedPage
+    paymentFailedPage: PaymentFailedPage,
+    originExtraInfo:   OriginExtraInfo
 ) extends FrontendController(mcc) {
 
-  val renderPage: Action[AnyContent] = Action { implicit request =>
-    // hard coded for now
-    Ok(paymentFailedPage(taxType = "Self Assessment", false, ChooseAPaymentMethodForm.form))
+  def renderPage(origin: Origin): Action[AnyContent] = Action { implicit request =>
+    val liftedOrigin: ExtendedOrigin = originExtraInfo.lift(origin)
+    val paymentMethods: Set[PaymentMethod] = liftedOrigin.paymentMethods()
+    Ok(paymentFailedPage(origin.toTaxType.toString, paymentMethods.contains(OpenBanking()), ChooseAPaymentMethodForm.form))
   }
+
+  def renderPage0(): Action[AnyContent] = renderPage(Origins.PfP800)
+
+  def renderPage1(): Action[AnyContent] = renderPage(Origins.PfSa)
 
   val submit: Action[AnyContent] = Action { implicit request =>
     ChooseAPaymentMethodForm.form
