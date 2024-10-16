@@ -46,7 +46,6 @@ class EmailAddressControllerSpec extends ItSpec {
 
       val fakeGetRequestInWelsh: FakeRequest[AnyContentAsEmpty.type] =
         fakeGetRequest.withLangWelsh()
-
       "should return 200 OK" in {
         val result = systemUnderTest.renderPage(fakeGetRequest)
         status(result) shouldBe Status.OK
@@ -189,7 +188,6 @@ class EmailAddressControllerSpec extends ItSpec {
 
       "should return html containing the correct error messages in welsh when an invalid email address is submitted" in {
         val validFormData = ("email-address", "notALegitEmail")
-
         val result = systemUnderTest.submit(fakePostRequestInWelsh(validFormData))
         val document = Jsoup.parse(contentAsString(result))
         document.select(".govuk-error-summary__title").text() shouldBe "Mae problem wedi codi"

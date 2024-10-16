@@ -18,9 +18,9 @@ package uk.gov.hmrc.cardpaymentfrontend.controllers
 
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import uk.gov.hmrc.cardpaymentfrontend.actions.{Actions, JourneyRequest}
 import uk.gov.hmrc.cardpaymentfrontend.forms.EmailAddressForm
 import uk.gov.hmrc.cardpaymentfrontend.models.EmailAddress
+import uk.gov.hmrc.cardpaymentfrontend.actions.{Actions, JourneyRequest}
 import uk.gov.hmrc.cardpaymentfrontend.requests.RequestSupport
 import uk.gov.hmrc.cardpaymentfrontend.views.html.EmailAddressPage
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
@@ -42,6 +42,7 @@ class EmailAddressController @Inject() (
   }
 
   val submit: Action[AnyContent] = actions.journeyAction { implicit journeyRequest: JourneyRequest[AnyContent] =>
+
     EmailAddressForm.form()
       .bindFromRequest()
       .fold(
@@ -51,5 +52,4 @@ class EmailAddressController @Inject() (
         }
       )
   }
-
 }

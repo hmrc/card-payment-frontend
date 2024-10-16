@@ -89,6 +89,35 @@ email-address.heading = Beth yw’ch cyfeiriad e-bost? (dewisol)
 email-address.hint = Byddwn ond yn defnyddio hwn i gadarnhau’ch bod wedi anfon taliad
 email-address.error.invalid = Nodwch gyfeiriad e-bost dilys neu gadewch yn wag
 
+# card fees page
+card-fees.heading = Ffioedd cerdyn
+card-fees.para1 = Bydd ffi na ellir ei had-dalu yn cael ei chodi os talwch â cherdyn credyd corfforaethol neu gerdyn debyd corfforaethol.
+card-fees.para2 = Nid oes ffi yn cael ei chodi os talwch drwy un o’r dulliau canlynol:
+card-fees.para3 = Ni allwch dalu â cherdyn credyd personol.
+card-fees.para4 = Dylech ganiatáu 3 diwrnod gwaith i’ch taliad gyrraedd cyfrif banc CThEM.
+
+# check your answers page
+# some refactoring here to consolidate common phrases
+check-your-answers.heading = Gwirio’ch atebion
+check-your-answers.your-ref = Bydd y taliad hwn yn dangos yn eich banc fel
+pfsa.reference.title = Cyfeirnod Unigryw y Trethdalwr (UTR)
+pfsa.reference.change-link.text = Newid
+pfsa.email.title = Cyfeiriad e-bost ar gyfer y dderbynneb
+pfsa.email.supply-link.text = TBS
+pfsa.amount.title = Swm
+pfsa.amount.change-link.text = Newid
+pfsa.address.title = Cyfeiriad bilio
+pfsa.address.change-link.text = Newid
+
+pfvat.reference.title = Rhif cofrestru TAW
+pfvat.reference.change-link.text = Newid
+pfvat.email.title = Cyfeiriad e-bost ar gyfer y dderbynneb
+pfvat.email.change-link.text = newid
+pfvat.amount.title = Swm
+pfvat.amount.change-link.text = Newid
+pfvat.address.title = Cyfeiriad bilio
+pfvat.address.change-link.text = Newid
+
 ## Address Page
 address.heading = Cyfeiriad bilio’r cerdyn
 address.field-name.line1.hint = Eich cyfeiriad bilio yw’r cyfeiriad y gwnaethoch gofrestru eich cerdyn ag ef
