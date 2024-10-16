@@ -18,26 +18,44 @@ package uk.gov.hmrc.cardpaymentfrontend.controllers
 
 import org.jsoup.Jsoup
 import play.api.http.Status
-import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded, Cookie}
+import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.ItSpec
+import uk.gov.hmrc.cardpaymentfrontend.testsupport.TestOps._
+import uk.gov.hmrc.cardpaymentfrontend.testsupport.stubs.PayApiStub
+import uk.gov.hmrc.cardpaymentfrontend.testsupport.testdata.TestJourneys
 
 import scala.jdk.CollectionConverters.ListHasAsScala
 
 class EmailAddressControllerSpec extends ItSpec {
 
+  override def beforeEach(): Unit = {
+    PayApiStub.stubForFindBySessionId2xx(TestJourneys.testPfSaJourneyCreated)
+    ()
+  }
+
   private val systemUnderTest: EmailAddressController = app.injector.instanceOf[EmailAddressController]
 
   "EmailController" - {
+
     "GET /email-address" - {
 
-      val fakeGetRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/email-address")
-      val fakeGetRequestInWelsh: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/email-address").withCookies(Cookie("PLAY_LANG", "cy"))
+      val fakeGetRequest: FakeRequest[AnyContentAsEmpty.type] =
+        FakeRequest("GET", "/email-address").withSessionId()
 
+      val fakeGetRequestInWelsh: FakeRequest[AnyContentAsEmpty.type] =
+        fakeGetRequest.withLangWelsh()
       "should return 200 OK" in {
         val result = systemUnderTest.renderPage(fakeGetRequest)
         status(result) shouldBe Status.OK
+      }
+
+      //TODO: check if this should redirect to /pay as well.
+      "should return 401 unauthorised when there is no journey returned from pay-api via action refiner" in {
+        PayApiStub.stubForFindBySessionId404
+        val result = systemUnderTest.renderPage(fakeGetRequest)
+        status(result) shouldBe Status.UNAUTHORIZED
       }
 
       "render the page with the hmrc layout" in {
@@ -65,20 +83,20 @@ class EmailAddressControllerSpec extends ItSpec {
         langToggleText should contain theSameElementsAs List("English", "Newid yr iaith ir Gymraeg Cymraeg") //checking the visually hidden text, it's simpler
       }
 
-      "render the page with a back button" in {
+      "render the page with a back link" in {
         val result = systemUnderTest.renderPage(fakeGetRequest)
         val document = Jsoup.parse(contentAsString(result))
-        val backButton = document.select(".govuk-back-link")
-        backButton.text() shouldBe "Back"
-        backButton.attr("href") shouldBe "#"
+        val backLink = document.select(".govuk-back-link")
+        backLink.text() shouldBe "Back"
+        backLink.attr("href") shouldBe "#"
       }
 
-      "render the page with a back button in welsh" in {
+      "render the page with a back link in welsh" in {
         val result = systemUnderTest.renderPage(fakeGetRequestInWelsh)
         val document = Jsoup.parse(contentAsString(result))
-        val backButton = document.select(".govuk-back-link")
-        backButton.text() shouldBe "Yn ôl"
-        backButton.attr("href") shouldBe "#"
+        val backLink = document.select(".govuk-back-link")
+        backLink.text() shouldBe "Yn ôl"
+        backLink.attr("href") shouldBe "#"
       }
 
       "render the page with a text field" in {
@@ -131,10 +149,13 @@ class EmailAddressControllerSpec extends ItSpec {
     "POST /email-address" - {
 
         def fakePostRequest(formData: (String, String)*): FakeRequest[AnyContentAsFormUrlEncoded] =
-          FakeRequest("POST", "/email-address").withFormUrlEncodedBody(formData: _*)
+          FakeRequest("POST", "/email-address")
+            .withSessionId()
+            .withFormUrlEncodedBody(formData: _*)
 
         def fakePostRequestInWelsh(formData: (String, String)*): FakeRequest[AnyContentAsFormUrlEncoded] =
-          FakeRequest("POST", "/email-address").withFormUrlEncodedBody(formData: _*).withCookies(Cookie("PLAY_LANG", "cy"))
+          fakePostRequest(formData: _*)
+            .withLangWelsh()
 
       "should return 200 OK when a valid email address is submitted" in {
         val validFormData = ("email-address", "blag@blah.com")

@@ -14,17 +14,6 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.cardpaymentfrontend.config
+package uk.gov.hmrc.cardpaymentfrontend.models
 
-import javax.inject.{Inject, Singleton}
-import play.api.Configuration
-import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
-
-@Singleton
-class AppConfig @Inject() (config: Configuration, servicesConfig: ServicesConfig) {
-  val welshLanguageSupportEnabled: Boolean = config.getOptional[Boolean]("features.welsh-language-support").getOrElse(false)
-  val payAnotherWayLink: String = config.get[String]("urls.govuk.pay-another-way")
-
-  val payApiBaseUrl: String = servicesConfig.baseUrl("pay-api")
-
-}
+final case class Country(name: String, code: String)
