@@ -84,11 +84,43 @@ title.PtaClass3Ni =
 title.AlcoholDuty =
 title.PfAlcoholDuty =
 
-
 ## Email address page
 email-address.heading = What is your email address? (optional)
 email-address.hint = We’ll only use this to confirm you sent a payment
 email-address.error.invalid = Enter a valid email address or leave it blank
+
+# card fees page
+card-fees.heading = Card fees
+card-fees.para1 = There is a non-refundable fee if you pay by corporate credit card or corporate debit card.
+card-fees.para2 = There is no fee if you pay by:
+card-fees.para2.bank-account = bank account
+card-fees.para2.open-banking = open banking
+card-fees.para2.direct-debit = direct debit
+card-fees.para3 = You cannot pay using a personal credit card.
+card-fees.para4 = Allow 3 working days for your payment to reach HMRC’s bank account.
+card-fees.para2.bank-account = bank account
+
+# check your answers page
+# some refactoring here to consolidate common phrases
+check-your-answers.heading = Check your answers
+check-your-answers.your-ref = This payment will show in your bank as
+pfsa.reference.title = Unique Taxpayer Reference (UTR)
+pfsa.reference.change-link.text = Change
+pfsa.email.title = Email address
+pfsa.email.supply-link.text = Enter email address
+pfsa.amount.title = Amount
+pfsa.amount.change-link.text = Change
+pfsa.address.title = Card billing address
+pfsa.address.change-link.text = Change
+
+pfvat.reference.title = VAT registration number
+pfvat.reference.change-link.text = Change
+pfvat.email.title = Email address
+pfvat.email.change-link.text = Change
+pfvat.amount.title = Amount
+pfvat.amount.change-link.text = Change
+pfvat.address.title = Card billing address
+pfsa.address.change-link.text = Change
 
 ## Address Page
 address.heading = Card billing address

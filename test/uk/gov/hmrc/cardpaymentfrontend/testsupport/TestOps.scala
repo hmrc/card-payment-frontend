@@ -14,17 +14,20 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.cardpaymentfrontend.config
+package uk.gov.hmrc.cardpaymentfrontend.testsupport
 
-import javax.inject.{Inject, Singleton}
-import play.api.Configuration
-import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
+import play.api.mvc.Cookie
+import play.api.test.FakeRequest
+import uk.gov.hmrc.http.SessionKeys
 
-@Singleton
-class AppConfig @Inject() (config: Configuration, servicesConfig: ServicesConfig) {
-  val welshLanguageSupportEnabled: Boolean = config.getOptional[Boolean]("features.welsh-language-support").getOrElse(false)
-  val payAnotherWayLink: String = config.get[String]("urls.govuk.pay-another-way")
+object TestOps {
+  implicit class FakeRequestOps[T](r: FakeRequest[T]) {
+    def withLang(language: String = "en"): FakeRequest[T] = r.withCookies(Cookie("PLAY_LANG", language))
 
-  val payApiBaseUrl: String = servicesConfig.baseUrl("pay-api")
+    def withLangWelsh(): FakeRequest[T] = r.withLang("cy")
+    def withLangEnglish(): FakeRequest[T] = r.withLang("en")
 
+    def withSessionId(sessionId: String = "some-valid-session-id"): FakeRequest[T] =
+      r.withSession(SessionKeys.sessionId -> sessionId)
+  }
 }

@@ -33,17 +33,12 @@ class RequestSupport @Inject() (override val messagesApi: MessagesApi) extends I
 
   implicit def hc(implicit request: Request[_]): HeaderCarrier = RequestSupport.hc
   def lang(implicit messages: Messages): Lang = messages.lang
-  //  def language(implicit messages: Messages): Language = Language()(messages)
 }
 
 object RequestSupport {
 
   implicit def hc(implicit request: Request[_]): HeaderCarrier = HcProvider.headerCarrier
 
-  /**
-   * Naive way of checking if user is logged in. Use it in views only.
-   * For more real check see [[service.AuthService]]
-   */
   def isLoggedIn(implicit requestHeader: RequestHeader): Boolean = requestHeader.session.get(SessionKeys.authToken).isDefined
 
   /**
@@ -52,7 +47,7 @@ object RequestSupport {
   def sessionId(implicit requestHeader: RequestHeader): String = requestHeader.session.get(SessionKeys.sessionId).getOrElse("Unknown Session Id")
 
   /**
-   * This is because we want to give responsibility of creation of [[HeaderCarrier]] to the platform code.
+   * This is because we want to give responsibility of creation of HeaderCarrier to the platform code.
    * If they refactor how hc is created our code will pick it up automatically.
    */
   private object HcProvider extends FrontendHeaderCarrierProvider {

@@ -30,7 +30,7 @@
     formWithCSRF: FormWithCSRF
 )
 
-@(form: Form[EmailAddress])(implicit request: RequestHeader, messages: Messages)
+@(form: Form[EmailAddress])(implicit requestHeader: RequestHeader, messages: Messages)
 
 @heading = @{messages("email-address.heading")}
 @key = @{EmailAddressForm.emailAddressKey}
@@ -65,8 +65,4 @@
         ))
 
     }
-}
-
-@{
-    //$COVERAGE-OFF$
 }
