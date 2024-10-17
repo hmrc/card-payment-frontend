@@ -43,10 +43,7 @@
         }</p>
 
         @formWithCsrf(
-            action = uk.gov.hmrc.cardpaymentfrontend.controllers.routes.PaymentFailedController.submit,
-            Symbol("id") -> "payment_method_form",
-            Symbol("autocomplete") -> "off",
-            Symbol("novalidate") -> "novalidate"
+            action = uk.gov.hmrc.cardpaymentfrontend.controllers.routes.PaymentFailedController.submit
         ) {
 
             @govukRadios(Radios(
