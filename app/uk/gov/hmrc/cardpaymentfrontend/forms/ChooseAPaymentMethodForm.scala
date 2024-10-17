@@ -14,13 +14,20 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins
+package uk.gov.hmrc.cardpaymentfrontend.forms
 
-import uk.gov.hmrc.cardpaymentfrontend.models.CheckYourAnswersRow
-import uk.gov.hmrc.cardpaymentfrontend.utils.PaymentMethod
+import play.api.data.Form
+import play.api.data.Forms.{mapping, optional, text}
 
-trait ExtendedOrigin {
-  def reference(): String
-  def paymentMethods(): Set[PaymentMethod]
-  def checkYourAnswersRows(): Seq[CheckYourAnswersRow]
+final case class ChooseAPaymentMethodForm(chosenMethod: Option[String])
+
+object ChooseAPaymentMethodForm {
+
+  val form: Form[ChooseAPaymentMethodForm] = {
+    Form(mapping(
+      "payment_method" -> optional(text).verifying("card-fail-choice.error", _.nonEmpty)
+    )(ChooseAPaymentMethodForm.apply)(ChooseAPaymentMethodForm.unapply))
+  }
+
 }
+
