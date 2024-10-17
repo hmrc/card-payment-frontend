@@ -32,11 +32,12 @@
 
 @layout(pageTitle = Some(heading)) {
 
+    <h1 class="govuk-heading-xl">@{
+        messages("payment-failed.heading")
+    }</h1>
+
     @if(hasOpenBanking) {
 
-        <h1 class="govuk-heading-xl">@{
-            messages("payment-failed.heading")
-        }</h1>
         <p class="govuk-body govuk-!-padding-bottom-6">@{
             messages("payment-failed.sub-heading")
         }</p>

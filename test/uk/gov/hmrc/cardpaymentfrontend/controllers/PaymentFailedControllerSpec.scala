@@ -113,6 +113,18 @@ class PaymentFailedControllerSpec extends ItSpec {
         document.selectXpath("//*[@id=\"main-content\"]/div/div/ul/li[3]").text() shouldBe "nid yw’r cyfeiriad a roesoch i ni’n cyd-fynd â’r un sydd gan ddosbarthwr eich cerdyn"
       }
 
+      "render the page without content line 4 for Pngr Tax Types in English" in {
+        val result = systemUnderTest.renderPage2()(fakeGetRequest)
+        val document = Jsoup.parse(contentAsString(result))
+        document.selectXpath("//*[@id=\"main-content\"]/div/div/ul/li[3]").text() shouldNot contain("the address you gave does not match the one your card issuer has")
+      }
+
+      "render the page without content line 4 for Pngr Tax Types in Welsh" in {
+        val result = systemUnderTest.renderPage2()(fakeGetRequestInWelsh)
+        val document = Jsoup.parse(contentAsString(result))
+        document.selectXpath("//*[@id=\"main-content\"]/div/div/ul/li[3]").text() shouldNot contain("nid yw’r cyfeiriad a roesoch i ni’n cyd-fynd â’r un sydd gan ddosbarthwr eich cerdyn")
+      }
+
     }
 
     "GET /payment-failed with Open Banking available as a Payment Method" - {

@@ -44,6 +44,8 @@ class PaymentFailedController @Inject() (
 
   def renderPage1(): Action[AnyContent] = renderPage(Origins.PfSa)
 
+  def renderPage2(): Action[AnyContent] = renderPage(Origins.BcPngr)
+
   val submit: Action[AnyContent] = Action { implicit request =>
     ChooseAPaymentMethodForm.form
       .bindFromRequest()
