@@ -10,6 +10,7 @@ ThisBuild / scalaVersion := "2.13.12"
 
 lazy val microservice = Project("card-payment-frontend", file("."))
   .enablePlugins(play.sbt.PlayScala, SbtDistributablesPlugin)
+  .disablePlugins(JUnitXmlReportPlugin)
   .settings(resolvers += Resolver.jcenterRepo)
   .settings(
     libraryDependencies ++= AppDependencies.compile ++ AppDependencies.test,
