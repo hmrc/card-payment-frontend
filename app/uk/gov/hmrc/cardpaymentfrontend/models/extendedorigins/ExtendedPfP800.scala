@@ -17,10 +17,13 @@
 package uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins
 
 import uk.gov.hmrc.cardpaymentfrontend.models.CheckYourAnswersRow
-import uk.gov.hmrc.cardpaymentfrontend.utils.PaymentMethod
+import uk.gov.hmrc.cardpaymentfrontend.utils._
 
-trait ExtendedOrigin {
-  def reference(): String
-  def paymentMethods(): Set[PaymentMethod]
-  def checkYourAnswersRows(): Seq[CheckYourAnswersRow]
+class ExtendedPfP800 extends ExtendedOrigin {
+  def reference(): String = "ma000003AP3022016" //This would really come from the journey either pay-api or stored locally
+  def paymentMethods(): Set[PaymentMethod] = Set(Card(), Bacs())
+
+  def checkYourAnswersRows(): Seq[CheckYourAnswersRow] = {
+    Seq.empty
+  }
 }
