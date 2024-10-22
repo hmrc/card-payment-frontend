@@ -22,7 +22,7 @@ import uk.gov.hmrc.cardpaymentfrontend.models.openbanking.{BtaSaSessionData, Ori
 import uk.gov.hmrc.cardpaymentfrontend.utils.PaymentMethods.{OneOffDirectDebit, OpenBanking}
 import uk.gov.hmrc.cardpaymentfrontend.utils._
 
-class ExtendedBtaSa extends ExtendedOrigin {
+object ExtendedBtaSa extends ExtendedOrigin {
   override val serviceNameMessageKey: String = "service-name.BtaSa"
   override val taxNameMessageKey: String = "payment-complete.tax-name.BtaSa"
   def reference(): String = "1097172564" //This would really come from the journey either pay-api or stored locally
