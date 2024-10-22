@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins
+package uk.gov.hmrc.cardpaymentfrontend
 
-import uk.gov.hmrc.cardpaymentfrontend.models.CheckYourAnswersRow
-import uk.gov.hmrc.cardpaymentfrontend.utils.PaymentMethod
+import payapi.corcommon.model.AmountInPence
 
-trait ExtendedOrigin {
-  def serviceNameMessageKey: String
-  def taxNameMessageKey: String
-  def reference(): String
-  def paymentMethods(): Set[PaymentMethod]
-  def checkYourAnswersRows(): Seq[CheckYourAnswersRow]
+import scala.math.BigDecimal.RoundingMode
+
+package object models {
+
+  //todo needs unit tests, wasn't tested in pay-frontend...
+  def creditCardCommissionRate(amountInPence: AmountInPence, commissionInPence: AmountInPence): BigDecimal =
+    BigDecimal((commissionInPence.value.toDouble / amountInPence.value.toDouble) * 100.0).setScale(3, RoundingMode.HALF_UP).toDouble
 }

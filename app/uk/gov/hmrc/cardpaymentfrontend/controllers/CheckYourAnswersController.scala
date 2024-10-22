@@ -38,7 +38,7 @@ class CheckYourAnswersController @Inject() (
   def renderPage(origin: Origin): Action[AnyContent] = Action { implicit request =>
     implicit val messages: Messages = request.messages
     val liftedOrigin: ExtendedOrigin = originExtraInfo.lift(origin)
-    val summaryList = liftedOrigin.checkYourAnswersRows() map summarise
+    val summaryList = liftedOrigin.checkYourAnswersRows().map(summarise)
     Ok(checkYourAnswersPage(liftedOrigin.reference(), SummaryList(summaryList)))
   }
 

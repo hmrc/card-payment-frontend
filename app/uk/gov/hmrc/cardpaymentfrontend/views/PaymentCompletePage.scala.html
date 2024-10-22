@@ -14,6 +14,7 @@
  * limitations under the License.
  *@
 
+@import payapi.corcommon.model.Reference
 @import uk.gov.hmrc.cardpaymentfrontend.views.html.Layout
 @import uk.gov.hmrc.govukfrontend.views.Aliases.{Key, SummaryList, Text, Value}
 @import uk.gov.hmrc.govukfrontend.views.html.components.{GovukPanel, GovukSummaryList, Panel}
@@ -28,16 +29,16 @@
 )
 
 @(
-        taxReference: String,
+        taxReference: Reference,
         taxType: String,
-        amountInPounds: String,
+        amountsSummaryListRows: Seq[SummaryListRow],
         paymentDate: String,
         maybeEmailAddress: Option[EmailAddress]
 )(implicit request: RequestHeader, messages: Messages)
 
 @heading = @{messages("payment-complete.panel.title")}
 
-@panelContent = @{Html(messages("payment-complete.panel.content", taxReference))}
+@panelContent = @{Html(messages("payment-complete.panel.content", taxReference.value))}
 
 @maybeEmailContent = {
     @maybeEmailAddress.fold(Html("")) { emailAddress =>
@@ -65,12 +66,8 @@
             SummaryListRow(
                 Key(Text(messages("payment-complete.summary-list.date"))),
                 Value(Text(messages(paymentDate)))
-            ),
-            SummaryListRow(
-                Key(Text(messages("payment-complete.summary-list.amount"))),
-                Value(Text(messages(amountInPounds)))
             )
-        )
+        ) ++ amountsSummaryListRows
     ))
 
     <p id="print-link" class="govuk-body govuk-!-display-none-print">

@@ -19,11 +19,16 @@ package uk.gov.hmrc.cardpaymentfrontend.controllers
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Element
 import org.jsoup.select.Elements
-import play.api.mvc.{AnyContentAsEmpty, Cookie}
+import payapi.cardpaymentjourney.model.journey.{Journey, JourneySpecificData}
+import payapi.corcommon.model.JourneyId
+import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.mvc.Http.Status
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.ItSpec
+import uk.gov.hmrc.cardpaymentfrontend.testsupport.TestOps._
+import uk.gov.hmrc.cardpaymentfrontend.testsupport.stubs.PayApiStub
+import uk.gov.hmrc.cardpaymentfrontend.testsupport.testdata.TestJourneys
 
 import scala.jdk.CollectionConverters.ListHasAsScala
 
@@ -35,22 +40,20 @@ class PaymentCompleteControllerSpec extends ItSpec {
 
     "GET /payment-complete" - {
 
-      val fakeGetRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/payment-complete")
-      val fakeGetRequestInWelsh: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/payment-complete").withCookies(Cookie("PLAY_LANG", "cy"))
-
-      "should return 200 OK" in {
-        val result = systemUnderTest.renderPage(fakeGetRequest)
-        status(result) shouldBe Status.OK
-      }
+      val fakeGetRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/payment-complete").withSessionId()
+      val fakeGetRequestInWelsh: FakeRequest[AnyContentAsEmpty.type] = fakeGetRequest.withLangWelsh()
 
       "render the page with the language toggle" in {
+        PayApiStub.stubForFindBySessionId2xx(TestJourneys.testPfSaJourneySuccessDebit)
         val result = systemUnderTest.renderPage(fakeGetRequest)
+        status(result) shouldBe Status.OK
         val document = Jsoup.parse(contentAsString(result))
         val langToggleText: List[String] = document.select(".hmrc-language-select__list-item").eachText().asScala.toList
         langToggleText should contain theSameElementsAs List("English", "Newid yr iaith ir Gymraeg Cymraeg") //checking the visually hidden text, it's simpler
       }
 
       "render the page without a back link" in {
+        PayApiStub.stubForFindBySessionId2xx(TestJourneys.testPfSaJourneySuccessDebit)
         val result = systemUnderTest.renderPage(fakeGetRequest)
         val document = Jsoup.parse(contentAsString(result))
         val backLink: Elements = document.select(".govuk-back-link")
@@ -58,6 +61,7 @@ class PaymentCompleteControllerSpec extends ItSpec {
       }
 
       "render the h1 panel correctly" in {
+        PayApiStub.stubForFindBySessionId2xx(TestJourneys.testPfSaJourneySuccessDebit)
         val result = systemUnderTest.renderPage(fakeGetRequest)
         val document = Jsoup.parse(contentAsString(result))
         val panel = document.body().select(".govuk-panel--confirmation")
@@ -66,6 +70,7 @@ class PaymentCompleteControllerSpec extends ItSpec {
       }
 
       "render the h1 panel correctly in welsh" in {
+        PayApiStub.stubForFindBySessionId2xx(TestJourneys.testPfSaJourneySuccessDebit)
         val result = systemUnderTest.renderPage(fakeGetRequestInWelsh)
         val document = Jsoup.parse(contentAsString(result))
         val panel = document.body().select(".govuk-panel--confirmation")
@@ -74,58 +79,30 @@ class PaymentCompleteControllerSpec extends ItSpec {
       }
 
       "render paragraph about email address when email is provided" in {
-        val result = systemUnderTest.renderPage(fakeGetRequest)
+        PayApiStub.stubForFindBySessionId2xx(TestJourneys.testPfSaJourneySuccessDebit)
+        val requestForTest = fakeGetRequest.withEmailInSession(JourneyId("TestJourneyId-44f9-ad7f-01e1d3d8f151"))
+        val result = systemUnderTest.renderPage(requestForTest)
         val document = Jsoup.parse(contentAsString(result))
         document.select("#email-paragraph").html() shouldBe "We have sent a confirmation email to <strong>blah@blah.com</strong>"
       }
 
       "render paragraph about email address in welsh when email is provided" in {
-        val result = systemUnderTest.renderPage(fakeGetRequestInWelsh)
+        PayApiStub.stubForFindBySessionId2xx(TestJourneys.testPfSaJourneySuccessDebit)
+        val requestForTest = fakeGetRequestInWelsh.withEmailInSession(JourneyId("TestJourneyId-44f9-ad7f-01e1d3d8f151"))
+        val result = systemUnderTest.renderPage(requestForTest)
         val document = Jsoup.parse(contentAsString(result))
         document.select("#email-paragraph").html() shouldBe "Rydym wedi anfon e-bost cadarnhau <strong>blah@blah.com</strong>"
       }
 
-      //can't implement yet until we define action refiners etc.
       "not render paragraph about email address when email is not provided" in {
-        pending
-      }
-
-      /*
-      todo enhance this test to test this page for EVERY origin, some origins have bespoke behaviour/content.
-      use a seq or table_driven_property_checks from scalatest and have (taxType: String, expectedSummaryRows) => ... the test that asserts the predefined expected test results
-       */
-      "render the summary list correctly" in {
+        PayApiStub.stubForFindBySessionId2xx(TestJourneys.testPfSaJourneySuccessDebit)
         val result = systemUnderTest.renderPage(fakeGetRequest)
         val document = Jsoup.parse(contentAsString(result))
-        val summaryListRows: List[Element] = document.select(".govuk-summary-list__row").asScala.toList
-        val keyValuePairsOfSummaryRows: List[(String, String)] =
-          summaryListRows.map(row => row.select(".govuk-summary-list__key").text() -> row.select(".govuk-summary-list__value").text())
-        val expectedSummaryListRows: List[(String, String)] = List(
-          "Tax" -> "Self assessment",
-          "Date" -> "7 October 2024",
-          "Amount" -> "£12.34"
-        )
-
-        keyValuePairsOfSummaryRows should contain theSameElementsInOrderAs expectedSummaryListRows
-      }
-
-      //todo enhance this test to test this page for EVERY origin, some origins have bespoke behaviour/content.
-      "render the summary list correctly in welsh" in {
-        val result = systemUnderTest.renderPage(fakeGetRequestInWelsh)
-        val document = Jsoup.parse(contentAsString(result))
-        val summaryListRows: List[Element] = document.select(".govuk-summary-list__row").asScala.toList
-        val keyValuePairsOfSummaryRows: List[(String, String)] =
-          summaryListRows.map(row => row.select(".govuk-summary-list__key").text() -> row.select(".govuk-summary-list__value").text())
-        val expectedSummaryListRows: List[(String, String)] = List(
-          "Treth" -> "Self assessment",
-          "Dyddiad" -> "7 October 2024",
-          "Swm" -> "£12.34"
-        )
-
-        keyValuePairsOfSummaryRows should contain theSameElementsInOrderAs expectedSummaryListRows
+        document.select("#email-paragraph").size() shouldBe 0
       }
 
       "render the print link correctly" in {
+        PayApiStub.stubForFindBySessionId2xx(TestJourneys.testPfSaJourneySuccessDebit)
         val result = systemUnderTest.renderPage(fakeGetRequest)
         val document = Jsoup.parse(contentAsString(result))
         val printLinkParagraphWrapper = document.select("#print-link")
@@ -137,6 +114,7 @@ class PaymentCompleteControllerSpec extends ItSpec {
       }
 
       "render the print link correctly in welsh" in {
+        PayApiStub.stubForFindBySessionId2xx(TestJourneys.testPfSaJourneySuccessDebit)
         val result = systemUnderTest.renderPage(fakeGetRequestInWelsh)
         val document = Jsoup.parse(contentAsString(result))
         val printLinkParagraphWrapper = document.select("#print-link")
@@ -148,6 +126,7 @@ class PaymentCompleteControllerSpec extends ItSpec {
       }
 
       "render the survey content correctly" in {
+        PayApiStub.stubForFindBySessionId2xx(TestJourneys.testPfSaJourneySuccessDebit)
         val result = systemUnderTest.renderPage(fakeGetRequest)
         val document = Jsoup.parse(contentAsString(result))
         val surveyWrapper = document.select("#survey-wrapper")
@@ -158,6 +137,7 @@ class PaymentCompleteControllerSpec extends ItSpec {
       }
 
       "render the survey content correctly in welsh" in {
+        PayApiStub.stubForFindBySessionId2xx(TestJourneys.testPfSaJourneySuccessDebit)
         val result = systemUnderTest.renderPage(fakeGetRequestInWelsh)
         val document = Jsoup.parse(contentAsString(result))
         val surveyWrapper = document.select("#survey-wrapper")
@@ -165,6 +145,196 @@ class PaymentCompleteControllerSpec extends ItSpec {
         surveyWrapper.select("h2").text() shouldBe "Helpwch ni i wella ein gwasanaethau"
         surveyWrapper.select("#survey-content").text() shouldBe "Rydym yn defnyddio’ch adborth i wella ein gwasanaethau."
         surveyWrapper.select("#survey-link-wrapper").html() shouldBe """<a class="govuk-link" href="ADD_ME">Rhowch wybod i ni beth yw eich barn am y gwasanaeth hwn</a> (mae’n cymryd 30 eiliad)"""
+      }
+
+        def testSummaryRows(testData: Journey[JourneySpecificData], fakeRequest: FakeRequest[_], expectedSummaryListRows: List[(String, String)]) = {
+          PayApiStub.stubForFindBySessionId2xx(testData)
+          val result = systemUnderTest.renderPage(fakeRequest)
+          val document = Jsoup.parse(contentAsString(result))
+          val summaryListRows: List[Element] = document.select(".govuk-summary-list__row").asScala.toList
+          val keyValuePairsOfSummaryRows: List[(String, String)] =
+            summaryListRows.map(row => row.select(".govuk-summary-list__key").text() -> row.select(".govuk-summary-list__value").text())
+
+          keyValuePairsOfSummaryRows should contain theSameElementsInOrderAs expectedSummaryListRows
+        }
+
+      "for origin PfSa" - {
+
+        "when paying by debit card" - {
+
+          "render the summary list correctly" in {
+            val expectedSummaryListRows: List[(String, String)] = List(
+              "Tax" -> "Self Assessment",
+              "Date" -> "2 November 2027",
+              "Amount" -> "£12.34"
+            )
+            testSummaryRows(TestJourneys.testPfSaJourneySuccessDebit, fakeGetRequest, expectedSummaryListRows)
+          }
+
+          "render the summary list correctly in welsh" in {
+            val expectedSummaryListRows: List[(String, String)] = List(
+              "Treth" -> "Hunanasesiad",
+              "Dyddiad" -> "2 Tachwedd 2027",
+              "Swm" -> "£12.34"
+            )
+            testSummaryRows(TestJourneys.testPfSaJourneySuccessDebit, fakeGetRequestInWelsh, expectedSummaryListRows)
+          }
+        }
+
+        "when paying by a card that incurs a surcharge" - {
+
+          "render the summary list correctly when payment has a surcharge" in {
+            val expectedSummaryListRows: List[(String, String)] = List(
+              "Tax" -> "Self Assessment",
+              "Date" -> "2 November 2027",
+              "Amount paid to HMRC" -> "£12.34",
+              "Card fee (9.97%), non-refundable" -> "£1.23",
+              "Total paid" -> "£13.57"
+            )
+            testSummaryRows(TestJourneys.testPfSaJourneySuccessCredit, fakeGetRequest, expectedSummaryListRows)
+          }
+
+          "render the summary list correctly in welsh when payment has a surcharge" in {
+            val expectedSummaryListRows: List[(String, String)] = List(
+              "Treth" -> "Hunanasesiad",
+              "Dyddiad" -> "2 Tachwedd 2027",
+              "Swm a dalwyd i CThEM" -> "£12.34",
+              "Ffi cerdyn (9.97%), ni ellir ei ad-dalu" -> "£1.23",
+              "Cyfanswm a dalwyd" -> "£13.57"
+            )
+            testSummaryRows(TestJourneys.testPfSaJourneySuccessCredit, fakeGetRequestInWelsh, expectedSummaryListRows)
+          }
+        }
+
+      }
+
+      "for origin BtaSa" - {
+
+        "when paying by debit card" - {
+
+          "render the summary list correctly" in {
+            val expectedSummaryListRows: List[(String, String)] = List(
+              "Tax" -> "Self Assessment",
+              "Date" -> "2 November 2027",
+              "Amount" -> "£12.34"
+            )
+            //TODO: Mike, add test data for btasa debit
+            testSummaryRows(???, fakeGetRequest, expectedSummaryListRows)
+
+            /**
+             * TODO: Mike, we may need to assert custom content for 'logged in' origins i.e. bta/pta, e.g:
+             *
+             * What happens next
+             * Your payment will take 3 to 5 days to show in your HMRC online account. <-- there's a href here we should assert too.
+             *
+             */
+
+          }
+
+          "render the summary list correctly in welsh" in {
+            val expectedSummaryListRows: List[(String, String)] = List(
+              "Treth" -> "Hunanasesiad",
+              "Dyddiad" -> "2 Tachwedd 2027",
+              "Swm" -> "£12.34"
+            )
+            //TODO: Mike, add test data for btasa debit
+            testSummaryRows(???, fakeGetRequestInWelsh, expectedSummaryListRows)
+          }
+        }
+
+        "when paying by a card that incurs a surcharge" - {
+
+          "render the summary list correctly when payment has a surcharge" in {
+            val expectedSummaryListRows: List[(String, String)] = List(
+              "Tax" -> "Self Assessment",
+              "Date" -> "2 November 2027",
+              "Amount paid to HMRC" -> "£12.34",
+              "Card fee (9.97%), non-refundable" -> "£1.23",
+              "Total paid" -> "£13.57"
+            )
+            //TODO: Mike, add test data for btasa credit
+            testSummaryRows(???, fakeGetRequest, expectedSummaryListRows)
+          }
+
+          "render the summary list correctly in welsh when payment has a surcharge" in {
+            val expectedSummaryListRows: List[(String, String)] = List(
+              "Treth" -> "Hunanasesiad",
+              "Dyddiad" -> "2 Tachwedd 2027",
+              "Swm a dalwyd i CThEM" -> "£12.34",
+              "Ffi cerdyn (9.97%), ni ellir ei ad-dalu" -> "£1.23",
+              "Cyfanswm a dalwyd" -> "£13.57"
+            )
+            //TODO: Mike, add test data for btasa credit
+            testSummaryRows(???, fakeGetRequestInWelsh, expectedSummaryListRows)
+          }
+        }
+      }
+
+      "for origin PtaSa" - {
+
+        "when paying by debit card" - {
+
+          "render the summary list correctly" in {
+            val expectedSummaryListRows: List[(String, String)] = List(
+              "Tax" -> "Self Assessment",
+              "Date" -> "2 November 2027",
+              "Amount" -> "£12.34"
+            )
+            //TODO: Mike, add test data for ptasa debit
+            testSummaryRows(???, fakeGetRequest, expectedSummaryListRows)
+
+            /**
+             * TODO: Mike, we may need to assert custom content for 'logged in' origins i.e. bta/pta, e.g:
+             *
+             * What happens next
+             * Your payment will take 3 to 5 days to show in your HMRC online account. <-- there's a href here we should assert too.
+             *
+             */
+
+          }
+
+          "render the summary list correctly in welsh" in {
+            val expectedSummaryListRows: List[(String, String)] = List(
+              "Treth" -> "Hunanasesiad",
+              "Dyddiad" -> "2 Tachwedd 2027",
+              "Swm" -> "£12.34"
+            )
+            //TODO: Mike, add test data for ptasa debit
+            testSummaryRows(???, fakeGetRequestInWelsh, expectedSummaryListRows)
+          }
+        }
+
+        "when paying by a card that incurs a surcharge" - {
+
+          "render the summary list correctly when payment has a surcharge" in {
+            val expectedSummaryListRows: List[(String, String)] = List(
+              "Tax" -> "Self Assessment",
+              "Date" -> "2 November 2027",
+              "Amount paid to HMRC" -> "£12.34",
+              "Card fee (9.97%), non-refundable" -> "£1.23",
+              "Total paid" -> "£13.57"
+            )
+            //TODO: Mike, add test data for ptasa credit
+            testSummaryRows(???, fakeGetRequest, expectedSummaryListRows)
+          }
+
+          "render the summary list correctly in welsh when payment has a surcharge" in {
+            val expectedSummaryListRows: List[(String, String)] = List(
+              "Treth" -> "Hunanasesiad",
+              "Dyddiad" -> "2 Tachwedd 2027",
+              "Swm a dalwyd i CThEM" -> "£12.34",
+              "Ffi cerdyn (9.97%), ni ellir ei ad-dalu" -> "£1.23",
+              "Cyfanswm a dalwyd" -> "£13.57"
+            )
+            //TODO: Mike, add test data for ptasa credit
+            testSummaryRows(???, fakeGetRequestInWelsh, expectedSummaryListRows)
+          }
+        }
+      }
+
+      //not sure if this is truly needed.
+      "for origin Itsa" - {
+
       }
     }
   }

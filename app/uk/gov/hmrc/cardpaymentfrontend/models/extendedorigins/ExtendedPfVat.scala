@@ -21,8 +21,10 @@ import uk.gov.hmrc.cardpaymentfrontend.models.{CheckYourAnswersRow, Link}
 import uk.gov.hmrc.cardpaymentfrontend.utils.{Bacs, Card, OpenBanking, PaymentMethod, VariableDirectDebit}
 
 class ExtendedPfVat extends ExtendedOrigin {
+  override val serviceNameMessageKey: String = "add.message.key.here"
+  override val taxNameMessageKey: String = "payment-complete.tax-name.PfVat"
   def reference(): String = "999964805"
-  def paymentMethods(): Set[PaymentMethod] = Set(Card(), OpenBanking(), VariableDirectDebit(), Bacs())
+  def paymentMethods(): Set[PaymentMethod] = Set(Card, OpenBanking, VariableDirectDebit, Bacs)
 
   def checkYourAnswersRows(): Seq[CheckYourAnswersRow] = {
     val referenceRow =
