@@ -45,6 +45,11 @@ class PaymentCompleteController @Inject() (
 
   def renderPage: Action[AnyContent] = actions.journeyAction { implicit request: JourneyRequest[AnyContent] =>
 
+    println("----------------")
+    println(request.journey.origin.toString)
+    println("-------LIFTED ORIGIN---------")
+    println(originExtraInfo.lift(request.journey.origin).taxNameMessageKey)
+
     val maybeEmailFromSession: Option[EmailAddress] =
       request.readFromSession[EmailAddress](request.journeyId, Keys.email).map(email => EmailAddress(email.value))
 

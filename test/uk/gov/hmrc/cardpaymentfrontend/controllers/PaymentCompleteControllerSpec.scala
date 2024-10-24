@@ -220,6 +220,7 @@ class PaymentCompleteControllerSpec extends ItSpec {
             )
             testSummaryRows(TestJourneys.testBtaSaJourneySuccessDebit, fakeGetRequest, expectedSummaryListRows)
 
+
             /**
              * TODO: Mike, we may need to assert custom content for 'logged in' origins i.e. bta/pta, e.g:
              *

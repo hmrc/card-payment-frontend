@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.cardpaymentfrontend.utils
 
-import uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins.{DefaultExtendedOrigin, ExtendedBtaSa, ExtendedOrigin, ExtendedPfP800, ExtendedPfSa, ExtendedPfVat}
+import uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins.{DefaultExtendedOrigin, ExtendedBtaSa, ExtendedOrigin, ExtendedPfP800, ExtendedPfSa, ExtendedPfVat, ExtendedPtaSa}
 import payapi.corcommon.model.{Origin, Origins}
 
 import javax.inject.{Inject, Singleton}
@@ -176,7 +176,7 @@ class OriginExtraInfo @Inject() () {
       case Origins.PfInheritanceTax         => new DefaultExtendedOrigin()
       case Origins.Mib                      => new DefaultExtendedOrigin()
       case Origins.PfClass3Ni               => new DefaultExtendedOrigin()
-      case Origins.PtaSa                    => new DefaultExtendedOrigin()
+      case Origins.PtaSa                    => ExtendedPtaSa
       case Origins.PfWineAndCider           => new DefaultExtendedOrigin()
       case Origins.PfBioFuels               => new DefaultExtendedOrigin()
       case Origins.PfAirPass                => new DefaultExtendedOrigin()
