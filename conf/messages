@@ -123,7 +123,16 @@ pfvat.email.change-link.text = Change
 pfvat.amount.title = Amount
 pfvat.amount.change-link.text = Change
 pfvat.address.title = Card billing address
-pfsa.address.change-link.text = Change
+pfvat.address.change-link.text = Change
+
+ptasa.reference.title = Unique Taxpayer Reference (UTR)
+ptasa.reference.change-link.text = Change
+ptasa.email.title = Email address
+ptasa.email.change-link.text = Change
+ptasa.amount.title = Total to pay
+ptasa.amount.change-link.text = Change
+ptasa.address.title = Card billing address
+ptasa.address.change-link.text = Change
 
 ## Address Page
 address.heading = Card billing address

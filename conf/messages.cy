@@ -123,6 +123,15 @@ pfvat.amount.change-link.text = Newid
 pfvat.address.title = Cyfeiriad bilio
 pfvat.address.change-link.text = Newid
 
+ptasa.reference.title = Cyfeirnod Unigryw y Trethdalwr (UTR)
+ptasa.reference.change-link.text = Newid
+ptasa.email.title = Cyfeiriad e-bost ar gyfer y dderbynneb
+ptasa.email.change-link.text = Newid
+ptasa.amount.title = Swm
+ptasa.amount.change-link.text = Newid
+ptasa.address.title = CCyfeiriad bilio
+ptasa.address.change-link.text = Newid
+
 ## Address Page
 address.heading = Cyfeiriad bilio’r cerdyn
 address.field-name.line1.hint = Eich cyfeiriad bilio yw’r cyfeiriad y gwnaethoch gofrestru eich cerdyn ag ef

@@ -21,16 +21,70 @@ import uk.gov.hmrc.cardpaymentfrontend.models.CheckYourAnswersRow
 import uk.gov.hmrc.cardpaymentfrontend.models.openbanking.{OriginSpecificSessionData, PtaSaSessionData}
 import uk.gov.hmrc.cardpaymentfrontend.utils.PaymentMethods.{OneOffDirectDebit, OpenBanking}
 import uk.gov.hmrc.cardpaymentfrontend.utils._
+import play.api.mvc.{AnyContent, Call}
+import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
+import uk.gov.hmrc.cardpaymentfrontend.models.{CheckYourAnswersRow, EmailAddress, Link}
+import uk.gov.hmrc.cardpaymentfrontend.utils.PaymentMethod
+import uk.gov.hmrc.cardpaymentfrontend.session.JourneySessionSupport._
 
-class ExtendedPtaSa extends ExtendedOrigin {
+object ExtendedPtaSa extends ExtendedOrigin {
   override val serviceNameMessageKey: String = "service-name.PtaSa"
   override val taxNameMessageKey: String = "payment-complete.tax-name.PtaSa"
   def reference(): String = "1097172564" //This would really come from the journey either pay-api or stored locally
   def cardFeesPagePaymentMethods: Set[PaymentMethod] = Set(OpenBanking, OneOffDirectDebit)
   //todo add these when we do that ticket
   def paymentMethods(): Set[PaymentMethod] = Set.empty
-  //todo add this when we do that ticket
-  def checkYourAnswersRows(): Seq[CheckYourAnswersRow] = Seq.empty
+
+  def checkYourAnswersRows(request: JourneyRequest[AnyContent]): Seq[CheckYourAnswersRow] = {
+
+    val maybeEmailAddress: Option[EmailAddress] = request.readFromSession[EmailAddress](request.journeyId, Keys.email)
+
+    val referenceRow =
+      CheckYourAnswersRow(
+        "ptasa.reference.title",
+        Seq(reference()),
+        Some(Link(
+          Call("GET", "this/that"),
+          "ptasa-reference-change-link",
+          "ptasa.reference.change-link.text"
+        ))
+      )
+
+    val amountRow = CheckYourAnswersRow(
+      "ptasa.amount.title",
+      Seq("£600"),
+      Some(Link(
+        Call("GET", "this/that"),
+        "ptasa-amount-change-link",
+        "ptasa.amount.change-link.text"
+      ))
+    )
+
+    val addressRow = CheckYourAnswersRow(
+      "pfsa.address.title",
+      Seq("14 High St", "Beedington", "West Sussex", "RH12 0QR"), //This would really come from the journey either pay-api or stored locally
+      Some(Link(
+        Call("GET", "this/that"),
+        "ptasa-address-change-link",
+        "ptasa.address.change-link.text"
+      ))
+    )
+
+    val emailRow = CheckYourAnswersRow(
+      "ptasa.email.title",
+      maybeEmailAddress match {
+        case Some(emailAddress) => Seq(emailAddress.value)
+        case None               => Seq.empty
+      },
+      Some(Link(
+        Call("GET", "change/email"),
+        "ptasa-email-supply-link",
+        "ptasa.email.supply-link.text"
+      ))
+    )
+
+    Seq(referenceRow, amountRow, addressRow, emailRow)
+  }
 
   override def openBankingOriginSpecificSessionData: JourneySpecificData => Option[OriginSpecificSessionData] = {
     case j: JsdPtaSa => Some(PtaSaSessionData(j.utr))

@@ -17,7 +17,6 @@
 package uk.gov.hmrc.cardpaymentfrontend.controllers
 
 import payapi.corcommon.model.{Origin, Origins}
-import play.api.i18n._
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.cardpaymentfrontend.actions.{Actions, JourneyRequest}
 import uk.gov.hmrc.cardpaymentfrontend.models.CheckYourAnswersRow.summarise
@@ -32,19 +31,20 @@ import javax.inject.{Inject, Singleton}
 
 @Singleton()
 class CheckYourAnswersController @Inject() (
-                                           actions: Actions,
+    actions:              Actions,
     mcc:                  MessagesControllerComponents,
     originExtraInfo:      OriginExtraInfo,
     checkYourAnswersPage: CheckYourAnswersPage,
-                                           requestSupport: RequestSupport
+    requestSupport:       RequestSupport
 ) extends FrontendController(mcc) {
-
   import requestSupport._
 
   def renderPage(origin: Origin): Action[AnyContent] = actions.journeyAction { implicit request: JourneyRequest[AnyContent] =>
+
     val liftedOrigin: ExtendedOrigin = originExtraInfo.lift(origin)
     val summaryList = liftedOrigin.checkYourAnswersRows(request).map(summarise)
-    Ok(checkYourAnswersPage(liftedOrigin.reference(request), SummaryList(summaryList)))
+
+    Ok(checkYourAnswersPage(liftedOrigin.reference(), SummaryList(summaryList)))
   }
 
   def renderPage0(): Action[AnyContent] = renderPage(Origins.PfSa)
