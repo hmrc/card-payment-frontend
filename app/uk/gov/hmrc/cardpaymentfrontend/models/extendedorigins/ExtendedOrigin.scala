@@ -16,6 +16,8 @@
 
 package uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins
 
+import play.api.mvc.AnyContent
+import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
 import uk.gov.hmrc.cardpaymentfrontend.models.CheckYourAnswersRow
 import uk.gov.hmrc.cardpaymentfrontend.utils.PaymentMethod
 
@@ -24,5 +26,5 @@ trait ExtendedOrigin {
   def taxNameMessageKey: String
   def reference(): String
   def paymentMethods(): Set[PaymentMethod]
-  def checkYourAnswersRows(): Seq[CheckYourAnswersRow]
+  def checkYourAnswersRows(request: JourneyRequest[AnyContent]): Seq[CheckYourAnswersRow]
 }

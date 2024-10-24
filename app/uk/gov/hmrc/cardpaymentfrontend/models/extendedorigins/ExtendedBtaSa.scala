@@ -16,6 +16,8 @@
 
 package uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins
 
+import play.api.mvc.AnyContent
+import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
 import uk.gov.hmrc.cardpaymentfrontend.models.CheckYourAnswersRow
 import uk.gov.hmrc.cardpaymentfrontend.utils._
 
@@ -26,5 +28,5 @@ object ExtendedBtaSa extends ExtendedOrigin {
   //todo add these when we do that ticket
   def paymentMethods(): Set[PaymentMethod] = Set.empty
   //todo add this when we do that ticket
-  def checkYourAnswersRows(): Seq[CheckYourAnswersRow] = Seq.empty
+  def checkYourAnswersRows(request: JourneyRequest[AnyContent]): Seq[CheckYourAnswersRow] = Seq.empty
 }

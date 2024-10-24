@@ -21,11 +21,12 @@ import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
 import uk.gov.hmrc.cardpaymentfrontend.models.CheckYourAnswersRow
 import uk.gov.hmrc.cardpaymentfrontend.utils.PaymentMethod
 
-class DefaultExtendedOrigin extends ExtendedOrigin {
-  def serviceNameMessageKey = ""
-  def taxNameMessageKey: String = ""
-  def reference(): String = ""
-  def paymentMethods(): Set[PaymentMethod] = Set.empty[PaymentMethod]
-
-  def checkYourAnswersRows(request: JourneyRequest[AnyContent]): Seq[CheckYourAnswersRow] = Seq.empty[CheckYourAnswersRow]
+object ExtendedItSa extends ExtendedOrigin {
+  override val serviceNameMessageKey: String = "service-name.ItSa"
+  override val taxNameMessageKey: String = "payment-complete.tax-name.ItSa"
+  def reference(): String = "1097172564" //This would really come from the journey either pay-api or stored locally
+  //todo add these when we do that ticket
+  def paymentMethods(): Set[PaymentMethod] = Set.empty
+  //todo add this when we do that ticket
+  def checkYourAnswersRows(request: JourneyRequest[AnyContent]): Seq[CheckYourAnswersRow] = Seq.empty
 }

@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.cardpaymentfrontend.utils
 
-import uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins.{DefaultExtendedOrigin, ExtendedBtaSa, ExtendedOrigin, ExtendedPfP800, ExtendedPfSa, ExtendedPfVat}
+import uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins.{DefaultExtendedOrigin, ExtendedBtaSa, ExtendedItSa, ExtendedOrigin, ExtendedPfP800, ExtendedPfSa, ExtendedPfVat, ExtendedPtaSa}
 import payapi.corcommon.model.{Origin, Origins}
 
 import javax.inject.{Inject, Singleton}
@@ -115,6 +115,7 @@ class OriginExtraInfo @Inject() () {
       case Origins.PtaClass3Ni              => Set(OpenBanking, OneOffDirectDebit, Bacs)
       case Origins.PfAlcoholDuty            => Set(Card, OpenBanking, Bacs) // DD also allowed but not in Payments
       case Origins.AlcoholDuty              => Set(Card, OpenBanking, Bacs) // DD also allowed but not in Payments
+      case Origins.VatC2c                   => Set(Card, OpenBanking, Bacs)
     }
 
   }
@@ -125,17 +126,10 @@ class OriginExtraInfo @Inject() () {
 
   def variableDirectDebitAllowed(origin: Origin): Boolean = paymentMethod(origin).contains(VariableDirectDebit)
 
-  //  def lift(origin: Origin): ExtendedOrigin = {
-  //    origin match {
-  //      case Origins.PfSa => new ExtendedPfSa()
-  //      case _            => new DefaultExtendedOrigin()
-  //    }
-  //  }
-
   def lift(origin: Origin): ExtendedOrigin = {
     origin match {
       case Origins.PfSa                     => ExtendedPfSa
-      case Origins.PfVat                    => new ExtendedPfVat()
+      case Origins.PfVat                    => ExtendedPfVat
       case Origins.PfCt                     => new DefaultExtendedOrigin()
       case Origins.PfEpayeNi                => new DefaultExtendedOrigin()
       case Origins.PfEpayeLpp               => new DefaultExtendedOrigin()
@@ -166,7 +160,7 @@ class OriginExtraInfo @Inject() () {
       case Origins.DdSdil                   => new DefaultExtendedOrigin()
       case Origins.VcVatReturn              => new DefaultExtendedOrigin()
       case Origins.VcVatOther               => new DefaultExtendedOrigin()
-      case Origins.ItSa                     => new DefaultExtendedOrigin()
+      case Origins.ItSa                     => ExtendedItSa
       case Origins.Amls                     => new DefaultExtendedOrigin()
       case Origins.Ppt                      => new DefaultExtendedOrigin()
       case Origins.PfCdsCash                => new DefaultExtendedOrigin()
@@ -175,7 +169,7 @@ class OriginExtraInfo @Inject() () {
       case Origins.PfInheritanceTax         => new DefaultExtendedOrigin()
       case Origins.Mib                      => new DefaultExtendedOrigin()
       case Origins.PfClass3Ni               => new DefaultExtendedOrigin()
-      case Origins.PtaSa                    => new DefaultExtendedOrigin()
+      case Origins.PtaSa                    => ExtendedPtaSa
       case Origins.PfWineAndCider           => new DefaultExtendedOrigin()
       case Origins.PfBioFuels               => new DefaultExtendedOrigin()
       case Origins.PfAirPass                => new DefaultExtendedOrigin()
@@ -209,6 +203,7 @@ class OriginExtraInfo @Inject() () {
       case Origins.PtaClass3Ni              => new DefaultExtendedOrigin()
       case Origins.PfAlcoholDuty            => new DefaultExtendedOrigin()
       case Origins.AlcoholDuty              => new DefaultExtendedOrigin()
+      case Origins.VatC2c                   => new DefaultExtendedOrigin()
     }
   }
 }

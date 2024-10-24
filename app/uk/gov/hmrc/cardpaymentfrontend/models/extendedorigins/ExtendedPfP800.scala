@@ -16,6 +16,8 @@
 
 package uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins
 
+import play.api.mvc.AnyContent
+import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
 import uk.gov.hmrc.cardpaymentfrontend.models.CheckYourAnswersRow
 import uk.gov.hmrc.cardpaymentfrontend.utils._
 
@@ -25,7 +27,7 @@ class ExtendedPfP800 extends ExtendedOrigin {
   def reference(): String = "ma000003AP3022016" //This would really come from the journey either pay-api or stored locally
   def paymentMethods(): Set[PaymentMethod] = Set(Card, Bacs)
 
-  def checkYourAnswersRows(): Seq[CheckYourAnswersRow] = {
+  def checkYourAnswersRows(request: JourneyRequest[AnyContent]): Seq[CheckYourAnswersRow] = {
     Seq.empty
   }
 }
