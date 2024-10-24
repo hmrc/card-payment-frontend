@@ -218,8 +218,7 @@ class PaymentCompleteControllerSpec extends ItSpec {
               "Date" -> "2 November 2027",
               "Amount" -> "£12.34"
             )
-            //TODO: Mike, add test data for btasa debit
-            testSummaryRows(???, fakeGetRequest, expectedSummaryListRows)
+            testSummaryRows(TestJourneys.testBtaSaJourneySuccessDebit, fakeGetRequest, expectedSummaryListRows)
 
             /**
              * TODO: Mike, we may need to assert custom content for 'logged in' origins i.e. bta/pta, e.g:
@@ -237,8 +236,7 @@ class PaymentCompleteControllerSpec extends ItSpec {
               "Dyddiad" -> "2 Tachwedd 2027",
               "Swm" -> "£12.34"
             )
-            //TODO: Mike, add test data for btasa debit
-            testSummaryRows(???, fakeGetRequestInWelsh, expectedSummaryListRows)
+            testSummaryRows(TestJourneys.testBtaSaJourneySuccessDebit, fakeGetRequestInWelsh, expectedSummaryListRows)
           }
         }
 
@@ -252,8 +250,7 @@ class PaymentCompleteControllerSpec extends ItSpec {
               "Card fee (9.97%), non-refundable" -> "£1.23",
               "Total paid" -> "£13.57"
             )
-            //TODO: Mike, add test data for btasa credit
-            testSummaryRows(???, fakeGetRequest, expectedSummaryListRows)
+            testSummaryRows(TestJourneys.testBtaSaJourneySuccessCredit, fakeGetRequest, expectedSummaryListRows)
           }
 
           "render the summary list correctly in welsh when payment has a surcharge" in {
@@ -264,8 +261,7 @@ class PaymentCompleteControllerSpec extends ItSpec {
               "Ffi cerdyn (9.97%), ni ellir ei ad-dalu" -> "£1.23",
               "Cyfanswm a dalwyd" -> "£13.57"
             )
-            //TODO: Mike, add test data for btasa credit
-            testSummaryRows(???, fakeGetRequestInWelsh, expectedSummaryListRows)
+            testSummaryRows(TestJourneys.testBtaSaJourneySuccessCredit, fakeGetRequestInWelsh, expectedSummaryListRows)
           }
         }
       }
@@ -280,8 +276,7 @@ class PaymentCompleteControllerSpec extends ItSpec {
               "Date" -> "2 November 2027",
               "Amount" -> "£12.34"
             )
-            //TODO: Mike, add test data for ptasa debit
-            testSummaryRows(???, fakeGetRequest, expectedSummaryListRows)
+            testSummaryRows(TestJourneys.testPtaSaJourneySuccessDebit, fakeGetRequest, expectedSummaryListRows)
 
             /**
              * TODO: Mike, we may need to assert custom content for 'logged in' origins i.e. bta/pta, e.g:
@@ -299,8 +294,7 @@ class PaymentCompleteControllerSpec extends ItSpec {
               "Dyddiad" -> "2 Tachwedd 2027",
               "Swm" -> "£12.34"
             )
-            //TODO: Mike, add test data for ptasa debit
-            testSummaryRows(???, fakeGetRequestInWelsh, expectedSummaryListRows)
+            testSummaryRows(TestJourneys.testPtaSaJourneySuccessDebit, fakeGetRequestInWelsh, expectedSummaryListRows)
           }
         }
 
@@ -314,8 +308,7 @@ class PaymentCompleteControllerSpec extends ItSpec {
               "Card fee (9.97%), non-refundable" -> "£1.23",
               "Total paid" -> "£13.57"
             )
-            //TODO: Mike, add test data for ptasa credit
-            testSummaryRows(???, fakeGetRequest, expectedSummaryListRows)
+            testSummaryRows(TestJourneys.testPtaSaJourneySuccessCredit, fakeGetRequest, expectedSummaryListRows)
           }
 
           "render the summary list correctly in welsh when payment has a surcharge" in {
@@ -326,8 +319,7 @@ class PaymentCompleteControllerSpec extends ItSpec {
               "Ffi cerdyn (9.97%), ni ellir ei ad-dalu" -> "£1.23",
               "Cyfanswm a dalwyd" -> "£13.57"
             )
-            //TODO: Mike, add test data for ptasa credit
-            testSummaryRows(???, fakeGetRequestInWelsh, expectedSummaryListRows)
+            testSummaryRows(TestJourneys.testPtaSaJourneySuccessCredit, fakeGetRequestInWelsh, expectedSummaryListRows)
           }
         }
       }

@@ -17,12 +17,12 @@
 package uk.gov.hmrc.cardpaymentfrontend.testsupport.testdata
 
 import payapi.cardpaymentjourney.model.barclays.BarclaysOrder
-import payapi.cardpaymentjourney.model.journey.{Journey, JsdPfSa, SessionId, Url}
+import payapi.cardpaymentjourney.model.journey.{Journey, JsdBtaSa, JsdPfSa, JsdPtaSa, SessionId, Url}
 import payapi.corcommon.model.barclays.{CardCategories, TransactionReference}
 import payapi.corcommon.model.taxes.sa.SaUtr
 import payapi.corcommon.model.{AmountInPence, JourneyId, PaymentStatuses}
 
-import java.time.LocalDateTime
+import java.time.{LocalDate, LocalDateTime}
 
 object TestJourneys {
 
@@ -74,6 +74,82 @@ object TestJourneys {
     status               = PaymentStatuses.Successful,
     createdOn            = LocalDateTime.parse("2027-11-02T16:28:55.185"),
     journeySpecificData  = JsdPfSa(utr = Some(SaUtr("1234567895"))),
+    chosenWayToPay       = None
+  )
+
+  val testBtaSaJourneySuccessDebit: Journey[JsdBtaSa] = Journey[JsdBtaSa](
+    _id                  = JourneyId("TestJourneyId-44f9-ad7f-01e1d3d8f151"),
+    sessionId            = Some(SessionId("TestSession-4b87460d-6f43-4c4c-b810-d6f87c774854")),
+    amountInPence        = Some(AmountInPence(1234)),
+    emailTemplateOptions = None,
+    navigation           = None,
+    order                = Some(BarclaysOrder(
+      transactionReference = TransactionReference("Some-transaction-ref"),
+      iFrameUrl            = Url("some-url"),
+      cardCategory         = Some(CardCategories.debit),
+      commissionInPence    = None,
+      paidOn               = Some(LocalDateTime.parse("2027-11-02T16:28:55.185"))
+    )),
+    status               = PaymentStatuses.Successful,
+    createdOn            = LocalDateTime.parse("2027-11-02T16:28:55.185"),
+    journeySpecificData  = JsdBtaSa(utr                  = SaUtr("1234567895"), defaultAmountInPence = AmountInPence(1234), dueDate = Some(LocalDate.of(2028, 12, 12))),
+    chosenWayToPay       = None
+  )
+
+  val testBtaSaJourneySuccessCredit: Journey[JsdBtaSa] = Journey[JsdBtaSa](
+    _id                  = JourneyId("TestJourneyId-44f9-ad7f-01e1d3d8f151"),
+    sessionId            = Some(SessionId("TestSession-4b87460d-6f43-4c4c-b810-d6f87c774854")),
+    amountInPence        = Some(AmountInPence(1234)),
+    emailTemplateOptions = None,
+    navigation           = None,
+    order                = Some(BarclaysOrder(
+      transactionReference = TransactionReference("Some-transaction-ref"),
+      iFrameUrl            = Url("some-url"),
+      cardCategory         = Some(CardCategories.credit),
+      commissionInPence    = Some(AmountInPence(123)),
+      paidOn               = Some(LocalDateTime.parse("2027-11-02T16:28:55.185"))
+    )),
+    status               = PaymentStatuses.Successful,
+    createdOn            = LocalDateTime.parse("2027-11-02T16:28:55.185"),
+    journeySpecificData  = JsdBtaSa(utr                  = SaUtr("1234567895"), defaultAmountInPence = AmountInPence(1234), dueDate = Some(LocalDate.of(2028, 12, 12))),
+    chosenWayToPay       = None
+  )
+
+  val testPtaSaJourneySuccessDebit: Journey[JsdPtaSa] = Journey[JsdPtaSa](
+    _id                  = JourneyId("TestJourneyId-44f9-ad7f-01e1d3d8f151"),
+    sessionId            = Some(SessionId("TestSession-4b87460d-6f43-4c4c-b810-d6f87c774854")),
+    amountInPence        = Some(AmountInPence(1234)),
+    emailTemplateOptions = None,
+    navigation           = None,
+    order                = Some(BarclaysOrder(
+      transactionReference = TransactionReference("Some-transaction-ref"),
+      iFrameUrl            = Url("some-url"),
+      cardCategory         = Some(CardCategories.debit),
+      commissionInPence    = None,
+      paidOn               = Some(LocalDateTime.parse("2027-11-02T16:28:55.185"))
+    )),
+    status               = PaymentStatuses.Successful,
+    createdOn            = LocalDateTime.parse("2027-11-02T16:28:55.185"),
+    journeySpecificData  = JsdPtaSa(utr                  = SaUtr("1234567895"), defaultAmountInPence = AmountInPence(1234), dueDate = Some(LocalDate.of(2028, 12, 12))),
+    chosenWayToPay       = None
+  )
+
+  val testPtaSaJourneySuccessCredit: Journey[JsdPtaSa] = Journey[JsdPtaSa](
+    _id                  = JourneyId("TestJourneyId-44f9-ad7f-01e1d3d8f151"),
+    sessionId            = Some(SessionId("TestSession-4b87460d-6f43-4c4c-b810-d6f87c774854")),
+    amountInPence        = Some(AmountInPence(1234)),
+    emailTemplateOptions = None,
+    navigation           = None,
+    order                = Some(BarclaysOrder(
+      transactionReference = TransactionReference("Some-transaction-ref"),
+      iFrameUrl            = Url("some-url"),
+      cardCategory         = Some(CardCategories.credit),
+      commissionInPence    = Some(AmountInPence(123)),
+      paidOn               = Some(LocalDateTime.parse("2027-11-02T16:28:55.185"))
+    )),
+    status               = PaymentStatuses.Successful,
+    createdOn            = LocalDateTime.parse("2027-11-02T16:28:55.185"),
+    journeySpecificData  = JsdPtaSa(utr                  = SaUtr("1234567895"), defaultAmountInPence = AmountInPence(1234), dueDate = Some(LocalDate.of(2028, 12, 12))),
     chosenWayToPay       = None
   )
 }
