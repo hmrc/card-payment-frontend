@@ -69,11 +69,7 @@ trait JourneySessionSupport {
     def readFromSession[T: Format](journeyId: JourneyId, key: String): Option[T] = r
       .session
       .get(journeyId.value)
-      .map { allJourneyData =>
-        println("inside read from session")
-        println(allJourneyData)
-        Json.parse(allJourneyData)
-      }
+      .map(allJourneyData => Json.parse(allJourneyData))
       .flatMap(json => (json \ key).toOption)
       .map(_.as[T])
   }
