@@ -13,3 +13,5 @@
 ->         /                                      prod.Routes
 
 GET        /pay-by-card/test-only/view-journey    uk.gov.hmrc.cardpaymentfrontend.testonly.TestOnlyController.showJourney
+
+GET        /pay-by-card/test-only/add-email-to-session    uk.gov.hmrc.cardpaymentfrontend.testonly.TestOnlyController.addAnEmailToSession

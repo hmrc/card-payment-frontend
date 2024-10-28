@@ -67,11 +67,11 @@
 
     @govukSummaryList(SummaryList(summaryListRows))
 
-    @maybeWhatHappensNextContent
-
     <p id="print-link" class="govuk-body govuk-!-display-none-print">
         <a href="javascript:window.print()" class="govuk-link">@Messages("payment-complete.print-link")</a>
     </p>
+
+    @maybeWhatHappensNextContent
 
     <div id="survey-wrapper" class="govuk-!-display-none-print">
         <h2 class="govuk-heading-m">@Messages("payment-complete.survey.title")</h2>
