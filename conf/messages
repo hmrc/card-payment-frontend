@@ -175,6 +175,9 @@ payment-complete.amount.card-fee = {0}Card fee ({1}),{2}non-refundable{3}
 payment-complete.amount.total-paid = Total paid
 payment-complete.print-link = Print your payment confirmation
 ##todo mods has bespoke content for print link, passengers shouldn't have one at all
+payment-complete.what-happens-next.header = What happens next
+payment-complete.what-happens-next.p1 = Your payment will take 3 to 5 days to show in your
+payment-complete.what-happens-next.link = HMRC online account.
 payment-complete.survey.title = Help us improve our services
 payment-complete.survey.p1 = We use your feedback to make our services better.
 payment-complete.survey.p2.part1 = Tell us what you think of this service

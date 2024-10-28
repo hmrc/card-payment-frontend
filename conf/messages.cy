@@ -174,6 +174,9 @@ payment-complete.amount.total-paid = Cyfanswm a dalwyd
 
 payment-complete.print-link = Argraffwch cadarnhad o’ch taliad
 ##todo mods has bespoke content for print link, passengers shouldn't have one at all
+payment-complete.what-happens-next.header = Yr hyn sy’n digwydd nesaf
+payment-complete.what-happens-next.p1 = Bydd eich taliad yn cymryd 3 i 5 diwrnod i ymddangos yn eich
+payment-complete.what-happens-next.link = cyfrif CThEM ar-lein.
 payment-complete.survey.title = Helpwch ni i wella ein gwasanaethau
 payment-complete.survey.p1 = Rydym yn defnyddio’ch adborth i wella ein gwasanaethau.
 payment-complete.survey.p2.part1 = Rhowch wybod i ni beth yw eich barn am y gwasanaeth hwn

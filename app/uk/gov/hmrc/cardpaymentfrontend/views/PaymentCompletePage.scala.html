@@ -30,10 +30,9 @@
 
 @(
         taxReference: Reference,
-        taxType: String,
-        amountsSummaryListRows: Seq[SummaryListRow],
-        paymentDate: String,
-        maybeEmailAddress: Option[EmailAddress]
+        summaryListRows: Seq[SummaryListRow],
+        maybeEmailAddress: Option[EmailAddress],
+        maybeReturnUrl: Option[String]
 )(implicit request: RequestHeader, messages: Messages)
 
 @heading = @{messages("payment-complete.panel.title")}
@@ -48,6 +47,15 @@
     }
 }
 
+@maybeWhatHappensNextContent = {
+    @maybeReturnUrl.fold(Html("")) { returnUrl =>
+        <div id="what-happens-next-wrapper">
+            <h4 class="govuk-heading-s govuk-!-margin-top-7">@Messages("payment-complete.what-happens-next.header")</h4>
+            <p class="govuk-body">@Messages("payment-complete.what-happens-next.p1") <a class="govuk-link" href="@{returnUrl}">@Messages("payment-complete.what-happens-next.link")</a></p>
+        </div>
+    }
+}
+
 @layout(pageTitle = Some(heading), showBackLink = false) {
 
     @govukPanel(Panel(
@@ -57,18 +65,9 @@
 
     @maybeEmailContent
 
-    @govukSummaryList(SummaryList(
-        Seq(
-            SummaryListRow(
-                Key(Text(messages("payment-complete.summary-list.tax"))),
-                Value(Text(messages(taxType)))
-            ),
-            SummaryListRow(
-                Key(Text(messages("payment-complete.summary-list.date"))),
-                Value(Text(messages(paymentDate)))
-            )
-        ) ++ amountsSummaryListRows
-    ))
+    @govukSummaryList(SummaryList(summaryListRows))
+
+    @maybeWhatHappensNextContent
 
     <p id="print-link" class="govuk-body govuk-!-display-none-print">
         <a href="javascript:window.print()" class="govuk-link">@Messages("payment-complete.print-link")</a>

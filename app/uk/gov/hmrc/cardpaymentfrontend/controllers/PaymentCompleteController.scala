@@ -45,25 +45,35 @@ class PaymentCompleteController @Inject() (
 
   def renderPage: Action[AnyContent] = actions.journeyAction { implicit request: JourneyRequest[AnyContent] =>
 
-    println("----------------")
-    println(request.journey.origin.toString)
-    println("-------LIFTED ORIGIN---------")
-    println(originExtraInfo.lift(request.journey.origin).taxNameMessageKey)
-
     val maybeEmailFromSession: Option[EmailAddress] =
       request.readFromSession[EmailAddress](request.journeyId, Keys.email).map(email => EmailAddress(email.value))
 
     Ok(paymentCompletePage(
-      taxReference           = request.journey.getReference,
-      taxType                = Messages(originExtraInfo.lift(request.journey.origin).taxNameMessageKey),
-      amountsSummaryListRows = PaymentCompleteController.buildAmountsSummaryListRow(request.journey),
-      paymentDate            = DateStringBuilder.getDateAsString(request.journey.getPaidOn),
-      maybeEmailAddress      = maybeEmailFromSession
+      taxReference      = request.journey.getReference,
+      summaryListRows   = PaymentCompleteController.buildSummaryListRows(
+        journey = request.journey,
+        taxType = originExtraInfo.lift(request.journey.origin).taxNameMessageKey
+      ),
+      maybeEmailAddress = maybeEmailFromSession,
+      maybeReturnUrl    = request.journey.navigation.flatMap(_.returnUrl.map(_.value))
     ))
   }
 }
 
 object PaymentCompleteController {
+
+  def buildSummaryListRows(journey: Journey[JourneySpecificData], taxType: String)(implicit messages: Messages): Seq[SummaryListRow] = {
+    Seq(
+      SummaryListRow(
+        key   = Key(Text(messages("payment-complete.summary-list.tax"))),
+        value = Value(Text(messages(taxType)))
+      ),
+      SummaryListRow(
+        key   = Key(Text(messages("payment-complete.summary-list.date"))),
+        value = Value(Text(messages(DateStringBuilder.getDateAsString(journey.getPaidOn))))
+      )
+    ) ++ buildAmountsSummaryListRow(journey)
+  }
 
   def buildAmountsSummaryListRow(journey: Journey[JourneySpecificData])(implicit messages: Messages): Seq[SummaryListRow] = {
 
