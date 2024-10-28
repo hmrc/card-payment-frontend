@@ -22,7 +22,6 @@ import scala.math.BigDecimal.RoundingMode
 
 package object models {
 
-  //todo needs unit tests, wasn't tested in pay-frontend...
   def creditCardCommissionRate(amountInPence: AmountInPence, commissionInPence: AmountInPence): BigDecimal =
     BigDecimal((commissionInPence.value.toDouble / amountInPence.value.toDouble) * 100.0).setScale(3, RoundingMode.HALF_UP).toDouble
 }
