@@ -36,10 +36,10 @@ class ActionRefinerSpec extends ItSpec {
     }
 
     "should return a right with JourneyRequest when pay-api returns a journey" in {
-      PayApiStub.stubForFindBySessionId2xx(TestJourneys.testPfSaJourneyCreated)
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.testPfSaJourneyCreated)
       val result: Either[Result, JourneyRequest[AnyContent]] = systemUnderTest.refine(fakeRequest).futureValue
       result.isRight shouldBe true
-      result.map(_.journey) shouldBe Right(TestJourneys.testPfSaJourneyCreated)
+      result.map(_.journey) shouldBe Right(TestJourneys.PfSa.testPfSaJourneyCreated)
     }
   }
 

@@ -37,7 +37,7 @@ class PaymentFailedController @Inject() (
   def renderPage(origin: Origin): Action[AnyContent] = Action { implicit request =>
     val liftedOrigin: ExtendedOrigin = originExtraInfo.lift(origin)
     val paymentMethods: Set[PaymentMethod] = liftedOrigin.paymentMethods()
-    Ok(paymentFailedPage(origin.toTaxType.toString, paymentMethods.contains(OpenBanking()), ChooseAPaymentMethodForm.form))
+    Ok(paymentFailedPage(origin.toTaxType.toString, paymentMethods.contains(OpenBanking), ChooseAPaymentMethodForm.form))
   }
 
   def renderPage0(): Action[AnyContent] = renderPage(Origins.PfP800)

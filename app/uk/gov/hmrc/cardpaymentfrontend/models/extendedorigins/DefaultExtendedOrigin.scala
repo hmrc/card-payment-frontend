@@ -20,6 +20,8 @@ import uk.gov.hmrc.cardpaymentfrontend.models.CheckYourAnswersRow
 import uk.gov.hmrc.cardpaymentfrontend.utils.PaymentMethod
 
 class DefaultExtendedOrigin extends ExtendedOrigin {
+  def serviceNameMessageKey = ""
+  def taxNameMessageKey: String = ""
   def reference(): String = ""
   def paymentMethods(): Set[PaymentMethod] = Set.empty[PaymentMethod]
 
