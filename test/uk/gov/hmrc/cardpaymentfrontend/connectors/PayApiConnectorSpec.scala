@@ -44,9 +44,9 @@ class PayApiConnectorSpec extends ItSpec {
       }
 
       "return Some Journey when there is one found for a session id in pay-api" in {
-        PayApiStub.stubForFindBySessionId2xx(TestJourneys.testPfSaJourneyCreated)
+        PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.testPfSaJourneyCreated)
         implicit val hc: HeaderCarrier = headerCarrierForTest(Some(uk.gov.hmrc.http.SessionId("some-valid-session-id")))
-        systemUnderTest.findLatestJourneyBySessionId().futureValue shouldBe Some(TestJourneys.testPfSaJourneyCreated)
+        systemUnderTest.findLatestJourneyBySessionId().futureValue shouldBe Some(TestJourneys.PfSa.testPfSaJourneyCreated)
       }
 
       "propagate a 5xx error when pay-api returns a 5xx" in {
