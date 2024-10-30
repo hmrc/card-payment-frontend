@@ -37,33 +37,33 @@ class ChangeYourAnswerControllerSpec extends ItSpec {
     val fakeGetRequestInWelsh: FakeRequest[AnyContentAsEmpty.type] = fakeGetRequest.withLangWelsh()
 
     "should return 200 OK" in {
-      PayApiStub.stubForFindBySessionId2xx(TestJourneys.testPfSaJourneySuccessDebit)
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.testPfSaJourneySuccessDebit)
       val result = systemUnderTest.renderPage0()(fakeGetRequest)
       status(result) shouldBe Status.OK
     }
     "render the page with the hmrc layout" in {
-      PayApiStub.stubForFindBySessionId2xx(TestJourneys.testPfSaJourneySuccessDebit)
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.testPfSaJourneySuccessDebit)
       val result = systemUnderTest.renderPage0()(fakeGetRequest)
       val document = Jsoup.parse(contentAsString(result))
       document.select("html").hasClass("govuk-template") shouldBe true withClue "no govuk template"
     }
 
     "render the page with the h1 correctly in English" in {
-      PayApiStub.stubForFindBySessionId2xx(TestJourneys.testPfSaJourneySuccessDebit)
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.testPfSaJourneySuccessDebit)
       val result = systemUnderTest.renderPage0()(fakeGetRequest)
       val document = Jsoup.parse(contentAsString(result))
       document.select("h1").text() shouldBe "Check your answers" withClue "Check your answers page H1 wrong"
     }
 
     "render the page with the h1 correctly in Welsh" in {
-      PayApiStub.stubForFindBySessionId2xx(TestJourneys.testPfSaJourneySuccessDebit)
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.testPfSaJourneySuccessDebit)
       val result = systemUnderTest.renderPage0()(fakeGetRequestInWelsh)
       val document = Jsoup.parse(contentAsString(result))
       document.select("h1").text() shouldBe "Gwirio’ch atebion" withClue "Check your answers Welsh page H1 wrong"
     }
 
     "render the page with the language toggle" in {
-      PayApiStub.stubForFindBySessionId2xx(TestJourneys.testPfSaJourneySuccessDebit)
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.testPfSaJourneySuccessDebit)
       val result = systemUnderTest.renderPage0()(fakeGetRequest)
       val document = Jsoup.parse(contentAsString(result))
       val langToggleText: List[String] = document.select(".hmrc-language-select__list-item").eachText().asScala.toList
@@ -71,7 +71,7 @@ class ChangeYourAnswerControllerSpec extends ItSpec {
     }
 
     "render the page with a back button" in {
-      PayApiStub.stubForFindBySessionId2xx(TestJourneys.testPfSaJourneySuccessDebit)
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.testPfSaJourneySuccessDebit)
       val result = systemUnderTest.renderPage0()(fakeGetRequest)
       val document = Jsoup.parse(contentAsString(result))
       val backButton = document.select(".govuk-back-link")
@@ -80,7 +80,7 @@ class ChangeYourAnswerControllerSpec extends ItSpec {
     }
 
     "render the page with a back button in welsh" in {
-      PayApiStub.stubForFindBySessionId2xx(TestJourneys.testPfSaJourneySuccessDebit)
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.testPfSaJourneySuccessDebit)
       val result = systemUnderTest.renderPage0()(fakeGetRequestInWelsh)
       val document = Jsoup.parse(contentAsString(result))
       val backButton = document.select(".govuk-back-link")
@@ -89,7 +89,7 @@ class ChangeYourAnswerControllerSpec extends ItSpec {
     }
 
     "render the reference name of PfSa in English" in {
-      PayApiStub.stubForFindBySessionId2xx(TestJourneys.testPfSaJourneySuccessDebit)
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.testPfSaJourneySuccessDebit)
       val result = systemUnderTest.renderPage0()(fakeGetRequest)
       val document = Jsoup.parse(contentAsString(result))
       val textOfBody = document.select("body").text()
@@ -97,7 +97,7 @@ class ChangeYourAnswerControllerSpec extends ItSpec {
     }
 
     "render the reference name of PfSa in Welsh" in {
-      PayApiStub.stubForFindBySessionId2xx(TestJourneys.testPfSaJourneySuccessDebit)
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.testPfSaJourneySuccessDebit)
       val result = systemUnderTest.renderPage0()(fakeGetRequestInWelsh)
       val document = Jsoup.parse(contentAsString(result))
       val textOfBody = document.select("body").text()
@@ -105,7 +105,7 @@ class ChangeYourAnswerControllerSpec extends ItSpec {
     }
 
     "render the reference value name of PfSa" in {
-      PayApiStub.stubForFindBySessionId2xx(TestJourneys.testPfSaJourneySuccessDebit)
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.testPfSaJourneySuccessDebit)
       val result = systemUnderTest.renderPage0()(fakeGetRequest)
       val document = Jsoup.parse(contentAsString(result))
       val textOfBody = document.select("body").text()
@@ -113,7 +113,7 @@ class ChangeYourAnswerControllerSpec extends ItSpec {
     }
 
     "render the reference change link text in English" in {
-      PayApiStub.stubForFindBySessionId2xx(TestJourneys.testPfSaJourneySuccessDebit)
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.testPfSaJourneySuccessDebit)
       val result = systemUnderTest.renderPage0()(fakeGetRequest)
       val document = Jsoup.parse(contentAsString(result))
       val changeLink = document.select("#pfsa-reference-change-link").text()
@@ -121,7 +121,7 @@ class ChangeYourAnswerControllerSpec extends ItSpec {
     }
 
     "render the reference change link text in Welsh" in {
-      PayApiStub.stubForFindBySessionId2xx(TestJourneys.testPfSaJourneySuccessDebit)
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.testPfSaJourneySuccessDebit)
       val result = systemUnderTest.renderPage0()(fakeGetRequestInWelsh)
       val document = Jsoup.parse(contentAsString(result))
       val changeLink = document.select("#pfsa-reference-change-link").text()
@@ -129,7 +129,7 @@ class ChangeYourAnswerControllerSpec extends ItSpec {
     }
 
     "render the amount title of PfSa in English" in {
-      PayApiStub.stubForFindBySessionId2xx(TestJourneys.testPfSaJourneySuccessDebit)
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.testPfSaJourneySuccessDebit)
       val result = systemUnderTest.renderPage0()(fakeGetRequest)
       val document = Jsoup.parse(contentAsString(result))
       val textOfBody = document.select("body").text()
@@ -138,7 +138,7 @@ class ChangeYourAnswerControllerSpec extends ItSpec {
 
     "render the amount title of PfSa in Welsh" in {
       pending
-      PayApiStub.stubForFindBySessionId2xx(TestJourneys.testPfSaJourneySuccessDebit)
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.testPfSaJourneySuccessDebit)
       val result = systemUnderTest.renderPage0()(fakeGetRequestInWelsh)
       val document = Jsoup.parse(contentAsString(result))
       val textOfBody = document.select("body").text()
@@ -146,7 +146,7 @@ class ChangeYourAnswerControllerSpec extends ItSpec {
     }
 
     "render the amount value of PfSa" in {
-      PayApiStub.stubForFindBySessionId2xx(TestJourneys.testPfSaJourneySuccessDebit)
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.testPfSaJourneySuccessDebit)
       val result = systemUnderTest.renderPage0()(fakeGetRequest)
       val document = Jsoup.parse(contentAsString(result))
       val textOfBody = document.select("body").text()
@@ -154,7 +154,7 @@ class ChangeYourAnswerControllerSpec extends ItSpec {
     }
 
     "render the amount change link text in English" in {
-      PayApiStub.stubForFindBySessionId2xx(TestJourneys.testPfSaJourneySuccessDebit)
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.testPfSaJourneySuccessDebit)
       val result = systemUnderTest.renderPage0()(fakeGetRequest)
       val document = Jsoup.parse(contentAsString(result))
       val changeLink = document.select("#pfsa-amount-change-link").text()
@@ -162,7 +162,7 @@ class ChangeYourAnswerControllerSpec extends ItSpec {
     }
 
     "render the amount change link text in Welsh" in {
-      PayApiStub.stubForFindBySessionId2xx(TestJourneys.testPfSaJourneySuccessDebit)
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.testPfSaJourneySuccessDebit)
       val result = systemUnderTest.renderPage0()(fakeGetRequestInWelsh)
       val document = Jsoup.parse(contentAsString(result))
       val changeLink = document.select("#pfsa-amount-change-link").text()
@@ -170,7 +170,7 @@ class ChangeYourAnswerControllerSpec extends ItSpec {
     }
 
     "render the address name of PfSa in English" in {
-      PayApiStub.stubForFindBySessionId2xx(TestJourneys.testPfSaJourneySuccessDebit)
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.testPfSaJourneySuccessDebit)
       val result = systemUnderTest.renderPage0()(fakeGetRequest)
       val document = Jsoup.parse(contentAsString(result))
       val textOfBody = document.select("body").text()
@@ -179,7 +179,7 @@ class ChangeYourAnswerControllerSpec extends ItSpec {
 
     "render the address name of PfSa in Welsh" in {
       pending
-      PayApiStub.stubForFindBySessionId2xx(TestJourneys.testPfSaJourneySuccessDebit)
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.testPfSaJourneySuccessDebit)
       val result = systemUnderTest.renderPage0()(fakeGetRequestInWelsh)
       val document = Jsoup.parse(contentAsString(result))
       val textOfBody = document.select("body").text()
@@ -187,7 +187,7 @@ class ChangeYourAnswerControllerSpec extends ItSpec {
     }
 
     "render the email address title of PfSa in English" in {
-      PayApiStub.stubForFindBySessionId2xx(TestJourneys.testPfSaJourneySuccessDebit)
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.testPfSaJourneySuccessDebit)
       val result = systemUnderTest.renderPage0()(fakeGetRequest)
       val document = Jsoup.parse(contentAsString(result))
       val textOfBody = document.select("body").text()
@@ -195,7 +195,7 @@ class ChangeYourAnswerControllerSpec extends ItSpec {
     }
 
     "render the email address title of PfSa in Welsh" in {
-      PayApiStub.stubForFindBySessionId2xx(TestJourneys.testPfSaJourneySuccessDebit)
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.testPfSaJourneySuccessDebit)
       val result = systemUnderTest.renderPage0()(fakeGetRequestInWelsh)
       val document = Jsoup.parse(contentAsString(result))
       val textOfBody = document.select("body").text()
@@ -203,7 +203,7 @@ class ChangeYourAnswerControllerSpec extends ItSpec {
     }
 
     "render the email supply link text in English" in {
-      PayApiStub.stubForFindBySessionId2xx(TestJourneys.testPfSaJourneySuccessDebit)
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.testPfSaJourneySuccessDebit)
       val result = systemUnderTest.renderPage0()(fakeGetRequest)
       val document = Jsoup.parse(contentAsString(result))
       val changeLink = document.select("#pfsa-email-supply-link").text()
@@ -212,7 +212,7 @@ class ChangeYourAnswerControllerSpec extends ItSpec {
 
     "render the email supply link text in Welsh" in {
       pending
-      PayApiStub.stubForFindBySessionId2xx(TestJourneys.testPfSaJourneySuccessDebit)
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.testPfSaJourneySuccessDebit)
       val result = systemUnderTest.renderPage0()(fakeGetRequestInWelsh)
       val document = Jsoup.parse(contentAsString(result))
       val changeLink = document.select("#pfsa-email-supply-link").text()
@@ -220,7 +220,7 @@ class ChangeYourAnswerControllerSpec extends ItSpec {
     }
 
     "render a final reference line in English" in {
-      PayApiStub.stubForFindBySessionId2xx(TestJourneys.testPfSaJourneySuccessDebit)
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.testPfSaJourneySuccessDebit)
       val result = systemUnderTest.renderPage0()(fakeGetRequest)
       val document = Jsoup.parse(contentAsString(result))
       val changeLink = document.select("#cya-final-ref").text()
@@ -228,7 +228,7 @@ class ChangeYourAnswerControllerSpec extends ItSpec {
     }
 
     "render a final reference line in Welsh" in {
-      PayApiStub.stubForFindBySessionId2xx(TestJourneys.testPfSaJourneySuccessDebit)
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.testPfSaJourneySuccessDebit)
       val result = systemUnderTest.renderPage0()(fakeGetRequestInWelsh)
       val document = Jsoup.parse(contentAsString(result))
       val changeLink = document.select("#cya-final-ref").text()
