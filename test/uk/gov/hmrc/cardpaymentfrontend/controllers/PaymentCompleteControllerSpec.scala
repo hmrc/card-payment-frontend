@@ -46,6 +46,7 @@ class PaymentCompleteControllerSpec extends ItSpec {
     val systemUnderTest = app.injector.instanceOf[PaymentCompleteController]
     val fakeGetRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/payment-complete").withSessionId()
     val fakeGetRequestInWelsh: FakeRequest[AnyContentAsEmpty.type] = fakeGetRequest.withLangWelsh()
+
     "GET /payment-complete" - {
 
       "render the page with the language toggle" in {
