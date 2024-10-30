@@ -27,6 +27,7 @@ import play.api.i18n.{Messages, MessagesApi}
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import play.mvc.Http.Status
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.ItSpec
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.TestOps._
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.stubs.PayApiStub
@@ -48,7 +49,9 @@ class PaymentCompleteControllerSpec extends ItSpec {
 
     "GET /payment-complete" - {
       "render the page with the language toggle" in {
+        PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.testPfSaJourneySuccessDebit)
         val result = systemUnderTest.renderPage(fakeGetRequest)
+        status(result) shouldBe Status.OK
         val document = Jsoup.parse(contentAsString(result))
         val langToggleText: List[String] = document.select(".hmrc-language-select__list-item").eachText().asScala.toList
         langToggleText should contain theSameElementsAs List("English", "Newid yr iaith ir Gymraeg Cymraeg") //checking the visually hidden text, it's simpler
