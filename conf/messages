@@ -159,7 +159,6 @@ address.field-name.error.invalid.emailaddress = Enter a valid email address or l
 address.field-name.error.constraint.emailaddress = Enter a valid email address or leave it blank
 address.field-name.error.invalid.char = Field contains an invalid character
 
-
 ## Date keys in format dd MMMM yyyy, i.e. 01 January 2024
 date.day-month-year.january = {0} January {1}
 date.day-month-year.february = {0} February {1}
