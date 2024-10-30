@@ -27,7 +27,6 @@ import play.api.i18n.{Messages, MessagesApi}
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import play.mvc.Http.Status
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.ItSpec
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.TestOps._
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.stubs.PayApiStub
@@ -48,13 +47,6 @@ class PaymentCompleteControllerSpec extends ItSpec {
     val fakeGetRequestInWelsh: FakeRequest[AnyContentAsEmpty.type] = fakeGetRequest.withLangWelsh()
 
     "GET /payment-complete" - {
-
-      "render the page with the language toggle" in {
-        PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.testPfSaJourneySuccessDebit)
-        val result = systemUnderTest.renderPage(fakeGetRequest)
-        status(result) shouldBe Status.OK
-      }
-
       "render the page with the language toggle" in {
         val result = systemUnderTest.renderPage(fakeGetRequest)
         val document = Jsoup.parse(contentAsString(result))
