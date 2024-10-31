@@ -21,7 +21,8 @@ import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.cardpaymentfrontend.forms.ChooseAPaymentMethodForm
 import uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins.ExtendedOrigin
-import uk.gov.hmrc.cardpaymentfrontend.utils.{OpenBanking, OriginExtraInfo, PaymentMethod}
+import uk.gov.hmrc.cardpaymentfrontend.utils.PaymentMethods.OpenBanking
+import uk.gov.hmrc.cardpaymentfrontend.utils.{OriginExtraInfo, PaymentMethod}
 import uk.gov.hmrc.cardpaymentfrontend.views.html.PaymentFailedPage
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 

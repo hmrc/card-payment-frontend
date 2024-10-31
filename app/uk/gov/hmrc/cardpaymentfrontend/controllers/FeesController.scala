@@ -18,8 +18,12 @@ package uk.gov.hmrc.cardpaymentfrontend.controllers
 
 import payapi.corcommon.model.{Origin, Origins}
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
+import uk.gov.hmrc.cardpaymentfrontend.actions.{Actions, JourneyRequest}
+import uk.gov.hmrc.cardpaymentfrontend.config.AppConfig
 import uk.gov.hmrc.cardpaymentfrontend.models.Link
-import uk.gov.hmrc.cardpaymentfrontend.utils.OriginExtraInfo
+import uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins.ExtendedOrigin
+import uk.gov.hmrc.cardpaymentfrontend.requests.RequestSupport
+import uk.gov.hmrc.cardpaymentfrontend.utils.{OriginExtraInfo, PaymentMethod, PaymentMethods}
 import uk.gov.hmrc.cardpaymentfrontend.views.html.FeesPage
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
@@ -27,10 +31,14 @@ import javax.inject.{Inject, Singleton}
 
 @Singleton
 class FeesController @Inject() (
-    originExtraInfo: OriginExtraInfo,
+    actions:         Actions,
+    appConfig:       AppConfig,
+    feesPage:        FeesPage,
     mcc:             MessagesControllerComponents,
-    feesPage:        FeesPage
+    originExtraInfo: OriginExtraInfo,
+    requestSupport:  RequestSupport
 ) extends FrontendController(mcc) {
+
   private[controllers] def twoDirectDebitsPrimaryLink(origin: Origin): Option[Link] = {
     origin match {
       case Origins.BtaEpayeBill => Some(Link(
@@ -127,5 +135,54 @@ class FeesController @Inject() (
 
   // Two kinds of DD with secondary link
   def renderPage5(): Action[AnyContent] = renderPage(Origins.PfMgd)
+
+  import requestSupport._
+
+  def renderPageNew(): Action[AnyContent] = actions.journeyAction { implicit journeyRequest: JourneyRequest[AnyContent] =>
+    val altPayments = linksAvailableOnFeesPage(journeyRequest.journey.origin)
+    if (altPayments.isEmpty) Redirect("http://nextpage.html")
+    else Ok(feesPage(altPayments))
+  }
+
+  def submit: Action[AnyContent] = actions.journeyAction { _ =>
+    Redirect(routes.EmailAddressController.renderPage)
+  }
+
+  private[controllers] def paymentMethodToBeShown(paymentMethod: PaymentMethod, paymentMethods: Set[PaymentMethod]): Boolean = paymentMethods.contains(paymentMethod)
+
+  private[controllers] def linksAvailableOnFeesPage(origin: Origin): Seq[Link] = {
+
+    val extendedOrigin: ExtendedOrigin = originExtraInfo.lift(origin)
+    val paymentMethodsToShow: Set[PaymentMethod] = extendedOrigin.cardFeesPagePaymentMethods
+    val showOpenBankingLink: Boolean = paymentMethodToBeShown(PaymentMethods.OpenBanking, paymentMethodsToShow)
+    val showBankTransferLink: Boolean = paymentMethodToBeShown(PaymentMethods.Bacs, paymentMethodsToShow)
+    val showOneOffDirectDebitLink: Boolean = paymentMethodToBeShown(PaymentMethods.OneOffDirectDebit, paymentMethodsToShow)
+
+    val maybeOpenBankingLink = if (showOpenBankingLink) {
+      Seq(Link(
+        href       = Call("GET", "https://open_banking_url_goes_here"),
+        linkId     = "open-banking-link",
+        messageKey = "card-fees.para2.open-banking"
+      ))
+    } else Seq.empty[Link]
+
+    val maybeBankTransferLink = if (showBankTransferLink) {
+      Seq(Link(
+        href       = Call("GET", appConfig.payFrontendBaseUrl + appConfig.bankTransferRelativeUrl),
+        linkId     = "bank-transfer-link",
+        messageKey = "card-fees.para2.bank-transfer"
+      ))
+    } else Seq.empty[Link]
+
+    val maybeOneOffDirectDebitLink = if (showOneOffDirectDebitLink) {
+      Seq(Link(
+        href       = Call("GET", appConfig.payFrontendBaseUrl + appConfig.oneOffDirectDebitRelativeUrl),
+        linkId     = "one-off-direct-debit-link",
+        messageKey = "card-fees.para2.one-off-direct-debit"
+      ))
+    } else Seq.empty[Link]
+
+    maybeOpenBankingLink ++ maybeBankTransferLink ++ maybeOneOffDirectDebitLink
+  }
 
 }

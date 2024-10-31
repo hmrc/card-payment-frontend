@@ -22,9 +22,14 @@ import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
 @Singleton
 class AppConfig @Inject() (config: Configuration, servicesConfig: ServicesConfig) {
-  val welshLanguageSupportEnabled: Boolean = config.getOptional[Boolean]("features.welsh-language-support").getOrElse(false)
+
   val payAnotherWayLink: String = config.get[String]("urls.govuk.pay-another-way")
 
   val payApiBaseUrl: String = servicesConfig.baseUrl("pay-api")
+
+  val payFrontendBaseUrl: String = servicesConfig.baseUrl("pay-frontend") + "/pay"
+
+  val bankTransferRelativeUrl: String = config.get[String]("urls.pay-frontend.bank-transfer")
+  val oneOffDirectDebitRelativeUrl: String = config.get[String]("urls.pay-frontend.one-off-direct-debit")
 
 }
