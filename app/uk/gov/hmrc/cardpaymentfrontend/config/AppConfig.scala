@@ -26,10 +26,14 @@ class AppConfig @Inject() (config: Configuration, servicesConfig: ServicesConfig
   val payAnotherWayLink: String = config.get[String]("urls.govuk.pay-another-way")
 
   val payApiBaseUrl: String = servicesConfig.baseUrl("pay-api")
+  val openBankingBaseUrl: String = servicesConfig.baseUrl("open-banking")
 
   val payFrontendBaseUrl: String = servicesConfig.baseUrl("pay-frontend") + "/pay"
 
   val bankTransferRelativeUrl: String = config.get[String]("urls.pay-frontend.bank-transfer")
   val oneOffDirectDebitRelativeUrl: String = config.get[String]("urls.pay-frontend.one-off-direct-debit")
+
+  val vatOssUrl: String = s"${config.get[String]("urls.vatOssBaseUrl")}/pay-vat-on-goods-sold-to-eu/northern-ireland-returns-payments/your-account"
+  val vatIossUrl: String = s"${config.get[String]("urls.vatIossBaseUrl")}/pay-vat-on-goods-sold-to-eu/import-one-stop-shop-returns-payments/your-account"
 
 }

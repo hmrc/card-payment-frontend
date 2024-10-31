@@ -160,7 +160,7 @@ class FeesController @Inject() (
 
     val maybeOpenBankingLink = if (showOpenBankingLink) {
       Seq(Link(
-        href       = Call("GET", "https://open_banking_url_goes_here"),
+        href       = Call("GET", routes.OpenBankingController.startOpenBankingJourney.url),
         linkId     = "open-banking-link",
         messageKey = "card-fees.para2.open-banking"
       ))
