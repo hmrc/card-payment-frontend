@@ -23,6 +23,8 @@ trait ExtendedOrigin {
   def serviceNameMessageKey: String
   def taxNameMessageKey: String
   def reference(): String
+  //denotes which links/payment methods to show on the card-fees page.
+  def cardFeesPagePaymentMethods: Set[PaymentMethod]
   def paymentMethods(): Set[PaymentMethod]
   def checkYourAnswersRows(): Seq[CheckYourAnswersRow]
 }

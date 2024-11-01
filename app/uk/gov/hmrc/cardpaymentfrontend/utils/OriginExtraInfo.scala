@@ -18,21 +18,27 @@ package uk.gov.hmrc.cardpaymentfrontend.utils
 
 import uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins.{DefaultExtendedOrigin, ExtendedBtaSa, ExtendedItSa, ExtendedOrigin, ExtendedPfP800, ExtendedPfSa, ExtendedPfVat, ExtendedPtaSa}
 import payapi.corcommon.model.{Origin, Origins}
+import uk.gov.hmrc.cardpaymentfrontend.utils.PaymentMethods.{Bacs, Card, OneOffDirectDebit, OpenBanking, PrintableDirectDebit, VariableDirectDebit}
 
 import javax.inject.{Inject, Singleton}
-trait PaymentMethod
 
-case object Card extends PaymentMethod
+//todo should probably be in it's own file.
+sealed trait PaymentMethod
 
-case object OpenBanking extends PaymentMethod
+object PaymentMethods {
 
-case object OneOffDirectDebit extends PaymentMethod
+  case object Card extends PaymentMethod
 
-case object VariableDirectDebit extends PaymentMethod
+  case object OpenBanking extends PaymentMethod
 
-case object PrintableDirectDebit extends PaymentMethod
+  case object OneOffDirectDebit extends PaymentMethod
 
-case object Bacs extends PaymentMethod
+  case object VariableDirectDebit extends PaymentMethod
+
+  case object PrintableDirectDebit extends PaymentMethod
+
+  case object Bacs extends PaymentMethod
+}
 
 //Probably a temporary class - it will be subsumed by the ExtendedOrigins in due course
 
@@ -125,13 +131,6 @@ class OriginExtraInfo @Inject() () {
   def oneOffDirectDebitAllowed(origin: Origin): Boolean = paymentMethod(origin).contains(OneOffDirectDebit)
 
   def variableDirectDebitAllowed(origin: Origin): Boolean = paymentMethod(origin).contains(VariableDirectDebit)
-
-  //  def lift(origin: Origin): ExtendedOrigin = {
-  //    origin match {
-  //      case Origins.PfSa => new ExtendedPfSa()
-  //      case _            => new DefaultExtendedOrigin()
-  //    }
-  //  }
 
   def lift(origin: Origin): ExtendedOrigin = {
     origin match {

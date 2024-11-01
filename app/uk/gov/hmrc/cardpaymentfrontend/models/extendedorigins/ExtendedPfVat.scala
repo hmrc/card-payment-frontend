@@ -18,12 +18,14 @@ package uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins
 
 import play.api.mvc.Call
 import uk.gov.hmrc.cardpaymentfrontend.models.{CheckYourAnswersRow, Link}
-import uk.gov.hmrc.cardpaymentfrontend.utils.{Bacs, Card, OpenBanking, PaymentMethod, VariableDirectDebit}
+import uk.gov.hmrc.cardpaymentfrontend.utils.PaymentMethods._
+import uk.gov.hmrc.cardpaymentfrontend.utils._
 
 class ExtendedPfVat extends ExtendedOrigin {
   override val serviceNameMessageKey: String = "add.message.key.here"
   override val taxNameMessageKey: String = "payment-complete.tax-name.PfVat"
   def reference(): String = "999964805"
+  def cardFeesPagePaymentMethods: Set[PaymentMethod] = Set.empty[PaymentMethod]
   def paymentMethods(): Set[PaymentMethod] = Set(Card, OpenBanking, VariableDirectDebit, Bacs)
 
   def checkYourAnswersRows(): Seq[CheckYourAnswersRow] = {

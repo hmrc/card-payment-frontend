@@ -6,6 +6,8 @@ GET        /assets/*file                         controllers.Assets.versioned(pa
 GET        /email-address                        uk.gov.hmrc.cardpaymentfrontend.controllers.EmailAddressController.renderPage
 POST       /email-address                        uk.gov.hmrc.cardpaymentfrontend.controllers.EmailAddressController.submit
 
+GET        /card-fees                            uk.gov.hmrc.cardpaymentfrontend.controllers.FeesController.renderPageNew
+POST       /card-fees                            uk.gov.hmrc.cardpaymentfrontend.controllers.FeesController.submit
 GET        /card-fees0                           uk.gov.hmrc.cardpaymentfrontend.controllers.FeesController.renderPage0
 GET        /card-fees1                           uk.gov.hmrc.cardpaymentfrontend.controllers.FeesController.renderPage1
 GET        /card-fees2                           uk.gov.hmrc.cardpaymentfrontend.controllers.FeesController.renderPage2

@@ -90,18 +90,19 @@ email-address.heading = What is your email address? (optional)
 email-address.hint = We’ll only use this to confirm you sent a payment
 email-address.error.invalid = Enter a valid email address or leave it blank
 
-# card fees page
+# Card fees page
 card-fees.heading = Card fees
 card-fees.para1 = There is a non-refundable fee if you pay by corporate credit card or corporate debit card.
 card-fees.para2 = There is no fee if you pay by:
-card-fees.para2.bank-account = bank account
-card-fees.para2.open-banking = open banking
+card-fees.para2.bank-transfer = bank transfer
+card-fees.para2.open-banking = bank account
 card-fees.para2.direct-debit = direct debit
+card-fees.para2.one-off-direct-debit = Direct Debit (one-off payment)
+card-fees.para2.personal-debit-card = personal debit card
 card-fees.para3 = You cannot pay using a personal credit card.
 card-fees.para4 = Allow 3 working days for your payment to reach HMRC’s bank account.
-card-fees.para2.bank-account = bank account
 
-# check your answers page
+# Check your answers page
 # some refactoring here to consolidate common phrases
 check-your-answers.heading = Check your answers
 check-your-answers.your-ref = This payment will show in your bank as

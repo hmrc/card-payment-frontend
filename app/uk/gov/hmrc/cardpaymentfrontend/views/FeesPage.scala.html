@@ -16,7 +16,6 @@
 
 @import uk.gov.hmrc.cardpaymentfrontend.models.Link
 @import uk.gov.hmrc.cardpaymentfrontend.views.html.Layout
-@import uk.gov.hmrc.cardpaymentfrontend.utils.{PaymentMethod, OpenBanking, VariableDirectDebit, OneOffDirectDebit}
 @import uk.gov.hmrc.govukfrontend.views.Aliases.{Button, ErrorSummary, Hint, Input, Label}
 @import uk.gov.hmrc.govukfrontend.views.html.components.{FormWithCSRF, GovukButton, GovukErrorSummary, GovukInput}
 @import uk.gov.hmrc.govukfrontend.views.Implicits.{RichFormErrors, RichInput}
@@ -39,16 +38,17 @@
      <p id="para1" class="govuk-body">@messages("card-fees.para1")</p>
      <p id="para2" class="govuk-body">@messages("card-fees.para2")</p>
 
-     <ul class="govuk-body">
-         @links.map {alt =>
+     <ul id="payment-type-list" class="govuk-body">
+         @links.map { alt =>
            <li><a class="govuk-link" id=@alt.linkId href=@alt.href.url>@messages(alt.messageKey)</a></li>
          }
+         <li id="personal-debit-card">@messages("card-fees.para2.personal-debit-card")</li>
      </ul>
 
      <p id="para3" class="govuk-body">@messages("card-fees.para3")</p>
      <p id="para4" class="govuk-body">@messages("card-fees.para4")</p>
 
-    @formWithCSRF(action = uk.gov.hmrc.cardpaymentfrontend.controllers.routes.EmailAddressController.submit) {
+    @formWithCSRF(action = uk.gov.hmrc.cardpaymentfrontend.controllers.routes.FeesController.submit) {
         @govukButton(Button(
           id = Some("submit"),
           content = Text(messages("continue"))

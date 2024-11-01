@@ -93,6 +93,11 @@ email-address.error.invalid = Nodwch gyfeiriad e-bost dilys neu gadewch yn wag
 card-fees.heading = Ffioedd cerdyn
 card-fees.para1 = Bydd ffi na ellir ei had-dalu yn cael ei chodi os talwch â cherdyn credyd corfforaethol neu gerdyn debyd corfforaethol.
 card-fees.para2 = Nid oes ffi yn cael ei chodi os talwch drwy un o’r dulliau canlynol:
+card-fees.para2.bank-transfer = drosglwyddiad banc
+card-fees.para2.open-banking = cyfrif banc
+card-fees.para2.direct-debit = ADD_ME
+card-fees.para2.one-off-direct-debit = Debyd Uniongyrchol (taliad untro)
+card-fees.para2.personal-debit-card = cerdyn debyd personol
 card-fees.para3 = Ni allwch dalu â cherdyn credyd personol.
 card-fees.para4 = Dylech ganiatáu 3 diwrnod gwaith i’ch taliad gyrraedd cyfrif banc CThEM.
 
