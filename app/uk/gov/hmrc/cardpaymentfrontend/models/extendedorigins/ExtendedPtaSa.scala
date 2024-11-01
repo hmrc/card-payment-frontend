@@ -16,27 +16,40 @@
 
 package uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins
 
+import payapi.corcommon.model.Reference
 import play.api.mvc.{AnyContent, Call}
 import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
-import uk.gov.hmrc.cardpaymentfrontend.models.{CheckYourAnswersRow, EmailAddress, Link}
+import uk.gov.hmrc.cardpaymentfrontend.models.{Address, CheckYourAnswersRow, EmailAddress, Link}
 import uk.gov.hmrc.cardpaymentfrontend.utils.PaymentMethod
 import uk.gov.hmrc.cardpaymentfrontend.session.JourneySessionSupport._
 
 object ExtendedPtaSa extends ExtendedOrigin {
   override val serviceNameMessageKey: String = "service-name.PtaSa"
   override val taxNameMessageKey: String = "payment-complete.tax-name.PtaSa"
-  def reference(): String = "1097172564" //This would really come from the journey either pay-api or stored locally
+
+  def reference(request: JourneyRequest[AnyContent]): String = {
+    request.journey.journeySpecificData.reference match {
+      case Some(Reference(ref)) => ref
+      case None                 => "" //todo: ...and Log
+    }
+  }
+
   //todo add these when we do that ticket
   def paymentMethods(): Set[PaymentMethod] = Set.empty
 
   def checkYourAnswersRows(request: JourneyRequest[AnyContent]): Seq[CheckYourAnswersRow] = {
 
     val maybeEmailAddress: Option[EmailAddress] = request.readFromSession[EmailAddress](request.journeyId, Keys.email)
+    val maybeAddress: Option[Address] = request.readFromSession[Address](request.journeyId, Keys.address)
+    val amount: String = request.journey.amountInPence match {
+      case Some(amt) => amt.formatInPounds
+      case None      => "" //todo: logging here
+    }
 
     val referenceRow =
       CheckYourAnswersRow(
         "ptasa.reference.title",
-        Seq(reference()),
+        Seq(reference(request)),
         Some(Link(
           Call("GET", "this/that"),
           "ptasa-reference-change-link",
@@ -46,7 +59,7 @@ object ExtendedPtaSa extends ExtendedOrigin {
 
     val amountRow = CheckYourAnswersRow(
       "ptasa.amount.title",
-      Seq("£600"),
+      Seq(amount),
       Some(Link(
         Call("GET", "this/that"),
         "ptasa-amount-change-link",
@@ -55,8 +68,11 @@ object ExtendedPtaSa extends ExtendedOrigin {
     )
 
     val addressRow = CheckYourAnswersRow(
-      "pfsa.address.title",
-      Seq("14 High St", "Beedington", "West Sussex", "RH12 0QR"), //This would really come from the journey either pay-api or stored locally
+      "ptasa.address.title",
+      maybeAddress match {
+        case Some(addr) => Seq(addr.line1, addr.line2.getOrElse(""), addr.city.getOrElse(""), addr.county.getOrElse(""), addr.postcode, addr.country).filter(_.nonEmpty)
+        case None       => Seq.empty
+      },
       Some(Link(
         Call("GET", "this/that"),
         "ptasa-address-change-link",

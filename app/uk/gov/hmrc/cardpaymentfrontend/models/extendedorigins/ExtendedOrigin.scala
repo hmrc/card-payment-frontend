@@ -24,7 +24,7 @@ import uk.gov.hmrc.cardpaymentfrontend.utils.PaymentMethod
 trait ExtendedOrigin {
   def serviceNameMessageKey: String
   def taxNameMessageKey: String
-  def reference(): String
+  def reference(request: JourneyRequest[AnyContent]): String
   def paymentMethods(): Set[PaymentMethod]
   def checkYourAnswersRows(request: JourneyRequest[AnyContent]): Seq[CheckYourAnswersRow]
 }

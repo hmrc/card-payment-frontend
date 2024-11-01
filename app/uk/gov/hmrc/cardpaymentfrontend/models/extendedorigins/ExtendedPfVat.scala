@@ -24,14 +24,14 @@ import uk.gov.hmrc.cardpaymentfrontend.utils.{Bacs, Card, OpenBanking, PaymentMe
 object ExtendedPfVat extends ExtendedOrigin {
   override val serviceNameMessageKey: String = "add.message.key.here"
   override val taxNameMessageKey: String = "payment-complete.tax-name.PfVat"
-  def reference(): String = "999964805"
+  def reference(request: JourneyRequest[AnyContent]): String = "999964805"
   def paymentMethods(): Set[PaymentMethod] = Set(Card, OpenBanking, VariableDirectDebit, Bacs)
 
   def checkYourAnswersRows(request: JourneyRequest[AnyContent]): Seq[CheckYourAnswersRow] = {
     val referenceRow =
       CheckYourAnswersRow(
         "pfvat.reference.title",
-        Seq(reference()), //This would really come from the journey either pay-api or stored locally
+        Seq(reference(request)), //This would really come from the journey either pay-api or stored locally
         Some(Link(
           Call("GET", "this/that"),
           "pfvat-reference-change-link",
