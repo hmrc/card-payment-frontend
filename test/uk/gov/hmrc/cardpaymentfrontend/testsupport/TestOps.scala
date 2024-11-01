@@ -20,7 +20,7 @@ import payapi.corcommon.model.JourneyId
 import play.api.libs.json.Json
 import play.api.mvc.Cookie
 import play.api.test.FakeRequest
-import uk.gov.hmrc.cardpaymentfrontend.models.EmailAddress
+import uk.gov.hmrc.cardpaymentfrontend.models.{Address, EmailAddress}
 import uk.gov.hmrc.http.SessionKeys
 
 object TestOps {
@@ -39,6 +39,11 @@ object TestOps {
     def withEmailInSession(journeyId: JourneyId, email: EmailAddress = EmailAddress("blah@blah.com")): FakeRequest[T] =
       r.withSession(journeyId.value -> Json.obj(
         "email" -> email
+      ).toString)
+
+    def withAddress(journeyId: JourneyId, address: Address) =
+      r.withSession(journeyId.value -> Json.obj(
+        "address" -> address
       ).toString)
   }
 }

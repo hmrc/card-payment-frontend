@@ -28,7 +28,7 @@ import uk.gov.hmrc.cardpaymentfrontend.utils.PaymentMethod
 object ExtendedItSa extends ExtendedOrigin {
   override val serviceNameMessageKey: String = "service-name.ItSa"
   override val taxNameMessageKey: String = "payment-complete.tax-name.ItSa"
-  def reference(): String = "1097172564" //This would really come from the journey either pay-api or stored locally
+  def reference(request: JourneyRequest[AnyContent]): String = "1097172564" //This would really come from the journey either pay-api or stored locally
   def cardFeesPagePaymentMethods: Set[PaymentMethod] = Set(Bacs)
   //todo add these when we do that ticket
   def paymentMethods(): Set[PaymentMethod] = Set.empty

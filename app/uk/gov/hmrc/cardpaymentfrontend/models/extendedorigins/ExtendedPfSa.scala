@@ -28,7 +28,7 @@ import uk.gov.hmrc.cardpaymentfrontend.utils.PaymentMethods.{Bacs, Card, OneOffD
 object ExtendedPfSa extends ExtendedOrigin {
   override val serviceNameMessageKey: String = "service-name.PfSa"
   override val taxNameMessageKey: String = "payment-complete.tax-name.PfSa"
-  def reference(): String = "1097172564" //This would really come from the journey either pay-api or stored locally
+  def reference(request: JourneyRequest[AnyContent]): String = "1097172564" //This would really come from the journey either pay-api or stored locally
   def cardFeesPagePaymentMethods: Set[PaymentMethod] = Set(OpenBanking, OneOffDirectDebit)
   def paymentMethods(): Set[PaymentMethod] = Set(Card, OpenBanking, OneOffDirectDebit, Bacs)
 
@@ -36,7 +36,7 @@ object ExtendedPfSa extends ExtendedOrigin {
     val referenceRow =
       CheckYourAnswersRow(
         "pfsa.reference.title",
-        Seq(reference()),
+        Seq(reference(request)),
         Some(Link(
           Call("GET", "this/that"),
           "pfsa-reference-change-link",

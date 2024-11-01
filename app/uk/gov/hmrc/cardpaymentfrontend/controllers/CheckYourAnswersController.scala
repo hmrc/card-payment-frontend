@@ -44,7 +44,7 @@ class CheckYourAnswersController @Inject() (
     val liftedOrigin: ExtendedOrigin = originExtraInfo.lift(origin)
     val summaryList = liftedOrigin.checkYourAnswersRows(request).map(summarise)
 
-    Ok(checkYourAnswersPage(liftedOrigin.reference(), SummaryList(summaryList)))
+    Ok(checkYourAnswersPage(liftedOrigin.reference(request), SummaryList(summaryList)))
   }
 
   def renderPage0(): Action[AnyContent] = renderPage(Origins.PfSa)

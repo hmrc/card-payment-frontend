@@ -26,7 +26,7 @@ import uk.gov.hmrc.cardpaymentfrontend.utils._
 class ExtendedPfP800 extends ExtendedOrigin {
   override val serviceNameMessageKey: String = "add.message.key.here"
   override val taxNameMessageKey: String = "payment-complete.tax-name.PfP800"
-  def reference(): String = "ma000003AP3022016" //This would really come from the journey either pay-api or stored locally
+  def reference(request: JourneyRequest[AnyContent]): String = "ma000003AP3022016" //This would really come from the journey either pay-api or stored locally
   def cardFeesPagePaymentMethods: Set[PaymentMethod] = Set.empty[PaymentMethod]
   def paymentMethods(): Set[PaymentMethod] = Set() //Set(Card, Bacs)//todo will we use this?
 

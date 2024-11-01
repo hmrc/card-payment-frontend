@@ -26,7 +26,7 @@ import uk.gov.hmrc.cardpaymentfrontend.utils.PaymentMethod
 trait ExtendedOrigin {
   def serviceNameMessageKey: String
   def taxNameMessageKey: String
-  def reference(): String
+  def reference(request: JourneyRequest[AnyContent]): String
   //denotes which links/payment methods to show on the card-fees page.
   def cardFeesPagePaymentMethods: Set[PaymentMethod]
   def paymentMethods(): Set[PaymentMethod]
