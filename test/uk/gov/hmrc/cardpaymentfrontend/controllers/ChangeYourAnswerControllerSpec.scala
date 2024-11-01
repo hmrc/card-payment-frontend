@@ -109,7 +109,7 @@ class ChangeYourAnswerControllerSpec extends ItSpec {
       val result = systemUnderTest.renderPage0()(fakeGetRequest)
       val document = Jsoup.parse(contentAsString(result))
       val textOfBody = document.select("body").text()
-      textOfBody.contains("1097172564") shouldBe true
+      textOfBody.contains("1234567895") shouldBe true
     }
 
     "render the reference change link text in English" in {
@@ -224,7 +224,7 @@ class ChangeYourAnswerControllerSpec extends ItSpec {
       val result = systemUnderTest.renderPage0()(fakeGetRequest)
       val document = Jsoup.parse(contentAsString(result))
       val changeLink = document.select("#cya-final-ref").text()
-      changeLink shouldBe "This payment will show in your bank as 1097172564."
+      changeLink shouldBe "This payment will show in your bank as 1234567895K."
     }
 
     "render a final reference line in Welsh" in {
@@ -232,7 +232,7 @@ class ChangeYourAnswerControllerSpec extends ItSpec {
       val result = systemUnderTest.renderPage0()(fakeGetRequestInWelsh)
       val document = Jsoup.parse(contentAsString(result))
       val changeLink = document.select("#cya-final-ref").text()
-      changeLink shouldBe "Bydd y taliad hwn yn dangos yn eich banc fel 1097172564."
+      changeLink shouldBe "Bydd y taliad hwn yn dangos yn eich banc fel 1234567895K."
     }
   }
 }

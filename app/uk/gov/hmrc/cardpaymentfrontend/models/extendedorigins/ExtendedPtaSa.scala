@@ -33,13 +33,6 @@ object ExtendedPtaSa extends ExtendedOrigin {
   override val taxNameMessageKey: String = "payment-complete.tax-name.PtaSa"
   def cardFeesPagePaymentMethods: Set[PaymentMethod] = Set(OpenBanking, OneOffDirectDebit)
 
-  def reference(request: JourneyRequest[AnyContent]): String = {
-    request.journey.journeySpecificData.reference match {
-      case Some(Reference(ref)) => ref
-      case None                 => "" //todo: ...and Log
-    }
-  }
-
   //todo add these when we do that ticket
   def paymentMethods(): Set[PaymentMethod] = Set.empty
 
@@ -47,10 +40,6 @@ object ExtendedPtaSa extends ExtendedOrigin {
 
     val maybeEmailAddress: Option[EmailAddress] = request.readFromSession[EmailAddress](request.journeyId, Keys.email)
     val maybeAddress: Option[Address] = request.readFromSession[Address](request.journeyId, Keys.address)
-    val amount: String = request.journey.amountInPence match {
-      case Some(amt) => amt.formatInPounds
-      case None      => "" //todo: logging here
-    }
 
     val referenceRow =
       CheckYourAnswersRow(
@@ -65,7 +54,7 @@ object ExtendedPtaSa extends ExtendedOrigin {
 
     val amountRow = CheckYourAnswersRow(
       "ptasa.amount.title",
-      Seq(amount),
+      Seq(amount(request)),
       Some(Link(
         Call("GET", "this/that"),
         "ptasa-amount-change-link",

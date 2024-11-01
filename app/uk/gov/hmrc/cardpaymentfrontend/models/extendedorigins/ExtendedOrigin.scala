@@ -16,6 +16,7 @@
 
 package uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins
 
+import payapi.corcommon.model.Reference
 import payapi.cardpaymentjourney.model.journey.JourneySpecificData
 import play.api.mvc.AnyContent
 import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
@@ -26,6 +27,12 @@ import uk.gov.hmrc.cardpaymentfrontend.utils.PaymentMethod
 trait ExtendedOrigin {
   def serviceNameMessageKey: String
   def taxNameMessageKey: String
+
+  def amount(request: JourneyRequest[AnyContent]): String = request.journey.amountInPence match {
+    case Some(amt) => amt.formatInPounds
+    case None      => "" //todo: logging here
+  }
+
   def reference(request: JourneyRequest[AnyContent]): String
   //denotes which links/payment methods to show on the card-fees page.
   def cardFeesPagePaymentMethods: Set[PaymentMethod]

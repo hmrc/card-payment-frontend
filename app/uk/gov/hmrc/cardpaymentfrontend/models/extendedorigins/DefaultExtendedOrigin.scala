@@ -26,7 +26,7 @@ import uk.gov.hmrc.cardpaymentfrontend.utils.PaymentMethod
 class DefaultExtendedOrigin extends ExtendedOrigin {
   def serviceNameMessageKey = ""
   def taxNameMessageKey: String = ""
-  def reference(request: JourneyRequest[AnyContent]): String = ""
+  override def reference(request: JourneyRequest[AnyContent]): String = ""
   def cardFeesPagePaymentMethods: Set[PaymentMethod] = Set.empty[PaymentMethod]
   def paymentMethods(): Set[PaymentMethod] = Set.empty[PaymentMethod]
 
