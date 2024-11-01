@@ -126,11 +126,20 @@ pfvat.address.change-link.text = Newid
 ptasa.reference.title = Cyfeirnod Unigryw y Trethdalwr (UTR)
 ptasa.reference.change-link.text = Newid
 ptasa.email.title = Cyfeiriad e-bost ar gyfer y dderbynneb
-ptasa.email.change-link.text = Newid
+ptasa.email.supply-link.text = Newid
 ptasa.amount.title = Swm
 ptasa.amount.change-link.text = Newid
 ptasa.address.title = CCyfeiriad bilio
 ptasa.address.change-link.text = Newid
+
+btasa.reference.title = Cyfeirnod Unigryw y Trethdalwr (UTR)
+btasa.reference.change-link.text = Newid
+btasa.email.title = Cyfeiriad e-bost ar gyfer y dderbynneb
+btasa.email.supply-link.text = Newid
+btasa.amount.title = Swm
+btasa.amount.change-link.text = Newid
+btasa.address.title = CCyfeiriad bilio
+btasa.address.change-link.text = Newid
 
 ## Address Page
 address.heading = Cyfeiriad bilio’r cerdyn
