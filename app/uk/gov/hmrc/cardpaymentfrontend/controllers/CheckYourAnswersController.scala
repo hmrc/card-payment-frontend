@@ -50,4 +50,8 @@ class CheckYourAnswersController @Inject() (
   def renderPage0(): Action[AnyContent] = renderPage(Origins.PfSa)
 
   def renderPage1(): Action[AnyContent] = renderPage(Origins.PfVat)
+
+  def renderPage2(): Action[AnyContent] = renderPage(Origins.PtaSa)
+
+  def renderPage3(): Action[AnyContent] = renderPage(Origins.BtaSa)
 }
