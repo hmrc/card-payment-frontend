@@ -16,6 +16,7 @@
 
 package uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins
 
+import payapi.corcommon.model.Reference
 import play.api.mvc.AnyContent
 import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
 import uk.gov.hmrc.cardpaymentfrontend.models.CheckYourAnswersRow
@@ -24,7 +25,19 @@ import uk.gov.hmrc.cardpaymentfrontend.utils.PaymentMethod
 trait ExtendedOrigin {
   def serviceNameMessageKey: String
   def taxNameMessageKey: String
-  def reference(request: JourneyRequest[AnyContent]): String
+
+  def reference(request: JourneyRequest[AnyContent]): String = {
+    request.journey.journeySpecificData.reference match {
+      case Some(Reference(ref)) => ref
+      case None                 => "" //todo: ...and Log
+    }
+  }
+
+  def amount(request: JourneyRequest[AnyContent]): String = request.journey.amountInPence match {
+    case Some(amt) => amt.formatInPounds
+    case None      => "" //todo: logging here
+  }
+
   def paymentMethods(): Set[PaymentMethod]
   def checkYourAnswersRows(request: JourneyRequest[AnyContent]): Seq[CheckYourAnswersRow]
 }

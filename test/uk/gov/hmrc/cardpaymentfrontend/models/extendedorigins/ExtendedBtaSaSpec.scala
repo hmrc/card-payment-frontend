@@ -22,16 +22,16 @@ import play.api.test.FakeRequest
 import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
 import uk.gov.hmrc.cardpaymentfrontend.models.{Address, CheckYourAnswersRow, EmailAddress}
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.ItSpec
+import uk.gov.hmrc.cardpaymentfrontend.testsupport.testdata.TestJourneys
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.TestOps._
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.stubs.PayApiStub
-import uk.gov.hmrc.cardpaymentfrontend.testsupport.testdata.TestJourneys
 
-class ExtendedPtaSaSpec extends ItSpec {
+class ExtendedBtaSaSpec extends ItSpec {
   val fakeGetRequest = FakeRequest("GET", "/cya0").withSessionId()
-  val testJourney = TestJourneys.PtaSa.testPtaSaJourneySuccessDebit
-  val systemUnderTest = ExtendedPtaSa
+  val testJourney = TestJourneys.BtaSa.testBtaSaJourneySuccessDebit
+  val systemUnderTest = ExtendedBtaSa
 
-  "ExtendedPtaSa CYA" - {
+  "ExtendedBtaSa CYA" - {
     "there should be four rows" in {
       PayApiStub.stubForFindBySessionId2xx(testJourney)
       val address = Address(line1    = "line1", line2 = Some("line2"), city = Some("city"), county = Some("county"), postcode = "AA1AA", country = "UK")
@@ -42,22 +42,22 @@ class ExtendedPtaSaSpec extends ItSpec {
     }
 
     "contains a reference row with the right title and value" in {
-      PayApiStub.stubForFindBySessionId2xx(TestJourneys.PtaSa.testPtaSaJourneySuccessDebit)
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.BtaSa.testBtaSaJourneySuccessDebit)
 
-      val fakeJourneyRequest: JourneyRequest[AnyContent] = new JourneyRequest(TestJourneys.PtaSa.testPtaSaJourneySuccessDebit, fakeGetRequest)
+      val fakeJourneyRequest: JourneyRequest[AnyContent] = new JourneyRequest(TestJourneys.BtaSa.testBtaSaJourneySuccessDebit, fakeGetRequest)
       val rows: Seq[CheckYourAnswersRow] = systemUnderTest.checkYourAnswersRows(fakeJourneyRequest)
       val referenceRow: CheckYourAnswersRow = rows.headOption.getOrElse(CheckYourAnswersRow("", Seq.empty, None))
-      referenceRow.titleMessageKey shouldBe "ptasa.reference.title"
+      referenceRow.titleMessageKey shouldBe "btasa.reference.title"
       referenceRow.value shouldBe Seq("1234567895K")
     }
 
     "contains an amount row with the right title and value" in {
-      PayApiStub.stubForFindBySessionId2xx(TestJourneys.PtaSa.testPtaSaJourneySuccessDebit)
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.BtaSa.testBtaSaJourneySuccessDebit)
 
-      val fakeJourneyRequest: JourneyRequest[AnyContent] = new JourneyRequest(testJourney, fakeGetRequest)
+      val fakeJourneyRequest: JourneyRequest[AnyContent] = new JourneyRequest(TestJourneys.BtaSa.testBtaSaJourneySuccessDebit, fakeGetRequest)
       val rows: Seq[CheckYourAnswersRow] = systemUnderTest.checkYourAnswersRows(fakeJourneyRequest)
       val amountRow: CheckYourAnswersRow = rows.lift(1).getOrElse(CheckYourAnswersRow("", Seq.empty, None))
-      amountRow.titleMessageKey shouldBe "ptasa.amount.title"
+      amountRow.titleMessageKey shouldBe "btasa.amount.title"
       amountRow.value shouldBe Seq("£12.34")
     }
 
@@ -68,7 +68,7 @@ class ExtendedPtaSaSpec extends ItSpec {
 
       val rows: Seq[CheckYourAnswersRow] = systemUnderTest.checkYourAnswersRows(fakeJourneyRequest)
       val addressRow: CheckYourAnswersRow = rows.lift(2).getOrElse(CheckYourAnswersRow("", Seq.empty, None))
-      addressRow.titleMessageKey shouldBe "ptasa.address.title"
+      addressRow.titleMessageKey shouldBe "btasa.address.title"
       addressRow.value shouldBe Seq("line1", "line2", "city", "county", "AA1AA", "UK")
     }
 
@@ -79,7 +79,7 @@ class ExtendedPtaSaSpec extends ItSpec {
 
       val rows: Seq[CheckYourAnswersRow] = systemUnderTest.checkYourAnswersRows(fakeJourneyRequest)
       val emailRow: CheckYourAnswersRow = rows.lift(3).getOrElse(CheckYourAnswersRow("", Seq.empty, None))
-      emailRow.titleMessageKey shouldBe "ptasa.email.title"
+      emailRow.titleMessageKey shouldBe "btasa.email.title"
       emailRow.value shouldBe Seq("this@that.com")
     }
 
@@ -89,7 +89,7 @@ class ExtendedPtaSaSpec extends ItSpec {
 
       val rows: Seq[CheckYourAnswersRow] = systemUnderTest.checkYourAnswersRows(fakeJourneyRequest)
       val emailRow: CheckYourAnswersRow = rows.lift(3).getOrElse(CheckYourAnswersRow("", Seq.empty, None))
-      emailRow.titleMessageKey shouldBe "ptasa.email.title"
+      emailRow.titleMessageKey shouldBe "btasa.email.title"
       emailRow.value shouldBe Seq.empty
     }
   }
