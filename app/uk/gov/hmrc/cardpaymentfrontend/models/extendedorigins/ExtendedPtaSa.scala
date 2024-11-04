@@ -22,6 +22,7 @@ import uk.gov.hmrc.cardpaymentfrontend.models.openbanking.{OriginSpecificSession
 import uk.gov.hmrc.cardpaymentfrontend.utils.PaymentMethods.{OneOffDirectDebit, OpenBanking}
 import uk.gov.hmrc.cardpaymentfrontend.utils._
 import payapi.corcommon.model.Reference
+import play.api.i18n.Messages
 import play.api.mvc.{AnyContent, Call}
 import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
 import uk.gov.hmrc.cardpaymentfrontend.models.{Address, CheckYourAnswersRow, EmailAddress, Link}
@@ -36,7 +37,7 @@ object ExtendedPtaSa extends ExtendedOrigin {
   //todo add these when we do that ticket
   def paymentMethods(): Set[PaymentMethod] = Set.empty
 
-  def checkYourAnswersRows(request: JourneyRequest[AnyContent]): Seq[CheckYourAnswersRow] = {
+  def checkYourAnswersRows(request: JourneyRequest[AnyContent])(implicit messages: Messages): Seq[CheckYourAnswersRow] = {
 
     val maybeEmailAddress: Option[EmailAddress] = request.readFromSession[EmailAddress](request.journeyId, Keys.email)
     val maybeAddress: Option[Address] = request.readFromSession[Address](request.journeyId, Keys.address)
@@ -51,6 +52,16 @@ object ExtendedPtaSa extends ExtendedOrigin {
           "ptasa.reference.change-link.text"
         ))
       )
+
+    val dateRow = CheckYourAnswersRow(
+      "ptasa-date.title",
+      Seq(Messages("ptasa-date.today")),
+      Some(Link(
+        Call("GET", "this/that"),
+        "ptasa-date-change-link",
+        "ptasa.date.change-link.text"
+      ))
+    )
 
     val amountRow = CheckYourAnswersRow(
       "ptasa.amount.title",
@@ -88,7 +99,7 @@ object ExtendedPtaSa extends ExtendedOrigin {
       ))
     )
 
-    Seq(referenceRow, amountRow, addressRow, emailRow)
+    Seq(referenceRow, dateRow, amountRow, addressRow, emailRow)
   }
 
   override def openBankingOriginSpecificSessionData: JourneySpecificData => Option[OriginSpecificSessionData] = {

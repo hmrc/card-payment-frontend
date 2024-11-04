@@ -16,6 +16,7 @@
 
 package uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins
 
+import play.api.i18n.Messages
 import payapi.cardpaymentjourney.model.journey.{JourneySpecificData, JsdItSa}
 import play.api.mvc.AnyContent
 import play.api.mvc.{AnyContent, Call}
@@ -47,7 +48,7 @@ object ExtendedItSa extends ExtendedOrigin {
   override def surveyIsWelshSupported: Boolean = true
   override def surveyBannerTitle: String = serviceNameMessageKey
 
-  def checkYourAnswersRows(request: JourneyRequest[AnyContent]): Seq[CheckYourAnswersRow] = {
+  def checkYourAnswersRows(request: JourneyRequest[AnyContent])(implicit messages: Messages): Seq[CheckYourAnswersRow] = {
     val maybeEmailAddress: Option[EmailAddress] = request.readFromSession[EmailAddress](request.journeyId, Keys.email)
     val maybeAddress: Option[Address] = request.readFromSession[Address](request.journeyId, Keys.address)
 

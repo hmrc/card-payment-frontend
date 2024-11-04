@@ -16,6 +16,7 @@
 
 package uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins
 
+import play.api.i18n.Messages
 import play.api.mvc.AnyContent
 import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
 import payapi.cardpaymentjourney.model.journey.JourneySpecificData
@@ -29,10 +30,9 @@ class DefaultExtendedOrigin extends ExtendedOrigin {
   override def reference(request: JourneyRequest[AnyContent]): String = ""
   def cardFeesPagePaymentMethods: Set[PaymentMethod] = Set.empty[PaymentMethod]
   def paymentMethods(): Set[PaymentMethod] = Set.empty[PaymentMethod]
+  def checkYourAnswersRows(request: JourneyRequest[AnyContent])(implicit messages: Messages): Seq[CheckYourAnswersRow] = Seq.empty[CheckYourAnswersRow]
 
   override def openBankingOriginSpecificSessionData: JourneySpecificData => Option[OriginSpecificSessionData] = _ => None
-
-  def checkYourAnswersRows(request: JourneyRequest[AnyContent]): Seq[CheckYourAnswersRow] = Seq.empty[CheckYourAnswersRow]
 
   override def surveyAuditName: String = ""
   override def surveyReturnHref: String = "https://www.gov.uk/government/organisations/hm-revenue-customs"

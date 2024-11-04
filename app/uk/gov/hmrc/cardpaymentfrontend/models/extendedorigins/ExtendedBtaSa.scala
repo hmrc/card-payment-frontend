@@ -16,6 +16,7 @@
 
 package uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins
 
+import play.api.i18n.Messages
 import play.api.mvc.{AnyContent, Call}
 import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
 import payapi.cardpaymentjourney.model.journey.{JourneySpecificData, JsdBtaSa}
@@ -46,65 +47,76 @@ object ExtendedBtaSa extends ExtendedOrigin {
   override def surveyIsWelshSupported: Boolean = true
   override def surveyBannerTitle: String = serviceNameMessageKey
 
-  private def referenceRow(request: JourneyRequest[AnyContent]) = CheckYourAnswersRow(
-    "btasa.reference.title",
-    Seq(reference(request)),
-    Some(Link(
-      Call("GET", "this/that"),
-      "pfvat-reference-change-link",
-      "pfvat.reference.change-link.text"
-    ))
-  )
-
-  private def amountRow(request: JourneyRequest[AnyContent]) = CheckYourAnswersRow(
-    "btasa.amount.title",
-    Seq(amount(request)),
-    Some(Link(
-      Call("GET", "this/that"),
-      "pfvat-reference-change-link",
-      "pfvat.reference.change-link.text"
-    ))
-  )
-
-  private def addressRow(request: JourneyRequest[AnyContent]) = {
-    val maybeAddress: Option[Address] = request.readFromSession[Address](request.journeyId, Keys.address)
-    CheckYourAnswersRow(
-      "btasa.address.title",
-      maybeAddress match {
-        case Some(addr) => Seq(addr.line1, addr.line2.getOrElse(""), addr.city.getOrElse(""), addr.county.getOrElse(""), addr.postcode, addr.country).filter(_.nonEmpty)
-        case None       => Seq.empty
-      },
+  def checkYourAnswersRows(request: JourneyRequest[AnyContent])(implicit messages: Messages): Seq[CheckYourAnswersRow] = {
+    val referenceRow = CheckYourAnswersRow(
+      "btasa.reference.title",
+      Seq(reference(request)),
       Some(Link(
         Call("GET", "this/that"),
-        "ptasa-address-change-link",
-        "ptasa.address.change-link.text"
+        "pfvat-reference-change-link",
+        "pfvat.reference.change-link.text"
       ))
     )
-  }
 
-  private def emailRow(request: JourneyRequest[AnyContent]) = {
-    val maybeEmailAddress: Option[EmailAddress] = request.readFromSession[EmailAddress](request.journeyId, Keys.email)
-
-    CheckYourAnswersRow(
-      "btasa.email.title",
-      maybeEmailAddress match {
-        case Some(emailAddress) => Seq(emailAddress.value)
-        case None               => Seq.empty
-      },
+    val dateRow = CheckYourAnswersRow(
+      "btasa-date.title",
+      Seq(Messages("btasa-date.today")),
       Some(Link(
-        Call("GET", "change/email"),
-        "btasa-email-supply-link",
-        "btasa.email.supply-link.text"
+        Call("GET", "this/that"),
+        "btasa-date-change-link",
+        "btasa.date.change-link.text"
       ))
     )
-  }
 
-  def checkYourAnswersRows(request: JourneyRequest[AnyContent]): Seq[CheckYourAnswersRow] =
-    Seq(
-      referenceRow(request),
-      amountRow(request),
-      addressRow(request),
-      emailRow(request)
+    val amountRow = CheckYourAnswersRow(
+      "btasa.amount.title",
+      Seq(amount(request)),
+      Some(Link(
+        Call("GET", "this/that"),
+        "pfvat-reference-change-link",
+        "pfvat.reference.change-link.text"
+      ))
     )
 
+    val addressRow = {
+      val maybeAddress: Option[Address] = request.readFromSession[Address](request.journeyId, Keys.address)
+      CheckYourAnswersRow(
+        "btasa.address.title",
+        maybeAddress match {
+          case Some(addr) => Seq(addr.line1, addr.line2.getOrElse(""), addr.city.getOrElse(""), addr.county.getOrElse(""), addr.postcode, addr.country).filter(_.nonEmpty)
+          case None       => Seq.empty
+        },
+        Some(Link(
+          Call("GET", "this/that"),
+          "ptasa-address-change-link",
+          "ptasa.address.change-link.text"
+        ))
+      )
+    }
+
+    val emailRow = {
+      val maybeEmailAddress: Option[EmailAddress] = request.readFromSession[EmailAddress](request.journeyId, Keys.email)
+
+      CheckYourAnswersRow(
+        "btasa.email.title",
+        maybeEmailAddress match {
+          case Some(emailAddress) => Seq(emailAddress.value)
+          case None               => Seq.empty
+        },
+        Some(Link(
+          Call("GET", "change/email"),
+          "btasa-email-supply-link",
+          "btasa.email.supply-link.text"
+        ))
+      )
+    }
+
+    Seq(
+      referenceRow,
+      dateRow,
+      amountRow,
+      addressRow,
+      emailRow
+    )
+  }
 }
