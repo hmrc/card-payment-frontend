@@ -44,6 +44,16 @@ object ExtendedItSa extends ExtendedOrigin {
         ))
       )
 
+    val dateRow = CheckYourAnswersRow(
+      "itsa-date.title",
+      Seq(Messages("itsa-date.today")),
+      Some(Link(
+        Call("GET", "this/that"),
+        "itsa-date-change-link",
+        "itsa.date.change-link.text"
+      ))
+    )
+
     val amountRow = CheckYourAnswersRow(
       "itsa.amount.title",
       Seq(amount(request)),
@@ -63,7 +73,7 @@ object ExtendedItSa extends ExtendedOrigin {
       Some(Link(
         Call("GET", "this/that"),
         "itsa-address-change-link",
-        "ptasa.address.change-link.text"
+        "itsa.address.change-link.text"
       ))
     )
 
@@ -80,6 +90,6 @@ object ExtendedItSa extends ExtendedOrigin {
       ))
     )
 
-    Seq(referenceRow, amountRow, addressRow, emailRow)
+    Seq(referenceRow, dateRow, amountRow, addressRow, emailRow)
   }
 }
