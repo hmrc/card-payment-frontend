@@ -144,6 +144,15 @@ btasa.address.title = Card billing address
 btasa.address.change-link.text = Change
 pfvat.address.change-link.text = Change
 
+itsa.reference.title = Unique Taxpayer Reference (UTR)
+itsa.reference.change-link.text = Change
+itsa.email.title = Email address
+itsa.email.supply-link.text = Change
+itsa.amount.title = Amount
+itsa.amount.change-link.text = Change
+itsa.address.title = Card billing address
+itsa.address.change-link.text = Change
+
 ## Address Page
 address.heading = Card billing address
 address.line1.hint = This billing address must match the address your card is registered with.

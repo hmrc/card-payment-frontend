@@ -141,6 +141,15 @@ btasa.amount.change-link.text = Newid
 btasa.address.title = CCyfeiriad bilio
 btasa.address.change-link.text = Newid
 
+itsa.reference.title = Cyfeirnod Unigryw y Trethdalwr (UTR)
+itsa.reference.change-link.text = Newid
+itsa.email.title = Cyfeiriad e-bost ar gyfer y dderbynneb
+itsa.email.supply-link.text = Newid
+itsa.amount.title = Swm
+itsa.amount.change-link.text = Newid
+itsa.address.title = CCyfeiriad bilio
+itsa.address.change-link.text = Newid
+
 ## Address Page
 address.heading = Cyfeiriad bilio’r cerdyn
 address.field-name.line1.hint = Eich cyfeiriad bilio yw’r cyfeiriad y gwnaethoch gofrestru eich cerdyn ag ef
