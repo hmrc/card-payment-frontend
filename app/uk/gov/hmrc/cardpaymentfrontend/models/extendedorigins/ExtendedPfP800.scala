@@ -16,6 +16,7 @@
 
 package uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins
 
+import play.api.i18n.Messages
 import play.api.mvc.AnyContent
 import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
 import uk.gov.hmrc.cardpaymentfrontend.models.CheckYourAnswersRow
@@ -26,7 +27,7 @@ class ExtendedPfP800 extends ExtendedOrigin {
   override val taxNameMessageKey: String = "payment-complete.tax-name.PfP800"
   def paymentMethods(): Set[PaymentMethod] = Set(Card, Bacs)
 
-  def checkYourAnswersRows(request: JourneyRequest[AnyContent]): Seq[CheckYourAnswersRow] = {
+  def checkYourAnswersRows(request: JourneyRequest[AnyContent])(implicit messages: Messages): Seq[CheckYourAnswersRow] = {
     Seq.empty
   }
 }

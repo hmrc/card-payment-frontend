@@ -16,6 +16,7 @@
 
 package uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins
 
+import play.api.i18n.Messages
 import play.api.mvc.AnyContent
 import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
 import uk.gov.hmrc.cardpaymentfrontend.models.CheckYourAnswersRow
@@ -26,5 +27,5 @@ class DefaultExtendedOrigin extends ExtendedOrigin {
   def taxNameMessageKey: String = ""
   def paymentMethods(): Set[PaymentMethod] = Set.empty[PaymentMethod]
 
-  def checkYourAnswersRows(request: JourneyRequest[AnyContent]): Seq[CheckYourAnswersRow] = Seq.empty[CheckYourAnswersRow]
+  def checkYourAnswersRows(request: JourneyRequest[AnyContent])(implicit messages: Messages): Seq[CheckYourAnswersRow] = Seq.empty[CheckYourAnswersRow]
 }

@@ -150,7 +150,7 @@ class ChangeYourAnswerControllerSpec extends ItSpec {
       val result = systemUnderTest.renderPage0()(fakeGetRequest)
       val document = Jsoup.parse(contentAsString(result))
       val textOfBody = document.select("body").text()
-      textOfBody.contains("£600") shouldBe true
+      textOfBody.contains("£12.34") shouldBe true
     }
 
     "render the amount change link text in English" in {

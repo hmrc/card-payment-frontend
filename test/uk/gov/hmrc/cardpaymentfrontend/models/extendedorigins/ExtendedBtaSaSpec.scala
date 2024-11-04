@@ -17,6 +17,7 @@
 package uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins
 
 import payapi.corcommon.model.JourneyId
+import play.api.i18n.{Messages, MessagesApi}
 import play.api.mvc.AnyContent
 import play.api.test.FakeRequest
 import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
@@ -28,17 +29,19 @@ import uk.gov.hmrc.cardpaymentfrontend.testsupport.stubs.PayApiStub
 
 class ExtendedBtaSaSpec extends ItSpec {
   val fakeGetRequest = FakeRequest("GET", "/cya0").withSessionId()
+  def messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
+  implicit val messages: Messages = messagesApi.preferred(fakeGetRequest)
   val testJourney = TestJourneys.BtaSa.testBtaSaJourneySuccessDebit
   val systemUnderTest = ExtendedBtaSa
 
   "ExtendedBtaSa CYA" - {
-    "there should be four rows" in {
+    "there should be five rows" in {
       PayApiStub.stubForFindBySessionId2xx(testJourney)
       val address = Address(line1    = "line1", line2 = Some("line2"), city = Some("city"), county = Some("county"), postcode = "AA1AA", country = "UK")
       val fakeJourneyRequest: JourneyRequest[AnyContent] = new JourneyRequest(testJourney, fakeGetRequest.withAddress(JourneyId("TestJourneyId-44f9-ad7f-01e1d3d8f151"), address))
 
       val rows: Seq[CheckYourAnswersRow] = systemUnderTest.checkYourAnswersRows(fakeJourneyRequest)
-      rows.size shouldBe 4
+      rows.size shouldBe 5
     }
 
     "contains a reference row with the right title and value" in {
@@ -51,12 +54,22 @@ class ExtendedBtaSaSpec extends ItSpec {
       referenceRow.value shouldBe Seq("1234567895K")
     }
 
-    "contains an amount row with the right title and value" in {
+    "contains an payment date with the right title and value" in {
       PayApiStub.stubForFindBySessionId2xx(TestJourneys.BtaSa.testBtaSaJourneySuccessDebit)
 
       val fakeJourneyRequest: JourneyRequest[AnyContent] = new JourneyRequest(TestJourneys.BtaSa.testBtaSaJourneySuccessDebit, fakeGetRequest)
       val rows: Seq[CheckYourAnswersRow] = systemUnderTest.checkYourAnswersRows(fakeJourneyRequest)
       val amountRow: CheckYourAnswersRow = rows.lift(1).getOrElse(CheckYourAnswersRow("", Seq.empty, None))
+      amountRow.titleMessageKey shouldBe "btasa-date.title"
+      amountRow.value shouldBe Seq("Today")
+    }
+
+    "contains an amount row with the right title and value" in {
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.BtaSa.testBtaSaJourneySuccessDebit)
+
+      val fakeJourneyRequest: JourneyRequest[AnyContent] = new JourneyRequest(TestJourneys.BtaSa.testBtaSaJourneySuccessDebit, fakeGetRequest)
+      val rows: Seq[CheckYourAnswersRow] = systemUnderTest.checkYourAnswersRows(fakeJourneyRequest)
+      val amountRow: CheckYourAnswersRow = rows.lift(2).getOrElse(CheckYourAnswersRow("", Seq.empty, None))
       amountRow.titleMessageKey shouldBe "btasa.amount.title"
       amountRow.value shouldBe Seq("£12.34")
     }
@@ -67,7 +80,7 @@ class ExtendedBtaSaSpec extends ItSpec {
       val fakeJourneyRequest: JourneyRequest[AnyContent] = new JourneyRequest(testJourney, fakeGetRequest.withAddress(JourneyId("TestJourneyId-44f9-ad7f-01e1d3d8f151"), address))
 
       val rows: Seq[CheckYourAnswersRow] = systemUnderTest.checkYourAnswersRows(fakeJourneyRequest)
-      val addressRow: CheckYourAnswersRow = rows.lift(2).getOrElse(CheckYourAnswersRow("", Seq.empty, None))
+      val addressRow: CheckYourAnswersRow = rows.lift(3).getOrElse(CheckYourAnswersRow("", Seq.empty, None))
       addressRow.titleMessageKey shouldBe "btasa.address.title"
       addressRow.value shouldBe Seq("line1", "line2", "city", "county", "AA1AA", "UK")
     }
@@ -78,7 +91,7 @@ class ExtendedBtaSaSpec extends ItSpec {
       val fakeJourneyRequest: JourneyRequest[AnyContent] = new JourneyRequest(testJourney, fakeGetRequest.withEmailInSession(JourneyId("TestJourneyId-44f9-ad7f-01e1d3d8f151"), email))
 
       val rows: Seq[CheckYourAnswersRow] = systemUnderTest.checkYourAnswersRows(fakeJourneyRequest)
-      val emailRow: CheckYourAnswersRow = rows.lift(3).getOrElse(CheckYourAnswersRow("", Seq.empty, None))
+      val emailRow: CheckYourAnswersRow = rows.lift(4).getOrElse(CheckYourAnswersRow("", Seq.empty, None))
       emailRow.titleMessageKey shouldBe "btasa.email.title"
       emailRow.value shouldBe Seq("this@that.com")
     }
@@ -88,7 +101,7 @@ class ExtendedBtaSaSpec extends ItSpec {
       val fakeJourneyRequest: JourneyRequest[AnyContent] = new JourneyRequest(testJourney, fakeGetRequest)
 
       val rows: Seq[CheckYourAnswersRow] = systemUnderTest.checkYourAnswersRows(fakeJourneyRequest)
-      val emailRow: CheckYourAnswersRow = rows.lift(3).getOrElse(CheckYourAnswersRow("", Seq.empty, None))
+      val emailRow: CheckYourAnswersRow = rows.lift(4).getOrElse(CheckYourAnswersRow("", Seq.empty, None))
       emailRow.titleMessageKey shouldBe "btasa.email.title"
       emailRow.value shouldBe Seq.empty
     }
