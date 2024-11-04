@@ -133,16 +133,15 @@ class ChangeYourAnswerControllerSpec extends ItSpec {
       val result = systemUnderTest.renderPage0()(fakeGetRequest)
       val document = Jsoup.parse(contentAsString(result))
       val textOfBody = document.select("body").text()
-      textOfBody.contains("Amount") shouldBe true
+      textOfBody.contains("Total to pay") shouldBe true
     }
 
     "render the amount title of PfSa in Welsh" in {
-      pending
       PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.testPfSaJourneySuccessDebit)
       val result = systemUnderTest.renderPage0()(fakeGetRequestInWelsh)
       val document = Jsoup.parse(contentAsString(result))
       val textOfBody = document.select("body").text()
-      textOfBody.contains("???") shouldBe true
+      textOfBody.contains("Cyfanswm i’w dalu") shouldBe true
     }
 
     "render the amount value of PfSa" in {
