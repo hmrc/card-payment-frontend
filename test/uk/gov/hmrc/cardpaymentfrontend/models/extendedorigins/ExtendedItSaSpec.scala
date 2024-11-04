@@ -70,7 +70,7 @@ class ExtendedItSaSpec extends ItSpec {
       val fakeJourneyRequest: JourneyRequest[AnyContent] = new JourneyRequest(testJourney, fakeGetRequest)
       val rows: Seq[CheckYourAnswersRow] = systemUnderTest.checkYourAnswersRows(fakeJourneyRequest)
       val paymentDateRow: CheckYourAnswersRow = rows.lift(1).getOrElse(CheckYourAnswersRow("", Seq.empty, None))
-      paymentDateRow.titleMessageKey shouldBe "itsa-date.title"
+      paymentDateRow.titleMessageKey shouldBe "itsa.date.title"
       paymentDateRow.value shouldBe Seq("Today")
     }
 
@@ -82,7 +82,7 @@ class ExtendedItSaSpec extends ItSpec {
       val fakeJourneyRequest: JourneyRequest[AnyContent] = new JourneyRequest(testJourney, fakeGetRequest)
       val rows: Seq[CheckYourAnswersRow] = systemUnderTest.checkYourAnswersRows(fakeJourneyRequest)
       val payDateRow: CheckYourAnswersRow = rows.lift(1).getOrElse(CheckYourAnswersRow("", Seq.empty, None))
-      payDateRow.titleMessageKey shouldBe "itsa-date.title"
+      payDateRow.titleMessageKey shouldBe "itsa.date.title"
       payDateRow.value shouldBe Seq("Heddiw")
     }
 

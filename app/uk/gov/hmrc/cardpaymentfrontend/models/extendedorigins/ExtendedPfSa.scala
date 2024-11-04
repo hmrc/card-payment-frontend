@@ -54,11 +54,11 @@ object ExtendedPfSa extends ExtendedOrigin {
       )
 
     val dateRow = CheckYourAnswersRow(
-      "pfsa-date.title",
-      Seq(Messages("pfsa-date.today")),
+      "pfsa.date.title",
+      Seq(Messages("pfsa.date.today")),
       Some(Link(
         Call("GET", "this/that"),
-        "pfsa-date-change-link",
+        "pfsa.date-change-link",
         "pfsa.date.change-link.text"
       ))
     )

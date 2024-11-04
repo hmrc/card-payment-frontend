@@ -59,11 +59,11 @@ object ExtendedBtaSa extends ExtendedOrigin {
     )
 
     val dateRow = CheckYourAnswersRow(
-      "btasa-date.title",
-      Seq(Messages("btasa-date.today")),
+      "btasa.date.title",
+      Seq(Messages("btasa.date.today")),
       Some(Link(
         Call("GET", "this/that"),
-        "btasa-date-change-link",
+        "btasa.date-change-link",
         "btasa.date.change-link.text"
       ))
     )

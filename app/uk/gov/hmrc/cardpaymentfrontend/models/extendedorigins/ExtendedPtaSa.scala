@@ -54,11 +54,11 @@ object ExtendedPtaSa extends ExtendedOrigin {
       )
 
     val dateRow = CheckYourAnswersRow(
-      "ptasa-date.title",
-      Seq(Messages("ptasa-date.today")),
+      "ptasa.date.title",
+      Seq(Messages("ptasa.date.today")),
       Some(Link(
         Call("GET", "this/that"),
-        "ptasa-date-change-link",
+        "ptasa.date-change-link",
         "ptasa.date.change-link.text"
       ))
     )
