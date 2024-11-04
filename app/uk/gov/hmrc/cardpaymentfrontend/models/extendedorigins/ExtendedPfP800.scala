@@ -16,7 +16,9 @@
 
 package uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins
 
+import payapi.cardpaymentjourney.model.journey.JourneySpecificData
 import uk.gov.hmrc.cardpaymentfrontend.models.CheckYourAnswersRow
+import uk.gov.hmrc.cardpaymentfrontend.models.openbanking.OriginSpecificSessionData
 import uk.gov.hmrc.cardpaymentfrontend.utils._
 
 class ExtendedPfP800 extends ExtendedOrigin {
@@ -29,4 +31,6 @@ class ExtendedPfP800 extends ExtendedOrigin {
   def checkYourAnswersRows(): Seq[CheckYourAnswersRow] = {
     Seq.empty
   }
+
+  override def openBankingOriginSpecificSessionData(jsd: JourneySpecificData): Option[OriginSpecificSessionData] = None
 }

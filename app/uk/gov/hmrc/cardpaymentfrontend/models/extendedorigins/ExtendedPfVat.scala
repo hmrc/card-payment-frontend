@@ -16,7 +16,9 @@
 
 package uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins
 
+import payapi.cardpaymentjourney.model.journey.{JourneySpecificData, JsdPfVat}
 import play.api.mvc.Call
+import uk.gov.hmrc.cardpaymentfrontend.models.openbanking.{OriginSpecificSessionData, PfVatSessionData}
 import uk.gov.hmrc.cardpaymentfrontend.models.{CheckYourAnswersRow, Link}
 import uk.gov.hmrc.cardpaymentfrontend.utils.PaymentMethods._
 import uk.gov.hmrc.cardpaymentfrontend.utils._
@@ -72,4 +74,8 @@ class ExtendedPfVat extends ExtendedOrigin {
     Seq(referenceRow, amountRow, addressRow, emailRow)
   }
 
+  override def openBankingOriginSpecificSessionData(jsd: JourneySpecificData): Option[OriginSpecificSessionData] = jsd match {
+    case j: JsdPfVat => Some(PfVatSessionData(j.vrn, j.chargeRef))
+    case _           => throw new RuntimeException("blah")
+  }
 }

@@ -16,11 +16,13 @@
 
 package uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins
 
+import payapi.cardpaymentjourney.model.journey.{JourneySpecificData, JsdItSa}
 import uk.gov.hmrc.cardpaymentfrontend.models.CheckYourAnswersRow
+import uk.gov.hmrc.cardpaymentfrontend.models.openbanking.{ItSaSessionData, OriginSpecificSessionData}
 import uk.gov.hmrc.cardpaymentfrontend.utils.PaymentMethods.Bacs
 import uk.gov.hmrc.cardpaymentfrontend.utils._
 
-object ExtendedItSa extends ExtendedOrigin {
+class ExtendedItSa extends ExtendedOrigin {
   override val serviceNameMessageKey: String = "service-name.ItSa"
   override val taxNameMessageKey: String = "payment-complete.tax-name.ItSa"
   def reference(): String = "1097172564" //This would really come from the journey either pay-api or stored locally
@@ -29,4 +31,9 @@ object ExtendedItSa extends ExtendedOrigin {
   def paymentMethods(): Set[PaymentMethod] = Set.empty
   //todo add this when we do that ticket
   def checkYourAnswersRows(): Seq[CheckYourAnswersRow] = Seq.empty
+
+  override def openBankingOriginSpecificSessionData(jsd: JourneySpecificData): Option[OriginSpecificSessionData] = jsd match {
+    case j: JsdItSa => Some(ItSaSessionData(j.utr))
+    case _          => throw new RuntimeException("blah")
+  }
 }

@@ -16,13 +16,15 @@
 
 package uk.gov.hmrc.cardpaymentfrontend.controllers
 
+import payapi.cardpaymentjourney.model.journey.{Journey, JourneySpecificData}
 import play.api.mvc.Results.Redirect
 import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.cardpaymentfrontend.actions.{Actions, JourneyRequest}
 import uk.gov.hmrc.cardpaymentfrontend.connectors.OpenBankingConnector
-import uk.gov.hmrc.cardpaymentfrontend.models.openbanking.CreateSessionDataRequest
+import uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins.ExtendedOrigin
+import uk.gov.hmrc.cardpaymentfrontend.models.openbanking.{CreateSessionDataRequest, OriginSpecificSessionData}
 import uk.gov.hmrc.cardpaymentfrontend.requests.RequestSupport
-import uk.gov.hmrc.cardpaymentfrontend.util.OpenBankingUtils
+import uk.gov.hmrc.cardpaymentfrontend.utils.OriginExtraInfo
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
@@ -31,21 +33,22 @@ import scala.concurrent.ExecutionContext
 class OpenBankingController @Inject() (
     actions:              Actions,
     openBankingConnector: OpenBankingConnector,
-    openBankingUtils:     OpenBankingUtils,
+    originExtraInfo:      OriginExtraInfo,
     requestSupport:       RequestSupport
 )(implicit executionContext: ExecutionContext) {
 
   import requestSupport._
 
   def startOpenBankingJourney: Action[AnyContent] = actions.journeyAction.async { implicit journeyRequest: JourneyRequest[AnyContent] =>
-    val createSessionDataRequest: CreateSessionDataRequest =
-      openBankingUtils
-        .originDataFromJsd(journeyRequest.journey.journeySpecificData, None)
-        .map(originSpecificSessionData => CreateSessionDataRequest(journeyRequest.journey.getAmountInPence, originSpecificSessionData, journeyRequest.journey.futureDatedPayment))
-        .getOrElse(throw new RuntimeException("Unable to build createSessionDataRequest, so cannot start an OB journey"))
+    val journey: Journey[JourneySpecificData] = journeyRequest.journey
+    val createSessionDataRequest: CreateSessionDataRequest = originExtraInfo
+      .lift(journey.origin)
+      .openBankingOriginSpecificSessionData(journey.journeySpecificData)
+      .map(originSpecificSessionData => CreateSessionDataRequest(journeyRequest.journey.getAmountInPence, originSpecificSessionData, journeyRequest.journey.futureDatedPayment))
+      .getOrElse(throw new RuntimeException("Unable to build createSessionDataRequest, so cannot start an OB journey"))
 
     openBankingConnector.startOpenBankingJourney(createSessionDataRequest)
-      .map(createSessionDatRequest => Redirect(createSessionDatRequest.nextUrl))
+      .map(createSessionDataResponse => Redirect(createSessionDataResponse.nextUrl))
   }
 
 }

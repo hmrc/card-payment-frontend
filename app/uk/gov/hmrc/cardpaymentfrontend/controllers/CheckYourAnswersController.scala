@@ -20,7 +20,6 @@ import payapi.corcommon.model.{Origin, Origins}
 import play.api.i18n._
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.cardpaymentfrontend.models.CheckYourAnswersRow.summarise
-import uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins.ExtendedOrigin
 import uk.gov.hmrc.cardpaymentfrontend.utils.OriginExtraInfo
 import uk.gov.hmrc.cardpaymentfrontend.views.html.CheckYourAnswersPage
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
@@ -37,7 +36,7 @@ class CheckYourAnswersController @Inject() (
 
   def renderPage(origin: Origin): Action[AnyContent] = Action { implicit request =>
     implicit val messages: Messages = request.messages
-    val liftedOrigin: ExtendedOrigin = originExtraInfo.lift(origin)
+    val liftedOrigin = originExtraInfo.lift(origin)
     val summaryList = liftedOrigin.checkYourAnswersRows().map(summarise)
     Ok(checkYourAnswersPage(liftedOrigin.reference(), SummaryList(summaryList)))
   }
