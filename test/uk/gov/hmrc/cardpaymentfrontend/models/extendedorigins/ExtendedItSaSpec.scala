@@ -18,7 +18,7 @@ package uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins
 
 import payapi.corcommon.model.JourneyId
 import play.api.i18n.{Messages, MessagesApi}
-import play.api.mvc.AnyContent
+import play.api.mvc.{AnyContent, AnyContentAsEmpty}
 import play.api.test.FakeRequest
 import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
 import uk.gov.hmrc.cardpaymentfrontend.models.{Address, CheckYourAnswersRow, EmailAddress}
@@ -35,13 +35,13 @@ class ExtendedItSaSpec extends ItSpec {
   val systemUnderTest = ExtendedItSa
 
   "ExtendedBtaSa CYA" - {
-    "there should be four rows" in {
+    "there should be five rows" in {
       PayApiStub.stubForFindBySessionId2xx(testJourney)
       val address = Address(line1    = "line1", line2 = Some("line2"), city = Some("city"), county = Some("county"), postcode = "AA1AA", country = "UK")
       val fakeJourneyRequest: JourneyRequest[AnyContent] = new JourneyRequest(testJourney, fakeGetRequest.withAddress(JourneyId("TestJourneyId-44f9-ad7f-01e1d3d8f151"), address))
 
       val rows: Seq[CheckYourAnswersRow] = systemUnderTest.checkYourAnswersRows(fakeJourneyRequest)
-      rows.size shouldBe 4
+      rows.size shouldBe 5
     }
 
     "contains a reference row with the right title and value" in {
@@ -57,11 +57,33 @@ class ExtendedItSaSpec extends ItSpec {
     "contains an amount row with the right title and value" in {
       PayApiStub.stubForFindBySessionId2xx(TestJourneys.BtaSa.testBtaSaJourneySuccessDebit)
 
-      val fakeJourneyRequest: JourneyRequest[AnyContent] = new JourneyRequest(TestJourneys.BtaSa.testBtaSaJourneySuccessDebit, fakeGetRequest)
+      val fakeJourneyRequest: JourneyRequest[AnyContent] = new JourneyRequest(testJourney, fakeGetRequest)
       val rows: Seq[CheckYourAnswersRow] = systemUnderTest.checkYourAnswersRows(fakeJourneyRequest)
-      val amountRow: CheckYourAnswersRow = rows.lift(1).getOrElse(CheckYourAnswersRow("", Seq.empty, None))
+      val amountRow: CheckYourAnswersRow = rows.lift(2).getOrElse(CheckYourAnswersRow("", Seq.empty, None))
       amountRow.titleMessageKey shouldBe "itsa.amount.title"
       amountRow.value shouldBe Seq("£12.34")
+    }
+
+    "contains an payment date with the right title and value in English" in {
+      PayApiStub.stubForFindBySessionId2xx(testJourney)
+
+      val fakeJourneyRequest: JourneyRequest[AnyContent] = new JourneyRequest(testJourney, fakeGetRequest)
+      val rows: Seq[CheckYourAnswersRow] = systemUnderTest.checkYourAnswersRows(fakeJourneyRequest)
+      val paymentDateRow: CheckYourAnswersRow = rows.lift(1).getOrElse(CheckYourAnswersRow("", Seq.empty, None))
+      paymentDateRow.titleMessageKey shouldBe "itsa-date.title"
+      paymentDateRow.value shouldBe Seq("Today")
+    }
+
+    "contains an payment date with the right title and value in Welsh" in {
+      PayApiStub.stubForFindBySessionId2xx(testJourney)
+      val fakeGetRequestInWelsh: FakeRequest[AnyContentAsEmpty.type] = fakeGetRequest.withLangWelsh()
+      implicit val messages: Messages = messagesApi.preferred(fakeGetRequestInWelsh)
+
+      val fakeJourneyRequest: JourneyRequest[AnyContent] = new JourneyRequest(testJourney, fakeGetRequest)
+      val rows: Seq[CheckYourAnswersRow] = systemUnderTest.checkYourAnswersRows(fakeJourneyRequest)
+      val payDateRow: CheckYourAnswersRow = rows.lift(1).getOrElse(CheckYourAnswersRow("", Seq.empty, None))
+      payDateRow.titleMessageKey shouldBe "itsa-date.title"
+      payDateRow.value shouldBe Seq("Heddiw")
     }
 
     "with a full address, create a sequence of string that hold the address" in {
@@ -70,7 +92,7 @@ class ExtendedItSaSpec extends ItSpec {
       val fakeJourneyRequest: JourneyRequest[AnyContent] = new JourneyRequest(testJourney, fakeGetRequest.withAddress(JourneyId("TestJourneyId-44f9-ad7f-01e1d3d8f151"), address))
 
       val rows: Seq[CheckYourAnswersRow] = systemUnderTest.checkYourAnswersRows(fakeJourneyRequest)
-      val addressRow: CheckYourAnswersRow = rows.lift(2).getOrElse(CheckYourAnswersRow("", Seq.empty, None))
+      val addressRow: CheckYourAnswersRow = rows.lift(3).getOrElse(CheckYourAnswersRow("", Seq.empty, None))
       addressRow.titleMessageKey shouldBe "itsa.address.title"
       addressRow.value shouldBe Seq("line1", "line2", "city", "county", "AA1AA", "UK")
     }
@@ -81,7 +103,7 @@ class ExtendedItSaSpec extends ItSpec {
       val fakeJourneyRequest: JourneyRequest[AnyContent] = new JourneyRequest(testJourney, fakeGetRequest.withEmailInSession(JourneyId("TestJourneyId-44f9-ad7f-01e1d3d8f151"), email))
 
       val rows: Seq[CheckYourAnswersRow] = systemUnderTest.checkYourAnswersRows(fakeJourneyRequest)
-      val emailRow: CheckYourAnswersRow = rows.lift(3).getOrElse(CheckYourAnswersRow("", Seq.empty, None))
+      val emailRow: CheckYourAnswersRow = rows.lift(4).getOrElse(CheckYourAnswersRow("", Seq.empty, None))
       emailRow.titleMessageKey shouldBe "itsa.email.title"
       emailRow.value shouldBe Seq("this@that.com")
     }
@@ -91,7 +113,7 @@ class ExtendedItSaSpec extends ItSpec {
       val fakeJourneyRequest: JourneyRequest[AnyContent] = new JourneyRequest(testJourney, fakeGetRequest)
 
       val rows: Seq[CheckYourAnswersRow] = systemUnderTest.checkYourAnswersRows(fakeJourneyRequest)
-      val emailRow: CheckYourAnswersRow = rows.lift(3).getOrElse(CheckYourAnswersRow("", Seq.empty, None))
+      val emailRow: CheckYourAnswersRow = rows.lift(4).getOrElse(CheckYourAnswersRow("", Seq.empty, None))
       emailRow.titleMessageKey shouldBe "itsa.email.title"
       emailRow.value shouldBe Seq.empty
     }

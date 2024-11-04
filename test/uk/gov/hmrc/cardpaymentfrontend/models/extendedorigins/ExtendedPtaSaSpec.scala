@@ -18,7 +18,7 @@ package uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins
 
 import payapi.corcommon.model.JourneyId
 import play.api.i18n.{Messages, MessagesApi}
-import play.api.mvc.AnyContent
+import play.api.mvc.{AnyContent, AnyContentAsEmpty}
 import play.api.test.FakeRequest
 import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
 import uk.gov.hmrc.cardpaymentfrontend.models.{Address, CheckYourAnswersRow, EmailAddress}
@@ -54,7 +54,7 @@ class ExtendedPtaSaSpec extends ItSpec {
       referenceRow.value shouldBe Seq("1234567895K")
     }
 
-    "contains an payment date with the right title and value" in {
+    "contains an payment date with the right title and value in English" in {
       PayApiStub.stubForFindBySessionId2xx(TestJourneys.BtaSa.testBtaSaJourneySuccessDebit)
 
       val fakeJourneyRequest: JourneyRequest[AnyContent] = new JourneyRequest(TestJourneys.BtaSa.testBtaSaJourneySuccessDebit, fakeGetRequest)
@@ -62,6 +62,18 @@ class ExtendedPtaSaSpec extends ItSpec {
       val amountRow: CheckYourAnswersRow = rows.lift(1).getOrElse(CheckYourAnswersRow("", Seq.empty, None))
       amountRow.titleMessageKey shouldBe "ptasa-date.title"
       amountRow.value shouldBe Seq("Today")
+    }
+
+    "contains an payment date with the right title and value in Welsh" in {
+      PayApiStub.stubForFindBySessionId2xx(testJourney)
+      val fakeGetRequestInWelsh: FakeRequest[AnyContentAsEmpty.type] = fakeGetRequest.withLangWelsh()
+      implicit val messages: Messages = messagesApi.preferred(fakeGetRequestInWelsh)
+
+      val fakeJourneyRequest: JourneyRequest[AnyContent] = new JourneyRequest(testJourney, fakeGetRequest)
+      val rows: Seq[CheckYourAnswersRow] = systemUnderTest.checkYourAnswersRows(fakeJourneyRequest)
+      val payDateRow: CheckYourAnswersRow = rows.lift(1).getOrElse(CheckYourAnswersRow("", Seq.empty, None))
+      payDateRow.titleMessageKey shouldBe "ptasa-date.title"
+      payDateRow.value shouldBe Seq("Heddiw")
     }
 
     "contains an amount row with the right title and value" in {

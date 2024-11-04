@@ -18,7 +18,7 @@ package uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins
 
 import payapi.corcommon.model.JourneyId
 import play.api.i18n.{Messages, MessagesApi}
-import play.api.mvc.AnyContent
+import play.api.mvc.{AnyContent, AnyContentAsEmpty}
 import play.api.test.FakeRequest
 import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
 import uk.gov.hmrc.cardpaymentfrontend.models.{Address, CheckYourAnswersRow, EmailAddress}
@@ -28,11 +28,11 @@ import uk.gov.hmrc.cardpaymentfrontend.testsupport.TestOps._
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.stubs.PayApiStub
 
 class ExtendedBtaSaSpec extends ItSpec {
-  val fakeGetRequest = FakeRequest("GET", "/cya0").withSessionId()
+  private val fakeGetRequest = FakeRequest("GET", "/cya0").withSessionId()
   def messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
-  implicit val messages: Messages = messagesApi.preferred(fakeGetRequest)
-  val testJourney = TestJourneys.BtaSa.testBtaSaJourneySuccessDebit
-  val systemUnderTest = ExtendedBtaSa
+  private implicit val messages: Messages = messagesApi.preferred(fakeGetRequest)
+  private val testJourney = TestJourneys.BtaSa.testBtaSaJourneySuccessDebit
+  private val systemUnderTest = ExtendedBtaSa
 
   "ExtendedBtaSa CYA" - {
     "there should be five rows" in {
@@ -54,20 +54,32 @@ class ExtendedBtaSaSpec extends ItSpec {
       referenceRow.value shouldBe Seq("1234567895K")
     }
 
-    "contains an payment date with the right title and value" in {
-      PayApiStub.stubForFindBySessionId2xx(TestJourneys.BtaSa.testBtaSaJourneySuccessDebit)
+    "contains an payment date with the right title and value in English" in {
+      PayApiStub.stubForFindBySessionId2xx(testJourney)
 
       val fakeJourneyRequest: JourneyRequest[AnyContent] = new JourneyRequest(TestJourneys.BtaSa.testBtaSaJourneySuccessDebit, fakeGetRequest)
       val rows: Seq[CheckYourAnswersRow] = systemUnderTest.checkYourAnswersRows(fakeJourneyRequest)
-      val amountRow: CheckYourAnswersRow = rows.lift(1).getOrElse(CheckYourAnswersRow("", Seq.empty, None))
-      amountRow.titleMessageKey shouldBe "btasa-date.title"
-      amountRow.value shouldBe Seq("Today")
+      val payDateRow: CheckYourAnswersRow = rows.lift(1).getOrElse(CheckYourAnswersRow("", Seq.empty, None))
+      payDateRow.titleMessageKey shouldBe "btasa-date.title"
+      payDateRow.value shouldBe Seq("Today")
+    }
+
+    "contains an payment date with the right title and value in Welsh" in {
+      PayApiStub.stubForFindBySessionId2xx(testJourney)
+      val fakeGetRequestInWelsh: FakeRequest[AnyContentAsEmpty.type] = fakeGetRequest.withLangWelsh()
+      implicit val messages: Messages = messagesApi.preferred(fakeGetRequestInWelsh)
+
+      val fakeJourneyRequest: JourneyRequest[AnyContent] = new JourneyRequest(testJourney, fakeGetRequest)
+      val rows: Seq[CheckYourAnswersRow] = systemUnderTest.checkYourAnswersRows(fakeJourneyRequest)
+      val payDateRow: CheckYourAnswersRow = rows.lift(1).getOrElse(CheckYourAnswersRow("", Seq.empty, None))
+      payDateRow.titleMessageKey shouldBe "btasa-date.title"
+      payDateRow.value shouldBe Seq("Heddiw")
     }
 
     "contains an amount row with the right title and value" in {
-      PayApiStub.stubForFindBySessionId2xx(TestJourneys.BtaSa.testBtaSaJourneySuccessDebit)
+      PayApiStub.stubForFindBySessionId2xx(testJourney)
 
-      val fakeJourneyRequest: JourneyRequest[AnyContent] = new JourneyRequest(TestJourneys.BtaSa.testBtaSaJourneySuccessDebit, fakeGetRequest)
+      val fakeJourneyRequest: JourneyRequest[AnyContent] = new JourneyRequest(testJourney, fakeGetRequest)
       val rows: Seq[CheckYourAnswersRow] = systemUnderTest.checkYourAnswersRows(fakeJourneyRequest)
       val amountRow: CheckYourAnswersRow = rows.lift(2).getOrElse(CheckYourAnswersRow("", Seq.empty, None))
       amountRow.titleMessageKey shouldBe "btasa.amount.title"
