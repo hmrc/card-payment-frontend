@@ -45,11 +45,11 @@ object ExtendedItSa extends ExtendedOrigin {
       )
 
     val dateRow = CheckYourAnswersRow(
-      "itsa-date.title",
-      Seq(Messages("itsa-date.today")),
+      "itsa.date.title",
+      Seq(Messages("itsa.date.today")),
       Some(Link(
         Call("GET", "this/that"),
-        "itsa-date-change-link",
+        "itsa.date-change-link",
         "itsa.date.change-link.text"
       ))
     )

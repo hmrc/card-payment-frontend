@@ -60,7 +60,7 @@ class ExtendedPtaSaSpec extends ItSpec {
       val fakeJourneyRequest: JourneyRequest[AnyContent] = new JourneyRequest(TestJourneys.BtaSa.testBtaSaJourneySuccessDebit, fakeGetRequest)
       val rows: Seq[CheckYourAnswersRow] = systemUnderTest.checkYourAnswersRows(fakeJourneyRequest)
       val amountRow: CheckYourAnswersRow = rows.lift(1).getOrElse(CheckYourAnswersRow("", Seq.empty, None))
-      amountRow.titleMessageKey shouldBe "ptasa-date.title"
+      amountRow.titleMessageKey shouldBe "ptasa.date.title"
       amountRow.value shouldBe Seq("Today")
     }
 
@@ -72,7 +72,7 @@ class ExtendedPtaSaSpec extends ItSpec {
       val fakeJourneyRequest: JourneyRequest[AnyContent] = new JourneyRequest(testJourney, fakeGetRequest)
       val rows: Seq[CheckYourAnswersRow] = systemUnderTest.checkYourAnswersRows(fakeJourneyRequest)
       val payDateRow: CheckYourAnswersRow = rows.lift(1).getOrElse(CheckYourAnswersRow("", Seq.empty, None))
-      payDateRow.titleMessageKey shouldBe "ptasa-date.title"
+      payDateRow.titleMessageKey shouldBe "ptasa.date.title"
       payDateRow.value shouldBe Seq("Heddiw")
     }
 
