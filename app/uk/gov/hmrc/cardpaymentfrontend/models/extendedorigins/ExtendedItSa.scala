@@ -16,10 +16,11 @@
 
 package uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins
 
-import play.api.mvc.AnyContent
+import play.api.mvc.{AnyContent, Call}
 import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
-import uk.gov.hmrc.cardpaymentfrontend.models.CheckYourAnswersRow
+import uk.gov.hmrc.cardpaymentfrontend.models.{Address, CheckYourAnswersRow, EmailAddress, Link}
 import uk.gov.hmrc.cardpaymentfrontend.utils.PaymentMethod
+import uk.gov.hmrc.cardpaymentfrontend.session.JourneySessionSupport._
 
 object ExtendedItSa extends ExtendedOrigin {
   override val serviceNameMessageKey: String = "service-name.ItSa"
@@ -27,5 +28,57 @@ object ExtendedItSa extends ExtendedOrigin {
   //todo add these when we do that ticket
   def paymentMethods(): Set[PaymentMethod] = Set.empty
   //todo add this when we do that ticket
-  def checkYourAnswersRows(request: JourneyRequest[AnyContent]): Seq[CheckYourAnswersRow] = Seq.empty
+  def checkYourAnswersRows(request: JourneyRequest[AnyContent]): Seq[CheckYourAnswersRow] = {
+    val maybeEmailAddress: Option[EmailAddress] = request.readFromSession[EmailAddress](request.journeyId, Keys.email)
+    val maybeAddress: Option[Address] = request.readFromSession[Address](request.journeyId, Keys.address)
+
+    val referenceRow =
+      CheckYourAnswersRow(
+        "itsa.reference.title",
+        Seq(reference(request)),
+        Some(Link(
+          Call("GET", "this/that"),
+          "itsa-reference-change-link",
+          "itsa.reference.change-link.text"
+        ))
+      )
+
+    val amountRow = CheckYourAnswersRow(
+      "itsa.amount.title",
+      Seq(amount(request)),
+      Some(Link(
+        Call("GET", "this/that"),
+        "itsa-amount-change-link",
+        "itsa.amount.change-link.text"
+      ))
+    )
+
+    val addressRow = CheckYourAnswersRow(
+      "itsa.address.title",
+      maybeAddress match {
+        case Some(addr) => Seq(addr.line1, addr.line2.getOrElse(""), addr.city.getOrElse(""), addr.county.getOrElse(""), addr.postcode, addr.country).filter(_.nonEmpty)
+        case None       => Seq.empty
+      },
+      Some(Link(
+        Call("GET", "this/that"),
+        "itsa-address-change-link",
+        "ptasa.address.change-link.text"
+      ))
+    )
+
+    val emailRow = CheckYourAnswersRow(
+      "itsa.email.title",
+      maybeEmailAddress match {
+        case Some(emailAddress) => Seq(emailAddress.value)
+        case None               => Seq.empty
+      },
+      Some(Link(
+        Call("GET", "change/email"),
+        "itsa-email-supply-link",
+        "itsa.email.supply-link.text"
+      ))
+    )
+
+    Seq(referenceRow, amountRow, addressRow, emailRow)
+  }
 }

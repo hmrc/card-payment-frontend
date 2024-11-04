@@ -42,7 +42,7 @@ class CheckYourAnswersController @Inject() (
   def renderPage(origin: Origin): Action[AnyContent] = actions.journeyAction { implicit request: JourneyRequest[AnyContent] =>
 
     val liftedOrigin: ExtendedOrigin = originExtraInfo.lift(origin)
-    val summaryList = liftedOrigin.checkYourAnswersRows(request).map(summarise)
+    val summaryList = originExtraInfo.lift(origin).checkYourAnswersRows(request).map(summarise)
 
     Ok(checkYourAnswersPage(liftedOrigin.reference(request), SummaryList(summaryList)))
   }
@@ -54,4 +54,6 @@ class CheckYourAnswersController @Inject() (
   def renderPage2(): Action[AnyContent] = renderPage(Origins.PtaSa)
 
   def renderPage3(): Action[AnyContent] = renderPage(Origins.BtaSa)
+
+  def renderPage4(): Action[AnyContent] = renderPage(Origins.ItSa)
 }
