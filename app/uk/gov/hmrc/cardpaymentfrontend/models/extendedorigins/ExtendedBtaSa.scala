@@ -96,19 +96,28 @@ object ExtendedBtaSa extends ExtendedOrigin {
 
     val emailRow = {
       val maybeEmailAddress: Option[EmailAddress] = request.readFromSession[EmailAddress](request.journeyId, Keys.email)
-
-      CheckYourAnswersRow(
-        "btasa.email.title",
-        maybeEmailAddress match {
-          case Some(emailAddress) => Seq(emailAddress.value)
-          case None               => Seq.empty
-        },
-        Some(Link(
-          Call("GET", "change/email"),
-          "btasa-email-supply-link",
-          "btasa.email.supply-link.text"
-        ))
-      )
+      maybeEmailAddress match {
+        case Some(emailAddress) =>
+          CheckYourAnswersRow(
+            titleMessageKey = "btasa.email.title",
+            value           = Seq(emailAddress.value),
+            changeLink      = Some(Link(
+              Call("GET", "change/email"),
+              "btasa-email-supply-link",
+              "btasa.email.supply-link.text.change"
+            ))
+          )
+        case None =>
+          CheckYourAnswersRow(
+            titleMessageKey = "btasa.email.title",
+            value           = Seq.empty,
+            changeLink      = Some(Link(
+              Call("GET", "change/email"),
+              "btasa-email-supply-link",
+              "btasa.email.supply-link.text.new"
+            ))
+          )
+      }
     }
 
     Seq(

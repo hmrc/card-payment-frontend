@@ -96,18 +96,28 @@ object ExtendedItSa extends ExtendedOrigin {
       ))
     )
 
-    val emailRow = CheckYourAnswersRow(
-      "itsa.email.title",
-      maybeEmailAddress match {
-        case Some(emailAddress) => Seq(emailAddress.value)
-        case None               => Seq.empty
-      },
-      Some(Link(
-        Call("GET", "change/email"),
-        "itsa-email-supply-link",
-        "itsa.email.supply-link.text"
-      ))
-    )
+    val emailRow = maybeEmailAddress match {
+      case Some(emailAddress) =>
+        CheckYourAnswersRow(
+          titleMessageKey = "itsa.email.title",
+          value           = Seq(emailAddress.value),
+          changeLink      = Some(Link(
+            Call("GET", "change/email"),
+            "itsa-email-supply-link",
+            "itsa.email.supply-link.text.change"
+          ))
+        )
+      case None =>
+        CheckYourAnswersRow(
+          titleMessageKey = "itsa.email.title",
+          value           = Seq.empty,
+          changeLink      = Some(Link(
+            Call("GET", "change/email"),
+            "itsa-email-supply-link",
+            "itsa.email.supply-link.text.new"
+          ))
+        )
+    }
 
     Seq(referenceRow, dateRow, amountRow, addressRow, emailRow)
   }
