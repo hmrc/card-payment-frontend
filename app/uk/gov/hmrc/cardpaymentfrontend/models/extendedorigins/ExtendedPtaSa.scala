@@ -45,12 +45,8 @@ object ExtendedPtaSa extends ExtendedOrigin {
     val referenceRow =
       CheckYourAnswersRow(
         "ptasa.reference.title",
-        Seq(reference(request)),
-        Some(Link(
-          Call("GET", "this/that"),
-          "ptasa-reference-change-link",
-          "ptasa.reference.change-link.text"
-        ))
+        Seq(reference(request).dropRight(1)), //Do not display the final K in the Utr in the CYA table),
+        None
       )
 
     val dateRow = CheckYourAnswersRow(

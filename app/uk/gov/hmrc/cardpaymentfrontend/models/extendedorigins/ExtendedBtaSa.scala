@@ -50,12 +50,8 @@ object ExtendedBtaSa extends ExtendedOrigin {
   def checkYourAnswersRows(request: JourneyRequest[AnyContent])(implicit messages: Messages): Seq[CheckYourAnswersRow] = {
     val referenceRow = CheckYourAnswersRow(
       "btasa.reference.title",
-      Seq(reference(request)),
-      Some(Link(
-        Call("GET", "this/that"),
-        "pfvat-reference-change-link",
-        "pfvat.reference.change-link.text"
-      ))
+      Seq(reference(request).dropRight(1)), //Do not display the final K in the Utr in the CYA table),
+      None
     )
 
     val dateRow = CheckYourAnswersRow(

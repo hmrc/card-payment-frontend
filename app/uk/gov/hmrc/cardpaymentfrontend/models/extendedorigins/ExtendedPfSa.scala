@@ -45,23 +45,13 @@ object ExtendedPfSa extends ExtendedOrigin {
     val referenceRow =
       CheckYourAnswersRow(
         "pfsa.reference.title",
-        Seq(reference(request)),
+        Seq(reference(request).dropRight(1)), //Do not display the final K in the Utr in the CYA table
         Some(Link(
           Call("GET", "this/that"),
           "pfsa-reference-change-link",
           "pfsa.reference.change-link.text"
         ))
       )
-
-    val dateRow = CheckYourAnswersRow(
-      "pfsa.date.title",
-      Seq(Messages("pfsa.date.today")),
-      Some(Link(
-        Call("GET", "this/that"),
-        "pfsa.date-change-link",
-        "pfsa.date.change-link.text"
-      ))
-    )
 
     val amountRow = CheckYourAnswersRow(
       "pfsa.amount.title",
@@ -109,7 +99,7 @@ object ExtendedPfSa extends ExtendedOrigin {
         )
     }
 
-    Seq(referenceRow, dateRow, amountRow, addressRow, emailRow)
+    Seq(referenceRow, amountRow, addressRow, emailRow)
   }
 
   override def openBankingOriginSpecificSessionData: JourneySpecificData => Option[OriginSpecificSessionData] = {
