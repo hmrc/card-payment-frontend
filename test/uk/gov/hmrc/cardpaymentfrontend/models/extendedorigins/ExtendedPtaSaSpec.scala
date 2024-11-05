@@ -51,7 +51,7 @@ class ExtendedPtaSaSpec extends ItSpec {
       val rows: Seq[CheckYourAnswersRow] = systemUnderTest.checkYourAnswersRows(fakeJourneyRequest)
       val referenceRow: CheckYourAnswersRow = rows.headOption.getOrElse(CheckYourAnswersRow("", Seq.empty, None))
       referenceRow.titleMessageKey shouldBe "ptasa.reference.title"
-      referenceRow.value shouldBe Seq("1234567895K")
+      referenceRow.value shouldBe Seq("1234567895")
     }
 
     "contains an payment date with the right title and value in English" in {
