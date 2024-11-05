@@ -42,7 +42,8 @@ trait ItSpec extends AnyFreeSpecLike
     "auditing.consumer.baseUri.port" -> self.wireMockPort,
     "auditing.enabled" -> false,
     "auditing.traceRequests" -> false,
-    "microservice.services.pay-api.port" -> self.wireMockPort
+    "microservice.services.pay-api.port" -> self.wireMockPort,
+    "microservice.services.open-banking.port" -> self.wireMockPort
   )
 
   override def beforeEach(): Unit = {

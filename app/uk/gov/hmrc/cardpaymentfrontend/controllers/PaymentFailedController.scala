@@ -20,7 +20,6 @@ import payapi.corcommon.model.{Origin, Origins}
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.cardpaymentfrontend.forms.ChooseAPaymentMethodForm
-import uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins.ExtendedOrigin
 import uk.gov.hmrc.cardpaymentfrontend.utils.PaymentMethods.OpenBanking
 import uk.gov.hmrc.cardpaymentfrontend.utils.{OriginExtraInfo, PaymentMethod}
 import uk.gov.hmrc.cardpaymentfrontend.views.html.PaymentFailedPage
@@ -36,7 +35,7 @@ class PaymentFailedController @Inject() (
 ) extends FrontendController(mcc) {
 
   def renderPage(origin: Origin): Action[AnyContent] = Action { implicit request =>
-    val liftedOrigin: ExtendedOrigin = originExtraInfo.lift(origin)
+    val liftedOrigin = originExtraInfo.lift(origin)
     val paymentMethods: Set[PaymentMethod] = liftedOrigin.paymentMethods()
     Ok(paymentFailedPage(origin.toTaxType.toString, paymentMethods.contains(OpenBanking), ChooseAPaymentMethodForm.form))
   }

@@ -3,6 +3,8 @@
 ->         /hmrc-frontend                        hmrcfrontend.Routes
 GET        /assets/*file                         controllers.Assets.versioned(path = "/public", file: Asset)
 
+GET        /start-open-banking                   uk.gov.hmrc.cardpaymentfrontend.controllers.OpenBankingController.startOpenBankingJourney
+
 GET        /email-address                        uk.gov.hmrc.cardpaymentfrontend.controllers.EmailAddressController.renderPage
 POST       /email-address                        uk.gov.hmrc.cardpaymentfrontend.controllers.EmailAddressController.submit
 

@@ -16,7 +16,9 @@
 
 package uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins
 
+import payapi.cardpaymentjourney.model.journey.JourneySpecificData
 import uk.gov.hmrc.cardpaymentfrontend.models.CheckYourAnswersRow
+import uk.gov.hmrc.cardpaymentfrontend.models.openbanking.OriginSpecificSessionData
 import uk.gov.hmrc.cardpaymentfrontend.utils.PaymentMethod
 
 trait ExtendedOrigin {
@@ -27,4 +29,5 @@ trait ExtendedOrigin {
   def cardFeesPagePaymentMethods: Set[PaymentMethod]
   def paymentMethods(): Set[PaymentMethod]
   def checkYourAnswersRows(): Seq[CheckYourAnswersRow]
+  def openBankingOriginSpecificSessionData: JourneySpecificData => Option[OriginSpecificSessionData]
 }

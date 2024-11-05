@@ -21,7 +21,6 @@ import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import uk.gov.hmrc.cardpaymentfrontend.actions.{Actions, JourneyRequest}
 import uk.gov.hmrc.cardpaymentfrontend.config.AppConfig
 import uk.gov.hmrc.cardpaymentfrontend.models.Link
-import uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins.ExtendedOrigin
 import uk.gov.hmrc.cardpaymentfrontend.requests.RequestSupport
 import uk.gov.hmrc.cardpaymentfrontend.utils.{OriginExtraInfo, PaymentMethod, PaymentMethods}
 import uk.gov.hmrc.cardpaymentfrontend.views.html.FeesPage
@@ -152,7 +151,7 @@ class FeesController @Inject() (
 
   private[controllers] def linksAvailableOnFeesPage(origin: Origin): Seq[Link] = {
 
-    val extendedOrigin: ExtendedOrigin = originExtraInfo.lift(origin)
+    val extendedOrigin = originExtraInfo.lift(origin)
     val paymentMethodsToShow: Set[PaymentMethod] = extendedOrigin.cardFeesPagePaymentMethods
     val showOpenBankingLink: Boolean = paymentMethodToBeShown(PaymentMethods.OpenBanking, paymentMethodsToShow)
     val showBankTransferLink: Boolean = paymentMethodToBeShown(PaymentMethods.Bacs, paymentMethodsToShow)
@@ -160,7 +159,7 @@ class FeesController @Inject() (
 
     val maybeOpenBankingLink = if (showOpenBankingLink) {
       Seq(Link(
-        href       = Call("GET", "https://open_banking_url_goes_here"),
+        href       = Call("GET", routes.OpenBankingController.startOpenBankingJourney.url),
         linkId     = "open-banking-link",
         messageKey = "card-fees.para2.open-banking"
       ))

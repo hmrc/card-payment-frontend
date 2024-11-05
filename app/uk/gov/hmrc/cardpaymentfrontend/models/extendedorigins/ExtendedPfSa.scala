@@ -16,12 +16,14 @@
 
 package uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins
 
+import payapi.cardpaymentjourney.model.journey.{JourneySpecificData, JsdPfSa}
 import play.api.mvc.Call
+import uk.gov.hmrc.cardpaymentfrontend.models.openbanking.{OriginSpecificSessionData, PfSaSessionData}
 import uk.gov.hmrc.cardpaymentfrontend.models.{CheckYourAnswersRow, Link}
-import uk.gov.hmrc.cardpaymentfrontend.utils.PaymentMethods.{Bacs, Card, OneOffDirectDebit, OpenBanking}
 import uk.gov.hmrc.cardpaymentfrontend.utils.PaymentMethod
+import uk.gov.hmrc.cardpaymentfrontend.utils.PaymentMethods.{Bacs, Card, OneOffDirectDebit, OpenBanking}
 
-object ExtendedPfSa extends ExtendedOrigin {
+class ExtendedPfSa extends ExtendedOrigin {
   override val serviceNameMessageKey: String = "service-name.PfSa"
   override val taxNameMessageKey: String = "payment-complete.tax-name.PfSa"
   def reference(): String = "1097172564" //This would really come from the journey either pay-api or stored locally
@@ -70,5 +72,10 @@ object ExtendedPfSa extends ExtendedOrigin {
       ))
     )
     Seq(referenceRow, amountRow, addressRow, emailRow)
+  }
+
+  override def openBankingOriginSpecificSessionData: JourneySpecificData => Option[OriginSpecificSessionData] = {
+    case j: JsdPfSa => j.utr.map(PfSaSessionData(_))
+    case _          => throw new RuntimeException("Incorrect origin found")
   }
 }
