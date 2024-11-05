@@ -18,10 +18,10 @@ package uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins
 
 import payapi.corcommon.model.JourneyId
 import play.api.i18n.{Messages, MessagesApi}
-import play.api.mvc.{AnyContent, AnyContentAsEmpty}
+import play.api.mvc.{AnyContent, AnyContentAsEmpty, Call}
 import play.api.test.FakeRequest
 import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
-import uk.gov.hmrc.cardpaymentfrontend.models.{Address, CheckYourAnswersRow, EmailAddress}
+import uk.gov.hmrc.cardpaymentfrontend.models.{Address, CheckYourAnswersRow, EmailAddress, Link}
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.ItSpec
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.stubs.PayApiStub
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.testdata.TestJourneys
@@ -106,6 +106,7 @@ class ExtendedPfSaSpec extends ItSpec {
       val emailRow: CheckYourAnswersRow = rows.lift(4).getOrElse(CheckYourAnswersRow("", Seq.empty, None))
       emailRow.titleMessageKey shouldBe "pfsa.email.title"
       emailRow.value shouldBe Seq("this@that.com")
+      emailRow.changeLink.getOrElse(Link(Call("", ""), "", "")).messageKey shouldBe "pfsa.email.supply-link.text.change"
     }
 
     "if there is no email address in the session contains the email address" in {
@@ -116,6 +117,7 @@ class ExtendedPfSaSpec extends ItSpec {
       val emailRow: CheckYourAnswersRow = rows.lift(4).getOrElse(CheckYourAnswersRow("", Seq.empty, None))
       emailRow.titleMessageKey shouldBe "pfsa.email.title"
       emailRow.value shouldBe Seq.empty
+      emailRow.changeLink.getOrElse(Link(Call("", ""), "", "")).messageKey shouldBe "pfsa.email.supply-link.text.new"
     }
   }
 }
