@@ -28,7 +28,7 @@ class AppConfig @Inject() (config: Configuration, servicesConfig: ServicesConfig
   val payApiBaseUrl: String = servicesConfig.baseUrl("pay-api")
   val openBankingBaseUrl: String = servicesConfig.baseUrl("open-banking")
 
-  val payFrontendBaseUrl: String = servicesConfig.baseUrl("pay-frontend") + "/pay"
+  val payFrontendBaseUrl: String = config.get[String]("urls.pay-frontend.base-url") + "/pay"
 
   val bankTransferRelativeUrl: String = config.get[String]("urls.pay-frontend.bank-transfer")
   val oneOffDirectDebitRelativeUrl: String = config.get[String]("urls.pay-frontend.one-off-direct-debit")
