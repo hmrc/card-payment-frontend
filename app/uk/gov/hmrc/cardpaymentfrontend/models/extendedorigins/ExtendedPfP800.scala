@@ -32,5 +32,5 @@ class ExtendedPfP800 extends ExtendedOrigin {
     Seq.empty
   }
 
-  override def openBankingOriginSpecificSessionData(jsd: JourneySpecificData): Option[OriginSpecificSessionData] = None
+  override def openBankingOriginSpecificSessionData: JourneySpecificData => Option[OriginSpecificSessionData] = _ => None
 }

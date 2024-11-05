@@ -29,5 +29,5 @@ class DefaultExtendedOrigin extends ExtendedOrigin {
   def paymentMethods(): Set[PaymentMethod] = Set.empty[PaymentMethod]
   def checkYourAnswersRows(): Seq[CheckYourAnswersRow] = Seq.empty[CheckYourAnswersRow]
 
-  override def openBankingOriginSpecificSessionData(j: JourneySpecificData): Option[OriginSpecificSessionData] = None
+  override def openBankingOriginSpecificSessionData: JourneySpecificData => Option[OriginSpecificSessionData] = _ => None
 }

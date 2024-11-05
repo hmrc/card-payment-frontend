@@ -32,8 +32,8 @@ class ExtendedBtaSa extends ExtendedOrigin {
   //todo add this when we do that ticket
   def checkYourAnswersRows(): Seq[CheckYourAnswersRow] = Seq.empty
 
-  override def openBankingOriginSpecificSessionData(jsd: JourneySpecificData): Option[OriginSpecificSessionData] = jsd match {
+  override def openBankingOriginSpecificSessionData: JourneySpecificData => Option[OriginSpecificSessionData] = {
     case j: JsdBtaSa => Some(BtaSaSessionData(j.utr))
-    case _           => throw new RuntimeException("blah")
+    case _           => throw new RuntimeException("Incorrect origin found")
   }
 }

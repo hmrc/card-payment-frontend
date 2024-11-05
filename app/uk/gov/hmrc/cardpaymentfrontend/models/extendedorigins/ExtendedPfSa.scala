@@ -74,8 +74,8 @@ class ExtendedPfSa extends ExtendedOrigin {
     Seq(referenceRow, amountRow, addressRow, emailRow)
   }
 
-  override def openBankingOriginSpecificSessionData(jsd: JourneySpecificData): Option[OriginSpecificSessionData] = jsd match {
+  override def openBankingOriginSpecificSessionData: JourneySpecificData => Option[OriginSpecificSessionData] = {
     case j: JsdPfSa => j.utr.map(PfSaSessionData(_))
-    case _          => throw new RuntimeException("blah")
+    case _          => throw new RuntimeException("Incorrect origin found")
   }
 }

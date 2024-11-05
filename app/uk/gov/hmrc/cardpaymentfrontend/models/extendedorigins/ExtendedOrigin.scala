@@ -29,5 +29,5 @@ trait ExtendedOrigin {
   def cardFeesPagePaymentMethods: Set[PaymentMethod]
   def paymentMethods(): Set[PaymentMethod]
   def checkYourAnswersRows(): Seq[CheckYourAnswersRow]
-  def openBankingOriginSpecificSessionData(j: JourneySpecificData): Option[OriginSpecificSessionData]
+  def openBankingOriginSpecificSessionData: JourneySpecificData => Option[OriginSpecificSessionData]
 }
