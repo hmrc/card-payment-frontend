@@ -33,6 +33,9 @@ object TestOps {
     def withSessionId(sessionId: String = "some-valid-session-id"): FakeRequest[T] =
       r.withSession(SessionKeys.sessionId -> sessionId)
 
+    def withAuthSession(authToken: String = "some-valid-auth-token"): FakeRequest[T] =
+      r.withSession(SessionKeys.authToken -> authToken)
+
     def withEmailInSession(journeyId: JourneyId, email: EmailAddress = EmailAddress("blah@blah.com")): FakeRequest[T] =
       r.withSession(journeyId.value -> Json.obj(
         "email" -> email

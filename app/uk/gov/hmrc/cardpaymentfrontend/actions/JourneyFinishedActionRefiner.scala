@@ -16,21 +16,18 @@
 
 package uk.gov.hmrc.cardpaymentfrontend.actions
 
-import play.api.mvc.{ActionBuilder, AnyContent, DefaultActionBuilder, Request}
+import play.api.mvc.{ActionRefiner, Result, Results}
 
 import javax.inject.{Inject, Singleton}
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class Actions @Inject() (
-    actionBuilder:                DefaultActionBuilder,
-    getJourneyActionRefiner:      GetJourneyActionRefiner,
-    journeyFinishedActionRefiner: JourneyFinishedActionRefiner
-) {
+class JourneyFinishedActionRefiner @Inject() ()(implicit ec: ExecutionContext) extends ActionRefiner[JourneyRequest, JourneyRequest] {
 
-  val default: ActionBuilder[Request, AnyContent] = actionBuilder
+  override protected[actions] def refine[A](request: JourneyRequest[A]): Future[Either[Result, JourneyRequest[A]]] = {
+    if (request.journey.status.isTerminalState) Future.successful(Right(request))
+    else Future.successful(Left(Results.NotFound("Journey not in valid state")))
+  }
 
-  val journeyAction: ActionBuilder[JourneyRequest, AnyContent] = default.andThen[JourneyRequest](getJourneyActionRefiner)
-
-  val journeyFinishedAction: ActionBuilder[JourneyRequest, AnyContent] = journeyAction.andThen[JourneyRequest](journeyFinishedActionRefiner)
-
+  override protected def executionContext: ExecutionContext = ec
 }
