@@ -133,7 +133,7 @@ class ChangeYourAnswerControllerSpec extends ItSpec {
       val result = systemUnderTest.renderPage0()(fakeGetRequest)
       val document = Jsoup.parse(contentAsString(result))
       val textOfBody = document.select("body").text()
-      textOfBody.contains("Total to pay") shouldBe true
+      textOfBody.contains("Amount") shouldBe true
     }
 
     "render the amount title of PfSa in Welsh" in {
@@ -141,7 +141,7 @@ class ChangeYourAnswerControllerSpec extends ItSpec {
       val result = systemUnderTest.renderPage0()(fakeGetRequestInWelsh)
       val document = Jsoup.parse(contentAsString(result))
       val textOfBody = document.select("body").text()
-      textOfBody.contains("Cyfanswm i’w dalu") shouldBe true
+      textOfBody.contains("Swm") shouldBe true
     }
 
     "render the amount value of PfSa" in {
