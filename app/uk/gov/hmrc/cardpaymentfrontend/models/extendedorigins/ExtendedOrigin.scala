@@ -35,7 +35,7 @@ trait ExtendedOrigin {
   }
 
   def amount(request: JourneyRequest[AnyContent]): String = request.journey.amountInPence match {
-    case Some(amt) => amt.formatInPounds
+    case Some(amt) => s"£${amt.inPoundsRoundedFormatted}"
     case None      => "" //todo: logging here
   }
 
