@@ -18,6 +18,8 @@
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.hmrcstandardpage.HmrcStandardPageParams
 @import uk.gov.hmrc.govukfrontend.views.Aliases.BackLink
 @import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcReportTechnicalIssueHelper
+@import uk.gov.hmrc.hmrcfrontend.views.viewmodels.hmrcstandardpage.TemplateOverrides
+@import views.html.helper.CSPNonce
 
 @this(
         hmrcStandardPage: HmrcStandardPage,
@@ -27,7 +29,8 @@
 @(
         pageTitle: Option[String] = None,
         showBackLink: Boolean = true,
-        backLinkOverride: Option[BackLink] = None
+        backLinkOverride: Option[BackLink] = None,
+        additionalScripts: Option[Html] = None
 )(contentBlock: Html)(implicit request: RequestHeader, messages: Messages)
 
 @content = {
@@ -35,8 +38,16 @@
     @hmrcReportTechnicalIssueHelper()
 }
 
+@scripts = {
+    <script type="module" src="@{controllers.routes.Assets.versioned("lib/jquery/jquery.min.js")}" @{CSPNonce.attr}></script>
+    @additionalScripts.getOrElse(Html(""))
+}
+
 @hmrcStandardPage(
   HmrcStandardPageParams(
+      templateOverrides = TemplateOverrides(
+          additionalScriptsBlock = Some(scripts)
+      ),
       pageTitle = pageTitle,
       isWelshTranslationAvailable = true,
       backLink = {

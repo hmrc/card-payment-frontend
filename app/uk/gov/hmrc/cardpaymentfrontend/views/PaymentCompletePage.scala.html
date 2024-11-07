@@ -16,11 +16,12 @@
 
 @import payapi.corcommon.model.Reference
 @import uk.gov.hmrc.cardpaymentfrontend.views.html.Layout
-@import uk.gov.hmrc.govukfrontend.views.Aliases.{Key, SummaryList, Text, Value}
+@import uk.gov.hmrc.govukfrontend.views.Aliases.{SummaryList, Text}
 @import uk.gov.hmrc.govukfrontend.views.html.components.{GovukPanel, GovukSummaryList, Panel}
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 @import uk.gov.hmrc.cardpaymentfrontend.models.EmailAddress
+@import views.html.helper.CSPNonce
 
 @this(
         govukPanel: GovukPanel,
@@ -34,6 +35,8 @@
         maybeEmailAddress: Option[EmailAddress],
         maybeReturnUrl: Option[String]
 )(implicit request: RequestHeader, messages: Messages)
+
+@additionalScript = { <script type="module" src="@{controllers.routes.Assets.versioned("javascripts/print-dialogue.js")}" @{CSPNonce.attr}></script> }
 
 @heading = @{messages("payment-complete.panel.title")}
 
@@ -56,7 +59,11 @@
     }
 }
 
-@layout(pageTitle = Some(heading), showBackLink = false) {
+@layout(
+    pageTitle = Some(heading),
+    showBackLink = false,
+    additionalScripts = Some(additionalScript)
+) {
 
     @govukPanel(Panel(
         title = Text(heading),
@@ -67,8 +74,10 @@
 
     @govukSummaryList(SummaryList(summaryListRows))
 
-    <p id="print-link" class="govuk-body govuk-!-display-none-print">
-        <a href="javascript:window.print()" class="govuk-link">@Messages("payment-complete.print-link")</a>
+    <p id="print-link-wrapper" class="govuk-body js-visible govuk-!-display-none-print">
+        <a id="print-page" class="govuk-link" href="#print-dialogue">
+            @Messages("payment-complete.print-link")
+        </a>
     </p>
 
     @maybeWhatHappensNextContent
