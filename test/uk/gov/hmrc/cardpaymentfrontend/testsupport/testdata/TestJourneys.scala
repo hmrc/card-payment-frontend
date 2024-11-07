@@ -148,7 +148,7 @@ object TestJourneys {
       )),
       status               = PaymentStatuses.Successful,
       createdOn            = LocalDateTime.parse("2027-11-02T16:28:55.185"),
-      journeySpecificData  = JsdPtaSa(utr                  = SaUtr("1234567895"), defaultAmountInPence = AmountInPence(1234), dueDate = Some(LocalDate.of(2028, 12, 12))),
+      journeySpecificData  = JsdPtaSa(utr                  = SaUtr("1234567895"), defaultAmountInPence = Some(AmountInPence(1234)), dueDate = Some(LocalDate.of(2028, 12, 12))),
       chosenWayToPay       = None
     )
 
@@ -167,7 +167,7 @@ object TestJourneys {
       )),
       status               = PaymentStatuses.Successful,
       createdOn            = LocalDateTime.parse("2027-11-02T16:28:55.185"),
-      journeySpecificData  = JsdPtaSa(utr                  = SaUtr("1234567895"), defaultAmountInPence = AmountInPence(1234), dueDate = Some(LocalDate.of(2028, 12, 12))),
+      journeySpecificData  = JsdPtaSa(utr                  = SaUtr("1234567895"), defaultAmountInPence = Some(AmountInPence(1234)), dueDate = Some(LocalDate.of(2028, 12, 12))),
       chosenWayToPay       = None
     )
   }
@@ -212,16 +212,4 @@ object TestJourneys {
     )
   }
 
-  val testPfSaJourneyCreated: Journey[JsdPfSa] = Journey[JsdPfSa](
-    _id                  = JourneyId("TestJourneyId-44f9-ad7f-01e1d3d8f151"),
-    sessionId            = Some(SessionId("TestSession-4b87460d-6f43-4c4c-b810-d6f87c774854")),
-    amountInPence        = None,
-    emailTemplateOptions = None,
-    navigation           = None,
-    order                = None,
-    status               = PaymentStatuses.Created,
-    createdOn            = LocalDateTime.parse("2027-11-02T16:28:55.185"),
-    journeySpecificData  = JsdPfSa(utr = None),
-    chosenWayToPay       = None
-  )
 }

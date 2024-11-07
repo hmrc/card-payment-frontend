@@ -36,4 +36,10 @@ class ExtendedBtaSa extends ExtendedOrigin {
     case j: JsdBtaSa => Some(BtaSaSessionData(j.utr))
     case _           => throw new RuntimeException("Incorrect origin found")
   }
+
+  override def surveyAuditName: String = "self-assessment"
+  override def surveyReturnHref: String = "/business-account"
+  override def surveyReturnMessageKey: String = "payments-survey.bta.return-message"
+  override def surveyIsWelshSupported: Boolean = true
+  override def surveyBannerTitle: String = serviceNameMessageKey
 }

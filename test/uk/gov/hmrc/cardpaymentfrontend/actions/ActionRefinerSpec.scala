@@ -16,6 +16,7 @@
 
 package uk.gov.hmrc.cardpaymentfrontend.actions
 
+import payapi.cardpaymentjourney.model.journey.{Journey, JourneySpecificData}
 import play.api.mvc.{AnyContent, Result, Results}
 import play.api.test.FakeRequest
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.ItSpec
@@ -40,6 +41,25 @@ class ActionRefinerSpec extends ItSpec {
       val result: Either[Result, JourneyRequest[AnyContent]] = systemUnderTest.refine(fakeRequest).futureValue
       result.isRight shouldBe true
       result.map(_.journey) shouldBe Right(TestJourneys.PfSa.testPfSaJourneyCreated)
+    }
+  }
+
+  "journeyFinishedActionRefiner" - {
+
+    val systemUnderTest: JourneyFinishedActionRefiner = app.injector.instanceOf[JourneyFinishedActionRefiner]
+
+      def fakeRequest(journey: Journey[JourneySpecificData]): JourneyRequest[AnyContent] = new JourneyRequest(journey, FakeRequest())
+
+    "should return a left when journey in JourneyRequest is not in a 'terminal state' (i.e. finished)" in {
+      val request = fakeRequest(TestJourneys.PfSa.testPfSaJourneyCreated)
+      systemUnderTest.refine(request).futureValue shouldBe Left(Results.NotFound("Journey not in valid state"))
+    }
+
+    "should return a right when journey in JourneyRequest is in a 'terminal state' (i.e. finished)" in {
+      val request = fakeRequest(TestJourneys.PfSa.testPfSaJourneySuccessDebit)
+      val result: Either[Result, JourneyRequest[AnyContent]] = systemUnderTest.refine(request).futureValue
+      result.isRight shouldBe true
+      result.map(_.journey) shouldBe Right(TestJourneys.PfSa.testPfSaJourneySuccessDebit)
     }
   }
 

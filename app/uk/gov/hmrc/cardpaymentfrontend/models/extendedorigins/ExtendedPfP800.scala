@@ -33,4 +33,10 @@ class ExtendedPfP800 extends ExtendedOrigin {
   }
 
   override def openBankingOriginSpecificSessionData: JourneySpecificData => Option[OriginSpecificSessionData] = _ => None
+
+  override def surveyAuditName: String = "p800-or-pa302"
+  override def surveyReturnHref: String = "https://www.gov.uk/government/organisations/hm-revenue-customs"
+  override def surveyReturnMessageKey: String = "payments-survey.other.return-message"
+  override def surveyIsWelshSupported: Boolean = true
+  override def surveyBannerTitle: String = serviceNameMessageKey
 }

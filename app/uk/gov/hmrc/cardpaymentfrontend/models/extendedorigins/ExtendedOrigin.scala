@@ -30,4 +30,11 @@ trait ExtendedOrigin {
   def paymentMethods(): Set[PaymentMethod]
   def checkYourAnswersRows(): Seq[CheckYourAnswersRow]
   def openBankingOriginSpecificSessionData: JourneySpecificData => Option[OriginSpecificSessionData]
+
+  //payments survey stuff
+  def surveyAuditName: String
+  def surveyReturnHref: String
+  def surveyReturnMessageKey: String
+  def surveyIsWelshSupported: Boolean
+  def surveyBannerTitle: String
 }

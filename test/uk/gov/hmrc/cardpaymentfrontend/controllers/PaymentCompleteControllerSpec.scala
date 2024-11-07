@@ -138,7 +138,7 @@ class PaymentCompleteControllerSpec extends ItSpec {
         surveyWrapper.hasClass("govuk-!-display-none-print") shouldBe true
         surveyWrapper.select("h2").text() shouldBe "Help us improve our services"
         surveyWrapper.select("#survey-content").text() shouldBe "We use your feedback to make our services better."
-        surveyWrapper.select("#survey-link-wrapper").html() shouldBe """<a class="govuk-link" href="ADD_ME">Tell us what you think of this service</a> (takes 30 seconds)"""
+        surveyWrapper.select("#survey-link-wrapper").html() shouldBe """<a class="govuk-link" href="/pay-by-card/start-payment-survey">Tell us what you think of this service</a> (takes 30 seconds)"""
       }
 
       "render the survey content correctly in welsh" in {
@@ -149,7 +149,7 @@ class PaymentCompleteControllerSpec extends ItSpec {
         surveyWrapper.hasClass("govuk-!-display-none-print") shouldBe true
         surveyWrapper.select("h2").text() shouldBe "Helpwch ni i wella ein gwasanaethau"
         surveyWrapper.select("#survey-content").text() shouldBe "Rydym yn defnyddio’ch adborth i wella ein gwasanaethau."
-        surveyWrapper.select("#survey-link-wrapper").html() shouldBe """<a class="govuk-link" href="ADD_ME">Rhowch wybod i ni beth yw eich barn am y gwasanaeth hwn</a> (mae’n cymryd 30 eiliad)"""
+        surveyWrapper.select("#survey-link-wrapper").html() shouldBe """<a class="govuk-link" href="/pay-by-card/start-payment-survey">Rhowch wybod i ni beth yw eich barn am y gwasanaeth hwn</a> (mae’n cymryd 30 eiliad)"""
       }
 
         def testSummaryRows(testData: Journey[JourneySpecificData], fakeRequest: FakeRequest[_], expectedSummaryListRows: List[(String, String)]) = {

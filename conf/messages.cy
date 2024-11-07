@@ -48,7 +48,7 @@ service-name.PfSpiritDrinks =
 service-name.PfInheritanceTax =
 service-name.Mib =
 service-name.PfClass3Ni =
-service-name.PtaSa =
+service-name.PtaSa = Talu eich Hunanasesiad
 service-name.PfWineAndCider =
 service-name.PfBioFuels =
 service-name.PfAirPass =
@@ -284,3 +284,8 @@ payment-failed.failed-try-again = Rhowch gynnig arall ar dalu drwy gerdyn
 
 payment-failed.failed-check-details = Gwiriwch y manylion a rhowch gynnig arall arni
 payment-failed.failed-check-again = Gwiriwch fod y manylion a nodwyd gennych yn gywir neu rhowch gynnig ar gerdyn gwahanol.
+
+## Payments survey
+payments-survey.bta.return-message = Dim diolch, dychwelyd i cyfrif treth busnes
+payments-survey.pta.return-message = Dim diolch, dychwelyd i cyfrif treth personol
+payments-survey.other.return-message = Dim diolch
