@@ -87,7 +87,7 @@
         <p id="survey-content" class="govuk-body">@Messages("payment-complete.survey.p1")</p>
         <p id="survey-link-wrapper" class="govuk-body">
             @* TODO update the href to link out to payments-survey as it is done in pay-frontend, needs origins etc. OPS-12861 *@
-            <a class="govuk-link" href="ADD_ME">@Messages("payment-complete.survey.p2.part1")</a>
+            <a class="govuk-link" href="@{uk.gov.hmrc.cardpaymentfrontend.controllers.routes.PaymentsSurveyController.startSurvey.url}">@Messages("payment-complete.survey.p2.part1")</a>
             @Messages("payment-complete.survey.p2.part2")
         </p>
     </div>

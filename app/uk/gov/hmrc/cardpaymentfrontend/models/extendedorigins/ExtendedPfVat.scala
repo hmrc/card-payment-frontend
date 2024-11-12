@@ -78,4 +78,10 @@ class ExtendedPfVat extends ExtendedOrigin {
     case j: JsdPfVat => Some(PfVatSessionData(j.vrn, j.chargeRef))
     case _           => throw new RuntimeException("Incorrect origin found")
   }
+
+  override def surveyAuditName: String = "vat"
+  override def surveyReturnHref: String = "https://www.gov.uk/government/organisations/hm-revenue-customs"
+  override def surveyReturnMessageKey: String = "payments-survey.other.return-message"
+  override def surveyIsWelshSupported: Boolean = true
+  override def surveyBannerTitle: String = serviceNameMessageKey
 }

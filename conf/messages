@@ -49,7 +49,7 @@ service-name.PfSpiritDrinks =
 service-name.PfInheritanceTax =
 service-name.Mib =
 service-name.PfClass3Ni =
-service-name.PtaSa =
+service-name.PtaSa = Pay your Self Assessment
 service-name.PfWineAndCider =
 service-name.PfBioFuels =
 service-name.PfAirPass =
@@ -284,3 +284,8 @@ payment-failed.failed-check-details = Check details and try again
 payment-failed.failed-check-again = Check the details you entered are correct or try a different card.
 
 
+## Payments survey
+payments-survey.bta.return-message = Skip survey, return to business tax account
+payments-survey.pta.return-message = Skip survey, return to personal tax account
+payments-survey.other.return-message = Skip survey
+payments-survey.bta.banner-title = Business tax account
