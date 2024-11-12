@@ -31,10 +31,16 @@ trait ExtendedOrigin {
 
   def amount(request: JourneyRequest[AnyContent]): String = request.journey.amountInPence match {
     case Some(amt) => s"£${amt.inPoundsRoundedFormatted}"
-    case None      => "" //todo: logging here
+    case None      => "???" //todo: logging here
   }
 
-  def reference(request: JourneyRequest[AnyContent]): String
+  def reference(request: JourneyRequest[AnyContent]): String = {
+    request.journey.journeySpecificData.reference match {
+      case Some(Reference(ref)) => ref
+      case None                 => "???" //todo:... and log
+    }
+  }
+
   //denotes which links/payment methods to show on the card-fees page.
   def cardFeesPagePaymentMethods: Set[PaymentMethod]
   def paymentMethods(): Set[PaymentMethod]

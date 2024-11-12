@@ -16,22 +16,20 @@
 
 package uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins
 
+import payapi.cardpaymentjourney.model.journey.{JourneySpecificData, JsdBtaSa}
 import play.api.i18n.Messages
 import play.api.mvc.{AnyContent, Call}
 import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
-import payapi.cardpaymentjourney.model.journey.{JourneySpecificData, JsdBtaSa}
-import uk.gov.hmrc.cardpaymentfrontend.models.CheckYourAnswersRow
 import uk.gov.hmrc.cardpaymentfrontend.models.openbanking.{BtaSaSessionData, OriginSpecificSessionData}
-import uk.gov.hmrc.cardpaymentfrontend.utils.PaymentMethods.{OneOffDirectDebit, OpenBanking}
 import uk.gov.hmrc.cardpaymentfrontend.models.{Address, CheckYourAnswersRow, EmailAddress, Link}
-import uk.gov.hmrc.cardpaymentfrontend.utils._
 import uk.gov.hmrc.cardpaymentfrontend.session.JourneySessionSupport._
+import uk.gov.hmrc.cardpaymentfrontend.utils.PaymentMethods.{OneOffDirectDebit, OpenBanking}
+import uk.gov.hmrc.cardpaymentfrontend.utils._
 
 object ExtendedBtaSa extends ExtendedOrigin {
   override val serviceNameMessageKey: String = "service-name.BtaSa"
   override val taxNameMessageKey: String = "payment-complete.tax-name.BtaSa"
 
-  def reference(request: JourneyRequest[AnyContent]): String = "1097172564" //This would really come from the journey either pay-api or stored locally
   def cardFeesPagePaymentMethods: Set[PaymentMethod] = Set(OpenBanking, OneOffDirectDebit)
   //todo add these when we do that ticket
   def paymentMethods(): Set[PaymentMethod] = Set.empty

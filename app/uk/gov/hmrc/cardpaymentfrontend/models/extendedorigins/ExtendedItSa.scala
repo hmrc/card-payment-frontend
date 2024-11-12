@@ -16,23 +16,19 @@
 
 package uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins
 
-import play.api.i18n.Messages
 import payapi.cardpaymentjourney.model.journey.{JourneySpecificData, JsdItSa}
-import play.api.mvc.AnyContent
+import play.api.i18n.Messages
 import play.api.mvc.{AnyContent, Call}
 import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
-import uk.gov.hmrc.cardpaymentfrontend.models.CheckYourAnswersRow
 import uk.gov.hmrc.cardpaymentfrontend.models.openbanking.{ItSaSessionData, OriginSpecificSessionData}
-import uk.gov.hmrc.cardpaymentfrontend.utils.PaymentMethods.Bacs
-import uk.gov.hmrc.cardpaymentfrontend.utils._
 import uk.gov.hmrc.cardpaymentfrontend.models.{Address, CheckYourAnswersRow, EmailAddress, Link}
-import uk.gov.hmrc.cardpaymentfrontend.utils.PaymentMethod
 import uk.gov.hmrc.cardpaymentfrontend.session.JourneySessionSupport._
+import uk.gov.hmrc.cardpaymentfrontend.utils.PaymentMethod
+import uk.gov.hmrc.cardpaymentfrontend.utils.PaymentMethods.Bacs
 
 object ExtendedItSa extends ExtendedOrigin {
   override val serviceNameMessageKey: String = "service-name.ItSa"
   override val taxNameMessageKey: String = "payment-complete.tax-name.ItSa"
-  def reference(request: JourneyRequest[AnyContent]): String = "1097172564" //This would really come from the journey either pay-api or stored locally
   def cardFeesPagePaymentMethods: Set[PaymentMethod] = Set(Bacs)
   //todo add these when we do that ticket
   def paymentMethods(): Set[PaymentMethod] = Set.empty

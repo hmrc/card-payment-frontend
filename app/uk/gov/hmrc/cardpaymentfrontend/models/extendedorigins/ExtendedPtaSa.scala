@@ -17,17 +17,14 @@
 package uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins
 
 import payapi.cardpaymentjourney.model.journey.{JourneySpecificData, JsdPtaSa}
-import uk.gov.hmrc.cardpaymentfrontend.models.CheckYourAnswersRow
-import uk.gov.hmrc.cardpaymentfrontend.models.openbanking.{OriginSpecificSessionData, PtaSaSessionData}
-import uk.gov.hmrc.cardpaymentfrontend.utils.PaymentMethods.{OneOffDirectDebit, OpenBanking}
-import uk.gov.hmrc.cardpaymentfrontend.utils._
-import payapi.corcommon.model.Reference
 import play.api.i18n.Messages
 import play.api.mvc.{AnyContent, Call}
 import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
+import uk.gov.hmrc.cardpaymentfrontend.models.openbanking.{OriginSpecificSessionData, PtaSaSessionData}
 import uk.gov.hmrc.cardpaymentfrontend.models.{Address, CheckYourAnswersRow, EmailAddress, Link}
-import uk.gov.hmrc.cardpaymentfrontend.utils.PaymentMethod
 import uk.gov.hmrc.cardpaymentfrontend.session.JourneySessionSupport._
+import uk.gov.hmrc.cardpaymentfrontend.utils.PaymentMethod
+import uk.gov.hmrc.cardpaymentfrontend.utils.PaymentMethods.{OneOffDirectDebit, OpenBanking}
 
 object ExtendedPtaSa extends ExtendedOrigin {
   override val serviceNameMessageKey: String = "service-name.PtaSa"
@@ -118,4 +115,5 @@ object ExtendedPtaSa extends ExtendedOrigin {
   override def surveyReturnMessageKey: String = "payments-survey.pta.return-message"
   override def surveyIsWelshSupported: Boolean = true
   override def surveyBannerTitle: String = serviceNameMessageKey
+
 }

@@ -17,11 +17,10 @@
 package uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins
 
 import payapi.cardpaymentjourney.model.journey.{JourneySpecificData, JsdPfVat}
-import play.api.mvc.Call
-import uk.gov.hmrc.cardpaymentfrontend.models.openbanking.{OriginSpecificSessionData, PfVatSessionData}
 import play.api.i18n.Messages
 import play.api.mvc.{AnyContent, Call}
 import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
+import uk.gov.hmrc.cardpaymentfrontend.models.openbanking.{OriginSpecificSessionData, PfVatSessionData}
 import uk.gov.hmrc.cardpaymentfrontend.models.{CheckYourAnswersRow, Link}
 import uk.gov.hmrc.cardpaymentfrontend.utils.PaymentMethods._
 import uk.gov.hmrc.cardpaymentfrontend.utils._
@@ -29,7 +28,6 @@ import uk.gov.hmrc.cardpaymentfrontend.utils._
 object ExtendedPfVat extends ExtendedOrigin {
   override val serviceNameMessageKey: String = "add.message.key.here"
   override val taxNameMessageKey: String = "payment-complete.tax-name.PfVat"
-  def reference(request: JourneyRequest[AnyContent]): String = "999964805"
   def cardFeesPagePaymentMethods: Set[PaymentMethod] = Set.empty[PaymentMethod]
   def paymentMethods(): Set[PaymentMethod] = Set(Card, OpenBanking, VariableDirectDebit, Bacs)
 

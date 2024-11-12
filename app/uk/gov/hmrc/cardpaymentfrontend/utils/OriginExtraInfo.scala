@@ -18,7 +18,6 @@ package uk.gov.hmrc.cardpaymentfrontend.utils
 
 import uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins.{DefaultExtendedOrigin, ExtendedBtaSa, ExtendedItSa, ExtendedOrigin, ExtendedPfP800, ExtendedPfSa, ExtendedPfVat, ExtendedPtaSa}
 import payapi.corcommon.model.{Origin, Origins}
-import uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins._
 import uk.gov.hmrc.cardpaymentfrontend.utils.PaymentMethods._
 
 import javax.inject.{Inject, Singleton}
@@ -135,8 +134,8 @@ class OriginExtraInfo @Inject() () {
 
   def lift(origin: Origin): ExtendedOrigin = {
     origin match {
-      case Origins.PfSa                     => new ExtendedPfSa
-      case Origins.PfVat                    => new ExtendedPfVat
+      case Origins.PfSa                     => ExtendedPfSa
+      case Origins.PfVat                    => ExtendedPfVat
       case Origins.PfCt                     => new DefaultExtendedOrigin
       case Origins.PfEpayeNi                => new DefaultExtendedOrigin
       case Origins.PfEpayeLpp               => new DefaultExtendedOrigin
@@ -151,7 +150,7 @@ class OriginExtraInfo @Inject() () {
       case Origins.PfClass2Ni               => new DefaultExtendedOrigin
       case Origins.PfInsurancePremium       => new DefaultExtendedOrigin
       case Origins.PfPsAdmin                => new DefaultExtendedOrigin
-      case Origins.BtaSa                    => new ExtendedBtaSa
+      case Origins.BtaSa                    => ExtendedBtaSa
       case Origins.AppSa                    => new DefaultExtendedOrigin
       case Origins.BtaVat                   => new DefaultExtendedOrigin
       case Origins.BtaEpayeBill             => new DefaultExtendedOrigin
@@ -167,7 +166,7 @@ class OriginExtraInfo @Inject() () {
       case Origins.DdSdil                   => new DefaultExtendedOrigin
       case Origins.VcVatReturn              => new DefaultExtendedOrigin
       case Origins.VcVatOther               => new DefaultExtendedOrigin
-      case Origins.ItSa                     => new ExtendedItSa
+      case Origins.ItSa                     => ExtendedItSa
       case Origins.Amls                     => new DefaultExtendedOrigin
       case Origins.Ppt                      => new DefaultExtendedOrigin
       case Origins.PfCdsCash                => new DefaultExtendedOrigin
@@ -176,7 +175,7 @@ class OriginExtraInfo @Inject() () {
       case Origins.PfInheritanceTax         => new DefaultExtendedOrigin
       case Origins.Mib                      => new DefaultExtendedOrigin
       case Origins.PfClass3Ni               => new DefaultExtendedOrigin
-      case Origins.PtaSa                    => new ExtendedPtaSa
+      case Origins.PtaSa                    => ExtendedPtaSa
       case Origins.PfWineAndCider           => new DefaultExtendedOrigin
       case Origins.PfBioFuels               => new DefaultExtendedOrigin
       case Origins.PfAirPass                => new DefaultExtendedOrigin
@@ -211,82 +210,6 @@ class OriginExtraInfo @Inject() () {
       case Origins.PfAlcoholDuty            => new DefaultExtendedOrigin
       case Origins.AlcoholDuty              => new DefaultExtendedOrigin
       case Origins.VatC2c                   => new DefaultExtendedOrigin
-      case Origins.PfSa                     => ExtendedPfSa
-      case Origins.PfVat                    => ExtendedPfVat
-      case Origins.PfCt                     => new DefaultExtendedOrigin()
-      case Origins.PfEpayeNi                => new DefaultExtendedOrigin()
-      case Origins.PfEpayeLpp               => new DefaultExtendedOrigin()
-      case Origins.PfEpayeSeta              => new DefaultExtendedOrigin()
-      case Origins.PfEpayeLateCis           => new DefaultExtendedOrigin()
-      case Origins.PfEpayeP11d              => new DefaultExtendedOrigin()
-      case Origins.PfSdlt                   => new DefaultExtendedOrigin()
-      case Origins.PfCds                    => new DefaultExtendedOrigin()
-      case Origins.PfOther                  => new DefaultExtendedOrigin()
-      case Origins.PfP800                   => new ExtendedPfP800()
-      case Origins.PtaP800                  => new DefaultExtendedOrigin()
-      case Origins.PfClass2Ni               => new DefaultExtendedOrigin()
-      case Origins.PfInsurancePremium       => new DefaultExtendedOrigin()
-      case Origins.PfPsAdmin                => new DefaultExtendedOrigin()
-      case Origins.BtaSa                    => ExtendedBtaSa
-      case Origins.AppSa                    => new DefaultExtendedOrigin()
-      case Origins.BtaVat                   => new DefaultExtendedOrigin()
-      case Origins.BtaEpayeBill             => new DefaultExtendedOrigin()
-      case Origins.BtaEpayePenalty          => new DefaultExtendedOrigin()
-      case Origins.BtaEpayeInterest         => new DefaultExtendedOrigin()
-      case Origins.BtaEpayeGeneral          => new DefaultExtendedOrigin()
-      case Origins.BtaClass1aNi             => new DefaultExtendedOrigin()
-      case Origins.BtaCt                    => new DefaultExtendedOrigin()
-      case Origins.BtaSdil                  => new DefaultExtendedOrigin()
-      case Origins.BcPngr                   => new DefaultExtendedOrigin()
-      case Origins.Parcels                  => new DefaultExtendedOrigin()
-      case Origins.DdVat                    => new DefaultExtendedOrigin()
-      case Origins.DdSdil                   => new DefaultExtendedOrigin()
-      case Origins.VcVatReturn              => new DefaultExtendedOrigin()
-      case Origins.VcVatOther               => new DefaultExtendedOrigin()
-      case Origins.ItSa                     => ExtendedItSa
-      case Origins.Amls                     => new DefaultExtendedOrigin()
-      case Origins.Ppt                      => new DefaultExtendedOrigin()
-      case Origins.PfCdsCash                => new DefaultExtendedOrigin()
-      case Origins.PfPpt                    => new DefaultExtendedOrigin()
-      case Origins.PfSpiritDrinks           => new DefaultExtendedOrigin()
-      case Origins.PfInheritanceTax         => new DefaultExtendedOrigin()
-      case Origins.Mib                      => new DefaultExtendedOrigin()
-      case Origins.PfClass3Ni               => new DefaultExtendedOrigin()
-      case Origins.PtaSa                    => ExtendedPtaSa
-      case Origins.PfWineAndCider           => new DefaultExtendedOrigin()
-      case Origins.PfBioFuels               => new DefaultExtendedOrigin()
-      case Origins.PfAirPass                => new DefaultExtendedOrigin()
-      case Origins.PfMgd                    => new DefaultExtendedOrigin()
-      case Origins.PfBeerDuty               => new DefaultExtendedOrigin()
-      case Origins.PfGamingOrBingoDuty      => new DefaultExtendedOrigin()
-      case Origins.PfGbPbRgDuty             => new DefaultExtendedOrigin()
-      case Origins.PfLandfillTax            => new DefaultExtendedOrigin()
-      case Origins.PfSdil                   => new DefaultExtendedOrigin()
-      case Origins.PfAggregatesLevy         => new DefaultExtendedOrigin()
-      case Origins.PfClimateChangeLevy      => new DefaultExtendedOrigin()
-      case Origins.PfSimpleAssessment       => new DefaultExtendedOrigin()
-      case Origins.PtaSimpleAssessment      => new DefaultExtendedOrigin()
-      case Origins.AppSimpleAssessment      => new DefaultExtendedOrigin()
-      case Origins.PfTpes                   => new DefaultExtendedOrigin()
-      case Origins.CapitalGainsTax          => new DefaultExtendedOrigin()
-      case Origins.EconomicCrimeLevy        => new DefaultExtendedOrigin()
-      case Origins.PfEconomicCrimeLevy      => new DefaultExtendedOrigin()
-      case Origins.PfJobRetentionScheme     => new DefaultExtendedOrigin()
-      case Origins.JrsJobRetentionScheme    => new DefaultExtendedOrigin()
-      case Origins.PfImportedVehicles       => new DefaultExtendedOrigin()
-      case Origins.PfChildBenefitRepayments => new DefaultExtendedOrigin()
-      case Origins.NiEuVatOss               => new DefaultExtendedOrigin()
-      case Origins.PfNiEuVatOss             => new DefaultExtendedOrigin()
-      case Origins.NiEuVatIoss              => new DefaultExtendedOrigin()
-      case Origins.PfNiEuVatIoss            => new DefaultExtendedOrigin()
-      case Origins.PfAmls                   => new DefaultExtendedOrigin()
-      case Origins.PfAted                   => new DefaultExtendedOrigin()
-      case Origins.PfCdsDeferment           => new DefaultExtendedOrigin()
-      case Origins.PfTrust                  => new DefaultExtendedOrigin()
-      case Origins.PtaClass3Ni              => new DefaultExtendedOrigin()
-      case Origins.PfAlcoholDuty            => new DefaultExtendedOrigin()
-      case Origins.AlcoholDuty              => new DefaultExtendedOrigin()
-      case Origins.VatC2c                   => new DefaultExtendedOrigin()
     }
   }
 }
