@@ -135,7 +135,7 @@ object TestJourneys {
       )),
       status               = PaymentStatuses.Successful,
       createdOn            = LocalDateTime.parse("2027-11-02T16:28:55.185"),
-      journeySpecificData  = JsdPtaSa(utr                  = SaUtr("1234567895"), defaultAmountInPence = AmountInPence(1234), dueDate = Some(LocalDate.of(2028, 12, 12))),
+      journeySpecificData  = JsdPtaSa(utr                  = SaUtr("1234567895"), defaultAmountInPence = Some(AmountInPence(1234)), dueDate = Some(LocalDate.of(2028, 12, 12))),
       chosenWayToPay       = None
     )
 
@@ -154,7 +154,7 @@ object TestJourneys {
       )),
       status               = PaymentStatuses.Successful,
       createdOn            = LocalDateTime.parse("2027-11-02T16:28:55.185"),
-      journeySpecificData  = JsdPtaSa(utr                  = SaUtr("1234567895"), defaultAmountInPence = AmountInPence(1234), dueDate = Some(LocalDate.of(2028, 12, 12))),
+      journeySpecificData  = JsdPtaSa(utr                  = SaUtr("1234567895"), defaultAmountInPence = Some(AmountInPence(1234)), dueDate = Some(LocalDate.of(2028, 12, 12))),
       chosenWayToPay       = None
     )
   }

@@ -53,8 +53,8 @@ object ExtendedBtaSa extends ExtendedOrigin {
       Seq(amount(request)),
       Some(Link(
         Call("GET", "this/that"),
-        "pfvat-reference-change-link",
-        "pfvat.reference.change-link.text"
+        "btasa-reference-change-link",
+        "btasa.reference.change-link.text"
       ))
     )
 
