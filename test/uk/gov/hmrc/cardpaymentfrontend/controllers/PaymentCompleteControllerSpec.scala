@@ -111,11 +111,12 @@ class PaymentCompleteControllerSpec extends ItSpec {
         PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.testPfSaJourneySuccessDebit)
         val result = systemUnderTest.renderPage(fakeGetRequest)
         val document = Jsoup.parse(contentAsString(result))
-        val printLinkParagraphWrapper = document.select("#print-link")
-        printLinkParagraphWrapper.hasClass("govuk-!-display-none-print") shouldBe true
-        val printLink = printLinkParagraphWrapper.select("a")
+        val printLinkWrapper = document.select("#print-link-wrapper")
+        printLinkWrapper.hasClass("govuk-!-display-none-print") shouldBe true
+        printLinkWrapper.hasClass("js-visible") shouldBe true
+        val printLink = printLinkWrapper.select("a")
         printLink.hasClass("govuk-link") shouldBe true
-        printLink.attr("href") shouldBe "javascript:window.print()"
+        printLink.attr("href") shouldBe "#print-dialogue"
         printLink.text() shouldBe "Print your payment confirmation"
       }
 
@@ -123,11 +124,12 @@ class PaymentCompleteControllerSpec extends ItSpec {
         PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.testPfSaJourneySuccessDebit)
         val result = systemUnderTest.renderPage(fakeGetRequestInWelsh)
         val document = Jsoup.parse(contentAsString(result))
-        val printLinkParagraphWrapper = document.select("#print-link")
-        printLinkParagraphWrapper.hasClass("govuk-!-display-none-print") shouldBe true
-        val printLink = printLinkParagraphWrapper.select("a")
+        val printLinkWrapper = document.select("#print-link-wrapper")
+        printLinkWrapper.hasClass("govuk-!-display-none-print") shouldBe true
+        printLinkWrapper.hasClass("js-visible") shouldBe true
+        val printLink = printLinkWrapper.select("a")
         printLink.hasClass("govuk-link") shouldBe true
-        printLink.attr("href") shouldBe "javascript:window.print()"
+        printLink.attr("href") shouldBe "#print-dialogue"
         printLink.text() shouldBe "Argraffwch cadarnhad o’ch taliad"
       }
 
