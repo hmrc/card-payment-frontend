@@ -16,6 +16,9 @@
 
 package uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins
 
+import play.api.i18n.Messages
+import play.api.mvc.AnyContent
+import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
 import payapi.cardpaymentjourney.model.journey.JourneySpecificData
 import uk.gov.hmrc.cardpaymentfrontend.models.CheckYourAnswersRow
 import uk.gov.hmrc.cardpaymentfrontend.models.openbanking.OriginSpecificSessionData
@@ -24,10 +27,10 @@ import uk.gov.hmrc.cardpaymentfrontend.utils.PaymentMethod
 class DefaultExtendedOrigin extends ExtendedOrigin {
   def serviceNameMessageKey = ""
   def taxNameMessageKey: String = ""
-  def reference(): String = ""
+  override def reference(request: JourneyRequest[AnyContent]): String = ""
   def cardFeesPagePaymentMethods: Set[PaymentMethod] = Set.empty[PaymentMethod]
   def paymentMethods(): Set[PaymentMethod] = Set.empty[PaymentMethod]
-  def checkYourAnswersRows(): Seq[CheckYourAnswersRow] = Seq.empty[CheckYourAnswersRow]
+  def checkYourAnswersRows(request: JourneyRequest[AnyContent])(implicit messages: Messages): Seq[CheckYourAnswersRow] = Seq.empty[CheckYourAnswersRow]
 
   override def openBankingOriginSpecificSessionData: JourneySpecificData => Option[OriginSpecificSessionData] = _ => None
 
@@ -36,4 +39,5 @@ class DefaultExtendedOrigin extends ExtendedOrigin {
   override def surveyReturnMessageKey: String = "payments-survey.other.return-message"
   override def surveyIsWelshSupported: Boolean = false
   override def surveyBannerTitle: String = serviceNameMessageKey
+
 }

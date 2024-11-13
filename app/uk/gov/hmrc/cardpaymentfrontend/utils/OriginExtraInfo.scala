@@ -16,8 +16,8 @@
 
 package uk.gov.hmrc.cardpaymentfrontend.utils
 
+import uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins.{DefaultExtendedOrigin, ExtendedBtaSa, ExtendedItSa, ExtendedOrigin, ExtendedPfP800, ExtendedPfSa, ExtendedPfVat, ExtendedPtaSa}
 import payapi.corcommon.model.{Origin, Origins}
-import uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins._
 import uk.gov.hmrc.cardpaymentfrontend.utils.PaymentMethods._
 
 import javax.inject.{Inject, Singleton}
@@ -134,8 +134,8 @@ class OriginExtraInfo @Inject() () {
 
   def lift(origin: Origin): ExtendedOrigin = {
     origin match {
-      case Origins.PfSa                     => new ExtendedPfSa
-      case Origins.PfVat                    => new ExtendedPfVat
+      case Origins.PfSa                     => ExtendedPfSa
+      case Origins.PfVat                    => ExtendedPfVat
       case Origins.PfCt                     => new DefaultExtendedOrigin
       case Origins.PfEpayeNi                => new DefaultExtendedOrigin
       case Origins.PfEpayeLpp               => new DefaultExtendedOrigin
@@ -150,7 +150,7 @@ class OriginExtraInfo @Inject() () {
       case Origins.PfClass2Ni               => new DefaultExtendedOrigin
       case Origins.PfInsurancePremium       => new DefaultExtendedOrigin
       case Origins.PfPsAdmin                => new DefaultExtendedOrigin
-      case Origins.BtaSa                    => new ExtendedBtaSa
+      case Origins.BtaSa                    => ExtendedBtaSa
       case Origins.AppSa                    => new DefaultExtendedOrigin
       case Origins.BtaVat                   => new DefaultExtendedOrigin
       case Origins.BtaEpayeBill             => new DefaultExtendedOrigin
@@ -166,7 +166,7 @@ class OriginExtraInfo @Inject() () {
       case Origins.DdSdil                   => new DefaultExtendedOrigin
       case Origins.VcVatReturn              => new DefaultExtendedOrigin
       case Origins.VcVatOther               => new DefaultExtendedOrigin
-      case Origins.ItSa                     => new ExtendedItSa
+      case Origins.ItSa                     => ExtendedItSa
       case Origins.Amls                     => new DefaultExtendedOrigin
       case Origins.Ppt                      => new DefaultExtendedOrigin
       case Origins.PfCdsCash                => new DefaultExtendedOrigin
@@ -175,7 +175,7 @@ class OriginExtraInfo @Inject() () {
       case Origins.PfInheritanceTax         => new DefaultExtendedOrigin
       case Origins.Mib                      => new DefaultExtendedOrigin
       case Origins.PfClass3Ni               => new DefaultExtendedOrigin
-      case Origins.PtaSa                    => new ExtendedPtaSa
+      case Origins.PtaSa                    => ExtendedPtaSa
       case Origins.PfWineAndCider           => new DefaultExtendedOrigin
       case Origins.PfBioFuels               => new DefaultExtendedOrigin
       case Origins.PfAirPass                => new DefaultExtendedOrigin

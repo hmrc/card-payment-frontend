@@ -17,24 +17,31 @@
 package uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins
 
 import payapi.cardpaymentjourney.model.journey.{JourneySpecificData, JsdPfSa}
-import play.api.mvc.Call
+import play.api.i18n.Messages
+import play.api.mvc.{AnyContent, Call}
+import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
 import uk.gov.hmrc.cardpaymentfrontend.models.openbanking.{OriginSpecificSessionData, PfSaSessionData}
-import uk.gov.hmrc.cardpaymentfrontend.models.{CheckYourAnswersRow, Link}
+import uk.gov.hmrc.cardpaymentfrontend.models.{Address, CheckYourAnswersRow, EmailAddress, Link}
+import uk.gov.hmrc.cardpaymentfrontend.session.JourneySessionSupport._
 import uk.gov.hmrc.cardpaymentfrontend.utils.PaymentMethod
 import uk.gov.hmrc.cardpaymentfrontend.utils.PaymentMethods.{Bacs, Card, OneOffDirectDebit, OpenBanking}
 
-class ExtendedPfSa extends ExtendedOrigin {
+object ExtendedPfSa extends ExtendedOrigin {
   override val serviceNameMessageKey: String = "service-name.PfSa"
   override val taxNameMessageKey: String = "payment-complete.tax-name.PfSa"
-  def reference(): String = "1097172564" //This would really come from the journey either pay-api or stored locally
   def cardFeesPagePaymentMethods: Set[PaymentMethod] = Set(OpenBanking, OneOffDirectDebit)
+
   def paymentMethods(): Set[PaymentMethod] = Set(Card, OpenBanking, OneOffDirectDebit, Bacs)
 
-  def checkYourAnswersRows(): Seq[CheckYourAnswersRow] = {
+  def checkYourAnswersRows(request: JourneyRequest[AnyContent])(implicit messages: Messages): Seq[CheckYourAnswersRow] = {
+
+    val maybeEmailAddress: Option[EmailAddress] = request.readFromSession[EmailAddress](request.journeyId, Keys.email)
+    val maybeAddress: Option[Address] = request.readFromSession[Address](request.journeyId, Keys.address)
+
     val referenceRow =
       CheckYourAnswersRow(
         "pfsa.reference.title",
-        Seq(reference()),
+        Seq(reference(request).dropRight(1)), //Do not display the final K in the Utr in the CYA table
         Some(Link(
           Call("GET", "this/that"),
           "pfsa-reference-change-link",
@@ -44,7 +51,7 @@ class ExtendedPfSa extends ExtendedOrigin {
 
     val amountRow = CheckYourAnswersRow(
       "pfsa.amount.title",
-      Seq("£600"),
+      Seq(amount(request)),
       Some(Link(
         Call("GET", "this/that"),
         "pfsa-amount-change-link",
@@ -54,7 +61,10 @@ class ExtendedPfSa extends ExtendedOrigin {
 
     val addressRow = CheckYourAnswersRow(
       "pfsa.address.title",
-      Seq("14 High St", "Beedington", "West Sussex", "RH12 0QR"), //This would really come from the journey either pay-api or stored locally
+      maybeAddress match {
+        case Some(addr) => Seq(addr.line1, addr.line2.getOrElse(""), addr.city.getOrElse(""), addr.county.getOrElse(""), addr.postcode, addr.country).filter(_.nonEmpty)
+        case None       => Seq.empty
+      },
       Some(Link(
         Call("GET", "this/that"),
         "pfsa-address-change-link",
@@ -62,15 +72,29 @@ class ExtendedPfSa extends ExtendedOrigin {
       ))
     )
 
-    val emailRow = CheckYourAnswersRow(
-      "pfsa.email.title",
-      Seq.empty,
-      Some(Link(
-        Call("GET", "change/email"),
-        "pfsa-email-supply-link",
-        "pfsa.email.supply-link.text"
-      ))
-    )
+    val emailRow = maybeEmailAddress match {
+      case Some(emailAddress) =>
+        CheckYourAnswersRow(
+          titleMessageKey = "pfsa.email.title",
+          value           = Seq(emailAddress.value),
+          changeLink      = Some(Link(
+            Call("GET", "change/email"),
+            "pfsa-email-supply-link",
+            "pfsa.email.supply-link.text.change"
+          ))
+        )
+      case None =>
+        CheckYourAnswersRow(
+          titleMessageKey = "pfsa.email.title",
+          value           = Seq.empty,
+          changeLink      = Some(Link(
+            Call("GET", "change/email"),
+            "pfsa-email-supply-link",
+            "pfsa.email.supply-link.text.new"
+          ))
+        )
+    }
+
     Seq(referenceRow, amountRow, addressRow, emailRow)
   }
 

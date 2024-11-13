@@ -16,7 +16,11 @@
 
 package uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins
 
+import payapi.corcommon.model.Reference
 import payapi.cardpaymentjourney.model.journey.JourneySpecificData
+import play.api.i18n.Messages
+import play.api.mvc.AnyContent
+import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
 import uk.gov.hmrc.cardpaymentfrontend.models.CheckYourAnswersRow
 import uk.gov.hmrc.cardpaymentfrontend.models.openbanking.OriginSpecificSessionData
 import uk.gov.hmrc.cardpaymentfrontend.utils.PaymentMethod
@@ -24,11 +28,23 @@ import uk.gov.hmrc.cardpaymentfrontend.utils.PaymentMethod
 trait ExtendedOrigin {
   def serviceNameMessageKey: String
   def taxNameMessageKey: String
-  def reference(): String
+
+  def amount(request: JourneyRequest[AnyContent]): String = request.journey.amountInPence match {
+    case Some(amt) => s"£${amt.inPoundsRoundedFormatted}"
+    case None      => "???" //todo: logging here
+  }
+
+  def reference(request: JourneyRequest[AnyContent]): String = {
+    request.journey.journeySpecificData.reference match {
+      case Some(Reference(ref)) => ref
+      case None                 => "???" //todo:... and log
+    }
+  }
+
   //denotes which links/payment methods to show on the card-fees page.
   def cardFeesPagePaymentMethods: Set[PaymentMethod]
   def paymentMethods(): Set[PaymentMethod]
-  def checkYourAnswersRows(): Seq[CheckYourAnswersRow]
+  def checkYourAnswersRows(request: JourneyRequest[AnyContent])(implicit messages: Messages): Seq[CheckYourAnswersRow]
   def openBankingOriginSpecificSessionData: JourneySpecificData => Option[OriginSpecificSessionData]
 
   //payments survey stuff
@@ -37,4 +53,5 @@ trait ExtendedOrigin {
   def surveyReturnMessageKey: String
   def surveyIsWelshSupported: Boolean
   def surveyBannerTitle: String
+
 }

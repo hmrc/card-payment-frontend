@@ -17,9 +17,11 @@
 package uk.gov.hmrc.cardpaymentfrontend.controllers
 
 import payapi.corcommon.model.{Origin, Origins}
-import play.api.i18n._
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import uk.gov.hmrc.cardpaymentfrontend.actions.{Actions, JourneyRequest}
 import uk.gov.hmrc.cardpaymentfrontend.models.CheckYourAnswersRow.summarise
+import uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins.ExtendedOrigin
+import uk.gov.hmrc.cardpaymentfrontend.requests.RequestSupport
 import uk.gov.hmrc.cardpaymentfrontend.utils.OriginExtraInfo
 import uk.gov.hmrc.cardpaymentfrontend.views.html.CheckYourAnswersPage
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
@@ -29,19 +31,29 @@ import javax.inject.{Inject, Singleton}
 
 @Singleton()
 class CheckYourAnswersController @Inject() (
+    actions:              Actions,
     mcc:                  MessagesControllerComponents,
     originExtraInfo:      OriginExtraInfo,
-    checkYourAnswersPage: CheckYourAnswersPage
+    checkYourAnswersPage: CheckYourAnswersPage,
+    requestSupport:       RequestSupport
 ) extends FrontendController(mcc) {
+  import requestSupport._
 
-  def renderPage(origin: Origin): Action[AnyContent] = Action { implicit request =>
-    implicit val messages: Messages = request.messages
-    val liftedOrigin = originExtraInfo.lift(origin)
-    val summaryList = liftedOrigin.checkYourAnswersRows().map(summarise)
-    Ok(checkYourAnswersPage(liftedOrigin.reference(), SummaryList(summaryList)))
+  def renderPage(origin: Origin): Action[AnyContent] = actions.journeyAction { implicit request: JourneyRequest[AnyContent] =>
+
+    val liftedOrigin: ExtendedOrigin = originExtraInfo.lift(origin)
+    val summaryList = originExtraInfo.lift(origin).checkYourAnswersRows(request).map(summarise)
+
+    Ok(checkYourAnswersPage(liftedOrigin.reference(request), SummaryList(summaryList)))
   }
 
   def renderPage0(): Action[AnyContent] = renderPage(Origins.PfSa)
 
   def renderPage1(): Action[AnyContent] = renderPage(Origins.PfVat)
+
+  def renderPage2(): Action[AnyContent] = renderPage(Origins.PtaSa)
+
+  def renderPage3(): Action[AnyContent] = renderPage(Origins.BtaSa)
+
+  def renderPage4(): Action[AnyContent] = renderPage(Origins.ItSa)
 }

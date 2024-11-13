@@ -20,6 +20,11 @@ GET        /card-fees5                           uk.gov.hmrc.cardpaymentfrontend
 
 GET        /cya0                                 uk.gov.hmrc.cardpaymentfrontend.controllers.CheckYourAnswersController.renderPage0
 GET        /cya1                                 uk.gov.hmrc.cardpaymentfrontend.controllers.CheckYourAnswersController.renderPage1
+GET        /cya2                                 uk.gov.hmrc.cardpaymentfrontend.controllers.CheckYourAnswersController.renderPage2
+GET        /cya3                                 uk.gov.hmrc.cardpaymentfrontend.controllers.CheckYourAnswersController.renderPage3
+GET        /cya4                                 uk.gov.hmrc.cardpaymentfrontend.controllers.CheckYourAnswersController.renderPage4
+
+
 
 GET        /address                              uk.gov.hmrc.cardpaymentfrontend.controllers.AddressController.renderPage
 POST       /address                              uk.gov.hmrc.cardpaymentfrontend.controllers.AddressController.submit
