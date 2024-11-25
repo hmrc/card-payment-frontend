@@ -27,7 +27,7 @@ class EmailConnectorSpec extends ItSpec {
         """
   )
 
-  "PayApiConnector" - {
+  "EmailConnector" - {
 
     "sendEmail" - {
 
@@ -38,7 +38,7 @@ class EmailConnectorSpec extends ItSpec {
         force = false
       )
 
-      "should return a 200 when endpoint is hit" in {
+      "should return a 202 ACCEPTED when endpoint is hit" in {
         EmailStub.stubForSendEmail(emailRequest)
         systemUnderTest.sendEmail(emailRequest)(HeaderCarrier()).futureValue
         EmailStub.verifyEmailWasSent(jsonBody)
