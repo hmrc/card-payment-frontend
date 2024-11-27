@@ -103,6 +103,8 @@ object ExtendedPfSa extends ExtendedOrigin {
     case _          => throw new RuntimeException("Incorrect origin found")
   }
 
+  override def emailTaxTypeMessageKey: String = "email.tax-name.PfSa"
+
   override def surveyAuditName: String = "self-assessment"
   override def surveyReturnHref: String = "https://www.gov.uk/government/organisations/hm-revenue-customs"
   override def surveyReturnMessageKey: String = "payments-survey.other.return-message"

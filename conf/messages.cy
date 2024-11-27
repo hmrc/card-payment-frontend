@@ -330,6 +330,14 @@ payment-failed.failed-try-again = Rhowch gynnig arall ar dalu drwy gerdyn
 payment-failed.failed-check-details = Gwiriwch y manylion a rhowch gynnig arall arni
 payment-failed.failed-check-again = Gwiriwch fod y manylion a nodwyd gennych yn gywir neu rhowch gynnig ar gerdyn gwahanol.
 
+
+## Email messages
+email.tax-name.PfSa = Hunanasesiad
+email.tax-name.BtaSa = Hunanasesiad
+email.tax-name.PtaSa = Hunanasesiad
+email.tax-name.ItSa = Hunanasesiad
+
+
 ## Payments survey
 payments-survey.bta.return-message = Dim diolch, dychwelyd i cyfrif treth busnes
 payments-survey.pta.return-message = Dim diolch, dychwelyd i cyfrif treth personol

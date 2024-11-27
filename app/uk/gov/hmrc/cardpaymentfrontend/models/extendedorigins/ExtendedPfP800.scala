@@ -40,4 +40,6 @@ class ExtendedPfP800 extends ExtendedOrigin {
   override def surveyIsWelshSupported: Boolean = true
   override def surveyBannerTitle: String = serviceNameMessageKey
 
+  override def emailTaxTypeMessageKey: String = "mike_add_me" //TOOD: Mike: update
+
 }

@@ -34,6 +34,8 @@ class DefaultExtendedOrigin extends ExtendedOrigin {
 
   override def openBankingOriginSpecificSessionData: JourneySpecificData => Option[OriginSpecificSessionData] = _ => None
 
+  override def emailTaxTypeMessageKey: String = ""
+
   override def surveyAuditName: String = ""
   override def surveyReturnHref: String = "https://www.gov.uk/government/organisations/hm-revenue-customs"
   override def surveyReturnMessageKey: String = "payments-survey.other.return-message"
