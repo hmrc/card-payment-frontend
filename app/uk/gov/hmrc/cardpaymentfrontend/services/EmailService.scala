@@ -34,7 +34,6 @@ class EmailService @Inject() (emailConnector: EmailConnector, originExtraInfo: O
 
   import requestSupport._
 
-  //TODO: Mike: call this function from payment success controller. Eventually we can call it from the payment-status controller, but we don't have that yet.
   def sendEmail(journey: Journey[JourneySpecificData], isEnglish: Boolean)(implicit headerCarrier: HeaderCarrier, request: Request[_]): Future[Unit] = {
     val emailRequest = buildEmailRequest(journey, isEnglish)
     emailConnector.sendEmail(emailRequest)(headerCarrier) // TODO: This should be found implicitly

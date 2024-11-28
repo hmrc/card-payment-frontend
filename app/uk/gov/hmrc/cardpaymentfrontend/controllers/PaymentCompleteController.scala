@@ -50,6 +50,7 @@ class PaymentCompleteController @Inject() (
     val maybeEmailFromSession: Option[EmailAddress] =
       request.readFromSession[EmailAddress](request.journeyId, Keys.email).map(email => EmailAddress(email.value))
 
+    //TODO: Eventually we can call this from the payment-status controller, but we don't have that yet.
     if(maybeEmailFromSession.isDefined) emailService.sendEmail(journey = request.journey, isEnglish = true) // TODO: add lang
 
     Ok(paymentCompletePage(
