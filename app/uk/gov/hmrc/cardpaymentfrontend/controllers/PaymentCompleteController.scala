@@ -24,6 +24,7 @@ import play.twirl.api.Html
 import uk.gov.hmrc.cardpaymentfrontend.actions.{Actions, JourneyRequest}
 import uk.gov.hmrc.cardpaymentfrontend.models.{EmailAddress, creditCardCommissionRate}
 import uk.gov.hmrc.cardpaymentfrontend.requests.RequestSupport
+import uk.gov.hmrc.cardpaymentfrontend.services.EmailService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import uk.gov.hmrc.cardpaymentfrontend.views.html.PaymentCompletePage
 
@@ -35,6 +36,7 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{Key, SummaryListR
 
 class PaymentCompleteController @Inject() (
     actions:             Actions,
+    emailService:        EmailService,
     originExtraInfo:     OriginExtraInfo,
     mcc:                 MessagesControllerComponents,
     paymentCompletePage: PaymentCompletePage,
@@ -47,6 +49,8 @@ class PaymentCompleteController @Inject() (
 
     val maybeEmailFromSession: Option[EmailAddress] =
       request.readFromSession[EmailAddress](request.journeyId, Keys.email).map(email => EmailAddress(email.value))
+
+    if(maybeEmailFromSession.isDefined) emailService.sendEmail(journey = request.journey, isEnglish = true) // TODO: add lang
 
     Ok(paymentCompletePage(
       taxReference      = request.journey.getReference,
