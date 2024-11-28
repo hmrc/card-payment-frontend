@@ -27,6 +27,7 @@ final case class EmailParameters(
     totalPaid:        Option[String]
 )
 
+@SuppressWarnings(Array("org.wartremover.warts.Any"))
 object EmailParameters {
   implicit val format: Format[EmailParameters] = Json.format[EmailParameters]
 }

@@ -17,6 +17,7 @@
 package uk.gov.hmrc.cardpaymentfrontend.connectors
 
 import play.api.libs.json.Json
+import uk.gov.hmrc.cardpaymentfrontend.models.EmailAddress
 import uk.gov.hmrc.cardpaymentfrontend.models.email.{EmailParameters, EmailRequest}
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.ItSpec
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.stubs.EmailStub
@@ -48,7 +49,7 @@ class EmailConnectorSpec extends ItSpec {
     ".sendEmail" - {
 
       val emailRequest = EmailRequest(
-        to         = List("test@email.com"),
+        to         = List(EmailAddress("test@email.com")),
         templateId = "payment_successful",
         parameters = EmailParameters("Self Assessment", "ending with 2564K", "transaction-reference", "1,000", None, None),
         force      = false

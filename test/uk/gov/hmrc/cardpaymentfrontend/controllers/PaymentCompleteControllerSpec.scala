@@ -28,6 +28,7 @@ import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.mvc.Http.Status
+import uk.gov.hmrc.cardpaymentfrontend.models.EmailAddress
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.ItSpec
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.TestOps._
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.stubs.PayApiStub
@@ -153,6 +154,22 @@ class PaymentCompleteControllerSpec extends ItSpec {
         surveyWrapper.select("h2").text() shouldBe "Helpwch ni i wella ein gwasanaethau"
         surveyWrapper.select("#survey-content").text() shouldBe "Rydym yn defnyddio’ch adborth i wella ein gwasanaethau."
         surveyWrapper.select("#survey-link-wrapper").html() shouldBe """<a class="govuk-link" href="/pay-by-card/start-payment-survey">Rhowch wybod i ni beth yw eich barn am y gwasanaeth hwn</a> (mae’n cymryd 30 eiliad)"""
+      }
+
+      //this test will be moved eventually
+      "should send an email if there is one in the session" in {
+        PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.testPfSaJourneySuccessDebit)
+        val fakeRequestForTest = fakeGetRequest.withEmailInSession(TestJourneys.PfSa.testPfSaJourneySuccessDebit._id, EmailAddress("blah@blah.com"))
+        val result = systemUnderTest.renderPage(fakeRequestForTest)
+        status(result) shouldBe Status.OK
+        //TODO: Mike add wiremock assertion to verify email gets sent
+      }
+
+      "should not send an email if there is not one in the session" in {
+        PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.testPfSaJourneySuccessDebit)
+        val result = systemUnderTest.renderPage(fakeGetRequest)
+        status(result) shouldBe Status.OK
+        //TODO: Mike add wiremock assertion to verify no email gets sent
       }
 
         def testSummaryRows(testData: Journey[JourneySpecificData], fakeRequest: FakeRequest[_], expectedSummaryListRows: List[(String, String)]) = {

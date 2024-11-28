@@ -20,6 +20,7 @@ import payapi.cardpaymentjourney.model.journey.{Journey, JourneySpecificData}
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.mvc.Request
 import uk.gov.hmrc.cardpaymentfrontend.connectors.EmailConnector
+import uk.gov.hmrc.cardpaymentfrontend.models.EmailAddress
 import uk.gov.hmrc.cardpaymentfrontend.models.email.{EmailParameters, EmailRequest}
 import uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins.ExtendedOrigin
 import uk.gov.hmrc.cardpaymentfrontend.requests.RequestSupport
@@ -34,22 +35,22 @@ class EmailService @Inject() (emailConnector: EmailConnector, originExtraInfo: O
 
   import requestSupport._
 
-  def sendEmail(journey: Journey[JourneySpecificData], isEnglish: Boolean)(implicit headerCarrier: HeaderCarrier, request: Request[_]): Future[Unit] = {
-    val emailRequest = buildEmailRequest(journey, isEnglish)
-    emailConnector.sendEmail(emailRequest)(headerCarrier) // TODO: This should be found implicitly
+  def sendEmail(journey: Journey[JourneySpecificData], emailAddress: EmailAddress, isEnglish: Boolean)(implicit headerCarrier: HeaderCarrier, request: Request[_]): Future[Unit] = {
+    val emailRequest = buildEmailRequest(journey, emailAddress, isEnglish)
+    emailConnector.sendEmail(emailRequest)(headerCarrier)
   }
 
   private[services] def buildEmailRequest(
-      journey:   Journey[JourneySpecificData],
-      isEnglish: Boolean
+      journey:      Journey[JourneySpecificData],
+      emailAddress: EmailAddress,
+      isEnglish:    Boolean
   )(implicit request: Request[_]): EmailRequest = {
-    val templateId = if (isEnglish) "payment_successful" else "payment_successful_cy"
-    val parameters: EmailParameters = EmailParameters("Self Assessment", "1234567895K", "Some-transaction-ref", "12.34", None, Some("12.34"))
-    //    val parameters = buildEmailParameters(journey)
-    //    val maybeEmailAddress = request.readFromSession[String](journey._id, "email").map(_.toString) // TODO: Do we need an Email model?
+
+    val templateId: String = if (isEnglish) "payment_successful" else "payment_successful_cy"
+    val parameters: EmailParameters = buildEmailParameters(journey)
 
     EmailRequest(
-      to         = List("joe_bloggs@gmail.com"), // TODO: will need to pass this in from the session?
+      to         = List(emailAddress),
       templateId = templateId,
       parameters = parameters,
       force      = false
