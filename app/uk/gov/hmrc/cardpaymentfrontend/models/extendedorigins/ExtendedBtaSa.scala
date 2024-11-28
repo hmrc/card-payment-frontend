@@ -123,5 +123,5 @@ object ExtendedBtaSa extends ExtendedOrigin {
     )
   }
 
-  override def emailTaxTypeMessageKey: String = "mike_add_me" //TOOD: Mike: update
+  override def emailTaxTypeMessageKey: String = "email.tax-name.BtaSa"
 }

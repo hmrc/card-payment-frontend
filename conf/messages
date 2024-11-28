@@ -333,6 +333,8 @@ email.tax-name.PfSa = Self Assessment
 email.tax-name.BtaSa = Self Assessment
 email.tax-name.PtaSa = Self Assessment
 email.tax-name.ItSa = Self Assessment
+email.tax-name.PfVat = Vat
+email.tax-name.PfP800 = P800
 
 
 ## Payments survey

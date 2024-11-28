@@ -35,22 +35,22 @@ class EmailService @Inject() (emailConnector: EmailConnector, originExtraInfo: O
   import requestSupport._
 
   //TODO: Mike: call this function from payment success controller. Eventually we can call it from the payment-status controller, but we don't have that yet.
-  def sendEmail(journey: Journey[JourneySpecificData], isEnglish: Boolean)(implicit headerCarrier: HeaderCarrier): Future[Unit] = {
+  def sendEmail(journey: Journey[JourneySpecificData], isEnglish: Boolean)(implicit headerCarrier: HeaderCarrier, request: Request[_]): Future[Unit] = {
     val emailRequest = buildEmailRequest(journey, isEnglish)
-    emailConnector.sendEmail(emailRequest)
+    emailConnector.sendEmail(emailRequest)(headerCarrier) // TODO: This should be found implicitly
   }
 
-  //TODO: Mike: test method
   private[services] def buildEmailRequest(
       journey:   Journey[JourneySpecificData],
       isEnglish: Boolean
-  ): EmailRequest = {
+  )(implicit request: Request[_]): EmailRequest = {
     val templateId = if (isEnglish) "payment_successful" else "payment_successful_cy"
-    val parameters = EmailParameters("Self Assessment", "ending with 2564K", "transaction-reference", "1,000", None, None)
-    //val parameters = buildEmailParameters(journey)
+    val parameters: EmailParameters = EmailParameters("Self Assessment", "1234567895K", "Some-transaction-ref", "12.34", None, Some("12.34"))
+    //    val parameters = buildEmailParameters(journey)
+    //    val maybeEmailAddress = request.readFromSession[String](journey._id, "email").map(_.toString) // TODO: Do we need an Email model?
 
     EmailRequest(
-      to         = List("???"), //will need to pass this in from
+      to         = List("joe_bloggs@gmail.com"), // TODO: will need to pass this in from the session?
       templateId = templateId,
       parameters = parameters,
       force      = false
@@ -64,9 +64,9 @@ class EmailService @Inject() (emailConnector: EmailConnector, originExtraInfo: O
       taxType          = messages(extendedOrigin.emailTaxTypeMessageKey),
       taxReference     = journey.referenceValue,
       paymentReference = journey.getTransactionReference.value,
-      amountPaid       = journey.getAmountInPence.formatInDecimal, // TODO: Mike, check if this is correct as is in pay-frontend
-      commission       = journey.getCommissionInPence.map(_.formatInDecimal), // TODO: Mike, check if this is correct as is in pay-frontend
-      totalPaid        = Some(journey.getTotalAmountInPence.formatInDecimal) // TODO: Mike, check if this is correct as is in pay-frontend
+      amountPaid       = journey.getAmountInPence.formatInDecimal,
+      commission       = journey.getCommissionInPence.map(_.formatInDecimal),
+      totalPaid        = Some(journey.getTotalAmountInPence.formatInDecimal)
     )
   }
 

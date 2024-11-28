@@ -17,7 +17,7 @@
 package uk.gov.hmrc.cardpaymentfrontend.services
 
 import play.api.test.FakeRequest
-import uk.gov.hmrc.cardpaymentfrontend.models.email.EmailParameters
+import uk.gov.hmrc.cardpaymentfrontend.models.email.{EmailParameters, EmailRequest}
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.ItSpec
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.TestOps.FakeRequestOps
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.testdata.TestJourneys
@@ -30,6 +30,47 @@ class EmailServiceSpec extends ItSpec {
 
     val fakeGetRequest = FakeRequest("GET", "/").withSessionId()
     val fakeGetRequestInWelsh = fakeGetRequest.withLangWelsh()
+
+    "buildEmailRequest" - {
+
+      val testEmailParameters = EmailParameters(
+        taxType          = "Self Assessment",
+        taxReference     = "1234567895K",
+        paymentReference = "Some-transaction-ref",
+        amountPaid       = "12.34",
+        commission       = None,
+        totalPaid        = Some("12.34")
+      )
+
+      "Should return an EmailRequest" - {
+
+        "request in english" in {
+          val expectedResult: EmailRequest = EmailRequest(
+            to         = List("joe_bloggs@gmail.com"),
+            templateId = "payment_successful",
+            parameters = testEmailParameters,
+            force      = false
+          )
+
+          val result = systemUnderTest.buildEmailRequest(TestJourneys.PfSa.testPfSaJourneySuccessDebit, isEnglish = true)(fakeGetRequest)
+          result shouldBe expectedResult
+        }
+
+        "request in welsh" in {
+          val expectedResult: EmailRequest = EmailRequest(
+            to         = List("joe_bloggs@gmail.com"),
+            templateId = "payment_successful_cy",
+            parameters = testEmailParameters,
+            force      = false
+          )
+
+          val result = systemUnderTest.buildEmailRequest(TestJourneys.PfSa.testPfSaJourneySuccessDebit, isEnglish = false)(fakeGetRequest)
+          result shouldBe expectedResult
+        }
+
+      }
+
+    }
 
     "buildEmailParameters" - {
       "should return an EmailParameters" - {

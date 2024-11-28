@@ -114,5 +114,5 @@ object ExtendedItSa extends ExtendedOrigin {
     Seq(referenceRow, dateRow, amountRow, addressRow, emailRow)
   }
 
-  override def emailTaxTypeMessageKey: String = "mike_add_me" //TOOD: Mike: update
+  override def emailTaxTypeMessageKey: String = "email.tax-name.ItSa"
 }
