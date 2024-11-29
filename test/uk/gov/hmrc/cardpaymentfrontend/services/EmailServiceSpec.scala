@@ -16,11 +16,13 @@
 
 package uk.gov.hmrc.cardpaymentfrontend.services
 
+import play.api.libs.json.{JsValue, Json}
 import play.api.test.FakeRequest
 import uk.gov.hmrc.cardpaymentfrontend.models.EmailAddress
 import uk.gov.hmrc.cardpaymentfrontend.models.email.{EmailParameters, EmailRequest}
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.ItSpec
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.TestOps.FakeRequestOps
+import uk.gov.hmrc.cardpaymentfrontend.testsupport.stubs.EmailStub
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.testdata.TestJourneys
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -211,31 +213,111 @@ class EmailServiceSpec extends ItSpec {
 
         "when origin is PtaSa" - {
           "debit in english" in {
-            //todo: Mike
+            val expectedResult: EmailParameters = EmailParameters(
+              taxType          = "Self Assessment",
+              taxReference     = "1234567895K",
+              paymentReference = "Some-transaction-ref",
+              amountPaid       = "12.34",
+              commission       = None,
+              totalPaid        = Some("12.34")
+            )
+
+            val result = systemUnderTest.buildEmailParameters(TestJourneys.PtaSa.testPtaSaJourneySuccessDebit)(fakeRequest)
+            result shouldBe expectedResult
           }
           "credit in english" in {
-            //todo: Mike
+            val expectedResult: EmailParameters = EmailParameters(
+              taxType          = "Self Assessment",
+              taxReference     = "1234567895K",
+              paymentReference = "Some-transaction-ref",
+              amountPaid       = "12.34",
+              commission       = Some("1.23"),
+              totalPaid        = Some("13.57")
+            )
+
+            val result = systemUnderTest.buildEmailParameters(TestJourneys.PtaSa.testPtaSaJourneySuccessCredit)(fakeRequest)
+            result shouldBe expectedResult
           }
           "debit in welsh" in {
-            //todo: Mike
+            val expectedResult: EmailParameters = EmailParameters(
+              taxType          = "Self Assessment",
+              taxReference     = "1234567895K",
+              paymentReference = "Some-transaction-ref",
+              amountPaid       = "12.34",
+              commission       = None,
+              totalPaid        = Some("12.34")
+            )
+
+            val result = systemUnderTest.buildEmailParameters(TestJourneys.PtaSa.testPtaSaJourneySuccessDebit)(fakeRequestInWelsh)
+            result shouldBe expectedResult
           }
           "credit in welsh" in {
-            //todo: Mike
+            val expectedResult: EmailParameters = EmailParameters(
+              taxType          = "Self Assessment",
+              taxReference     = "1234567895K",
+              paymentReference = "Some-transaction-ref",
+              amountPaid       = "12.34",
+              commission       = Some("1.23"),
+              totalPaid        = Some("13.57")
+            )
+
+            val result = systemUnderTest.buildEmailParameters(TestJourneys.PtaSa.testPtaSaJourneySuccessCredit)(fakeRequestInWelsh)
+            result shouldBe expectedResult
           }
         }
 
         "when origin is ItSa" - {
           "debit in english" in {
-            //todo: Mike
+            val expectedResult: EmailParameters = EmailParameters(
+              taxType          = "Self Assessment",
+              taxReference     = "1234567895K",
+              paymentReference = "Some-transaction-ref",
+              amountPaid       = "12.34",
+              commission       = None,
+              totalPaid        = Some("12.34")
+            )
+
+            val result = systemUnderTest.buildEmailParameters(TestJourneys.ItSa.testItsaJourneySuccessDebit)(fakeRequest)
+            result shouldBe expectedResult
           }
           "credit in english" in {
-            //todo: Mike
+            val expectedResult: EmailParameters = EmailParameters(
+              taxType          = "Self Assessment",
+              taxReference     = "1234567895K",
+              paymentReference = "Some-transaction-ref",
+              amountPaid       = "12.34",
+              commission       = Some("1.23"),
+              totalPaid        = Some("13.57")
+            )
+
+            val result = systemUnderTest.buildEmailParameters(TestJourneys.ItSa.testItsaJourneySuccessCredit)(fakeRequest)
+            result shouldBe expectedResult
           }
           "debit in welsh" in {
-            //todo: Mike
+            val expectedResult: EmailParameters = EmailParameters(
+              taxType          = "Hunanasesiad",
+              taxReference     = "1234567895K",
+              paymentReference = "Some-transaction-ref",
+              amountPaid       = "12.34",
+              commission       = None,
+              totalPaid        = Some("12.34")
+            )
+
+            val result = systemUnderTest.buildEmailParameters(TestJourneys.ItSa.testItsaJourneySuccessDebit)(fakeRequestInWelsh)
+            result shouldBe expectedResult
           }
           "credit in welsh" in {
-            //todo: Mike
+            val expectedResult: EmailParameters = EmailParameters(
+              taxType          = "Hunanasesiad",
+              taxReference     = "1234567895K",
+              paymentReference = "Some-transaction-ref",
+              amountPaid       = "12.34",
+              commission       = Some("1.23"),
+              totalPaid        = Some("13.57")
+            )
+
+            val result = systemUnderTest.buildEmailParameters(TestJourneys.ItSa.testItsaJourneySuccessCredit)(fakeRequestInWelsh)
+            result shouldBe expectedResult
           }
         }
       }
@@ -243,17 +325,39 @@ class EmailServiceSpec extends ItSpec {
     }
 
     "sendEmail" - {
+
+      val jsonBody = Json.parse(
+
+        """
+        {
+          "to" : [ "blah@blah.com" ],
+          "templateId" : "payment_successful",
+          "parameters" : {
+            "taxType" : "Self Assessment",
+            "taxReference" : "1234567895K",
+            "paymentReference" : "Some-transaction-ref",
+            "amountPaid" : "12.34",
+            "commission" : "1.23",
+            "totalPaid" : "13.57"
+          },
+          "force" : false
+        }
+        """
+      )
+
       "should send an email successfully" in {
-        //todo: Mike, add wiremock assertion
         val result = systemUnderTest.sendEmail(
           journey      = TestJourneys.PfSa.testPfSaJourneySuccessCredit,
           emailAddress = EmailAddress("blah@blah.com"),
           isEnglish    = true
         )(HeaderCarrier(), fakeRequest)
         whenReady(result)(_ => succeed)
-        //verify request was sent
+        EmailStub.verifyEmailWasSent(jsonBody)
       }
     }
+
+
+
 
   }
 
