@@ -33,6 +33,10 @@ object ExtendedItSa extends ExtendedOrigin {
   //todo add these when we do that ticket
   def paymentMethods(): Set[PaymentMethod] = Set.empty
 
+  override def checkYourAnswersReferenceRow(journeyRequest: JourneyRequest[AnyContent]): CheckYourAnswersRow = {
+    ???
+  }
+
   override def openBankingOriginSpecificSessionData: JourneySpecificData => Option[OriginSpecificSessionData] = {
     case j: JsdItSa => Some(ItSaSessionData(j.utr))
     case _          => throw new RuntimeException("Incorrect origin found")

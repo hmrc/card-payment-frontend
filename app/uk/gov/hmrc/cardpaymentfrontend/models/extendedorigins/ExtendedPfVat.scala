@@ -75,6 +75,10 @@ object ExtendedPfVat extends ExtendedOrigin {
     Seq(referenceRow, amountRow, addressRow, emailRow)
   }
 
+  override def checkYourAnswersReferenceRow(journeyRequest: JourneyRequest[AnyContent]): CheckYourAnswersRow = {
+    ???
+  }
+
   override def openBankingOriginSpecificSessionData: JourneySpecificData => Option[OriginSpecificSessionData] = {
     case j: JsdPfVat => Some(PfVatSessionData(j.vrn, j.chargeRef))
     case _           => throw new RuntimeException("Incorrect origin found")

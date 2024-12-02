@@ -122,6 +122,7 @@ class OriginExtraInfo @Inject() () {
       case Origins.PfAlcoholDuty            => Set(Card, OpenBanking, Bacs) // DD also allowed but not in Payments
       case Origins.AlcoholDuty              => Set(Card, OpenBanking, Bacs) // DD also allowed but not in Payments
       case Origins.VatC2c                   => Set(Card, OpenBanking, Bacs)
+      case Origins.`3psSa`                  => Set(OpenBanking, Bacs)
     }
 
   }
@@ -210,6 +211,7 @@ class OriginExtraInfo @Inject() () {
       case Origins.PfAlcoholDuty            => new DefaultExtendedOrigin
       case Origins.AlcoholDuty              => new DefaultExtendedOrigin
       case Origins.VatC2c                   => new DefaultExtendedOrigin
+      case Origins.`3psSa`                  => new DefaultExtendedOrigin
     }
   }
 }

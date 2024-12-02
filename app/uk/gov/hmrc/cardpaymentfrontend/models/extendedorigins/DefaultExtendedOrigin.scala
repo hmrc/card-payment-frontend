@@ -32,6 +32,8 @@ class DefaultExtendedOrigin extends ExtendedOrigin {
   def paymentMethods(): Set[PaymentMethod] = Set.empty[PaymentMethod]
   def checkYourAnswersRows(request: JourneyRequest[AnyContent])(implicit messages: Messages): Seq[CheckYourAnswersRow] = Seq.empty[CheckYourAnswersRow]
 
+  override def checkYourAnswersReferenceRow(journeyRequest: JourneyRequest[AnyContent]): Option[CheckYourAnswersRow] = None
+
   override def openBankingOriginSpecificSessionData: JourneySpecificData => Option[OriginSpecificSessionData] = _ => None
 
   override def surveyAuditName: String = ""

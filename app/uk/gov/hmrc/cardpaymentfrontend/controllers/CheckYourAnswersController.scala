@@ -16,16 +16,17 @@
 
 package uk.gov.hmrc.cardpaymentfrontend.controllers
 
-import payapi.corcommon.model.{Origin, Origins}
+import payapi.corcommon.model.Origin
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.cardpaymentfrontend.actions.{Actions, JourneyRequest}
+import uk.gov.hmrc.cardpaymentfrontend.models.CheckYourAnswersRow
 import uk.gov.hmrc.cardpaymentfrontend.models.CheckYourAnswersRow.summarise
-import uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins.ExtendedOrigin
 import uk.gov.hmrc.cardpaymentfrontend.requests.RequestSupport
 import uk.gov.hmrc.cardpaymentfrontend.utils.OriginExtraInfo
 import uk.gov.hmrc.cardpaymentfrontend.views.html.CheckYourAnswersPage
-import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import uk.gov.hmrc.govukfrontend.views.Aliases.SummaryList
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
 import javax.inject.{Inject, Singleton}
 
@@ -39,21 +40,21 @@ class CheckYourAnswersController @Inject() (
 ) extends FrontendController(mcc) {
   import requestSupport._
 
-  def renderPage(origin: Origin): Action[AnyContent] = actions.journeyAction { implicit request: JourneyRequest[AnyContent] =>
+  def renderPage: Action[AnyContent] = actions.journeyAction { implicit journeyRequest: JourneyRequest[AnyContent] =>
+    val origin: Origin = journeyRequest.journey.origin
+    val liftedOrigin = originExtraInfo.lift(origin)
 
-    val liftedOrigin: ExtendedOrigin = originExtraInfo.lift(origin)
-    val summaryList = originExtraInfo.lift(origin).checkYourAnswersRows(request).map(summarise)
+    val referenceRow: Option[CheckYourAnswersRow] = Some(liftedOrigin.checkYourAnswersReferenceRow(journeyRequest))
+    val amountRow: Option[CheckYourAnswersRow] = Some(liftedOrigin.checkYourAnswersAmountSummaryRow(journeyRequest))
+    val maybeEmailRow: Option[CheckYourAnswersRow] = liftedOrigin.checkYourAnswersEmailAddressRow(journeyRequest)
+    val cardBillingAddressRow: Option[CheckYourAnswersRow] = Some(liftedOrigin.checkYourAnswersCardBillingAddressRow(journeyRequest))
 
-    Ok(checkYourAnswersPage(liftedOrigin.reference(request), SummaryList(summaryList)))
+    val summaryListRows: Seq[SummaryListRow] = Seq(referenceRow, amountRow, maybeEmailRow, cardBillingAddressRow).flatten.map(summarise)
+    Ok(checkYourAnswersPage(SummaryList(summaryListRows)))
   }
 
-  def renderPage0(): Action[AnyContent] = renderPage(Origins.PfSa)
+  def submit: Action[AnyContent] = actions.journeyAction { _ =>
+    Ok("nice, you submitted the check your answers page, this is where the iframe needs to go")
+  }
 
-  def renderPage1(): Action[AnyContent] = renderPage(Origins.PfVat)
-
-  def renderPage2(): Action[AnyContent] = renderPage(Origins.PtaSa)
-
-  def renderPage3(): Action[AnyContent] = renderPage(Origins.BtaSa)
-
-  def renderPage4(): Action[AnyContent] = renderPage(Origins.ItSa)
 }

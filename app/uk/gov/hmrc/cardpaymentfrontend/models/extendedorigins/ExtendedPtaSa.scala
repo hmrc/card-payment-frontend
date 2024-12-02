@@ -105,6 +105,10 @@ object ExtendedPtaSa extends ExtendedOrigin {
     Seq(referenceRow, dateRow, amountRow, addressRow, emailRow)
   }
 
+  override def checkYourAnswersReferenceRow(journeyRequest: JourneyRequest[AnyContent]): CheckYourAnswersRow = {
+    ???
+  }
+
   override def openBankingOriginSpecificSessionData: JourneySpecificData => Option[OriginSpecificSessionData] = {
     case j: JsdPtaSa => Some(PtaSaSessionData(j.utr))
     case _           => throw new RuntimeException("Incorrect origin found")
