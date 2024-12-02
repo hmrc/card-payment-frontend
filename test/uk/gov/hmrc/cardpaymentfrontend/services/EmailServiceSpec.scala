@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.cardpaymentfrontend.services
 
-import play.api.libs.json.{JsValue, Json}
+import play.api.libs.json.Json
 import play.api.test.FakeRequest
 import uk.gov.hmrc.cardpaymentfrontend.models.EmailAddress
 import uk.gov.hmrc.cardpaymentfrontend.models.email.{EmailParameters, EmailRequest}
@@ -240,7 +240,7 @@ class EmailServiceSpec extends ItSpec {
           }
           "debit in welsh" in {
             val expectedResult: EmailParameters = EmailParameters(
-              taxType          = "Self Assessment",
+              taxType          = "Hunanasesiad",
               taxReference     = "1234567895K",
               paymentReference = "Some-transaction-ref",
               amountPaid       = "12.34",
@@ -253,7 +253,7 @@ class EmailServiceSpec extends ItSpec {
           }
           "credit in welsh" in {
             val expectedResult: EmailParameters = EmailParameters(
-              taxType          = "Self Assessment",
+              taxType          = "Hunanasesiad",
               taxReference     = "1234567895K",
               paymentReference = "Some-transaction-ref",
               amountPaid       = "12.34",
@@ -355,9 +355,6 @@ class EmailServiceSpec extends ItSpec {
         EmailStub.verifyEmailWasSent(jsonBody)
       }
     }
-
-
-
 
   }
 

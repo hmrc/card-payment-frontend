@@ -18,13 +18,9 @@ package uk.gov.hmrc.cardpaymentfrontend.testsupport.stubs
 
 import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, equalToJson, post, postRequestedFor, stubFor, urlEqualTo, urlPathEqualTo, verify}
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
-import payapi.cardpaymentjourney.model.journey.{Journey, JourneySpecificData}
 import play.api.http.Status
 import play.api.libs.json.{JsValue, Json}
-import uk.gov.hmrc.cardpaymentfrontend.models.EmailAddress
 import uk.gov.hmrc.cardpaymentfrontend.models.email.EmailRequest
-
-import scala.concurrent.Future
 
 object EmailStub {
 
