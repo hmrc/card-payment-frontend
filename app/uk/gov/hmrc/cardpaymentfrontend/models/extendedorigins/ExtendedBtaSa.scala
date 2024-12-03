@@ -34,8 +34,16 @@ object ExtendedBtaSa extends ExtendedOrigin {
   //todo add these when we do that ticket
   def paymentMethods(): Set[PaymentMethod] = Set.empty
 
-  override def checkYourAnswersReferenceRow(journeyRequest: JourneyRequest[AnyContent]): CheckYourAnswersRow = {
-    ???
+  override def checkYourAnswersReferenceRow(journeyRequest: JourneyRequest[AnyContent]): Option[CheckYourAnswersRow] = {
+    Some(CheckYourAnswersRow(
+      titleMessageKey = "check-your-answers.BtaSa.reference.title",
+      value = Seq(journeyRequest.journey.referenceValue),
+      changeLink = Some(Link(
+        Call("GET", "this/that"),
+        "btasa.reference-change-link",
+        "btasa.reference.change-link.text"
+      ))
+    ))
   }
 
   override def openBankingOriginSpecificSessionData: JourneySpecificData => Option[OriginSpecificSessionData] = {
@@ -49,17 +57,17 @@ object ExtendedBtaSa extends ExtendedOrigin {
   override def surveyIsWelshSupported: Boolean = true
   override def surveyBannerTitle: String = serviceNameMessageKey
 
-  def checkYourAnswersRows(request: JourneyRequest[AnyContent])(implicit messages: Messages): Seq[CheckYourAnswersRow] = {
+  def checkYourAnswersRows(journeyRequest: JourneyRequest[AnyContent])(implicit messages: Messages): Seq[CheckYourAnswersRow] = {
     val referenceRow = CheckYourAnswersRow(
-      "btasa.reference.title",
-      Seq(reference(request).dropRight(1)), //Do not display the final K in the Utr in the CYA table),
-      None
+      titleMessageKey = "check-your-answers.BtaSa.reference.title",
+      value = Seq(reference(journeyRequest)),
+      changeLink = None
     )
 
     val dateRow = CheckYourAnswersRow(
-      "btasa.date.title",
-      Seq(Messages("btasa.date.today")),
-      Some(Link(
+      titleMessageKey = "btasa.date.title",
+      value = Seq(Messages("btasa.date.today")),
+      changeLink = Some(Link(
         Call("GET", "this/that"),
         "btasa.date-change-link",
         "btasa.date.change-link.text"
@@ -67,9 +75,9 @@ object ExtendedBtaSa extends ExtendedOrigin {
     )
 
     val amountRow = CheckYourAnswersRow(
-      "btasa.amount.title",
-      Seq(amount(request)),
-      Some(Link(
+      titleMessageKey = "btasa.amount.title",
+      value = Seq(amount(request)),
+      changeLink = Some(Link(
         Call("GET", "this/that"),
         "pfvat-reference-change-link",
         "pfvat.reference.change-link.text"
@@ -79,12 +87,12 @@ object ExtendedBtaSa extends ExtendedOrigin {
     val addressRow = {
       val maybeAddress: Option[Address] = request.readFromSession[Address](request.journeyId, Keys.address)
       CheckYourAnswersRow(
-        "btasa.address.title",
-        maybeAddress match {
+        titleMessageKey = "btasa.address.title",
+        value = maybeAddress match {
           case Some(addr) => Seq(addr.line1, addr.line2.getOrElse(""), addr.city.getOrElse(""), addr.county.getOrElse(""), addr.postcode, addr.country).filter(_.nonEmpty)
           case None       => Seq.empty
         },
-        Some(Link(
+        changeLink = Some(Link(
           Call("GET", "this/that"),
           "ptasa-address-change-link",
           "ptasa.address.change-link.text"

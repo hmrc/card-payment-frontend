@@ -33,8 +33,16 @@ object ExtendedItSa extends ExtendedOrigin {
   //todo add these when we do that ticket
   def paymentMethods(): Set[PaymentMethod] = Set.empty
 
-  override def checkYourAnswersReferenceRow(journeyRequest: JourneyRequest[AnyContent]): CheckYourAnswersRow = {
-    ???
+  override def checkYourAnswersReferenceRow(journeyRequest: JourneyRequest[AnyContent]): Option[CheckYourAnswersRow] = {
+    Some(CheckYourAnswersRow(
+      titleMessageKey = "check-your-answers.ItSa.reference.title",
+      value = Seq(journeyRequest.journey.referenceValue),
+      changeLink = Some(Link(
+        Call("GET", "this/that"),
+        "itsa.reference-change-link",
+        "itsa.reference.change-link.text"
+      ))
+    ))
   }
 
   override def openBankingOriginSpecificSessionData: JourneySpecificData => Option[OriginSpecificSessionData] = {
@@ -48,14 +56,14 @@ object ExtendedItSa extends ExtendedOrigin {
   override def surveyIsWelshSupported: Boolean = true
   override def surveyBannerTitle: String = serviceNameMessageKey
 
-  def checkYourAnswersRows(request: JourneyRequest[AnyContent])(implicit messages: Messages): Seq[CheckYourAnswersRow] = {
+  def checkYourAnswersRows(journeyRequest: JourneyRequest[AnyContent])(implicit messages: Messages): Seq[CheckYourAnswersRow] = {
     val maybeEmailAddress: Option[EmailAddress] = request.readFromSession[EmailAddress](request.journeyId, Keys.email)
     val maybeAddress: Option[Address] = request.readFromSession[Address](request.journeyId, Keys.address)
 
     val referenceRow =
       CheckYourAnswersRow(
         "itsa.reference.title",
-        Seq(reference(request).dropRight(1)), //Do not display the final K in the Utr in the CYA table),
+        Seq(reference(journeyRequest)),
         None
       )
 

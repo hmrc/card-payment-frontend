@@ -31,6 +31,29 @@ object ExtendedPfVat extends ExtendedOrigin {
   def cardFeesPagePaymentMethods: Set[PaymentMethod] = Set.empty[PaymentMethod]
   def paymentMethods(): Set[PaymentMethod] = Set(Card, OpenBanking, VariableDirectDebit, Bacs)
 
+  override def checkYourAnswersReferenceRow(journeyRequest: JourneyRequest[AnyContent]): Option[CheckYourAnswersRow] = {
+    Some(CheckYourAnswersRow(
+      titleMessageKey = "check-your-answers.PfVat.reference.title",
+      value = Seq(journeyRequest.journey.referenceValue),
+      changeLink = Some(Link(
+        Call("GET", "this/that"),
+        "pfvat.reference-change-link",
+        "pfvat.reference.change-link.text"
+      ))
+    ))
+  }
+
+  override def openBankingOriginSpecificSessionData: JourneySpecificData => Option[OriginSpecificSessionData] = {
+    case j: JsdPfVat => Some(PfVatSessionData(j.vrn, j.chargeRef))
+    case _           => throw new RuntimeException("Incorrect origin found")
+  }
+
+  override def surveyAuditName: String = "vat"
+  override def surveyReturnHref: String = "https://www.gov.uk/government/organisations/hm-revenue-customs"
+  override def surveyReturnMessageKey: String = "payments-survey.other.return-message"
+  override def surveyIsWelshSupported: Boolean = true
+  override def surveyBannerTitle: String = serviceNameMessageKey
+
   def checkYourAnswersRows(request: JourneyRequest[AnyContent])(implicit messages: Messages): Seq[CheckYourAnswersRow] = {
     val referenceRow =
       CheckYourAnswersRow(
@@ -75,18 +98,4 @@ object ExtendedPfVat extends ExtendedOrigin {
     Seq(referenceRow, amountRow, addressRow, emailRow)
   }
 
-  override def checkYourAnswersReferenceRow(journeyRequest: JourneyRequest[AnyContent]): CheckYourAnswersRow = {
-    ???
-  }
-
-  override def openBankingOriginSpecificSessionData: JourneySpecificData => Option[OriginSpecificSessionData] = {
-    case j: JsdPfVat => Some(PfVatSessionData(j.vrn, j.chargeRef))
-    case _           => throw new RuntimeException("Incorrect origin found")
-  }
-
-  override def surveyAuditName: String = "vat"
-  override def surveyReturnHref: String = "https://www.gov.uk/government/organisations/hm-revenue-customs"
-  override def surveyReturnMessageKey: String = "payments-survey.other.return-message"
-  override def surveyIsWelshSupported: Boolean = true
-  override def surveyBannerTitle: String = serviceNameMessageKey
 }
