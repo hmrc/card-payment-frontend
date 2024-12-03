@@ -43,7 +43,7 @@ object TestJourneys {
     val testPfSaJourneyUpdatedWithRefAndAmount: Journey[JsdPfSa] = Journey[JsdPfSa](
       _id                  = JourneyId("TestJourneyId-44f9-ad7f-01e1d3d8f151"),
       sessionId            = Some(SessionId("TestSession-4b87460d-6f43-4c4c-b810-d6f87c774854")),
-      amountInPence        = Some(AmountInPence(12345)),
+      amountInPence        = Some(AmountInPence(1234)),
       emailTemplateOptions = None,
       navigation           = None,
       order                = None,
@@ -93,6 +93,19 @@ object TestJourneys {
   }
 
   object BtaSa {
+    val testBtaSaJourneyUpdatedWithRefAndAmount: Journey[JsdBtaSa] = Journey[JsdBtaSa](
+      _id                  = JourneyId("TestJourneyId-44f9-ad7f-01e1d3d8f151"),
+      sessionId            = Some(SessionId("TestSession-4b87460d-6f43-4c4c-b810-d6f87c774854")),
+      amountInPence        = Some(AmountInPence(1234)),
+      emailTemplateOptions = None,
+      navigation           = Some(NavigationOptions(returnUrl = Url("https://www.return-to-bta.com"), backUrl = Url("https://www.back-to-bta.com"))),
+      order                = None,
+      status               = PaymentStatuses.Created,
+      createdOn            = LocalDateTime.parse("2027-11-02T16:28:55.185"),
+      journeySpecificData  = JsdBtaSa(utr                  = SaUtr("1234567895"), defaultAmountInPence = AmountInPence(1234), dueDate = Some(LocalDate.of(2028, 12, 12))),
+      chosenWayToPay       = None
+    )
+
     val testBtaSaJourneySuccessDebit: Journey[JsdBtaSa] = Journey[JsdBtaSa](
       _id                  = JourneyId("TestJourneyId-44f9-ad7f-01e1d3d8f151"),
       sessionId            = Some(SessionId("TestSession-4b87460d-6f43-4c4c-b810-d6f87c774854")),
@@ -133,6 +146,19 @@ object TestJourneys {
   }
 
   object PtaSa {
+    val testPtaSaJourneyUpdatedWithRefAndAmount: Journey[JsdPtaSa] = Journey[JsdPtaSa](
+      _id                  = JourneyId("TestJourneyId-44f9-ad7f-01e1d3d8f151"),
+      sessionId            = Some(SessionId("TestSession-4b87460d-6f43-4c4c-b810-d6f87c774854")),
+      amountInPence        = Some(AmountInPence(1234)),
+      emailTemplateOptions = None,
+      navigation           = Some(NavigationOptions(returnUrl = Url("https://www.return-to-pta.com"), backUrl = Url("https://www.back-to-pta.com"))),
+      order                = None,
+      status               = PaymentStatuses.Created,
+      createdOn            = LocalDateTime.parse("2027-11-02T16:28:55.185"),
+      journeySpecificData  = JsdPtaSa(utr                  = SaUtr("1234567895"), defaultAmountInPence = Some(AmountInPence(1234)), dueDate = Some(LocalDate.of(2028, 12, 12))),
+      chosenWayToPay       = None
+    )
+
     val testPtaSaJourneySuccessDebit: Journey[JsdPtaSa] = Journey[JsdPtaSa](
       _id                  = JourneyId("TestJourneyId-44f9-ad7f-01e1d3d8f151"),
       sessionId            = Some(SessionId("TestSession-4b87460d-6f43-4c4c-b810-d6f87c774854")),
@@ -173,7 +199,20 @@ object TestJourneys {
   }
 
   object ItSa {
-    val testItsaJourneySuccessDebit: Journey[JsdItSa] = Journey[JsdItSa](
+    val testItSaJourneyUpdatedWithRefAndAmount: Journey[JsdItSa] = Journey[JsdItSa](
+      _id                  = JourneyId("TestJourneyId-44f9-ad7f-01e1d3d8f151"),
+      sessionId            = Some(SessionId("TestSession-4b87460d-6f43-4c4c-b810-d6f87c774854")),
+      amountInPence        = Some(AmountInPence(1234)),
+      emailTemplateOptions = None,
+      navigation           = Some(NavigationOptions(returnUrl = Url("https://www.return-to-itsa.com"), backUrl = Url("https://www.back-to-itsa.com"))),
+      order                = None,
+      status               = PaymentStatuses.Created,
+      createdOn            = LocalDateTime.parse("2027-11-02T16:28:55.185"),
+      journeySpecificData  = JsdItSa(utr     = SaUtr("1234567895"), dueDate = Some(LocalDate.of(2028, 12, 12))),
+      chosenWayToPay       = None
+    )
+
+    val testItSaJourneySuccessDebit: Journey[JsdItSa] = Journey[JsdItSa](
       _id                  = JourneyId("TestJourneyId-44f9-ad7f-01e1d3d8f151"),
       sessionId            = Some(SessionId("TestSession-4b87460d-6f43-4c4c-b810-d6f87c774854")),
       amountInPence        = Some(AmountInPence(1234)),
@@ -192,7 +231,7 @@ object TestJourneys {
       chosenWayToPay       = None
     )
 
-    val testItsaJourneySuccessCredit: Journey[JsdItSa] = Journey[JsdItSa](
+    val testItSaJourneySuccessCredit: Journey[JsdItSa] = Journey[JsdItSa](
       _id                  = JourneyId("TestJourneyId-44f9-ad7f-01e1d3d8f151"),
       sessionId            = Some(SessionId("TestSession-4b87460d-6f43-4c4c-b810-d6f87c774854")),
       amountInPence        = Some(AmountInPence(1234)),

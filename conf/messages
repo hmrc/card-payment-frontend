@@ -113,11 +113,10 @@ check-your-answers.email-address = Email address
 check-your-answers.card-billing-address = Card billing address
 
 #tax regime specific messages
-check-your-answers.PfSa.reference.title = Unique Taxpayer Reference (UTR)
-check-your-answers.BtaSa.reference.title = Unique Taxpayer Reference (UTR)
-check-your-answers.PtaSa.reference.title = Unique Taxpayer Reference (UTR)
-check-your-answers.ItSa.reference.title = Unique Taxpayer Reference (UTR)
-
+check-your-answers.PfSa.reference = Unique Taxpayer Reference (UTR)
+check-your-answers.BtaSa.reference = Unique Taxpayer Reference (UTR)
+check-your-answers.PtaSa.reference = Unique Taxpayer Reference (UTR)
+check-your-answers.ItSa.reference = Unique Taxpayer Reference (UTR)
 check-your-answers.PfVat.reference.title = VAT registration number
 
 

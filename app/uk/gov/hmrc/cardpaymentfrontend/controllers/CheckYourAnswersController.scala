@@ -44,12 +44,13 @@ class CheckYourAnswersController @Inject() (
     val origin: Origin = journeyRequest.journey.origin
     val liftedOrigin = originExtraInfo.lift(origin)
 
-    val referenceRow: Option[CheckYourAnswersRow] = Some(liftedOrigin.checkYourAnswersReferenceRow(journeyRequest))
-    val amountRow: Option[CheckYourAnswersRow] = Some(liftedOrigin.checkYourAnswersAmountSummaryRow(journeyRequest))
+    val referenceRow: Option[CheckYourAnswersRow] = liftedOrigin.checkYourAnswersReferenceRow(journeyRequest)
+    val amountRow: Option[CheckYourAnswersRow] = liftedOrigin.checkYourAnswersAmountSummaryRow(journeyRequest)
     val maybeEmailRow: Option[CheckYourAnswersRow] = liftedOrigin.checkYourAnswersEmailAddressRow(journeyRequest)
-    val cardBillingAddressRow: Option[CheckYourAnswersRow] = Some(liftedOrigin.checkYourAnswersCardBillingAddressRow(journeyRequest))
+    val cardBillingAddressRow: Option[CheckYourAnswersRow] = liftedOrigin.checkYourAnswersCardBillingAddressRow(journeyRequest)
 
     val summaryListRows: Seq[SummaryListRow] = Seq(referenceRow, amountRow, maybeEmailRow, cardBillingAddressRow).flatten.map(summarise)
+
     Ok(checkYourAnswersPage(SummaryList(summaryListRows)))
   }
 

@@ -34,29 +34,6 @@ object ExtendedPtaSa extends ExtendedOrigin {
   //todo add these when we do that ticket
   def paymentMethods(): Set[PaymentMethod] = Set.empty
 
-  override def checkYourAnswersReferenceRow(journeyRequest: JourneyRequest[AnyContent]): Option[CheckYourAnswersRow] = {
-    Some(CheckYourAnswersRow(
-      titleMessageKey = "check-your-answers.PtaSa.reference.title",
-      value = Seq(journeyRequest.journey.referenceValue),
-      changeLink = Some(Link(
-        Call("GET", "this/that"),
-        "ptasa.reference-change-link",
-        "ptasa.reference.change-link.text"
-      ))
-    ))
-  }
-
-  override def openBankingOriginSpecificSessionData: JourneySpecificData => Option[OriginSpecificSessionData] = {
-    case j: JsdPtaSa => Some(PtaSaSessionData(j.utr))
-    case _           => throw new RuntimeException("Incorrect origin found")
-  }
-
-  override def surveyAuditName: String = "self-assessment"
-  override def surveyReturnHref: String = "/personal-account"
-  override def surveyReturnMessageKey: String = "payments-survey.pta.return-message"
-  override def surveyIsWelshSupported: Boolean = true
-  override def surveyBannerTitle: String = serviceNameMessageKey
-
   def checkYourAnswersRows(request: JourneyRequest[AnyContent])(implicit messages: Messages): Seq[CheckYourAnswersRow] = {
 
     val maybeEmailAddress: Option[EmailAddress] = request.readFromSession[EmailAddress](request.journeyId, Keys.email)
@@ -127,5 +104,28 @@ object ExtendedPtaSa extends ExtendedOrigin {
 
     Seq(referenceRow, dateRow, amountRow, addressRow, emailRow)
   }
+
+  override def checkYourAnswersReferenceRow(journeyRequest: JourneyRequest[AnyContent]): Option[CheckYourAnswersRow] = {
+    Some(CheckYourAnswersRow(
+      titleMessageKey = "check-your-answers.PtaSa.reference",
+      value           = Seq(journeyRequest.journey.referenceValue),
+      changeLink      = Some(Link(
+        href       = Call("GET", "some-link-to-pay-frontend"),
+        linkId     = "check-your-answers-reference-change-link",
+        messageKey = "check-your-answers.change"
+      ))
+    ))
+  }
+
+  override def openBankingOriginSpecificSessionData: JourneySpecificData => Option[OriginSpecificSessionData] = {
+    case j: JsdPtaSa => Some(PtaSaSessionData(j.utr))
+    case _           => throw new RuntimeException("Incorrect origin found")
+  }
+
+  override def surveyAuditName: String = "self-assessment"
+  override def surveyReturnHref: String = "/personal-account"
+  override def surveyReturnMessageKey: String = "payments-survey.pta.return-message"
+  override def surveyIsWelshSupported: Boolean = true
+  override def surveyBannerTitle: String = serviceNameMessageKey
 
 }

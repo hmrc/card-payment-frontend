@@ -134,7 +134,7 @@ class PaymentsSurveyServiceSpec extends ItSpec {
               )
             )
           )
-          val result = systemUnderTest.makeSsjJourneyRequest(TestJourneys.ItSa.testItsaJourneySuccessDebit)(loggedInFakeRequest)
+          val result = systemUnderTest.makeSsjJourneyRequest(TestJourneys.ItSa.testItSaJourneySuccessDebit)(loggedInFakeRequest)
           result shouldBe expectedPaymentSurveyJourneyRequest
         }
       }

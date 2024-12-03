@@ -25,7 +25,8 @@ object WartRemoverSettings {
         Wart.Equals,
         Wart.GlobalExecutionContext,
         Wart.NonUnitStatements,
-        Wart.PublicInference
+        Wart.PublicInference,
+        Wart.SeqApply
       ),
       wartremoverExcluded ++= (Compile / routes).value ++
         target.value.get // stops a weird wart remover Null error being thrown, we don't care about target directory

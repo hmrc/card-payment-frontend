@@ -15,7 +15,7 @@ object AppDependencies {
 
   val compile: Seq[ModuleID] = Seq[ModuleID](
     "uk.gov.hmrc" %% "bootstrap-frontend-play-30"       % bootstrapVersion,
-    "uk.gov.hmrc" %% "play-frontend-hmrc-play-30"       % "11.6.0",
+    "uk.gov.hmrc" %% "play-frontend-hmrc-play-30"       % "11.7.0",
     "uk.gov.hmrc" %% "pay-api-cor-card-payment-journey" % payApiCorVersion excludeAll(payApiExclusionRules: _*)
   )
 

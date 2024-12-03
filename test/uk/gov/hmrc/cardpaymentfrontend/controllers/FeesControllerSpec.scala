@@ -470,21 +470,21 @@ class FeesControllerSpec extends ItSpec {
       "for origin ItSa" - {
 
         "render the static content correctly" in {
-          PayApiStub.stubForFindBySessionId2xx(TestJourneys.ItSa.testItsaJourneySuccessDebit)
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.ItSa.testItSaJourneySuccessDebit)
           val result = systemUnderTest.renderPageNew()(fakeRequest)
           val document = Jsoup.parse(contentAsString(result))
           testStaticContentEnglish(document)
         }
 
         "the static content correctly in welsh" in {
-          PayApiStub.stubForFindBySessionId2xx(TestJourneys.ItSa.testItsaJourneySuccessDebit)
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.ItSa.testItSaJourneySuccessDebit)
           val result = systemUnderTest.renderPageNew()(fakeWelshRequest)
           val document = Jsoup.parse(contentAsString(result))
           testStaticContentWelsh(document)
         }
 
         "render two options for other ways to pay" in {
-          PayApiStub.stubForFindBySessionId2xx(TestJourneys.ItSa.testItsaJourneySuccessDebit)
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.ItSa.testItSaJourneySuccessDebit)
           val result = systemUnderTest.renderPageNew()(fakeRequest)
           val document = Jsoup.parse(contentAsString(result))
           val listOfMethods = document.select("#payment-type-list").select("li")
@@ -492,7 +492,7 @@ class FeesControllerSpec extends ItSpec {
         }
 
         "render an option for bank transfer" in {
-          PayApiStub.stubForFindBySessionId2xx(TestJourneys.ItSa.testItsaJourneySuccessDebit)
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.ItSa.testItSaJourneySuccessDebit)
           val result = systemUnderTest.renderPageNew()(fakeRequest)
           val document = Jsoup.parse(contentAsString(result))
           val listOfMethods = document.select("#payment-type-list").select("li")
@@ -502,7 +502,7 @@ class FeesControllerSpec extends ItSpec {
         }
 
         "render an option for bank transfer in welsh" in {
-          PayApiStub.stubForFindBySessionId2xx(TestJourneys.ItSa.testItsaJourneySuccessDebit)
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.ItSa.testItSaJourneySuccessDebit)
           val result = systemUnderTest.renderPageNew()(fakeWelshRequest)
           val document = Jsoup.parse(contentAsString(result))
           val listOfMethods = document.select("#payment-type-list").select("li")
@@ -512,7 +512,7 @@ class FeesControllerSpec extends ItSpec {
         }
 
         "render an option for personal debit card" in {
-          PayApiStub.stubForFindBySessionId2xx(TestJourneys.ItSa.testItsaJourneySuccessDebit)
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.ItSa.testItSaJourneySuccessDebit)
           val result = systemUnderTest.renderPageNew()(fakeRequest)
           val document = Jsoup.parse(contentAsString(result))
           val listOfMethods = document.select("#payment-type-list").select("li")
@@ -521,7 +521,7 @@ class FeesControllerSpec extends ItSpec {
         }
 
         "render an option for personal debit card in welsh" in {
-          PayApiStub.stubForFindBySessionId2xx(TestJourneys.ItSa.testItsaJourneySuccessDebit)
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.ItSa.testItSaJourneySuccessDebit)
           val result = systemUnderTest.renderPageNew()(fakeWelshRequest)
           val document = Jsoup.parse(contentAsString(result))
           val listOfMethods = document.select("#payment-type-list").select("li")
@@ -654,6 +654,7 @@ class FeesControllerSpec extends ItSpec {
             case Origins.AlcoholDuty              => Seq.empty
             case Origins.PfAlcoholDuty            => Seq.empty
             case Origins.VatC2c                   => Seq.empty
+            case Origins.`3psSa`                  => Seq.empty
           }
           systemUnderTest.linksAvailableOnFeesPage(origin) shouldBe expectedLinks withClue s"links did not match expected for origin: ${origin.entryName}"
         }

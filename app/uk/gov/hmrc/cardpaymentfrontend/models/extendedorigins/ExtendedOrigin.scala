@@ -31,10 +31,7 @@ trait ExtendedOrigin {
   def serviceNameMessageKey: String
   def taxNameMessageKey: String
 
-  def amount(request: JourneyRequest[AnyContent]): String = request.journey.amountInPence match {
-    case Some(amountInPence) => s"£${amountInPence.inPoundsRoundedFormatted}"
-    case None      => throw new RuntimeException("Amount is not present, therefore we can't display it.")
-  }
+  def amount(request: JourneyRequest[AnyContent]): String = s"£${request.journey.getAmountInPence.inPoundsRoundedFormatted}"
 
   def reference(request: JourneyRequest[AnyContent]): String = {
     request.journey.journeySpecificData.reference match {
@@ -51,14 +48,14 @@ trait ExtendedOrigin {
   def checkYourAnswersReferenceRow(journeyRequest: JourneyRequest[AnyContent]): Option[CheckYourAnswersRow]
 
   def checkYourAnswersAmountSummaryRow(journeyRequest: JourneyRequest[AnyContent]): Option[CheckYourAnswersRow] = Some(CheckYourAnswersRow(
-      titleMessageKey = "check-your-answers.total-to-pay",
-      value           = Seq(amount(journeyRequest)),
-      changeLink      = Some(Link(
-        href       = Call("GET", "this/that"),
-        linkId     = "check-your-answers-amount-change-link",
-        messageKey = "check-your-answers.change"
-      ))
+    titleMessageKey = "check-your-answers.total-to-pay",
+    value           = Seq(amount(journeyRequest)),
+    changeLink      = Some(Link(
+      href       = Call("GET", "some-link-to-pay-frontend"),
+      linkId     = "check-your-answers-amount-change-link",
+      messageKey = "check-your-answers.change"
     ))
+  ))
 
   def checkYourAnswersEmailAddressRow(journeyRequest: JourneyRequest[AnyContent]): Option[CheckYourAnswersRow] = {
     val maybeEmail: Option[EmailAddress] = journeyRequest.readFromSession[EmailAddress](journeyRequest.journeyId, Keys.email)
@@ -67,7 +64,7 @@ trait ExtendedOrigin {
         titleMessageKey = "check-your-answers.email-address",
         value           = Seq(email.value),
         changeLink      = Some(Link(
-          href       = Call("GET", "this/that"),
+          href       = Call("GET", "some-link-to-address-page-on-card-payment-frontend"),
           linkId     = "check-your-answers-email-address-change-link",
           messageKey = "check-your-answers.change"
         ))
@@ -79,24 +76,24 @@ trait ExtendedOrigin {
     //todo error? we can't take a card payment without an address
     val addressFromSession: Address = journeyRequest.readFromSession[Address](journeyRequest.journeyId, Keys.address).getOrElse(throw new RuntimeException("Cannot take a card payment without an address"))
     val addressValues: Seq[String] = Seq[String](
-        addressFromSession.line1,
-        addressFromSession.line2.getOrElse(""),
-        addressFromSession.city.getOrElse(""),
-        addressFromSession.county.getOrElse(""),
-        addressFromSession.postcode,
-        addressFromSession.country
-      ).filter(_.nonEmpty)
+      addressFromSession.line1,
+      addressFromSession.line2.getOrElse(""),
+      addressFromSession.city.getOrElse(""),
+      addressFromSession.county.getOrElse(""),
+      addressFromSession.postcode,
+      addressFromSession.country
+    ).filter(_.nonEmpty)
 
     Some(CheckYourAnswersRow(
-        titleMessageKey = "check-your-answers.card-billing-address",
-        value           = addressValues,
-        changeLink      = Some(Link(
-          href       = Call("GET", "this/that"),
-          linkId     = "check-your-answers-card-billing-address-change-link",
-          messageKey = "check-your-answers.change"
-        ))
+      titleMessageKey = "check-your-answers.card-billing-address",
+      value           = addressValues,
+      changeLink      = Some(Link(
+        href       = Call("GET", "some-link-to-address-page-on-card-payment-frontend"),
+        linkId     = "check-your-answers-card-billing-address-change-link",
+        messageKey = "check-your-answers.change"
+      ))
     ))
-    }
+  }
 
   //todo rename, it's not quite right -- or delete when not used anymore.
   def checkYourAnswersRows(request: JourneyRequest[AnyContent])(implicit messages: Messages): Seq[CheckYourAnswersRow]

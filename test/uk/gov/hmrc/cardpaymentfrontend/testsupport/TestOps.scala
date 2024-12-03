@@ -28,6 +28,7 @@ object TestOps {
     def withLang(language: String = "en"): FakeRequest[T] = r.withCookies(Cookie("PLAY_LANG", language))
 
     def withLangWelsh(): FakeRequest[T] = r.withLang("cy")
+
     def withLangEnglish(): FakeRequest[T] = r.withLang("en")
 
     def withSessionId(sessionId: String = "some-valid-session-id"): FakeRequest[T] =
@@ -41,9 +42,18 @@ object TestOps {
         "email" -> email
       ).toString)
 
-    def withAddress(journeyId: JourneyId, address: Address) =
+    def withAddressInSession(journeyId: JourneyId, address: Address = Address(line1    = "line1", postcode = "AA0AA0", country = "GBR")): FakeRequest[T] =
       r.withSession(journeyId.value -> Json.obj(
         "address" -> address
       ).toString)
+
+    def withEmailAndAddressInSession(
+        journeyId:    JourneyId,
+        emailAddress: EmailAddress = EmailAddress("blah@blah.com"),
+        address:      Address      = Address(line1    = "line1", postcode = "AA0AA0", country = "GBR")
+    ): FakeRequest[T] = r.withSession(journeyId.value -> Json.obj(
+      "email" -> emailAddress,
+      "address" -> address
+    ).toString())
   }
 }
