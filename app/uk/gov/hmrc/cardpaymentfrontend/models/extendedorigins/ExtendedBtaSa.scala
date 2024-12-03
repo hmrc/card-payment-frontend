@@ -122,4 +122,6 @@ object ExtendedBtaSa extends ExtendedOrigin {
       emailRow
     )
   }
+
+  override def emailTaxTypeMessageKey: String = "email.tax-name.BtaSa"
 }

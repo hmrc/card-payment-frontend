@@ -11,7 +11,9 @@ object SbtUpdatesSettings {
     dependencyUpdatesFailBuild := StrictBuilding.strictBuilding.value,
     (Compile / compile) := ((Compile / compile) dependsOn dependencyUpdates).value,
     dependencyUpdatesFilter -= moduleFilter("org.scala-lang"),
-    dependencyUpdatesFilter -= moduleFilter("org.playframework")
+    dependencyUpdatesFilter -= moduleFilter("org.playframework"),
+    // ignoring pay-api-cor while 3ps being worked on
+    dependencyUpdatesFilter -= moduleFilter("uk.gov.hmrc", "pay-api-cor-card-payment-journey")
   )
 
 }

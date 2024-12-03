@@ -47,6 +47,9 @@ trait ExtendedOrigin {
   def checkYourAnswersRows(request: JourneyRequest[AnyContent])(implicit messages: Messages): Seq[CheckYourAnswersRow]
   def openBankingOriginSpecificSessionData: JourneySpecificData => Option[OriginSpecificSessionData]
 
+  //email related content
+  def emailTaxTypeMessageKey: String
+
   //payments survey stuff
   def surveyAuditName: String
   def surveyReturnHref: String

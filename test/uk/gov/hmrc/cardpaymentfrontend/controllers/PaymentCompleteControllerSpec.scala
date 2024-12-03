@@ -24,13 +24,15 @@ import payapi.cardpaymentjourney.model.journey.{Journey, JourneySpecificData, Ur
 import payapi.corcommon.model.barclays.{CardCategories, TransactionReference}
 import payapi.corcommon.model.{AmountInPence, JourneyId}
 import play.api.i18n.{Messages, MessagesApi}
+import play.api.libs.json.Json
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.mvc.Http.Status
+import uk.gov.hmrc.cardpaymentfrontend.models.EmailAddress
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.ItSpec
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.TestOps._
-import uk.gov.hmrc.cardpaymentfrontend.testsupport.stubs.PayApiStub
+import uk.gov.hmrc.cardpaymentfrontend.testsupport.stubs.{EmailStub, PayApiStub}
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.testdata.TestJourneys
 import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
@@ -48,6 +50,24 @@ class PaymentCompleteControllerSpec extends ItSpec {
     val fakeGetRequestInWelsh: FakeRequest[AnyContentAsEmpty.type] = fakeGetRequest.withLangWelsh()
 
     "GET /payment-complete" - {
+
+      val jsonBody = Json.parse(
+
+        """
+        {
+          "to" : [ "blah@blah.com" ],
+          "templateId" : "payment_successful",
+          "parameters" : {
+            "taxType" : "Self Assessment",
+            "taxReference" : "1234567895K",
+            "paymentReference" : "Some-transaction-ref",
+            "amountPaid" : "12.34",
+            "totalPaid" : "12.34"
+          },
+          "force" : false
+        }
+        """
+      )
 
       "render the page with the language toggle" in {
         PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.testPfSaJourneySuccessDebit)
@@ -153,6 +173,22 @@ class PaymentCompleteControllerSpec extends ItSpec {
         surveyWrapper.select("h2").text() shouldBe "Helpwch ni i wella ein gwasanaethau"
         surveyWrapper.select("#survey-content").text() shouldBe "Rydym yn defnyddio’ch adborth i wella ein gwasanaethau."
         surveyWrapper.select("#survey-link-wrapper").html() shouldBe """<a class="govuk-link" href="/pay-by-card/start-payment-survey">Rhowch wybod i ni beth yw eich barn am y gwasanaeth hwn</a> (mae’n cymryd 30 eiliad)"""
+      }
+
+      //this test will be moved eventually
+      "should send an email if there is one in the session" in {
+        PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.testPfSaJourneySuccessDebit)
+        val fakeRequestForTest = fakeGetRequest.withEmailInSession(TestJourneys.PfSa.testPfSaJourneySuccessDebit._id, EmailAddress("blah@blah.com"))
+        val result = systemUnderTest.renderPage(fakeRequestForTest)
+        status(result) shouldBe Status.OK
+        EmailStub.verifyEmailWasSent(jsonBody)
+      }
+
+      "should not send an email if there is not one in the session" in {
+        PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.testPfSaJourneySuccessDebit)
+        val result = systemUnderTest.renderPage(fakeGetRequest)
+        status(result) shouldBe Status.OK
+        EmailStub.verifyEmailWasNotSend()
       }
 
         def testSummaryRows(testData: Journey[JourneySpecificData], fakeRequest: FakeRequest[_], expectedSummaryListRows: List[(String, String)]) = {

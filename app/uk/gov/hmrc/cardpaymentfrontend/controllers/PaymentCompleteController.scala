@@ -24,38 +24,53 @@ import play.twirl.api.Html
 import uk.gov.hmrc.cardpaymentfrontend.actions.{Actions, JourneyRequest}
 import uk.gov.hmrc.cardpaymentfrontend.models.{EmailAddress, creditCardCommissionRate}
 import uk.gov.hmrc.cardpaymentfrontend.requests.RequestSupport
-import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-import uk.gov.hmrc.cardpaymentfrontend.views.html.PaymentCompletePage
-
-import javax.inject.Inject
+import uk.gov.hmrc.cardpaymentfrontend.services.EmailService
 import uk.gov.hmrc.cardpaymentfrontend.session.JourneySessionSupport._
+import uk.gov.hmrc.cardpaymentfrontend.util.SafeEquals.EqualsOps
 import uk.gov.hmrc.cardpaymentfrontend.utils.{DateStringBuilder, OriginExtraInfo}
+import uk.gov.hmrc.cardpaymentfrontend.views.html.PaymentCompletePage
 import uk.gov.hmrc.govukfrontend.views.Aliases.{HtmlContent, Text, Value}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{Key, SummaryListRow}
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
+
+import javax.inject.Inject
+import scala.concurrent.{ExecutionContext, Future}
 
 class PaymentCompleteController @Inject() (
     actions:             Actions,
+    emailService:        EmailService,
     originExtraInfo:     OriginExtraInfo,
     mcc:                 MessagesControllerComponents,
     paymentCompletePage: PaymentCompletePage,
     requestSupport:      RequestSupport
-) extends FrontendController(mcc) {
+)(implicit executionContext: ExecutionContext) extends FrontendController(mcc) {
 
   import requestSupport._
 
-  val renderPage: Action[AnyContent] = actions.journeyAction { implicit request: JourneyRequest[AnyContent] =>
+  val renderPage: Action[AnyContent] = actions.journeyAction { implicit journeyRequest: JourneyRequest[AnyContent] =>
 
     val maybeEmailFromSession: Option[EmailAddress] =
-      request.readFromSession[EmailAddress](request.journeyId, Keys.email).map(email => EmailAddress(email.value))
+      journeyRequest.readFromSession[EmailAddress](journeyRequest.journeyId, Keys.email).map(email => EmailAddress(email.value))
+
+    val langIsEnglish: Boolean = journeyRequest.lang.code =!= "cy"
+
+    //TODO: Eventually we can call this from the payment-status controller, but we don't have that yet.
+    val _ = maybeEmailFromSession.fold(Future.unit) { email =>
+      emailService.sendEmail(
+        journey      = journeyRequest.journey,
+        emailAddress = email,
+        isEnglish    = langIsEnglish
+      )(RequestSupport.hc, journeyRequest)
+    }.map((_: Unit) => ())
 
     Ok(paymentCompletePage(
-      taxReference      = request.journey.getReference,
+      taxReference      = journeyRequest.journey.getReference,
       summaryListRows   = PaymentCompleteController.buildSummaryListRows(
-        journey = request.journey,
-        taxType = originExtraInfo.lift(request.journey.origin).taxNameMessageKey
+        journey = journeyRequest.journey,
+        taxType = originExtraInfo.lift(journeyRequest.journey.origin).taxNameMessageKey
       ),
       maybeEmailAddress = maybeEmailFromSession,
-      maybeReturnUrl    = request.journey.navigation.flatMap(_.returnUrl.map(_.value))
+      maybeReturnUrl    = journeyRequest.journey.navigation.flatMap(_.returnUrl.map(_.value))
     ))
   }
 }
