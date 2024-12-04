@@ -396,7 +396,7 @@ class PaymentCompleteControllerSpec extends ItSpec {
               "Date" -> "2 November 2027",
               "Amount" -> "£12.34"
             )
-            testSummaryRows(TestJourneys.ItSa.testItsaJourneySuccessDebit, fakeGetRequest, expectedSummaryListRows)
+            testSummaryRows(TestJourneys.ItSa.testItSaJourneySuccessDebit, fakeGetRequest, expectedSummaryListRows)
 
           }
 
@@ -406,11 +406,11 @@ class PaymentCompleteControllerSpec extends ItSpec {
               "Dyddiad" -> "2 Tachwedd 2027",
               "Swm" -> "£12.34"
             )
-            testSummaryRows(TestJourneys.ItSa.testItsaJourneySuccessDebit, fakeGetRequestInWelsh, expectedSummaryListRows)
+            testSummaryRows(TestJourneys.ItSa.testItSaJourneySuccessDebit, fakeGetRequestInWelsh, expectedSummaryListRows)
           }
 
           "render the custom what happens next content" in {
-            PayApiStub.stubForFindBySessionId2xx(TestJourneys.ItSa.testItsaJourneySuccessDebit)
+            PayApiStub.stubForFindBySessionId2xx(TestJourneys.ItSa.testItSaJourneySuccessDebit)
             val result = systemUnderTest.renderPage(fakeGetRequest)
             val document = Jsoup.parse(contentAsString(result))
             val wrapper = document.select("#what-happens-next-wrapper")
@@ -419,7 +419,7 @@ class PaymentCompleteControllerSpec extends ItSpec {
           }
 
           "render the custom what happens next content in welsh" in {
-            PayApiStub.stubForFindBySessionId2xx(TestJourneys.ItSa.testItsaJourneySuccessDebit)
+            PayApiStub.stubForFindBySessionId2xx(TestJourneys.ItSa.testItSaJourneySuccessDebit)
             val result = systemUnderTest.renderPage(fakeGetRequestInWelsh)
             val document = Jsoup.parse(contentAsString(result))
             val wrapper = document.select("#what-happens-next-wrapper")
@@ -438,7 +438,7 @@ class PaymentCompleteControllerSpec extends ItSpec {
               "Card fee (9.97%), non-refundable" -> "£1.23",
               "Total paid" -> "£13.57"
             )
-            testSummaryRows(TestJourneys.ItSa.testItsaJourneySuccessCredit, fakeGetRequest, expectedSummaryListRows)
+            testSummaryRows(TestJourneys.ItSa.testItSaJourneySuccessCredit, fakeGetRequest, expectedSummaryListRows)
           }
 
           "render the summary list correctly in welsh when payment has a surcharge" in {
@@ -449,7 +449,7 @@ class PaymentCompleteControllerSpec extends ItSpec {
               "Ffi cerdyn (9.97%), ni ellir ei ad-dalu" -> "£1.23",
               "Cyfanswm a dalwyd" -> "£13.57"
             )
-            testSummaryRows(TestJourneys.ItSa.testItsaJourneySuccessCredit, fakeGetRequestInWelsh, expectedSummaryListRows)
+            testSummaryRows(TestJourneys.ItSa.testItSaJourneySuccessCredit, fakeGetRequestInWelsh, expectedSummaryListRows)
           }
         }
       }

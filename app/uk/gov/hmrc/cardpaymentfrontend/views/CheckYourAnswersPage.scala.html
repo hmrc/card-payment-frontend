@@ -27,7 +27,7 @@
     summaryListComponent: GovukSummaryList
 )
 
-@(reference: String, summaryList: SummaryList)(implicit request: RequestHeader, messages: Messages)
+@(summaryList: SummaryList)(implicit request: RequestHeader, messages: Messages)
 
 @heading = @{messages("check-your-answers.heading")}
 
@@ -36,9 +36,7 @@
 
    @summaryListComponent(summaryList)
 
-   <p id="cya-final-ref" class="govuk-body">@messages("check-your-answers.your-ref") <strong>@reference</strong>.</p>
-
-   @formWithCSRF(action = uk.gov.hmrc.cardpaymentfrontend.controllers.routes.EmailAddressController.submit) {
+   @formWithCSRF(action = uk.gov.hmrc.cardpaymentfrontend.controllers.routes.CheckYourAnswersController.submit) {
       @govukButton(Button(
          id = Some("submit"),
           content = Text(messages("continue"))

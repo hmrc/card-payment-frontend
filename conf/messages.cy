@@ -89,7 +89,7 @@ email-address.heading = Beth yw’ch cyfeiriad e-bost? (dewisol)
 email-address.hint = Byddwn ond yn defnyddio hwn i gadarnhau’ch bod wedi anfon taliad
 email-address.error.invalid = Nodwch gyfeiriad e-bost dilys neu gadewch yn wag
 
-# Card fees page
+## Card fees page
 card-fees.heading = Ffioedd cerdyn
 card-fees.para1 = Bydd ffi na ellir ei had-dalu yn cael ei chodi os talwch â cherdyn credyd corfforaethol neu gerdyn debyd corfforaethol.
 card-fees.para2 = Nid oes ffi yn cael ei chodi os talwch drwy un o’r dulliau canlynol:
@@ -101,72 +101,22 @@ card-fees.para2.personal-debit-card = cerdyn debyd personol
 card-fees.para3 = Ni allwch dalu â cherdyn credyd personol.
 card-fees.para4 = Dylech ganiatáu 3 diwrnod gwaith i’ch taliad gyrraedd cyfrif banc CThEM.
 
-# check your answers page
-# some refactoring here to consolidate common phrases
-check-your-answers.heading = Gwirio’ch atebion
-check-your-answers.your-ref = Bydd y taliad hwn yn dangos yn eich banc fel
-pfsa.reference.title = Cyfeirnod Unigryw y Trethdalwr (UTR)
-pfsa.reference.change-link.text = Newid
-pfsa.email.title = Cyfeiriad e-bost ar gyfer y dderbynneb
-pfsa.email.supply-link.text.change = Newid
-pfsa.email.supply-link.text.new  = Nodwch gyfeiriad e-bost
-pfsa.date.title = Dyddiad talu
-pfsa.date.today = Heddiw
-ptasa.date.change-link.text = Newid
-pfsa.amount.title = Swm
-pfsa.amount.change-link.text = Newid
-pfsa.address.title = Cyfeiriad bilio
-pfsa.address.change-link.text = Newid
+## Check your answers page
+# common messages across all regimes
+check-your-answers.heading = Gwiriwch eich manylion
+check-your-answers.change = Newid
+check-your-answers.payment-date = Dyddiad talu
+check-your-answers.total-to-pay = Cyfanswm i’w dalu
+check-your-answers.email-address = Cyfeiriad e-bost
+check-your-answers.card-billing-address = Cyfeiriad bilio
 
-pfvat.reference.title = Rhif cofrestru TAW
-pfvat.reference.change-link.text = Newid
-pfvat.email.title = Cyfeiriad e-bost ar gyfer y dderbynneb
-pfvat.email.supply-link.text.change = Newid
-pfvat.email.supply-link.text.new  = Nodwch gyfeiriad e-bost
-pfvat.amount.title = Swm
-pfvat.amount.change-link.text = Newid
-pfvat.address.title = Cyfeiriad bilio
-pfvat.address.change-link.text = Newid
+#tax regime specific messages
+check-your-answers.PfSa.reference = Cyfeirnod Unigryw y Trethdalwr (UTR)
+check-your-answers.BtaSa.reference = Cyfeirnod Unigryw y Trethdalwr (UTR)
+check-your-answers.PtaSa.reference = Cyfeirnod Unigryw y Trethdalwr (UTR)
+check-your-answers.ItSa.reference = Cyfeirnod Unigryw y Trethdalwr (UTR)
+check-your-answers.PfVat.reference.title = ADD_ME
 
-ptasa.reference.title = Cyfeirnod Unigryw y Trethdalwr (UTR)
-ptasa.reference.change-link.text = Newid
-ptasa.email.title = Cyfeiriad e-bost ar gyfer y dderbynneb
-ptasa.email.supply-link.text.change = Newid
-ptasa.email.supply-link.text.new  = Nodwch gyfeiriad e-bost
-ptasa.amount.title = Cyfanswm i’w dalu
-ptasa.date.title = Dyddiad talu
-ptasa.date.today = Heddiw
-ptasa.date.change-link.text = Newid
-ptasa.amount.title = Swm
-ptasa.amount.change-link.text = Newid
-ptasa.address.title = CCyfeiriad bilio
-ptasa.address.change-link.text = Newid
-
-btasa.reference.title = Cyfeirnod Unigryw y Trethdalwr (UTR)
-btasa.reference.change-link.text = Newid
-btasa.email.title = Cyfeiriad e-bost ar gyfer y dderbynneb
-btasa.email.supply-link.text.change = Newid
-btasa.email.supply-link.text.new  = Nodwch gyfeiriad e-bost
-btasa.date.title = Dyddiad talu
-btasa.date.today = Heddiw
-btasa.date.change-link.text = Newid
-btasa.amount.title = Swm
-btasa.amount.change-link.text = Newid
-btasa.address.title = CCyfeiriad bilio
-btasa.address.change-link.text = Newid
-
-itsa.reference.title = Cyfeirnod Unigryw y Trethdalwr (UTR)
-itsa.reference.change-link.text = Newid
-itsa.email.title = Cyfeiriad e-bost ar gyfer y dderbynneb
-itsa.email.supply-link.text.change = Newid
-itsa.email.supply-link.text.new  = Nodwch gyfeiriad e-bost
-itsa.date.title = Dyddiad talu
-itsa.date.today = Heddiw
-itsa.date.change-link.text = Newid
-itsa.amount.title = Swm
-itsa.amount.change-link.text = Newid
-itsa.address.title = CCyfeiriad bilio
-itsa.address.change-link.text = Newid
 
 ## Address Page
 address.heading = Cyfeiriad bilio’r cerdyn

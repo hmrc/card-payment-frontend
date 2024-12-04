@@ -16,10 +16,10 @@
 
 package uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins
 
+import payapi.cardpaymentjourney.model.journey.JourneySpecificData
 import play.api.i18n.Messages
 import play.api.mvc.AnyContent
 import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
-import payapi.cardpaymentjourney.model.journey.JourneySpecificData
 import uk.gov.hmrc.cardpaymentfrontend.models.CheckYourAnswersRow
 import uk.gov.hmrc.cardpaymentfrontend.models.openbanking.OriginSpecificSessionData
 import uk.gov.hmrc.cardpaymentfrontend.utils._
@@ -31,6 +31,8 @@ class ExtendedPfP800 extends ExtendedOrigin {
   def paymentMethods(): Set[PaymentMethod] = Set() //Set(Card, Bacs)//todo will we use this?
 
   def checkYourAnswersRows(request: JourneyRequest[AnyContent])(implicit messages: Messages): Seq[CheckYourAnswersRow] = Seq.empty
+
+  override def checkYourAnswersReferenceRow(journeyRequest: JourneyRequest[AnyContent]): Option[CheckYourAnswersRow] = None
 
   override def openBankingOriginSpecificSessionData: JourneySpecificData => Option[OriginSpecificSessionData] = _ => None
 

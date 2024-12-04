@@ -90,7 +90,7 @@ email-address.heading = What is your email address? (optional)
 email-address.hint = We’ll only use this to confirm you sent a payment
 email-address.error.invalid = Enter a valid email address or leave it blank
 
-# Card fees page
+## Card fees page
 card-fees.heading = Card fees
 card-fees.para1 = There is a non-refundable fee if you pay by corporate credit card or corporate debit card.
 card-fees.para2 = There is no fee if you pay by:
@@ -103,71 +103,23 @@ card-fees.para3 = You cannot pay using a personal credit card.
 card-fees.para4 = Allow 3 working days for your payment to reach HMRC’s bank account.
 card-fees.para2.bank-account = bank account
 
-# Check your answers page
-# some refactoring here to consolidate common phrases
+## Check your answers page
+# common messages across all regimes
 check-your-answers.heading = Check your answers
-check-your-answers.your-ref = This payment will show in your bank as
-pfsa.reference.title = Unique Taxpayer Reference (UTR)
-pfsa.reference.change-link.text = Change
-pfsa.email.title = Email address
-pfsa.email.supply-link.text.change = Change
-pfsa.email.supply-link.text.new = Enter email address
-pfsa.date.title = Payment date
-pfsa.date.today = Today
-pfsa.date.change-link.text = Change
-pfsa.amount.title = Amount
-pfsa.amount.change-link.text = Change
-pfsa.address.title = Card billing address
-pfsa.address.change-link.text = Change
+check-your-answers.change = Change
+check-your-answers.payment-date = Payment date
+check-your-answers.total-to-pay = Total to pay
+check-your-answers.email-address = Email address
+check-your-answers.card-billing-address = Card billing address
 
-pfvat.reference.title = VAT registration number
-pfvat.reference.change-link.text = Change
-pfvat.email.title = Email address
-pfvat.email.change-link.text = Change
-pfvat.amount.title = Amount
-pfvat.amount.change-link.text = Change
-pfvat.address.title = Card billing address
-pfvat.address.change-link.text = Change
+#tax regime specific messages
+check-your-answers.PfSa.reference = Unique Taxpayer Reference (UTR)
+check-your-answers.BtaSa.reference = Unique Taxpayer Reference (UTR)
+check-your-answers.PtaSa.reference = Unique Taxpayer Reference (UTR)
+check-your-answers.ItSa.reference = Unique Taxpayer Reference (UTR)
+check-your-answers.PfVat.reference.title = VAT registration number
 
-ptasa.reference.title = Unique Taxpayer Reference (UTR)
-ptasa.reference.change-link.text = Change
-ptasa.email.title = Email address
-ptasa.email.supply-link.text.change = Change
-ptasa.email.supply-link.text.new = Enter email address
-ptasa.date.title = Payment date
-ptasa.date.today = Today
-ptasa.date.change-link.text = Change
-ptasa.amount.title = Amount
-ptasa.amount.change-link.text = Change
-ptasa.address.title = Card billing address
-ptasa.address.change-link.text = Change
 
-btasa.reference.title = Unique Taxpayer Reference (UTR)
-btasa.reference.change-link.text = Change
-btasa.email.title = Email address
-btasa.email.supply-link.text.change = Change
-btasa.email.supply-link.text.new = Enter email address
-btasa.date.title = Payment date
-btasa.date.today = Today
-btasa.date.change-link.text = Change
-btasa.amount.title = Amount
-btasa.amount.change-link.text = Change
-btasa.address.title = Card billing address
-btasa.address.change-link.text = Change
-pfvat.address.change-link.text = Change
-
-itsa.reference.title = Unique Taxpayer Reference (UTR)
-itsa.reference.change-link.text = Change
-itsa.email.title = Email address
-itsa.email.supply-link.text.change = Change
-itsa.email.supply-link.text.new = Enter email address
-itsa.date.title = Payment date
-itsa.date.today = Today
-itsa.date.change-link.text = Change
-itsa.amount.title = Amount
-itsa.amount.change-link.text = Change
-itsa.address.title = Card billing address
-itsa.address.change-link.text = Change
 
 ## Address Page
 address.heading = Card billing address

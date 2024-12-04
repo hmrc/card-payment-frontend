@@ -34,6 +34,18 @@ object ExtendedBtaSa extends ExtendedOrigin {
   //todo add these when we do that ticket
   def paymentMethods(): Set[PaymentMethod] = Set.empty
 
+  override def checkYourAnswersReferenceRow(journeyRequest: JourneyRequest[AnyContent]): Option[CheckYourAnswersRow] = {
+    Some(CheckYourAnswersRow(
+      titleMessageKey = "check-your-answers.BtaSa.reference",
+      value           = Seq(journeyRequest.journey.referenceValue),
+      changeLink      = Some(Link(
+        href       = Call("GET", "some-link-to-pay-frontend"),
+        linkId     = "check-your-answers-reference-change-link",
+        messageKey = "check-your-answers.change"
+      ))
+    ))
+  }
+
   override def openBankingOriginSpecificSessionData: JourneySpecificData => Option[OriginSpecificSessionData] = {
     case j: JsdBtaSa => Some(BtaSaSessionData(j.utr))
     case _           => throw new RuntimeException("Incorrect origin found")

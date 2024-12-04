@@ -29,6 +29,7 @@ import uk.gov.hmrc.cardpaymentfrontend.utils.PaymentMethods.{Bacs, Card, OneOffD
 object ExtendedPfSa extends ExtendedOrigin {
   override val serviceNameMessageKey: String = "service-name.PfSa"
   override val taxNameMessageKey: String = "payment-complete.tax-name.PfSa"
+
   def cardFeesPagePaymentMethods: Set[PaymentMethod] = Set(OpenBanking, OneOffDirectDebit)
 
   def paymentMethods(): Set[PaymentMethod] = Set(Card, OpenBanking, OneOffDirectDebit, Bacs)
@@ -40,62 +41,74 @@ object ExtendedPfSa extends ExtendedOrigin {
 
     val referenceRow =
       CheckYourAnswersRow(
-        "pfsa.reference.title",
-        Seq(reference(request).dropRight(1)), //Do not display the final K in the Utr in the CYA table
-        Some(Link(
+        titleMessageKey = "PfSa.reference.title",
+        value           = Seq(reference(request).dropRight(1)), //Do not display the final K in the Utr in the CYA table//TODO: We should not drop right. We should use the dedicated methods to display sa utr.
+        changeLink      = Some(Link(
           Call("GET", "this/that"),
-          "pfsa-reference-change-link",
-          "pfsa.reference.change-link.text"
+          linkId     = "PfSa-reference-change-link",
+          messageKey = "PfSa.reference.change-link.text"
         ))
       )
 
     val amountRow = CheckYourAnswersRow(
-      "pfsa.amount.title",
-      Seq(amount(request)),
-      Some(Link(
+      titleMessageKey = "PfSa.amount.title",
+      value           = Seq(amount(request)),
+      changeLink      = Some(Link(
         Call("GET", "this/that"),
-        "pfsa-amount-change-link",
-        "pfsa.amount.change-link.text"
+        linkId     = "PfSa-amount-change-link",
+        messageKey = "PfSa.amount.change-link.text"
       ))
     )
 
     val addressRow = CheckYourAnswersRow(
-      "pfsa.address.title",
-      maybeAddress match {
+      titleMessageKey = "PfSa.address.title",
+      value           = maybeAddress match {
         case Some(addr) => Seq(addr.line1, addr.line2.getOrElse(""), addr.city.getOrElse(""), addr.county.getOrElse(""), addr.postcode, addr.country).filter(_.nonEmpty)
         case None       => Seq.empty
       },
-      Some(Link(
+      changeLink      = Some(Link(
         Call("GET", "this/that"),
-        "pfsa-address-change-link",
-        "pfsa.address.change-link.text"
+        linkId     = "PfSa-address-change-link",
+        messageKey = "PfSa.address.change-link.text"
       ))
     )
 
     val emailRow = maybeEmailAddress match {
       case Some(emailAddress) =>
         CheckYourAnswersRow(
-          titleMessageKey = "pfsa.email.title",
+          titleMessageKey = "PfSa.email.title",
           value           = Seq(emailAddress.value),
           changeLink      = Some(Link(
             Call("GET", "change/email"),
-            "pfsa-email-supply-link",
-            "pfsa.email.supply-link.text.change"
+            linkId     = "PfSa-email-supply-link",
+            messageKey = "PfSa.email.supply-link.text.change"
           ))
         )
       case None =>
         CheckYourAnswersRow(
-          titleMessageKey = "pfsa.email.title",
+          titleMessageKey = "PfSa.email.title",
           value           = Seq.empty,
           changeLink      = Some(Link(
             Call("GET", "change/email"),
-            "pfsa-email-supply-link",
-            "pfsa.email.supply-link.text.new"
+            linkId     = "PfSa-email-supply-link",
+            messageKey = "PfSa.email.supply-link.text.new"
           ))
         )
     }
 
     Seq(referenceRow, amountRow, addressRow, emailRow)
+  }
+
+  override def checkYourAnswersReferenceRow(journeyRequest: JourneyRequest[AnyContent]): Option[CheckYourAnswersRow] = {
+    Some(CheckYourAnswersRow(
+      titleMessageKey = "check-your-answers.PfSa.reference",
+      value           = Seq(journeyRequest.journey.referenceValue),
+      changeLink      = Some(Link(
+        href       = Call("GET", "some-link-to-pay-frontend"),
+        linkId     = "check-your-answers-reference-change-link",
+        messageKey = "check-your-answers.change"
+      ))
+    ))
   }
 
   override def openBankingOriginSpecificSessionData: JourneySpecificData => Option[OriginSpecificSessionData] = {

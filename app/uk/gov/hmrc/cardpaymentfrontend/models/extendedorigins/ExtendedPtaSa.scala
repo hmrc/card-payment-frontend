@@ -105,6 +105,18 @@ object ExtendedPtaSa extends ExtendedOrigin {
     Seq(referenceRow, dateRow, amountRow, addressRow, emailRow)
   }
 
+  override def checkYourAnswersReferenceRow(journeyRequest: JourneyRequest[AnyContent]): Option[CheckYourAnswersRow] = {
+    Some(CheckYourAnswersRow(
+      titleMessageKey = "check-your-answers.PtaSa.reference",
+      value           = Seq(journeyRequest.journey.referenceValue),
+      changeLink      = Some(Link(
+        href       = Call("GET", "some-link-to-pay-frontend"),
+        linkId     = "check-your-answers-reference-change-link",
+        messageKey = "check-your-answers.change"
+      ))
+    ))
+  }
+
   override def openBankingOriginSpecificSessionData: JourneySpecificData => Option[OriginSpecificSessionData] = {
     case j: JsdPtaSa => Some(PtaSaSessionData(j.utr))
     case _           => throw new RuntimeException("Incorrect origin found")
