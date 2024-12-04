@@ -157,11 +157,12 @@ class EmailAddressControllerSpec extends ItSpec {
           fakePostRequest(formData: _*)
             .withLangWelsh()
 
-      "should return 200 OK when a valid email address is submitted" in {
+      "should return 200 OK when a valid email address is submitted and email is added to the session" in {
         val validFormData = ("email-address", "blag@blah.com")
         val result = systemUnderTest.submit(fakePostRequest(validFormData))
         status(result) shouldBe Status.OK
         contentAsString(result) shouldBe "Happy with the email entered"
+        session(result).data.get("TestJourneyId-44f9-ad7f-01e1d3d8f151").map(_.replaceAll("\\s", "")) shouldBe Some("""{"email":"blag@blah.com"}""")
       }
 
       "should return 200 OK when no email address to be submitted" in {
