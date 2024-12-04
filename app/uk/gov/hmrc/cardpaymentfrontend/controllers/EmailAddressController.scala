@@ -24,6 +24,7 @@ import uk.gov.hmrc.cardpaymentfrontend.actions.{Actions, JourneyRequest}
 import uk.gov.hmrc.cardpaymentfrontend.requests.RequestSupport
 import uk.gov.hmrc.cardpaymentfrontend.views.html.EmailAddressPage
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
+import uk.gov.hmrc.cardpaymentfrontend.session.JourneySessionSupport._
 
 import javax.inject.{Inject, Singleton}
 
@@ -47,8 +48,8 @@ class EmailAddressController @Inject() (
       .bindFromRequest()
       .fold(
         (formWithErrors: Form[EmailAddress]) => BadRequest(emailAddressPage(form = formWithErrors)),
-        { _ =>
-          Ok("Happy with the email entered")
+        { email =>
+          Ok("Happy with the email entered").placeInSession(journeyRequest.journeyId, "email" -> email)
         }
       )
   }

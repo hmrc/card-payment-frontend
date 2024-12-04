@@ -124,6 +124,7 @@ object OriginSpecificSessionData {
       case PfAlcoholDuty            => Json.format[PfAlcoholDutySessionData].reads(json)
       case AlcoholDuty              => Json.format[AlcoholDutySessionData].reads(json)
       case VatC2c                   => Json.format[VatC2cSessionData].reads(json)
+      case `3psSa`                  => Json.format[`3psSaSessionData`].reads(json)
 
       //Todo: Remove PfP800 when PtaP800 is fully available
       case origin @ (PfOther | PtaP800 | PfP800
@@ -200,6 +201,7 @@ object OriginSpecificSessionData {
       case sessionData: PfAlcoholDutySessionData       => Json.format[PfAlcoholDutySessionData].writes(sessionData)
       case sessionData: AlcoholDutySessionData         => Json.format[AlcoholDutySessionData].writes(sessionData)
       case sessionData: VatC2cSessionData              => Json.format[VatC2cSessionData].writes(sessionData)
+      case sessionData: `3psSaSessionData`             => Json.format[`3psSaSessionData`].writes(sessionData)
     }) + ("origin" -> Json.toJson(o.origin))
 
   implicit val format: OFormat[OriginSpecificSessionData] = OFormat(reads, writes)
@@ -228,6 +230,10 @@ final case class PtaSaSessionData(saUtr: SaUtr, override val returnUrl: Option[U
 }
 
 final case class ItSaSessionData(saUtr: SaUtr, override val returnUrl: Option[Url] = None) extends SelfAssessmentSessionData(ItSa) {
+  def searchTag = SearchTag(saUtr.value)
+}
+
+final case class `3psSaSessionData`(saUtr: SaUtr, override val returnUrl: Option[Url] = None) extends SelfAssessmentSessionData(ItSa) {
   def searchTag = SearchTag(saUtr.value)
 }
 
