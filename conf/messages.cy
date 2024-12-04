@@ -106,9 +106,9 @@ card-fees.para4 = Dylech ganiatáu 3 diwrnod gwaith i’ch taliad gyrraedd cyfri
 check-your-answers.heading = Gwiriwch eich manylion
 check-your-answers.change = Newid
 check-your-answers.payment-date = Dyddiad talu
-check-your-answers.total-to-pay = ADD_ME
-check-your-answers.email-address = ADD_ME
-check-your-answers.card-billing-address = ADD_ME
+check-your-answers.total-to-pay = Cyfanswm i’w dalu
+check-your-answers.email-address = Cyfeiriad e-bost
+check-your-answers.card-billing-address = Cyfeiriad bilio
 
 #tax regime specific messages
 check-your-answers.PfSa.reference = Cyfeirnod Unigryw y Trethdalwr (UTR)

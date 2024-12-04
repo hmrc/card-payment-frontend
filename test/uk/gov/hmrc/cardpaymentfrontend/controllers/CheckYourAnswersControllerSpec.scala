@@ -172,7 +172,6 @@ class CheckYourAnswersControllerSpec extends ItSpec {
 
         val tdJourney: Journey[JourneySpecificData] = deriveTestDataFromOrigin(origin)
 
-        //TODO: Mike, welsh test
         s"[${origin.entryName}] should render the amount row correctly" in {
           PayApiStub.stubForFindBySessionId2xx(tdJourney)
           val result = systemUnderTest.renderPage(fakeRequest(tdJourney._id))
@@ -181,10 +180,18 @@ class CheckYourAnswersControllerSpec extends ItSpec {
           assertRow(amountRow, "Total to pay", "£12.34", "Change", "some-link-to-pay-frontend")
         }
 
+        s"[${origin.entryName}] should render the amount row correctly in Welsh" in {
+          PayApiStub.stubForFindBySessionId2xx(tdJourney)
+          val result = systemUnderTest.renderPage(fakeRequestWelsh(tdJourney._id))
+          val document = Jsoup.parse(contentAsString(result))
+          val amountRow = document.select(".govuk-summary-list__row").asScala.toList(1)
+          assertRow(amountRow, "Cyfanswm i’w dalu", "£12.34", "Newid", "some-link-to-pay-frontend")
+        }
+
         //hint, this is so test without email address row does not become obsolete if we changed the value. Stops anyone "forgetting" to update the test.
         val emailAddressKeyText: String = "Email address"
+        val emailAddressKeyTextWelsh: String = "Cyfeiriad e-bost"
 
-        //TODO: Mike, welsh test
         s"[${origin.entryName}] render the email address row correctly when there is an email in session" in {
           PayApiStub.stubForFindBySessionId2xx(tdJourney)
           val result = systemUnderTest.renderPage(fakeRequest())
@@ -193,19 +200,34 @@ class CheckYourAnswersControllerSpec extends ItSpec {
           assertRow(emailRow, emailAddressKeyText, "blah@blah.com", "Change", "some-link-to-address-page-on-card-payment-frontend")
         }
 
+        s"[${origin.entryName}] render the email address row correctly when there is an email in session in Welsh" in {
+          PayApiStub.stubForFindBySessionId2xx(tdJourney)
+          val result = systemUnderTest.renderPage(fakeRequestWelsh())
+          val document = Jsoup.parse(contentAsString(result))
+          val emailRow: Element = document.select(".govuk-summary-list__row").asScala.toList(2)
+          assertRow(emailRow, emailAddressKeyTextWelsh, "blah@blah.com", "Newid", "some-link-to-address-page-on-card-payment-frontend")
+        }
+
         s"[${origin.entryName}] not render the email address row when there is not an email in session" in {
           PayApiStub.stubForFindBySessionId2xx(tdJourney)
           val result = systemUnderTest.renderPage(FakeRequest().withSessionId().withAddressInSession(tdJourney._id))
           contentAsString(result) shouldNot include(emailAddressKeyText)
         }
 
-        //TODO: Mike, welsh test
         s"[${origin.entryName}] render the card billing address row correctly" in {
           PayApiStub.stubForFindBySessionId2xx(tdJourney)
           val result = systemUnderTest.renderPage(fakeRequest())
           val document = Jsoup.parse(contentAsString(result))
           val cardBillingAddressRow: Element = document.select(".govuk-summary-list__row").asScala.toList(3)
           assertRow(cardBillingAddressRow, "Card billing address", "line1 AA0AA0 GBR", "Change", "some-link-to-address-page-on-card-payment-frontend")
+        }
+
+        s"[${origin.entryName}] render the card billing address row correctly in Welsh" in {
+          PayApiStub.stubForFindBySessionId2xx(tdJourney)
+          val result = systemUnderTest.renderPage(fakeRequestWelsh())
+          val document = Jsoup.parse(contentAsString(result))
+          val cardBillingAddressRow: Element = document.select(".govuk-summary-list__row").asScala.toList(3)
+          assertRow(cardBillingAddressRow, "Cyfeiriad bilio", "line1 AA0AA0 GBR", "Newid", "some-link-to-address-page-on-card-payment-frontend")
         }
 
         s"[${origin.entryName}] throw an exception when there is no card billing address in the session" in {
@@ -217,7 +239,6 @@ class CheckYourAnswersControllerSpec extends ItSpec {
         }
     }
 
-    //TODO: Mike, welsh test
     "[PfSa] should render the payment reference row correctly" in {
       PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.testPfSaJourneyUpdatedWithRefAndAmount)
       val result = systemUnderTest.renderPage(fakeRequest())
@@ -226,7 +247,14 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       assertRow(referenceRow, "Unique Taxpayer Reference (UTR)", "1234567895K", "Change", "some-link-to-pay-frontend")
     }
 
-    //TODO: Mike, welsh test
+    "[PfSa] should render the payment reference row correctly in Welsh" in {
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.testPfSaJourneyUpdatedWithRefAndAmount)
+      val result = systemUnderTest.renderPage(fakeRequestWelsh())
+      val document = Jsoup.parse(contentAsString(result))
+      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(0)
+      assertRow(referenceRow, "Cyfeirnod Unigryw y Trethdalwr (UTR)", "1234567895K", "Newid", "some-link-to-pay-frontend")
+    }
+
     "[BtaSa] should render the payment reference row correctly" in {
       PayApiStub.stubForFindBySessionId2xx(TestJourneys.BtaSa.testBtaSaJourneyUpdatedWithRefAndAmount)
       val result = systemUnderTest.renderPage(fakeRequest())
@@ -235,7 +263,14 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       assertRow(referenceRow, "Unique Taxpayer Reference (UTR)", "1234567895K", "Change", "some-link-to-pay-frontend")
     }
 
-    //TODO: Mike, welsh test
+    "[BtaSa] should render the payment reference row correctly in Welsh" in {
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.BtaSa.testBtaSaJourneyUpdatedWithRefAndAmount)
+      val result = systemUnderTest.renderPage(fakeRequestWelsh())
+      val document = Jsoup.parse(contentAsString(result))
+      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(0)
+      assertRow(referenceRow, "Cyfeirnod Unigryw y Trethdalwr (UTR)", "1234567895K", "Newid", "some-link-to-pay-frontend")
+    }
+
     "[PtaSa] should render the payment reference row correctly" in {
       PayApiStub.stubForFindBySessionId2xx(TestJourneys.PtaSa.testPtaSaJourneyUpdatedWithRefAndAmount)
       val result = systemUnderTest.renderPage(fakeRequest())
@@ -244,13 +279,28 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       assertRow(referenceRow, "Unique Taxpayer Reference (UTR)", "1234567895K", "Change", "some-link-to-pay-frontend")
     }
 
-    //TODO: Mike, welsh test
+    "[PtaSa] should render the payment reference row correctly in Welsh" in {
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.PtaSa.testPtaSaJourneyUpdatedWithRefAndAmount)
+      val result = systemUnderTest.renderPage(fakeRequestWelsh())
+      val document = Jsoup.parse(contentAsString(result))
+      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(0)
+      assertRow(referenceRow, "Cyfeirnod Unigryw y Trethdalwr (UTR)", "1234567895K", "Newid", "some-link-to-pay-frontend")
+    }
+
     "[ItSa] should render the payment reference row correctly" in {
       PayApiStub.stubForFindBySessionId2xx(TestJourneys.ItSa.testItSaJourneyUpdatedWithRefAndAmount)
       val result = systemUnderTest.renderPage(fakeRequest())
       val document = Jsoup.parse(contentAsString(result))
       val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(0)
       assertRow(referenceRow, "Unique Taxpayer Reference (UTR)", "1234567895K", "Change", "some-link-to-pay-frontend")
+    }
+
+    "[ItSa] should render the payment reference row correctly in Welsh" in {
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.ItSa.testItSaJourneyUpdatedWithRefAndAmount)
+      val result = systemUnderTest.renderPage(fakeRequestWelsh())
+      val document = Jsoup.parse(contentAsString(result))
+      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(0)
+      assertRow(referenceRow, "Cyfeirnod Unigryw y Trethdalwr (UTR)", "1234567895K", "Newid", "some-link-to-pay-frontend")
     }
 
   }
