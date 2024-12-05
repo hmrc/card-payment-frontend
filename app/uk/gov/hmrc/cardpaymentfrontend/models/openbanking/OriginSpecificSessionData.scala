@@ -237,10 +237,6 @@ final case class `3psSaSessionData`(saUtr: SaUtr, override val returnUrl: Option
   def searchTag: SearchTag = SearchTag(saUtr.value)
 }
 
-final case class `3psSaSessionData`(saUtr: SaUtr, override val returnUrl: Option[Url] = None) extends SelfAssessmentSessionData(ItSa) {
-  def searchTag = SearchTag(saUtr.value)
-}
-
 sealed abstract class PayeSessionData(origin: Origin) extends OriginSpecificSessionData(origin) {}
 
 final case class BtaEpayeGeneralSessionData(
