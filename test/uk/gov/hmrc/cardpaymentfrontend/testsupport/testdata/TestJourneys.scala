@@ -127,6 +127,46 @@ object TestJourneys {
       chosenWayToPay       = None
     )
 
+    val testBtaSaJourneySuccessDebitNoDueDate: Journey[JsdBtaSa] = Journey[JsdBtaSa](
+      _id                  = JourneyId("TestJourneyId-44f9-ad7f-01e1d3d8f151"),
+      sessionId            = Some(SessionId("TestSession-4b87460d-6f43-4c4c-b810-d6f87c774854")),
+      amountInPence        = Some(AmountInPence(1234)),
+      emailTemplateOptions = None,
+      navigation           = Some(NavigationOptions(returnUrl = Url("https://www.return-to-bta.com"), backUrl = Url("https://www.back-to-bta.com"))),
+      order                = Some(BarclaysOrder(
+        transactionReference = TransactionReference("Some-transaction-ref"),
+        iFrameUrl            = Url("some-url"),
+        cardCategory         = Some(CardCategories.debit),
+        commissionInPence    = None,
+        paidOn               = Some(LocalDateTime.parse("2027-11-02T16:28:55.185"))
+      )),
+      status               = PaymentStatuses.Successful,
+      futureDatedPayment   = None,
+      createdOn            = LocalDateTime.parse("2027-11-02T16:28:55.185"),
+      journeySpecificData  = JsdBtaSa(utr                  = SaUtr("1234567895"), defaultAmountInPence = AmountInPence(1234), dueDate = None),
+      chosenWayToPay       = None
+    )
+
+    val testBtaSaJourneySuccessDebitOverdue: Journey[JsdBtaSa] = Journey[JsdBtaSa](
+      _id                  = JourneyId("TestJourneyId-44f9-ad7f-01e1d3d8f151"),
+      sessionId            = Some(SessionId("TestSession-4b87460d-6f43-4c4c-b810-d6f87c774854")),
+      amountInPence        = Some(AmountInPence(1234)),
+      emailTemplateOptions = None,
+      navigation           = Some(NavigationOptions(returnUrl = Url("https://www.return-to-bta.com"), backUrl = Url("https://www.back-to-bta.com"))),
+      order                = Some(BarclaysOrder(
+        transactionReference = TransactionReference("Some-transaction-ref"),
+        iFrameUrl            = Url("some-url"),
+        cardCategory         = Some(CardCategories.debit),
+        commissionInPence    = None,
+        paidOn               = Some(LocalDateTime.parse("2027-11-02T16:28:55.185"))
+      )),
+      status               = PaymentStatuses.Successful,
+      futureDatedPayment   = None,
+      createdOn            = LocalDateTime.parse("2027-11-02T16:28:55.185"),
+      journeySpecificData  = JsdBtaSa(utr                  = SaUtr("1234567895"), defaultAmountInPence = AmountInPence(1234), dueDate = Some(LocalDate.of(2023, 12, 12))),
+      chosenWayToPay       = None
+    )
+
     val testBtaSaJourneySuccessCredit: Journey[JsdBtaSa] = Journey[JsdBtaSa](
       _id                  = JourneyId("TestJourneyId-44f9-ad7f-01e1d3d8f151"),
       sessionId            = Some(SessionId("TestSession-4b87460d-6f43-4c4c-b810-d6f87c774854")),
