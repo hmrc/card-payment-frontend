@@ -29,7 +29,7 @@ object CheckYourAnswersRow {
     checkYourAnswerRow.value match {
       case seqOfString if seqOfString.nonEmpty => SummaryListRow(
         key     = Key(content = Text(Messages(checkYourAnswerRow.titleMessageKey))),
-        value   = Value(content = HtmlContent(seqOfString.mkString("</br>"))),
+        value   = Value(content = HtmlContent(Messages(seqOfString.mkString("</br>")))),
         actions = checkYourAnswerRow.changeLink match {
           case Some(changeLink) => Some(
             Actions(items = Seq(ActionItem(
