@@ -101,21 +101,22 @@ card-fees.para2.personal-debit-card = cerdyn debyd personol
 card-fees.para3 = Ni allwch dalu â cherdyn credyd personol.
 card-fees.para4 = Dylech ganiatáu 3 diwrnod gwaith i’ch taliad gyrraedd cyfrif banc CThEM.
 
-## Check your answers page
+## Check your details page
 # common messages across all regimes
-check-your-answers.heading = Gwiriwch eich manylion
-check-your-answers.change = Newid
-check-your-answers.payment-date = Dyddiad talu
-check-your-answers.total-to-pay = Cyfanswm i’w dalu
-check-your-answers.email-address = Cyfeiriad e-bost
-check-your-answers.card-billing-address = Cyfeiriad bilio
+check-your-details.heading = Gwiriwch eich manylion
+check-your-details.change = Newid
+check-your-details.payment-date = Dyddiad talu
+check-your-details.payment-date.today = Heddiw
+check-your-details.total-to-pay = Cyfanswm i’w dalu
+check-your-details.email-address = Cyfeiriad e-bost
+check-your-details.card-billing-address = Cyfeiriad bilio
 
 #tax regime specific messages
-check-your-answers.PfSa.reference = Cyfeirnod Unigryw y Trethdalwr (UTR)
-check-your-answers.BtaSa.reference = Cyfeirnod Unigryw y Trethdalwr (UTR)
-check-your-answers.PtaSa.reference = Cyfeirnod Unigryw y Trethdalwr (UTR)
-check-your-answers.ItSa.reference = Cyfeirnod Unigryw y Trethdalwr (UTR)
-check-your-answers.PfVat.reference.title = ADD_ME
+check-your-details.PfSa.reference = Cyfeirnod Unigryw y Trethdalwr (UTR)
+check-your-details.BtaSa.reference = Cyfeirnod Unigryw y Trethdalwr (UTR)
+check-your-details.PtaSa.reference = Cyfeirnod Unigryw y Trethdalwr (UTR)
+check-your-details.ItSa.reference = Cyfeirnod Unigryw y Trethdalwr (UTR)
+check-your-details.PfVat.reference.title = ADD_ME
 
 
 ## Address Page

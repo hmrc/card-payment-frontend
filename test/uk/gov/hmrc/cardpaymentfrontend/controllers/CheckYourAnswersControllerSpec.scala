@@ -42,7 +42,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       .withEmailAndAddressInSession(journeyId)
   def fakeRequestWelsh(journeyId: JourneyId = TestJourneys.PfSa.testPfSaJourneyUpdatedWithRefAndAmount._id): FakeRequest[AnyContentAsEmpty.type] = fakeRequest(journeyId).withLangWelsh()
 
-  "GET /check-your-answers" - {
+  "GET /check-your-details" - {
 
     "should return 200 OK" in {
       PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.testPfSaJourneyUpdatedWithRefAndAmount)
@@ -62,7 +62,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.testPfSaJourneyUpdatedWithRefAndAmount)
       val result = systemUnderTest.renderPage(fakeRequest())
       val document = Jsoup.parse(contentAsString(result))
-      document.select("h1").text() shouldBe "Check your answers"
+      document.select("h1").text() shouldBe "Check your details"
     }
 
     "should render the h1 correctly in welsh" in {
@@ -167,6 +167,16 @@ class CheckYourAnswersControllerSpec extends ItSpec {
         case Origins.`3psSa`                  => throw new MatchError("Not implemented yet")
       }
 
+      // derives correct row in summary list due to Origins that may include FDP
+      def deriveAmountRowIndex(origin: Origin): Int = {
+        origin match {
+          case Origins.BtaSa => 3
+          case Origins.PtaSa => 3
+          case _             => 2
+        }
+
+      }
+
     TestHelpers.implementedOrigins.foreach {
       origin: Origin =>
 
@@ -176,7 +186,8 @@ class CheckYourAnswersControllerSpec extends ItSpec {
           PayApiStub.stubForFindBySessionId2xx(tdJourney)
           val result = systemUnderTest.renderPage(fakeRequest(tdJourney._id))
           val document = Jsoup.parse(contentAsString(result))
-          val amountRow = document.select(".govuk-summary-list__row").asScala.toList(1)
+          val amountRowIndex = deriveAmountRowIndex(origin)
+          val amountRow = document.select(".govuk-summary-list__row").asScala.toList(amountRowIndex)
           assertRow(amountRow, "Total to pay", "£12.34", "Change", "some-link-to-pay-frontend")
         }
 
@@ -184,7 +195,8 @@ class CheckYourAnswersControllerSpec extends ItSpec {
           PayApiStub.stubForFindBySessionId2xx(tdJourney)
           val result = systemUnderTest.renderPage(fakeRequestWelsh(tdJourney._id))
           val document = Jsoup.parse(contentAsString(result))
-          val amountRow = document.select(".govuk-summary-list__row").asScala.toList(1)
+          val amountRowIndex = deriveAmountRowIndex(origin)
+          val amountRow = document.select(".govuk-summary-list__row").asScala.toList(amountRowIndex)
           assertRow(amountRow, "Cyfanswm i’w dalu", "£12.34", "Newid", "some-link-to-pay-frontend")
         }
 
@@ -219,7 +231,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
           val result = systemUnderTest.renderPage(fakeRequest())
           val document = Jsoup.parse(contentAsString(result))
           val cardBillingAddressRow: Element = document.select(".govuk-summary-list__row").asScala.toList(3)
-          assertRow(cardBillingAddressRow, "Card billing address", "line1 AA0AA0 GBR", "Change", "some-link-to-address-page-on-card-payment-frontend")
+          assertRow(cardBillingAddressRow, "Card billing address", "line1 AA0AA0", "Change", "some-link-to-address-page-on-card-payment-frontend")
         }
 
         s"[${origin.entryName}] render the card billing address row correctly in Welsh" in {
@@ -227,7 +239,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
           val result = systemUnderTest.renderPage(fakeRequestWelsh())
           val document = Jsoup.parse(contentAsString(result))
           val cardBillingAddressRow: Element = document.select(".govuk-summary-list__row").asScala.toList(3)
-          assertRow(cardBillingAddressRow, "Cyfeiriad bilio", "line1 AA0AA0 GBR", "Newid", "some-link-to-address-page-on-card-payment-frontend")
+          assertRow(cardBillingAddressRow, "Cyfeiriad bilio", "line1 AA0AA0", "Newid", "some-link-to-address-page-on-card-payment-frontend")
         }
 
         s"[${origin.entryName}] throw an exception when there is no card billing address in the session" in {
@@ -301,6 +313,38 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       val document = Jsoup.parse(contentAsString(result))
       val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(0)
       assertRow(referenceRow, "Cyfeirnod Unigryw y Trethdalwr (UTR)", "1234567895K", "Newid", "some-link-to-pay-frontend")
+    }
+
+    "[BtaSa] should render the payment date row correctly" in {
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.BtaSa.testBtaSaJourneyUpdatedWithRefAndAmount)
+      val result = systemUnderTest.renderPage(fakeRequest())
+      val document = Jsoup.parse(contentAsString(result))
+      val paymentDateRow = document.select(".govuk-summary-list__row").asScala.toList(0)
+      assertRow(paymentDateRow, "Payment date", "Today", "Change", "some-link-to-pay-frontend")
+    }
+
+    "[BtaSa] should render the payment date row correctly in Welsh" in {
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.BtaSa.testBtaSaJourneyUpdatedWithRefAndAmount)
+      val result = systemUnderTest.renderPage(fakeRequestWelsh())
+      val document = Jsoup.parse(contentAsString(result))
+      val paymentDateRow = document.select(".govuk-summary-list__row").asScala.toList(0)
+      assertRow(paymentDateRow, "Dyddiad talu", "Heddiw", "Newid", "some-link-to-pay-frontend")
+    }
+
+    "[PtaSa] should render the payment date row correctly" in {
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.PtaSa.testPtaSaJourneyUpdatedWithRefAndAmount)
+      val result = systemUnderTest.renderPage(fakeRequest())
+      val document = Jsoup.parse(contentAsString(result))
+      val paymentDateRow = document.select(".govuk-summary-list__row").asScala.toList(0)
+      assertRow(paymentDateRow, "Payment date", "Today", "Change", "some-link-to-pay-frontend")
+    }
+
+    "[PtaSa] should render the payment date row correctly in Welsh" in {
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.PtaSa.testPtaSaJourneyUpdatedWithRefAndAmount)
+      val result = systemUnderTest.renderPage(fakeRequestWelsh())
+      val document = Jsoup.parse(contentAsString(result))
+      val paymentDateRow = document.select(".govuk-summary-list__row").asScala.toList(0)
+      assertRow(paymentDateRow, "Dyddiad talu", "Heddiw", "Newid", "some-link-to-pay-frontend")
     }
 
   }

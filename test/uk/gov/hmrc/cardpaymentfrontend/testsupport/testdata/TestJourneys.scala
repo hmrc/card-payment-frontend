@@ -20,7 +20,7 @@ import payapi.cardpaymentjourney.model.barclays.BarclaysOrder
 import payapi.cardpaymentjourney.model.journey.{Journey, JsdBtaSa, JsdItSa, JsdPfSa, JsdPtaSa, NavigationOptions, SessionId, Url}
 import payapi.corcommon.model.barclays.{CardCategories, TransactionReference}
 import payapi.corcommon.model.taxes.sa.SaUtr
-import payapi.corcommon.model.{AmountInPence, JourneyId, PaymentStatuses}
+import payapi.corcommon.model.{AmountInPence, FutureDatedPayment, JourneyId, PaymentStatuses}
 
 import java.time.{LocalDate, LocalDateTime}
 
@@ -101,6 +101,7 @@ object TestJourneys {
       navigation           = Some(NavigationOptions(returnUrl = Url("https://www.return-to-bta.com"), backUrl = Url("https://www.back-to-bta.com"))),
       order                = None,
       status               = PaymentStatuses.Created,
+      futureDatedPayment   = Some(FutureDatedPayment(chosenDate = LocalDate.of(2028, 12, 10))),
       createdOn            = LocalDateTime.parse("2027-11-02T16:28:55.185"),
       journeySpecificData  = JsdBtaSa(utr                  = SaUtr("1234567895"), defaultAmountInPence = AmountInPence(1234), dueDate = Some(LocalDate.of(2028, 12, 12))),
       chosenWayToPay       = None
@@ -120,6 +121,7 @@ object TestJourneys {
         paidOn               = Some(LocalDateTime.parse("2027-11-02T16:28:55.185"))
       )),
       status               = PaymentStatuses.Successful,
+      futureDatedPayment   = Some(FutureDatedPayment(chosenDate = LocalDate.of(2028, 12, 10))),
       createdOn            = LocalDateTime.parse("2027-11-02T16:28:55.185"),
       journeySpecificData  = JsdBtaSa(utr                  = SaUtr("1234567895"), defaultAmountInPence = AmountInPence(1234), dueDate = Some(LocalDate.of(2028, 12, 12))),
       chosenWayToPay       = None
@@ -139,6 +141,7 @@ object TestJourneys {
         paidOn               = Some(LocalDateTime.parse("2027-11-02T16:28:55.185"))
       )),
       status               = PaymentStatuses.Successful,
+      futureDatedPayment   = Some(FutureDatedPayment(chosenDate = LocalDate.of(2028, 12, 10))),
       createdOn            = LocalDateTime.parse("2027-11-02T16:28:55.185"),
       journeySpecificData  = JsdBtaSa(utr                  = SaUtr("1234567895"), defaultAmountInPence = AmountInPence(1234), dueDate = Some(LocalDate.of(2028, 12, 12))),
       chosenWayToPay       = None
@@ -154,6 +157,7 @@ object TestJourneys {
       navigation           = Some(NavigationOptions(returnUrl = Url("https://www.return-to-pta.com"), backUrl = Url("https://www.back-to-pta.com"))),
       order                = None,
       status               = PaymentStatuses.Created,
+      futureDatedPayment   = Some(FutureDatedPayment(chosenDate = LocalDate.of(2028, 12, 10))),
       createdOn            = LocalDateTime.parse("2027-11-02T16:28:55.185"),
       journeySpecificData  = JsdPtaSa(utr                  = SaUtr("1234567895"), defaultAmountInPence = Some(AmountInPence(1234)), dueDate = Some(LocalDate.of(2028, 12, 12))),
       chosenWayToPay       = None
@@ -173,6 +177,7 @@ object TestJourneys {
         paidOn               = Some(LocalDateTime.parse("2027-11-02T16:28:55.185"))
       )),
       status               = PaymentStatuses.Successful,
+      futureDatedPayment   = Some(FutureDatedPayment(chosenDate = LocalDate.of(2028, 12, 10))),
       createdOn            = LocalDateTime.parse("2027-11-02T16:28:55.185"),
       journeySpecificData  = JsdPtaSa(utr                  = SaUtr("1234567895"), defaultAmountInPence = Some(AmountInPence(1234)), dueDate = Some(LocalDate.of(2028, 12, 12))),
       chosenWayToPay       = None
@@ -192,6 +197,7 @@ object TestJourneys {
         paidOn               = Some(LocalDateTime.parse("2027-11-02T16:28:55.185"))
       )),
       status               = PaymentStatuses.Successful,
+      futureDatedPayment   = Some(FutureDatedPayment(chosenDate = LocalDate.of(2028, 12, 10))),
       createdOn            = LocalDateTime.parse("2027-11-02T16:28:55.185"),
       journeySpecificData  = JsdPtaSa(utr                  = SaUtr("1234567895"), defaultAmountInPence = Some(AmountInPence(1234)), dueDate = Some(LocalDate.of(2028, 12, 12))),
       chosenWayToPay       = None

@@ -26,6 +26,8 @@ import uk.gov.hmrc.cardpaymentfrontend.models.openbanking.OriginSpecificSessionD
 import uk.gov.hmrc.cardpaymentfrontend.utils.PaymentMethod
 import uk.gov.hmrc.cardpaymentfrontend.session.JourneySessionSupport._
 
+import java.time.LocalDate
+
 trait ExtendedOrigin {
 
   def serviceNameMessageKey: String
@@ -44,16 +46,39 @@ trait ExtendedOrigin {
   def cardFeesPagePaymentMethods: Set[PaymentMethod]
   def paymentMethods(): Set[PaymentMethod]
 
+  // TODO: Tests needed
+  def checkYourAnswersPaymentDateRow(journeyRequest: JourneyRequest[AnyContent]): Option[CheckYourAnswersRow] = {
+    if (showFuturePayment(journeyRequest)) {
+      Some(CheckYourAnswersRow(
+        titleMessageKey = "check-your-details.payment-date",
+        value           = Seq("check-your-details.payment-date.today"),
+        changeLink      = Some(Link(
+          href       = Call("GET", "some-link-to-pay-frontend"),
+          linkId     = "check-your-details-payment-date-change-link",
+          messageKey = "check-your-details.change"
+        ))
+      ))
+    } else {
+      None
+    }
+
+  }
+  // TODO: Tests needed
+  // If dueDate is not today, we do not show the payment date row as FDP is not supported by card payments
+  def showFuturePayment(journeyRequest: JourneyRequest[AnyContent]): Boolean = {
+    journeyRequest.journey.journeySpecificData.dueDate.fold(false)(LocalDate.now().isBefore)
+  }
+
   //check your answers summary rows
   def checkYourAnswersReferenceRow(journeyRequest: JourneyRequest[AnyContent]): Option[CheckYourAnswersRow]
 
   def checkYourAnswersAmountSummaryRow(journeyRequest: JourneyRequest[AnyContent]): Option[CheckYourAnswersRow] = Some(CheckYourAnswersRow(
-    titleMessageKey = "check-your-answers.total-to-pay",
+    titleMessageKey = "check-your-details.total-to-pay",
     value           = Seq(amount(journeyRequest)),
     changeLink      = Some(Link(
       href       = Call("GET", "some-link-to-pay-frontend"),
-      linkId     = "check-your-answers-amount-change-link",
-      messageKey = "check-your-answers.change"
+      linkId     = "check-your-details-amount-change-link",
+      messageKey = "check-your-details.change"
     ))
   ))
 
@@ -61,17 +86,18 @@ trait ExtendedOrigin {
     val maybeEmail: Option[EmailAddress] = journeyRequest.readFromSession[EmailAddress](journeyRequest.journeyId, Keys.email)
     maybeEmail.map { email =>
       CheckYourAnswersRow(
-        titleMessageKey = "check-your-answers.email-address",
+        titleMessageKey = "check-your-details.email-address",
         value           = Seq(email.value),
         changeLink      = Some(Link(
           href       = Call("GET", "some-link-to-address-page-on-card-payment-frontend"),
-          linkId     = "check-your-answers-email-address-change-link",
-          messageKey = "check-your-answers.change"
+          linkId     = "check-your-details-email-address-change-link",
+          messageKey = "check-your-details.change"
         ))
       )
     }
   }
 
+  // TODO: Update tests to not include country - check doesn't show country
   def checkYourAnswersCardBillingAddressRow(journeyRequest: JourneyRequest[AnyContent]): Option[CheckYourAnswersRow] = {
     //todo error? we can't take a card payment without an address
     val addressFromSession: Address = journeyRequest.readFromSession[Address](journeyRequest.journeyId, Keys.address).getOrElse(throw new RuntimeException("Cannot take a card payment without an address"))
@@ -80,17 +106,16 @@ trait ExtendedOrigin {
       addressFromSession.line2.getOrElse(""),
       addressFromSession.city.getOrElse(""),
       addressFromSession.county.getOrElse(""),
-      addressFromSession.postcode,
-      addressFromSession.country
+      addressFromSession.postcode
     ).filter(_.nonEmpty)
 
     Some(CheckYourAnswersRow(
-      titleMessageKey = "check-your-answers.card-billing-address",
+      titleMessageKey = "check-your-details.card-billing-address",
       value           = addressValues,
       changeLink      = Some(Link(
         href       = Call("GET", "some-link-to-address-page-on-card-payment-frontend"),
-        linkId     = "check-your-answers-card-billing-address-change-link",
-        messageKey = "check-your-answers.change"
+        linkId     = "check-your-details-card-billing-address-change-link",
+        messageKey = "check-your-details.change"
       ))
     ))
   }
