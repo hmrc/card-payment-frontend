@@ -43,4 +43,26 @@ class ExtendedOriginSpec extends ItSpec {
     val result: String = systemUnderTest.asInstanceOf[ExtendedOrigin].amount(fakeJourneyRequest)
     result shouldBe "£5"
   }
+
+  //TODO: Mike, fill in these
+  "showFuturePayment" - {
+    "should return true when dueDate in journeySpecificData is in the future" in {
+
+    }
+    "should return false when dueDate in journeySpecificData is None" in {
+
+    }
+    "should return false when dueDate in journeySpecificData is Some value in the past" in {
+
+    }
+  }
+
+  "checkYourAnswersPaymentDateRow" - {
+    "return Some[CheckYourAnswersRow] when showFuturePayment returns true" in {
+
+    }
+    "return None when showFuturePayment returns false" in {
+
+    }
+  }
 }

@@ -46,7 +46,6 @@ trait ExtendedOrigin {
   def cardFeesPagePaymentMethods: Set[PaymentMethod]
   def paymentMethods(): Set[PaymentMethod]
 
-  // TODO: Tests needed
   def checkYourAnswersPaymentDateRow(journeyRequest: JourneyRequest[AnyContent]): Option[CheckYourAnswersRow] = {
     if (showFuturePayment(journeyRequest)) {
       Some(CheckYourAnswersRow(
@@ -63,13 +62,12 @@ trait ExtendedOrigin {
     }
 
   }
-  // TODO: Tests needed
+
   // If dueDate is not today, we do not show the payment date row as FDP is not supported by card payments
   def showFuturePayment(journeyRequest: JourneyRequest[AnyContent]): Boolean = {
     journeyRequest.journey.journeySpecificData.dueDate.fold(false)(LocalDate.now().isBefore)
   }
 
-  //check your answers summary rows
   def checkYourAnswersReferenceRow(journeyRequest: JourneyRequest[AnyContent]): Option[CheckYourAnswersRow]
 
   def checkYourAnswersAmountSummaryRow(journeyRequest: JourneyRequest[AnyContent]): Option[CheckYourAnswersRow] = Some(CheckYourAnswersRow(
