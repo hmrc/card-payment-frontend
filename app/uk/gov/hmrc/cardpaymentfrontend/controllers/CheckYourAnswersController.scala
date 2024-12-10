@@ -44,18 +44,19 @@ class CheckYourAnswersController @Inject() (
     val origin: Origin = journeyRequest.journey.origin
     val liftedOrigin = originExtraInfo.lift(origin)
 
+    val paymentDate: Option[CheckYourAnswersRow] = liftedOrigin.checkYourAnswersPaymentDateRow(journeyRequest)
     val referenceRow: Option[CheckYourAnswersRow] = liftedOrigin.checkYourAnswersReferenceRow(journeyRequest)
     val amountRow: Option[CheckYourAnswersRow] = liftedOrigin.checkYourAnswersAmountSummaryRow(journeyRequest)
     val maybeEmailRow: Option[CheckYourAnswersRow] = liftedOrigin.checkYourAnswersEmailAddressRow(journeyRequest)
     val cardBillingAddressRow: Option[CheckYourAnswersRow] = liftedOrigin.checkYourAnswersCardBillingAddressRow(journeyRequest)
 
-    val summaryListRows: Seq[SummaryListRow] = Seq(referenceRow, amountRow, maybeEmailRow, cardBillingAddressRow).flatten.map(summarise)
+    val summaryListRows: Seq[SummaryListRow] = Seq(paymentDate, referenceRow, amountRow, maybeEmailRow, cardBillingAddressRow).flatten.map(summarise)
 
     Ok(checkYourAnswersPage(SummaryList(summaryListRows)))
   }
 
   def submit: Action[AnyContent] = actions.journeyAction { _ =>
-    Ok("nice, you submitted the check your answers page, this is where the iframe needs to go")
+    Ok("nice, you submitted the check your details page, this is where the iframe needs to go")
   }
 
 }
