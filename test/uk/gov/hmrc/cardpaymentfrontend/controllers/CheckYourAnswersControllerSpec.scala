@@ -383,7 +383,12 @@ class CheckYourAnswersControllerSpec extends ItSpec {
   private def assertRow(element: Element, keyText: String, valueText: String, actionText: Option[String], actionHref: Option[String]): Assertion = {
     element.select(".govuk-summary-list__key").text() shouldBe keyText
     element.select(".govuk-summary-list__value").text() shouldBe valueText
-    actionText.fold(element.select(".govuk-summary-list__actions").text() shouldBe "")(content => element.select(".govuk-summary-list__actions").text() shouldBe content)
+
+    actionText.fold {
+      element.toString should not contain "Change"
+      element.select(".govuk-summary-list__actions").asScala.size shouldBe 0
+    }(content => element.select(".govuk-summary-list__actions").text() shouldBe content)
+
     actionHref.fold(element.select(".govuk-summary-list__actions").select("a").text() shouldBe "")(href => element.select(".govuk-summary-list__actions").select("a").attr("href") shouldBe href)
   }
 
