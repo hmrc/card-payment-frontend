@@ -103,21 +103,22 @@ card-fees.para3 = You cannot pay using a personal credit card.
 card-fees.para4 = Allow 3 working days for your payment to reach HMRC’s bank account.
 card-fees.para2.bank-account = bank account
 
-## Check your answers page
+## Check your details page
 # common messages across all regimes
-check-your-answers.heading = Check your answers
-check-your-answers.change = Change
-check-your-answers.payment-date = Payment date
-check-your-answers.total-to-pay = Total to pay
-check-your-answers.email-address = Email address
-check-your-answers.card-billing-address = Card billing address
+check-your-details.heading = Check your details
+check-your-details.change = Change
+check-your-details.payment-date = Payment date
+check-your-details.payment-date.today = Today
+check-your-details.total-to-pay = Total to pay
+check-your-details.email-address = Email address
+check-your-details.card-billing-address = Card billing address
 
 #tax regime specific messages
-check-your-answers.PfSa.reference = Unique Taxpayer Reference (UTR)
-check-your-answers.BtaSa.reference = Unique Taxpayer Reference (UTR)
-check-your-answers.PtaSa.reference = Unique Taxpayer Reference (UTR)
-check-your-answers.ItSa.reference = Unique Taxpayer Reference (UTR)
-check-your-answers.PfVat.reference.title = VAT registration number
+check-your-details.PfSa.reference = Unique Taxpayer Reference (UTR)
+check-your-details.BtaSa.reference = Unique Taxpayer Reference (UTR)
+check-your-details.PtaSa.reference = Unique Taxpayer Reference (UTR)
+check-your-details.ItSa.reference = Unique Taxpayer Reference (UTR)
+check-your-details.PfVat.reference.title = VAT registration number
 
 
 

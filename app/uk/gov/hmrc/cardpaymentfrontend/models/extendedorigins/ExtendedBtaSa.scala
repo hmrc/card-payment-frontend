@@ -36,13 +36,9 @@ object ExtendedBtaSa extends ExtendedOrigin {
 
   override def checkYourAnswersReferenceRow(journeyRequest: JourneyRequest[AnyContent]): Option[CheckYourAnswersRow] = {
     Some(CheckYourAnswersRow(
-      titleMessageKey = "check-your-answers.BtaSa.reference",
+      titleMessageKey = "check-your-details.BtaSa.reference",
       value           = Seq(journeyRequest.journey.referenceValue),
-      changeLink      = Some(Link(
-        href       = Call("GET", "some-link-to-pay-frontend"),
-        linkId     = "check-your-answers-reference-change-link",
-        messageKey = "check-your-answers.change"
-      ))
+      changeLink      = None
     ))
   }
 
