@@ -81,8 +81,8 @@ service-name.PfAted =
 service-name.PfCdsDeferment =
 service-name.PfTrust =
 service-name.PtaClass3Ni =
-service-name.AlcoholDuty =
-service-name.PfAlcoholDuty =
+service-name.AlcoholDuty = Pay your Alcohol Duty
+service-name.PfAlcoholDuty = Pay your Alcohol Duty
 
 
 ## Email address page
@@ -118,6 +118,9 @@ check-your-details.PfSa.reference = Unique Taxpayer Reference (UTR)
 check-your-details.BtaSa.reference = Unique Taxpayer Reference (UTR)
 check-your-details.PtaSa.reference = Unique Taxpayer Reference (UTR)
 check-your-details.ItSa.reference = Unique Taxpayer Reference (UTR)
+check-your-details.PfAlcoholDuty.reference = Payment reference
+check-your-details.AlcoholDuty.reference = Payment reference
+check-your-details.AlcoholDuty.charge-reference = Charge reference
 check-your-details.PfVat.reference.title = VAT registration number
 
 
@@ -253,8 +256,8 @@ payment-complete.tax-name.PfAted =
 payment-complete.tax-name.PfCdsDeferment =
 payment-complete.tax-name.PfTrust =
 payment-complete.tax-name.PtaClass3Ni =
-payment-complete.tax-name.AlcoholDuty =
-payment-complete.tax-name.PfAlcoholDuty =
+payment-complete.tax-name.AlcoholDuty = Alcohol Duty
+payment-complete.tax-name.PfAlcoholDuty = Alcohol Duty
 
 ## Payment Cancelled page
 payment-cancelled.heading = Payment cancelled
@@ -288,6 +291,8 @@ email.tax-name.PtaSa = Self Assessment
 email.tax-name.ItSa = Self Assessment
 email.tax-name.PfVat = Vat
 email.tax-name.PfP800 = P800
+email.tax-name.PfAlcoholDuty = Alcohol Duty
+email.tax-name.AlcoholDuty = Alcohol Duty
 
 
 ## Payments survey

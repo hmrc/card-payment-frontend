@@ -80,8 +80,8 @@ service-name.PfAted =
 service-name.PfCdsDeferment =
 service-name.PfTrust =
 service-name.PtaClass3Ni =
-service-name.AlcoholDuty =
-service-name.PfAlcoholDuty =
+service-name.AlcoholDuty = Talu’ch Toll Alcohol
+service-name.PfAlcoholDuty = Talu’ch Toll Alcohol
 
 
 ## Email address page
@@ -116,6 +116,9 @@ check-your-details.PfSa.reference = Cyfeirnod Unigryw y Trethdalwr (UTR)
 check-your-details.BtaSa.reference = Cyfeirnod Unigryw y Trethdalwr (UTR)
 check-your-details.PtaSa.reference = Cyfeirnod Unigryw y Trethdalwr (UTR)
 check-your-details.ItSa.reference = Cyfeirnod Unigryw y Trethdalwr (UTR)
+check-your-details.PfAlcoholDuty.reference = Cyfeirnod y taliad
+check-your-details.AlcoholDuty.reference = Cyfeirnod y taliad
+check-your-details.AlcoholDuty.charge-reference = Cyfeirnod y tâl
 check-your-details.PfVat.reference.title = ADD_ME
 
 
@@ -255,8 +258,8 @@ payment-complete.tax-name.PfAted =
 payment-complete.tax-name.PfCdsDeferment =
 payment-complete.tax-name.PfTrust =
 payment-complete.tax-name.PtaClass3Ni =
-payment-complete.tax-name.AlcoholDuty =
-payment-complete.tax-name.PfAlcoholDuty =
+payment-complete.tax-name.AlcoholDuty = Toll Alcohol
+payment-complete.tax-name.PfAlcoholDuty = Toll Alcohol
 
 ## Payment Cancelled page
 payment-cancelled.heading = Taliad wedi’i ganslo
@@ -287,6 +290,8 @@ email.tax-name.PfSa = Hunanasesiad
 email.tax-name.BtaSa = Hunanasesiad
 email.tax-name.PtaSa = Hunanasesiad
 email.tax-name.ItSa = Hunanasesiad
+email.tax-name.PfAlcoholDuty = Toll Alcohol
+email.tax-name.AlcoholDuty = Toll Alcohol
 
 
 ## Payments survey

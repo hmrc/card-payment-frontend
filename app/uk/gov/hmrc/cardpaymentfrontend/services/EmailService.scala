@@ -23,15 +23,15 @@ import uk.gov.hmrc.cardpaymentfrontend.connectors.EmailConnector
 import uk.gov.hmrc.cardpaymentfrontend.models.EmailAddress
 import uk.gov.hmrc.cardpaymentfrontend.models.email.{EmailParameters, EmailRequest}
 import uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins.ExtendedOrigin
+import uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins.ExtendedOrigin.OriginExtended
 import uk.gov.hmrc.cardpaymentfrontend.requests.RequestSupport
-import uk.gov.hmrc.cardpaymentfrontend.utils.OriginExtraInfo
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.Future
 
 @Singleton
-class EmailService @Inject() (emailConnector: EmailConnector, originExtraInfo: OriginExtraInfo, requestSupport: RequestSupport)(implicit messagesApi: MessagesApi) {
+class EmailService @Inject() (emailConnector: EmailConnector, requestSupport: RequestSupport)(implicit messagesApi: MessagesApi) {
 
   import requestSupport._
 
@@ -59,7 +59,7 @@ class EmailService @Inject() (emailConnector: EmailConnector, originExtraInfo: O
 
   private[services] def buildEmailParameters(journey: Journey[JourneySpecificData])(implicit request: Request[_]): EmailParameters = {
     val messages: Messages = request.messages
-    val extendedOrigin: ExtendedOrigin = originExtraInfo.lift(journey.origin)
+    val extendedOrigin: ExtendedOrigin = journey.origin.lift
     EmailParameters(
       taxType          = messages(extendedOrigin.emailTaxTypeMessageKey),
       taxReference     = journey.referenceValue,

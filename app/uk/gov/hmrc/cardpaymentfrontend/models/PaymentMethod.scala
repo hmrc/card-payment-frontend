@@ -14,21 +14,21 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.cardpaymentfrontend.forms
+package uk.gov.hmrc.cardpaymentfrontend.models
 
-import play.api.data.Form
-import play.api.data.Forms.{mapping, optional, text}
+sealed trait PaymentMethod
 
-//todo use enum/adt instead of string.
-final case class ChooseAPaymentMethodForm(chosenMethod: Option[String])
+object PaymentMethod {
 
-object ChooseAPaymentMethodForm {
+  case object Card extends PaymentMethod
 
-  val form: Form[ChooseAPaymentMethodForm] = {
-    Form(mapping(
-      "payment_method" -> optional(text).verifying("card-fail-choice.error", _.nonEmpty)
-    )(ChooseAPaymentMethodForm.apply)(ChooseAPaymentMethodForm.unapply))
-  }
+  case object OpenBanking extends PaymentMethod
 
+  case object OneOffDirectDebit extends PaymentMethod
+
+  case object VariableDirectDebit extends PaymentMethod
+
+  case object PrintableDirectDebit extends PaymentMethod
+
+  case object Bacs extends PaymentMethod
 }
-

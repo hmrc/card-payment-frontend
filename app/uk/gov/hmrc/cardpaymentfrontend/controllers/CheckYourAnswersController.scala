@@ -16,13 +16,13 @@
 
 package uk.gov.hmrc.cardpaymentfrontend.controllers
 
-import payapi.corcommon.model.Origin
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.cardpaymentfrontend.actions.{Actions, JourneyRequest}
 import uk.gov.hmrc.cardpaymentfrontend.models.CheckYourAnswersRow
 import uk.gov.hmrc.cardpaymentfrontend.models.CheckYourAnswersRow.summarise
+import uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins.ExtendedOrigin
+import uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins.ExtendedOrigin.OriginExtended
 import uk.gov.hmrc.cardpaymentfrontend.requests.RequestSupport
-import uk.gov.hmrc.cardpaymentfrontend.utils.OriginExtraInfo
 import uk.gov.hmrc.cardpaymentfrontend.views.html.CheckYourAnswersPage
 import uk.gov.hmrc.govukfrontend.views.Aliases.SummaryList
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
@@ -34,23 +34,29 @@ import javax.inject.{Inject, Singleton}
 class CheckYourAnswersController @Inject() (
     actions:              Actions,
     mcc:                  MessagesControllerComponents,
-    originExtraInfo:      OriginExtraInfo,
     checkYourAnswersPage: CheckYourAnswersPage,
     requestSupport:       RequestSupport
 ) extends FrontendController(mcc) {
   import requestSupport._
 
   def renderPage: Action[AnyContent] = actions.journeyAction { implicit journeyRequest: JourneyRequest[AnyContent] =>
-    val origin: Origin = journeyRequest.journey.origin
-    val liftedOrigin = originExtraInfo.lift(origin)
+    val extendedOrigin: ExtendedOrigin = journeyRequest.journey.origin.lift
 
-    val paymentDate: Option[CheckYourAnswersRow] = liftedOrigin.checkYourAnswersPaymentDateRow(journeyRequest)
-    val referenceRow: Option[CheckYourAnswersRow] = liftedOrigin.checkYourAnswersReferenceRow(journeyRequest)
-    val amountRow: Option[CheckYourAnswersRow] = liftedOrigin.checkYourAnswersAmountSummaryRow(journeyRequest)
-    val maybeEmailRow: Option[CheckYourAnswersRow] = liftedOrigin.checkYourAnswersEmailAddressRow(journeyRequest)
-    val cardBillingAddressRow: Option[CheckYourAnswersRow] = liftedOrigin.checkYourAnswersCardBillingAddressRow(journeyRequest)
+    val paymentDate: Option[CheckYourAnswersRow] = extendedOrigin.checkYourAnswersPaymentDateRow(journeyRequest)
+    val referenceRow: Option[CheckYourAnswersRow] = extendedOrigin.checkYourAnswersReferenceRow(journeyRequest)
+    val additionalReferenceRow: Option[CheckYourAnswersRow] = extendedOrigin.checkYourAnswersAdditionalReferenceRow(journeyRequest)
+    val amountRow: Option[CheckYourAnswersRow] = extendedOrigin.checkYourAnswersAmountSummaryRow(journeyRequest)
+    val maybeEmailRow: Option[CheckYourAnswersRow] = extendedOrigin.checkYourAnswersEmailAddressRow(journeyRequest)
+    val cardBillingAddressRow: Option[CheckYourAnswersRow] = extendedOrigin.checkYourAnswersCardBillingAddressRow(journeyRequest)
 
-    val summaryListRows: Seq[SummaryListRow] = Seq(paymentDate, referenceRow, amountRow, maybeEmailRow, cardBillingAddressRow).flatten.map(summarise)
+    val summaryListRows: Seq[SummaryListRow] = Seq(
+      paymentDate,
+      referenceRow,
+      additionalReferenceRow,
+      amountRow,
+      maybeEmailRow,
+      cardBillingAddressRow
+    ).flatten.map(summarise)
 
     Ok(checkYourAnswersPage(SummaryList(summaryListRows)))
   }

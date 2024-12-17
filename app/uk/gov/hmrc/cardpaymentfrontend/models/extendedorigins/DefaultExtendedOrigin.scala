@@ -20,9 +20,8 @@ import play.api.i18n.Messages
 import play.api.mvc.AnyContent
 import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
 import payapi.cardpaymentjourney.model.journey.JourneySpecificData
-import uk.gov.hmrc.cardpaymentfrontend.models.CheckYourAnswersRow
+import uk.gov.hmrc.cardpaymentfrontend.models.{CheckYourAnswersRow, PaymentMethod}
 import uk.gov.hmrc.cardpaymentfrontend.models.openbanking.OriginSpecificSessionData
-import uk.gov.hmrc.cardpaymentfrontend.utils.PaymentMethod
 
 class DefaultExtendedOrigin extends ExtendedOrigin {
   def serviceNameMessageKey = ""

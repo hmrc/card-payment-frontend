@@ -54,5 +54,3 @@ object CheckYourAnswersRow {
     }
   }
 }
-
-//No Json as this is not going over the wire

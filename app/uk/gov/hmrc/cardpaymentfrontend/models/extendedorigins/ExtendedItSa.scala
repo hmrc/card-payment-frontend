@@ -21,17 +21,16 @@ import play.api.i18n.Messages
 import play.api.mvc.{AnyContent, Call}
 import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
 import uk.gov.hmrc.cardpaymentfrontend.models.openbanking.{ItSaSessionData, OriginSpecificSessionData}
-import uk.gov.hmrc.cardpaymentfrontend.models.{Address, CheckYourAnswersRow, EmailAddress, Link}
+import uk.gov.hmrc.cardpaymentfrontend.models.{Address, CheckYourAnswersRow, EmailAddress, Link, PaymentMethod}
 import uk.gov.hmrc.cardpaymentfrontend.session.JourneySessionSupport._
-import uk.gov.hmrc.cardpaymentfrontend.utils.PaymentMethod
-import uk.gov.hmrc.cardpaymentfrontend.utils.PaymentMethods.Bacs
+import uk.gov.hmrc.cardpaymentfrontend.models.PaymentMethod.{Bacs, Card}
 
 object ExtendedItSa extends ExtendedOrigin {
   override val serviceNameMessageKey: String = "service-name.ItSa"
   override val taxNameMessageKey: String = "payment-complete.tax-name.ItSa"
   def cardFeesPagePaymentMethods: Set[PaymentMethod] = Set(Bacs)
   //todo add these when we do that ticket
-  def paymentMethods(): Set[PaymentMethod] = Set.empty
+  def paymentMethods(): Set[PaymentMethod] = Set(Card, Bacs)
 
   override def checkYourAnswersReferenceRow(journeyRequest: JourneyRequest[AnyContent]): Option[CheckYourAnswersRow] = {
     Some(CheckYourAnswersRow(

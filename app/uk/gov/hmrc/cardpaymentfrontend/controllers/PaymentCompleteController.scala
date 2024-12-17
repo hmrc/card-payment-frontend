@@ -16,18 +16,19 @@
 
 package uk.gov.hmrc.cardpaymentfrontend.controllers
 
-import payapi.cardpaymentjourney.model.journey.{Journey, JourneySpecificData}
+import payapi.cardpaymentjourney.model.journey.{Journey, JourneySpecificData, JsdAlcoholDuty}
 import payapi.corcommon.model.barclays.CardCategories
 import play.api.i18n.Messages
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import play.twirl.api.Html
 import uk.gov.hmrc.cardpaymentfrontend.actions.{Actions, JourneyRequest}
+import uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins.ExtendedOrigin.OriginExtended
 import uk.gov.hmrc.cardpaymentfrontend.models.{EmailAddress, creditCardCommissionRate}
 import uk.gov.hmrc.cardpaymentfrontend.requests.RequestSupport
 import uk.gov.hmrc.cardpaymentfrontend.services.EmailService
 import uk.gov.hmrc.cardpaymentfrontend.session.JourneySessionSupport._
 import uk.gov.hmrc.cardpaymentfrontend.util.SafeEquals.EqualsOps
-import uk.gov.hmrc.cardpaymentfrontend.utils.{DateStringBuilder, OriginExtraInfo}
+import uk.gov.hmrc.cardpaymentfrontend.utils.DateStringBuilder
 import uk.gov.hmrc.cardpaymentfrontend.views.html.PaymentCompletePage
 import uk.gov.hmrc.govukfrontend.views.Aliases.{HtmlContent, Text, Value}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{Key, SummaryListRow}
@@ -39,7 +40,6 @@ import scala.concurrent.{ExecutionContext, Future}
 class PaymentCompleteController @Inject() (
     actions:             Actions,
     emailService:        EmailService,
-    originExtraInfo:     OriginExtraInfo,
     mcc:                 MessagesControllerComponents,
     paymentCompletePage: PaymentCompletePage,
     requestSupport:      RequestSupport
@@ -67,7 +67,7 @@ class PaymentCompleteController @Inject() (
       taxReference      = journeyRequest.journey.getReference,
       summaryListRows   = PaymentCompleteController.buildSummaryListRows(
         journey = journeyRequest.journey,
-        taxType = originExtraInfo.lift(journeyRequest.journey.origin).taxNameMessageKey
+        taxType = journeyRequest.journey.origin.lift.taxNameMessageKey
       ),
       maybeEmailAddress = maybeEmailFromSession,
       maybeReturnUrl    = journeyRequest.journey.navigation.flatMap(_.returnUrl.map(_.value))
@@ -78,7 +78,7 @@ class PaymentCompleteController @Inject() (
 object PaymentCompleteController {
 
   def buildSummaryListRows(journey: Journey[JourneySpecificData], taxType: String)(implicit messages: Messages): Seq[SummaryListRow] = {
-    Seq(
+    val consistentRows = Seq(
       SummaryListRow(
         key   = Key(Text(messages("payment-complete.summary-list.tax"))),
         value = Value(Text(messages(taxType)))
@@ -87,7 +87,25 @@ object PaymentCompleteController {
         key   = Key(Text(messages("payment-complete.summary-list.date"))),
         value = Value(Text(messages(DateStringBuilder.getDateAsString(journey.getPaidOn))))
       )
-    ) ++ buildAmountsSummaryListRow(journey)
+    )
+
+    val taxSpecificRows: Seq[SummaryListRow] = journey.journeySpecificData match {
+      case JsdAlcoholDuty(_, alcoholDutyChargeReference, _) =>
+        alcoholDutyChargeReference.fold[Seq[SummaryListRow]](Seq.empty[SummaryListRow]) { alcoholDutyChargeReference =>
+          Seq(
+            SummaryListRow(
+              key   = Key(Text(messages("check-your-details.AlcoholDuty.charge-reference"))),
+              value = Value(Text(alcoholDutyChargeReference.canonicalizedValue))
+            )
+          )
+        }
+
+      case _ => Seq.empty[SummaryListRow]
+    }
+
+    val amountRows = buildAmountsSummaryListRow(journey)
+
+    consistentRows ++ taxSpecificRows ++ amountRows
   }
 
   def buildAmountsSummaryListRow(journey: Journey[JourneySpecificData])(implicit messages: Messages): Seq[SummaryListRow] = {

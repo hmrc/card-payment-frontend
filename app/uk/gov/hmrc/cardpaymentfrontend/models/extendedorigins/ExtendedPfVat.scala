@@ -20,10 +20,9 @@ import payapi.cardpaymentjourney.model.journey.{JourneySpecificData, JsdPfVat}
 import play.api.i18n.Messages
 import play.api.mvc.{AnyContent, Call}
 import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
+import uk.gov.hmrc.cardpaymentfrontend.models.PaymentMethod._
 import uk.gov.hmrc.cardpaymentfrontend.models.openbanking.{OriginSpecificSessionData, PfVatSessionData}
-import uk.gov.hmrc.cardpaymentfrontend.models.{CheckYourAnswersRow, Link}
-import uk.gov.hmrc.cardpaymentfrontend.utils.PaymentMethods._
-import uk.gov.hmrc.cardpaymentfrontend.utils._
+import uk.gov.hmrc.cardpaymentfrontend.models.{CheckYourAnswersRow, Link, PaymentMethod}
 
 object ExtendedPfVat extends ExtendedOrigin {
   override val serviceNameMessageKey: String = "add.message.key.here"

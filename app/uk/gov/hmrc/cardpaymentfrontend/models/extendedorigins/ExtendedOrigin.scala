@@ -16,14 +16,13 @@
 
 package uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins
 
-import payapi.corcommon.model.Reference
+import payapi.corcommon.model.{Origin, Origins, Reference}
 import payapi.cardpaymentjourney.model.journey.JourneySpecificData
 import play.api.i18n.Messages
 import play.api.mvc.{AnyContent, Call}
 import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
-import uk.gov.hmrc.cardpaymentfrontend.models.{Address, CheckYourAnswersRow, EmailAddress, Link}
+import uk.gov.hmrc.cardpaymentfrontend.models.{Address, CheckYourAnswersRow, EmailAddress, Link, PaymentMethod}
 import uk.gov.hmrc.cardpaymentfrontend.models.openbanking.OriginSpecificSessionData
-import uk.gov.hmrc.cardpaymentfrontend.utils.PaymentMethod
 import uk.gov.hmrc.cardpaymentfrontend.session.JourneySessionSupport._
 
 import java.time.LocalDate
@@ -69,6 +68,8 @@ trait ExtendedOrigin {
   }
 
   def checkYourAnswersReferenceRow(journeyRequest: JourneyRequest[AnyContent]): Option[CheckYourAnswersRow]
+
+  def checkYourAnswersAdditionalReferenceRow(journeyRequest: JourneyRequest[AnyContent]): Option[CheckYourAnswersRow] = None
 
   def checkYourAnswersAmountSummaryRow(journeyRequest: JourneyRequest[AnyContent]): Option[CheckYourAnswersRow] = Some(CheckYourAnswersRow(
     titleMessageKey = "check-your-details.total-to-pay",
@@ -132,4 +133,88 @@ trait ExtendedOrigin {
   def surveyIsWelshSupported: Boolean
   def surveyBannerTitle: String
 
+}
+
+object ExtendedOrigin {
+  implicit class OriginExtended(origin: Origin) {
+    def lift: ExtendedOrigin = origin match {
+      case Origins.PfSa                     => ExtendedPfSa
+      case Origins.PfVat                    => ExtendedPfVat
+      case Origins.PfCt                     => new DefaultExtendedOrigin
+      case Origins.PfEpayeNi                => new DefaultExtendedOrigin
+      case Origins.PfEpayeLpp               => new DefaultExtendedOrigin
+      case Origins.PfEpayeSeta              => new DefaultExtendedOrigin
+      case Origins.PfEpayeLateCis           => new DefaultExtendedOrigin
+      case Origins.PfEpayeP11d              => new DefaultExtendedOrigin
+      case Origins.PfSdlt                   => new DefaultExtendedOrigin
+      case Origins.PfCds                    => new DefaultExtendedOrigin
+      case Origins.PfOther                  => new DefaultExtendedOrigin
+      case Origins.PfP800                   => new ExtendedPfP800
+      case Origins.PtaP800                  => new DefaultExtendedOrigin
+      case Origins.PfClass2Ni               => new DefaultExtendedOrigin
+      case Origins.PfInsurancePremium       => new DefaultExtendedOrigin
+      case Origins.PfPsAdmin                => new DefaultExtendedOrigin
+      case Origins.BtaSa                    => ExtendedBtaSa
+      case Origins.AppSa                    => new DefaultExtendedOrigin
+      case Origins.BtaVat                   => new DefaultExtendedOrigin
+      case Origins.BtaEpayeBill             => new DefaultExtendedOrigin
+      case Origins.BtaEpayePenalty          => new DefaultExtendedOrigin
+      case Origins.BtaEpayeInterest         => new DefaultExtendedOrigin
+      case Origins.BtaEpayeGeneral          => new DefaultExtendedOrigin
+      case Origins.BtaClass1aNi             => new DefaultExtendedOrigin
+      case Origins.BtaCt                    => new DefaultExtendedOrigin
+      case Origins.BtaSdil                  => new DefaultExtendedOrigin
+      case Origins.BcPngr                   => new DefaultExtendedOrigin
+      case Origins.Parcels                  => new DefaultExtendedOrigin
+      case Origins.DdVat                    => new DefaultExtendedOrigin
+      case Origins.DdSdil                   => new DefaultExtendedOrigin
+      case Origins.VcVatReturn              => new DefaultExtendedOrigin
+      case Origins.VcVatOther               => new DefaultExtendedOrigin
+      case Origins.ItSa                     => ExtendedItSa
+      case Origins.Amls                     => new DefaultExtendedOrigin
+      case Origins.Ppt                      => new DefaultExtendedOrigin
+      case Origins.PfCdsCash                => new DefaultExtendedOrigin
+      case Origins.PfPpt                    => new DefaultExtendedOrigin
+      case Origins.PfSpiritDrinks           => new DefaultExtendedOrigin
+      case Origins.PfInheritanceTax         => new DefaultExtendedOrigin
+      case Origins.Mib                      => new DefaultExtendedOrigin
+      case Origins.PfClass3Ni               => new DefaultExtendedOrigin
+      case Origins.PtaSa                    => ExtendedPtaSa
+      case Origins.PfWineAndCider           => new DefaultExtendedOrigin
+      case Origins.PfBioFuels               => new DefaultExtendedOrigin
+      case Origins.PfAirPass                => new DefaultExtendedOrigin
+      case Origins.PfMgd                    => new DefaultExtendedOrigin
+      case Origins.PfBeerDuty               => new DefaultExtendedOrigin
+      case Origins.PfGamingOrBingoDuty      => new DefaultExtendedOrigin
+      case Origins.PfGbPbRgDuty             => new DefaultExtendedOrigin
+      case Origins.PfLandfillTax            => new DefaultExtendedOrigin
+      case Origins.PfSdil                   => new DefaultExtendedOrigin
+      case Origins.PfAggregatesLevy         => new DefaultExtendedOrigin
+      case Origins.PfClimateChangeLevy      => new DefaultExtendedOrigin
+      case Origins.PfSimpleAssessment       => new DefaultExtendedOrigin
+      case Origins.PtaSimpleAssessment      => new DefaultExtendedOrigin
+      case Origins.AppSimpleAssessment      => new DefaultExtendedOrigin
+      case Origins.PfTpes                   => new DefaultExtendedOrigin
+      case Origins.CapitalGainsTax          => new DefaultExtendedOrigin
+      case Origins.EconomicCrimeLevy        => new DefaultExtendedOrigin
+      case Origins.PfEconomicCrimeLevy      => new DefaultExtendedOrigin
+      case Origins.PfJobRetentionScheme     => new DefaultExtendedOrigin
+      case Origins.JrsJobRetentionScheme    => new DefaultExtendedOrigin
+      case Origins.PfImportedVehicles       => new DefaultExtendedOrigin
+      case Origins.PfChildBenefitRepayments => new DefaultExtendedOrigin
+      case Origins.NiEuVatOss               => new DefaultExtendedOrigin
+      case Origins.PfNiEuVatOss             => new DefaultExtendedOrigin
+      case Origins.NiEuVatIoss              => new DefaultExtendedOrigin
+      case Origins.PfNiEuVatIoss            => new DefaultExtendedOrigin
+      case Origins.PfAmls                   => new DefaultExtendedOrigin
+      case Origins.PfAted                   => new DefaultExtendedOrigin
+      case Origins.PfCdsDeferment           => new DefaultExtendedOrigin
+      case Origins.PfTrust                  => new DefaultExtendedOrigin
+      case Origins.PtaClass3Ni              => new DefaultExtendedOrigin
+      case Origins.PfAlcoholDuty            => ExtendedPfAlcoholDuty
+      case Origins.AlcoholDuty              => ExtendedAlcoholDuty
+      case Origins.VatC2c                   => new DefaultExtendedOrigin
+      case Origins.`3psSa`                  => new DefaultExtendedOrigin
+    }
+  }
 }

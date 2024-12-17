@@ -160,8 +160,8 @@ class CheckYourAnswersControllerSpec extends ItSpec {
         case Origins.PfCdsDeferment           => throw new MatchError("Not implemented yet")
         case Origins.PfTrust                  => throw new MatchError("Not implemented yet")
         case Origins.PtaClass3Ni              => throw new MatchError("Not implemented yet")
-        case Origins.AlcoholDuty              => throw new MatchError("Not implemented yet")
-        case Origins.PfAlcoholDuty            => throw new MatchError("Not implemented yet")
+        case Origins.AlcoholDuty              => TestJourneys.AlcoholDuty.testAlcoholDutyJourneyUpdatedWithRefAndAmount
+        case Origins.PfAlcoholDuty            => TestJourneys.PfAlcoholDuty.testPfAlcoholDutyJourneyUpdatedWithRefAndAmount
         case Origins.VatC2c                   => throw new MatchError("Not implemented yet")
         case Origins.`3psSa`                  => throw new MatchError("Not implemented yet")
       }
@@ -183,28 +183,31 @@ class CheckYourAnswersControllerSpec extends ItSpec {
 
       def deriveAmountRowIndex(origin: Origin): Int = {
         origin match {
-          case Origins.BtaSa => 2
-          case Origins.PtaSa => 2
-          case Origins.ItSa  => 2
-          case _             => 1
+          case Origins.BtaSa       => 2
+          case Origins.PtaSa       => 2
+          case Origins.ItSa        => 2
+          case Origins.AlcoholDuty => 2
+          case _                   => 1
         }
       }
 
       def deriveEmailRowIndex(origin: Origin): Int = {
         origin match {
-          case Origins.BtaSa => 3
-          case Origins.PtaSa => 3
-          case Origins.ItSa  => 3
-          case _             => 2
+          case Origins.BtaSa       => 3
+          case Origins.PtaSa       => 3
+          case Origins.ItSa        => 3
+          case Origins.AlcoholDuty => 3
+          case _                   => 2
         }
       }
 
       def deriveCardBillingAddressRowIndex(origin: Origin): Int = {
         origin match {
-          case Origins.BtaSa => 4
-          case Origins.PtaSa => 4
-          case Origins.ItSa  => 4
-          case _             => 3
+          case Origins.BtaSa       => 4
+          case Origins.PtaSa       => 4
+          case Origins.ItSa        => 4
+          case Origins.AlcoholDuty => 4
+          case _                   => 3
         }
       }
 
@@ -328,6 +331,54 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       val document = Jsoup.parse(contentAsString(result))
       val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.PtaSa))
       assertRow(referenceRow, "Cyfeirnod Unigryw y Trethdalwr (UTR)", "1234567895K", None, None)
+    }
+
+    "[PfAlcoholDuty] should render the payment reference row correctly" in {
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfAlcoholDuty.testPfAlcoholDutyJourneyUpdatedWithRefAndAmount)
+      val result = systemUnderTest.renderPage(fakeRequest())
+      val document = Jsoup.parse(contentAsString(result))
+      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.PfAlcoholDuty))
+      assertRow(referenceRow, "Payment reference", "XMADP0123456789", Some("Change"), Some("some-link-to-pay-frontend"))
+    }
+
+    "[PfAlcoholDuty] should render the payment reference row correctly in Welsh" in {
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfAlcoholDuty.testPfAlcoholDutyJourneyUpdatedWithRefAndAmount)
+      val result = systemUnderTest.renderPage(fakeRequestWelsh())
+      val document = Jsoup.parse(contentAsString(result))
+      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.PfAlcoholDuty))
+      assertRow(referenceRow, "Cyfeirnod y taliad", "XMADP0123456789", Some("Newid"), Some("some-link-to-pay-frontend"))
+    }
+
+    "[AlcoholDuty] should render the payment reference row correctly" in {
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.AlcoholDuty.testAlcoholDutyJourneyUpdatedWithRefAndAmount)
+      val result = systemUnderTest.renderPage(fakeRequest())
+      val document = Jsoup.parse(contentAsString(result))
+      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.AlcoholDuty))
+      assertRow(referenceRow, "Payment reference", "XMADP0123456789", None, None)
+    }
+
+    "[AlcoholDuty] should render the payment reference row correctly in Welsh" in {
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.AlcoholDuty.testAlcoholDutyJourneyUpdatedWithRefAndAmount)
+      val result = systemUnderTest.renderPage(fakeRequestWelsh())
+      val document = Jsoup.parse(contentAsString(result))
+      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.AlcoholDuty))
+      assertRow(referenceRow, "Cyfeirnod y taliad", "XMADP0123456789", None, None)
+    }
+
+    "[AlcoholDuty] should render the charge reference row correctly when it's available" in {
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.AlcoholDuty.testAlcoholDutyJourneyUpdatedWithRefAndAmount)
+      val result = systemUnderTest.renderPage(fakeRequest())
+      val document = Jsoup.parse(contentAsString(result))
+      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(1)
+      assertRow(referenceRow, "Charge reference", "XE1234567890123", None, None)
+    }
+
+    "[AlcoholDuty] should render the charge reference row correctly in welsh when it's available" in {
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.AlcoholDuty.testAlcoholDutyJourneyUpdatedWithRefAndAmount)
+      val result = systemUnderTest.renderPage(fakeRequestWelsh())
+      val document = Jsoup.parse(contentAsString(result))
+      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(1)
+      assertRow(referenceRow, "Cyfeirnod y tâl", "XE1234567890123", None, None)
     }
 
     "[ItSa] should render the payment reference row correctly" in {
