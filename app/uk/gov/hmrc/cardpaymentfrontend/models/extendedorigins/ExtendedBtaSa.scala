@@ -20,11 +20,10 @@ import payapi.cardpaymentjourney.model.journey.{JourneySpecificData, JsdBtaSa}
 import play.api.i18n.Messages
 import play.api.mvc.{AnyContent, Call}
 import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
+import uk.gov.hmrc.cardpaymentfrontend.models.PaymentMethod.{OneOffDirectDebit, OpenBanking}
 import uk.gov.hmrc.cardpaymentfrontend.models.openbanking.{BtaSaSessionData, OriginSpecificSessionData}
-import uk.gov.hmrc.cardpaymentfrontend.models.{Address, CheckYourAnswersRow, EmailAddress, Link}
+import uk.gov.hmrc.cardpaymentfrontend.models._
 import uk.gov.hmrc.cardpaymentfrontend.session.JourneySessionSupport._
-import uk.gov.hmrc.cardpaymentfrontend.utils.PaymentMethods.{OneOffDirectDebit, OpenBanking}
-import uk.gov.hmrc.cardpaymentfrontend.utils._
 
 object ExtendedBtaSa extends ExtendedOrigin {
   override val serviceNameMessageKey: String = "service-name.BtaSa"

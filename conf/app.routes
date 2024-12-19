@@ -9,14 +9,8 @@ GET        /start-payment-survey                 uk.gov.hmrc.cardpaymentfrontend
 GET        /email-address                        uk.gov.hmrc.cardpaymentfrontend.controllers.EmailAddressController.renderPage
 POST       /email-address                        uk.gov.hmrc.cardpaymentfrontend.controllers.EmailAddressController.submit
 
-GET        /card-fees                            uk.gov.hmrc.cardpaymentfrontend.controllers.FeesController.renderPageNew
+GET        /card-fees                            uk.gov.hmrc.cardpaymentfrontend.controllers.FeesController.renderPage
 POST       /card-fees                            uk.gov.hmrc.cardpaymentfrontend.controllers.FeesController.submit
-GET        /card-fees0                           uk.gov.hmrc.cardpaymentfrontend.controllers.FeesController.renderPage0
-GET        /card-fees1                           uk.gov.hmrc.cardpaymentfrontend.controllers.FeesController.renderPage1
-GET        /card-fees2                           uk.gov.hmrc.cardpaymentfrontend.controllers.FeesController.renderPage2
-GET        /card-fees3                           uk.gov.hmrc.cardpaymentfrontend.controllers.FeesController.renderPage3
-GET        /card-fees4                           uk.gov.hmrc.cardpaymentfrontend.controllers.FeesController.renderPage4
-GET        /card-fees5                           uk.gov.hmrc.cardpaymentfrontend.controllers.FeesController.renderPage5
 
 GET        /check-your-details                   uk.gov.hmrc.cardpaymentfrontend.controllers.CheckYourAnswersController.renderPage
 POST       /check-your-details                   uk.gov.hmrc.cardpaymentfrontend.controllers.CheckYourAnswersController.submit

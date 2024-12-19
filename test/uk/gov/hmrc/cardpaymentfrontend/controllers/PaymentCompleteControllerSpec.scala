@@ -453,6 +453,108 @@ class PaymentCompleteControllerSpec extends ItSpec {
           }
         }
       }
+
+      "for origin PfAlcoholDuty" - {
+
+        "when paying by debit card" - {
+
+          "render the summary list correctly" in {
+            val expectedSummaryListRows: List[(String, String)] = List(
+              "Tax" -> "Alcohol Duty",
+              "Date" -> "2 November 2027",
+              "Amount" -> "£12.34"
+            )
+            testSummaryRows(TestJourneys.PfAlcoholDuty.testPfAlcoholDutyJourneySuccessDebit, fakeGetRequest, expectedSummaryListRows)
+          }
+
+          "render the summary list correctly in welsh" in {
+            val expectedSummaryListRows: List[(String, String)] = List(
+              "Treth" -> "Toll Alcohol",
+              "Dyddiad" -> "2 Tachwedd 2027",
+              "Swm" -> "£12.34"
+            )
+            testSummaryRows(TestJourneys.PfAlcoholDuty.testPfAlcoholDutyJourneySuccessDebit, fakeGetRequestInWelsh, expectedSummaryListRows)
+          }
+        }
+
+        "when paying by a card that incurs a surcharge" - {
+
+          "render the summary list correctly when payment has a surcharge" in {
+            val expectedSummaryListRows: List[(String, String)] = List(
+              "Tax" -> "Alcohol Duty",
+              "Date" -> "2 November 2027",
+              "Amount paid to HMRC" -> "£12.34",
+              "Card fee (9.97%), non-refundable" -> "£1.23",
+              "Total paid" -> "£13.57"
+            )
+            testSummaryRows(TestJourneys.PfAlcoholDuty.testPfAlcoholDutyJourneySuccessCredit, fakeGetRequest, expectedSummaryListRows)
+          }
+
+          "render the summary list correctly in welsh when payment has a surcharge" in {
+            val expectedSummaryListRows: List[(String, String)] = List(
+              "Treth" -> "Toll Alcohol",
+              "Dyddiad" -> "2 Tachwedd 2027",
+              "Swm a dalwyd i CThEM" -> "£12.34",
+              "Ffi cerdyn (9.97%), ni ellir ei ad-dalu" -> "£1.23",
+              "Cyfanswm a dalwyd" -> "£13.57"
+            )
+            testSummaryRows(TestJourneys.PfAlcoholDuty.testPfAlcoholDutyJourneySuccessCredit, fakeGetRequestInWelsh, expectedSummaryListRows)
+          }
+        }
+      }
+
+      "for origin AlcoholDuty" - {
+
+        "when paying by debit card" - {
+
+          "render the summary list correctly" in {
+            val expectedSummaryListRows: List[(String, String)] = List(
+              "Tax" -> "Alcohol Duty",
+              "Date" -> "2 November 2027",
+              "Charge reference" -> "XE1234567890123",
+              "Amount" -> "£12.34"
+            )
+            testSummaryRows(TestJourneys.AlcoholDuty.testAlcoholDutyJourneySuccessDebit, fakeGetRequest, expectedSummaryListRows)
+          }
+
+          "render the summary list correctly in welsh" in {
+            val expectedSummaryListRows: List[(String, String)] = List(
+              "Treth" -> "Toll Alcohol",
+              "Dyddiad" -> "2 Tachwedd 2027",
+              "Cyfeirnod y tâl" -> "XE1234567890123",
+              "Swm" -> "£12.34"
+            )
+            testSummaryRows(TestJourneys.AlcoholDuty.testAlcoholDutyJourneySuccessDebit, fakeGetRequestInWelsh, expectedSummaryListRows)
+          }
+        }
+
+        "when paying by a card that incurs a surcharge" - {
+
+          "render the summary list correctly when payment has a surcharge" in {
+            val expectedSummaryListRows: List[(String, String)] = List(
+              "Tax" -> "Alcohol Duty",
+              "Date" -> "2 November 2027",
+              "Charge reference" -> "XE1234567890123",
+              "Amount paid to HMRC" -> "£12.34",
+              "Card fee (9.97%), non-refundable" -> "£1.23",
+              "Total paid" -> "£13.57"
+            )
+            testSummaryRows(TestJourneys.AlcoholDuty.testAlcoholDutyJourneySuccessCredit, fakeGetRequest, expectedSummaryListRows)
+          }
+
+          "render the summary list correctly in welsh when payment has a surcharge" in {
+            val expectedSummaryListRows: List[(String, String)] = List(
+              "Treth" -> "Toll Alcohol",
+              "Dyddiad" -> "2 Tachwedd 2027",
+              "Cyfeirnod y tâl" -> "XE1234567890123",
+              "Swm a dalwyd i CThEM" -> "£12.34",
+              "Ffi cerdyn (9.97%), ni ellir ei ad-dalu" -> "£1.23",
+              "Cyfanswm a dalwyd" -> "£13.57"
+            )
+            testSummaryRows(TestJourneys.AlcoholDuty.testAlcoholDutyJourneySuccessCredit, fakeGetRequestInWelsh, expectedSummaryListRows)
+          }
+        }
+      }
     }
 
     "buildAmountsSummaryListRow" - {

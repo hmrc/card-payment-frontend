@@ -20,9 +20,8 @@ import payapi.cardpaymentjourney.model.journey.JourneySpecificData
 import play.api.i18n.Messages
 import play.api.mvc.AnyContent
 import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
-import uk.gov.hmrc.cardpaymentfrontend.models.CheckYourAnswersRow
 import uk.gov.hmrc.cardpaymentfrontend.models.openbanking.OriginSpecificSessionData
-import uk.gov.hmrc.cardpaymentfrontend.utils._
+import uk.gov.hmrc.cardpaymentfrontend.models.{CheckYourAnswersRow, PaymentMethod}
 
 class ExtendedPfP800 extends ExtendedOrigin {
   override val serviceNameMessageKey: String = "add.message.key.here"

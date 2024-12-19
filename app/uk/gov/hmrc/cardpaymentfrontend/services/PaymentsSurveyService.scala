@@ -21,9 +21,9 @@ import play.api.i18n.{Lang, Messages, MessagesApi}
 import play.api.mvc.Request
 import uk.gov.hmrc.cardpaymentfrontend.connectors.PaymentsSurveyConnector
 import uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins.ExtendedOrigin
+import uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins.ExtendedOrigin.OriginExtended
 import uk.gov.hmrc.cardpaymentfrontend.models.paymentssurvey.{AuditOptions, PaymentSurveyJourneyRequest, SurveyBannerTitle, SurveyContentOptions}
 import uk.gov.hmrc.cardpaymentfrontend.requests.RequestSupport
-import uk.gov.hmrc.cardpaymentfrontend.utils.OriginExtraInfo
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -31,7 +31,6 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class PaymentsSurveyService @Inject() (
     requestSupport:          RequestSupport,
-    originExtraInfo:         OriginExtraInfo,
     paymentsSurveyConnector: PaymentsSurveyConnector
 )(
     implicit
@@ -49,7 +48,7 @@ class PaymentsSurveyService @Inject() (
 
   private[services] def makeSsjJourneyRequest(journey: Journey[JourneySpecificData])(implicit request: Request[_]): PaymentSurveyJourneyRequest = {
     implicit val messages: Messages = request.messages
-    val extendedOrigin: ExtendedOrigin = originExtraInfo.lift(journey.origin)
+    val extendedOrigin: ExtendedOrigin = journey.origin.lift
     val origin: String = journey.origin.entryName
     val returnMessage: String = messages(extendedOrigin.surveyReturnMessageKey)
     val returnHref: String = extendedOrigin.surveyReturnHref

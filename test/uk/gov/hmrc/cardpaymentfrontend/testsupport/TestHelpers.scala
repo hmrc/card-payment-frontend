@@ -32,7 +32,9 @@ object TestHelpers {
     PfSa,
     BtaSa,
     PtaSa,
-    ItSa
+    ItSa,
+    PfAlcoholDuty,
+    AlcoholDuty
   )
 
   val unimplementedOrigins: Seq[Origin] = Seq[Origin](
@@ -105,8 +107,6 @@ object TestHelpers {
     PfCdsDeferment,
     PfTrust,
     PtaClass3Ni,
-    PfAlcoholDuty,
-    AlcoholDuty,
     VatC2c,
     `3psSa`
   )

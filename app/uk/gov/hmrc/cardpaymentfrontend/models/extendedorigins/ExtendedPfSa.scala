@@ -21,10 +21,9 @@ import play.api.i18n.Messages
 import play.api.mvc.{AnyContent, Call}
 import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
 import uk.gov.hmrc.cardpaymentfrontend.models.openbanking.{OriginSpecificSessionData, PfSaSessionData}
-import uk.gov.hmrc.cardpaymentfrontend.models.{Address, CheckYourAnswersRow, EmailAddress, Link}
+import uk.gov.hmrc.cardpaymentfrontend.models.{Address, CheckYourAnswersRow, EmailAddress, Link, PaymentMethod}
 import uk.gov.hmrc.cardpaymentfrontend.session.JourneySessionSupport._
-import uk.gov.hmrc.cardpaymentfrontend.utils.PaymentMethod
-import uk.gov.hmrc.cardpaymentfrontend.utils.PaymentMethods.{Bacs, Card, OneOffDirectDebit, OpenBanking}
+import uk.gov.hmrc.cardpaymentfrontend.models.PaymentMethod.{Bacs, Card, OneOffDirectDebit, OpenBanking}
 
 object ExtendedPfSa extends ExtendedOrigin {
   override val serviceNameMessageKey: String = "service-name.PfSa"
