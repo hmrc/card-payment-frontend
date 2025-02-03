@@ -18,10 +18,13 @@ package uk.gov.hmrc.cardpaymentfrontend.controllers
 
 import org.jsoup.Jsoup
 import play.api.http.Status
-import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded, Cookie}
+import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.ItSpec
+import uk.gov.hmrc.cardpaymentfrontend.testsupport.TestOps.FakeRequestOps
+import uk.gov.hmrc.cardpaymentfrontend.testsupport.stubs.PayApiStub
+import uk.gov.hmrc.cardpaymentfrontend.testsupport.testdata.TestJourneys
 
 import scala.jdk.CollectionConverters.ListHasAsScala
 
@@ -29,37 +32,47 @@ class AddressControllerSpec extends ItSpec {
 
   val systemUnderTest: AddressController = app.injector.instanceOf[AddressController]
 
+  override def beforeEach(): Unit = {
+    PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.testPfSaJourneyUpdatedWithRefAndAmount)
+    ()
+  }
+
   "Address Controller" - {
 
     "GET /address" - {
-      val fakeGetRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/address")
-      val fakeGetRequestInWelsh = FakeRequest("GET", "/email-address").withCookies(Cookie("PLAY_LANG", "cy"))
+      val fakeGetRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/address").withSessionId()
+      val fakeGetRequestInWelsh = fakeGetRequest.withLangWelsh()
 
       "should return 200 OK" in {
         val result = systemUnderTest.renderPage(fakeGetRequest)
         status(result) shouldBe Status.OK
       }
+
       "include the hmrc layout" in {
         val result = systemUnderTest.renderPage(fakeGetRequest)
         val document = Jsoup.parse(contentAsString(result))
         document.select("html").hasClass("govuk-template") shouldBe true withClue "no govuk template"
       }
+
       "show the language toggle" in {
         val result = systemUnderTest.renderPage(fakeGetRequest)
         val document = Jsoup.parse(contentAsString(result))
         val langToggleText: List[String] = document.select(".hmrc-language-select__list-item").eachText().asScala.toList
         langToggleText should contain theSameElementsAs List("English", "Newid yr iaith ir Gymraeg Cymraeg") //checking the visually hidden text, it's simpler
       }
+
       "show the heading correctly in English" in {
         val result = systemUnderTest.renderPage(fakeGetRequest)
         val document = Jsoup.parse(contentAsString(result))
         document.select("h1").html shouldBe "Card billing address" withClue "Page heading wrong in English"
       }
+
       "show the heading correctly in Welsh" in {
         val result = systemUnderTest.renderPage(fakeGetRequestInWelsh)
         val document = Jsoup.parse(contentAsString(result))
         document.select("h1").html shouldBe "Cyfeiriad bilio’r cerdyn" withClue "Page heading wrong in welsh"
       }
+
       "show the hint correctly in English" in {
         val result = systemUnderTest.renderPage(fakeGetRequest)
         val document = Jsoup.parse(contentAsString(result))
@@ -68,6 +81,7 @@ class AddressControllerSpec extends ItSpec {
         document.selectXpath("//*[@id=\"main-content\"]/div/div/p[2]") contains
           "If it does not, the payment will fail." withClue "Page hint 2 wrong in English"
       }
+
       "show the hint correctly in Welsh" in {
         val result = systemUnderTest.renderPage(fakeGetRequestInWelsh)
         val document = Jsoup.parse(contentAsString(result))
@@ -78,12 +92,12 @@ class AddressControllerSpec extends ItSpec {
 
     "POST /address" - {
         def fakePostRequest(formData: (String, String)*): FakeRequest[AnyContentAsFormUrlEncoded] =
-          FakeRequest("POST", "/address").withFormUrlEncodedBody(formData: _*)
+          FakeRequest("POST", "/address").withFormUrlEncodedBody(formData: _*).withSessionId()
 
         def fakePostRequestInWelsh(formData: (String, String)*): FakeRequest[AnyContentAsFormUrlEncoded] =
-          FakeRequest("POST", "/address").withFormUrlEncodedBody(formData: _*).withCookies(Cookie("PLAY_LANG", "cy"))
+          fakePostRequest(formData: _*).withLangWelsh()
 
-      "should return 200 OK when a valid address is submitted" in {
+      "should return 303 SEE_OTHER and redirect to /check-your-details when a valid address is submitted" in {
         val address = List(
           ("line1", "20 Fake Cottage"),
           ("line2", "Fake Street"),
@@ -93,8 +107,8 @@ class AddressControllerSpec extends ItSpec {
           ("country", "GBR")
         )
         val result = systemUnderTest.submit(fakePostRequest(address: _*))
-        status(result) shouldBe Status.OK
-        contentAsString(result) shouldBe "Happy with the address entered"
+        status(result) shouldBe Status.SEE_OTHER
+        redirectLocation(result) shouldBe Some("/pay-by-card/check-your-details")
       }
 
       "should return html containing the correct error messages when first line of address is missing" in {
