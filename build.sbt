@@ -1,3 +1,4 @@
+import play.sbt.routes.RoutesKeys
 import uk.gov.hmrc.DefaultBuildSettings
 
 //--- defining here so it can be set before running sbt like `sbt 'set Global / strictBuilding := true' ...`
@@ -33,6 +34,9 @@ lazy val microservice = Project("card-payment-frontend", file("."))
   .settings(
     Compile / unmanagedResourceDirectories += baseDirectory.value / "resources",
     Compile / scalacOptions -= "utf8",
+  )
+  .settings(
+    RoutesKeys.routesImport += "uk.gov.hmrc.play.bootstrap.binders.RedirectUrl"
   )
 
 lazy val it = project

@@ -20,6 +20,9 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.cardpaymentfrontend.actions.Actions
 import uk.gov.hmrc.cardpaymentfrontend.requests.RequestSupport
 import uk.gov.hmrc.cardpaymentfrontend.views.html.iframe.{IframeContainerPage, RedirectToParentPage}
+import uk.gov.hmrc.play.bootstrap.binders.RedirectUrl.idFunctor
+import uk.gov.hmrc.play.bootstrap.binders.RedirectUrlPolicy.Id
+import uk.gov.hmrc.play.bootstrap.binders.{RedirectUrl, UnsafePermitAll}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
 import javax.inject.{Inject, Singleton}
@@ -27,7 +30,8 @@ import scala.concurrent.Future
 
 @Singleton()
 class PaymentStatusController @Inject() (
-    actions:          Actions,
+    actions: Actions,
+    //    appConfig:        AppConfig,
     mcc:              MessagesControllerComponents,
     requestSupport:   RequestSupport,
     iframeContainer:  IframeContainerPage,
@@ -36,8 +40,9 @@ class PaymentStatusController @Inject() (
 
   import requestSupport._
 
-  def showIframe(iframeUrl: String): Action[AnyContent] = Action { implicit req =>
-    Ok(iframeContainer(iframeUrl))
+  def showIframe(iframeUrl: RedirectUrl): Action[AnyContent] = Action { implicit req =>
+    //todo replace UnsafePermitAll with AbsoluteWithHostnameFromAllowlist
+    Ok(iframeContainer(iframeUrl.get[Id](UnsafePermitAll).url))
   }
 
   def returnToHmrc(transactionReference: String): Action[AnyContent] = actions.default { implicit request =>

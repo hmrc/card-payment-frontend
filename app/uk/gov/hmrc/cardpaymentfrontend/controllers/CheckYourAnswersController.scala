@@ -27,6 +27,7 @@ import uk.gov.hmrc.cardpaymentfrontend.requests.RequestSupport
 import uk.gov.hmrc.cardpaymentfrontend.views.html.CheckYourAnswersPage
 import uk.gov.hmrc.govukfrontend.views.Aliases.SummaryList
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import uk.gov.hmrc.play.bootstrap.binders.RedirectUrl
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
 import javax.inject.{Inject, Singleton}
@@ -68,7 +69,7 @@ class CheckYourAnswersController @Inject() (
     cardPaymentConnector
       .initiatePayment()(requestSupport.hc)
       .map { cardPaymentInitiatePaymentResponse =>
-        Redirect(routes.PaymentStatusController.showIframe(cardPaymentInitiatePaymentResponse.redirectUrl))
+        Redirect(routes.PaymentStatusController.showIframe(RedirectUrl(cardPaymentInitiatePaymentResponse.redirectUrl)))
       }
   }
 
