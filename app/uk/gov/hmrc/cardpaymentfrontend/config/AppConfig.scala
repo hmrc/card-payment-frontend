@@ -25,6 +25,7 @@ class AppConfig @Inject() (config: Configuration, servicesConfig: ServicesConfig
 
   val payAnotherWayLink: String = config.get[String]("urls.govuk.pay-another-way")
 
+  val cardPaymentBaseUrl: String = servicesConfig.baseUrl("card-payment")
   val payApiBaseUrl: String = servicesConfig.baseUrl("pay-api")
   val openBankingBaseUrl: String = servicesConfig.baseUrl("open-banking")
   val paymentsSurveyBaseUrl: String = servicesConfig.baseUrl("payments-survey")

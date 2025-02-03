@@ -18,6 +18,14 @@ POST       /check-your-details                   uk.gov.hmrc.cardpaymentfrontend
 GET        /address                              uk.gov.hmrc.cardpaymentfrontend.controllers.AddressController.renderPage
 POST       /address                              uk.gov.hmrc.cardpaymentfrontend.controllers.AddressController.submit
 
+#todo jake rename this url, maybe /begin-payment?
+GET        /show-iframe                          uk.gov.hmrc.cardpaymentfrontend.controllers.PaymentStatusController.showIframe(iframeUrl: String)
+#this is the one that they come back to from iframe, for some reason it's an empty bodied post. It essentially renders some html which clicks a link that routes to /return
+#todo jake rename this to payment-status or something
++nocsrf
+POST       /return-to-hmrc/:transactionReference uk.gov.hmrc.cardpaymentfrontend.controllers.PaymentStatusController.returnToHmrc(transactionReference: String)
+GET        /payment-status/:transactionReference uk.gov.hmrc.cardpaymentfrontend.controllers.PaymentStatusController.paymentStatus(transactionReference: String)
+
 GET        /payment-complete                     uk.gov.hmrc.cardpaymentfrontend.controllers.PaymentCompleteController.renderPage
 
 GET        /payment-cancelled                    uk.gov.hmrc.cardpaymentfrontend.controllers.PaymentCancelledController.renderPage

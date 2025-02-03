@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,16 +14,13 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.cardpaymentfrontend.actions
+package uk.gov.hmrc.cardpaymentfrontend.models.cardpayment
 
-import payapi.cardpaymentjourney.model.journey.{Journey, JourneySpecificData}
-import payapi.corcommon.model.JourneyId
-import play.api.mvc.{Request, WrappedRequest}
+import play.api.libs.json.{Format, Json}
 
-class JourneyRequest[A](
-    val journey: Journey[JourneySpecificData],
-    val request: Request[A]
-) extends WrappedRequest[A](request) {
+final case class CardPaymentInitiatePaymentResponse(redirectUrl: String, transactionReference: String)
 
-  val journeyId: JourneyId = journey._id
+object CardPaymentInitiatePaymentResponse {
+  @SuppressWarnings(Array("org.wartremover.warts.Any"))
+  implicit val format: Format[CardPaymentInitiatePaymentResponse] = Json.format[CardPaymentInitiatePaymentResponse]
 }

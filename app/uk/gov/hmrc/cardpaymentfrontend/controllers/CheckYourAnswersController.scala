@@ -18,6 +18,7 @@ package uk.gov.hmrc.cardpaymentfrontend.controllers
 
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.cardpaymentfrontend.actions.{Actions, JourneyRequest}
+import uk.gov.hmrc.cardpaymentfrontend.connectors.CardPaymentConnector
 import uk.gov.hmrc.cardpaymentfrontend.models.CheckYourAnswersRow
 import uk.gov.hmrc.cardpaymentfrontend.models.CheckYourAnswersRow.summarise
 import uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins.ExtendedOrigin
@@ -29,14 +30,16 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
 import javax.inject.{Inject, Singleton}
+import scala.concurrent.ExecutionContext
 
 @Singleton()
 class CheckYourAnswersController @Inject() (
     actions:              Actions,
-    mcc:                  MessagesControllerComponents,
+    cardPaymentConnector: CardPaymentConnector, //todo introduce a service layer maybe
     checkYourAnswersPage: CheckYourAnswersPage,
+    mcc:                  MessagesControllerComponents,
     requestSupport:       RequestSupport
-) extends FrontendController(mcc) {
+)(implicit executionContext: ExecutionContext) extends FrontendController(mcc) {
   import requestSupport._
 
   def renderPage: Action[AnyContent] = actions.journeyAction { implicit journeyRequest: JourneyRequest[AnyContent] =>
@@ -61,8 +64,12 @@ class CheckYourAnswersController @Inject() (
     Ok(checkYourAnswersPage(SummaryList(summaryListRows)))
   }
 
-  def submit: Action[AnyContent] = actions.journeyAction { _ =>
-    Ok("nice, you submitted the check your details page, this is where the iframe needs to go")
+  def submit: Action[AnyContent] = actions.journeyAction.async { implicit request: JourneyRequest[AnyContent] =>
+    cardPaymentConnector
+      .initiatePayment()(requestSupport.hc)
+      .map { cardPaymentInitiatePaymentResponse =>
+        Redirect(routes.PaymentStatusController.showIframe(cardPaymentInitiatePaymentResponse.redirectUrl))
+      }
   }
 
 }

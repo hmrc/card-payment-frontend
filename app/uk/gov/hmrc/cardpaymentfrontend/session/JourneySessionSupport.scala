@@ -33,6 +33,7 @@ trait JourneySessionSupport {
   object Keys {
     val address = "address"
     val email = "email"
+    val transactionReference = "transactionReference"
   }
 
   implicit class ResultOps(r: Result)(implicit request: RequestHeader) {

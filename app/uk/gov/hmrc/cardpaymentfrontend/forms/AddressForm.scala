@@ -34,7 +34,7 @@ object AddressForm {
   def form(): Form[Address] = Form(
     mapping(
 
-      "line1" -> text.transform[String](_.trim, identity).verifying("address.field-name.error.invalid.line1", s => s.length > 0)
+      "line1" -> text.transform[String](_.trim, identity).verifying("address.field-name.error.invalid.line1", s => s.nonEmpty)
         .verifying(maxLength(50))
         .verifying(emojiConstraint("line1", "address.field-name.error.invalid.char")),
       "line2" -> optional(text.transform[String](_.trim, identity)

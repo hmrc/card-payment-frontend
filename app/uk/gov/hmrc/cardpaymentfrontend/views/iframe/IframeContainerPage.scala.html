@@ -1,4 +1,4 @@
-/*
+@*
  * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,18 +12,21 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ *@
 
-package uk.gov.hmrc.cardpaymentfrontend.actions
+@import uk.gov.hmrc.cardpaymentfrontend.views.html.Layout
 
-import payapi.cardpaymentjourney.model.journey.{Journey, JourneySpecificData}
-import payapi.corcommon.model.JourneyId
-import play.api.mvc.{Request, WrappedRequest}
 
-class JourneyRequest[A](
-    val journey: Journey[JourneySpecificData],
-    val request: Request[A]
-) extends WrappedRequest[A](request) {
+@this(layout: Layout)
 
-  val journeyId: JourneyId = journey._id
+@(iframeUrl: String)(implicit request: RequestHeader, messages: Messages)
+@* TODO: Jake, update the title *@
+@layout(pageTitle = Some("IFrame holder page")) {
+    @Html(s"""<link rel="stylesheet" media="all" type="text/css" href="${controllers.routes.Assets.versioned("stylesheets/barclaycard-iframe.css").toString}">""")
+    <h1 class="govuk-heading-xl">IFrame holder page</h1>
+
+    <iframe title="I am the Barclaycard iframe"
+        src="@{iframeUrl}"
+        id="barclaycard-iframe">
+    </iframe>
 }
