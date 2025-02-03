@@ -39,4 +39,6 @@ class AppConfig @Inject() (config: Configuration, servicesConfig: ServicesConfig
   val vatOssUrl: String = s"${config.get[String]("urls.vatOssBaseUrl")}/pay-vat-on-goods-sold-to-eu/northern-ireland-returns-payments/your-account"
   val vatIossUrl: String = s"${config.get[String]("urls.vatIossBaseUrl")}/pay-vat-on-goods-sold-to-eu/import-one-stop-shop-returns-payments/your-account"
 
+  val iframeHostNameAllowList: Set[String] = config.get[Seq[String]]("iframeHostNameAllowList").toSet
+
 }

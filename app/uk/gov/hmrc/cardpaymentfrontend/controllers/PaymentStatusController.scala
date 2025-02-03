@@ -16,13 +16,14 @@
 
 package uk.gov.hmrc.cardpaymentfrontend.controllers
 
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.cardpaymentfrontend.actions.Actions
+import uk.gov.hmrc.cardpaymentfrontend.config.AppConfig
 import uk.gov.hmrc.cardpaymentfrontend.requests.RequestSupport
 import uk.gov.hmrc.cardpaymentfrontend.views.html.iframe.{IframeContainerPage, RedirectToParentPage}
 import uk.gov.hmrc.play.bootstrap.binders.RedirectUrl.idFunctor
 import uk.gov.hmrc.play.bootstrap.binders.RedirectUrlPolicy.Id
-import uk.gov.hmrc.play.bootstrap.binders.{RedirectUrl, UnsafePermitAll}
+import uk.gov.hmrc.play.bootstrap.binders.{AbsoluteWithHostnameFromAllowlist, RedirectUrl, RedirectUrlPolicy}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
 import javax.inject.{Inject, Singleton}
@@ -30,8 +31,8 @@ import scala.concurrent.Future
 
 @Singleton()
 class PaymentStatusController @Inject() (
-    actions: Actions,
-    //    appConfig:        AppConfig,
+    actions:          Actions,
+    appConfig:        AppConfig,
     mcc:              MessagesControllerComponents,
     requestSupport:   RequestSupport,
     iframeContainer:  IframeContainerPage,
@@ -40,9 +41,16 @@ class PaymentStatusController @Inject() (
 
   import requestSupport._
 
+  private val redirectUrlPolicy: RedirectUrlPolicy[Id] = AbsoluteWithHostnameFromAllowlist(appConfig.iframeHostNameAllowList)
+
+  //todo need to write a test for this, where we override the allow list or something to trigger bad request.
   def showIframe(iframeUrl: RedirectUrl): Action[AnyContent] = Action { implicit req =>
-    //todo replace UnsafePermitAll with AbsoluteWithHostnameFromAllowlist
-    Ok(iframeContainer(iframeUrl.get[Id](UnsafePermitAll).url))
+    iframeUrl
+      .getEither[Id](redirectUrlPolicy)
+      .fold[Result](
+        _ => BadRequest("Bad url"),
+        safeUrl => Ok(iframeContainer(safeUrl.url))
+      )
   }
 
   def returnToHmrc(transactionReference: String): Action[AnyContent] = actions.default { implicit request =>
