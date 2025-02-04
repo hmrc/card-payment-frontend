@@ -18,9 +18,12 @@ package uk.gov.hmrc.cardpaymentfrontend.controllers
 
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import uk.gov.hmrc.cardpaymentfrontend.actions.{Actions, JourneyRequest}
 import uk.gov.hmrc.cardpaymentfrontend.forms.AddressForm
 import uk.gov.hmrc.cardpaymentfrontend.models.Address
+import uk.gov.hmrc.cardpaymentfrontend.requests.RequestSupport
 import uk.gov.hmrc.cardpaymentfrontend.services.CountriesService
+import uk.gov.hmrc.cardpaymentfrontend.session.JourneySessionSupport._
 import uk.gov.hmrc.cardpaymentfrontend.views.html.AddressPage
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
@@ -28,22 +31,27 @@ import javax.inject.{Inject, Singleton}
 
 @Singleton
 class AddressController @Inject() (
-    mcc:              MessagesControllerComponents,
+    actions:          Actions,
     addressPage:      AddressPage,
-    countriesService: CountriesService
+    countriesService: CountriesService,
+    mcc:              MessagesControllerComponents,
+    requestSupport:   RequestSupport
 ) extends FrontendController(mcc) {
 
-  val renderPage: Action[AnyContent] = Action { implicit request =>
+  import requestSupport._
+
+  val renderPage: Action[AnyContent] = actions.journeyAction { implicit request: JourneyRequest[AnyContent] =>
     Ok(addressPage(AddressForm.form(), countriesService.getCountries))
   }
 
-  val submit: Action[AnyContent] = Action { implicit request =>
+  val submit: Action[AnyContent] = actions.journeyAction { implicit journeyRequest: JourneyRequest[AnyContent] =>
     AddressForm.form()
       .bindFromRequest()
       .fold(
         (formWithErrors: Form[Address]) => BadRequest(addressPage(form = formWithErrors, countriesService.getCountries)),
-        { _ =>
-          Ok("Happy with the address entered")
+        { address =>
+          Redirect(routes.CheckYourAnswersController.renderPage)
+            .placeInSession(journeyRequest.journeyId, Keys.address -> address)
         }
       )
   }

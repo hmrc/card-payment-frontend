@@ -43,13 +43,14 @@ class EmailAddressController @Inject() (
   }
 
   val submit: Action[AnyContent] = actions.journeyAction { implicit journeyRequest: JourneyRequest[AnyContent] =>
-
     EmailAddressForm.form()
       .bindFromRequest()
       .fold(
         (formWithErrors: Form[EmailAddress]) => BadRequest(emailAddressPage(form = formWithErrors)),
         { email =>
-          Ok("Happy with the email entered").placeInSession(journeyRequest.journeyId, "email" -> email)
+          Redirect(routes.AddressController.renderPage)
+            .placeInSession(journeyRequest.journeyId, Keys.email -> email)
+
         }
       )
   }
