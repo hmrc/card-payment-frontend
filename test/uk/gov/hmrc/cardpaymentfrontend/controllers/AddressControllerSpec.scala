@@ -103,8 +103,8 @@ class AddressControllerSpec extends ItSpec {
           ("line2", "Fake Street"),
           ("city", "Imaginaryshire"),
           ("county", "East Imaginationland"),
-          ("postcode", "IM2 4HJ"),
-          ("country", "GBR")
+          ("postCode", "IM2 4HJ"),
+          ("countryCode", "GBR")
         )
         val result = systemUnderTest.submit(fakePostRequest(address: _*))
         status(result) shouldBe Status.SEE_OTHER
@@ -117,8 +117,8 @@ class AddressControllerSpec extends ItSpec {
           ("line2", "Fake Street"),
           ("city", "Imaginaryshire"),
           ("county", "East Imaginationland"),
-          ("postcode", "IM2 4HJ"),
-          ("country", "GBR")
+          ("postCode", "IM2 4HJ"),
+          ("countryCode", "GBR")
         )
         val result = systemUnderTest.submit(fakePostRequest(firstLineMissing: _*))
         val document = Jsoup.parse(contentAsString(result))
@@ -127,20 +127,20 @@ class AddressControllerSpec extends ItSpec {
         document.select(".govuk-error-summary__list").select("a").attr("href") shouldBe "#line1"
       }
 
-      "should return html containing the correct error messages when postcode is missing" in {
-        val postcodeMissing = List(
+      "should return html containing the correct error messages when postCode is missing" in {
+        val postCodeMissing = List(
           ("line1", "20 Fake Cottage"),
           ("line2", "Fake Street"),
           ("city", "Imaginaryshire"),
           ("county", "East Imaginationland"),
-          ("postcode", ""),
-          ("country", "GBR")
+          ("postCode", ""),
+          ("countryCode", "GBR")
         )
-        val result = systemUnderTest.submit(fakePostRequest(postcodeMissing: _*))
+        val result = systemUnderTest.submit(fakePostRequest(postCodeMissing: _*))
         val document = Jsoup.parse(contentAsString(result))
         document.select(".govuk-error-summary__title").text() shouldBe "There is a problem"
         document.select(".govuk-error-summary__list").text() shouldBe "Enter your postcode"
-        document.select(".govuk-error-summary__list").select("a").attr("href") shouldBe "#postcode"
+        document.select(".govuk-error-summary__list").select("a").attr("href") shouldBe "#postCode"
       }
 
       "should return html containing the correct error messages when no country selected" in {
@@ -149,14 +149,14 @@ class AddressControllerSpec extends ItSpec {
           ("line2", "Fake Street"),
           ("city", "Imaginaryshire"),
           ("county", "East Imaginationland"),
-          ("postcode", "IM2 4HJ"),
-          ("country", "")
+          ("postCode", "IM2 4HJ"),
+          ("countryCode", "")
         )
         val result = systemUnderTest.submit(fakePostRequest(noCountrySelected: _*))
         val document = Jsoup.parse(contentAsString(result))
         document.select(".govuk-error-summary__title").text() shouldBe "There is a problem"
         document.select(".govuk-error-summary__list").text() shouldBe "Select a country"
-        document.select(".govuk-error-summary__list").select("a").attr("href") shouldBe "#country"
+        document.select(".govuk-error-summary__list").select("a").attr("href") shouldBe "#countryCode"
       }
 
       "should return a 400 BAD_REQUEST when an invalid address is submitted" in {
@@ -165,8 +165,8 @@ class AddressControllerSpec extends ItSpec {
           ("line2", "Fake Street"),
           ("city", "Imaginaryshire"),
           ("county", "East Imaginationland"),
-          ("postcode", "IM2 4HJ"),
-          ("country", "")
+          ("postCode", "IM2 4HJ"),
+          ("countryCode", "")
         )
         val result = systemUnderTest.submit(fakePostRequest(postcodeMissing: _*))
         status(result) shouldBe Status.BAD_REQUEST
@@ -178,8 +178,8 @@ class AddressControllerSpec extends ItSpec {
           ("line2", "Fake Street"),
           ("city", "Imaginaryshire"),
           ("county", "East Imaginationland"),
-          ("postcode", "IM2 4HJ"),
-          ("country", "GBR")
+          ("postCode", "IM2 4HJ"),
+          ("countryCode", "GBR")
         )
         val result = systemUnderTest.submit(fakePostRequestInWelsh(firstLineMissing: _*))
         val document = Jsoup.parse(contentAsString(result))
@@ -194,14 +194,14 @@ class AddressControllerSpec extends ItSpec {
           ("line2", "Fake Street"),
           ("city", "Imaginaryshire"),
           ("county", "East Imaginationland"),
-          ("postcode", ""),
-          ("country", "GBR")
+          ("postCode", ""),
+          ("countryCode", "GBR")
         )
         val result = systemUnderTest.submit(fakePostRequestInWelsh(postcodeMissing: _*))
         val document = Jsoup.parse(contentAsString(result))
         document.select(".govuk-error-summary__title").text() shouldBe "Mae problem wedi codi"
         document.select(".govuk-error-summary__list").text() shouldBe "Nodwch eich cod post"
-        document.select(".govuk-error-summary__list").select("a").attr("href") shouldBe "#postcode"
+        document.select(".govuk-error-summary__list").select("a").attr("href") shouldBe "#postCode"
       }
 
       "should return html containing the correct error messages IN WELSH when no country selected" in {
@@ -210,14 +210,14 @@ class AddressControllerSpec extends ItSpec {
           ("line2", "Fake Street"),
           ("city", "Imaginaryshire"),
           ("county", "East Imaginationland"),
-          ("postcode", "IM2 4HJ"),
-          ("country", "")
+          ("postCode", "IM2 4HJ"),
+          ("countryCode", "")
         )
         val result = systemUnderTest.submit(fakePostRequestInWelsh(noCountrySelected: _*))
         val document = Jsoup.parse(contentAsString(result))
         document.select(".govuk-error-summary__title").text() shouldBe "Mae problem wedi codi"
         document.select(".govuk-error-summary__list").text() shouldBe "Dewiswch eich gwlad"
-        document.select(".govuk-error-summary__list").select("a").attr("href") shouldBe "#country"
+        document.select(".govuk-error-summary__list").select("a").attr("href") shouldBe "#countryCode"
       }
 
     }

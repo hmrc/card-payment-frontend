@@ -19,12 +19,12 @@ package uk.gov.hmrc.cardpaymentfrontend.models
 import play.api.libs.json.{Json, OFormat}
 
 final case class Address(
-    line1:    String,
-    line2:    Option[String] = None,
-    city:     Option[String] = None,
-    county:   Option[String] = None,
-    postcode: String,
-    country:  String
+    line1:       String,
+    line2:       Option[String] = None,
+    city:        Option[String] = None,
+    county:      Option[String] = None,
+    postCode:    String,
+    countryCode: String
 ) {
   def hasSelect(maybeString: Option[String]): Boolean = {
     maybeString match {
@@ -37,7 +37,7 @@ final case class Address(
 
   // For UK (GBR) addresses only, replace counties containing variations on Select with None.
   def sanitiseCounty(): Address =
-    if (country.matches("GBR") && hasSelect(this.county)) this.copy (county = None)
+    if (countryCode.matches("GBR") && hasSelect(this.county)) this.copy (county = None)
     else this
 }
 

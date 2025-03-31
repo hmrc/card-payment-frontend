@@ -56,5 +56,12 @@ class PayApiConnectorSpec extends ItSpec {
         error.getCause.getMessage should include(s"GET of 'http://localhost:${wireMockPort.toString}/pay-api/journey/find-latest-by-session-id' returned 503.")
       }
     }
+
+    "JourneyUpdates" - {
+      "updateBeginWebPayment" is pending
+      "updateSucceedWebPayment" is pending
+      "updateCancelWebPayment" is pending
+      "updateFailWebPayment" is pending
+    }
   }
 }

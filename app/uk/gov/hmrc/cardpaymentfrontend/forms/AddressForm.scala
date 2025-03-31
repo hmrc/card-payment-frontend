@@ -46,8 +46,8 @@ object AddressForm {
       "county" -> optional(text.transform[String](_.trim, identity)
         .verifying(maxLength(60))
         .verifying(emojiConstraint("county", "address.field-name.error.invalid.char"))),
-      "postcode" -> of(postcodeFormatter),
-      "country" -> text.verifying(countryConstraint)
+      "postCode" -> of(postCodeFormatter),
+      "countryCode" -> text.verifying(countryConstraint)
     )(Address.apply)(Address.unapply)
   )
 
@@ -66,20 +66,20 @@ object AddressForm {
 
   }
 
-  def countryConstraint: Constraint[String] = Constraint[String]("constraint.country") { o =>
-    if (o.isBlank) Invalid(ValidationError("address.field-name.error.required.country")) else if (o.trim.isEmpty) Invalid(ValidationError("address.field-name.error.required.country")) else Valid
+  def countryConstraint: Constraint[String] = Constraint[String]("constraint.countryCode") { o =>
+    if (o.isBlank) Invalid(ValidationError("address.field-name.error.required.countryCode")) else if (o.trim.isEmpty) Invalid(ValidationError("address.field-name.error.required.countryCode")) else Valid
   }
 
-  val postcodeFormatter: Formatter[String] = new Formatter[String] {
+  val postCodeFormatter: Formatter[String] = new Formatter[String] {
 
     override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], String] = {
       // for accessibility, we need to allow users to enter spaces anywhere in postcode, we strip them to assert the postcode matches the regex, then use what the user entered.
-      val postCode: String = data("postcode").filterNot(_.isWhitespace)
-      val selectedCountryIsGBR: Boolean = data("country").matches("GBR")
+      val postCode: String = data("postCode").filterNot(_.isWhitespace)
+      val selectedCountryIsGBR: Boolean = data("countryCode").matches("GBR")
       if (selectedCountryIsGBR && postCode.isEmpty)
-        Left(Seq(FormError("postcode", "address.field-name.error.empty.postcode")))
+        Left(Seq(FormError("postCode", "address.field-name.error.empty.postCode")))
       else if (selectedCountryIsGBR && !postCode.matches(ukPostcodeRegex.regex))
-        Left(Seq(FormError("postcode", "address.field-name.error.invalid.postcode")))
+        Left(Seq(FormError("postCode", "address.field-name.error.invalid.postCode")))
       else
         Right(postCode)
     }

@@ -84,7 +84,7 @@ object ExtendedBtaSa extends ExtendedOrigin {
       CheckYourAnswersRow(
         "btasa.address.title",
         maybeAddress match {
-          case Some(addr) => Seq(addr.line1, addr.line2.getOrElse(""), addr.city.getOrElse(""), addr.county.getOrElse(""), addr.postcode, addr.country).filter(_.nonEmpty)
+          case Some(addr) => Seq(addr.line1, addr.line2.getOrElse(""), addr.city.getOrElse(""), addr.county.getOrElse(""), addr.postCode, addr.countryCode).filter(_.nonEmpty)
           case None       => Seq.empty
         },
         Some(Link(

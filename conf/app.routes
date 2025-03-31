@@ -12,19 +12,18 @@ POST       /email-address                        uk.gov.hmrc.cardpaymentfrontend
 GET        /card-fees                            uk.gov.hmrc.cardpaymentfrontend.controllers.FeesController.renderPage
 POST       /card-fees                            uk.gov.hmrc.cardpaymentfrontend.controllers.FeesController.submit
 
-GET        /check-your-details                   uk.gov.hmrc.cardpaymentfrontend.controllers.CheckYourAnswersController.renderPage
-POST       /check-your-details                   uk.gov.hmrc.cardpaymentfrontend.controllers.CheckYourAnswersController.submit
-
 GET        /address                              uk.gov.hmrc.cardpaymentfrontend.controllers.AddressController.renderPage
 POST       /address                              uk.gov.hmrc.cardpaymentfrontend.controllers.AddressController.submit
+
+GET        /check-your-details                   uk.gov.hmrc.cardpaymentfrontend.controllers.CheckYourAnswersController.renderPage
+POST       /check-your-details                   uk.gov.hmrc.cardpaymentfrontend.controllers.CheckYourAnswersController.submit
 
 #todo jake rename this url, maybe /begin-payment?
 GET        /show-iframe                          uk.gov.hmrc.cardpaymentfrontend.controllers.PaymentStatusController.showIframe(iframeUrl: RedirectUrl)
 #this is the one that they come back to from iframe, for some reason it's an empty bodied post. It essentially renders some html which clicks a link that routes to /return
-#todo jake rename this to payment-status or something
 +nocsrf
-POST       /return-to-hmrc/:transactionReference uk.gov.hmrc.cardpaymentfrontend.controllers.PaymentStatusController.returnToHmrc(transactionReference: String)
-GET        /payment-status/:transactionReference uk.gov.hmrc.cardpaymentfrontend.controllers.PaymentStatusController.paymentStatus(transactionReference: String)
+POST       /return-to-hmrc/:traceId              uk.gov.hmrc.cardpaymentfrontend.controllers.PaymentStatusController.returnToHmrc(traceId: String)
+GET        /payment-status/:traceId              uk.gov.hmrc.cardpaymentfrontend.controllers.PaymentStatusController.paymentStatus(traceId: String)
 
 GET        /payment-complete                     uk.gov.hmrc.cardpaymentfrontend.controllers.PaymentCompleteController.renderPage
 

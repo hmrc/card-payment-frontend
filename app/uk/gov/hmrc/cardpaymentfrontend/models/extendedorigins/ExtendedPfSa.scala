@@ -62,7 +62,8 @@ object ExtendedPfSa extends ExtendedOrigin {
     val addressRow = CheckYourAnswersRow(
       titleMessageKey = "PfSa.address.title",
       value           = maybeAddress match {
-        case Some(addr) => Seq(addr.line1, addr.line2.getOrElse(""), addr.city.getOrElse(""), addr.county.getOrElse(""), addr.postcode, addr.country).filter(_.nonEmpty)
+        //todo, we're doing the same thing over and over, lets write this once and reuse.
+        case Some(addr) => Seq(addr.line1, addr.line2.getOrElse(""), addr.city.getOrElse(""), addr.county.getOrElse(""), addr.postCode, addr.countryCode).filter(_.nonEmpty)
         case None       => Seq.empty
       },
       changeLink      = Some(Link(
