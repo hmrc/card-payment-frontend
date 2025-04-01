@@ -112,31 +112,31 @@
         )
         @govukInput(
             Input(
-                id = "postcode",
-                name = "postcode",
+                id = "postCode",
+                name = "postCode",
                 classes = "govuk-input--width-20",
                 label = Label(
-                    content = Text(messages("address.field-name.postcode"))),
+                    content = Text(messages("address.field-name.postCode"))),
                 inputType = "text",
                 autocomplete = Some("off"),
                 spellcheck = Some(false),
-                errorMessage = form.error("postcode").map(e => ErrorMessage.errorMessageWithDefaultStringsTranslated(
+                errorMessage = form.error("postCode").map(e => ErrorMessage.errorMessageWithDefaultStringsTranslated(
                     content = Text(messages(e.message))
                 ))
             ).withFormField(form(key))
         )
         @govukSelect(
             Select(
-                id = "country",
-                name = "country",
+                id = "countryCode",
+                name = "countryCode",
                 classes = "govuk-select address-input-width",
-                label = Label(content = Text(messages("address.field-name.country"))),
+                label = Label(content = Text(messages("address.field-name.countryCode"))),
                 errorMessage = form.error("country").map(e => ErrorMessage.errorMessageWithDefaultStringsTranslated(
                     content = Text(messages(e.message))
                 )),
                 items = Seq(SelectItem(
                     Some(""),
-                    text = messages("address.country.select.message"),
+                    text = messages("address.countryCode.select.message"),
                 )) ++ countries.map(c => SelectItem(Some(c.code), c.name))
             )
         )

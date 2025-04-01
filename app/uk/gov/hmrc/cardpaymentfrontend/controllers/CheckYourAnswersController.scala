@@ -18,12 +18,13 @@ package uk.gov.hmrc.cardpaymentfrontend.controllers
 
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.cardpaymentfrontend.actions.{Actions, JourneyRequest}
-import uk.gov.hmrc.cardpaymentfrontend.connectors.CardPaymentConnector
-import uk.gov.hmrc.cardpaymentfrontend.models.CheckYourAnswersRow
+import uk.gov.hmrc.cardpaymentfrontend.models.{Address, CheckYourAnswersRow, EmailAddress}
 import uk.gov.hmrc.cardpaymentfrontend.models.CheckYourAnswersRow.summarise
 import uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins.ExtendedOrigin
 import uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins.ExtendedOrigin.OriginExtended
 import uk.gov.hmrc.cardpaymentfrontend.requests.RequestSupport
+import uk.gov.hmrc.cardpaymentfrontend.services.CardPaymentService
+import uk.gov.hmrc.cardpaymentfrontend.session.JourneySessionSupport._
 import uk.gov.hmrc.cardpaymentfrontend.views.html.CheckYourAnswersPage
 import uk.gov.hmrc.govukfrontend.views.Aliases.SummaryList
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
@@ -36,7 +37,7 @@ import scala.concurrent.ExecutionContext
 @Singleton()
 class CheckYourAnswersController @Inject() (
     actions:              Actions,
-    cardPaymentConnector: CardPaymentConnector, //todo introduce a service layer maybe
+    cardPaymentService:   CardPaymentService,
     checkYourAnswersPage: CheckYourAnswersPage,
     mcc:                  MessagesControllerComponents,
     requestSupport:       RequestSupport
@@ -65,9 +66,13 @@ class CheckYourAnswersController @Inject() (
     Ok(checkYourAnswersPage(SummaryList(summaryListRows)))
   }
 
-  def submit: Action[AnyContent] = actions.journeyAction.async { implicit request: JourneyRequest[AnyContent] =>
-    cardPaymentConnector
-      .initiatePayment()(requestSupport.hc)
+  def submit: Action[AnyContent] = actions.journeyAction.async { implicit journeyRequest: JourneyRequest[AnyContent] =>
+    cardPaymentService
+      .initiatePayment(
+        journey               = journeyRequest.journey,
+        addressFromSession    = journeyRequest.readFromSession[Address](journeyRequest.journeyId, Keys.address).getOrElse(throw new RuntimeException("We can't process a card payment without the billing address.")),
+        maybeEmailFromSession = journeyRequest.readFromSession[EmailAddress](journeyRequest.journeyId, Keys.email)
+      )(requestSupport.hc, journeyRequest.request)
       .map { cardPaymentInitiatePaymentResponse =>
         Redirect(routes.PaymentStatusController.showIframe(RedirectUrl(cardPaymentInitiatePaymentResponse.redirectUrl)))
       }

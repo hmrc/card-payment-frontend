@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.cardpaymentfrontend.models
 
-import payapi.corcommon.model.AmountInPence
+import _root_.payapi.corcommon.model.AmountInPence
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.UnitSpec
 
 class CreditCardCommissionRateSpec extends UnitSpec {

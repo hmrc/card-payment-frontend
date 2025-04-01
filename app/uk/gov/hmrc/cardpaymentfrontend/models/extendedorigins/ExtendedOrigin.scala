@@ -105,7 +105,7 @@ trait ExtendedOrigin {
       addressFromSession.line2.getOrElse(""),
       addressFromSession.city.getOrElse(""),
       addressFromSession.county.getOrElse(""),
-      addressFromSession.postcode
+      addressFromSession.postCode
     ).filter(_.nonEmpty)
 
     Some(CheckYourAnswersRow(

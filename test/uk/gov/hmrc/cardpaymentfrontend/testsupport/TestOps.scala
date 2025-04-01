@@ -42,7 +42,7 @@ object TestOps {
         "email" -> email
       ).toString)
 
-    def withAddressInSession(journeyId: JourneyId, address: Address = Address(line1    = "line1", postcode = "AA0AA0", country = "GBR")): FakeRequest[T] =
+    def withAddressInSession(journeyId: JourneyId, address: Address = Address(line1       = "line1", postCode = "AA0AA0", countryCode = "GBR")): FakeRequest[T] =
       r.withSession(journeyId.value -> Json.obj(
         "address" -> address
       ).toString)
@@ -50,7 +50,7 @@ object TestOps {
     def withEmailAndAddressInSession(
         journeyId:    JourneyId,
         emailAddress: EmailAddress = EmailAddress("blah@blah.com"),
-        address:      Address      = Address(line1    = "line1", postcode = "AA0AA0", country = "GBR")
+        address:      Address      = Address(line1       = "line1", postCode = "AA0AA0", countryCode = "GBR")
     ): FakeRequest[T] = r.withSession(journeyId.value -> Json.obj(
       "email" -> emailAddress,
       "address" -> address

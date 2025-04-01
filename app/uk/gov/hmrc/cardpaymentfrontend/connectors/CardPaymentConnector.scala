@@ -16,8 +16,9 @@
 
 package uk.gov.hmrc.cardpaymentfrontend.connectors
 
+import play.api.libs.json.{JsBoolean, Json}
 import uk.gov.hmrc.cardpaymentfrontend.config.AppConfig
-import uk.gov.hmrc.cardpaymentfrontend.models.cardpayment.CardPaymentInitiatePaymentResponse
+import uk.gov.hmrc.cardpaymentfrontend.models.cardpayment.{CardPaymentInitiatePaymentRequest, CardPaymentInitiatePaymentResponse}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, StringContextOps}
 import uk.gov.hmrc.http.client.HttpClientV2
 import uk.gov.hmrc.http.HttpReads.Implicits._
@@ -31,15 +32,22 @@ class CardPaymentConnector @Inject() (appConfig: AppConfig, httpClientV2: HttpCl
 
   private val cardPaymentBaseUrl: URL = url"""${appConfig.cardPaymentBaseUrl}"""
   private val initiatePaymentUrl: URL = url"$cardPaymentBaseUrl/card-payment/initiate-payment"
-  private val authAndSettleUrl: URL = url"$cardPaymentBaseUrl/card-payment/auth-and-settle"
+  private val checkPaymentStatusUrl: String => URL = (transactionNumber: String) => url"$cardPaymentBaseUrl/card-payment/payment-status/$transactionNumber"
+  private val authAndSettleUrl: String => URL = (transactionNumber: String) => url"$cardPaymentBaseUrl/card-payment/auth-and-settle/$transactionNumber"
 
-  def initiatePayment()(implicit headerCarrier: HeaderCarrier): Future[CardPaymentInitiatePaymentResponse] =
+  def initiatePayment(cardPaymentInitiatePaymentRequest: CardPaymentInitiatePaymentRequest)(implicit headerCarrier: HeaderCarrier): Future[CardPaymentInitiatePaymentResponse] =
     httpClientV2
       .post(initiatePaymentUrl)
+      .withBody(Json.toJson(cardPaymentInitiatePaymentRequest))
       .execute[CardPaymentInitiatePaymentResponse]
 
-  def authAndSettle()(implicit headerCarrier: HeaderCarrier): Future[HttpResponse] =
+  def checkPaymentStatus(transactionNumber: String)(implicit headerCarrier: HeaderCarrier): Future[JsBoolean] =
     httpClientV2
-      .post(authAndSettleUrl)
+      .get(checkPaymentStatusUrl(transactionNumber))
+      .execute[JsBoolean]
+
+  def authAndSettle(transactionNumber: String)(implicit headerCarrier: HeaderCarrier): Future[HttpResponse] =
+    httpClientV2
+      .post(authAndSettleUrl(transactionNumber))
       .execute[HttpResponse]
 }
