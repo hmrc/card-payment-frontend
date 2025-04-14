@@ -33,7 +33,7 @@ class AddressControllerSpec extends ItSpec {
   val systemUnderTest: AddressController = app.injector.instanceOf[AddressController]
 
   override def beforeEach(): Unit = {
-    PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.testPfSaJourneyUpdatedWithRefAndAmount)
+    PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyBeforeBeginWebPayment)
     ()
   }
 

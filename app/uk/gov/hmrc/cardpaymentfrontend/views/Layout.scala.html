@@ -30,6 +30,7 @@
         pageTitle: Option[String] = None,
         showBackLink: Boolean = true,
         backLinkOverride: Option[BackLink] = None,
+        welshSupported: Boolean = true,
         additionalScripts: Option[Html] = None
 )(contentBlock: Html)(implicit request: RequestHeader, messages: Messages)
 
@@ -49,7 +50,7 @@
           additionalScriptsBlock = Some(scripts)
       ),
       pageTitle = pageTitle,
-      isWelshTranslationAvailable = true,
+      isWelshTranslationAvailable = welshSupported,
       backLink = {
           if (showBackLink) {
               if (backLinkOverride.isDefined) backLinkOverride else Some(BackLink.mimicsBrowserBackButtonViaJavaScript)

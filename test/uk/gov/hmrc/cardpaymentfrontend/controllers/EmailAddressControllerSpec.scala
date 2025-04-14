@@ -31,7 +31,7 @@ import scala.jdk.CollectionConverters.ListHasAsScala
 class EmailAddressControllerSpec extends ItSpec {
 
   override def beforeEach(): Unit = {
-    PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.testPfSaJourneyCreated)
+    PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyBeforeBeginWebPayment)
     ()
   }
 

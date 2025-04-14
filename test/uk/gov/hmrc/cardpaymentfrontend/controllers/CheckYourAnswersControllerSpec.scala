@@ -36,22 +36,22 @@ class CheckYourAnswersControllerSpec extends ItSpec {
 
   val systemUnderTest: CheckYourAnswersController = app.injector.instanceOf[CheckYourAnswersController]
 
-  def fakeRequest(journeyId: JourneyId = TestJourneys.PfSa.testPfSaJourneyUpdatedWithRefAndAmount._id): FakeRequest[AnyContentAsEmpty.type] =
+  def fakeRequest(journeyId: JourneyId = TestJourneys.PfSa.journeyBeforeBeginWebPayment._id): FakeRequest[AnyContentAsEmpty.type] =
     FakeRequest()
       .withSessionId()
       .withEmailAndAddressInSession(journeyId)
-  def fakeRequestWelsh(journeyId: JourneyId = TestJourneys.PfSa.testPfSaJourneyUpdatedWithRefAndAmount._id): FakeRequest[AnyContentAsEmpty.type] = fakeRequest(journeyId).withLangWelsh()
+  def fakeRequestWelsh(journeyId: JourneyId = TestJourneys.PfSa.journeyBeforeBeginWebPayment._id): FakeRequest[AnyContentAsEmpty.type] = fakeRequest(journeyId).withLangWelsh()
 
   "GET /check-your-details" - {
 
     "should return 200 OK" in {
-      PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.testPfSaJourneyUpdatedWithRefAndAmount)
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyBeforeBeginWebPayment)
       val result = systemUnderTest.renderPage(fakeRequest())
       status(result) shouldBe Status.OK
     }
 
     "should render the page with the language toggle" in {
-      PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.testPfSaJourneyUpdatedWithRefAndAmount)
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyBeforeBeginWebPayment)
       val result = systemUnderTest.renderPage(fakeRequest())
       val document = Jsoup.parse(contentAsString(result))
       val langToggleText: List[String] = document.select(".hmrc-language-select__list-item").eachText().asScala.toList
@@ -59,38 +59,38 @@ class CheckYourAnswersControllerSpec extends ItSpec {
     }
 
     "should render the h1 correctly" in {
-      PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.testPfSaJourneyUpdatedWithRefAndAmount)
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyBeforeBeginWebPayment)
       val result = systemUnderTest.renderPage(fakeRequest())
       val document = Jsoup.parse(contentAsString(result))
       document.select("h1").text() shouldBe "Check your details"
     }
 
     "should render the h1 correctly in welsh" in {
-      PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.testPfSaJourneyUpdatedWithRefAndAmount)
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyBeforeBeginWebPayment)
       val result = systemUnderTest.renderPage(fakeRequestWelsh())
       val document = Jsoup.parse(contentAsString(result))
       document.select("h1").text() shouldBe "Gwiriwch eich manylion"
     }
 
     "should render the continue button" in {
-      PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.testPfSaJourneyUpdatedWithRefAndAmount)
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyBeforeBeginWebPayment)
       val result = systemUnderTest.renderPage(fakeRequest())
       val document = Jsoup.parse(contentAsString(result))
       document.select("#submit").text() shouldBe "Continue"
     }
 
     "should render the continue button in welsh" in {
-      PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.testPfSaJourneyUpdatedWithRefAndAmount)
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyBeforeBeginWebPayment)
       val result = systemUnderTest.renderPage(fakeRequestWelsh())
       val document = Jsoup.parse(contentAsString(result))
       document.select("#submit").text() shouldBe "Yn eich blaen"
     }
 
       def deriveTestDataFromOrigin(origin: Origin): Journey[JourneySpecificData] = origin match {
-        case Origins.PfSa                     => TestJourneys.PfSa.testPfSaJourneyUpdatedWithRefAndAmount
-        case Origins.BtaSa                    => TestJourneys.BtaSa.testBtaSaJourneyUpdatedWithRefAndAmount
-        case Origins.PtaSa                    => TestJourneys.PtaSa.testPtaSaJourneyUpdatedWithRefAndAmount
-        case Origins.ItSa                     => TestJourneys.ItSa.testItSaJourneyUpdatedWithRefAndAmount
+        case Origins.PfSa                     => TestJourneys.PfSa.journeyBeforeBeginWebPayment
+        case Origins.BtaSa                    => TestJourneys.BtaSa.journeyBeforeBeginWebPayment
+        case Origins.PtaSa                    => TestJourneys.PtaSa.journeyBeforeBeginWebPayment
+        case Origins.ItSa                     => TestJourneys.ItSa.journeyBeforeBeginWebPayment
         case Origins.PfVat                    => throw new MatchError("Not implemented yet")
         case Origins.PfCt                     => throw new MatchError("Not implemented yet")
         case Origins.PfEpayeNi                => throw new MatchError("Not implemented yet")
@@ -160,8 +160,8 @@ class CheckYourAnswersControllerSpec extends ItSpec {
         case Origins.PfCdsDeferment           => throw new MatchError("Not implemented yet")
         case Origins.PfTrust                  => throw new MatchError("Not implemented yet")
         case Origins.PtaClass3Ni              => throw new MatchError("Not implemented yet")
-        case Origins.AlcoholDuty              => TestJourneys.AlcoholDuty.testAlcoholDutyJourneyUpdatedWithRefAndAmount
-        case Origins.PfAlcoholDuty            => TestJourneys.PfAlcoholDuty.testPfAlcoholDutyJourneyUpdatedWithRefAndAmount
+        case Origins.AlcoholDuty              => TestJourneys.AlcoholDuty.journeyBeforeBeginWebPayment
+        case Origins.PfAlcoholDuty            => TestJourneys.PfAlcoholDuty.journeyBeforeBeginWebPayment
         case Origins.VatC2c                   => throw new MatchError("Not implemented yet")
         case Origins.`3psSa`                  => throw new MatchError("Not implemented yet")
       }
@@ -286,7 +286,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
     }
 
     "[PfSa] should render the payment reference row correctly" in {
-      PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.testPfSaJourneyUpdatedWithRefAndAmount)
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyBeforeBeginWebPayment)
       val result = systemUnderTest.renderPage(fakeRequest())
       val document = Jsoup.parse(contentAsString(result))
       val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.PfSa))
@@ -294,7 +294,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
     }
 
     "[PfSa] should render the payment reference row correctly in Welsh" in {
-      PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.testPfSaJourneyUpdatedWithRefAndAmount)
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyBeforeBeginWebPayment)
       val result = systemUnderTest.renderPage(fakeRequestWelsh())
       val document = Jsoup.parse(contentAsString(result))
       val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.PfSa))
@@ -302,7 +302,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
     }
 
     "[BtaSa] should render the payment reference row correctly" in {
-      PayApiStub.stubForFindBySessionId2xx(TestJourneys.BtaSa.testBtaSaJourneyUpdatedWithRefAndAmount)
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.BtaSa.journeyBeforeBeginWebPayment)
       val result = systemUnderTest.renderPage(fakeRequest())
       val document = Jsoup.parse(contentAsString(result))
       val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.BtaSa))
@@ -310,7 +310,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
     }
 
     "[BtaSa] should render the payment reference row correctly in Welsh" in {
-      PayApiStub.stubForFindBySessionId2xx(TestJourneys.BtaSa.testBtaSaJourneyUpdatedWithRefAndAmount)
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.BtaSa.journeyBeforeBeginWebPayment)
       val result = systemUnderTest.renderPage(fakeRequestWelsh())
       val document = Jsoup.parse(contentAsString(result))
       val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.BtaSa))
@@ -318,7 +318,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
     }
 
     "[PtaSa] should render the payment reference row correctly" in {
-      PayApiStub.stubForFindBySessionId2xx(TestJourneys.PtaSa.testPtaSaJourneyUpdatedWithRefAndAmount)
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.PtaSa.journeyBeforeBeginWebPayment)
       val result = systemUnderTest.renderPage(fakeRequest())
       val document = Jsoup.parse(contentAsString(result))
       val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.PtaSa))
@@ -326,7 +326,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
     }
 
     "[PtaSa] should render the payment reference row correctly in Welsh" in {
-      PayApiStub.stubForFindBySessionId2xx(TestJourneys.PtaSa.testPtaSaJourneyUpdatedWithRefAndAmount)
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.PtaSa.journeyBeforeBeginWebPayment)
       val result = systemUnderTest.renderPage(fakeRequestWelsh())
       val document = Jsoup.parse(contentAsString(result))
       val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.PtaSa))
@@ -334,7 +334,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
     }
 
     "[PfAlcoholDuty] should render the payment reference row correctly" in {
-      PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfAlcoholDuty.testPfAlcoholDutyJourneyUpdatedWithRefAndAmount)
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfAlcoholDuty.journeyBeforeBeginWebPayment)
       val result = systemUnderTest.renderPage(fakeRequest())
       val document = Jsoup.parse(contentAsString(result))
       val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.PfAlcoholDuty))
@@ -342,7 +342,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
     }
 
     "[PfAlcoholDuty] should render the payment reference row correctly in Welsh" in {
-      PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfAlcoholDuty.testPfAlcoholDutyJourneyUpdatedWithRefAndAmount)
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfAlcoholDuty.journeyBeforeBeginWebPayment)
       val result = systemUnderTest.renderPage(fakeRequestWelsh())
       val document = Jsoup.parse(contentAsString(result))
       val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.PfAlcoholDuty))
@@ -350,7 +350,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
     }
 
     "[AlcoholDuty] should render the payment reference row correctly" in {
-      PayApiStub.stubForFindBySessionId2xx(TestJourneys.AlcoholDuty.testAlcoholDutyJourneyUpdatedWithRefAndAmount)
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.AlcoholDuty.journeyBeforeBeginWebPayment)
       val result = systemUnderTest.renderPage(fakeRequest())
       val document = Jsoup.parse(contentAsString(result))
       val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.AlcoholDuty))
@@ -358,7 +358,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
     }
 
     "[AlcoholDuty] should render the payment reference row correctly in Welsh" in {
-      PayApiStub.stubForFindBySessionId2xx(TestJourneys.AlcoholDuty.testAlcoholDutyJourneyUpdatedWithRefAndAmount)
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.AlcoholDuty.journeyBeforeBeginWebPayment)
       val result = systemUnderTest.renderPage(fakeRequestWelsh())
       val document = Jsoup.parse(contentAsString(result))
       val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.AlcoholDuty))
@@ -366,7 +366,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
     }
 
     "[AlcoholDuty] should render the charge reference row correctly when it's available" in {
-      PayApiStub.stubForFindBySessionId2xx(TestJourneys.AlcoholDuty.testAlcoholDutyJourneyUpdatedWithRefAndAmount)
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.AlcoholDuty.journeyBeforeBeginWebPayment)
       val result = systemUnderTest.renderPage(fakeRequest())
       val document = Jsoup.parse(contentAsString(result))
       val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(1)
@@ -374,7 +374,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
     }
 
     "[AlcoholDuty] should render the charge reference row correctly in welsh when it's available" in {
-      PayApiStub.stubForFindBySessionId2xx(TestJourneys.AlcoholDuty.testAlcoholDutyJourneyUpdatedWithRefAndAmount)
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.AlcoholDuty.journeyBeforeBeginWebPayment)
       val result = systemUnderTest.renderPage(fakeRequestWelsh())
       val document = Jsoup.parse(contentAsString(result))
       val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(1)
@@ -382,7 +382,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
     }
 
     "[ItSa] should render the payment reference row correctly" in {
-      PayApiStub.stubForFindBySessionId2xx(TestJourneys.ItSa.testItSaJourneyUpdatedWithRefAndAmount)
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.ItSa.journeyBeforeBeginWebPayment)
       val result = systemUnderTest.renderPage(fakeRequest())
       val document = Jsoup.parse(contentAsString(result))
       val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.ItSa))
@@ -390,7 +390,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
     }
 
     "[ItSa] should render the payment reference row correctly in Welsh" in {
-      PayApiStub.stubForFindBySessionId2xx(TestJourneys.ItSa.testItSaJourneyUpdatedWithRefAndAmount)
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.ItSa.journeyBeforeBeginWebPayment)
       val result = systemUnderTest.renderPage(fakeRequestWelsh())
       val document = Jsoup.parse(contentAsString(result))
       val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.ItSa))
@@ -398,7 +398,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
     }
 
     "[BtaSa] should render the payment date row correctly" in {
-      PayApiStub.stubForFindBySessionId2xx(TestJourneys.BtaSa.testBtaSaJourneyUpdatedWithRefAndAmount)
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.BtaSa.journeyBeforeBeginWebPayment)
       val result = systemUnderTest.renderPage(fakeRequest())
       val document = Jsoup.parse(contentAsString(result))
       val paymentDateRow = document.select(".govuk-summary-list__row").asScala.toList(0)
@@ -406,7 +406,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
     }
 
     "[BtaSa] should render the payment date row correctly in Welsh" in {
-      PayApiStub.stubForFindBySessionId2xx(TestJourneys.BtaSa.testBtaSaJourneyUpdatedWithRefAndAmount)
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.BtaSa.journeyBeforeBeginWebPayment)
       val result = systemUnderTest.renderPage(fakeRequestWelsh())
       val document = Jsoup.parse(contentAsString(result))
       val paymentDateRow = document.select(".govuk-summary-list__row").asScala.toList(0)
@@ -414,7 +414,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
     }
 
     "[PtaSa] should render the payment date row correctly" in {
-      PayApiStub.stubForFindBySessionId2xx(TestJourneys.PtaSa.testPtaSaJourneyUpdatedWithRefAndAmount)
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.PtaSa.journeyBeforeBeginWebPayment)
       val result = systemUnderTest.renderPage(fakeRequest())
       val document = Jsoup.parse(contentAsString(result))
       val paymentDateRow = document.select(".govuk-summary-list__row").asScala.toList(0)
@@ -422,7 +422,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
     }
 
     "[PtaSa] should render the payment date row correctly in Welsh" in {
-      PayApiStub.stubForFindBySessionId2xx(TestJourneys.PtaSa.testPtaSaJourneyUpdatedWithRefAndAmount)
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.PtaSa.journeyBeforeBeginWebPayment)
       val result = systemUnderTest.renderPage(fakeRequestWelsh())
       val document = Jsoup.parse(contentAsString(result))
       val paymentDateRow = document.select(".govuk-summary-list__row").asScala.toList(0)

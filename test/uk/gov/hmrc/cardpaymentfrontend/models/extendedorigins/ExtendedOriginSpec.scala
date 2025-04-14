@@ -32,9 +32,9 @@ import java.time.LocalDate
 class ExtendedOriginSpec extends ItSpec {
   private val systemUnderTest = ExtendedBtaSa //ExtendedBtaSa is a concrete reification of the trait ExtendedOrigin, we use it as a substitute here.
   private val fakeGetRequest = FakeRequest("GET", "/cya0").withSessionId()
-  private val testJourney = TestJourneys.BtaSa.testBtaSaJourneySuccessDebit
-  private val testJourneyNoDueDate = TestJourneys.BtaSa.testBtaSaJourneySuccessDebitNoDueDate
-  private val testJourneyOverdue = TestJourneys.BtaSa.testBtaSaJourneySuccessDebitNoDueDate
+  private val testJourney = TestJourneys.BtaSa.journeyBeforeBeginWebPayment
+  private val testJourneyNoDueDate = TestJourneys.BtaSa.journeyBeforeBeginWebPayment.copy(journeySpecificData = testJourney.journeySpecificData.copy(dueDate = None))
+  private val testJourneyOverdue = TestJourneys.BtaSa.journeyBeforeBeginWebPayment.copy(journeySpecificData = testJourneyNoDueDate.journeySpecificData.copy(dueDate = Some(LocalDate.of(2023, 12, 12))))
 
   "A value with pounds and pennies will display the pounds and pennies to 2 decimal places" in {
     PayApiStub.stubForFindBySessionId2xx(testJourney)

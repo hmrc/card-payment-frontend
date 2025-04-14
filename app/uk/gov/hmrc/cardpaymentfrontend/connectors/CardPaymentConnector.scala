@@ -32,8 +32,8 @@ class CardPaymentConnector @Inject() (appConfig: AppConfig, httpClientV2: HttpCl
 
   private val cardPaymentBaseUrl: URL = url"""${appConfig.cardPaymentBaseUrl}"""
   private val initiatePaymentUrl: URL = url"$cardPaymentBaseUrl/card-payment/initiate-payment"
-  private val checkPaymentStatusUrl: String => URL = (transactionNumber: String) => url"$cardPaymentBaseUrl/card-payment/payment-status/$transactionNumber"
-  private val authAndSettleUrl: String => URL = (transactionNumber: String) => url"$cardPaymentBaseUrl/card-payment/auth-and-settle/$transactionNumber"
+  private val checkPaymentStatusUrl: String => URL = (transactionReference: String) => url"$cardPaymentBaseUrl/card-payment/payment-status/$transactionReference"
+  private val authAndSettleUrl: String => URL = (transactionReference: String) => url"$cardPaymentBaseUrl/card-payment/auth-and-settle/$transactionReference"
 
   def initiatePayment(cardPaymentInitiatePaymentRequest: CardPaymentInitiatePaymentRequest)(implicit headerCarrier: HeaderCarrier): Future[CardPaymentInitiatePaymentResponse] =
     httpClientV2
@@ -41,13 +41,15 @@ class CardPaymentConnector @Inject() (appConfig: AppConfig, httpClientV2: HttpCl
       .withBody(Json.toJson(cardPaymentInitiatePaymentRequest))
       .execute[CardPaymentInitiatePaymentResponse]
 
-  def checkPaymentStatus(transactionNumber: String)(implicit headerCarrier: HeaderCarrier): Future[JsBoolean] =
+  //todo probably delete?
+  def checkPaymentStatus(transactionReference: String)(implicit headerCarrier: HeaderCarrier): Future[JsBoolean] =
     httpClientV2
-      .get(checkPaymentStatusUrl(transactionNumber))
+      .get(checkPaymentStatusUrl(transactionReference))
       .execute[JsBoolean]
 
-  def authAndSettle(transactionNumber: String)(implicit headerCarrier: HeaderCarrier): Future[HttpResponse] =
+  //todo should we make this strongly typed and return a CardPaymentResult or Option[CardPaymentResult]?
+  def authAndSettle(transactionReference: String)(implicit headerCarrier: HeaderCarrier): Future[HttpResponse] =
     httpClientV2
-      .post(authAndSettleUrl(transactionNumber))
+      .post(authAndSettleUrl(transactionReference))
       .execute[HttpResponse]
 }

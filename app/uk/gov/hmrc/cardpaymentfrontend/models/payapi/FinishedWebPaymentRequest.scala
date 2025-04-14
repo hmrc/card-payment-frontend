@@ -20,11 +20,23 @@ import play.api.libs.json.{Json, OFormat}
 
 import java.time.LocalDateTime
 
+sealed trait FinishedWebPaymentRequest
+
+final case class FailWebPaymentRequest(
+    transactionTime: LocalDateTime,
+    cardCategory:    String
+) extends FinishedWebPaymentRequest
+
+object FailWebPaymentRequest {
+  @SuppressWarnings(Array("org.wartremover.warts.Any"))
+  implicit val format: OFormat[FailWebPaymentRequest] = Json.format
+}
+
 final case class SucceedWebPaymentRequest(
     cardCategory:      String,
     commissionInPence: Option[Long],
     transactionTime:   LocalDateTime
-)
+) extends FinishedWebPaymentRequest
 
 object SucceedWebPaymentRequest {
   @SuppressWarnings(Array("org.wartremover.warts.Any"))

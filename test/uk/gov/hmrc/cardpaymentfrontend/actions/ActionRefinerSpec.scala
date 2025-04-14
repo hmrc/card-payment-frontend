@@ -37,10 +37,10 @@ class ActionRefinerSpec extends ItSpec {
     }
 
     "should return a right with JourneyRequest when pay-api returns a journey" in {
-      PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.testPfSaJourneyCreated)
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyBeforeBeginWebPayment)
       val result: Either[Result, JourneyRequest[AnyContent]] = systemUnderTest.refine(fakeRequest).futureValue
       result.isRight shouldBe true
-      result.map(_.journey) shouldBe Right(TestJourneys.PfSa.testPfSaJourneyCreated)
+      result.map(_.journey) shouldBe Right(TestJourneys.PfSa.journeyBeforeBeginWebPayment)
     }
   }
 
@@ -51,15 +51,15 @@ class ActionRefinerSpec extends ItSpec {
       def fakeRequest(journey: Journey[JourneySpecificData]): JourneyRequest[AnyContent] = new JourneyRequest(journey, FakeRequest())
 
     "should return a left when journey in JourneyRequest is not in a 'terminal state' (i.e. finished)" in {
-      val request = fakeRequest(TestJourneys.PfSa.testPfSaJourneyCreated)
+      val request = fakeRequest(TestJourneys.PfSa.journeyBeforeBeginWebPayment)
       systemUnderTest.refine(request).futureValue shouldBe Left(Results.NotFound("Journey not in valid state"))
     }
 
     "should return a right when journey in JourneyRequest is in a 'terminal state' (i.e. finished)" in {
-      val request = fakeRequest(TestJourneys.PfSa.testPfSaJourneySuccessDebit)
+      val request = fakeRequest(TestJourneys.PfSa.journeyAfterSucceedDebitWebPayment)
       val result: Either[Result, JourneyRequest[AnyContent]] = systemUnderTest.refine(request).futureValue
       result.isRight shouldBe true
-      result.map(_.journey) shouldBe Right(TestJourneys.PfSa.testPfSaJourneySuccessDebit)
+      result.map(_.journey) shouldBe Right(TestJourneys.PfSa.journeyAfterSucceedDebitWebPayment)
     }
   }
 
