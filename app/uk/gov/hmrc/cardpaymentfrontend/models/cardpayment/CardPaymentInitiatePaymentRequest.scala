@@ -22,7 +22,7 @@ import uk.gov.hmrc.cardpaymentfrontend.models.{Address, EmailAddress}
 
 final case class CardPaymentInitiatePaymentRequest(
     redirectUrl:         String,
-    clientId:            String, //or merchant id, i.e. SAEE etc
+    clientId:            String,
     purchaseDescription: String, // i.e. tax reference
     purchaseAmount:      AmountInPence, //in pennies
     billingAddress:      Address,

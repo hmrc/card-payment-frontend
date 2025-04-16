@@ -86,86 +86,6 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       document.select("#submit").text() shouldBe "Yn eich blaen"
     }
 
-      def deriveTestDataFromOrigin(origin: Origin): Journey[JourneySpecificData] = origin match {
-        case Origins.PfSa                     => TestJourneys.PfSa.journeyBeforeBeginWebPayment
-        case Origins.BtaSa                    => TestJourneys.BtaSa.journeyBeforeBeginWebPayment
-        case Origins.PtaSa                    => TestJourneys.PtaSa.journeyBeforeBeginWebPayment
-        case Origins.ItSa                     => TestJourneys.ItSa.journeyBeforeBeginWebPayment
-        case Origins.PfVat                    => throw new MatchError("Not implemented yet")
-        case Origins.PfCt                     => throw new MatchError("Not implemented yet")
-        case Origins.PfEpayeNi                => throw new MatchError("Not implemented yet")
-        case Origins.PfEpayeLpp               => throw new MatchError("Not implemented yet")
-        case Origins.PfEpayeSeta              => throw new MatchError("Not implemented yet")
-        case Origins.PfEpayeLateCis           => throw new MatchError("Not implemented yet")
-        case Origins.PfEpayeP11d              => throw new MatchError("Not implemented yet")
-        case Origins.PfSdlt                   => throw new MatchError("Not implemented yet")
-        case Origins.PfCds                    => throw new MatchError("Not implemented yet")
-        case Origins.PfOther                  => throw new MatchError("Not implemented yet")
-        case Origins.PfP800                   => throw new MatchError("Not implemented yet")
-        case Origins.PtaP800                  => throw new MatchError("Not implemented yet")
-        case Origins.PfClass2Ni               => throw new MatchError("Not implemented yet")
-        case Origins.PfInsurancePremium       => throw new MatchError("Not implemented yet")
-        case Origins.PfPsAdmin                => throw new MatchError("Not implemented yet")
-        case Origins.AppSa                    => throw new MatchError("Not implemented yet")
-        case Origins.BtaVat                   => throw new MatchError("Not implemented yet")
-        case Origins.BtaEpayeBill             => throw new MatchError("Not implemented yet")
-        case Origins.BtaEpayePenalty          => throw new MatchError("Not implemented yet")
-        case Origins.BtaEpayeInterest         => throw new MatchError("Not implemented yet")
-        case Origins.BtaEpayeGeneral          => throw new MatchError("Not implemented yet")
-        case Origins.BtaClass1aNi             => throw new MatchError("Not implemented yet")
-        case Origins.BtaCt                    => throw new MatchError("Not implemented yet")
-        case Origins.BtaSdil                  => throw new MatchError("Not implemented yet")
-        case Origins.BcPngr                   => throw new MatchError("Not implemented yet")
-        case Origins.Parcels                  => throw new MatchError("Not implemented yet")
-        case Origins.DdVat                    => throw new MatchError("Not implemented yet")
-        case Origins.DdSdil                   => throw new MatchError("Not implemented yet")
-        case Origins.VcVatReturn              => throw new MatchError("Not implemented yet")
-        case Origins.VcVatOther               => throw new MatchError("Not implemented yet")
-        case Origins.Amls                     => throw new MatchError("Not implemented yet")
-        case Origins.Ppt                      => throw new MatchError("Not implemented yet")
-        case Origins.PfCdsCash                => throw new MatchError("Not implemented yet")
-        case Origins.PfPpt                    => throw new MatchError("Not implemented yet")
-        case Origins.PfSpiritDrinks           => throw new MatchError("Not implemented yet")
-        case Origins.PfInheritanceTax         => throw new MatchError("Not implemented yet")
-        case Origins.Mib                      => throw new MatchError("Not implemented yet")
-        case Origins.PfClass3Ni               => throw new MatchError("Not implemented yet")
-        case Origins.PfWineAndCider           => throw new MatchError("Not implemented yet")
-        case Origins.PfBioFuels               => throw new MatchError("Not implemented yet")
-        case Origins.PfAirPass                => throw new MatchError("Not implemented yet")
-        case Origins.PfMgd                    => throw new MatchError("Not implemented yet")
-        case Origins.PfBeerDuty               => throw new MatchError("Not implemented yet")
-        case Origins.PfGamingOrBingoDuty      => throw new MatchError("Not implemented yet")
-        case Origins.PfGbPbRgDuty             => throw new MatchError("Not implemented yet")
-        case Origins.PfLandfillTax            => throw new MatchError("Not implemented yet")
-        case Origins.PfSdil                   => throw new MatchError("Not implemented yet")
-        case Origins.PfAggregatesLevy         => throw new MatchError("Not implemented yet")
-        case Origins.PfClimateChangeLevy      => throw new MatchError("Not implemented yet")
-        case Origins.PfSimpleAssessment       => throw new MatchError("Not implemented yet")
-        case Origins.PtaSimpleAssessment      => throw new MatchError("Not implemented yet")
-        case Origins.AppSimpleAssessment      => throw new MatchError("Not implemented yet")
-        case Origins.PfTpes                   => throw new MatchError("Not implemented yet")
-        case Origins.CapitalGainsTax          => throw new MatchError("Not implemented yet")
-        case Origins.EconomicCrimeLevy        => throw new MatchError("Not implemented yet")
-        case Origins.PfEconomicCrimeLevy      => throw new MatchError("Not implemented yet")
-        case Origins.PfJobRetentionScheme     => throw new MatchError("Not implemented yet")
-        case Origins.JrsJobRetentionScheme    => throw new MatchError("Not implemented yet")
-        case Origins.PfImportedVehicles       => throw new MatchError("Not implemented yet")
-        case Origins.PfChildBenefitRepayments => throw new MatchError("Not implemented yet")
-        case Origins.NiEuVatOss               => throw new MatchError("Not implemented yet")
-        case Origins.PfNiEuVatOss             => throw new MatchError("Not implemented yet")
-        case Origins.NiEuVatIoss              => throw new MatchError("Not implemented yet")
-        case Origins.PfNiEuVatIoss            => throw new MatchError("Not implemented yet")
-        case Origins.PfAmls                   => throw new MatchError("Not implemented yet")
-        case Origins.PfAted                   => throw new MatchError("Not implemented yet")
-        case Origins.PfCdsDeferment           => throw new MatchError("Not implemented yet")
-        case Origins.PfTrust                  => throw new MatchError("Not implemented yet")
-        case Origins.PtaClass3Ni              => throw new MatchError("Not implemented yet")
-        case Origins.AlcoholDuty              => TestJourneys.AlcoholDuty.journeyBeforeBeginWebPayment
-        case Origins.PfAlcoholDuty            => TestJourneys.PfAlcoholDuty.journeyBeforeBeginWebPayment
-        case Origins.VatC2c                   => throw new MatchError("Not implemented yet")
-        case Origins.`3psSa`                  => throw new MatchError("Not implemented yet")
-      }
-
       // derives correct row in summary list due to Origins that may include FDP.
       // The rows show as (with index value):
       // Payment date (optional) 0 or 1
@@ -214,7 +134,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
     TestHelpers.implementedOrigins.foreach {
       origin: Origin =>
 
-        val tdJourney: Journey[JourneySpecificData] = deriveTestDataFromOrigin(origin)
+        val tdJourney: Journey[JourneySpecificData] = TestHelpers.deriveTestDataFromOrigin(origin).journeyBeforeBeginWebPayment
 
         s"[${origin.entryName}] should render the amount row correctly" in {
           PayApiStub.stubForFindBySessionId2xx(tdJourney)

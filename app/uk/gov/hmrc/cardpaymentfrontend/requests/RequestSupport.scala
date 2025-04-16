@@ -18,6 +18,7 @@ package uk.gov.hmrc.cardpaymentfrontend.requests
 
 import play.api.i18n._
 import play.api.mvc.{Request, RequestHeader}
+import uk.gov.hmrc.cardpaymentfrontend.models.{Language, Languages}
 import uk.gov.hmrc.http.{HeaderCarrier, SessionKeys}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendHeaderCarrierProvider
 
@@ -33,6 +34,11 @@ class RequestSupport @Inject() (override val messagesApi: MessagesApi) extends I
 
   implicit def hc(implicit request: Request[_]): HeaderCarrier = RequestSupport.hc
   def lang(implicit messages: Messages): Lang = messages.lang
+
+  def usableLanguage(implicit messages: Messages): Language = lang.code match {
+    case "cy" => Languages.Welsh
+    case _    => Languages.English
+  }
 }
 
 object RequestSupport {

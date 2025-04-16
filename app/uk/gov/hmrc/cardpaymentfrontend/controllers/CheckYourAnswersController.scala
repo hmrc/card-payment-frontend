@@ -71,7 +71,8 @@ class CheckYourAnswersController @Inject() (
       .initiatePayment(
         journey               = journeyRequest.journey,
         addressFromSession    = journeyRequest.readFromSession[Address](journeyRequest.journeyId, Keys.address).getOrElse(throw new RuntimeException("We can't process a card payment without the billing address.")),
-        maybeEmailFromSession = journeyRequest.readFromSession[EmailAddress](journeyRequest.journeyId, Keys.email)
+        maybeEmailFromSession = journeyRequest.readFromSession[EmailAddress](journeyRequest.journeyId, Keys.email),
+        language              = requestSupport.usableLanguage
       )(requestSupport.hc, journeyRequest.request)
       .map { cardPaymentInitiatePaymentResponse =>
         Redirect(routes.PaymentStatusController.showIframe(RedirectUrl(cardPaymentInitiatePaymentResponse.redirectUrl)))

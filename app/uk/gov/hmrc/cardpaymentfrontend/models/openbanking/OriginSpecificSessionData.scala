@@ -31,6 +31,7 @@ import payapi.corcommon.model.taxes.other._
 import payapi.corcommon.model.taxes.p302.{P302ChargeRef, P302Ref}
 import payapi.corcommon.model.taxes.trusts.TrustReference
 import payapi.corcommon.model.taxes.p800.P800Ref
+import payapi.corcommon.model.taxes.pillar2.Pillar2Reference
 import payapi.corcommon.model.taxes.ppt.PptReference
 import payapi.corcommon.model.taxes.sa.SaUtr
 import payapi.corcommon.model.taxes.sd.SpiritDrinksReference
@@ -39,6 +40,7 @@ import payapi.corcommon.model.times.period.CalendarQuarterlyPeriod
 import payapi.corcommon.model.{Origin, Reference, SearchTag}
 import payapi.corcommon.model.taxes.sdlt.Utrn
 import payapi.corcommon.model.taxes.vatc2c.VatC2cReference
+import payapi.corcommon.model.thirdpartysoftware.{ClientJourneyId, FriendlyName}
 import play.api.libs.functional.syntax.toFunctionalBuilderOps
 import play.api.libs.json._
 
@@ -124,7 +126,11 @@ object OriginSpecificSessionData {
       case PfAlcoholDuty            => Json.format[PfAlcoholDutySessionData].reads(json)
       case AlcoholDuty              => Json.format[AlcoholDutySessionData].reads(json)
       case VatC2c                   => Json.format[VatC2cSessionData].reads(json)
+      case PfVatC2c                 => Json.format[PfVatC2cSessionData].reads(json)
       case `3psSa`                  => Json.format[`3psSaSessionData`].reads(json)
+      case `3psVat`                 => Json.format[`3psVatSessionData`].reads(json)
+      case PfPillar2                => Json.format[PfPillar2SessionData].reads(json)
+      case Pillar2                  => Json.format[Pillar2SessionData].reads(json)
 
       //Todo: Remove PfP800 when PtaP800 is fully available
       case origin @ (PfOther | PtaP800 | PfP800
@@ -201,7 +207,11 @@ object OriginSpecificSessionData {
       case sessionData: PfAlcoholDutySessionData       => Json.format[PfAlcoholDutySessionData].writes(sessionData)
       case sessionData: AlcoholDutySessionData         => Json.format[AlcoholDutySessionData].writes(sessionData)
       case sessionData: VatC2cSessionData              => Json.format[VatC2cSessionData].writes(sessionData)
+      case sessionData: PfVatC2cSessionData            => Json.format[PfVatC2cSessionData].writes(sessionData)
       case sessionData: `3psSaSessionData`             => Json.format[`3psSaSessionData`].writes(sessionData)
+      case sessionData: `3psVatSessionData`            => Json.format[`3psVatSessionData`].writes(sessionData)
+      case sessionData: `PfPillar2SessionData`         => Json.format[PfPillar2SessionData].writes(sessionData)
+      case sessionData: `Pillar2SessionData`           => Json.format[Pillar2SessionData].writes(sessionData)
     }) + ("origin" -> Json.toJson(o.origin))
 
   implicit val format: OFormat[OriginSpecificSessionData] = OFormat(reads, writes)
@@ -233,8 +243,21 @@ final case class ItSaSessionData(saUtr: SaUtr, override val returnUrl: Option[Ur
   def searchTag: SearchTag = SearchTag(saUtr.value)
 }
 
+sealed trait ThirdPartySoftwareSessionData {
+  val clientJourneyId: ClientJourneyId
+}
 final case class `3psSaSessionData`(saUtr: SaUtr, override val returnUrl: Option[Url] = None) extends SelfAssessmentSessionData(`3psSa`) {
   def searchTag: SearchTag = SearchTag(saUtr.value)
+}
+
+final case class `3psVatSessionData`(
+    vrn:                    Vrn,
+    clientJourneyId:        ClientJourneyId,
+    friendlyName:           Option[FriendlyName],
+    override val returnUrl: Option[Url]          = None
+) extends VatSessionData(`3psVat`) with ThirdPartySoftwareSessionData {
+  def paymentReference: Reference = ReferenceMaker.makeVatReference(vrn)
+  def searchTag = SearchTag(vrn.value)
 }
 
 sealed abstract class PayeSessionData(origin: Origin) extends OriginSpecificSessionData(origin) {}
@@ -580,4 +603,21 @@ final case class VatC2cSessionData(vatC2cReference: VatC2cReference, returnUrl: 
   def paymentReference: Reference = ReferenceMaker.makeVatC2cReference(vatC2cReference)
 
   def searchTag: SearchTag = SearchTag(vatC2cReference.canonicalizedValue)
+}
+
+final case class PfVatC2cSessionData(vatC2cReference: VatC2cReference, returnUrl: Option[Url] = None) extends OriginSpecificSessionData(PfVatC2c) {
+  def paymentReference: Reference = ReferenceMaker.makeVatC2cReference(vatC2cReference)
+
+  def searchTag: SearchTag = SearchTag(vatC2cReference.canonicalizedValue)
+}
+
+final case class Pillar2SessionData(pillar2Reference: Pillar2Reference, returnUrl: Option[Url] = None) extends OriginSpecificSessionData(Pillar2) {
+  def paymentReference: Reference = ReferenceMaker.makePillar2Reference(pillar2Reference)
+
+  def searchTag: SearchTag = SearchTag(pillar2Reference.canonicalizedValue)
+}
+
+final case class PfPillar2SessionData(pillar2Reference: Pillar2Reference, returnUrl: Option[Url] = None) extends OriginSpecificSessionData(PfPillar2) {
+  def paymentReference: Reference = ReferenceMaker.makePillar2Reference(pillar2Reference)
+  def searchTag: SearchTag = SearchTag(pillar2Reference.canonicalizedValue)
 }
