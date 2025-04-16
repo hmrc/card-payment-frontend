@@ -59,7 +59,9 @@ object PayApiStub {
           | "transactionReference": "sometransactionref",
           | "iFrameUrl":            "someiframeurl"
           |}
-          |""".stripMargin
+          |""".stripMargin,
+        true,
+        true
       ))
   )
 
@@ -75,7 +77,9 @@ object PayApiStub {
           | "commissionInPence": 123,
           | "transactionTime": "$expectedTransactionTime"
           |}
-          |""".stripMargin
+          |""".stripMargin,
+        true,
+        true
       ))
   )
 
@@ -87,10 +91,12 @@ object PayApiStub {
       .withRequestBody(equalToJson(
         s"""
           |{
-          | "cardCategory": "debit",
-          | "transactionTime": "$expectedTransactionTime"
+          | "transactionTime": "$expectedTransactionTime",
+          | "cardCategory": "debit"
           |}
-          |""".stripMargin
+          |""".stripMargin,
+        true,
+        true
       ))
   )
 
