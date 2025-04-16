@@ -19,7 +19,7 @@
 
 @this(layout: Layout)
 
-@(transactionReference: String)(implicit request: RequestHeader, messages: Messages)
+@()(implicit request: RequestHeader, messages: Messages)
 
 @scripts = {<script src="@{controllers.routes.Assets.versioned("javascripts/escape-iframe.js")}" @{CSPNonce.attr}></script>}
 
@@ -28,5 +28,5 @@
     <a rel="noreferrer"
     id="returnControlLink"
     target="_parent"
-    href="@{uk.gov.hmrc.cardpaymentfrontend.controllers.routes.PaymentStatusController.paymentStatus(transactionReference)}"></a>
+    href="@{uk.gov.hmrc.cardpaymentfrontend.controllers.routes.PaymentStatusController.paymentStatus()}"></a>
 }

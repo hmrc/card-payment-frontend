@@ -41,6 +41,27 @@ object TestDataUtils {
     paidOn               = Some(LocalDateTime.parse("2027-11-02T16:28:55.185"))
   ))
 
+  val sentOrder: Option[BarclaysOrder] = Some(BarclaysOrder(
+    transactionReference = TransactionReference("Some-transaction-ref"),
+    iFrameUrl            = Url("some-url"),
+    cardCategory         = None,
+    commissionInPence    = None,
+    paidOn               = None
+  ))
+
+  //todo update, I think there's one extra field that needs setting
+  val failedOrder: Option[BarclaysOrder] = Some(BarclaysOrder(
+    transactionReference = TransactionReference("Some-transaction-ref"),
+    iFrameUrl            = Url("some-url"),
+    cardCategory         = None,
+    commissionInPence    = None,
+    paidOn               = None
+  ))
+
+  def intoSentWithOrder[Jsd <: JourneySpecificData]: (Journey[Jsd], Option[BarclaysOrder]) => Journey[Jsd] = {
+    case (journey, maybeOrder) => intoState(journey, maybeOrder, PaymentStatuses.Sent)
+  }
+
   def intoSuccessWithOrder[Jsd <: JourneySpecificData]: (Journey[Jsd], Option[BarclaysOrder]) => Journey[Jsd] = {
     case (journey, maybeOrder) => intoState(journey, maybeOrder, PaymentStatuses.Successful)
   }

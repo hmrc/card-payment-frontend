@@ -55,10 +55,10 @@ class EmailServiceSpec extends ItSpec {
           )
 
           val result = systemUnderTest.buildEmailRequest(
-            TestJourneys.PfSa.testPfSaJourneySuccessDebit,
+            TestJourneys.PfSa.journeyAfterSucceedDebitWebPayment,
             emailAddress = EmailAddress("joe_bloggs@gmail.com"),
             isEnglish    = true
-          )(fakeRequest.withEmailInSession(TestJourneys.PfSa.testPfSaJourneySuccessDebit._id, EmailAddress("joe_bloggs@gmail.com")))
+          )(fakeRequest.withEmailInSession(TestJourneys.PfSa.journeyAfterSucceedDebitWebPayment._id, EmailAddress("joe_bloggs@gmail.com")))
           result shouldBe expectedResult
         }
 
@@ -78,10 +78,10 @@ class EmailServiceSpec extends ItSpec {
           )
 
           val result = systemUnderTest.buildEmailRequest(
-            TestJourneys.PfSa.testPfSaJourneySuccessDebit,
+            TestJourneys.PfSa.journeyAfterSucceedDebitWebPayment,
             emailAddress = EmailAddress("joe_bloggs@gmail.com"),
             isEnglish    = false
-          )(fakeRequestInWelsh.withEmailInSession(TestJourneys.PfSa.testPfSaJourneySuccessDebit._id, EmailAddress("joe_bloggs@gmail.com")))
+          )(fakeRequestInWelsh.withEmailInSession(TestJourneys.PfSa.journeyAfterSucceedDebitWebPayment._id, EmailAddress("joe_bloggs@gmail.com")))
           result shouldBe expectedResult
         }
 
@@ -105,7 +105,7 @@ class EmailServiceSpec extends ItSpec {
               totalPaid        = Some("12.34")
             )
 
-            val result = systemUnderTest.buildEmailParameters(TestJourneys.PfSa.testPfSaJourneySuccessDebit)(fakeRequest)
+            val result = systemUnderTest.buildEmailParameters(TestJourneys.PfSa.journeyAfterSucceedDebitWebPayment)(fakeRequest)
             result shouldBe expectedResult
           }
 
@@ -119,7 +119,7 @@ class EmailServiceSpec extends ItSpec {
               totalPaid        = Some("13.57")
             )
 
-            val result = systemUnderTest.buildEmailParameters(TestJourneys.PfSa.testPfSaJourneySuccessCredit)(fakeRequest)
+            val result = systemUnderTest.buildEmailParameters(TestJourneys.PfSa.journeyAfterSucceedCreditWebPayment)(fakeRequest)
             result shouldBe expectedResult
           }
 
@@ -133,7 +133,7 @@ class EmailServiceSpec extends ItSpec {
               totalPaid        = Some("12.34")
             )
 
-            val result = systemUnderTest.buildEmailParameters(TestJourneys.PfSa.testPfSaJourneySuccessDebit)(fakeRequestInWelsh)
+            val result = systemUnderTest.buildEmailParameters(TestJourneys.PfSa.journeyAfterSucceedDebitWebPayment)(fakeRequestInWelsh)
             result shouldBe expectedResult
           }
 
@@ -147,7 +147,7 @@ class EmailServiceSpec extends ItSpec {
               totalPaid        = Some("13.57")
             )
 
-            val result = systemUnderTest.buildEmailParameters(TestJourneys.PfSa.testPfSaJourneySuccessCredit)(fakeRequestInWelsh)
+            val result = systemUnderTest.buildEmailParameters(TestJourneys.PfSa.journeyAfterSucceedCreditWebPayment)(fakeRequestInWelsh)
             result shouldBe expectedResult
           }
         }
@@ -164,7 +164,7 @@ class EmailServiceSpec extends ItSpec {
               totalPaid        = Some("12.34")
             )
 
-            val result = systemUnderTest.buildEmailParameters(TestJourneys.BtaSa.testBtaSaJourneySuccessDebit)(fakeRequest)
+            val result = systemUnderTest.buildEmailParameters(TestJourneys.BtaSa.journeyAfterSucceedDebitWebPayment)(fakeRequest)
             result shouldBe expectedResult
           }
 
@@ -178,7 +178,7 @@ class EmailServiceSpec extends ItSpec {
               totalPaid        = Some("13.57")
             )
 
-            val result = systemUnderTest.buildEmailParameters(TestJourneys.BtaSa.testBtaSaJourneySuccessCredit)(fakeRequest)
+            val result = systemUnderTest.buildEmailParameters(TestJourneys.BtaSa.journeyAfterSucceedCreditWebPayment)(fakeRequest)
             result shouldBe expectedResult
           }
 
@@ -192,7 +192,7 @@ class EmailServiceSpec extends ItSpec {
               totalPaid        = Some("12.34")
             )
 
-            val result = systemUnderTest.buildEmailParameters(TestJourneys.BtaSa.testBtaSaJourneySuccessDebit)(fakeRequestInWelsh)
+            val result = systemUnderTest.buildEmailParameters(TestJourneys.BtaSa.journeyAfterSucceedDebitWebPayment)(fakeRequestInWelsh)
             result shouldBe expectedResult
           }
 
@@ -206,7 +206,7 @@ class EmailServiceSpec extends ItSpec {
               totalPaid        = Some("13.57")
             )
 
-            val result = systemUnderTest.buildEmailParameters(TestJourneys.BtaSa.testBtaSaJourneySuccessCredit)(fakeRequestInWelsh)
+            val result = systemUnderTest.buildEmailParameters(TestJourneys.BtaSa.journeyAfterSucceedCreditWebPayment)(fakeRequestInWelsh)
             result shouldBe expectedResult
           }
         }
@@ -222,7 +222,7 @@ class EmailServiceSpec extends ItSpec {
               totalPaid        = Some("12.34")
             )
 
-            val result = systemUnderTest.buildEmailParameters(TestJourneys.PtaSa.testPtaSaJourneySuccessDebit)(fakeRequest)
+            val result = systemUnderTest.buildEmailParameters(TestJourneys.PtaSa.journeyAfterSucceedDebitWebPayment)(fakeRequest)
             result shouldBe expectedResult
           }
           "credit in english" in {
@@ -235,7 +235,7 @@ class EmailServiceSpec extends ItSpec {
               totalPaid        = Some("13.57")
             )
 
-            val result = systemUnderTest.buildEmailParameters(TestJourneys.PtaSa.testPtaSaJourneySuccessCredit)(fakeRequest)
+            val result = systemUnderTest.buildEmailParameters(TestJourneys.PtaSa.journeyAfterSucceedCreditWebPayment)(fakeRequest)
             result shouldBe expectedResult
           }
           "debit in welsh" in {
@@ -248,7 +248,7 @@ class EmailServiceSpec extends ItSpec {
               totalPaid        = Some("12.34")
             )
 
-            val result = systemUnderTest.buildEmailParameters(TestJourneys.PtaSa.testPtaSaJourneySuccessDebit)(fakeRequestInWelsh)
+            val result = systemUnderTest.buildEmailParameters(TestJourneys.PtaSa.journeyAfterSucceedDebitWebPayment)(fakeRequestInWelsh)
             result shouldBe expectedResult
           }
           "credit in welsh" in {
@@ -261,7 +261,7 @@ class EmailServiceSpec extends ItSpec {
               totalPaid        = Some("13.57")
             )
 
-            val result = systemUnderTest.buildEmailParameters(TestJourneys.PtaSa.testPtaSaJourneySuccessCredit)(fakeRequestInWelsh)
+            val result = systemUnderTest.buildEmailParameters(TestJourneys.PtaSa.journeyAfterSucceedCreditWebPayment)(fakeRequestInWelsh)
             result shouldBe expectedResult
           }
         }
@@ -277,7 +277,7 @@ class EmailServiceSpec extends ItSpec {
               totalPaid        = Some("12.34")
             )
 
-            val result = systemUnderTest.buildEmailParameters(TestJourneys.ItSa.testItSaJourneySuccessDebit)(fakeRequest)
+            val result = systemUnderTest.buildEmailParameters(TestJourneys.ItSa.journeyAfterSucceedDebitWebPayment)(fakeRequest)
             result shouldBe expectedResult
           }
           "credit in english" in {
@@ -290,7 +290,7 @@ class EmailServiceSpec extends ItSpec {
               totalPaid        = Some("13.57")
             )
 
-            val result = systemUnderTest.buildEmailParameters(TestJourneys.ItSa.testItSaJourneySuccessCredit)(fakeRequest)
+            val result = systemUnderTest.buildEmailParameters(TestJourneys.ItSa.journeyAfterSucceedCreditWebPayment)(fakeRequest)
             result shouldBe expectedResult
           }
           "debit in welsh" in {
@@ -303,7 +303,7 @@ class EmailServiceSpec extends ItSpec {
               totalPaid        = Some("12.34")
             )
 
-            val result = systemUnderTest.buildEmailParameters(TestJourneys.ItSa.testItSaJourneySuccessDebit)(fakeRequestInWelsh)
+            val result = systemUnderTest.buildEmailParameters(TestJourneys.ItSa.journeyAfterSucceedDebitWebPayment)(fakeRequestInWelsh)
             result shouldBe expectedResult
           }
           "credit in welsh" in {
@@ -316,7 +316,7 @@ class EmailServiceSpec extends ItSpec {
               totalPaid        = Some("13.57")
             )
 
-            val result = systemUnderTest.buildEmailParameters(TestJourneys.ItSa.testItSaJourneySuccessCredit)(fakeRequestInWelsh)
+            val result = systemUnderTest.buildEmailParameters(TestJourneys.ItSa.journeyAfterSucceedCreditWebPayment)(fakeRequestInWelsh)
             result shouldBe expectedResult
           }
         }
@@ -347,7 +347,7 @@ class EmailServiceSpec extends ItSpec {
 
       "should send an email successfully" in {
         val result = systemUnderTest.sendEmail(
-          journey      = TestJourneys.PfSa.testPfSaJourneySuccessCredit,
+          journey      = TestJourneys.PfSa.journeyAfterSucceedCreditWebPayment,
           emailAddress = EmailAddress("blah@blah.com"),
           isEnglish    = true
         )(HeaderCarrier(), fakeRequest)

@@ -32,12 +32,12 @@ class PaymentsSurveyServiceSpec extends ItSpec {
     "startPaySurvey" - {
       "return a future Url given call to PaymentsSurvey succeeds" in {
         PaymentsSurveyStub.stubForStartJourney2xx(TestPaymentsSurveyData.ssJResponse)
-        val result = systemUnderTest.startPaySurvey(TestJourneys.PfSa.testPfSaJourneySuccessDebit)(FakeRequest())
+        val result = systemUnderTest.startPaySurvey(TestJourneys.PfSa.journeyAfterSucceedDebitWebPayment)(FakeRequest())
         result.futureValue shouldBe Url("http://survey-redirect-url.com")
       }
       "fail when call to PaymentsSurvey fails" in {
         PaymentsSurveyStub.stubForStartJourney5xx()
-        val result = systemUnderTest.startPaySurvey(TestJourneys.PfSa.testPfSaJourneySuccessDebit)(FakeRequest())
+        val result = systemUnderTest.startPaySurvey(TestJourneys.PfSa.journeyAfterSucceedDebitWebPayment)(FakeRequest())
         result.failed.futureValue.getMessage shouldBe s"POST of 'http://localhost:${wireMockPort.toString}/payments-survey/journey/start' returned 503. Response body: ''"
       }
     }
@@ -65,7 +65,7 @@ class PaymentsSurveyServiceSpec extends ItSpec {
               )
             )
           )
-          val result = systemUnderTest.makeSsjJourneyRequest(TestJourneys.PfSa.testPfSaJourneySuccessDebit)(loggedOutFakeRequest)
+          val result = systemUnderTest.makeSsjJourneyRequest(TestJourneys.PfSa.journeyAfterSucceedDebitWebPayment)(loggedOutFakeRequest)
           result shouldBe expectedPaymentSurveyJourneyRequest
         }
 
@@ -88,7 +88,7 @@ class PaymentsSurveyServiceSpec extends ItSpec {
               )
             )
           )
-          val result = systemUnderTest.makeSsjJourneyRequest(TestJourneys.BtaSa.testBtaSaJourneySuccessDebit)(loggedInFakeRequest)
+          val result = systemUnderTest.makeSsjJourneyRequest(TestJourneys.BtaSa.journeyAfterSucceedDebitWebPayment)(loggedInFakeRequest)
           result shouldBe expectedPaymentSurveyJourneyRequest
         }
 
@@ -111,7 +111,7 @@ class PaymentsSurveyServiceSpec extends ItSpec {
               )
             )
           )
-          val result = systemUnderTest.makeSsjJourneyRequest(TestJourneys.PtaSa.testPtaSaJourneySuccessDebit)(loggedInFakeRequest)
+          val result = systemUnderTest.makeSsjJourneyRequest(TestJourneys.PtaSa.journeyAfterSucceedDebitWebPayment)(loggedInFakeRequest)
           result shouldBe expectedPaymentSurveyJourneyRequest
         }
 
@@ -134,7 +134,7 @@ class PaymentsSurveyServiceSpec extends ItSpec {
               )
             )
           )
-          val result = systemUnderTest.makeSsjJourneyRequest(TestJourneys.ItSa.testItSaJourneySuccessDebit)(loggedInFakeRequest)
+          val result = systemUnderTest.makeSsjJourneyRequest(TestJourneys.ItSa.journeyAfterSucceedDebitWebPayment)(loggedInFakeRequest)
           result shouldBe expectedPaymentSurveyJourneyRequest
         }
       }

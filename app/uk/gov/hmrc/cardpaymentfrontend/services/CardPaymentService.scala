@@ -21,10 +21,10 @@ import play.api.Logging
 import play.api.libs.json.JsBoolean
 import play.api.mvc.RequestHeader
 import uk.gov.hmrc.cardpaymentfrontend.connectors.{CardPaymentConnector, PayApiConnector}
+import uk.gov.hmrc.cardpaymentfrontend.models.cardpayment.{CardPaymentInitiatePaymentRequest, CardPaymentInitiatePaymentResponse, CardPaymentResult}
+import uk.gov.hmrc.cardpaymentfrontend.models.payapi.{BeginWebPaymentRequest, FailWebPaymentRequest, FinishedWebPaymentRequest, SucceedWebPaymentRequest}
 import uk.gov.hmrc.cardpaymentfrontend.models.{Address, EmailAddress}
-import uk.gov.hmrc.cardpaymentfrontend.models.cardpayment.{CardPaymentInitiatePaymentRequest, CardPaymentInitiatePaymentResponse}
-import uk.gov.hmrc.cardpaymentfrontend.models.payapi.BeginWebPaymentRequest
-import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
+import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -38,7 +38,8 @@ class CardPaymentService @Inject() (cardPaymentConnector: CardPaymentConnector, 
       maybeEmailFromSession: Option[EmailAddress]
   )(implicit headerCarrier: HeaderCarrier, requestHeader: RequestHeader): Future[CardPaymentInitiatePaymentResponse] = {
 
-    val urlToComeBackFromAfterIframe: String = uk.gov.hmrc.cardpaymentfrontend.controllers.routes.PaymentStatusController.returnToHmrc(journey.traceId.value).absoluteURL()(requestHeader)
+    //todo move this to a val outside the function, then we can test it too
+    val urlToComeBackFromAfterIframe: String = uk.gov.hmrc.cardpaymentfrontend.controllers.routes.PaymentStatusController.returnToHmrc().absoluteURL()(requestHeader)
 
     val cardPaymentInitiatePaymentRequest: CardPaymentInitiatePaymentRequest = CardPaymentInitiatePaymentRequest(
       redirectUrl         = urlToComeBackFromAfterIframe,
@@ -60,9 +61,17 @@ class CardPaymentService @Inject() (cardPaymentConnector: CardPaymentConnector, 
     cardPaymentConnector.checkPaymentStatus(transactionReference)
   }
 
-  def authAndSettle(transactionReference: String)(implicit headerCarrier: HeaderCarrier): Future[HttpResponse] = {
+  def finishPayment(transactionReference: String, journeyId: String)(implicit headerCarrier: HeaderCarrier): Future[Option[CardPaymentResult]] = {
     logger.info("TransactionReference: " + transactionReference) //todo take me out before go live
-    cardPaymentConnector.authAndSettle(transactionReference)
+    for {
+      result <- cardPaymentConnector.authAndSettle(transactionReference)
+      cardPaymentResult = result.json.asOpt[CardPaymentResult]
+      maybeWebPaymentRequest: Option[FinishedWebPaymentRequest] = cardPaymentResult.flatMap(_.intoUpdateWebPaymentRequest)
+      _ <- maybeWebPaymentRequest.fold(payApiConnector.JourneyUpdates.updateCancelWebPayment(journeyId)) {
+        case r: FailWebPaymentRequest    => payApiConnector.JourneyUpdates.updateFailWebPayment(journeyId, r)
+        case r: SucceedWebPaymentRequest => payApiConnector.JourneyUpdates.updateSucceedWebPayment(journeyId, r)
+      }
+    } yield cardPaymentResult
   }
 
 }

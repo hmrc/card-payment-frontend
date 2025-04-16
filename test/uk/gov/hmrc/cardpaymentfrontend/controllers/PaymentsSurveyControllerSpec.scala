@@ -30,7 +30,7 @@ class PaymentsSurveyControllerSpec extends ItSpec {
   "PaymentsSurveyController" - {
     "startSurvey" - {
       "redirect to payment survey redirect url when journey is in terminal state" in {
-        PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.testPfSaJourneySuccessDebit)
+        PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyAfterSucceedDebitWebPayment)
         PaymentsSurveyStub.stubForStartJourney2xx(TestPaymentsSurveyData.ssJResponse)
         val fakeRequest = FakeRequest().withSessionId()
         val result = systemUnderTest.startSurvey()(fakeRequest)
@@ -38,7 +38,7 @@ class PaymentsSurveyControllerSpec extends ItSpec {
       }
 
       "should return 404 when journey is not in terminal state" in {
-        PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.testPfSaJourneyCreated)
+        PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyBeforeBeginWebPayment)
         val fakeRequest = FakeRequest().withSessionId()
         val result = systemUnderTest.startSurvey()(fakeRequest)
         status(result) shouldBe 404

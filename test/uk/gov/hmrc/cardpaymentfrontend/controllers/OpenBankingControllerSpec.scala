@@ -16,6 +16,7 @@
 
 package uk.gov.hmrc.cardpaymentfrontend.controllers
 
+import payapi.cardpaymentjourney.model.journey.JsdPfSa
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{defaultAwaitTimeout, redirectLocation}
 import uk.gov.hmrc.cardpaymentfrontend.models.openbanking.{CreateSessionDataResponse, SessionDataId}
@@ -31,7 +32,7 @@ class OpenBankingControllerSpec extends ItSpec {
   "OpenBankingController" - {
     "startOpenBankingJourney" - {
       "should throw an error when a createSessionDataRequest cannot be created" in {
-        PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.testPfSaJourneyCreated)
+        PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyBeforeBeginWebPayment.copy(journeySpecificData = JsdPfSa(utr = None)))
         val fakeRequest = FakeRequest().withSessionId()
         val exception = intercept[RuntimeException] {
           systemUnderTest.startOpenBankingJourney(fakeRequest).futureValue
@@ -40,7 +41,7 @@ class OpenBankingControllerSpec extends ItSpec {
       }
 
       "redirect when call to open banking to start a journey succeeds" in {
-        PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.testPfSaJourneyUpdatedWithRefAndAmount)
+        PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyBeforeBeginWebPayment)
         OpenBankingStub.stubForStartJourney2xx(CreateSessionDataResponse(SessionDataId("some-session-data-id"), "http://www.some-redirect-url-for-ob.co.uk"))
         val fakeRequest = FakeRequest().withSessionId()
         val result = systemUnderTest.startOpenBankingJourney(fakeRequest)
