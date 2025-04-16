@@ -214,7 +214,11 @@ object ExtendedOrigin {
       case Origins.PfAlcoholDuty            => ExtendedPfAlcoholDuty
       case Origins.AlcoholDuty              => ExtendedAlcoholDuty
       case Origins.VatC2c                   => new DefaultExtendedOrigin
+      case Origins.PfVatC2c                 => new DefaultExtendedOrigin
       case Origins.`3psSa`                  => new DefaultExtendedOrigin
+      case Origins.`3psVat`                 => new DefaultExtendedOrigin
+      case Origins.PfPillar2                => new DefaultExtendedOrigin
+      case Origins.Pillar2                  => new DefaultExtendedOrigin
     }
   }
 }
