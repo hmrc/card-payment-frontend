@@ -77,7 +77,7 @@ class PaymentStatusController @Inject() (
     maybeCardPaymentResultF.map {
       case Some(cardPaymentResult) => cardPaymentResult.cardPaymentResult match {
         case CardPaymentFinishPaymentResponses.Successful => Redirect(routes.PaymentCompleteController.renderPage)
-        case CardPaymentFinishPaymentResponses.Failed     => Redirect(routes.PaymentFailedController.renderPage0) //todo we haven't built this page preoprly yet
+        case CardPaymentFinishPaymentResponses.Failed     => Redirect(routes.PaymentFailedController.renderPage)
         case CardPaymentFinishPaymentResponses.Cancelled  => Redirect(routes.PaymentCancelledController.renderPage)
       }
       case None => InternalServerError

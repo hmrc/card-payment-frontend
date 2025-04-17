@@ -27,7 +27,7 @@
     layout: Layout
 )
 
-@(taxType: TaxType, hasOpenBanking: Boolean, form: Form[ChooseAPaymentMethodForm])(implicit request: RequestHeader, messages: Messages)
+@(taxType: String, hasOpenBanking: Boolean, form: Form[ChooseAPaymentMethodForm])(implicit request: RequestHeader, messages: Messages)
 
 @heading= @{messages("payment-failed.heading")}
 

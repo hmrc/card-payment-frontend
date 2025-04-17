@@ -17,13 +17,12 @@
 package uk.gov.hmrc.cardpaymentfrontend.controllers
 
 import play.api.data.Form
-import play.api.i18n.Messages.implicitMessagesProviderToMessages
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.cardpaymentfrontend.actions.{Actions, JourneyRequest}
-import uk.gov.hmrc.cardpaymentfrontend.requests.RequestSupport
 import uk.gov.hmrc.cardpaymentfrontend.forms.ChooseAPaymentMethodForm
 import uk.gov.hmrc.cardpaymentfrontend.models.PaymentMethod.OpenBanking
 import uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins.ExtendedOrigin.OriginExtended
+import uk.gov.hmrc.cardpaymentfrontend.requests.RequestSupport
 import uk.gov.hmrc.cardpaymentfrontend.views.html.PaymentFailedPage
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
@@ -31,18 +30,19 @@ import javax.inject.{Inject, Singleton}
 
 @Singleton
 class PaymentFailedController @Inject() (
-    actions:                Actions,
-    mcc:                    MessagesControllerComponents,
-    requestSupport:         RequestSupport,
-    paymentFailedPage:      PaymentFailedPage
+    actions:           Actions,
+    mcc:               MessagesControllerComponents,
+    requestSupport:    RequestSupport,
+    paymentFailedPage: PaymentFailedPage
 ) extends FrontendController(mcc) {
 
   import requestSupport._
 
   val renderPage: Action[AnyContent] = actions.journeyAction { implicit journeyRequest: JourneyRequest[AnyContent] =>
     Ok(paymentFailedPage(
-      taxType = journeyRequest.journey.origin.lift.taxNameMessageKey,
-      hasOpenBanking = journeyRequest.journey.origin.lift.paymentMethods().contains(OpenBanking)
+      taxType        = journeyRequest.journey.origin.lift.taxNameMessageKey,
+      hasOpenBanking = journeyRequest.journey.origin.lift.paymentMethods().contains(OpenBanking),
+      form           = ChooseAPaymentMethodForm.form
     ))
   }
 
