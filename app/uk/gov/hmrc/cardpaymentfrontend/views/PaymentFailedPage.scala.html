@@ -18,6 +18,7 @@
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import uk.gov.hmrc.cardpaymentfrontend.views.html.Layout
 @import uk.gov.hmrc.cardpaymentfrontend.forms.ChooseAPaymentMethodForm
+@import payapi.corcommon.model.TaxType
 
 @this(
     formWithCsrf: FormWithCSRF,
@@ -26,7 +27,7 @@
     layout: Layout
 )
 
-@(taxType: String, hasOpenBanking: Boolean, form: Form[ChooseAPaymentMethodForm])(implicit request: RequestHeader, messages: Messages)
+@(taxType: TaxType, hasOpenBanking: Boolean, form: Form[ChooseAPaymentMethodForm])(implicit request: RequestHeader, messages: Messages)
 
 @heading= @{messages("payment-failed.heading")}
 

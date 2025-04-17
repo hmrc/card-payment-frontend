@@ -16,11 +16,12 @@
 
 package uk.gov.hmrc.cardpaymentfrontend.controllers
 
-import payapi.corcommon.model.{Origin, Origins}
 import play.api.data.Form
+import play.api.i18n.Messages.implicitMessagesProviderToMessages
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import uk.gov.hmrc.cardpaymentfrontend.actions.{Actions, JourneyRequest}
+import uk.gov.hmrc.cardpaymentfrontend.requests.RequestSupport
 import uk.gov.hmrc.cardpaymentfrontend.forms.ChooseAPaymentMethodForm
-import uk.gov.hmrc.cardpaymentfrontend.models.PaymentMethod
 import uk.gov.hmrc.cardpaymentfrontend.models.PaymentMethod.OpenBanking
 import uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins.ExtendedOrigin.OriginExtended
 import uk.gov.hmrc.cardpaymentfrontend.views.html.PaymentFailedPage
@@ -30,21 +31,18 @@ import javax.inject.{Inject, Singleton}
 
 @Singleton
 class PaymentFailedController @Inject() (
+    actions:             Actions,
     mcc:               MessagesControllerComponents,
     paymentFailedPage: PaymentFailedPage
 ) extends FrontendController(mcc) {
 
-  def renderPage(origin: Origin): Action[AnyContent] = Action { implicit request =>
-    val liftedOrigin = origin.lift
-    val paymentMethods: Set[PaymentMethod] = liftedOrigin.paymentMethods()
-    Ok(paymentFailedPage(origin.toTaxType.toString, paymentMethods.contains(OpenBanking), ChooseAPaymentMethodForm.form))
+  val renderPage: Action[AnyContent] = actions.journeyAction { implicit journeyRequest: JourneyRequest[AnyContent] =>
+    Ok(paymentFailedPage(
+      taxType = journeyRequest.journey.origin.lift.taxNameMessageKey,
+      hasOpenBanking = journeyRequest.journey.origin.lift.paymentMethods().contains(OpenBanking)
+    ))
+
   }
-
-  def renderPage0(): Action[AnyContent] = renderPage(Origins.PfP800)
-
-  def renderPage1(): Action[AnyContent] = renderPage(Origins.PfSa)
-
-  def renderPage2(): Action[AnyContent] = renderPage(Origins.BcPngr)
 
   val submit: Action[AnyContent] = Action { implicit request =>
     ChooseAPaymentMethodForm.form
