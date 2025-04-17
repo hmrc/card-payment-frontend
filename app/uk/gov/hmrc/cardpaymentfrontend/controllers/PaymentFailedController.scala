@@ -31,17 +31,19 @@ import javax.inject.{Inject, Singleton}
 
 @Singleton
 class PaymentFailedController @Inject() (
-    actions:             Actions,
-    mcc:               MessagesControllerComponents,
-    paymentFailedPage: PaymentFailedPage
+    actions:                Actions,
+    mcc:                    MessagesControllerComponents,
+    requestSupport:         RequestSupport,
+    paymentFailedPage:      PaymentFailedPage
 ) extends FrontendController(mcc) {
+
+  import requestSupport._
 
   val renderPage: Action[AnyContent] = actions.journeyAction { implicit journeyRequest: JourneyRequest[AnyContent] =>
     Ok(paymentFailedPage(
       taxType = journeyRequest.journey.origin.lift.taxNameMessageKey,
       hasOpenBanking = journeyRequest.journey.origin.lift.paymentMethods().contains(OpenBanking)
     ))
-
   }
 
   val submit: Action[AnyContent] = Action { implicit request =>
