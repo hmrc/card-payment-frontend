@@ -18,7 +18,6 @@
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import uk.gov.hmrc.cardpaymentfrontend.views.html.Layout
 @import uk.gov.hmrc.cardpaymentfrontend.forms.ChooseAPaymentMethodForm
-@import payapi.corcommon.model.TaxType
 
 @this(
     formWithCsrf: FormWithCSRF,
@@ -39,7 +38,7 @@
 
     @if(hasOpenBanking) {
 
-        <p class="govuk-body govuk-!-padding-bottom-6">@{
+        <p class="govuk-body govuk-!-padding-bottom-6" id="sub-heading">@{
             messages("payment-failed.sub-heading")
         }</p>
 
@@ -65,15 +64,15 @@
         }
     } else {
 
-    <p class="govuk-body">@{messages("payment-failed.sub-heading")}</p>
+    <p class="govuk-body" id="sub-heading">@{messages("payment-failed.sub-heading")}</p>
 
-    <p class="govuk-body">@{messages("payment-failed.failed1")}</p>
+    <p class="govuk-body" id="line1">@{messages("payment-failed.failed1")}</p>
     <ul class="govuk-list--bullet govuk-!-static-padding-left-7">
-        <li class="govuk-body">@{messages("payment-failed.failed2")}</li>
-        <li class="govuk-body">@{messages("payment-failed.failed3")}</li>
-        @if(taxType != "pngr"){ <li class="govuk-body">@{messages("payment-failed.failed4")}</li> }
+        <li class="govuk-body" id="line2">@{messages("payment-failed.failed2")}</li>
+        <li class="govuk-body" id="line3">@{messages("payment-failed.failed3")}</li>
+        @if(taxType != "pngr"){ <li class="govuk-body" id="line4">@{messages("payment-failed.failed4")}</li> }
     </ul>
-    <p class="govuk-body">@{messages("payment-failed.failed-check-again")}</p>
+    <p class="govuk-body" id="check-again">@{messages("payment-failed.failed-check-again")}</p>
 
     @govukButton(Button(content = Text(Messages("payment-failed.failed-check-details")),  id = Some("submit")))
 

@@ -17,11 +17,14 @@
 package uk.gov.hmrc.cardpaymentfrontend.controllers
 
 import org.jsoup.Jsoup
-import play.api.http.Status
-import play.api.mvc.{AnyContentAsEmpty, Cookie}
+import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import play.mvc.Http.Status
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.ItSpec
+import uk.gov.hmrc.cardpaymentfrontend.testsupport.TestOps.FakeRequestOps
+import uk.gov.hmrc.cardpaymentfrontend.testsupport.stubs.PayApiStub
+import uk.gov.hmrc.cardpaymentfrontend.testsupport.testdata.TestJourneys
 
 import scala.jdk.CollectionConverters.ListHasAsScala
 
@@ -33,93 +36,72 @@ class PaymentFailedControllerSpec extends ItSpec {
 
     "GET /payment-failed" - {
 
-      val fakeGetRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/payment-failed")
-      val fakeGetRequestInWelsh: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/payment-failed").withCookies(Cookie("PLAY_LANG", "cy"))
+      val fakeGetRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/payment-failed").withSessionId()
+      val fakeGetRequestInWelsh: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/payment-failed").withSessionId().withLangWelsh()
 
       "should return 200 OK" in {
+        PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyAfterFailWebPayment)
         val result = systemUnderTest.renderPage()(fakeGetRequest)
+        println(result)
         status(result) shouldBe Status.OK
       }
 
       "include the hmrc layout" in {
-        val result = systemUnderTest.renderPage()(fakeGetRequest)
+        PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyAfterFailWebPayment)
+        val result = systemUnderTest.renderPage(fakeGetRequest)
         val document = Jsoup.parse(contentAsString(result))
         document.select("html").hasClass("govuk-template") shouldBe true withClue "no govuk template"
       }
 
-      "render the page with the correct sub heading in English" in {
-        val result = systemUnderTest.renderPage()(fakeGetRequest)
+      "render the page with the language toggle" in {
+        PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyAfterFailWebPayment)
+        val result = systemUnderTest.renderPage(fakeGetRequest)
+        status(result) shouldBe Status.OK
         val document = Jsoup.parse(contentAsString(result))
-        document.selectXpath("//*[@id=\"main-content\"]/div/div/p[1]").text() shouldBe "No payment has been taken from your card."
+        println(document)
+        val langToggleText: List[String] = document.select(".hmrc-language-select__list-item").eachText().asScala.toList
+        langToggleText should contain theSameElementsAs List("English", "Newid yr iaith ir Gymraeg Cymraeg")
       }
 
-      "render the page with the correct line 1 in English" in {
-        val result = systemUnderTest.renderPage()(fakeGetRequest)
+      "render the correct content in English for origins with no OpenBanking" in {
+        // TODO: May need changing if/when ItSa payment methods are changed
+        PayApiStub.stubForFindBySessionId2xx(TestJourneys.ItSa.journeyAfterFailWebPayment)
+        val result = systemUnderTest.renderPage(fakeGetRequest)
         val document = Jsoup.parse(contentAsString(result))
-        document.selectXpath("//*[@id=\"main-content\"]/div/div/p[2]").text() shouldBe "The payment may have failed if:"
+        val title = document.body().select(".govuk-heading-xl")
+        title.select("h1").text() shouldBe "Payment failed"
+        println(document)
+        document.getElementById("sub-heading").text() shouldBe "No payment has been taken from your card."
+        document.getElementById("line1").text() shouldBe "The payment may have failed if:"
+        document.getElementById("line2").text() shouldBe "there are not enough funds in your account"
+        document.getElementById("line3").text() shouldBe "you entered invalid or expired card details"
+        document.getElementById("line4").text() shouldBe "the address you gave does not match the one your card issuer has"
       }
 
-      "render the page with the correct line 2 in English" in {
-        val result = systemUnderTest.renderPage()(fakeGetRequest)
+      "render the correct content in Welsh for origins with no OpenBanking" in {
+        // TODO: May need changing if/when ItSa payment methods are changed
+        PayApiStub.stubForFindBySessionId2xx(TestJourneys.ItSa.journeyAfterFailWebPayment)
+        val result = systemUnderTest.renderPage(fakeGetRequestInWelsh)
         val document = Jsoup.parse(contentAsString(result))
-        document.selectXpath("//*[@id=\"main-content\"]/div/div/ul/li[1]").text() shouldBe "there are not enough funds in your account"
+        val title = document.body().select(".govuk-heading-xl")
+        title.select("h1").text() shouldBe "Taliad wedi methu"
+        println(document)
+        document.getElementById("sub-heading").text() shouldBe "Nid oes taliad wedi’i dynnu o’ch cerdyn."
+        document.getElementById("line1").text() shouldBe "Mae’n bosibl bod y taliad wedi methi oherwydd:"
+        document.getElementById("line2").text() shouldBe "nid oes yna ddigon o arian yn eich cyfrif"
+        document.getElementById("line3").text() shouldBe "rydych wedi nodi manylion cerdyn sy’n annilys neu sydd wedi dod i ben"
+        document.getElementById("line4").text() shouldBe "nid yw’r cyfeiriad a roesoch i ni’n cyd-fynd â’r un sydd gan ddosbarthwr eich cerdyn"
       }
 
-      "render the page with the correct line 3 in English" in {
-        val result = systemUnderTest.renderPage()(fakeGetRequest)
-        val document = Jsoup.parse(contentAsString(result))
-        document.selectXpath("//*[@id=\"main-content\"]/div/div/ul/li[2]").text() shouldBe "you entered invalid or expired card details"
-      }
-
-      "render the page with the correct line 4 in English" in {
-        val result = systemUnderTest.renderPage()(fakeGetRequest)
-        val document = Jsoup.parse(contentAsString(result))
-        document.selectXpath("//*[@id=\"main-content\"]/div/div/ul/li[3]").text() shouldBe "the address you gave does not match the one your card issuer has"
-      }
-
-      "render the page with the correct check again content in English" in {
-        val result = systemUnderTest.renderPage()(fakeGetRequest)
-        val document = Jsoup.parse(contentAsString(result))
-        document.selectXpath("//*[@id=\"main-content\"]/div/div/ul/li[3]").text() shouldBe "the address you gave does not match the one your card issuer has"
-      }
-
-      "render the page with the correct sub heading in Welsh" in {
-        val result = systemUnderTest.renderPage()(fakeGetRequestInWelsh)
-        val document = Jsoup.parse(contentAsString(result))
-        document.selectXpath("//*[@id=\"main-content\"]/div/div/p[1]").text() shouldBe "Nid oes taliad wedi’i dynnu o’ch cerdyn."
-      }
-
-      "render the page with the correct line 1 in Welsh" in {
-        val result = systemUnderTest.renderPage()(fakeGetRequestInWelsh)
-        val document = Jsoup.parse(contentAsString(result))
-        document.selectXpath("//*[@id=\"main-content\"]/div/div/p[2]").text() shouldBe "Mae’n bosibl bod y taliad wedi methi oherwydd:"
-      }
-
-      "render the page with the correct line 2 in Welsh" in {
-        val result = systemUnderTest.renderPage()(fakeGetRequestInWelsh)
-        val document = Jsoup.parse(contentAsString(result))
-        document.selectXpath("//*[@id=\"main-content\"]/div/div/ul/li[1]").text() shouldBe "nid oes yna ddigon o arian yn eich cyfrif"
-      }
-
-      "render the page with the correct line 3 in Welsh" in {
-        val result = systemUnderTest.renderPage()(fakeGetRequestInWelsh)
-        val document = Jsoup.parse(contentAsString(result))
-        document.selectXpath("//*[@id=\"main-content\"]/div/div/ul/li[2]").text() shouldBe "rydych wedi nodi manylion cerdyn sy’n annilys neu sydd wedi dod i ben"
-      }
-
-      "render the page with the correct line 4 in Welsh" in {
-        val result = systemUnderTest.renderPage()(fakeGetRequestInWelsh)
-        val document = Jsoup.parse(contentAsString(result))
-        document.selectXpath("//*[@id=\"main-content\"]/div/div/ul/li[3]").text() shouldBe "nid yw’r cyfeiriad a roesoch i ni’n cyd-fynd â’r un sydd gan ddosbarthwr eich cerdyn"
-      }
-
+      // TODO: These need updating when Passengers tax types are added.
       "render the page without content line 4 for Pngr Tax Types in English" in {
+        // Pngr Stub
         val result = systemUnderTest.renderPage()(fakeGetRequest)
         val document = Jsoup.parse(contentAsString(result))
         document.selectXpath("//*[@id=\"main-content\"]/div/div/ul/li[3]").text() shouldNot contain("the address you gave does not match the one your card issuer has")
       }
-
       "render the page without content line 4 for Pngr Tax Types in Welsh" in {
+        // Pngr Stub
         val result = systemUnderTest.renderPage()(fakeGetRequestInWelsh)
         val document = Jsoup.parse(contentAsString(result))
         document.selectXpath("//*[@id=\"main-content\"]/div/div/ul/li[3]").text() shouldNot contain("nid yw’r cyfeiriad a roesoch i ni’n cyd-fynd â’r un sydd gan ddosbarthwr eich cerdyn")
@@ -129,28 +111,31 @@ class PaymentFailedControllerSpec extends ItSpec {
 
     "GET /payment-failed with Open Banking available as a Payment Method" - {
 
-      val fakeGetRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/payment-failed1")
-      val fakeGetRequestInWelsh: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/payment-failed1").withCookies(Cookie("PLAY_LANG", "cy"))
+      val fakeGetRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/payment-failed").withSessionId()
+      val fakeGetRequestInWelsh: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/payment-failed").withSessionId().withLangWelsh()
 
       "should return 200 OK" in {
+        PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyAfterFailWebPayment)
         val result = systemUnderTest.renderPage()(fakeGetRequest)
         status(result) shouldBe Status.OK
       }
 
       "render the page with the correct sub heading in English" in {
-        val result = systemUnderTest.renderPage()(fakeGetRequest)
+        PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyAfterFailWebPayment)
+        val result = systemUnderTest.renderPage(fakeGetRequest)
         val document = Jsoup.parse(contentAsString(result))
         document.selectXpath("//*[@id=\"main-content\"]/div/div/p[1]").text() shouldBe "No payment has been taken from your card."
       }
 
       "render the page with the correct Radio Heading content in English" in {
+        PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyAfterFailWebPayment)
         val result = systemUnderTest.renderPage()(fakeGetRequest)
         val document = Jsoup.parse(contentAsString(result))
         document.select(".govuk-fieldset__legend").text() shouldBe "What do you want to do?"
       }
 
       "render the page with the correct Radio contents in the correct order in English" in {
-
+        PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyAfterFailWebPayment)
         val expectedContent = List("Approve a payment to come straight from my bank account", "Try card payment again")
 
         val result = systemUnderTest.renderPage()(fakeGetRequest)
@@ -162,19 +147,21 @@ class PaymentFailedControllerSpec extends ItSpec {
       }
 
       "render the page with the correct sub heading in Welsh" in {
+        PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyAfterFailWebPayment)
         val result = systemUnderTest.renderPage()(fakeGetRequestInWelsh)
         val document = Jsoup.parse(contentAsString(result))
         document.selectXpath("//*[@id=\"main-content\"]/div/div/p[1]").text() shouldBe "Nid oes taliad wedi’i dynnu o’ch cerdyn."
       }
 
       "render the page with the correct Radio Heading content in Welsh" in {
+        PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyAfterFailWebPayment)
         val result = systemUnderTest.renderPage()(fakeGetRequestInWelsh)
         val document = Jsoup.parse(contentAsString(result))
         document.select(".govuk-fieldset__legend").text() shouldBe "Beth hoffech chi ei wneud?"
       }
 
       "render the page with the correct Radio contents in the correct order in Welsh" in {
-
+        PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyAfterFailWebPayment)
         val expectedContent = List("Cymeradwyo taliad i fynd yn syth o’m cyfrif banc", "Rhowch gynnig arall ar dalu drwy gerdyn")
 
         val result = systemUnderTest.renderPage()(fakeGetRequestInWelsh)
