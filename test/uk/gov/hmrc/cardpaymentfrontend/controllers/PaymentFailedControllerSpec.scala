@@ -42,7 +42,6 @@ class PaymentFailedControllerSpec extends ItSpec {
       "should return 200 OK" in {
         PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyAfterFailWebPayment)
         val result = systemUnderTest.renderPage()(fakeGetRequest)
-        println(result)
         status(result) shouldBe Status.OK
       }
 
@@ -58,7 +57,6 @@ class PaymentFailedControllerSpec extends ItSpec {
         val result = systemUnderTest.renderPage(fakeGetRequest)
         status(result) shouldBe Status.OK
         val document = Jsoup.parse(contentAsString(result))
-        println(document)
         val langToggleText: List[String] = document.select(".hmrc-language-select__list-item").eachText().asScala.toList
         langToggleText should contain theSameElementsAs List("English", "Newid yr iaith ir Gymraeg Cymraeg")
       }
@@ -91,20 +89,6 @@ class PaymentFailedControllerSpec extends ItSpec {
         document.getElementById("line2").text() shouldBe "nid oes yna ddigon o arian yn eich cyfrif"
         document.getElementById("line3").text() shouldBe "rydych wedi nodi manylion cerdyn sy’n annilys neu sydd wedi dod i ben"
         document.getElementById("line4").text() shouldBe "nid yw’r cyfeiriad a roesoch i ni’n cyd-fynd â’r un sydd gan ddosbarthwr eich cerdyn"
-      }
-
-      // TODO: These need updating when Passengers tax types are added.
-      "render the page without content line 4 for Pngr Tax Types in English" in {
-        // Pngr Stub
-        val result = systemUnderTest.renderPage()(fakeGetRequest)
-        val document = Jsoup.parse(contentAsString(result))
-        document.selectXpath("//*[@id=\"main-content\"]/div/div/ul/li[3]").text() shouldNot contain("the address you gave does not match the one your card issuer has")
-      }
-      "render the page without content line 4 for Pngr Tax Types in Welsh" in {
-        // Pngr Stub
-        val result = systemUnderTest.renderPage()(fakeGetRequestInWelsh)
-        val document = Jsoup.parse(contentAsString(result))
-        document.selectXpath("//*[@id=\"main-content\"]/div/div/ul/li[3]").text() shouldNot contain("nid yw’r cyfeiriad a roesoch i ni’n cyd-fynd â’r un sydd gan ddosbarthwr eich cerdyn")
       }
 
     }
