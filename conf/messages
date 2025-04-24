@@ -103,6 +103,9 @@ card-fees.para3 = You cannot pay using a personal credit card.
 card-fees.para4 = Allow 3 working days for your payment to reach HMRC’s bank account.
 card-fees.para2.bank-account = bank account
 
+#Select a method of payment after a card payment failure
+card-fail-choice.error = Select how you want to pay
+
 ## Check your details page
 # common messages across all regimes
 check-your-details.heading = Check your details
