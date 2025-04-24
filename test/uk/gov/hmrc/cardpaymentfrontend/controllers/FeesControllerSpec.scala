@@ -563,6 +563,10 @@ class FeesControllerSpec extends ItSpec {
             case Origins.PfAlcoholDuty            => Seq(expectedOpenBankingLink)
             case Origins.VatC2c                   => Seq.empty
             case Origins.`3psSa`                  => Seq.empty
+            case Origins.`3psVat`                 => Seq.empty
+            case Origins.PfPillar2                => Seq.empty
+            case Origins.PfVatC2c                 => Seq.empty
+            case Origins.Pillar2                  => Seq.empty
           }
           systemUnderTest.linksAvailableOnFeesPage(origin) shouldBe expectedLinks withClue s"links did not match expected for origin: ${origin.entryName}"
         }
