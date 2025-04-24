@@ -23,15 +23,14 @@ import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
 import uk.gov.hmrc.cardpaymentfrontend.models.openbanking.{OriginSpecificSessionData, PtaSaSessionData}
 import uk.gov.hmrc.cardpaymentfrontend.models.{Address, CheckYourAnswersRow, EmailAddress, Link, PaymentMethod}
 import uk.gov.hmrc.cardpaymentfrontend.session.JourneySessionSupport._
-import uk.gov.hmrc.cardpaymentfrontend.models.PaymentMethod.{OneOffDirectDebit, OpenBanking}
+import uk.gov.hmrc.cardpaymentfrontend.models.PaymentMethod._
 
 object ExtendedPtaSa extends ExtendedOrigin {
   override val serviceNameMessageKey: String = "service-name.PtaSa"
   override val taxNameMessageKey: String = "payment-complete.tax-name.PtaSa"
   def cardFeesPagePaymentMethods: Set[PaymentMethod] = Set(OpenBanking, OneOffDirectDebit)
 
-  //todo add these when we do that ticket
-  def paymentMethods(): Set[PaymentMethod] = Set.empty
+  def paymentMethods(): Set[PaymentMethod] = Set(Card, OpenBanking, OneOffDirectDebit, Bacs)
 
   def checkYourAnswersRows(request: JourneyRequest[AnyContent])(implicit messages: Messages): Seq[CheckYourAnswersRow] = {
 
