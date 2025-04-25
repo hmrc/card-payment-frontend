@@ -26,7 +26,7 @@ object ChooseAPaymentMethodForm {
 
   val form: Form[ChooseAPaymentMethodForm] = {
     Form(mapping(
-      "payment_method" -> optional(text).verifying("card-fail-choice.error", _.nonEmpty)
+      "payment_method" -> optional(text).verifying("payment-failed.error", _.nonEmpty)
     )(ChooseAPaymentMethodForm.apply)(ChooseAPaymentMethodForm.unapply))
   }
 

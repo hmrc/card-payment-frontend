@@ -6,7 +6,6 @@ service.text = This is your new service
 continue = Continue
 error.there-is-a-problem = There is a problem
 
-
 ## Origin service names
 service-name.PfSa = Pay your Self Assessment
 service-name.PfVat = Pay your VAT
@@ -102,9 +101,6 @@ card-fees.para2.personal-debit-card = personal debit card
 card-fees.para3 = You cannot pay using a personal credit card.
 card-fees.para4 = Allow 3 working days for your payment to reach HMRC’s bank account.
 card-fees.para2.bank-account = bank account
-
-#Select a method of payment after a card payment failure
-card-fail-choice.error = Select how you want to pay
 
 ## Check your details page
 # common messages across all regimes
@@ -286,6 +282,7 @@ payment-failed.failed-try-again = Try card payment again
 payment-failed.failed-check-details = Check details and try again
 payment-failed.failed-check-again = Check the details you entered are correct or try a different card.
 
+payment-failed.error = Select how you want to pay
 
 ## Email messages
 email.tax-name.PfSa = Self Assessment

@@ -101,9 +101,6 @@ card-fees.para2.personal-debit-card = cerdyn debyd personol
 card-fees.para3 = Ni allwch dalu â cherdyn credyd personol.
 card-fees.para4 = Dylech ganiatáu 3 diwrnod gwaith i’ch taliad gyrraedd cyfrif banc CThEM.
 
-#Select a method of payment after a card payment failure
-card-fail-choice.error = Dewiswch sut yr ydych am dalu
-
 ## Check your details page
 # common messages across all regimes
 check-your-details.heading = Gwiriwch eich manylion
@@ -287,6 +284,7 @@ payment-failed.failed-try-again = Rhowch gynnig arall ar dalu drwy gerdyn
 payment-failed.failed-check-details = Gwiriwch y manylion a rhowch gynnig arall arni
 payment-failed.failed-check-again = Gwiriwch fod y manylion a nodwyd gennych yn gywir neu rhowch gynnig ar gerdyn gwahanol.
 
+payment-failed.error = Dewiswch sut yr ydych am dalu
 
 ## Email messages
 email.tax-name.PfSa = Hunanasesiad

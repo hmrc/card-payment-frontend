@@ -15,11 +15,13 @@
  *@
 
 @import uk.gov.hmrc.govukfrontend.views.Implicits.RichRadios
+@import uk.gov.hmrc.govukfrontend.views.html.components.implicits.RichFormErrors
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import uk.gov.hmrc.cardpaymentfrontend.views.html.Layout
 @import uk.gov.hmrc.cardpaymentfrontend.forms.ChooseAPaymentMethodForm
 
 @this(
+    errorSummary: GovukErrorSummary,
     formWithCsrf: FormWithCSRF,
     govukButton: GovukButton,
     govukRadios: GovukRadios,
@@ -31,6 +33,12 @@
 @heading= @{messages("payment-failed.heading")}
 
 @layout(pageTitle = Some(heading)) {
+
+    @if(form.hasErrors) {
+        @errorSummary(ErrorSummary(errorList =
+            form.errors.asTextErrorLinks, title = Text(messages("error.there-is-a-problem")))
+        )
+    }
 
     <h1 class="govuk-heading-xl">@{
         messages("payment-failed.heading")
