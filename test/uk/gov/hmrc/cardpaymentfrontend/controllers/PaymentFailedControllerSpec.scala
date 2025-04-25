@@ -68,7 +68,6 @@ class PaymentFailedControllerSpec extends ItSpec {
         val document = Jsoup.parse(contentAsString(result))
         val title = document.body().select(".govuk-heading-xl")
         title.select("h1").text() shouldBe "Payment failed"
-        println(document)
         document.getElementById("sub-heading").text() shouldBe "No payment has been taken from your card."
         document.getElementById("line1").text() shouldBe "The payment may have failed if:"
         document.getElementById("line2").text() shouldBe "there are not enough funds in your account"
@@ -83,7 +82,6 @@ class PaymentFailedControllerSpec extends ItSpec {
         val document = Jsoup.parse(contentAsString(result))
         val title = document.body().select(".govuk-heading-xl")
         title.select("h1").text() shouldBe "Taliad wedi methu"
-        println(document)
         document.getElementById("sub-heading").text() shouldBe "Nid oes taliad wedi’i dynnu o’ch cerdyn."
         document.getElementById("line1").text() shouldBe "Mae’n bosibl bod y taliad wedi methi oherwydd:"
         document.getElementById("line2").text() shouldBe "nid oes yna ddigon o arian yn eich cyfrif"

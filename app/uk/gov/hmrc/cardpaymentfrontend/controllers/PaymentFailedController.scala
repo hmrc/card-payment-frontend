@@ -46,11 +46,11 @@ class PaymentFailedController @Inject() (
     ))
   }
 
-  val submit: Action[AnyContent] = Action { implicit request =>
+  val submit: Action[AnyContent] = actions.journeyAction { implicit journeyRequest: JourneyRequest[AnyContent] =>
     ChooseAPaymentMethodForm.form
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[ChooseAPaymentMethodForm]) => BadRequest(paymentFailedPage(taxType = "Self Assessment", true, formWithErrors)),
+        (formWithErrors: Form[ChooseAPaymentMethodForm]) => BadRequest(paymentFailedPage(taxType = journeyRequest.journey.taxType.toString, hasOpenBanking = true, form = formWithErrors)),
         { validForm: ChooseAPaymentMethodForm =>
           validForm.chosenMethod match {
             case Some("open-banking") => Redirect(uk.gov.hmrc.cardpaymentfrontend.controllers.routes.OpenBankingController.startOpenBankingJourney)
