@@ -53,7 +53,7 @@ class PaymentFailedController @Inject() (
         (formWithErrors: Form[ChooseAPaymentMethodForm]) => BadRequest(paymentFailedPage(taxType = "Self Assessment", true, formWithErrors)),
         { validForm: ChooseAPaymentMethodForm =>
           validForm.chosenMethod match {
-            case Some("open-banking") => Ok("we need to go to OB here")
+            case Some("open-banking") => Redirect(uk.gov.hmrc.cardpaymentfrontend.controllers.routes.OpenBankingController.startOpenBankingJourney)
             case Some("try-again")    => Redirect(uk.gov.hmrc.cardpaymentfrontend.controllers.routes.EmailAddressController.renderPage)
             case Some(_)              => throw new RuntimeException("This should never happen, form should prevent this from occurring")
             case None                 => throw new RuntimeException("This should never happen, form should prevent this from occurring")
