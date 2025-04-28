@@ -177,6 +177,23 @@ class PaymentFailedControllerSpec extends ItSpec {
       }
     }
 
+    "When No radio option is selected" - {
+
+      "Should throw a Runtime Exception with invalid selected " in {
+        val fakeGetRequest: FakeRequest[AnyContentAsFormUrlEncoded] = FakeRequest("POST", "/payment-failed").withSessionId().withFormUrlEncodedBody(("payment_method", "invalid-selection"))
+        PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyAfterFailWebPayment)
+        val result = systemUnderTest.submit(fakeGetRequest)
+        assertThrows[RuntimeException] { status(result) }
+      }
+
+      "Should throw a Runtime Exception with None selected " in {
+        val fakeGetRequest: FakeRequest[AnyContentAsFormUrlEncoded] = FakeRequest("POST", "/payment-failed").withSessionId().withFormUrlEncodedBody(("payment_method", None.toString))
+        PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyAfterFailWebPayment)
+        val result = systemUnderTest.submit(fakeGetRequest)
+        assertThrows[RuntimeException] { status(result) }
+      }
+    }
+
   }
 
 }
