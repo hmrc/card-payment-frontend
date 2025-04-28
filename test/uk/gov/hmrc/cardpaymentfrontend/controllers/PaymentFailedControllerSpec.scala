@@ -17,7 +17,7 @@
 package uk.gov.hmrc.cardpaymentfrontend.controllers
 
 import org.jsoup.Jsoup
-import play.api.mvc.AnyContentAsEmpty
+import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.mvc.Http.Status
@@ -154,6 +154,27 @@ class PaymentFailedControllerSpec extends ItSpec {
 
       }
 
+    }
+
+    "When Open Banking is selected" - {
+      val fakeGetRequest: FakeRequest[AnyContentAsFormUrlEncoded] = FakeRequest("POST", "/payment-failed").withSessionId().withFormUrlEncodedBody(("payment_method", "open-banking"))
+
+      "Should redirect to start Open Banking Journey" in {
+        PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyAfterFailWebPayment)
+        val result = systemUnderTest.submit(fakeGetRequest)
+        redirectLocation(result) shouldBe Some("/pay-by-card/start-open-banking")
+      }
+
+    }
+
+    "When Try Again is selected" - {
+      val fakeGetRequest: FakeRequest[AnyContentAsFormUrlEncoded] = FakeRequest("POST", "/payment-failed").withSessionId().withFormUrlEncodedBody(("payment_method", "try-again"))
+
+      "Should redirect to the Enter Email Address page" in {
+        PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyAfterFailWebPayment)
+        val result = systemUnderTest.submit(fakeGetRequest)
+        redirectLocation(result) shouldBe Some("/pay-by-card/email-address")
+      }
     }
 
   }

@@ -50,7 +50,11 @@ class PaymentFailedController @Inject() (
     ChooseAPaymentMethodForm.form
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[ChooseAPaymentMethodForm]) => BadRequest(paymentFailedPage(taxType = journeyRequest.journey.taxType.toString, hasOpenBanking = true, form = formWithErrors)),
+        (formWithErrors: Form[ChooseAPaymentMethodForm]) => BadRequest(paymentFailedPage(
+          taxType        = journeyRequest.journey.origin.lift.taxNameMessageKey,
+          hasOpenBanking = journeyRequest.journey.origin.lift.paymentMethods().contains(OpenBanking),
+          form           = formWithErrors
+        )),
         { validForm: ChooseAPaymentMethodForm =>
           validForm.chosenMethod match {
             case Some("open-banking") => Redirect(uk.gov.hmrc.cardpaymentfrontend.controllers.routes.OpenBankingController.startOpenBankingJourney)
