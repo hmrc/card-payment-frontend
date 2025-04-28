@@ -66,7 +66,7 @@ class PaymentFailedControllerSpec extends ItSpec {
         PayApiStub.stubForFindBySessionId2xx(TestJourneys.ItSa.journeyAfterFailWebPayment)
         val result = systemUnderTest.renderPage(fakeGetRequest)
         val document = Jsoup.parse(contentAsString(result))
-        val title = document.body().select(".govuk-heading-l")
+        val title = document.body().select(".govuk-heading-xl")
         title.select("h1").text() shouldBe "Payment failed"
         document.getElementById("sub-heading").text() shouldBe "No payment has been taken from your card."
         document.getElementById("line1").text() shouldBe "The payment may have failed if:"
@@ -80,7 +80,7 @@ class PaymentFailedControllerSpec extends ItSpec {
         PayApiStub.stubForFindBySessionId2xx(TestJourneys.ItSa.journeyAfterFailWebPayment)
         val result = systemUnderTest.renderPage(fakeGetRequestInWelsh)
         val document = Jsoup.parse(contentAsString(result))
-        val title = document.body().select(".govuk-heading-l")
+        val title = document.body().select(".govuk-heading-xl")
         title.select("h1").text() shouldBe "Taliad wedi methu"
         document.getElementById("sub-heading").text() shouldBe "Nid oes taliad wedi’i dynnu o’ch cerdyn."
         document.getElementById("line1").text() shouldBe "Mae’n bosibl bod y taliad wedi methi oherwydd:"

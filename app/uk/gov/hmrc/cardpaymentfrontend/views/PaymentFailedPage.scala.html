@@ -20,6 +20,7 @@
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import uk.gov.hmrc.govukfrontend.views.html.components.implicits.RichFormErrors
 @import payapi.corcommon.model.Origin
+@import payapi.corcommon.model.Origins
 
 @this(
     errorSummary: GovukErrorSummary,
@@ -31,6 +32,7 @@
 
 @(origin: Origin, hasOpenBanking: Boolean, form: Form[ChooseAPaymentMethodForm])(implicit request: RequestHeader, messages: Messages)
 
+@import payapi.corcommon.model.Origins.BcPngr
 @heading= @{messages("payment-failed.heading")}
 
 @layout(pageTitle = Some(heading)) {
@@ -41,7 +43,7 @@
         )
     }
 
-    <h1 class="govuk-heading-l">@{
+    <h1 class="govuk-heading-xl">@{
         messages("payment-failed.heading")
     }</h1>
 
@@ -79,7 +81,7 @@
     <ul class="govuk-list--bullet govuk-!-static-padding-left-7">
         <li class="govuk-body" id="line2">@{messages("payment-failed.failed2")}</li>
         <li class="govuk-body" id="line3">@{messages("payment-failed.failed3")}</li>
-        @if(origin.toTaxType.toString != "pngr"){ <li class="govuk-body" id="line4">@{messages("payment-failed.failed4")}</li> }
+        @if(origin != BcPngr){ <li class="govuk-body" id="line4">@{messages("payment-failed.failed4")}</li> }
     </ul>
     <p class="govuk-body" id="check-again">@{messages("payment-failed.failed-check-again")}</p>
 
