@@ -40,7 +40,7 @@ class PaymentFailedController @Inject() (
 
   val renderPage: Action[AnyContent] = actions.journeyAction { implicit journeyRequest: JourneyRequest[AnyContent] =>
     Ok(paymentFailedPage(
-      taxType        = journeyRequest.journey.origin.lift.taxNameMessageKey,
+      origin         = journeyRequest.journey.origin,
       hasOpenBanking = journeyRequest.journey.origin.lift.paymentMethods().contains(OpenBanking),
       form           = ChooseAPaymentMethodForm.form
     ))
@@ -51,7 +51,7 @@ class PaymentFailedController @Inject() (
       .bindFromRequest()
       .fold(
         (formWithErrors: Form[ChooseAPaymentMethodForm]) => BadRequest(paymentFailedPage(
-          taxType        = journeyRequest.journey.origin.lift.taxNameMessageKey,
+          origin         = journeyRequest.journey.origin,
           hasOpenBanking = journeyRequest.journey.origin.lift.paymentMethods().contains(OpenBanking),
           form           = formWithErrors
         )),

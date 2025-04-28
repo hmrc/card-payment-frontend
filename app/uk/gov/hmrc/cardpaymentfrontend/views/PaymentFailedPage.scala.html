@@ -19,6 +19,7 @@
 @import uk.gov.hmrc.govukfrontend.views.Implicits.RichRadios
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import uk.gov.hmrc.govukfrontend.views.html.components.implicits.RichFormErrors
+@import payapi.corcommon.model.Origin
 
 @this(
     errorSummary: GovukErrorSummary,
@@ -28,7 +29,7 @@
     layout: Layout
 )
 
-@(taxType: String, hasOpenBanking: Boolean, form: Form[ChooseAPaymentMethodForm])(implicit request: RequestHeader, messages: Messages)
+@(origin: Origin, hasOpenBanking: Boolean, form: Form[ChooseAPaymentMethodForm])(implicit request: RequestHeader, messages: Messages)
 
 @heading= @{messages("payment-failed.heading")}
 
@@ -78,7 +79,7 @@
     <ul class="govuk-list--bullet govuk-!-static-padding-left-7">
         <li class="govuk-body" id="line2">@{messages("payment-failed.failed2")}</li>
         <li class="govuk-body" id="line3">@{messages("payment-failed.failed3")}</li>
-        @if(taxType != "pngr"){ <li class="govuk-body" id="line4">@{messages("payment-failed.failed4")}</li> }
+        @if(origin.toTaxType.toString != "pngr"){ <li class="govuk-body" id="line4">@{messages("payment-failed.failed4")}</li> }
     </ul>
     <p class="govuk-body" id="check-again">@{messages("payment-failed.failed-check-again")}</p>
 
