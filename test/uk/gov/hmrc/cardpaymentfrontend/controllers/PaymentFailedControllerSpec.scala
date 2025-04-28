@@ -21,6 +21,7 @@ import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.mvc.Http.Status
+import uk.gov.hmrc.cardpaymentfrontend.forms.ChooseAPaymentMethodFormValues
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.ItSpec
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.TestOps.FakeRequestOps
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.stubs.PayApiStub
@@ -157,7 +158,7 @@ class PaymentFailedControllerSpec extends ItSpec {
     }
 
     "When Open Banking is selected" - {
-      val fakeGetRequest: FakeRequest[AnyContentAsFormUrlEncoded] = FakeRequest("POST", "/payment-failed").withSessionId().withFormUrlEncodedBody(("payment_method", "open-banking"))
+      val fakeGetRequest: FakeRequest[AnyContentAsFormUrlEncoded] = FakeRequest("POST", "/payment-failed").withSessionId().withFormUrlEncodedBody(("payment_method", ChooseAPaymentMethodFormValues.OpenBanking.entryName))
 
       "Should redirect to start Open Banking Journey" in {
         PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyAfterFailWebPayment)
@@ -168,7 +169,7 @@ class PaymentFailedControllerSpec extends ItSpec {
     }
 
     "When Try Again is selected" - {
-      val fakeGetRequest: FakeRequest[AnyContentAsFormUrlEncoded] = FakeRequest("POST", "/payment-failed").withSessionId().withFormUrlEncodedBody(("payment_method", "try-again"))
+      val fakeGetRequest: FakeRequest[AnyContentAsFormUrlEncoded] = FakeRequest("POST", "/payment-failed").withSessionId().withFormUrlEncodedBody(("payment_method", ChooseAPaymentMethodFormValues.TryAgain.entryName))
 
       "Should redirect to the Enter Email Address page" in {
         PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyAfterFailWebPayment)
@@ -179,23 +180,40 @@ class PaymentFailedControllerSpec extends ItSpec {
 
     "When No radio option is selected" - {
 
-      "BadRequest" - {
-
-      }
-
-      "Should throw a Runtime Exception with invalid selected " in {
-        val fakeGetRequest: FakeRequest[AnyContentAsFormUrlEncoded] = FakeRequest("POST", "/payment-failed").withSessionId().withFormUrlEncodedBody(("payment_method", "invalid-selection"))
+      "Should show the correct error content in English - BadRequest" in {
+        val fakeGetRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("POST", "/payment-failed").withSessionId()
         PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyAfterFailWebPayment)
         val result = systemUnderTest.submit(fakeGetRequest)
-        assertThrows[RuntimeException] { status(result) }
+        status(result) shouldBe 400
+        val document = Jsoup.parse(contentAsString(result))
+        val errorSummary = document.select(".govuk-error-summary")
+        errorSummary.select("h2").text() shouldBe "There is a problem"
+        val errorSummaryList = errorSummary.select(".govuk-error-summary__list").select("li").asScala.toList
+        errorSummaryList.size shouldBe 1
+        errorSummaryList.map(_.text()) shouldBe List("Select how you want to pay")
+        document.select(".govuk-error-message").text() shouldBe "Error: Select how you want to pay"
       }
 
-      "Should throw a Runtime Exception with None selected " in {
-        val fakeGetRequest: FakeRequest[AnyContentAsFormUrlEncoded] = FakeRequest("POST", "/payment-failed").withSessionId().withFormUrlEncodedBody(("payment_method", None.toString))
+      "Should show the correct error content in Welsh - BadRequest" in {
+        val fakeGetRequestInWelsh: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/payment-failed").withSessionId().withLangWelsh()
         PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyAfterFailWebPayment)
-        val result = systemUnderTest.submit(fakeGetRequest)
-        assertThrows[RuntimeException] { status(result) }
+        val result = systemUnderTest.submit(fakeGetRequestInWelsh)
+        status(result) shouldBe 400
+        val document = Jsoup.parse(contentAsString(result))
+        val errorSummary = document.select(".govuk-error-summary")
+        errorSummary.select("h2").text() shouldBe "Mae problem wedi codi"
+        val errorSummaryList = errorSummary.select(".govuk-error-summary__list").select("li").asScala.toList
+        errorSummaryList.size shouldBe 1
+        errorSummaryList.map(_.text()) shouldBe List("Dewiswch sut yr ydych am dalu")
+        document.select(".govuk-error-message").text() shouldBe "Gwall: Dewiswch sut yr ydych am dalu"
       }
+
+      "should return BadRequest when value not in ChooseAPaymentMethodFormValues is submitted" in {
+        PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyAfterFailWebPayment)
+        val result = systemUnderTest.submit(FakeRequest("POST", "/payment-failed").withSessionId().withFormUrlEncodedBody("payment-method" -> "IAmInValid"))
+        status(result) shouldBe 400
+      }
+
     }
 
   }

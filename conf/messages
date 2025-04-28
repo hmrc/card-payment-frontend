@@ -282,7 +282,7 @@ payment-failed.failed-try-again = Try card payment again
 payment-failed.failed-check-details = Check details and try again
 payment-failed.failed-check-again = Check the details you entered are correct or try a different card.
 
-payment-failed.error = Select how you want to pay
+payment-failed.choose-a-payment-method.error = Select how you want to pay
 
 ## Email messages
 email.tax-name.PfSa = Self Assessment

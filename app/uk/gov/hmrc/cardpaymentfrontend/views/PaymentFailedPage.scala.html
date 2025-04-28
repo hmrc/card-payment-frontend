@@ -14,7 +14,7 @@
  * limitations under the License.
  *@
 
-@import uk.gov.hmrc.cardpaymentfrontend.forms.ChooseAPaymentMethodForm
+@import uk.gov.hmrc.cardpaymentfrontend.forms.ChooseAPaymentMethodFormValues
 @import uk.gov.hmrc.cardpaymentfrontend.views.html.Layout
 @import uk.gov.hmrc.govukfrontend.views.Implicits.RichRadios
 @import uk.gov.hmrc.govukfrontend.views.html.components._
@@ -30,7 +30,7 @@
     layout: Layout
 )
 
-@(origin: Origin, hasOpenBanking: Boolean, form: Form[ChooseAPaymentMethodForm])(implicit request: RequestHeader, messages: Messages)
+@(origin: Origin, hasOpenBanking: Boolean, form: Form[ChooseAPaymentMethodFormValues])(implicit request: RequestHeader, messages: Messages)
 
 @import payapi.corcommon.model.Origins.BcPngr
 @heading= @{messages("payment-failed.heading")}
@@ -67,8 +67,16 @@
                 )),
                 name = "payment_method",
                 items = Seq(
-                    RadioItem(content = Text(messages("payment-failed.failed-go-to-open-banking")), value = Some("open-banking"), checked = false),
-                    RadioItem(content = Text(messages("payment-failed.failed-try-again")), value = Some("try-again"), checked = false)
+                    RadioItem(
+                        content = Text(messages("payment-failed.failed-go-to-open-banking")),
+                        value = Some(ChooseAPaymentMethodFormValues.OpenBanking.entryName),
+                        checked = form.data.values.toList.contains(ChooseAPaymentMethodFormValues.OpenBanking.entryName)
+                    ),
+                    RadioItem(
+                        content = Text(messages("payment-failed.failed-try-again")),
+                        value = Some(ChooseAPaymentMethodFormValues.TryAgain.entryName),
+                        checked = form.data.values.toList.contains(ChooseAPaymentMethodFormValues.TryAgain.entryName)
+                    )
                 )).withFormField(form("payment_method")))
 
             @govukButton(Button(content = Text(Messages("continue")), attributes = Map("id" -> "next")))

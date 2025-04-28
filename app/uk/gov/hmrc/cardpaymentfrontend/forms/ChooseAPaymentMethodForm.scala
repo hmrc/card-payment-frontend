@@ -16,18 +16,28 @@
 
 package uk.gov.hmrc.cardpaymentfrontend.forms
 
-import play.api.data.Form
-import play.api.data.Forms.{mapping, optional, text}
+import play.api.data.Forms.{mapping, of}
+import play.api.data.{Form, Mapping}
+import uk.gov.hmrc.cardpaymentfrontend.utils.EnumFormatter
 
-//todo use enum/adt instead of string.
-final case class ChooseAPaymentMethodForm(chosenMethod: Option[String])
+final case class ChooseAPaymentMethodForm(chosenMethod: ChooseAPaymentMethodFormValues)
 
 object ChooseAPaymentMethodForm {
 
-  val form: Form[ChooseAPaymentMethodForm] = {
+  val form: Form[ChooseAPaymentMethodFormValues] = {
+
+    val chooseAPaymentMethodMapping: Mapping[ChooseAPaymentMethodFormValues] = of(
+      EnumFormatter.format(
+        `enum`                  = ChooseAPaymentMethodFormValues,
+        errorMessageIfMissing   = "payment-failed.choose-a-payment-method.error",
+        errorMessageIfEnumError = "payment-failed.choose-a-payment-method.error",
+        insensitive             = true
+      )
+    )
     Form(mapping(
-      "payment_method" -> optional(text).verifying("payment-failed.error", _.nonEmpty)
-    )(ChooseAPaymentMethodForm.apply)(ChooseAPaymentMethodForm.unapply))
+      "payment_method" -> chooseAPaymentMethodMapping
+    )(identity)(Some(_)))
+
   }
 
 }

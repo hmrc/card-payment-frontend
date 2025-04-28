@@ -284,7 +284,7 @@ payment-failed.failed-try-again = Rhowch gynnig arall ar dalu drwy gerdyn
 payment-failed.failed-check-details = Gwiriwch y manylion a rhowch gynnig arall arni
 payment-failed.failed-check-again = Gwiriwch fod y manylion a nodwyd gennych yn gywir neu rhowch gynnig ar gerdyn gwahanol.
 
-payment-failed.error = Dewiswch sut yr ydych am dalu
+payment-failed.choose-a-payment-method.error = Dewiswch sut yr ydych am dalu
 
 ## Email messages
 email.tax-name.PfSa = Hunanasesiad

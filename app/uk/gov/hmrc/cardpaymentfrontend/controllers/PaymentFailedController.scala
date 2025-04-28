@@ -19,7 +19,7 @@ package uk.gov.hmrc.cardpaymentfrontend.controllers
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.cardpaymentfrontend.actions.{Actions, JourneyRequest}
-import uk.gov.hmrc.cardpaymentfrontend.forms.ChooseAPaymentMethodForm
+import uk.gov.hmrc.cardpaymentfrontend.forms.{ChooseAPaymentMethodForm, ChooseAPaymentMethodFormValues}
 import uk.gov.hmrc.cardpaymentfrontend.models.PaymentMethod.OpenBanking
 import uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins.ExtendedOrigin.OriginExtended
 import uk.gov.hmrc.cardpaymentfrontend.requests.RequestSupport
@@ -50,19 +50,14 @@ class PaymentFailedController @Inject() (
     ChooseAPaymentMethodForm.form
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[ChooseAPaymentMethodForm]) => BadRequest(paymentFailedPage(
+        (formWithErrors: Form[ChooseAPaymentMethodFormValues]) => BadRequest(paymentFailedPage(
           origin         = journeyRequest.journey.origin,
           hasOpenBanking = journeyRequest.journey.origin.lift.paymentMethods().contains(OpenBanking),
           form           = formWithErrors
         )),
-        { validForm: ChooseAPaymentMethodForm =>
-          validForm.chosenMethod match {
-            case Some("open-banking") => Redirect(uk.gov.hmrc.cardpaymentfrontend.controllers.routes.OpenBankingController.startOpenBankingJourney)
-            case Some("try-again")    => Redirect(uk.gov.hmrc.cardpaymentfrontend.controllers.routes.EmailAddressController.renderPage)
-            case Some(_)              => throw new RuntimeException("This should never happen, form should prevent this from occurring")
-            case None                 => throw new RuntimeException("This should never happen, form should prevent this from occurring")
-          }
-
+        {
+          case ChooseAPaymentMethodFormValues.OpenBanking => Redirect(uk.gov.hmrc.cardpaymentfrontend.controllers.routes.OpenBankingController.startOpenBankingJourney)
+          case ChooseAPaymentMethodFormValues.TryAgain    => Redirect(uk.gov.hmrc.cardpaymentfrontend.controllers.routes.EmailAddressController.renderPage)
         }
       )
   }
