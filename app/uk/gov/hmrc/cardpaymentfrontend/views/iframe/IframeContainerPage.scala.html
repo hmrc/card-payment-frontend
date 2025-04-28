@@ -23,7 +23,7 @@
 @* TODO: Jake, update the title *@
 @layout(pageTitle = Some("IFrame holder page"), welshSupported = false) {
     @Html(s"""<link rel="stylesheet" media="all" type="text/css" href="${controllers.routes.Assets.versioned("stylesheets/barclaycard-iframe.css").toString}">""")
-    <h1 class="govuk-heading-xl">IFrame holder page</h1>
+    <h1 class="govuk-heading-l">IFrame holder page</h1>
 
     <iframe title="I am the Barclaycard iframe"
         src="@{iframeUrl}"
