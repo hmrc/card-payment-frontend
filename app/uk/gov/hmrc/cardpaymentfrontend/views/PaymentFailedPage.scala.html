@@ -14,23 +14,34 @@
  * limitations under the License.
  *@
 
+@import uk.gov.hmrc.cardpaymentfrontend.forms.ChooseAPaymentMethodFormValues
+@import uk.gov.hmrc.cardpaymentfrontend.views.html.Layout
 @import uk.gov.hmrc.govukfrontend.views.Implicits.RichRadios
 @import uk.gov.hmrc.govukfrontend.views.html.components._
-@import uk.gov.hmrc.cardpaymentfrontend.views.html.Layout
-@import uk.gov.hmrc.cardpaymentfrontend.forms.ChooseAPaymentMethodForm
+@import uk.gov.hmrc.govukfrontend.views.html.components.implicits.RichFormErrors
+@import payapi.corcommon.model.Origin
+@import payapi.corcommon.model.Origins
 
 @this(
+    errorSummary: GovukErrorSummary,
     formWithCsrf: FormWithCSRF,
     govukButton: GovukButton,
     govukRadios: GovukRadios,
     layout: Layout
 )
 
-@(taxType: String, hasOpenBanking: Boolean, form: Form[ChooseAPaymentMethodForm])(implicit request: RequestHeader, messages: Messages)
+@(origin: Origin, hasOpenBanking: Boolean, form: Form[ChooseAPaymentMethodFormValues])(implicit request: RequestHeader, messages: Messages)
 
+@import payapi.corcommon.model.Origins.BcPngr
 @heading= @{messages("payment-failed.heading")}
 
 @layout(pageTitle = Some(heading)) {
+
+    @if(form.hasErrors) {
+        @errorSummary(ErrorSummary(errorList =
+            form.errors.asTextErrorLinks, title = Text(messages("error.there-is-a-problem")))
+        )
+    }
 
     <h1 class="govuk-heading-xl">@{
         messages("payment-failed.heading")
@@ -38,7 +49,7 @@
 
     @if(hasOpenBanking) {
 
-        <p class="govuk-body govuk-!-padding-bottom-6">@{
+        <p class="govuk-body govuk-!-padding-bottom-6" id="sub-heading">@{
             messages("payment-failed.sub-heading")
         }</p>
 
@@ -56,23 +67,31 @@
                 )),
                 name = "payment_method",
                 items = Seq(
-                    RadioItem(content = Text(messages("payment-failed.failed-go-to-open-banking")), value = Some("open-banking"), checked = false),
-                    RadioItem(content = Text(messages("payment-failed.failed-try-again")), value = Some("try-again"), checked = false)
+                    RadioItem(
+                        content = Text(messages("payment-failed.failed-go-to-open-banking")),
+                        value = Some(ChooseAPaymentMethodFormValues.OpenBanking.entryName),
+                        checked = form.data.values.toList.contains(ChooseAPaymentMethodFormValues.OpenBanking.entryName)
+                    ),
+                    RadioItem(
+                        content = Text(messages("payment-failed.failed-try-again")),
+                        value = Some(ChooseAPaymentMethodFormValues.TryAgain.entryName),
+                        checked = form.data.values.toList.contains(ChooseAPaymentMethodFormValues.TryAgain.entryName)
+                    )
                 )).withFormField(form("payment_method")))
 
             @govukButton(Button(content = Text(Messages("continue")), attributes = Map("id" -> "next")))
         }
     } else {
 
-    <p class="govuk-body">@{messages("payment-failed.sub-heading")}</p>
+    <p class="govuk-body" id="sub-heading">@{messages("payment-failed.sub-heading")}</p>
 
-    <p class="govuk-body">@{messages("payment-failed.failed1")}</p>
+    <p class="govuk-body" id="line1">@{messages("payment-failed.failed1")}</p>
     <ul class="govuk-list--bullet govuk-!-static-padding-left-7">
-        <li class="govuk-body">@{messages("payment-failed.failed2")}</li>
-        <li class="govuk-body">@{messages("payment-failed.failed3")}</li>
-        @if(taxType != "pngr"){ <li class="govuk-body">@{messages("payment-failed.failed4")}</li> }
+        <li class="govuk-body" id="line2">@{messages("payment-failed.failed2")}</li>
+        <li class="govuk-body" id="line3">@{messages("payment-failed.failed3")}</li>
+        @if(origin != BcPngr){ <li class="govuk-body" id="line4">@{messages("payment-failed.failed4")}</li> }
     </ul>
-    <p class="govuk-body">@{messages("payment-failed.failed-check-again")}</p>
+    <p class="govuk-body" id="check-again">@{messages("payment-failed.failed-check-again")}</p>
 
     @govukButton(Button(content = Text(Messages("payment-failed.failed-check-details")),  id = Some("submit")))
 

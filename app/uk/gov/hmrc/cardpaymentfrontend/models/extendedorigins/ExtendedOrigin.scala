@@ -43,6 +43,7 @@ trait ExtendedOrigin {
 
   //denotes which links/payment methods to show on the card-fees page.
   def cardFeesPagePaymentMethods: Set[PaymentMethod]
+  // This denotes which payment methods are available for the given Origin/TaxRegime
   def paymentMethods(): Set[PaymentMethod]
 
   def checkYourAnswersPaymentDateRow(journeyRequest: JourneyRequest[AnyContent]): Option[CheckYourAnswersRow] = {

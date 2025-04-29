@@ -16,13 +16,13 @@
 
 package uk.gov.hmrc.cardpaymentfrontend.controllers
 
-import payapi.corcommon.model.{Origin, Origins}
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import uk.gov.hmrc.cardpaymentfrontend.forms.ChooseAPaymentMethodForm
-import uk.gov.hmrc.cardpaymentfrontend.models.PaymentMethod
+import uk.gov.hmrc.cardpaymentfrontend.actions.{Actions, JourneyRequest}
+import uk.gov.hmrc.cardpaymentfrontend.forms.{ChooseAPaymentMethodForm, ChooseAPaymentMethodFormValues}
 import uk.gov.hmrc.cardpaymentfrontend.models.PaymentMethod.OpenBanking
 import uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins.ExtendedOrigin.OriginExtended
+import uk.gov.hmrc.cardpaymentfrontend.requests.RequestSupport
 import uk.gov.hmrc.cardpaymentfrontend.views.html.PaymentFailedPage
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
@@ -30,35 +30,34 @@ import javax.inject.{Inject, Singleton}
 
 @Singleton
 class PaymentFailedController @Inject() (
+    actions:           Actions,
     mcc:               MessagesControllerComponents,
+    requestSupport:    RequestSupport,
     paymentFailedPage: PaymentFailedPage
 ) extends FrontendController(mcc) {
 
-  def renderPage(origin: Origin): Action[AnyContent] = Action { implicit request =>
-    val liftedOrigin = origin.lift
-    val paymentMethods: Set[PaymentMethod] = liftedOrigin.paymentMethods()
-    Ok(paymentFailedPage(origin.toTaxType.toString, paymentMethods.contains(OpenBanking), ChooseAPaymentMethodForm.form))
+  import requestSupport._
+
+  val renderPage: Action[AnyContent] = actions.journeyAction { implicit journeyRequest: JourneyRequest[AnyContent] =>
+    Ok(paymentFailedPage(
+      origin         = journeyRequest.journey.origin,
+      hasOpenBanking = journeyRequest.journey.origin.lift.paymentMethods().contains(OpenBanking),
+      form           = ChooseAPaymentMethodForm.form
+    ))
   }
 
-  def renderPage0(): Action[AnyContent] = renderPage(Origins.PfP800)
-
-  def renderPage1(): Action[AnyContent] = renderPage(Origins.PfSa)
-
-  def renderPage2(): Action[AnyContent] = renderPage(Origins.BcPngr)
-
-  val submit: Action[AnyContent] = Action { implicit request =>
+  val submit: Action[AnyContent] = actions.journeyAction { implicit journeyRequest: JourneyRequest[AnyContent] =>
     ChooseAPaymentMethodForm.form
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[ChooseAPaymentMethodForm]) => BadRequest(paymentFailedPage(taxType = "Self Assessment", true, formWithErrors)),
-        { validForm: ChooseAPaymentMethodForm =>
-          validForm.chosenMethod match {
-            case Some("open-banking") => Ok("we need to go to OB here")
-            case Some("try-again")    => Redirect(uk.gov.hmrc.cardpaymentfrontend.controllers.routes.EmailAddressController.renderPage)
-            case Some(_)              => throw new RuntimeException("This should never happen, form should prevent this from occurring")
-            case None                 => throw new RuntimeException("This should never happen, form should prevent this from occurring")
-          }
-
+        (formWithErrors: Form[ChooseAPaymentMethodFormValues]) => BadRequest(paymentFailedPage(
+          origin         = journeyRequest.journey.origin,
+          hasOpenBanking = journeyRequest.journey.origin.lift.paymentMethods().contains(OpenBanking),
+          form           = formWithErrors
+        )),
+        {
+          case ChooseAPaymentMethodFormValues.OpenBanking => Redirect(uk.gov.hmrc.cardpaymentfrontend.controllers.routes.OpenBankingController.startOpenBankingJourney)
+          case ChooseAPaymentMethodFormValues.TryAgain    => Redirect(uk.gov.hmrc.cardpaymentfrontend.controllers.routes.EmailAddressController.renderPage)
         }
       )
   }

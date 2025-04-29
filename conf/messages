@@ -6,7 +6,6 @@ service.text = This is your new service
 continue = Continue
 error.there-is-a-problem = There is a problem
 
-
 ## Origin service names
 service-name.PfSa = Pay your Self Assessment
 service-name.PfVat = Pay your VAT
@@ -283,6 +282,7 @@ payment-failed.failed-try-again = Try card payment again
 payment-failed.failed-check-details = Check details and try again
 payment-failed.failed-check-again = Check the details you entered are correct or try a different card.
 
+payment-failed.choose-a-payment-method.error = Select how you want to pay
 
 ## Email messages
 email.tax-name.PfSa = Self Assessment

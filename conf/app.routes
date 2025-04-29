@@ -29,9 +29,8 @@ GET        /payment-complete                     uk.gov.hmrc.cardpaymentfrontend
 
 GET        /payment-cancelled                    uk.gov.hmrc.cardpaymentfrontend.controllers.PaymentCancelledController.renderPage
 
-GET        /payment-failed0                      uk.gov.hmrc.cardpaymentfrontend.controllers.PaymentFailedController.renderPage0
-GET        /payment-failed1                      uk.gov.hmrc.cardpaymentfrontend.controllers.PaymentFailedController.renderPage1
-GET        /payment-failed2                      uk.gov.hmrc.cardpaymentfrontend.controllers.PaymentFailedController.renderPage2
+GET        /payment-failed                       uk.gov.hmrc.cardpaymentfrontend.controllers.PaymentFailedController.renderPage
+
 POST       /payment-failed                       uk.gov.hmrc.cardpaymentfrontend.controllers.PaymentFailedController.submit
 
 
