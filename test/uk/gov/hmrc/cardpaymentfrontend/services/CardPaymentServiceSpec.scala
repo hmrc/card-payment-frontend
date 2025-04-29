@@ -41,6 +41,7 @@ class CardPaymentServiceSpec extends ItSpec {
   val testEmail = EmailAddress("some@email.com")
 
   "CardPaymentService" - {
+
     "initiatePayment" - {
 
       val cardPaymentInitiatePaymentRequest = CardPaymentInitiatePaymentRequest("http://localhost/pay-by-card/return-to-hmrc", "SAEE", "1234567895K", AmountInPence(1234), Address("made up street", postCode    = "AA11AA", countryCode = "GBR"), Some(EmailAddress("some@email.com")))
