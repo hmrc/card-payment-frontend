@@ -92,7 +92,7 @@ class PaymentCompleteControllerSpec extends ItSpec {
         val document = Jsoup.parse(contentAsString(result))
         val panel = document.body().select(".govuk-panel--confirmation")
         panel.select("h1").text() shouldBe "Payment received by HMRC"
-        panel.select(".govuk-panel__body").html() shouldBe "Your payment reference\n<br><strong>1234567895K</strong>"
+        panel.select(".govuk-panel__body").html() shouldBe "Your payment reference\n<br>\n<strong>1234567895K</strong>"
       }
 
       "render the h1 panel correctly in welsh" in {
@@ -101,7 +101,7 @@ class PaymentCompleteControllerSpec extends ItSpec {
         val document = Jsoup.parse(contentAsString(result))
         val panel = document.body().select(".govuk-panel--confirmation")
         panel.select("h1").text() shouldBe "Taliad wedi dod i law CThEM"
-        panel.select(".govuk-panel__body").html() shouldBe "Eich cyfeirnod talu\n<br><strong>1234567895K</strong>"
+        panel.select(".govuk-panel__body").html() shouldBe "Eich cyfeirnod talu\n<br>\n<strong>1234567895K</strong>"
       }
 
       "render paragraph about email address when email is provided" in {
