@@ -20,30 +20,40 @@ import payapi.cardpaymentjourney.model.journey.Journey
 import play.api.Logging
 import play.api.libs.json.JsBoolean
 import play.api.mvc.RequestHeader
+import uk.gov.hmrc.cardpaymentfrontend.config.AppConfig
 import uk.gov.hmrc.cardpaymentfrontend.connectors.{CardPaymentConnector, PayApiConnector}
-import uk.gov.hmrc.cardpaymentfrontend.models.cardpayment.{CardPaymentInitiatePaymentRequest, CardPaymentInitiatePaymentResponse, CardPaymentResult}
+import uk.gov.hmrc.cardpaymentfrontend.models.cardpayment.{CardPaymentInitiatePaymentRequest, CardPaymentInitiatePaymentResponse, CardPaymentResult, ClientId}
 import uk.gov.hmrc.cardpaymentfrontend.models.payapi.{BeginWebPaymentRequest, FailWebPaymentRequest, FinishedWebPaymentRequest, SucceedWebPaymentRequest}
-import uk.gov.hmrc.cardpaymentfrontend.models.{Address, EmailAddress}
+import uk.gov.hmrc.cardpaymentfrontend.models.{Address, EmailAddress, Language}
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class CardPaymentService @Inject() (cardPaymentConnector: CardPaymentConnector, payApiConnector: PayApiConnector)(implicit executionContext: ExecutionContext) extends Logging {
+class CardPaymentService @Inject() (
+    appConfig:            AppConfig,
+    cardPaymentConnector: CardPaymentConnector,
+    payApiConnector:      PayApiConnector,
+    clientIdService:      ClientIdService
+)(implicit executionContext: ExecutionContext) extends Logging {
 
   def initiatePayment(
       journey:               Journey[_],
       addressFromSession:    Address,
-      maybeEmailFromSession: Option[EmailAddress]
+      maybeEmailFromSession: Option[EmailAddress],
+      language:              Language
   )(implicit headerCarrier: HeaderCarrier, requestHeader: RequestHeader): Future[CardPaymentInitiatePaymentResponse] = {
 
     //todo move this to a val outside the function, then we can test it too
     val urlToComeBackFromAfterIframe: String = uk.gov.hmrc.cardpaymentfrontend.controllers.routes.PaymentStatusController.returnToHmrc().absoluteURL()(requestHeader)
 
+    val clientId: ClientId = clientIdService.determineClientId(journey, language)
+    val clientIdStringToUse = if (appConfig.useProductionClientIds) clientId.prodCode else clientId.qaCode
+
     val cardPaymentInitiatePaymentRequest: CardPaymentInitiatePaymentRequest = CardPaymentInitiatePaymentRequest(
       redirectUrl         = urlToComeBackFromAfterIframe,
-      clientId            = "MBEE", //todo need a function that determines this based on tt/origin
+      clientId            = clientIdStringToUse,
       purchaseDescription = journey.referenceValue,
       purchaseAmount      = journey.getAmountInPence,
       billingAddress      = addressFromSession,

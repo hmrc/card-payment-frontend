@@ -19,6 +19,7 @@ package uk.gov.hmrc.cardpaymentfrontend.services
 import payapi.corcommon.model.AmountInPence
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
+import uk.gov.hmrc.cardpaymentfrontend.models.Languages.English
 import uk.gov.hmrc.cardpaymentfrontend.models.cardpayment._
 import uk.gov.hmrc.cardpaymentfrontend.models.{Address, EmailAddress}
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.ItSpec
@@ -40,20 +41,21 @@ class CardPaymentServiceSpec extends ItSpec {
   val testEmail = EmailAddress("some@email.com")
 
   "CardPaymentService" - {
+
     "initiatePayment" - {
 
-      val cardPaymentInitiatePaymentRequest = CardPaymentInitiatePaymentRequest("http://localhost/pay-by-card/return-to-hmrc", "MBEE", "1234567895K", AmountInPence(1234), Address("made up street", postCode    = "AA11AA", countryCode = "GBR"), Some(EmailAddress("some@email.com")))
+      val cardPaymentInitiatePaymentRequest = CardPaymentInitiatePaymentRequest("http://localhost/pay-by-card/return-to-hmrc", "SAEE", "1234567895K", AmountInPence(1234), Address("made up street", postCode    = "AA11AA", countryCode = "GBR"), Some(EmailAddress("some@email.com")))
       val expectedCardPaymentInitiatePaymentResponse = CardPaymentInitiatePaymentResponse("someiframeurl", "sometransactionref")
 
       "should return a CardPaymentInitiatePaymentResponse when card-payment backend returns one" in {
         CardPaymentStub.InitiatePayment.stubForInitiatePayment2xx(cardPaymentInitiatePaymentRequest, expectedCardPaymentInitiatePaymentResponse)
-        val result = systemUnderTest.initiatePayment(testJourney, testAddress, Some(testEmail)).futureValue
+        val result = systemUnderTest.initiatePayment(testJourney, testAddress, Some(testEmail), English).futureValue
         result shouldBe expectedCardPaymentInitiatePaymentResponse
       }
 
       "should update pay-api journey with BeginWebPaymentRequest when call to card-payment backend succeeds" in {
         CardPaymentStub.InitiatePayment.stubForInitiatePayment2xx(cardPaymentInitiatePaymentRequest, expectedCardPaymentInitiatePaymentResponse)
-        systemUnderTest.initiatePayment(testJourney, testAddress, Some(testEmail)).futureValue
+        systemUnderTest.initiatePayment(testJourney, testAddress, Some(testEmail), English).futureValue
         PayApiStub.verifyUpdateBeginWebPayment(1, testJourney._id.value)
       }
     }
