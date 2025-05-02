@@ -172,7 +172,7 @@ class PaymentFailedControllerSpec extends ItSpec {
       val fakeGetRequest: FakeRequest[AnyContentAsFormUrlEncoded] = FakeRequest("POST", "/payment-failed").withSessionId().withFormUrlEncodedBody(("payment_method", ChooseAPaymentMethodFormValues.TryAgain.entryName))
 
       "Should redirect to the Enter Email Address page" in {
-        PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyAfterFailWebPayment)
+        PayApiStub.stubForFindBySessionId2xx(TestJourneys.ItSa.journeyAfterFailWebPayment)
         val result = systemUnderTest.submit(fakeGetRequest)
         redirectLocation(result) shouldBe Some("/pay-by-card/email-address")
       }
