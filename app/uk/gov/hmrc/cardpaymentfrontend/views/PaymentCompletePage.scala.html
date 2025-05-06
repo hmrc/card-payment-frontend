@@ -70,7 +70,7 @@
         content = HtmlContent(panelContent)
     ))
 
-    @if(maybeEmailAddress.isDefined) {
+    @if(maybeEmailAddress.map(_.value).getOrElse("").nonEmpty) {
         @maybeEmailContent
     }
 
