@@ -17,13 +17,11 @@
 package uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins
 
 import payapi.cardpaymentjourney.model.journey.{JourneySpecificData, JsdPfSa}
-import play.api.i18n.Messages
 import play.api.mvc.{AnyContent, Call}
 import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
-import uk.gov.hmrc.cardpaymentfrontend.models.openbanking.{OriginSpecificSessionData, PfSaSessionData}
-import uk.gov.hmrc.cardpaymentfrontend.models.{Address, CheckYourAnswersRow, EmailAddress, Link, PaymentMethod}
-import uk.gov.hmrc.cardpaymentfrontend.session.JourneySessionSupport._
 import uk.gov.hmrc.cardpaymentfrontend.models.PaymentMethod.{Bacs, Card, OneOffDirectDebit, OpenBanking}
+import uk.gov.hmrc.cardpaymentfrontend.models.openbanking.{OriginSpecificSessionData, PfSaSessionData}
+import uk.gov.hmrc.cardpaymentfrontend.models.{CheckYourAnswersRow, Link, PaymentMethod}
 
 object ExtendedPfSa extends ExtendedOrigin {
   override val serviceNameMessageKey: String = "service-name.PfSa"
@@ -33,78 +31,12 @@ object ExtendedPfSa extends ExtendedOrigin {
 
   def paymentMethods(): Set[PaymentMethod] = Set(Card, OpenBanking, OneOffDirectDebit, Bacs)
 
-  def checkYourAnswersRows(request: JourneyRequest[AnyContent])(implicit messages: Messages): Seq[CheckYourAnswersRow] = {
-
-    val maybeEmailAddress: Option[EmailAddress] = request.readFromSession[EmailAddress](request.journeyId, Keys.email)
-    val maybeAddress: Option[Address] = request.readFromSession[Address](request.journeyId, Keys.address)
-
-    val referenceRow =
-      CheckYourAnswersRow(
-        titleMessageKey = "PfSa.reference.title",
-        value           = Seq(reference(request).dropRight(1)), //Do not display the final K in the Utr in the CYA table//TODO: We should not drop right. We should use the dedicated methods to display sa utr.
-        changeLink      = Some(Link(
-          Call("GET", "this/that"),
-          linkId     = "PfSa-reference-change-link",
-          messageKey = "PfSa.reference.change-link.text"
-        ))
-      )
-
-    val amountRow = CheckYourAnswersRow(
-      titleMessageKey = "PfSa.amount.title",
-      value           = Seq(amount(request)),
-      changeLink      = Some(Link(
-        Call("GET", "this/that"),
-        linkId     = "PfSa-amount-change-link",
-        messageKey = "PfSa.amount.change-link.text"
-      ))
-    )
-
-    val addressRow = CheckYourAnswersRow(
-      titleMessageKey = "PfSa.address.title",
-      value           = maybeAddress match {
-        //todo, we're doing the same thing over and over, lets write this once and reuse.
-        case Some(addr) => Seq(addr.line1, addr.line2.getOrElse(""), addr.city.getOrElse(""), addr.county.getOrElse(""), addr.postCode, addr.countryCode).filter(_.nonEmpty)
-        case None       => Seq.empty
-      },
-      changeLink      = Some(Link(
-        Call("GET", "this/that"),
-        linkId     = "PfSa-address-change-link",
-        messageKey = "PfSa.address.change-link.text"
-      ))
-    )
-
-    val emailRow = maybeEmailAddress match {
-      case Some(emailAddress) =>
-        CheckYourAnswersRow(
-          titleMessageKey = "PfSa.email.title",
-          value           = Seq(emailAddress.value),
-          changeLink      = Some(Link(
-            Call("GET", "change/email"),
-            linkId     = "PfSa-email-supply-link",
-            messageKey = "PfSa.email.supply-link.text.change"
-          ))
-        )
-      case None =>
-        CheckYourAnswersRow(
-          titleMessageKey = "PfSa.email.title",
-          value           = Seq.empty,
-          changeLink      = Some(Link(
-            Call("GET", "change/email"),
-            linkId     = "PfSa-email-supply-link",
-            messageKey = "PfSa.email.supply-link.text.new"
-          ))
-        )
-    }
-
-    Seq(referenceRow, amountRow, addressRow, emailRow)
-  }
-
-  override def checkYourAnswersReferenceRow(journeyRequest: JourneyRequest[AnyContent]): Option[CheckYourAnswersRow] = {
+  override def checkYourAnswersReferenceRow(journeyRequest: JourneyRequest[AnyContent])(payFrontendBaseUrl: String): Option[CheckYourAnswersRow] = {
     Some(CheckYourAnswersRow(
       titleMessageKey = "check-your-details.PfSa.reference",
       value           = Seq(journeyRequest.journey.referenceValue),
       changeLink      = Some(Link(
-        href       = Call("GET", "some-link-to-pay-frontend"),
+        href       = Call("GET", changeReferenceUrl(payFrontendBaseUrl)),
         linkId     = "check-your-details-reference-change-link",
         messageKey = "check-your-details.change"
       ))

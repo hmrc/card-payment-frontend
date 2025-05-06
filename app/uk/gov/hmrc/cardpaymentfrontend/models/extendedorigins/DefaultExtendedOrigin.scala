@@ -16,12 +16,11 @@
 
 package uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins
 
-import play.api.i18n.Messages
+import payapi.cardpaymentjourney.model.journey.JourneySpecificData
 import play.api.mvc.AnyContent
 import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
-import payapi.cardpaymentjourney.model.journey.JourneySpecificData
-import uk.gov.hmrc.cardpaymentfrontend.models.{CheckYourAnswersRow, PaymentMethod}
 import uk.gov.hmrc.cardpaymentfrontend.models.openbanking.OriginSpecificSessionData
+import uk.gov.hmrc.cardpaymentfrontend.models.{CheckYourAnswersRow, PaymentMethod}
 
 class DefaultExtendedOrigin extends ExtendedOrigin {
   def serviceNameMessageKey = ""
@@ -29,9 +28,8 @@ class DefaultExtendedOrigin extends ExtendedOrigin {
   override def reference(request: JourneyRequest[AnyContent]): String = ""
   def cardFeesPagePaymentMethods: Set[PaymentMethod] = Set.empty[PaymentMethod]
   def paymentMethods(): Set[PaymentMethod] = Set.empty[PaymentMethod]
-  def checkYourAnswersRows(request: JourneyRequest[AnyContent])(implicit messages: Messages): Seq[CheckYourAnswersRow] = Seq.empty[CheckYourAnswersRow]
 
-  override def checkYourAnswersReferenceRow(journeyRequest: JourneyRequest[AnyContent]): Option[CheckYourAnswersRow] = None
+  override def checkYourAnswersReferenceRow(journeyRequest: JourneyRequest[AnyContent])(payFrontendBaseUrl: String): Option[CheckYourAnswersRow] = None
 
   override def openBankingOriginSpecificSessionData: JourneySpecificData => Option[OriginSpecificSessionData] = _ => None
 

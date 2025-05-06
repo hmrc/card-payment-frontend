@@ -16,13 +16,12 @@
 
 package uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins
 
-import payapi.corcommon.model.{Origin, Origins, Reference}
 import payapi.cardpaymentjourney.model.journey.JourneySpecificData
-import play.api.i18n.Messages
+import payapi.corcommon.model.{Origin, Origins, Reference}
 import play.api.mvc.{AnyContent, Call}
 import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
-import uk.gov.hmrc.cardpaymentfrontend.models.{Address, CheckYourAnswersRow, EmailAddress, Link, PaymentMethod}
 import uk.gov.hmrc.cardpaymentfrontend.models.openbanking.OriginSpecificSessionData
+import uk.gov.hmrc.cardpaymentfrontend.models._
 import uk.gov.hmrc.cardpaymentfrontend.session.JourneySessionSupport._
 
 import java.time.LocalDate
@@ -46,13 +45,13 @@ trait ExtendedOrigin {
   // This denotes which payment methods are available for the given Origin/TaxRegime
   def paymentMethods(): Set[PaymentMethod]
 
-  def checkYourAnswersPaymentDateRow(journeyRequest: JourneyRequest[AnyContent]): Option[CheckYourAnswersRow] = {
+  def checkYourAnswersPaymentDateRow(journeyRequest: JourneyRequest[AnyContent])(payFrontendBaseUrl: String): Option[CheckYourAnswersRow] = {
     if (showFuturePayment(journeyRequest)) {
       Some(CheckYourAnswersRow(
         titleMessageKey = "check-your-details.payment-date",
         value           = Seq("check-your-details.payment-date.today"),
         changeLink      = Some(Link(
-          href       = Call("GET", "some-link-to-pay-frontend"),
+          href       = Call("GET", s"$payFrontendBaseUrl/change-when-do-you-want-to-pay?toPayFrontendConfirmation=true"),
           linkId     = "check-your-details-payment-date-change-link",
           messageKey = "check-your-details.change"
         ))
@@ -68,15 +67,18 @@ trait ExtendedOrigin {
     journeyRequest.journey.journeySpecificData.dueDate.fold(false)(LocalDate.now().isBefore)
   }
 
-  def checkYourAnswersReferenceRow(journeyRequest: JourneyRequest[AnyContent]): Option[CheckYourAnswersRow]
+  protected def changeReferenceUrl(payFrontendBaseUrl: String): String = s"$payFrontendBaseUrl/pay-by-card-change-reference-number"
+
+  //hint: the checkYourAnswersReferenceRow should only include a change link when the journey is not prepopulated, i.e., user has manually entered their reference.
+  def checkYourAnswersReferenceRow(journeyRequest: JourneyRequest[AnyContent])(payFrontendBaseUrl: String): Option[CheckYourAnswersRow]
 
   def checkYourAnswersAdditionalReferenceRow(journeyRequest: JourneyRequest[AnyContent]): Option[CheckYourAnswersRow] = None
 
-  def checkYourAnswersAmountSummaryRow(journeyRequest: JourneyRequest[AnyContent]): Option[CheckYourAnswersRow] = Some(CheckYourAnswersRow(
+  def checkYourAnswersAmountSummaryRow(journeyRequest: JourneyRequest[AnyContent])(payFrontendBaseUrl: String): Option[CheckYourAnswersRow] = Some(CheckYourAnswersRow(
     titleMessageKey = "check-your-details.total-to-pay",
     value           = Seq(amount(journeyRequest)),
     changeLink      = Some(Link(
-      href       = Call("GET", "some-link-to-pay-frontend"),
+      href       = Call("GET", s"$payFrontendBaseUrl/change-amount?showSummary=false&stayOnPayFrontend=false"),
       linkId     = "check-your-details-amount-change-link",
       messageKey = "check-your-details.change"
     ))
@@ -89,7 +91,7 @@ trait ExtendedOrigin {
         titleMessageKey = "check-your-details.email-address",
         value           = Seq(email.value),
         changeLink      = Some(Link(
-          href       = Call("GET", "some-link-to-address-page-on-card-payment-frontend"),
+          href       = uk.gov.hmrc.cardpaymentfrontend.controllers.routes.EmailAddressController.renderPage,
           linkId     = "check-your-details-email-address-change-link",
           messageKey = "check-your-details.change"
         ))
@@ -106,22 +108,20 @@ trait ExtendedOrigin {
       addressFromSession.line2.getOrElse(""),
       addressFromSession.city.getOrElse(""),
       addressFromSession.county.getOrElse(""),
-      addressFromSession.postCode
+      addressFromSession.postcode
     ).filter(_.nonEmpty)
 
     Some(CheckYourAnswersRow(
       titleMessageKey = "check-your-details.card-billing-address",
       value           = addressValues,
       changeLink      = Some(Link(
-        href       = Call("GET", "some-link-to-address-page-on-card-payment-frontend"),
+        href       = uk.gov.hmrc.cardpaymentfrontend.controllers.routes.AddressController.renderPage,
         linkId     = "check-your-details-card-billing-address-change-link",
         messageKey = "check-your-details.change"
       ))
     ))
   }
 
-  //todo rename, it's not quite right -- or delete when not used anymore.
-  def checkYourAnswersRows(request: JourneyRequest[AnyContent])(implicit messages: Messages): Seq[CheckYourAnswersRow]
   def openBankingOriginSpecificSessionData: JourneySpecificData => Option[OriginSpecificSessionData]
 
   //email related content

@@ -17,7 +17,6 @@
 package uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins
 
 import payapi.cardpaymentjourney.model.journey.JourneySpecificData
-import play.api.i18n.Messages
 import play.api.mvc.AnyContent
 import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
 import uk.gov.hmrc.cardpaymentfrontend.models.openbanking.OriginSpecificSessionData
@@ -27,11 +26,9 @@ class ExtendedPfP800 extends ExtendedOrigin {
   override val serviceNameMessageKey: String = "add.message.key.here"
   override val taxNameMessageKey: String = "payment-complete.tax-name.PfP800"
   def cardFeesPagePaymentMethods: Set[PaymentMethod] = Set.empty[PaymentMethod]
-  def paymentMethods(): Set[PaymentMethod] = Set() //Set(Card, Bacs)//todo will we use this?
+  def paymentMethods(): Set[PaymentMethod] = Set() //Set(Card, Bacs)
 
-  def checkYourAnswersRows(request: JourneyRequest[AnyContent])(implicit messages: Messages): Seq[CheckYourAnswersRow] = Seq.empty
-
-  override def checkYourAnswersReferenceRow(journeyRequest: JourneyRequest[AnyContent]): Option[CheckYourAnswersRow] = None
+  override def checkYourAnswersReferenceRow(journeyRequest: JourneyRequest[AnyContent])(payFrontendBaseUrl: String): Option[CheckYourAnswersRow] = None
 
   override def openBankingOriginSpecificSessionData: JourneySpecificData => Option[OriginSpecificSessionData] = _ => None
 

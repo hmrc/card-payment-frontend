@@ -37,14 +37,14 @@ class CardPaymentServiceSpec extends ItSpec {
   implicit val fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest()
 
   val testJourney = TestJourneys.PfSa.journeyBeforeBeginWebPayment
-  val testAddress = Address("made up street", postCode    = "AA11AA", countryCode = "GBR")
+  val testAddress = Address("made up street", postcode = "AA11AA", country = "GBR")
   val testEmail = EmailAddress("some@email.com")
 
   "CardPaymentService" - {
 
     "initiatePayment" - {
 
-      val cardPaymentInitiatePaymentRequest = CardPaymentInitiatePaymentRequest("http://localhost/pay-by-card/return-to-hmrc", "SAEE", "1234567895K", AmountInPence(1234), Address("made up street", postCode    = "AA11AA", countryCode = "GBR"), Some(EmailAddress("some@email.com")))
+      val cardPaymentInitiatePaymentRequest = CardPaymentInitiatePaymentRequest("http://localhost:10155/pay-by-card/return-to-hmrc", "SAEE", "1234567895K", AmountInPence(1234), BarclaycardAddress("made up street", postCode    = "AA11AA", countryCode = "GBR"), Some(EmailAddress("some@email.com")))
       val expectedCardPaymentInitiatePaymentResponse = CardPaymentInitiatePaymentResponse("someiframeurl", "sometransactionref")
 
       "should return a CardPaymentInitiatePaymentResponse when card-payment backend returns one" in {
