@@ -36,17 +36,17 @@
 
 @layout(pageTitle = Some(heading)) {
 
-    @if(form.hasErrors) {
-        @errorSummary(ErrorSummary(errorList =
-            form.errors.asTextErrorLinks, title = Text(messages("error.there-is-a-problem")))
-        )
-    }
-
     <h1 class="govuk-heading-xl">@{
         messages("payment-failed.heading")
     }</h1>
 
     @if(hasOpenBanking) {
+
+        @if(form.hasErrors) {
+            @errorSummary(ErrorSummary(errorList =
+                form.errors.asTextErrorLinks, title = Text(messages("error.there-is-a-problem")))
+            )
+        }
 
         <p class="govuk-body govuk-!-padding-bottom-6" id="sub-heading">@{
             messages("payment-failed.sub-heading")
@@ -94,12 +94,13 @@
 
 
         @formWithCsrf(
-           action = uk.gov.hmrc.cardpaymentfrontend.controllers.routes.PaymentFailedController.submit
+            action = uk.gov.hmrc.cardpaymentfrontend.controllers.routes.PaymentFailedController.submit
         ) {
             @govukButton(Button(
                 content = Text(Messages("payment-failed.failed-check-details")),
                 value = Some(ChooseAPaymentMethodFormValues.TryAgain.entryName),
-                attributes = Map("id" -> "submit")
+                name = Some("payment_method"),
+                attributes = Map("id" -> "next")
             ))
         }
 
