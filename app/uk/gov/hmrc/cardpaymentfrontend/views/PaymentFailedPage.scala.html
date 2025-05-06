@@ -20,7 +20,7 @@
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import uk.gov.hmrc.govukfrontend.views.html.components.implicits.RichFormErrors
 @import payapi.corcommon.model.Origin
-@import payapi.corcommon.model.Origins
+@import payapi.corcommon.model.Origins._
 
 @this(
     errorSummary: GovukErrorSummary,
@@ -32,7 +32,6 @@
 
 @(origin: Origin, hasOpenBanking: Boolean, form: Form[ChooseAPaymentMethodFormValues])(implicit request: RequestHeader, messages: Messages)
 
-@import payapi.corcommon.model.Origins.BcPngr
 @heading= @{messages("payment-failed.heading")}
 
 @layout(pageTitle = Some(heading)) {
@@ -83,25 +82,26 @@
         }
     } else {
 
-    <p class="govuk-body" id="sub-heading">@{messages("payment-failed.sub-heading")}</p>
+        <p class="govuk-body" id="sub-heading">@{messages("payment-failed.sub-heading")}</p>
 
-    <p class="govuk-body" id="line1">@{messages("payment-failed.failed1")}</p>
-    <ul class="govuk-list--bullet govuk-!-static-padding-left-7">
-        <li class="govuk-body" id="line2">@{messages("payment-failed.failed2")}</li>
-        <li class="govuk-body" id="line3">@{messages("payment-failed.failed3")}</li>
-        @if(origin != BcPngr){ <li class="govuk-body" id="line4">@{messages("payment-failed.failed4")}</li> }
-    </ul>
-    <p class="govuk-body" id="check-again">@{messages("payment-failed.failed-check-again")}</p>
+        <p class="govuk-body" id="line1">@{messages("payment-failed.failed1")}</p>
+        <ul class="govuk-list--bullet govuk-!-static-padding-left-7">
+            <li class="govuk-body" id="line2">@{messages("payment-failed.failed2")}</li>
+            <li class="govuk-body" id="line3">@{messages("payment-failed.failed3")}</li>
+            @if(origin != BcPngr){ <li class="govuk-body" id="line4">@{messages("payment-failed.failed4")}</li> }
+        </ul>
+        <p class="govuk-body" id="check-again">@{messages("payment-failed.failed-check-again")}</p>
 
 
-    @formWithCsrf(
-       action = uk.gov.hmrc.cardpaymentfrontend.controllers.routes.PaymentFailedController.submit
-    ) {
-        @govukButton(Button(
-            content = Text(Messages("payment-failed.failed-check-details")),
-            id = Some("submit")
-        ))
-    }
+        @formWithCsrf(
+           action = uk.gov.hmrc.cardpaymentfrontend.controllers.routes.PaymentFailedController.submit
+        ) {
+            @govukButton(Button(
+                content = Text(Messages("payment-failed.failed-check-details")),
+                value = Some(ChooseAPaymentMethodFormValues.TryAgain.entryName),
+                attributes = Map("id" -> "submit")
+            ))
+        }
 
     <div><br></div>
 

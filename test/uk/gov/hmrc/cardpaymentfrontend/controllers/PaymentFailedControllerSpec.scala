@@ -157,6 +157,54 @@ class PaymentFailedControllerSpec extends ItSpec {
 
     }
 
+    "GET /payment-failed with No Open Banking as a Payment Method" - {
+
+      val fakeGetRequest: FakeRequest[AnyContentAsFormUrlEncoded] = FakeRequest("POST", "/payment-failed").withSessionId().withFormUrlEncodedBody(("payment_method", ChooseAPaymentMethodFormValues.TryAgain.entryName))
+      val fakeGetRequestInWelsh: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/payment-failed").withSessionId().withLangWelsh()
+
+      "should return 200 OK" in {
+        PayApiStub.stubForFindBySessionId2xx(TestJourneys.ItSa.journeyAfterFailWebPayment)
+        val result = systemUnderTest.renderPage()(fakeGetRequest)
+        status(result) shouldBe Status.OK
+      }
+
+      "render the page with the correct sub heading in English" in {
+        PayApiStub.stubForFindBySessionId2xx(TestJourneys.ItSa.journeyAfterFailWebPayment)
+        val result = systemUnderTest.renderPage(fakeGetRequest)
+        val document = Jsoup.parse(contentAsString(result))
+        document.selectXpath("//*[@id=\"main-content\"]/div/div/p[1]").text() shouldBe "No payment has been taken from your card."
+      }
+
+      "render the page with the correct sub heading in Welsh" in {
+        PayApiStub.stubForFindBySessionId2xx(TestJourneys.ItSa.journeyAfterFailWebPayment)
+        val result = systemUnderTest.renderPage()(fakeGetRequestInWelsh)
+        val document = Jsoup.parse(contentAsString(result))
+        document.selectXpath("//*[@id=\"main-content\"]/div/div/p[1]").text() shouldBe "Nid oes taliad wedi’i dynnu o’ch cerdyn."
+      }
+
+      "render the page with the correct button content in English" in {
+        PayApiStub.stubForFindBySessionId2xx(TestJourneys.ItSa.journeyAfterFailWebPayment)
+        val result = systemUnderTest.renderPage(fakeGetRequest)
+        val document = Jsoup.parse(contentAsString(result))
+        println(document)
+        document.select(".govuk-button").first().text() shouldBe "Check details and try again"
+      }
+
+      "render the page with the correct button content in Welsh" in {
+        PayApiStub.stubForFindBySessionId2xx(TestJourneys.ItSa.journeyAfterFailWebPayment)
+        val result = systemUnderTest.renderPage(fakeGetRequestInWelsh)
+        val document = Jsoup.parse(contentAsString(result))
+        document.select(".govuk-button").first().text() shouldBe "Gwiriwch y manylion a rhowch gynnig arall arni"
+      }
+
+      "Button should redirect to TryAgain - Enter Email Address page" in {
+        PayApiStub.stubForFindBySessionId2xx(TestJourneys.ItSa.journeyAfterFailWebPayment)
+        val result = systemUnderTest.submit(fakeGetRequest)
+        redirectLocation(result) shouldBe Some("/pay-by-card/email-address")
+      }
+
+    }
+
     "When Open Banking is selected" - {
       val fakeGetRequest: FakeRequest[AnyContentAsFormUrlEncoded] = FakeRequest("POST", "/payment-failed").withSessionId().withFormUrlEncodedBody(("payment_method", ChooseAPaymentMethodFormValues.OpenBanking.entryName))
 
