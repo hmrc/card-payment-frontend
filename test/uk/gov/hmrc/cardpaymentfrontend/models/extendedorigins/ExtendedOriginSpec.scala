@@ -95,8 +95,7 @@ class ExtendedOriginSpec extends ItSpec {
     val fakeGetRequestWithEmail = FakeRequest("GET", "/cya0").withSession(sessionMapWithEmail)
 
     "return Some[CheckYourAnswersRow] when showEmailAddress returns true" in {
-      val testJourneyEmailAddress = TestJourneys.BtaSa.journeyAfterBeginWebPayment
-      val fakeJourneyRequest: JourneyRequest[AnyContent] = new JourneyRequest(testJourneyEmailAddress, fakeGetRequestWithEmail)
+      val fakeJourneyRequest: JourneyRequest[AnyContent] = new JourneyRequest(testJourney, fakeGetRequestWithEmail)
       val result: Option[CheckYourAnswersRow] = systemUnderTest.checkYourAnswersEmailAddressRow(fakeJourneyRequest)
       result shouldBe Some(CheckYourAnswersRow("check-your-details.email-address", List("email@gmail.com"), Some(Link(Call("GET", "some-link-to-address-page-on-card-payment-frontend"), "check-your-details-email-address-change-link", "check-your-details.change", None))))
 
