@@ -20,18 +20,18 @@ import payapi.corcommon.model.{AmountInPence, FutureDatedPayment}
 import play.api.mvc.{AnyContent, Call}
 import play.api.test.FakeRequest
 import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
-import uk.gov.hmrc.cardpaymentfrontend.models.CheckYourAnswersRow
+import uk.gov.hmrc.cardpaymentfrontend.models.{CheckYourAnswersRow, Link}
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.ItSpec
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.TestOps.FakeRequestOps
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.stubs.PayApiStub
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.testdata.TestJourneys
-import uk.gov.hmrc.cardpaymentfrontend.models.Link
 
 import java.time.LocalDate
 
 class ExtendedOriginSpec extends ItSpec {
   private val systemUnderTest = ExtendedBtaSa //ExtendedBtaSa is a concrete reification of the trait ExtendedOrigin, we use it as a substitute here.
   private val fakeGetRequest = FakeRequest("GET", "/cya0").withSessionId()
+
   private val testJourney = TestJourneys.BtaSa.journeyBeforeBeginWebPayment
   private val testJourneyNoDueDate = TestJourneys.BtaSa.journeyBeforeBeginWebPayment.copy(journeySpecificData = testJourney.journeySpecificData.copy(dueDate = None))
   private val testJourneyOverdue = TestJourneys.BtaSa.journeyBeforeBeginWebPayment.copy(journeySpecificData = testJourneyNoDueDate.journeySpecificData.copy(dueDate = Some(LocalDate.of(2023, 12, 12))))
@@ -78,6 +78,33 @@ class ExtendedOriginSpec extends ItSpec {
     "return None when showFuturePayment returns false" in {
       val fakeJourneyRequest: JourneyRequest[AnyContent] = new JourneyRequest(testJourneyNoDueDate, fakeGetRequest)
       val result: Option[CheckYourAnswersRow] = systemUnderTest.checkYourAnswersPaymentDateRow(fakeJourneyRequest)
+      result shouldBe (None)
+    }
+  }
+
+  "checkYourAnswersEmailAddressRow" - {
+
+    val jsonSessionWithEmail =
+      """
+        |{
+        | "email" : "email@gmail.com"
+        |}
+        |""".stripMargin
+
+    val sessionMapWithEmail = ("TestJourneyId-44f9-ad7f-01e1d3d8f151", jsonSessionWithEmail)
+    val fakeGetRequestWithEmail = FakeRequest("GET", "/cya0").withSession(sessionMapWithEmail)
+
+    "return Some[CheckYourAnswersRow] when showEmailAddress returns true" in {
+      val testJourneyEmailAddress = TestJourneys.BtaSa.journeyAfterBeginWebPayment
+      val fakeJourneyRequest: JourneyRequest[AnyContent] = new JourneyRequest(testJourneyEmailAddress, fakeGetRequestWithEmail)
+      val result: Option[CheckYourAnswersRow] = systemUnderTest.checkYourAnswersEmailAddressRow(fakeJourneyRequest)
+      result shouldBe Some(CheckYourAnswersRow("check-your-details.email-address", List("email@gmail.com"), Some(Link(Call("GET", "some-link-to-address-page-on-card-payment-frontend"), "check-your-details-email-address-change-link", "check-your-details.change", None))))
+
+    }
+    "return None when showEmailAddress returns false" in {
+      val testJourneyEmailAddress = TestJourneys.BtaSa.journeyAfterBeginWebPayment
+      val fakeJourneyRequest: JourneyRequest[AnyContent] = new JourneyRequest(testJourneyEmailAddress, fakeGetRequest)
+      val result: Option[CheckYourAnswersRow] = systemUnderTest.checkYourAnswersEmailAddressRow(fakeJourneyRequest)
       result shouldBe (None)
     }
   }
