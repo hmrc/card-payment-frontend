@@ -19,7 +19,6 @@ package uk.gov.hmrc.cardpaymentfrontend.services
 import payapi.cardpaymentjourney.model.journey.Journey
 import play.api.Logging
 import play.api.libs.json.JsBoolean
-//import play.api.mvc.RequestHeader
 import uk.gov.hmrc.cardpaymentfrontend.config.AppConfig
 import uk.gov.hmrc.cardpaymentfrontend.connectors.{CardPaymentConnector, PayApiConnector}
 import uk.gov.hmrc.cardpaymentfrontend.models.cardpayment.{BarclaycardAddress, CardPaymentInitiatePaymentRequest, CardPaymentInitiatePaymentResponse, CardPaymentResult, ClientId}
@@ -63,7 +62,7 @@ class CardPaymentService @Inject() (
     )
 
     val cardPaymentInitiatePaymentRequest: CardPaymentInitiatePaymentRequest = CardPaymentInitiatePaymentRequest(
-      redirectUrl         = returnToHmrcUrl, //(requestHeader),
+      redirectUrl         = returnToHmrcUrl,
       clientId            = clientIdStringToUse,
       purchaseDescription = journey.referenceValue,
       purchaseAmount      = journey.getAmountInPence,
