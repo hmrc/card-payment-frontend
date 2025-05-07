@@ -96,7 +96,6 @@
         </ul>
         <p class="govuk-body" id="check-again">@{messages("payment-failed.failed-check-again")}</p>
 
-
         @formWithCsrf(
             action = uk.gov.hmrc.cardpaymentfrontend.controllers.routes.PaymentFailedController.submit
         ) {
