@@ -36,10 +36,6 @@
 
 @layout(pageTitle = Some(heading)) {
 
-    <h1 class="govuk-heading-xl">@{
-        messages("payment-failed.heading")
-    }</h1>
-
     @if(hasOpenBanking) {
 
         @if(form.hasErrors) {
@@ -47,6 +43,10 @@
                 form.errors.asTextErrorLinks, title = Text(messages("error.there-is-a-problem")))
             )
         }
+
+        <h1 class="govuk-heading-xl">@{
+            messages("payment-failed.heading")
+        }</h1>
 
         <p class="govuk-body govuk-!-padding-bottom-6" id="sub-heading">@{
             messages("payment-failed.sub-heading")
@@ -81,6 +81,10 @@
             @govukButton(Button(content = Text(Messages("continue")), attributes = Map("id" -> "next")))
         }
     } else {
+
+        <h1 class="govuk-heading-xl">@{
+            messages("payment-failed.heading")
+        }</h1>
 
         <p class="govuk-body" id="sub-heading">@{messages("payment-failed.sub-heading")}</p>
 
