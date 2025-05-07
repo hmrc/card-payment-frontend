@@ -124,6 +124,7 @@ class PaymentCompleteControllerSpec extends ItSpec {
         PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyAfterSucceedDebitWebPayment)
         val result = systemUnderTest.renderPage(fakeGetRequest)
         val document = Jsoup.parse(contentAsString(result))
+        println(document)
         document.select("#email-paragraph").size() shouldBe 0
       }
 
