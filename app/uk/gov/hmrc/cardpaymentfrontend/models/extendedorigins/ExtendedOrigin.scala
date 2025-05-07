@@ -86,7 +86,7 @@ trait ExtendedOrigin {
 
   def checkYourAnswersEmailAddressRow(journeyRequest: JourneyRequest[AnyContent]): Option[CheckYourAnswersRow] = {
     val maybeEmail: Option[EmailAddress] = journeyRequest.readFromSession[EmailAddress](journeyRequest.journeyId, Keys.email)
-    maybeEmail.map { email =>
+    maybeEmail.filter(!_.value.isBlank).map { email =>
       CheckYourAnswersRow(
         titleMessageKey = "check-your-details.email-address",
         value           = Seq(email.value),

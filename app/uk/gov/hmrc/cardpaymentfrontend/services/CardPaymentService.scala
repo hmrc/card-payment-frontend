@@ -19,6 +19,7 @@ package uk.gov.hmrc.cardpaymentfrontend.services
 import payapi.cardpaymentjourney.model.journey.Journey
 import play.api.Logging
 import play.api.libs.json.JsBoolean
+//import play.api.mvc.RequestHeader
 import uk.gov.hmrc.cardpaymentfrontend.config.AppConfig
 import uk.gov.hmrc.cardpaymentfrontend.connectors.{CardPaymentConnector, PayApiConnector}
 import uk.gov.hmrc.cardpaymentfrontend.models.cardpayment.{BarclaycardAddress, CardPaymentInitiatePaymentRequest, CardPaymentInitiatePaymentResponse, CardPaymentResult, ClientId}
@@ -37,9 +38,9 @@ class CardPaymentService @Inject() (
     clientIdService:      ClientIdService
 )(implicit executionContext: ExecutionContext) extends Logging {
 
-  private val frontendBaseUrl: String = appConfig.cardPaymentFrontendBaseUrl
   // the url barclaycard make an empty post to after user completes payment
-  private val returnToHmrcUrl: String = frontendBaseUrl + uk.gov.hmrc.cardpaymentfrontend.controllers.routes.PaymentStatusController.returnToHmrc().url
+  private def returnToHmrcUrl: String =
+    s"${appConfig.cardPaymentFrontendBaseUrl}${uk.gov.hmrc.cardpaymentfrontend.controllers.routes.PaymentStatusController.returnToHmrc().url}"
 
   def initiatePayment(
       journey:               Journey[_],
@@ -47,7 +48,6 @@ class CardPaymentService @Inject() (
       maybeEmailFromSession: Option[EmailAddress],
       language:              Language
   )(implicit headerCarrier: HeaderCarrier): Future[CardPaymentInitiatePaymentResponse] = {
-
     val clientId: ClientId = clientIdService.determineClientId(journey, language)
     val clientIdStringToUse = if (appConfig.useProductionClientIds) clientId.prodCode else clientId.qaCode
 
@@ -63,7 +63,7 @@ class CardPaymentService @Inject() (
     )
 
     val cardPaymentInitiatePaymentRequest: CardPaymentInitiatePaymentRequest = CardPaymentInitiatePaymentRequest(
-      redirectUrl         = returnToHmrcUrl,
+      redirectUrl         = returnToHmrcUrl, //(requestHeader),
       clientId            = clientIdStringToUse,
       purchaseDescription = journey.referenceValue,
       purchaseAmount      = journey.getAmountInPence,

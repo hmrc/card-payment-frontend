@@ -46,7 +46,8 @@ trait ItSpec extends AnyFreeSpecLike
     "microservice.services.email-service.port" -> self.wireMockPort,
     "microservice.services.open-banking.port" -> self.wireMockPort,
     "microservice.services.pay-api.port" -> self.wireMockPort,
-    "microservice.services.payments-survey.port" -> self.wireMockPort
+    "microservice.services.payments-survey.port" -> self.wireMockPort,
+    "urls.card-payment-frontend.base-url" -> "http://localhost:10155"
   )
 
   override def beforeEach(): Unit = {
