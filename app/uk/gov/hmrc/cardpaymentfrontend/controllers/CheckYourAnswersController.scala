@@ -54,12 +54,14 @@ class CheckYourAnswersController @Inject() (
     val cardBillingAddressRow: Option[CheckYourAnswersRow] = extendedOrigin.checkYourAnswersCardBillingAddressRow(journeyRequest)
     // If no email is present in the session, no Email Row is shown
     val maybeEmailRow: Option[CheckYourAnswersRow] = {
-      if (journeyRequest.readFromSession[EmailAddress](journeyRequest.journeyId, Keys.email).map(_.value).getOrElse("").nonEmpty) {
-        extendedOrigin.checkYourAnswersEmailAddressRow(journeyRequest)
-      } else {
-        None
-      }
+      journeyRequest.readFromSession[EmailAddress](journeyRequest.journeyId, Keys.email)
+        .filter(!_.value.isBlank)
+      extendedOrigin.checkYourAnswersEmailAddressRow(journeyRequest)
     }
+
+//    journeyRequest.readFromSession[EmailAddress](journeyRequest.journeyId, Keys.email)
+//      .filter(!_.value.isBlank)
+//      .map(email => EmailAddress(email.value))
 
     val summaryListRows: Seq[SummaryListRow] = Seq(
       paymentDate,
