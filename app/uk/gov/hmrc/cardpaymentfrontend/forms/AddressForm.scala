@@ -46,8 +46,8 @@ object AddressForm {
       "county" -> optional(text.transform[String](_.trim, identity)
         .verifying(maxLength(60))
         .verifying(emojiConstraint("county", "address.field-name.error.invalid.char"))),
-      "postCode" -> of(postCodeFormatter),
-      "countryCode" -> text.verifying(countryConstraint)
+      "postcode" -> of(postcodeFormatter),
+      "country" -> text.verifying(countryConstraint)
     )(Address.apply)(Address.unapply)
   )
 
@@ -66,22 +66,22 @@ object AddressForm {
 
   }
 
-  def countryConstraint: Constraint[String] = Constraint[String]("constraint.countryCode") { o =>
-    if (o.isBlank) Invalid(ValidationError("address.field-name.error.required.countryCode")) else if (o.trim.isEmpty) Invalid(ValidationError("address.field-name.error.required.countryCode")) else Valid
+  def countryConstraint: Constraint[String] = Constraint[String]("constraint.country") { o =>
+    if (o.isBlank) Invalid(ValidationError("address.field-name.error.required.country")) else if (o.trim.isEmpty) Invalid(ValidationError("address.field-name.error.required.country")) else Valid
   }
 
-  val postCodeFormatter: Formatter[String] = new Formatter[String] {
+  val postcodeFormatter: Formatter[String] = new Formatter[String] {
 
     override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], String] = {
       // for accessibility, we need to allow users to enter spaces anywhere in postcode, we strip them to assert the postcode matches the regex, then use what the user entered.
-      val postCode: String = data("postCode").filterNot(_.isWhitespace)
-      val selectedCountryIsGBR: Boolean = data("countryCode").matches("GBR")
-      if (selectedCountryIsGBR && postCode.isEmpty)
-        Left(Seq(FormError("postCode", "address.field-name.error.empty.postCode")))
-      else if (selectedCountryIsGBR && !postCode.matches(ukPostcodeRegex.regex))
-        Left(Seq(FormError("postCode", "address.field-name.error.invalid.postCode")))
+      val postcode: String = data("postcode").filterNot(_.isWhitespace)
+      val selectedCountryIsGBR: Boolean = data("country").matches("GBR")
+      if (selectedCountryIsGBR && postcode.isEmpty)
+        Left(Seq(FormError("postcode", "address.field-name.error.empty.postcode")))
+      else if (selectedCountryIsGBR && !postcode.matches(ukPostcodeRegex.regex))
+        Left(Seq(FormError("postcode", "address.field-name.error.invalid.postcode")))
       else
-        Right(postCode)
+        Right(postcode)
     }
 
     override def unbind(key: String, value: String): Map[String, String] = Map(key -> value)

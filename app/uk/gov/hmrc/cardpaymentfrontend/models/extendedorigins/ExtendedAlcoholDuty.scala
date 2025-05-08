@@ -18,12 +18,11 @@ package uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins
 
 import payapi.cardpaymentjourney.model.journey.{JourneySpecificData, JsdAlcoholDuty}
 import payapi.corcommon.model.taxes.ad.AlcoholDutyChargeReference
-import play.api.i18n.Messages
 import play.api.mvc.AnyContent
 import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
-import uk.gov.hmrc.cardpaymentfrontend.models.{CheckYourAnswersRow, PaymentMethod}
-import uk.gov.hmrc.cardpaymentfrontend.models.openbanking.{AlcoholDutySessionData, OriginSpecificSessionData}
 import uk.gov.hmrc.cardpaymentfrontend.models.PaymentMethod.{Bacs, Card, OpenBanking}
+import uk.gov.hmrc.cardpaymentfrontend.models.openbanking.{AlcoholDutySessionData, OriginSpecificSessionData}
+import uk.gov.hmrc.cardpaymentfrontend.models.{CheckYourAnswersRow, PaymentMethod}
 
 object ExtendedAlcoholDuty extends ExtendedOrigin {
   override val serviceNameMessageKey: String = "service-name.AlcoholDuty"
@@ -33,10 +32,7 @@ object ExtendedAlcoholDuty extends ExtendedOrigin {
 
   def paymentMethods(): Set[PaymentMethod] = Set(Card, OpenBanking, Bacs)
 
-  //todo delete from ExtendedOrigin trait, we won't use it anymore
-  def checkYourAnswersRows(request: JourneyRequest[AnyContent])(implicit messages: Messages): Seq[CheckYourAnswersRow] = Seq.empty
-
-  override def checkYourAnswersReferenceRow(journeyRequest: JourneyRequest[AnyContent]): Option[CheckYourAnswersRow] = {
+  override def checkYourAnswersReferenceRow(journeyRequest: JourneyRequest[AnyContent])(payFrontendBaseUrl: String): Option[CheckYourAnswersRow] = {
     Some(CheckYourAnswersRow(
       titleMessageKey = "check-your-details.AlcoholDuty.reference",
       value           = Seq(journeyRequest.journey.referenceValue),

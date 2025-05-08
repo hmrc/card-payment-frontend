@@ -19,10 +19,9 @@ package uk.gov.hmrc.cardpaymentfrontend.services
 import payapi.cardpaymentjourney.model.journey.Journey
 import play.api.Logging
 import play.api.libs.json.JsBoolean
-import play.api.mvc.RequestHeader
 import uk.gov.hmrc.cardpaymentfrontend.config.AppConfig
 import uk.gov.hmrc.cardpaymentfrontend.connectors.{CardPaymentConnector, PayApiConnector}
-import uk.gov.hmrc.cardpaymentfrontend.models.cardpayment.{CardPaymentInitiatePaymentRequest, CardPaymentInitiatePaymentResponse, CardPaymentResult, ClientId}
+import uk.gov.hmrc.cardpaymentfrontend.models.cardpayment.{BarclaycardAddress, CardPaymentInitiatePaymentRequest, CardPaymentInitiatePaymentResponse, CardPaymentResult, ClientId}
 import uk.gov.hmrc.cardpaymentfrontend.models.payapi.{BeginWebPaymentRequest, FailWebPaymentRequest, FinishedWebPaymentRequest, SucceedWebPaymentRequest}
 import uk.gov.hmrc.cardpaymentfrontend.models.{Address, EmailAddress, Language}
 import uk.gov.hmrc.http.HeaderCarrier
@@ -38,25 +37,36 @@ class CardPaymentService @Inject() (
     clientIdService:      ClientIdService
 )(implicit executionContext: ExecutionContext) extends Logging {
 
+  // the url barclaycard make an empty post to after user completes payment
+  private def returnToHmrcUrl: String =
+    s"${appConfig.cardPaymentFrontendBaseUrl}${uk.gov.hmrc.cardpaymentfrontend.controllers.routes.PaymentStatusController.returnToHmrc().url}"
+
   def initiatePayment(
       journey:               Journey[_],
       addressFromSession:    Address,
       maybeEmailFromSession: Option[EmailAddress],
       language:              Language
-  )(implicit headerCarrier: HeaderCarrier, requestHeader: RequestHeader): Future[CardPaymentInitiatePaymentResponse] = {
-
-    //todo move this to a val outside the function, then we can test it too
-    val urlToComeBackFromAfterIframe: String = uk.gov.hmrc.cardpaymentfrontend.controllers.routes.PaymentStatusController.returnToHmrc().absoluteURL()(requestHeader)
-
+  )(implicit headerCarrier: HeaderCarrier): Future[CardPaymentInitiatePaymentResponse] = {
     val clientId: ClientId = clientIdService.determineClientId(journey, language)
     val clientIdStringToUse = if (appConfig.useProductionClientIds) clientId.prodCode else clientId.qaCode
 
+    //todo eventually we can just use barclaycardaddress model, but we want backwards compatibility with pay-frontend.
+    // This way if user ends up on pay-frontend after being on card-payment-frontend (or vice versa) it won't break.
+    val addressFromSessionAsBarclaycardAddress: BarclaycardAddress = BarclaycardAddress(
+      line1       = addressFromSession.line1,
+      line2       = addressFromSession.line2,
+      city        = addressFromSession.city,
+      county      = addressFromSession.county,
+      postCode    = addressFromSession.postcode,
+      countryCode = addressFromSession.country
+    )
+
     val cardPaymentInitiatePaymentRequest: CardPaymentInitiatePaymentRequest = CardPaymentInitiatePaymentRequest(
-      redirectUrl         = urlToComeBackFromAfterIframe,
+      redirectUrl         = returnToHmrcUrl,
       clientId            = clientIdStringToUse,
       purchaseDescription = journey.referenceValue,
       purchaseAmount      = journey.getAmountInPence,
-      billingAddress      = addressFromSession,
+      billingAddress      = addressFromSessionAsBarclaycardAddress,
       emailAddress        = maybeEmailFromSession
     )
 

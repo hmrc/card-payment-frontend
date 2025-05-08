@@ -18,6 +18,7 @@ package uk.gov.hmrc.cardpaymentfrontend.controllers
 
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.cardpaymentfrontend.actions.{Actions, JourneyRequest}
+import uk.gov.hmrc.cardpaymentfrontend.config.AppConfig
 import uk.gov.hmrc.cardpaymentfrontend.models.{Address, CheckYourAnswersRow, EmailAddress}
 import uk.gov.hmrc.cardpaymentfrontend.models.CheckYourAnswersRow.summarise
 import uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins.ExtendedOrigin
@@ -37,6 +38,7 @@ import scala.concurrent.ExecutionContext
 @Singleton()
 class CheckYourAnswersController @Inject() (
     actions:              Actions,
+    appConfig:            AppConfig,
     cardPaymentService:   CardPaymentService,
     checkYourAnswersPage: CheckYourAnswersPage,
     mcc:                  MessagesControllerComponents,
@@ -47,10 +49,10 @@ class CheckYourAnswersController @Inject() (
   def renderPage: Action[AnyContent] = actions.journeyAction { implicit journeyRequest: JourneyRequest[AnyContent] =>
     val extendedOrigin: ExtendedOrigin = journeyRequest.journey.origin.lift
 
-    val paymentDate: Option[CheckYourAnswersRow] = extendedOrigin.checkYourAnswersPaymentDateRow(journeyRequest)
-    val referenceRow: Option[CheckYourAnswersRow] = extendedOrigin.checkYourAnswersReferenceRow(journeyRequest)
+    val paymentDate: Option[CheckYourAnswersRow] = extendedOrigin.checkYourAnswersPaymentDateRow(journeyRequest)(appConfig.payFrontendBaseUrl)
+    val referenceRow: Option[CheckYourAnswersRow] = extendedOrigin.checkYourAnswersReferenceRow(journeyRequest)(appConfig.payFrontendBaseUrl)
     val additionalReferenceRow: Option[CheckYourAnswersRow] = extendedOrigin.checkYourAnswersAdditionalReferenceRow(journeyRequest)
-    val amountRow: Option[CheckYourAnswersRow] = extendedOrigin.checkYourAnswersAmountSummaryRow(journeyRequest)
+    val amountRow: Option[CheckYourAnswersRow] = extendedOrigin.checkYourAnswersAmountSummaryRow(journeyRequest)(appConfig.payFrontendBaseUrl)
     val maybeEmailRow: Option[CheckYourAnswersRow] = extendedOrigin.checkYourAnswersEmailAddressRow(journeyRequest)
     val cardBillingAddressRow: Option[CheckYourAnswersRow] = extendedOrigin.checkYourAnswersCardBillingAddressRow(journeyRequest)
 
@@ -73,7 +75,7 @@ class CheckYourAnswersController @Inject() (
         addressFromSession    = journeyRequest.readFromSession[Address](journeyRequest.journeyId, Keys.address).getOrElse(throw new RuntimeException("We can't process a card payment without the billing address.")),
         maybeEmailFromSession = journeyRequest.readFromSession[EmailAddress](journeyRequest.journeyId, Keys.email),
         language              = requestSupport.usableLanguage
-      )(requestSupport.hc, journeyRequest.request)
+      )(requestSupport.hc)
       .map { cardPaymentInitiatePaymentResponse =>
         Redirect(routes.PaymentStatusController.showIframe(RedirectUrl(cardPaymentInitiatePaymentResponse.redirectUrl)))
       }

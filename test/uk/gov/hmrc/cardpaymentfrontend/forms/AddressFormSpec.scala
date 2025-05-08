@@ -36,8 +36,8 @@ class AddressFormSpec extends UnitSpec {
         "line2" -> "Some Cottage",
         "city" -> "Nice Town",
         "county" -> "Cool County",
-        "postCode" -> "AA11 AA",
-        "countryCode" -> "GBR"
+        "postcode" -> "AA11 AA",
+        "country" -> "GBR"
       )
 
       val result: Form[Address] = form.bind(validAddress)
@@ -49,8 +49,8 @@ class AddressFormSpec extends UnitSpec {
 
       val validAddress: Map[String, String] = Map(
         "line1" -> "20 Street Road",
-        "postCode" -> "AA11 AA",
-        "countryCode" -> "GBR"
+        "postcode" -> "AA11 AA",
+        "country" -> "GBR"
       )
 
       val result: Form[Address] = form.bind(validAddress)
@@ -65,8 +65,8 @@ class AddressFormSpec extends UnitSpec {
         "line2" -> "   ",
         "city" -> "",
         "county" -> "",
-        "postCode" -> "AA11 AA",
-        "countryCode" -> "GBR"
+        "postcode" -> "AA11 AA",
+        "country" -> "GBR"
       )
 
       val result: Form[Address] = form.bind(validAddress)
@@ -81,13 +81,13 @@ class AddressFormSpec extends UnitSpec {
         "line2" -> "Some Cottage",
         "city" -> "Nice Town",
         "county" -> "Cool County",
-        "postCode" -> "",
-        "countryCode" -> ""
+        "postcode" -> "",
+        "country" -> ""
       )
 
       val result: Form[Address] = form.bind(validAddress)
       result.hasErrors shouldBe true
-      result.errors shouldBe List(FormError("line1", List("address.field-name.error.invalid.line1")), FormError("countryCode", List("address.field-name.error.required.countryCode")))
+      result.errors shouldBe List(FormError("line1", List("address.field-name.error.invalid.line1")), FormError("country", List("address.field-name.error.required.country")))
     }
 
     "When country is not GBR, errors thrown for line1 only" in {
@@ -97,8 +97,8 @@ class AddressFormSpec extends UnitSpec {
         "line2" -> "Some Cottage",
         "city" -> "Nice Town",
         "county" -> "Cool County",
-        "postCode" -> "",
-        "countryCode" -> "BMU"
+        "postcode" -> "",
+        "country" -> "BMU"
       )
 
       val result: Form[Address] = form.bind(validAddress)
@@ -113,13 +113,13 @@ class AddressFormSpec extends UnitSpec {
         "line2" -> "Some Cottage",
         "city" -> "Nice Town",
         "county" -> "Cool County",
-        "postCode" -> "",
-        "countryCode" -> "GBR"
+        "postcode" -> "",
+        "country" -> "GBR"
       )
 
       val result: Form[Address] = form.bind(validAddress)
       result.hasErrors shouldBe true
-      result.errors shouldBe List(FormError("postCode", List("address.field-name.error.empty.postCode")))
+      result.errors shouldBe List(FormError("postcode", List("address.field-name.error.empty.postcode")))
     }
 
     "Throw errors when fields are too long" in {
@@ -131,8 +131,8 @@ class AddressFormSpec extends UnitSpec {
         "line2" -> createLongString(51),
         "city" -> createLongString(61),
         "county" -> createLongString(61),
-        "postCode" -> "AA11 AA",
-        "countryCode" -> "GBR"
+        "postcode" -> "AA11 AA",
+        "country" -> "GBR"
       )
 
       val result: Form[Address] = form.bind(invalidAddress)
@@ -152,8 +152,8 @@ class AddressFormSpec extends UnitSpec {
         "line2" -> "🐸",
         "city" -> "🍄",
         "county" -> "🦕",
-        "postCode" -> "AA11 AA",
-        "countryCode" -> "GBR"
+        "postcode" -> "AA11 AA",
+        "country" -> "GBR"
       )
 
       val result: Form[Address] = form.bind(invalidAddress)
