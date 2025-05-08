@@ -70,9 +70,7 @@
         content = HtmlContent(panelContent)
     ))
 
-    @if(maybeEmailAddress.map(_.value).getOrElse("").nonEmpty) {
-        @maybeEmailContent
-    }
+    @maybeEmailContent
 
     @govukSummaryList(SummaryList(summaryListRows))
 
