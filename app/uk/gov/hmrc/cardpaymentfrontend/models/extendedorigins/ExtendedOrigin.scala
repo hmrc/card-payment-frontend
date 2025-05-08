@@ -84,17 +84,18 @@ trait ExtendedOrigin {
 
   def checkYourAnswersEmailAddressRow(journeyRequest: JourneyRequest[AnyContent]): Option[CheckYourAnswersRow] = {
     val maybeEmail: Option[EmailAddress] = journeyRequest.readFromSession[EmailAddress](journeyRequest.journeyId, Keys.email)
-    maybeEmail.map { email =>
-      CheckYourAnswersRow(
-        titleMessageKey = "check-your-details.email-address",
-        value           = Seq(email.value),
-        changeLink      = Some(Link(
-          href       = Call("GET", "some-link-to-address-page-on-card-payment-frontend"),
-          linkId     = "check-your-details-email-address-change-link",
-          messageKey = "check-your-details.change"
-        ))
-      )
-    }
+    maybeEmail.filter(!_.value.isBlank)
+      .map { email =>
+        CheckYourAnswersRow(
+          titleMessageKey = "check-your-details.email-address",
+          value           = Seq(email.value),
+          changeLink      = Some(Link(
+            href       = Call("GET", "some-link-to-address-page-on-card-payment-frontend"),
+            linkId     = "check-your-details-email-address-change-link",
+            messageKey = "check-your-details.change"
+          ))
+        )
+      }
   }
 
   // TODO: Update tests to not include country - check doesn't show country

@@ -50,7 +50,7 @@ class PaymentCompleteController @Inject() (
   val renderPage: Action[AnyContent] = actions.journeyAction { implicit journeyRequest: JourneyRequest[AnyContent] =>
 
     val maybeEmailFromSession: Option[EmailAddress] =
-      journeyRequest.readFromSession[EmailAddress](journeyRequest.journeyId, Keys.email).map(email => EmailAddress(email.value))
+      journeyRequest.readFromSession[EmailAddress](journeyRequest.journeyId, Keys.email).filter(!_.value.isBlank).map(email => EmailAddress(email.value))
 
     val langIsEnglish: Boolean = journeyRequest.lang.code =!= "cy"
 
