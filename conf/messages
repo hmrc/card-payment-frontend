@@ -5,6 +5,7 @@ service.text = This is your new service
 ## Non page specific
 continue = Continue
 error.there-is-a-problem = There is a problem
+main-banner-title = Pay your {}
 
 ## Origin service names
 service-name.PfSa = Pay your Self Assessment
@@ -259,6 +260,7 @@ payment-complete.tax-name.AlcoholDuty = Alcohol Duty
 payment-complete.tax-name.PfAlcoholDuty = Alcohol Duty
 
 ## Payment Cancelled page
+
 payment-cancelled.heading = Payment cancelled
 payment-cancelled.p1 = You have cancelled your payment.
 payment-cancelled.p2 = No payment has been taken from your account.
