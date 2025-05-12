@@ -32,6 +32,7 @@ class AppConfig @Inject() (config: Configuration, servicesConfig: ServicesConfig
   val emailBaseUrl: String = servicesConfig.baseUrl("email-service")
 
   val payFrontendBaseUrl: String = config.get[String]("urls.pay-frontend.base-url") + "/pay"
+  val cardPaymentFrontendBaseUrl: String = config.get[String]("urls.card-payment-frontend.base-url")
 
   val bankTransferRelativeUrl: String = config.get[String]("urls.pay-frontend.bank-transfer")
   val oneOffDirectDebitRelativeUrl: String = config.get[String]("urls.pay-frontend.one-off-direct-debit")

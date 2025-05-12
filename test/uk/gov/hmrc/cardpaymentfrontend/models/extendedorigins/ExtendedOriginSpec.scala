@@ -71,13 +71,13 @@ class ExtendedOriginSpec extends ItSpec {
     "return Some[CheckYourAnswersRow] when showFuturePayment returns true" in {
       val testJourneyWithFutureDatedPayment = testJourney copy (futureDatedPayment = Some(FutureDatedPayment(LocalDate.now().plusMonths(1))))
       val fakeJourneyRequest: JourneyRequest[AnyContent] = new JourneyRequest(testJourneyWithFutureDatedPayment, fakeGetRequest)
-      val result: Option[CheckYourAnswersRow] = systemUnderTest.checkYourAnswersPaymentDateRow(fakeJourneyRequest)
-      result shouldBe Some(CheckYourAnswersRow("check-your-details.payment-date", List("check-your-details.payment-date.today"), Some(Link(Call("GET", "some-link-to-pay-frontend"), "check-your-details-payment-date-change-link", "check-your-details.change", None))))
+      val result: Option[CheckYourAnswersRow] = systemUnderTest.checkYourAnswersPaymentDateRow(fakeJourneyRequest)("blah")
+      result shouldBe Some(CheckYourAnswersRow("check-your-details.payment-date", List("check-your-details.payment-date.today"), Some(Link(Call("GET", "blah/change-when-do-you-want-to-pay?toPayFrontendConfirmation=true"), "check-your-details-payment-date-change-link", "check-your-details.change", None))))
 
     }
     "return None when showFuturePayment returns false" in {
       val fakeJourneyRequest: JourneyRequest[AnyContent] = new JourneyRequest(testJourneyNoDueDate, fakeGetRequest)
-      val result: Option[CheckYourAnswersRow] = systemUnderTest.checkYourAnswersPaymentDateRow(fakeJourneyRequest)
+      val result: Option[CheckYourAnswersRow] = systemUnderTest.checkYourAnswersPaymentDateRow(fakeJourneyRequest)("blah")
       result shouldBe (None)
     }
   }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,19 +14,20 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.cardpaymentfrontend.models
+package uk.gov.hmrc.cardpaymentfrontend.models.cardpayment
 
-import play.api.libs.json.{Json, OFormat}
+import play.api.libs.json.{Format, Json}
 
-//these fields are the same as pay-frontend, so we can reuse some pages
-final case class Address(
-    line1:    String,
-    line2:    Option[String] = None,
-    city:     Option[String] = None,
-    county:   Option[String] = None,
-    postcode: String,
-    country:  String
+//barclaycard want field names in a specific way, so we have another case class for it to send to the backend
+final case class BarclaycardAddress(
+    line1:       String,
+    line2:       Option[String] = None,
+    city:        Option[String] = None,
+    county:      Option[String] = None,
+    postCode:    String,
+    countryCode: String
 ) {
+
   def hasSelect(maybeString: Option[String]): Boolean = {
     maybeString match {
       case Some(s) =>
@@ -37,12 +38,12 @@ final case class Address(
   }
 
   // For UK (GBR) addresses only, replace counties containing variations on Select with None.
-  def sanitiseCounty(): Address =
-    if (country.matches("GBR") && hasSelect(this.county)) this.copy (county = None)
+  def sanitiseCounty(): BarclaycardAddress =
+    if (countryCode.matches("GBR") && hasSelect(this.county)) this.copy (county = None)
     else this
 }
 
 @SuppressWarnings(Array("org.wartremover.warts.Any"))
-object Address {
-  implicit val format: OFormat[Address] = Json.format[Address] //it's used only when placing address in play session.
+object BarclaycardAddress {
+  implicit val format: Format[BarclaycardAddress] = Json.format[BarclaycardAddress]
 }

@@ -131,19 +131,19 @@ address.field-name.line1 = Cyfeiriad - llinell 1
 address.field-name.line2 = Cyfeiriad - llinell 2 (dewisol)
 address.field-name.city = Tref neu ddinas (dewisol)
 address.field-name.county = Sir (dewisol)
-address.field-name.postCode = Cod post
-address.field-name.countryCode = Gwlad
+address.field-name.postcode = Cod post
+address.field-name.country = Gwlad
 
-address.countryCode.select.message = Dewiswch
-address.postCode.hint = Os ydych yn berson nad yw’n breswyl yn y DU, mae hyn yn ddewisol
+address.country.select.message = Dewiswch
+address.postcode.hint = Os ydych yn berson nad yw’n breswyl yn y DU, mae hyn yn ddewisol
 address.optional = (dewisol)
 address.optional.non.uk.address = (dewisol ar gyfer cyfeiriadau y tu allan i’r DU)
 
 address.field-name.error.invalid.line1 = Nodwch linell gyntaf y cyfeiriad bilio
-address.field-name.error.invalid.postCode = Nodwch eich cod post yn y fformat cywir
-address.field-name.error.empty.postCode = Nodwch eich cod post
-address.field-name.error.required.postCode = Nodwch god post dilys
-address.field-name.error.required.countryCode = Dewiswch eich gwlad
+address.field-name.error.invalid.postcode = Nodwch eich cod post yn y fformat cywir
+address.field-name.error.empty.postcode = Nodwch eich cod post
+address.field-name.error.required.postcode = Nodwch god post dilys
+address.field-name.error.required.country = Dewiswch eich gwlad
 address.field-name.error.invalid.emailaddress = Nodwch gyfeiriad e-bost dilys neu gadewch yn wag
 address.field-name.error.constraint.emailaddress = Nodwch gyfeiriad e-bost dilys neu gadewch yn wag
 address.field-name.error.invalid.char = Mae’r maes yn cynnwys cymeriad annilys

@@ -17,8 +17,8 @@
 package uk.gov.hmrc.cardpaymentfrontend.connectors
 
 import payapi.corcommon.model.AmountInPence
-import uk.gov.hmrc.cardpaymentfrontend.models.cardpayment.{CardPaymentInitiatePaymentRequest, CardPaymentInitiatePaymentResponse}
-import uk.gov.hmrc.cardpaymentfrontend.models.{Address, EmailAddress}
+import uk.gov.hmrc.cardpaymentfrontend.models.cardpayment.{BarclaycardAddress, CardPaymentInitiatePaymentRequest, CardPaymentInitiatePaymentResponse}
+import uk.gov.hmrc.cardpaymentfrontend.models.EmailAddress
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.ItSpec
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.stubs.CardPaymentStub
 import uk.gov.hmrc.http.HeaderCarrier
@@ -32,7 +32,7 @@ class CardPaymentConnectorSpec extends ItSpec {
 
     "initiatePayment" - {
       "should return a CardPaymentInitiatePaymentResponse when card-payment backend returns valid json" in {
-        val cardPaymentInitiatePaymentRequest = CardPaymentInitiatePaymentRequest("somereturnurl", "MIEE", "1234567895K", AmountInPence(1234), Address("teststreet", postCode    = "AA11AA", countryCode = "GBR"), Some(EmailAddress("test@email.com")))
+        val cardPaymentInitiatePaymentRequest = CardPaymentInitiatePaymentRequest("somereturnurl", "MIEE", "1234567895K", AmountInPence(1234), BarclaycardAddress("teststreet", postCode    = "AA11AA", countryCode = "GBR"), Some(EmailAddress("test@email.com")))
         val expectedCardPaymentInitiatePaymentResponse = CardPaymentInitiatePaymentResponse("someiframeurl", "sometransactionref")
 
         CardPaymentStub.InitiatePayment.stubForInitiatePayment2xx(cardPaymentInitiatePaymentRequest, expectedCardPaymentInitiatePaymentResponse)
@@ -42,7 +42,7 @@ class CardPaymentConnectorSpec extends ItSpec {
       }
 
       "should throw an exception when card-payment backend returns a 5xx server error" in {
-        val cardPaymentInitiatePaymentRequest = CardPaymentInitiatePaymentRequest("somereturnurl", "MIEE", "1234567895", AmountInPence(123), Address("teststreet", postCode    = "AA11AA", countryCode = "GBR"), Some(EmailAddress("test@email.com")))
+        val cardPaymentInitiatePaymentRequest = CardPaymentInitiatePaymentRequest("somereturnurl", "MIEE", "1234567895", AmountInPence(123), BarclaycardAddress("teststreet", postCode    = "AA11AA", countryCode = "GBR"), Some(EmailAddress("test@email.com")))
         CardPaymentStub.InitiatePayment.stubForInitiatePayment5xx()
         val error: Exception = intercept[Exception](systemUnderTest.initiatePayment(cardPaymentInitiatePaymentRequest).futureValue)
         error.getCause.getMessage should include(s"POST of 'http://localhost:${wireMockPort.toString}/card-payment/initiate-payment' returned 503.")

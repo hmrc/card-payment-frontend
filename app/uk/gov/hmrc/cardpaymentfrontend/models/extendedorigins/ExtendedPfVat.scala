@@ -17,12 +17,11 @@
 package uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins
 
 import payapi.cardpaymentjourney.model.journey.{JourneySpecificData, JsdPfVat}
-import play.api.i18n.Messages
-import play.api.mvc.{AnyContent, Call}
+import play.api.mvc.AnyContent
 import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
 import uk.gov.hmrc.cardpaymentfrontend.models.PaymentMethod._
 import uk.gov.hmrc.cardpaymentfrontend.models.openbanking.{OriginSpecificSessionData, PfVatSessionData}
-import uk.gov.hmrc.cardpaymentfrontend.models.{CheckYourAnswersRow, Link, PaymentMethod}
+import uk.gov.hmrc.cardpaymentfrontend.models.{CheckYourAnswersRow, PaymentMethod}
 
 object ExtendedPfVat extends ExtendedOrigin {
   override val serviceNameMessageKey: String = "add.message.key.here"
@@ -30,51 +29,7 @@ object ExtendedPfVat extends ExtendedOrigin {
   def cardFeesPagePaymentMethods: Set[PaymentMethod] = Set.empty[PaymentMethod]
   def paymentMethods(): Set[PaymentMethod] = Set(Card, OpenBanking, VariableDirectDebit, Bacs)
 
-  def checkYourAnswersRows(request: JourneyRequest[AnyContent])(implicit messages: Messages): Seq[CheckYourAnswersRow] = {
-    val referenceRow =
-      CheckYourAnswersRow(
-        "pfvat.reference.title",
-        Seq(reference(request)), //This would really come from the journey either pay-api or stored locally
-        Some(Link(
-          Call("GET", "this/that"),
-          "pfvat-reference-change-link",
-          "pfvat.reference.change-link.text"
-        ))
-      )
-
-    val amountRow = CheckYourAnswersRow(
-      "pfvat.amount.title",
-      Seq("£600"),
-      Some(Link(
-        Call("GET", "this/that"),
-        "pfvat-amount-change-link",
-        "pfvat.amount.change-link.text"
-      ))
-    )
-
-    val addressRow = CheckYourAnswersRow(
-      "pfsa.address.title",
-      Seq("24 Andrews Close", "Warnington", "West Sussex", "BN11 7PG"), //This would really come from the journey either pay-api or stored locally
-      Some(Link(
-        Call("GET", "this/that"),
-        "pfsa-address-change-link",
-        "pfsa.address.change-link.text"
-      ))
-    )
-
-    val emailRow = CheckYourAnswersRow(
-      "pfsa.email.title",
-      Seq("fdobbs1972@gmail.com"),
-      Some(Link(
-        Call("GET", "change/email"),
-        "pfvat-email-change-link",
-        "pfvat.email.change-link.text"
-      ))
-    )
-    Seq(referenceRow, amountRow, addressRow, emailRow)
-  }
-
-  override def checkYourAnswersReferenceRow(journeyRequest: JourneyRequest[AnyContent]): Option[CheckYourAnswersRow] = None
+  override def checkYourAnswersReferenceRow(journeyRequest: JourneyRequest[AnyContent])(payFrontendBaseUrl: String): Option[CheckYourAnswersRow] = None
 
   override def openBankingOriginSpecificSessionData: JourneySpecificData => Option[OriginSpecificSessionData] = {
     case j: JsdPfVat => Some(PfVatSessionData(j.vrn, j.chargeRef))
