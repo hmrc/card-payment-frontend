@@ -15,19 +15,23 @@
  *@
 
 @import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcStandardPage
+@import uk.gov.hmrc.hmrcfrontend.views.html.components.HmrcHeader
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.hmrcstandardpage.HmrcStandardPageParams
 @import uk.gov.hmrc.govukfrontend.views.Aliases.BackLink
 @import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcReportTechnicalIssueHelper
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.hmrcstandardpage.TemplateOverrides
 @import views.html.helper.CSPNonce
+@import uk.gov.hmrc.hmrcfrontend.views.Aliases._
 
 @this(
         hmrcStandardPage: HmrcStandardPage,
-        hmrcReportTechnicalIssueHelper: HmrcReportTechnicalIssueHelper
+        hmrcReportTechnicalIssueHelper: HmrcReportTechnicalIssueHelper,
+        hmrcHeader: HmrcHeader
 )
 
 @(
         pageTitle: Option[String] = None,
+        navTitle: Option[String] = None,
         showBackLink: Boolean = true,
         backLinkOverride: Option[BackLink] = None,
         welshSupported: Boolean = true,
@@ -43,6 +47,13 @@
     <script type="module" src="@{controllers.routes.Assets.versioned("lib/jquery/jquery.min.js")}" @{CSPNonce.attr}></script>
     @additionalScripts.getOrElse(Html(""))
 }
+
+@hmrcHeader(Header(
+    homepageUrl = "https://www.gov.uk",
+    serviceName = Some(navTitle.getOrElse(Messages("header.default"))),
+    serviceUrl = "",
+    language = if (messages.lang.code == "cy") Cy else En
+))
 
 @hmrcStandardPage(
   HmrcStandardPageParams(

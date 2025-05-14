@@ -24,6 +24,7 @@
 @import uk.gov.hmrc.cardpaymentfrontend.models.Country
 @import uk.gov.hmrc.govukfrontend.views.Implicits.RichInput
 @import uk.gov.hmrc.cardpaymentfrontend.forms.AddressForm
+@import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
 
 @this(
     errorSummary: GovukErrorSummary,
@@ -37,12 +38,12 @@
 @(
     form: Form[Address],
     countries: Seq[Country]
-)(implicit request: RequestHeader, messages: Messages)
+)(implicit request: JourneyRequest[_], messages: Messages)
 
 @heading= @{messages("address.heading")}
 @key = @{AddressForm.addressKey}
 
-@layout(pageTitle = Some(heading)) {
+@layout(pageTitle = Some(heading), navTitle = Some(request.journey.taxType.entryName.capitalize)) {
 
     @if(form.hasErrors) {
         @errorSummary(ErrorSummary(errorList =

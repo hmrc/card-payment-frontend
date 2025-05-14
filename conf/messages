@@ -5,7 +5,7 @@ service.text = This is your new service
 ## Non page specific
 continue = Continue
 error.there-is-a-problem = There is a problem
-main-banner-title = Pay your {}
+main-banner-title = Pay your
 
 ## Origin service names
 service-name.PfSa = Pay your Self Assessment
