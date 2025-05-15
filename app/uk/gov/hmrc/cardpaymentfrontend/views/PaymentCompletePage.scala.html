@@ -22,6 +22,7 @@
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 @import uk.gov.hmrc.cardpaymentfrontend.models.EmailAddress
 @import views.html.helper.CSPNonce
+@import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
 
 @this(
         govukPanel: GovukPanel,
@@ -34,7 +35,7 @@
         summaryListRows: Seq[SummaryListRow],
         maybeEmailAddress: Option[EmailAddress],
         maybeReturnUrl: Option[String]
-)(implicit request: RequestHeader, messages: Messages)
+)(implicit request: JourneyRequest[_], messages: Messages)
 
 @additionalScript = { <script type="module" src="@{controllers.routes.Assets.versioned("javascripts/print-dialogue.js")}" @{CSPNonce.attr}></script> }
 

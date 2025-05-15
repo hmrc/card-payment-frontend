@@ -35,9 +35,8 @@
 @(origin: Origin, hasOpenBanking: Boolean, form: Form[ChooseAPaymentMethodFormValues])(implicit request: JourneyRequest[_], messages: Messages)
 
 @heading= @{messages("payment-failed.heading")}
-@navTitle = @{messages(request.journey.origin.lift.serviceNameMessageKey)}
 
-@layout(pageTitle = Some(heading), navTitle = Some(navTitle)) {
+@layout(pageTitle = Some(heading)) {
 
     @if(hasOpenBanking) {
 

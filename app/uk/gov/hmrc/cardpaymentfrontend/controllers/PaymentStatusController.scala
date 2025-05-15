@@ -17,7 +17,7 @@
 package uk.gov.hmrc.cardpaymentfrontend.controllers
 
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
-import uk.gov.hmrc.cardpaymentfrontend.actions.Actions
+import uk.gov.hmrc.cardpaymentfrontend.actions.{Actions, JourneyRequest}
 import uk.gov.hmrc.cardpaymentfrontend.config.AppConfig
 import uk.gov.hmrc.cardpaymentfrontend.models.cardpayment.CardPaymentFinishPaymentResponses
 import uk.gov.hmrc.cardpaymentfrontend.requests.RequestSupport
@@ -48,7 +48,7 @@ class PaymentStatusController @Inject() (
   private val redirectUrlPolicy: RedirectUrlPolicy[Id] = AbsoluteWithHostnameFromAllowlist(appConfig.iframeHostNameAllowList)
 
   //todo need to write a test for this, where we override the allow list or something to trigger bad request.
-  def showIframe(iframeUrl: RedirectUrl): Action[AnyContent] = Action { implicit req =>
+  def showIframe(iframeUrl: RedirectUrl): Action[AnyContent] = actions.journeyAction { implicit req: JourneyRequest[AnyContent] =>
     iframeUrl
       .getEither[Id](redirectUrlPolicy)
       .fold[Result](
@@ -57,7 +57,7 @@ class PaymentStatusController @Inject() (
       )
   }
 
-  def returnToHmrc(): Action[AnyContent] = actions.default { implicit request =>
+  def returnToHmrc(): Action[AnyContent] = actions.journeyAction { implicit request =>
     Ok(redirectToParent())
   }
 

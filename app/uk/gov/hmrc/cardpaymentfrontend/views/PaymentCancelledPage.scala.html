@@ -18,6 +18,7 @@
 @import uk.gov.hmrc.cardpaymentfrontend.views.html.Layout
 @import uk.gov.hmrc.govukfrontend.views.Aliases.{Button, Text}
 @import uk.gov.hmrc.govukfrontend.views.html.components.GovukButton
+@import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
 
 @this(
         appConfig: AppConfig,
@@ -25,11 +26,11 @@
         layout: Layout
 )
 
-@(exitUrl: String)(implicit request: RequestHeader, messages: Messages)
+@(exitUrl: String)(implicit request: JourneyRequest[_], messages: Messages)
 
 @heading = @{messages("payment-cancelled.heading")}
 
-@layout(pageTitle = Some(heading), navTitle = Some(""), showBackLink = false) {
+@layout(pageTitle = Some(heading), showBackLink = false) {
 
     <h1 class="govuk-heading-xl">@heading</h1>
     <div id="paragraph-wrapper">

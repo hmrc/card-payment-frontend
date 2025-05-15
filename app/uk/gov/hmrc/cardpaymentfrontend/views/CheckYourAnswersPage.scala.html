@@ -32,9 +32,8 @@
 @(summaryList: SummaryList)(implicit request: JourneyRequest[_], messages: Messages)
 
 @heading = @{messages("check-your-details.heading")}
-@navTitle = @{messages(request.journey.origin.lift.serviceNameMessageKey)}
 
-@layout(pageTitle = Some(heading), navTitle = Some(navTitle)) {
+@layout(pageTitle = Some(heading)) {
 
    <h1 class="govuk-heading-xl govuk-!-margin-bottom-9">@heading</h1>
 

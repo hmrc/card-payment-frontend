@@ -14,29 +14,25 @@
  * limitations under the License.
  *@
 
-@import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcStandardPage
-@import uk.gov.hmrc.hmrcfrontend.views.html.components.HmrcHeader
-@import uk.gov.hmrc.hmrcfrontend.views.viewmodels.hmrcstandardpage.HmrcStandardPageParams
+@import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
+@import uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins.ExtendedOrigin.OriginExtended
 @import uk.gov.hmrc.govukfrontend.views.Aliases.BackLink
-@import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcReportTechnicalIssueHelper
-@import uk.gov.hmrc.hmrcfrontend.views.viewmodels.hmrcstandardpage.TemplateOverrides
+@import uk.gov.hmrc.hmrcfrontend.views.html.helpers.{HmrcReportTechnicalIssueHelper, HmrcStandardPage}
+@import uk.gov.hmrc.hmrcfrontend.views.viewmodels.hmrcstandardpage.{HmrcStandardPageParams, TemplateOverrides}
 @import views.html.helper.CSPNonce
-@import uk.gov.hmrc.hmrcfrontend.views.Aliases._
 
 @this(
         hmrcStandardPage: HmrcStandardPage,
-        hmrcReportTechnicalIssueHelper: HmrcReportTechnicalIssueHelper,
-        hmrcHeader: HmrcHeader
+        hmrcReportTechnicalIssueHelper: HmrcReportTechnicalIssueHelper
 )
 
 @(
         pageTitle: Option[String] = None,
-        navTitle: Option[String] = None,
         showBackLink: Boolean = true,
         backLinkOverride: Option[BackLink] = None,
         welshSupported: Boolean = true,
         additionalScripts: Option[Html] = None
-)(contentBlock: Html)(implicit request: RequestHeader, messages: Messages)
+)(contentBlock: Html)(implicit request: JourneyRequest[_], messages: Messages)
 
 @content = {
     @contentBlock
@@ -48,19 +44,13 @@
     @additionalScripts.getOrElse(Html(""))
 }
 
-@hmrcHeader(Header(
-    homepageUrl = "https://www.gov.uk",
-    serviceName = Some(navTitle.getOrElse(Messages("header.default"))),
-    serviceUrl = "",
-    language = if (messages.lang.code == "cy") Cy else En
-))
-
 @hmrcStandardPage(
   HmrcStandardPageParams(
       templateOverrides = TemplateOverrides(
           additionalScriptsBlock = Some(scripts)
       ),
       pageTitle = pageTitle,
+      serviceName = Some(messages(request.journey.origin.lift.serviceNameMessageKey)),
       isWelshTranslationAvailable = welshSupported,
       backLink = {
           if (showBackLink) {

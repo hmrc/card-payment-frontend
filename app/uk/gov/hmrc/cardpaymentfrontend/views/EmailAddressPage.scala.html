@@ -36,9 +36,8 @@
 
 @heading = @{messages("email-address.heading")}
 @key = @{EmailAddressForm.emailAddressKey}
-@navTitle = @{messages(request.journey.origin.lift.serviceNameMessageKey)}
 
-@layout(pageTitle = Some(heading), navTitle = Some(navTitle)) {
+@layout(pageTitle = Some(heading)) {
 
     @if(form.hasErrors) { @errorSummary(ErrorSummary(errorList = form.errors.asTextErrorLinks, title = Text(messages("error.there-is-a-problem")))) }
 
