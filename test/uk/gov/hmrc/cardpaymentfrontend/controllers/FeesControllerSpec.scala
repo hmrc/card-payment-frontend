@@ -39,6 +39,7 @@ class FeesControllerSpec extends ItSpec {
       val fakeWelshRequest = FakeRequest().withSessionId().withLangWelsh()
 
         def testStaticContentEnglish(document: Document): Assertion = {
+          document.select(".govuk-header__service-name").html shouldBe "Pay your Self Assessment"
           document.select("h1").text() shouldBe "Card fees"
           val para1 = document.select("#para1")
           para1.text() shouldBe "There is a non-refundable fee if you pay by corporate credit card or corporate debit card."
@@ -51,6 +52,7 @@ class FeesControllerSpec extends ItSpec {
         }
 
         def testStaticContentWelsh(document: Document): Assertion = {
+          document.select(".govuk-header__service-name").html shouldBe "Talu eich Hunanasesiad"
           document.select("h1").text() shouldBe "Ffioedd cerdyn"
           val para1 = document.select("#para1")
           para1.text() shouldBe "Bydd ffi na ellir ei had-dalu yn cael ei chodi os talwch â cherdyn credyd corfforaethol neu gerdyn debyd corfforaethol."

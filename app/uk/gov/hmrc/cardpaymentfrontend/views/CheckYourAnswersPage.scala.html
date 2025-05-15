@@ -19,6 +19,8 @@
 @import uk.gov.hmrc.govukfrontend.views.html.components.{FormWithCSRF, GovukButton, GovukErrorSummary, GovukInput, GovukSummaryList}
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
 @import uk.gov.hmrc.govukfrontend.views.Aliases.SummaryList
+@import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
+@import uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins.ExtendedOrigin.OriginExtended
 
 @this(
     govukButton: GovukButton,
@@ -27,11 +29,13 @@
     summaryListComponent: GovukSummaryList
 )
 
-@(summaryList: SummaryList)(implicit request: RequestHeader, messages: Messages)
+@(summaryList: SummaryList)(implicit request: JourneyRequest[_], messages: Messages)
 
 @heading = @{messages("check-your-details.heading")}
+@navTitle = @{messages(request.journey.origin.lift.serviceNameMessageKey)}
 
-@layout(pageTitle = Some(heading)) {
+@layout(pageTitle = Some(heading), navTitle = Some(navTitle)) {
+
    <h1 class="govuk-heading-xl govuk-!-margin-bottom-9">@heading</h1>
 
    @summaryListComponent(summaryList)

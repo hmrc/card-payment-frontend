@@ -21,6 +21,8 @@
 @import uk.gov.hmrc.govukfrontend.views.html.components.implicits.RichFormErrors
 @import payapi.corcommon.model.Origin
 @import payapi.corcommon.model.Origins._
+@import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
+@import uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins.ExtendedOrigin.OriginExtended
 
 @this(
     errorSummary: GovukErrorSummary,
@@ -30,11 +32,12 @@
     layout: Layout
 )
 
-@(origin: Origin, hasOpenBanking: Boolean, form: Form[ChooseAPaymentMethodFormValues])(implicit request: RequestHeader, messages: Messages)
+@(origin: Origin, hasOpenBanking: Boolean, form: Form[ChooseAPaymentMethodFormValues])(implicit request: JourneyRequest[_], messages: Messages)
 
 @heading= @{messages("payment-failed.heading")}
+@navTitle = @{messages(request.journey.origin.lift.serviceNameMessageKey)}
 
-@layout(pageTitle = Some(heading)) {
+@layout(pageTitle = Some(heading), navTitle = Some(navTitle)) {
 
     @if(hasOpenBanking) {
 

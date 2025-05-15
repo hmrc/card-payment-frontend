@@ -62,6 +62,20 @@ class PaymentFailedControllerSpec extends ItSpec {
         langToggleText should contain theSameElementsAs List("English", "Newid yr iaith ir Gymraeg Cymraeg")
       }
 
+      "show the Service Name banner title correctly in English" in {
+        PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyBeforeBeginWebPayment)
+        val result = systemUnderTest.renderPage(fakeGetRequest)
+        val document = Jsoup.parse(contentAsString(result))
+        document.select(".govuk-header__service-name").html shouldBe "Pay your Self Assessment"
+      }
+
+      "show the Service Name banner title correctly in Welsh" in {
+        PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyBeforeBeginWebPayment)
+        val result = systemUnderTest.renderPage(fakeGetRequestInWelsh)
+        val document = Jsoup.parse(contentAsString(result))
+        document.select(".govuk-header__service-name").html shouldBe "Talu eich Hunanasesiad"
+      }
+
       "render the correct content in English for origins with no OpenBanking" in {
         // TODO: May need changing if/when ItSa payment methods are changed
         PayApiStub.stubForFindBySessionId2xx(TestJourneys.ItSa.journeyAfterFailWebPayment)
