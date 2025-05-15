@@ -16,13 +16,13 @@
 
 package uk.gov.hmrc.cardpaymentfrontend.config
 
+import javax.inject.{Inject, Singleton}
 import play.api.i18n.MessagesApi
 import play.api.mvc.RequestHeader
 import play.twirl.api.Html
-import uk.gov.hmrc.cardpaymentfrontend.views.html.ErrorTemplate
 import uk.gov.hmrc.play.bootstrap.frontend.http.FrontendErrorHandler
+import uk.gov.hmrc.cardpaymentfrontend.views.html.ErrorTemplate
 
-import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
@@ -31,6 +31,6 @@ class ErrorHandler @Inject() (
     override val messagesApi: MessagesApi
 )(implicit override val ec: ExecutionContext) extends FrontendErrorHandler {
 
-  override def standardErrorTemplate(pageTitle: String, heading: String, message: String)(request: RequestHeader): Future[Html] =
+  override def standardErrorTemplate(pageTitle: String, heading: String, message: String)(implicit request: RequestHeader): Future[Html] =
     Future.successful(errorTemplate(pageTitle, heading, message))
 }

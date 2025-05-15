@@ -31,8 +31,9 @@
 @(links: Seq[Link])(implicit request: JourneyRequest[_], messages: Messages)
 
 @heading = @{messages("card-fees.heading")}
+@serviceNameKey =  @{messages(request.journey.origin.lift.serviceNameMessageKey)}
 
-@layout(pageTitle = Some(heading)) {
+@layout(pageTitle = Some(heading), serviceName = Some(serviceNameKey)) {
 
     <h1 class = "govuk-heading-xl govuk-!-margin-bottom-9">@heading</h1>
      <p id="para1" class="govuk-body">@messages("card-fees.para1")</p>

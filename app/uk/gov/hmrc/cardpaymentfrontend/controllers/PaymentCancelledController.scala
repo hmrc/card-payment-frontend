@@ -17,23 +17,17 @@
 package uk.gov.hmrc.cardpaymentfrontend.controllers
 
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import uk.gov.hmrc.cardpaymentfrontend.actions.{Actions, JourneyRequest}
-import uk.gov.hmrc.cardpaymentfrontend.requests.RequestSupport
 import uk.gov.hmrc.cardpaymentfrontend.views.html.PaymentCancelledPage
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
 import javax.inject.Inject
 
 class PaymentCancelledController @Inject() (
-    actions:              Actions,
     mcc:                  MessagesControllerComponents,
-    paymentCancelledPage: PaymentCancelledPage,
-    requestSupport:       RequestSupport
+    paymentCancelledPage: PaymentCancelledPage
 ) extends FrontendController(mcc) {
 
-  import requestSupport._
-
-  val renderPage: Action[AnyContent] = actions.journeyAction { implicit journeyRequest: JourneyRequest[AnyContent] =>
+  val renderPage: Action[AnyContent] = Action { implicit request =>
     //just hardcoded exitUrl for now, eventually we'll need some more functionality but that requires spj models etc.
     Ok(paymentCancelledPage(exitUrl = "https://www.gov.uk/"))
   }

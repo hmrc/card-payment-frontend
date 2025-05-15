@@ -35,9 +35,10 @@
 @(form: Form[EmailAddress])(implicit request: JourneyRequest[_], messages: Messages)
 
 @heading = @{messages("email-address.heading")}
+@serviceNameKey =  @{messages(request.journey.origin.lift.serviceNameMessageKey)}
 @key = @{EmailAddressForm.emailAddressKey}
 
-@layout(pageTitle = Some(heading)) {
+@layout(pageTitle = Some(heading), serviceName = Some(serviceNameKey)) {
 
     @if(form.hasErrors) { @errorSummary(ErrorSummary(errorList = form.errors.asTextErrorLinks, title = Text(messages("error.there-is-a-problem")))) }
 

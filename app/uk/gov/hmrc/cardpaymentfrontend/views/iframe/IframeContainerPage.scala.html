@@ -19,7 +19,7 @@
 
 @this(layout: Layout)
 
-@(iframeUrl: String)(implicit request: JourneyRequest[_], messages: Messages)
+@(iframeUrl: String)(implicit request: RequestHeader, messages: Messages)
 @* TODO: Jake, update the title *@
 @layout(pageTitle = Some("IFrame holder page"), welshSupported = false) {
     @Html(s"""<link rel="stylesheet" media="all" type="text/css" href="${controllers.routes.Assets.versioned("stylesheets/barclaycard-iframe.css").toString}">""")

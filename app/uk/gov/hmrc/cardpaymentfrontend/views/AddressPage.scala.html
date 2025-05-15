@@ -22,6 +22,7 @@
 @import uk.gov.hmrc.govukfrontend.views.Implicits.RichInput
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import uk.gov.hmrc.govukfrontend.views.html.components.implicits.RichFormErrors
+@import uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins.ExtendedOrigin.OriginExtended
 
 @this(
     errorSummary: GovukErrorSummary,
@@ -39,9 +40,9 @@
 
 @heading= @{messages("address.heading")}
 @key = @{AddressForm.addressKey}
+@serviceNameKey =  @{messages(request.journey.origin.lift.serviceNameMessageKey)}
 
-@layout(pageTitle = Some(heading)) {
-
+@layout(pageTitle = Some(heading), serviceName = Some(serviceNameKey)) {
     @if(form.hasErrors) {
         @errorSummary(ErrorSummary(errorList =
             form.errors.asTextErrorLinks, title = Text(messages("error.there-is-a-problem")))

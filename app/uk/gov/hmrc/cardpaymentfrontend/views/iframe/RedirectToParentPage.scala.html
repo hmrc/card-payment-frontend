@@ -20,7 +20,7 @@
 
 @this(layout: Layout)
 
-@()(implicit request: JourneyRequest[_], messages: Messages)
+@()(implicit request: RequestHeader, messages: Messages)
 
 @scripts = {<script src="@{controllers.routes.Assets.versioned("javascripts/escape-iframe.js")}" @{CSPNonce.attr}></script>}
 
