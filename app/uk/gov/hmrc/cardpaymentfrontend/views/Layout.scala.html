@@ -14,11 +14,11 @@
  * limitations under the License.
  *@
 
-@import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcStandardPage
-@import uk.gov.hmrc.hmrcfrontend.views.viewmodels.hmrcstandardpage.HmrcStandardPageParams
+@import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
+@import uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins.ExtendedOrigin.OriginExtended
 @import uk.gov.hmrc.govukfrontend.views.Aliases.BackLink
-@import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcReportTechnicalIssueHelper
-@import uk.gov.hmrc.hmrcfrontend.views.viewmodels.hmrcstandardpage.TemplateOverrides
+@import uk.gov.hmrc.hmrcfrontend.views.html.helpers.{HmrcReportTechnicalIssueHelper, HmrcStandardPage}
+@import uk.gov.hmrc.hmrcfrontend.views.viewmodels.hmrcstandardpage.{HmrcStandardPageParams, TemplateOverrides}
 @import views.html.helper.CSPNonce
 
 @this(
@@ -28,6 +28,7 @@
 
 @(
         pageTitle: Option[String] = None,
+        serviceName: Option[String] = None,
         showBackLink: Boolean = true,
         backLinkOverride: Option[BackLink] = None,
         welshSupported: Boolean = true,
@@ -50,6 +51,7 @@
           additionalScriptsBlock = Some(scripts)
       ),
       pageTitle = pageTitle,
+      serviceName = serviceName,
       isWelshTranslationAvailable = welshSupported,
       backLink = {
           if (showBackLink) {

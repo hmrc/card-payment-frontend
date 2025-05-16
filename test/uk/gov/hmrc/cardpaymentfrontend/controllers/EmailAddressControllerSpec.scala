@@ -64,6 +64,20 @@ class EmailAddressControllerSpec extends ItSpec {
         document.select("html").hasClass("govuk-template") shouldBe true withClue "no govuk template"
       }
 
+      "show the Service Name banner title correctly in English" in {
+        PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyBeforeBeginWebPayment)
+        val result = systemUnderTest.renderPage(fakeGetRequest)
+        val document = Jsoup.parse(contentAsString(result))
+        document.select(".govuk-header__service-name").html shouldBe "Pay your Self Assessment"
+      }
+
+      "show the Service Name banner title correctly in Welsh" in {
+        PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyBeforeBeginWebPayment)
+        val result = systemUnderTest.renderPage(fakeGetRequestInWelsh)
+        val document = Jsoup.parse(contentAsString(result))
+        document.select(".govuk-header__service-name").html shouldBe "Talu eich Hunanasesiad"
+      }
+
       "render the page with the h1 correctly in English" in {
         val result = systemUnderTest.renderPage(fakeGetRequest)
         val document = Jsoup.parse(contentAsString(result))
