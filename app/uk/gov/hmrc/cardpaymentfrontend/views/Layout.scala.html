@@ -18,12 +18,14 @@
 @import uk.gov.hmrc.hmrcfrontend.views.html.helpers.{HmrcReportTechnicalIssueHelper, HmrcStandardPage}
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.hmrcstandardpage.{HmrcStandardPageParams, TemplateOverrides}
 @import views.html.helper.CSPNonce
-@import uk.gov.hmrc.cardpaymentfrontend.services.AuthService
+@import uk.gov.hmrc.hmrcfrontend.views.viewmodels.hmrcstandardpage.ServiceURLs
+@import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcTimeoutDialogHelper
 
 @this(
         hmrcStandardPage: HmrcStandardPage,
         hmrcReportTechnicalIssueHelper: HmrcReportTechnicalIssueHelper,
-        authService: AuthService
+        hmrcTimeoutDialogHelper: HmrcTimeoutDialogHelper
+
 )
 
 @(
@@ -48,9 +50,16 @@
 @hmrcStandardPage(
   HmrcStandardPageParams(
       templateOverrides = TemplateOverrides(
-          additionalScriptsBlock = Some(scripts)
+          additionalScriptsBlock = Some(scripts),
+          additionalHeadBlock = Some(hmrcTimeoutDialogHelper(
+              signOutUrl = uk.gov.hmrc.cardpaymentfrontend.controllers.routes.SignOutController.signOut.url,
+              timeoutUrl = Some(uk.gov.hmrc.cardpaymentfrontend.controllers.routes.SignOutController.timedOut.url))
+
+          )
       ),
-      serviceURLs = authService.serviceURLs,
+      serviceURLs = ServiceURLs(
+          signOutUrl = Some(uk.gov.hmrc.cardpaymentfrontend.controllers.routes.SignOutController.signOut.url)
+      ),
       pageTitle = pageTitle,
       serviceName = serviceName,
       isWelshTranslationAvailable = welshSupported,

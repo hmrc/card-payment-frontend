@@ -299,3 +299,8 @@ email.tax-name.AlcoholDuty = Toll Alcohol
 payments-survey.bta.return-message = Dim diolch, dychwelyd i cyfrif treth busnes
 payments-survey.pta.return-message = Dim diolch, dychwelyd i cyfrif treth personol
 payments-survey.other.return-message = Dim diolch
+
+## Timed Out
+timed-out.title = Er eich diogelwch, gwnaethom eich allgofnodi
+timed-out.warning = Rydych ar fin cael eich allgofnodi
+timed-out.sign-in = Mewngofnodi

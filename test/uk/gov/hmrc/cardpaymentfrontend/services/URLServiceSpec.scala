@@ -16,7 +16,7 @@
 
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.ItSpec
 
-class AuthServiceSpec extends ItSpec {
+class URLServiceSpec extends ItSpec {
 
   //  private lazy val service = app.injector.instanceOf[AuthService]
 

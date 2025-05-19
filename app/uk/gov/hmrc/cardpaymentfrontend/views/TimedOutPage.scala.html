@@ -1,4 +1,4 @@
-/*
+@*
  * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,22 +12,31 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ *@
 
-package uk.gov.hmrc.cardpaymentfrontend.services
+@import uk.gov.hmrc.cardpaymentfrontend.config.AppConfig
+@import uk.gov.hmrc.cardpaymentfrontend.views.html.Layout
 
-import uk.gov.hmrc.cardpaymentfrontend.config.AppConfig
-import uk.gov.hmrc.hmrcfrontend.views.viewmodels.hmrcstandardpage.ServiceURLs
+@this(
+    layout: Layout,
+    appConfig: AppConfig
+)
+@()(implicit request: Request[_], messages: Messages)
 
-import javax.inject.{Inject, Singleton}
+@heading = @{messages("timed-out.title")}
 
-@Singleton
-final class AuthService @Inject() (appConfig: AppConfig) {
-  private val ggBaseUrl: String = appConfig.ggBaseUrl
-  private val defaultSignOutUrl: String = s"$ggBaseUrl/gg/sign-out?continue="
+@layout(pageTitle = Some(heading)) {
 
-  val serviceURLs: ServiceURLs = ServiceURLs(
-    signOutUrl = Some(defaultSignOutUrl)
-  )
+    <h1 class="govuk-heading-l">
+    @heading
+    </h1>
 
+    <p class="govuk-body">
+        <a href="@{
+            appConfig.signInUrl
+        }" class="govuk-button govuk-!-margin-bottom-0">
+            @{messages("timed-out.sign-in")}
+        </a>
+    </p>
 }
+

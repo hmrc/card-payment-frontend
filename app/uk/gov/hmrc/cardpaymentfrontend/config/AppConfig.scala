@@ -32,7 +32,13 @@ class AppConfig @Inject() (config: Configuration, servicesConfig: ServicesConfig
   val paymentsSurveyBaseUrl: String = servicesConfig.baseUrl("payments-survey")
   val emailBaseUrl: String = servicesConfig.baseUrl("email-service")
 
-  val ggBaseUrl: String = servicesConfig.baseUrl("card-payment")
+  private val platformHost: Option[String] = config.getOptional[String]("platform.frontend.host")
+  val signOutUrl: String = {
+    val basGatewayBaseUrl = platformHost.getOrElse(config.get[String]("urls.bas-gateway.base-url"))
+    s"$basGatewayBaseUrl/bas-gateway/sign-out-without-state"
+  }
+
+  val signInUrl: String = config.get[String]("urls.sign-in.base-url")
 
   val payFrontendBaseUrl: String = config.get[String]("urls.pay-frontend.base-url") + "/pay"
   val cardPaymentFrontendBaseUrl: String = config.get[String]("urls.card-payment-frontend.base-url")
