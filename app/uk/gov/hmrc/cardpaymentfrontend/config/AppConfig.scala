@@ -16,9 +16,10 @@
 
 package uk.gov.hmrc.cardpaymentfrontend.config
 
-import javax.inject.{Inject, Singleton}
 import play.api.Configuration
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
+
+import javax.inject.{Inject, Singleton}
 
 @Singleton
 class AppConfig @Inject() (config: Configuration, servicesConfig: ServicesConfig) {
@@ -30,6 +31,8 @@ class AppConfig @Inject() (config: Configuration, servicesConfig: ServicesConfig
   val openBankingBaseUrl: String = servicesConfig.baseUrl("open-banking")
   val paymentsSurveyBaseUrl: String = servicesConfig.baseUrl("payments-survey")
   val emailBaseUrl: String = servicesConfig.baseUrl("email-service")
+
+  val ggBaseUrl: String = servicesConfig.baseUrl("card-payment")
 
   val payFrontendBaseUrl: String = config.get[String]("urls.pay-frontend.base-url") + "/pay"
   val cardPaymentFrontendBaseUrl: String = config.get[String]("urls.card-payment-frontend.base-url")

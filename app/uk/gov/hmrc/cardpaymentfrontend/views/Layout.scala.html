@@ -14,20 +14,21 @@
  * limitations under the License.
  *@
 
-@import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcStandardPage
-@import uk.gov.hmrc.hmrcfrontend.views.viewmodels.hmrcstandardpage.HmrcStandardPageParams
 @import uk.gov.hmrc.govukfrontend.views.Aliases.BackLink
-@import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcReportTechnicalIssueHelper
-@import uk.gov.hmrc.hmrcfrontend.views.viewmodels.hmrcstandardpage.TemplateOverrides
+@import uk.gov.hmrc.hmrcfrontend.views.html.helpers.{HmrcReportTechnicalIssueHelper, HmrcStandardPage}
+@import uk.gov.hmrc.hmrcfrontend.views.viewmodels.hmrcstandardpage.{HmrcStandardPageParams, TemplateOverrides}
 @import views.html.helper.CSPNonce
+@import uk.gov.hmrc.cardpaymentfrontend.services.AuthService
 
 @this(
         hmrcStandardPage: HmrcStandardPage,
-        hmrcReportTechnicalIssueHelper: HmrcReportTechnicalIssueHelper
+        hmrcReportTechnicalIssueHelper: HmrcReportTechnicalIssueHelper,
+        authService: AuthService
 )
 
 @(
         pageTitle: Option[String] = None,
+        serviceName: Option[String] = None,
         showBackLink: Boolean = true,
         backLinkOverride: Option[BackLink] = None,
         welshSupported: Boolean = true,
@@ -49,7 +50,9 @@
       templateOverrides = TemplateOverrides(
           additionalScriptsBlock = Some(scripts)
       ),
+      serviceURLs = authService.serviceURLs,
       pageTitle = pageTitle,
+      serviceName = serviceName,
       isWelshTranslationAvailable = welshSupported,
       backLink = {
           if (showBackLink) {
