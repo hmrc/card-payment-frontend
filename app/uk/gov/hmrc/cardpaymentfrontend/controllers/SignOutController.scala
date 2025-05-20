@@ -21,20 +21,16 @@ import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.cardpaymentfrontend.actions.Actions
 import uk.gov.hmrc.cardpaymentfrontend.config.AppConfig
-import uk.gov.hmrc.cardpaymentfrontend.requests.RequestSupport
 import uk.gov.hmrc.cardpaymentfrontend.views.html.TimedOutPage
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
 @Singleton
 class SignOutController @Inject() (
-    actions:        Actions,
-    mcc:            MessagesControllerComponents,
-    appConfig:      AppConfig,
-    requestSupport: RequestSupport,
-    timedOutPage:   TimedOutPage
+    actions:      Actions,
+    mcc:          MessagesControllerComponents,
+    appConfig:    AppConfig,
+    timedOutPage: TimedOutPage
 ) extends FrontendController(mcc) with I18nSupport {
-
-  import requestSupport._
 
   private lazy val signOutFromTimeoutRedirect = {
     val continueUrl = s"${appConfig.cardPaymentFrontendBaseUrl}${routes.SignOutController.timedOut.url}"
@@ -52,6 +48,10 @@ class SignOutController @Inject() (
 
   val timedOut: Action[AnyContent] = actions.default { implicit request =>
     Ok(timedOutPage()).withNewSession
+  }
+
+  val keepAlive: Action[AnyContent] = actions.default { _ =>
+    Ok("Okay")
   }
 
 }

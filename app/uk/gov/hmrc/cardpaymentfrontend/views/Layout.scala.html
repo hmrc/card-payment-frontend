@@ -20,12 +20,14 @@
 @import views.html.helper.CSPNonce
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.hmrcstandardpage.ServiceURLs
 @import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcTimeoutDialogHelper
+@import uk.gov.hmrc.cardpaymentfrontend.requests.RequestSupport.isLoggedIn
+@import uk.gov.hmrc.cardpaymentfrontend.config.AppConfig
 
 @this(
         hmrcStandardPage: HmrcStandardPage,
         hmrcReportTechnicalIssueHelper: HmrcReportTechnicalIssueHelper,
-        hmrcTimeoutDialogHelper: HmrcTimeoutDialogHelper
-
+        hmrcTimeoutDialogHelper: HmrcTimeoutDialogHelper,
+        appConfig: AppConfig
 )
 
 @(
@@ -53,12 +55,18 @@
           additionalScriptsBlock = Some(scripts),
           additionalHeadBlock = Some(hmrcTimeoutDialogHelper(
               signOutUrl = uk.gov.hmrc.cardpaymentfrontend.controllers.routes.SignOutController.signOut.url,
-              timeoutUrl = Some(uk.gov.hmrc.cardpaymentfrontend.controllers.routes.SignOutController.timedOut.url))
-
-          )
+              timeoutUrl = Some(uk.gov.hmrc.cardpaymentfrontend.controllers.routes.SignOutController.timedOut.url),
+              keepAliveUrl = Some(uk.gov.hmrc.cardpaymentfrontend.controllers.routes.SignOutController.keepAlive.url),
+              timeout = Some(appConfig.timeoutInSeconds),
+              countdown = Some(appConfig.countdownInSeconds),
+              title = None,
+              message = Some { if (isLoggedIn) Messages("time-out.dialogue.logged-in.message") else Messages("time-out.dialogue.logged-out.message") },
+              keepAliveButtonText = Some { if (isLoggedIn) Messages("time-out.dialogue.logged-in.keep-alive-button-text") else Messages("time-out.dialogue.logged-out.keep-alive-button-text") },
+              signOutButtonText = Some { if (isLoggedIn) Messages("time-out.dialogue.logged-in.sign-out-button-text") else Messages("time-out.dialogue.logged-out.sign-out-button-text") }
+          ))
       ),
       serviceURLs = ServiceURLs(
-          signOutUrl = Some(uk.gov.hmrc.cardpaymentfrontend.controllers.routes.SignOutController.signOut.url)
+          signOutUrl = if (isLoggedIn) Some(uk.gov.hmrc.cardpaymentfrontend.controllers.routes.SignOutController.signOut.url) else None
       ),
       pageTitle = pageTitle,
       serviceName = serviceName,

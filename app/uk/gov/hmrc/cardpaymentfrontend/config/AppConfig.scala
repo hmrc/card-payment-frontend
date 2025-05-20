@@ -40,6 +40,9 @@ class AppConfig @Inject() (config: Configuration, servicesConfig: ServicesConfig
 
   val signInUrl: String = config.get[String]("urls.sign-in.base-url")
 
+  val timeoutInSeconds: Int = 12
+  val countdownInSeconds: Int = 6
+
   val payFrontendBaseUrl: String = config.get[String]("urls.pay-frontend.base-url") + "/pay"
   val cardPaymentFrontendBaseUrl: String = config.get[String]("urls.card-payment-frontend.base-url")
 

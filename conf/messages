@@ -302,7 +302,16 @@ payments-survey.other.return-message = Skip survey
 payments-survey.bta.banner-title = Business tax account
 
 
-## Timed Out
-timed-out.title = For your security, we signed you out
-timed-out.warning = You're about to be signed out
-timed-out.sign-in = Sign in
+## Time Out
+time-out.title = For your security, we signed you out
+time-out.warning = You're about to be signed out
+time-out.sign-in = Sign in
+time-out.dialogue.logged-in.message =
+time-out.dialogue.logged-in.keep-alive-button-text =
+time-out.dialogue.logged-in.sign-out-button-text =
+time-out.dialogue.logged-out.message =
+time-out.dialogue.logged-out.keep-alive-button-text =
+time-out.dialogue.logged-out.sign-out-button-text =
+
+
+
