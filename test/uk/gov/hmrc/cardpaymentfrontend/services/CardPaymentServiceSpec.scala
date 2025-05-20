@@ -16,7 +16,9 @@
 
 package uk.gov.hmrc.cardpaymentfrontend.services
 
+import payapi.cardpaymentjourney.model.journey.{Journey, JsdPfSa}
 import payapi.corcommon.model.AmountInPence
+import payapi.corcommon.model.Origins.PfSa
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import uk.gov.hmrc.cardpaymentfrontend.models.Languages.English
@@ -36,15 +38,19 @@ class CardPaymentServiceSpec extends ItSpec {
   implicit val headerCarrier: HeaderCarrier = HeaderCarrier()
   implicit val fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest()
 
-  val testJourney = TestJourneys.PfSa.journeyBeforeBeginWebPayment
-  val testAddress = Address("made up street", postcode = "AA11AA", country = "GBR")
-  val testEmail = EmailAddress("some@email.com")
+  val testJourney: Journey[JsdPfSa] = TestJourneys.PfSa.journeyBeforeBeginWebPayment
+  val testAddress: Address = Address("made up street", postcode = "AA11AA", country = "GBR")
+  val testEmail: EmailAddress = EmailAddress("some@email.com")
 
   "CardPaymentService" - {
 
     "initiatePayment" - {
 
-      val cardPaymentInitiatePaymentRequest = CardPaymentInitiatePaymentRequest("http://localhost:10155/pay-by-card/return-to-hmrc", "SAEE", "1234567895K", AmountInPence(1234), BarclaycardAddress("made up street", postCode    = "AA11AA", countryCode = "GBR"), Some(EmailAddress("some@email.com")))
+      val cardPaymentInitiatePaymentRequest = CardPaymentInitiatePaymentRequest(
+        "http://localhost:10155/pay-by-card/return-to-hmrc", "SAEE", "1234567895K", AmountInPence(1234),
+         BarclaycardAddress("made up street", postCode    = "AA11AA", countryCode = "GBR"),
+         Some(EmailAddress("some@email.com")), PfSa
+      )
       val expectedCardPaymentInitiatePaymentResponse = CardPaymentInitiatePaymentResponse("someiframeurl", "sometransactionref")
 
       "should return a CardPaymentInitiatePaymentResponse when card-payment backend returns one" in {

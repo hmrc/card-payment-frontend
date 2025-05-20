@@ -67,7 +67,8 @@ class CardPaymentService @Inject() (
       purchaseDescription = journey.referenceValue,
       purchaseAmount      = journey.getAmountInPence,
       billingAddress      = addressFromSessionAsBarclaycardAddress,
-      emailAddress        = maybeEmailFromSession
+      emailAddress        = maybeEmailFromSession,
+      origin              = journey.origin
     )
 
     for {
