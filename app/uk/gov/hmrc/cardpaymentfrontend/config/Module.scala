@@ -16,7 +16,9 @@
 
 package uk.gov.hmrc.cardpaymentfrontend.config
 
-import com.google.inject.AbstractModule
+import com.google.inject.{AbstractModule, Provides, Singleton}
+
+import java.time.{Clock, ZoneOffset}
 
 class Module extends AbstractModule {
 
@@ -24,4 +26,5 @@ class Module extends AbstractModule {
 
     bind(classOf[AppConfig]).asEagerSingleton()
   }
+
 }
