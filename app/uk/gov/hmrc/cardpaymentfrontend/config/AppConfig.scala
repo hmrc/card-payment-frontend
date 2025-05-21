@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,8 +40,8 @@ class AppConfig @Inject() (config: Configuration, servicesConfig: ServicesConfig
 
   val signInUrl: String = config.get[String]("urls.sign-in.base-url")
 
-  val timeoutInSeconds: Int = 12
-  val countdownInSeconds: Int = 6
+  val timeoutInSeconds: Int = config.get[Int]("session.timeout")
+  val countdownInSeconds: Int = config.get[Int]("session.countdown")
 
   val payFrontendBaseUrl: String = config.get[String]("urls.pay-frontend.base-url") + "/pay"
   val cardPaymentFrontendBaseUrl: String = config.get[String]("urls.card-payment-frontend.base-url")

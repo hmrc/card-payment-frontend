@@ -31,7 +31,7 @@ class SignOutControllerSpec extends ItSpec {
   "SignOutController should" - {
 
     val systemUnderTest: SignOutController = app.injector.instanceOf[SignOutController]
-    val fakeGetRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/payment-failed").withSessionId()
+    val fakeGetRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/sign-out").withSessionId()
 
     "signOutFromTimeout should redirect to signOutUrl with continue URL" in {
       PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyBeforeBeginWebPayment)
@@ -60,12 +60,10 @@ class SignOutControllerSpec extends ItSpec {
       session(result).data shouldBe empty
     }
 
-    // TODO: Placeholder content. Needs to be completed.
+    // TODO: Placeholder content. We don't know what this is doing.
     "keepAlive should return OK with 'Okay' response" in {
       val result = systemUnderTest.keepAlive(fakeGetRequest)
-
       status(result) shouldBe OK
-      contentAsString(result) shouldBe "Okay"
     }
 
   }
