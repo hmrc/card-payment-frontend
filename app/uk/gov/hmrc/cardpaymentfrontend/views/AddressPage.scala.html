@@ -14,16 +14,14 @@
  * limitations under the License.
  *@
 
-@import uk.gov.hmrc.govukfrontend.views.html.components._
-@import uk.gov.hmrc.cardpaymentfrontend.views.html.Layout
-@import uk.gov.hmrc.cardpaymentfrontend.models.Address
-@import uk.gov.hmrc.govukfrontend.views.Aliases.ErrorSummary
-@import uk.gov.hmrc.govukfrontend.views.Aliases.{Button, Text}
-@import uk.gov.hmrc.govukfrontend.views.html.components.implicits.RichFormErrors
-@import uk.gov.hmrc.govukfrontend.views.Aliases.Input
-@import uk.gov.hmrc.cardpaymentfrontend.models.Country
-@import uk.gov.hmrc.govukfrontend.views.Implicits.RichInput
+@import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
 @import uk.gov.hmrc.cardpaymentfrontend.forms.AddressForm
+@import uk.gov.hmrc.cardpaymentfrontend.models.{Address, Country}
+@import uk.gov.hmrc.cardpaymentfrontend.views.html.Layout
+@import uk.gov.hmrc.govukfrontend.views.Aliases.{Button, ErrorSummary, Input, Text}
+@import uk.gov.hmrc.govukfrontend.views.Implicits.RichInput
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import uk.gov.hmrc.govukfrontend.views.html.components.implicits.RichFormErrors
 
 @this(
     errorSummary: GovukErrorSummary,
@@ -37,13 +35,12 @@
 @(
     form: Form[Address],
     countries: Seq[Country]
-)(implicit request: RequestHeader, messages: Messages)
+)(implicit journeyRequest: JourneyRequest[_], messages: Messages)
 
 @heading= @{messages("address.heading")}
 @key = @{AddressForm.addressKey}
 
-@layout(pageTitle = Some(heading)) {
-
+@layout(pageTitle = Some(heading), origin = Some(journeyRequest.journey.origin)) {
     @if(form.hasErrors) {
         @errorSummary(ErrorSummary(errorList =
             form.errors.asTextErrorLinks, title = Text(messages("error.there-is-a-problem")))
