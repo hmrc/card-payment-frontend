@@ -146,7 +146,7 @@ class EmailAddressControllerSpec extends ItSpec {
         link.attr("target") shouldBe "_blank"
       }
 
-      "be prepopulated if there is an address in the session" in {
+      "be prepopulated if there is an email address in the session" in {
           def fakeRequestWithAddressInSession(journeyId: JourneyId = TestJourneys.PfSa.journeyBeforeBeginWebPayment._id): FakeRequest[AnyContentAsEmpty.type] =
             FakeRequest()
               .withSessionId()
