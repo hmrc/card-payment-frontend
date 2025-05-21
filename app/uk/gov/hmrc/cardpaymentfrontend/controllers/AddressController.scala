@@ -40,13 +40,13 @@ class AddressController @Inject() (
 
   import requestSupport._
 
-  val renderPage: Action[AnyContent] = actions.journeyAction { implicit request: JourneyRequest[AnyContent] =>
-    val form = request.readFromSession[Address](request.journeyId, Keys.address)
+  val renderPage: Action[AnyContent] = actions.journeyAction { implicit journeyRequest: JourneyRequest[AnyContent] =>
+    val form = journeyRequest.readFromSession[Address](request.journeyId, Keys.address)
       .fold(AddressForm.form()) { address => AddressForm.form().fill(address) }
     Ok(addressPage(form, countriesService.getCountries))
   }
 
-  val submit: Action[AnyContent] = actions.journeyAction { implicit request: JourneyRequest[AnyContent] =>
+  val submit: Action[AnyContent] = actions.journeyAction { implicit journeyRequest: JourneyRequest[AnyContent] =>
 
     AddressForm.form()
       .bindFromRequest()
@@ -54,7 +54,7 @@ class AddressController @Inject() (
         (formWithErrors: Form[Address]) => BadRequest(addressPage(form = formWithErrors, countriesService.getCountries)),
         { address =>
           Redirect(routes.CheckYourAnswersController.renderPage)
-            .placeInSession[Address](request.journeyId, Keys.address -> address)
+            .placeInSession[Address](journeyRequest.journeyId, Keys.address -> address)
         }
       )
   }
