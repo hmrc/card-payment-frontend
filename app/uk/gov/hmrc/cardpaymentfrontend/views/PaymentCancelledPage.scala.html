@@ -18,7 +18,6 @@
 @import uk.gov.hmrc.govukfrontend.views.Aliases.{Button, Text}
 @import uk.gov.hmrc.govukfrontend.views.html.components.GovukButton
 @import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
-@import uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins.ExtendedOrigin.OriginExtended
 @import uk.gov.hmrc.cardpaymentfrontend.views.html.Layout
 
 @this(
@@ -26,12 +25,11 @@
         govukButton: GovukButton,
         layout: Layout
 )
-@(exitUrl: String)(implicit request: JourneyRequest[_], messages: Messages)
+@(exitUrl: String)(implicit journeyRequest: JourneyRequest[_], messages: Messages)
 
 @heading = @{messages("payment-cancelled.heading")}
-@serviceNameKey =  @{messages(request.journey.origin.lift.serviceNameMessageKey)}
 
-@layout(pageTitle = Some(heading), showBackLink = false, serviceName = Some(serviceNameKey)) {
+@layout(pageTitle = Some(heading), origin = Some(journeyRequest.journey.origin), showBackLink = false) {
 
     <h1 class="govuk-heading-xl">@heading</h1>
     <div id="paragraph-wrapper">

@@ -14,15 +14,14 @@
  * limitations under the License.
  *@
 
+@import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
 @import uk.gov.hmrc.cardpaymentfrontend.forms.EmailAddressForm
 @import uk.gov.hmrc.cardpaymentfrontend.models.EmailAddress
 @import uk.gov.hmrc.cardpaymentfrontend.views.html.Layout
 @import uk.gov.hmrc.govukfrontend.views.Aliases.{Button, ErrorSummary, Hint, Input, Label}
-@import uk.gov.hmrc.govukfrontend.views.html.components.{FormWithCSRF, GovukButton, GovukErrorSummary, GovukInput}
 @import uk.gov.hmrc.govukfrontend.views.Implicits.{RichFormErrors, RichInput}
+@import uk.gov.hmrc.govukfrontend.views.html.components.{FormWithCSRF, GovukButton, GovukErrorSummary, GovukInput}
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
-@import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
-@import uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins.ExtendedOrigin.OriginExtended
 
 @this(
     errorSummary: GovukErrorSummary,
@@ -32,13 +31,12 @@
     formWithCSRF: FormWithCSRF
 )
 
-@(form: Form[EmailAddress])(implicit request: JourneyRequest[_], messages: Messages)
+@(form: Form[EmailAddress])(implicit journeyRequest: JourneyRequest[_], messages: Messages)
 
 @heading = @{messages("email-address.heading")}
-@serviceNameKey =  @{messages(request.journey.origin.lift.serviceNameMessageKey)}
 @key = @{EmailAddressForm.emailAddressKey}
 
-@layout(pageTitle = Some(heading), serviceName = Some(serviceNameKey)) {
+@layout(pageTitle = Some(heading), origin = Some(journeyRequest.journey.origin)) {
 
     @if(form.hasErrors) { @errorSummary(ErrorSummary(errorList = form.errors.asTextErrorLinks, title = Text(messages("error.there-is-a-problem")))) }
 

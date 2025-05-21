@@ -26,22 +26,21 @@
 @import uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins.ExtendedOrigin.OriginExtended
 
 @this(
-        govukPanel: GovukPanel,
-        govukSummaryList: GovukSummaryList,
-        layout: Layout
+    govukPanel: GovukPanel,
+    govukSummaryList: GovukSummaryList,
+    layout: Layout
 )
 
 @(
-        taxReference: Reference,
-        summaryListRows: Seq[SummaryListRow],
-        maybeEmailAddress: Option[EmailAddress],
-        maybeReturnUrl: Option[String]
-)(implicit request: JourneyRequest[_], messages: Messages)
+    taxReference: Reference,
+    summaryListRows: Seq[SummaryListRow],
+    maybeEmailAddress: Option[EmailAddress],
+    maybeReturnUrl: Option[String]
+)(implicit journeyRequest: JourneyRequest[_], messages: Messages)
 
 @additionalScript = { <script type="module" src="@{controllers.routes.Assets.versioned("javascripts/print-dialogue.js")}" @{CSPNonce.attr}></script> }
 
 @heading = @{messages("payment-complete.panel.title")}
-@serviceNameKey =  @{messages(request.journey.origin.lift.serviceNameMessageKey)}
 
 @panelContent = @{Html(messages("payment-complete.panel.content", taxReference.value))}
 
@@ -65,7 +64,7 @@
 
 @layout(
     pageTitle = Some(heading),
-    serviceName = Some(serviceNameKey),
+    origin = Some(journeyRequest.journey.origin),
     showBackLink = false,
     additionalScripts = Some(additionalScript)
 ) {

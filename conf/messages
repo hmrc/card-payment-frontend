@@ -5,9 +5,9 @@ service.text = This is your new service
 ## Non page specific
 continue = Continue
 error.there-is-a-problem = There is a problem
-main-banner-title = Pay your
 
 ## Origin service names
+service-name.generic = Pay your tax
 service-name.PfSa = Pay your Self Assessment
 service-name.PfVat = Pay your VAT
 service-name.PfCt = Pay your Corporation Tax
@@ -163,6 +163,9 @@ date.day-month-year.september = {0} September {1}
 date.day-month-year.october = {0} October {1}
 date.day-month-year.november = {0} November {1}
 date.day-month-year.december = {0} December {1}
+
+## iframe container page
+iframe.heading = Make your payment
 
 ## Payment complete page
 payment-complete.panel.title = Payment received by HMRC

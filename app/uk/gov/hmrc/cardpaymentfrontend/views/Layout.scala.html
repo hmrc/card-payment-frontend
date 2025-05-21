@@ -14,7 +14,7 @@
  * limitations under the License.
  *@
 
-@import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
+@import payapi.corcommon.model.Origin
 @import uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins.ExtendedOrigin.OriginExtended
 @import uk.gov.hmrc.govukfrontend.views.Aliases.BackLink
 @import uk.gov.hmrc.hmrcfrontend.views.html.helpers.{HmrcReportTechnicalIssueHelper, HmrcStandardPage}
@@ -28,12 +28,14 @@
 
 @(
         pageTitle: Option[String] = None,
-        serviceName: Option[String] = None,
+        origin: Option[Origin] = None,
         showBackLink: Boolean = true,
         backLinkOverride: Option[BackLink] = None,
         welshSupported: Boolean = true,
         additionalScripts: Option[Html] = None
 )(contentBlock: Html)(implicit request: RequestHeader, messages: Messages)
+
+@serviceName = @{origin.map(eo => messages(eo.lift.serviceNameMessageKey)).getOrElse(messages("service-name.generic"))}
 
 @content = {
     @contentBlock
@@ -51,7 +53,7 @@
           additionalScriptsBlock = Some(scripts)
       ),
       pageTitle = pageTitle,
-      serviceName = serviceName,
+      serviceName = Some(serviceName),
       isWelshTranslationAvailable = welshSupported,
       backLink = {
           if (showBackLink) {

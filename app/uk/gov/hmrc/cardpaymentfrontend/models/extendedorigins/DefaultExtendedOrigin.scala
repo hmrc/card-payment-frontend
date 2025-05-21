@@ -22,12 +22,12 @@ import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
 import uk.gov.hmrc.cardpaymentfrontend.models.openbanking.OriginSpecificSessionData
 import uk.gov.hmrc.cardpaymentfrontend.models.{CheckYourAnswersRow, PaymentMethod}
 
-class DefaultExtendedOrigin extends ExtendedOrigin {
-  def serviceNameMessageKey = ""
-  def taxNameMessageKey: String = "Tax"
+object DefaultExtendedOrigin extends ExtendedOrigin {
+  override def serviceNameMessageKey = "service-name.generic"
+  override def taxNameMessageKey: String = ""
   override def reference(request: JourneyRequest[AnyContent]): String = ""
-  def cardFeesPagePaymentMethods: Set[PaymentMethod] = Set.empty[PaymentMethod]
-  def paymentMethods(): Set[PaymentMethod] = Set.empty[PaymentMethod]
+  override def cardFeesPagePaymentMethods: Set[PaymentMethod] = Set.empty[PaymentMethod]
+  override def paymentMethods(): Set[PaymentMethod] = Set.empty[PaymentMethod]
 
   override def checkYourAnswersReferenceRow(journeyRequest: JourneyRequest[AnyContent])(payFrontendBaseUrl: String): Option[CheckYourAnswersRow] = None
 

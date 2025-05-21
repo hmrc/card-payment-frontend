@@ -16,11 +16,10 @@
 
 @import uk.gov.hmrc.cardpaymentfrontend.views.html.Layout
 @import views.html.helper.CSPNonce
-@import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
 
 @this(layout: Layout)
 
-@()(implicit request: RequestHeader, messages: Messages)
+@()(implicit requestHeader: RequestHeader, messages: Messages)
 
 @scripts = {<script src="@{controllers.routes.Assets.versioned("javascripts/escape-iframe.js")}" @{CSPNonce.attr}></script>}
 
