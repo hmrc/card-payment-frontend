@@ -41,7 +41,7 @@ class AddressController @Inject() (
   import requestSupport._
 
   val renderPage: Action[AnyContent] = actions.journeyAction { implicit journeyRequest: JourneyRequest[AnyContent] =>
-    val form = journeyRequest.readFromSession[Address](request.journeyId, Keys.address)
+    val form = journeyRequest.readFromSession[Address](journeyRequest.journeyId, Keys.address)
       .fold(AddressForm.form()) { address => AddressForm.form().fill(address) }
     Ok(addressPage(form, countriesService.getCountries))
   }
