@@ -14,16 +14,14 @@
  * limitations under the License.
  *@
 
-@import uk.gov.hmrc.govukfrontend.views.html.components._
-@import uk.gov.hmrc.cardpaymentfrontend.views.html.Layout
-@import uk.gov.hmrc.cardpaymentfrontend.models.Address
-@import uk.gov.hmrc.govukfrontend.views.Aliases.ErrorSummary
-@import uk.gov.hmrc.govukfrontend.views.Aliases.{Button, Text}
-@import uk.gov.hmrc.govukfrontend.views.html.components.implicits.RichFormErrors
-@import uk.gov.hmrc.govukfrontend.views.Aliases.Input
-@import uk.gov.hmrc.cardpaymentfrontend.models.Country
-@import uk.gov.hmrc.govukfrontend.views.Implicits.RichInput
 @import uk.gov.hmrc.cardpaymentfrontend.forms.AddressForm
+@import uk.gov.hmrc.cardpaymentfrontend.models.{Address, Country}
+@import uk.gov.hmrc.cardpaymentfrontend.views.html.Layout
+@import uk.gov.hmrc.govukfrontend.views.Aliases.{Button, ErrorSummary, Input, Text}
+@import uk.gov.hmrc.govukfrontend.views.Implicits.RichInput
+@import uk.gov.hmrc.govukfrontend.views.Implicits.RichSelect
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import uk.gov.hmrc.govukfrontend.views.html.components.implicits.RichFormErrors
 
 @this(
     errorSummary: GovukErrorSummary,
@@ -71,7 +69,7 @@
                 errorMessage = form.error("line1").map(e => ErrorMessage.errorMessageWithDefaultStringsTranslated(
                     content = Text(messages(e.message))
                 )),
-            ).withFormField(form(key))
+            ).withFormField(form("line1"))
         )
 
         @govukInput(
@@ -84,7 +82,7 @@
                 inputType = "text",
                 autocomplete = Some("off"),
                 spellcheck = Some(false)
-            ).withFormField(form(key))
+            ).withFormField(form("line2"))
         )
         @govukInput(
             Input(
@@ -96,7 +94,7 @@
                 inputType = "text",
                 autocomplete = Some("off"),
                 spellcheck = Some(false)
-            ).withFormField(form(key))
+            ).withFormField(form("city"))
         )
         @govukInput(
             Input(
@@ -108,7 +106,7 @@
                 inputType = "text",
                 autocomplete = Some("off"),
                 spellcheck = Some(false)
-            ).withFormField(form(key))
+            ).withFormField(form("county"))
         )
         @govukInput(
             Input(
@@ -123,7 +121,7 @@
                 errorMessage = form.error("postcode").map(e => ErrorMessage.errorMessageWithDefaultStringsTranslated(
                     content = Text(messages(e.message))
                 ))
-            ).withFormField(form(key))
+            ).withFormField(form("postcode"))
         )
         @govukSelect(
             Select(
@@ -138,7 +136,7 @@
                     Some(""),
                     text = messages("address.country.select.message"),
                 )) ++ countries.map(c => SelectItem(Some(c.code), c.name))
-            )
+            ).withFormField(form("country"))
         )
 
         @govukButton(Button(

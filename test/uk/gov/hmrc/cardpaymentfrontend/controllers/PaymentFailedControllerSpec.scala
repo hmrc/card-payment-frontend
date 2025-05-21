@@ -186,7 +186,6 @@ class PaymentFailedControllerSpec extends ItSpec {
         PayApiStub.stubForFindBySessionId2xx(TestJourneys.ItSa.journeyAfterFailWebPayment)
         val result = systemUnderTest.renderPage(fakeGetRequest)
         val document = Jsoup.parse(contentAsString(result))
-        println(document)
         document.select(".govuk-button").first().text() shouldBe "Check details and try again"
       }
 

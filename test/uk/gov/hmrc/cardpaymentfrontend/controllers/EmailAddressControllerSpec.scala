@@ -17,6 +17,7 @@
 package uk.gov.hmrc.cardpaymentfrontend.controllers
 
 import org.jsoup.Jsoup
+import payapi.corcommon.model.JourneyId
 import play.api.http.Status
 import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded}
 import play.api.test.FakeRequest
@@ -144,6 +145,20 @@ class EmailAddressControllerSpec extends ItSpec {
         link.text() shouldBe "A yw’r dudalen hon yn gweithio’n iawn? (yn agor tab newydd)"
         link.attr("target") shouldBe "_blank"
       }
+
+      "be prepopulated if there is an address in the session" in {
+          def fakeRequestWithAddressInSession(journeyId: JourneyId = TestJourneys.PfSa.journeyBeforeBeginWebPayment._id): FakeRequest[AnyContentAsEmpty.type] =
+            FakeRequest()
+              .withSessionId()
+              .withEmailInSession(journeyId)
+        PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyBeforeBeginWebPayment)
+
+        val result = systemUnderTest.renderPage(fakeRequestWithAddressInSession())
+        val document = Jsoup.parse(contentAsString(result))
+
+        document.select("input[name=email-address]").attr("value") shouldBe "blah@blah.com"
+      }
+
     }
 
     "POST /email-address" - {
