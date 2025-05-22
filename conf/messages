@@ -306,12 +306,12 @@ payments-survey.bta.banner-title = Business tax account
 time-out.title = For your security, we signed you out
 time-out.warning = You're about to be signed out
 time-out.sign-in = Sign in
-time-out.dialogue.logged-in.message =
-time-out.dialogue.logged-in.keep-alive-button-text =
-time-out.dialogue.logged-in.sign-out-button-text =
-time-out.dialogue.logged-out.message =
-time-out.dialogue.logged-out.keep-alive-button-text =
-time-out.dialogue.logged-out.sign-out-button-text =
+time-out.dialogue.logged-in.message = For your security, we will time you out in
+time-out.dialogue.logged-in.keep-alive-button-text = Stay signed in
+time-out.dialogue.logged-in.sign-out-button-text = Sign out
+time-out.dialogue.logged-out.message = For your security, we will time you out in
+time-out.dialogue.logged-out.keep-alive-button-text = Continue
+time-out.dialogue.logged-out.sign-out-button-text = Delete your answers
 
 
 
