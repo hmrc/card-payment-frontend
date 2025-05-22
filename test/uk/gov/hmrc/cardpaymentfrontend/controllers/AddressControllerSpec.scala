@@ -17,6 +17,7 @@
 package uk.gov.hmrc.cardpaymentfrontend.controllers
 
 import org.jsoup.Jsoup
+import payapi.corcommon.model.JourneyId
 import play.api.http.Status
 import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded}
 import play.api.test.FakeRequest
@@ -100,6 +101,24 @@ class AddressControllerSpec extends ItSpec {
         val result = systemUnderTest.renderPage(fakeGetRequestInWelsh)
         val document = Jsoup.parse(contentAsString(result))
         document.selectXpath("//*[@id=\"main-content\"]/div/div/p[1]") contains "Eich cyfeiriad bilio yw’r cyfeiriad y gwnaethoch gofrestru eich cerdyn ag ef" withClue "Page hint wrong in welsh"
+      }
+
+      "be prepopulated if there is an address in the session" in {
+          def fakeRequestWithAddressInSession(journeyId: JourneyId = TestJourneys.PfSa.journeyBeforeBeginWebPayment._id): FakeRequest[AnyContentAsEmpty.type] =
+            FakeRequest()
+              .withSessionId()
+              .withAddressInSession(journeyId)
+        PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyBeforeBeginWebPayment)
+
+        val result = systemUnderTest.renderPage(fakeRequestWithAddressInSession())
+        val document = Jsoup.parse(contentAsString(result))
+
+        document.select("input[name=line1]").attr("value") shouldBe "line1"
+        document.select("input[name=line2]").attr("value") shouldBe "line2"
+        document.select("input[name=city]").attr("value") shouldBe "city"
+        document.select("input[name=postcode]").attr("value") shouldBe "AA0AA0"
+        document.select("select[name=country] option[selected]").attr("value") shouldBe "GBR"
+
       }
 
     }
