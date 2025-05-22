@@ -17,6 +17,7 @@
 package uk.gov.hmrc.cardpaymentfrontend.controllers
 
 import org.jsoup.Jsoup
+import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.mvc.Http.Status
@@ -30,38 +31,42 @@ class PaymentStatusControllerSpec extends ItSpec {
 
   val systemUnderTest: PaymentStatusController = app.injector.instanceOf[PaymentStatusController]
 
+  val fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withSessionId()
+
   "PaymentStatusController" - {
 
     "showIframe" - {
 
       "should return 200 OK and render a hmrc looking page with the provided url in an iframe" in {
+        PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyAfterBeginWebPayment)
         val validIframeUrl = "http://localhost:8080"
-        val result = systemUnderTest.showIframe(RedirectUrl(validIframeUrl))(FakeRequest())
+        val result = systemUnderTest.showIframe(RedirectUrl(validIframeUrl))(fakeRequest)
 
         status(result) shouldBe Status.OK
         val document = Jsoup.parse(contentAsString(result))
-        document.title shouldBe "IFrame holder page" //obviously we're going to change these... just adding something basic for now.
-        document.select("h1").text() shouldBe "IFrame holder page"
-        document.select(".govuk-header__service-name").text() shouldBe "card-payment-frontend"
+        document.title shouldBe "Make your payment"
+        document.select("h1").text() shouldBe "Make your payment"
+        document.select(".govuk-header__service-name").text() shouldBe "Pay your Self Assessment"
 
         val iframe = document.select("iframe")
-        iframe.attr("title") shouldBe "I am the Barclaycard iframe"
+        iframe.attr("title") shouldBe "Make your payment"
         iframe.attr("src") shouldBe validIframeUrl
       }
 
       "should throw an IllegalArgumentException when the iframe url provided is not a valid url" in {
-        val exception = intercept[IllegalArgumentException](systemUnderTest.showIframe(RedirectUrl("invalid"))(FakeRequest()).futureValue)
+        val exception = intercept[IllegalArgumentException](systemUnderTest.showIframe(RedirectUrl("invalid"))(fakeRequest).futureValue)
         exception.getMessage shouldBe "requirement failed: 'invalid' is not a valid continue URL"
       }
 
       "should return BAD_REQUEST when iframe url does not comply with redirect policy (i.e. host not on allow list in config)" in {
-        val result = systemUnderTest.showIframe(RedirectUrl("https://www.gov.uk"))(FakeRequest())
+        PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyAfterBeginWebPayment)
+        val result = systemUnderTest.showIframe(RedirectUrl("https://www.gov.uk"))(fakeRequest)
         status(result) shouldBe Status.BAD_REQUEST
         contentAsString(result) shouldBe "Bad url provided that doesn't match the redirect policy. Check allow list if this is not expected."
       }
 
       "should not render the iframe page with a language toggle" in {
-        val result = systemUnderTest.showIframe(RedirectUrl("http://localhost:8080"))(FakeRequest())
+        val result = systemUnderTest.showIframe(RedirectUrl("http://localhost:8080"))(fakeRequest)
         val document = Jsoup.parse(contentAsString(result))
         document.select(".hmrc-language-select__list-item").isEmpty shouldBe true
       }
@@ -70,7 +75,7 @@ class PaymentStatusControllerSpec extends ItSpec {
     "returnToHmrc" - {
 
       "should render the redirectToParent page which links to the /payment-status endpoint" in {
-        val result = systemUnderTest.returnToHmrc()(FakeRequest())
+        val result = systemUnderTest.returnToHmrc()(fakeRequest)
         status(result) shouldBe Status.OK
         val document = Jsoup.parse(contentAsString(result))
         val anchorElement = document.select("#returnControlLink")
@@ -81,7 +86,6 @@ class PaymentStatusControllerSpec extends ItSpec {
     }
 
     "paymentStatus" - {
-      val fakeRequest = FakeRequest().withSessionId()
       "should throw an error when we can't find the transaction reference in the journey, despite the payment having been started" in {
         PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyBeforeBeginWebPayment)
         val error = intercept[RuntimeException] (systemUnderTest.paymentStatus()(fakeRequest).futureValue)

@@ -7,6 +7,7 @@ continue = Yn eich blaen
 error.there-is-a-problem = Mae problem wedi codi
 
 ## Origin service names
+service-name.generic = Talwch eich treth
 service-name.PfSa = Talu eich Hunanasesiad
 service-name.PfVat = Talu eich TAW
 service-name.PfCt =
@@ -162,6 +163,10 @@ date.day-month-year.september = {0} Medi {1}
 date.day-month-year.october = {0} Hydref {1}
 date.day-month-year.november = {0} Tachwedd {1}
 date.day-month-year.december = {0} Rhagfyr {1}
+
+
+## iframe container page
+iframe.heading = Gwnewch eich taliad
 
 
 ## Payment complete page

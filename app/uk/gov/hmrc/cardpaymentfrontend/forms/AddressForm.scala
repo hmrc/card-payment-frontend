@@ -73,6 +73,7 @@ object AddressForm {
   val postcodeFormatter: Formatter[String] = new Formatter[String] {
 
     override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], String] = {
+
       // for accessibility, we need to allow users to enter spaces anywhere in postcode, we strip them to assert the postcode matches the regex, then use what the user entered.
       val postcode: String = data("postcode").filterNot(_.isWhitespace)
       val selectedCountryIsGBR: Boolean = data("country").matches("GBR")

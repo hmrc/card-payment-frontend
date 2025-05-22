@@ -82,6 +82,7 @@ class PaymentCompleteControllerSpec extends ItSpec {
         PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyAfterSucceedDebitWebPayment)
         val result = systemUnderTest.renderPage(fakeGetRequest)
         val document = Jsoup.parse(contentAsString(result))
+        println(document)
         val backLink: Elements = document.select(".govuk-back-link")
         backLink.size() shouldBe 0
       }

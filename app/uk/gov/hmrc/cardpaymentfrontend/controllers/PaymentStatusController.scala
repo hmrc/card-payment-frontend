@@ -48,7 +48,7 @@ class PaymentStatusController @Inject() (
   private val redirectUrlPolicy: RedirectUrlPolicy[Id] = AbsoluteWithHostnameFromAllowlist(appConfig.iframeHostNameAllowList)
 
   //todo need to write a test for this, where we override the allow list or something to trigger bad request.
-  def showIframe(iframeUrl: RedirectUrl): Action[AnyContent] = Action { implicit req =>
+  def showIframe(iframeUrl: RedirectUrl): Action[AnyContent] = actions.journeyAction { implicit journeyRequest =>
     iframeUrl
       .getEither[Id](redirectUrlPolicy)
       .fold[Result](

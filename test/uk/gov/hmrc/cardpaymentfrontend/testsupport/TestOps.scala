@@ -42,7 +42,10 @@ object TestOps {
         "email" -> email
       ).toString)
 
-    def withAddressInSession(journeyId: JourneyId, address: Address = Address(line1    = "line1", postcode = "AA0AA0", country = "GBR")): FakeRequest[T] =
+    def withAddressInSession(
+        journeyId: JourneyId,
+        address:   Address   = Address(line1    = "line1", line2 = Some("line2"), city = Some("city"), postcode = "AA0AA0", country = "GBR")
+    ): FakeRequest[T] =
       r.withSession(journeyId.value -> Json.obj(
         "address" -> address
       ).toString)
