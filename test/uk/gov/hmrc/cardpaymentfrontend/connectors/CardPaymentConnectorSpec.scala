@@ -17,7 +17,6 @@
 package uk.gov.hmrc.cardpaymentfrontend.connectors
 
 import payapi.corcommon.model.AmountInPence
-import payapi.corcommon.model.Origins.Pillar2
 import uk.gov.hmrc.cardpaymentfrontend.models.cardpayment.{BarclaycardAddress, CardPaymentInitiatePaymentRequest, CardPaymentInitiatePaymentResponse}
 import uk.gov.hmrc.cardpaymentfrontend.models.EmailAddress
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.ItSpec
@@ -36,7 +35,7 @@ class CardPaymentConnectorSpec extends ItSpec {
         val cardPaymentInitiatePaymentRequest = CardPaymentInitiatePaymentRequest(
           "somereturnurl", "MIEE", "1234567895K", AmountInPence(1234),
           BarclaycardAddress("teststreet", postCode    = "AA11AA", countryCode = "GBR"),
-          Some(EmailAddress("test@email.com")), Pillar2
+          Some(EmailAddress("test@email.com")), "00081999999999"
         )
         val expectedCardPaymentInitiatePaymentResponse = CardPaymentInitiatePaymentResponse("someiframeurl", "sometransactionref")
 
@@ -49,8 +48,8 @@ class CardPaymentConnectorSpec extends ItSpec {
       "should throw an exception when card-payment backend returns a 5xx server error" in {
         val cardPaymentInitiatePaymentRequest = CardPaymentInitiatePaymentRequest(
           "somereturnurl", "MIEE", "1234567895", AmountInPence(123),
-           BarclaycardAddress("teststreet", postCode    = "AA11AA", countryCode = "GBR"),
-           Some(EmailAddress("test@email.com")), Pillar2
+          BarclaycardAddress("teststreet", postCode    = "AA11AA", countryCode = "GBR"),
+          Some(EmailAddress("test@email.com")), "00081999999999"
         )
         CardPaymentStub.InitiatePayment.stubForInitiatePayment5xx()
         val error: Exception = intercept[Exception](systemUnderTest.initiatePayment(cardPaymentInitiatePaymentRequest).futureValue)

@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.cardpaymentfrontend.models.cardpayment
 
-import payapi.corcommon.model.{AmountInPence, Origin}
+import payapi.corcommon.model.AmountInPence
 import play.api.libs.json.{Format, Json}
 import uk.gov.hmrc.cardpaymentfrontend.models.EmailAddress
 
@@ -27,7 +27,7 @@ final case class CardPaymentInitiatePaymentRequest(
     purchaseAmount:      AmountInPence, //in pennies
     billingAddress:      BarclaycardAddress,
     emailAddress:        Option[EmailAddress],
-    origin:              Origin
+    transactionNumber:   String
 )
 
 object CardPaymentInitiatePaymentRequest {

@@ -18,7 +18,6 @@ package uk.gov.hmrc.cardpaymentfrontend.services
 
 import payapi.cardpaymentjourney.model.journey.{Journey, JsdPfSa}
 import payapi.corcommon.model.AmountInPence
-import payapi.corcommon.model.Origins.PfSa
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import uk.gov.hmrc.cardpaymentfrontend.models.Languages.English
@@ -43,13 +42,11 @@ class CardPaymentServiceSpec extends ItSpec {
   val testEmail: EmailAddress = EmailAddress("some@email.com")
 
   "CardPaymentService" - {
-
     "initiatePayment" - {
-
       val cardPaymentInitiatePaymentRequest = CardPaymentInitiatePaymentRequest(
         "http://localhost:10155/pay-by-card/return-to-hmrc", "SAEE", "1234567895K", AmountInPence(1234),
-         BarclaycardAddress("made up street", postCode    = "AA11AA", countryCode = "GBR"),
-         Some(EmailAddress("some@email.com")), PfSa
+        BarclaycardAddress("made up street", postCode    = "AA11AA", countryCode = "GBR"),
+        Some(EmailAddress("some@email.com")), "00001999999999"
       )
       val expectedCardPaymentInitiatePaymentResponse = CardPaymentInitiatePaymentResponse("someiframeurl", "sometransactionref")
 
