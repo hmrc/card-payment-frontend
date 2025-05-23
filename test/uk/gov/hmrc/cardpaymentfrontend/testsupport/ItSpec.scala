@@ -46,7 +46,8 @@ trait ItSpec extends AnyFreeSpecLike
     "microservice.services.email-service.port" -> self.wireMockPort,
     "microservice.services.open-banking.port" -> self.wireMockPort,
     "microservice.services.pay-api.port" -> self.wireMockPort,
-    "microservice.services.payments-survey.port" -> self.wireMockPort
+    "microservice.services.payments-survey.port" -> self.wireMockPort,
+    "internal-auth.token" -> "testToken"
   )
 
   override def beforeEach(): Unit = {
@@ -57,8 +58,10 @@ trait ItSpec extends AnyFreeSpecLike
     super.afterEach()
   }
 
-  override def fakeApplication(): Application = new GuiceApplicationBuilder()
-    .configure(configMap).build()
+  protected def applicationBuilder: GuiceApplicationBuilder = new GuiceApplicationBuilder()
+    .configure(configMap)
+
+  override def fakeApplication(): Application = applicationBuilder.build()
 
   override implicit protected lazy val runningServer: RunningServer =
     TestServerFactory.start(app)
