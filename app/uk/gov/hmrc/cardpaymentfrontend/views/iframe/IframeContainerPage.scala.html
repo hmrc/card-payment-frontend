@@ -15,17 +15,19 @@
  *@
 
 @import uk.gov.hmrc.cardpaymentfrontend.views.html.Layout
-
+@import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
 
 @this(layout: Layout)
 
-@(iframeUrl: String)(implicit request: RequestHeader, messages: Messages)
-@* TODO: Jake, update the title *@
-@layout(pageTitle = Some("IFrame holder page"), welshSupported = false) {
-    @Html(s"""<link rel="stylesheet" media="all" type="text/css" href="${controllers.routes.Assets.versioned("stylesheets/barclaycard-iframe.css").toString}">""")
-    <h1 class="govuk-heading-l">IFrame holder page</h1>
+@(iframeUrl: String)(implicit journeyRequest: JourneyRequest[_], messages: Messages)
 
-    <iframe title="I am the Barclaycard iframe"
+@heading = @{messages("iframe.heading")}
+
+@layout(pageTitle = Some(heading), origin = Some(journeyRequest.journey.origin), welshSupported = false) {
+    @Html(s"""<link rel="stylesheet" media="all" type="text/css" href="${controllers.routes.Assets.versioned("stylesheets/barclaycard-iframe.css").toString}">""")
+    <h1 class="govuk-heading-l">@heading</h1>
+
+    <iframe title="@heading"
         src="@{iframeUrl}"
         id="barclaycard-iframe">
     </iframe>

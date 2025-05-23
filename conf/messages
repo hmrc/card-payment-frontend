@@ -7,9 +7,10 @@ continue = Continue
 error.there-is-a-problem = There is a problem
 
 ## Origin service names
+service-name.generic = Pay your tax
 service-name.PfSa = Pay your Self Assessment
 service-name.PfVat = Pay your VAT
-service-name.PfCt =
+service-name.PfCt = Pay your Corporation Tax
 service-name.PfEpayeNi = Pay your employers’ PAYE and National Insurance
 service-name.PfEpayeLpp = Pay your PAYE late payment or filing penalty
 service-name.PfEpayeSeta =
@@ -47,24 +48,24 @@ service-name.PfPpt =
 service-name.PfSpiritDrinks =
 service-name.PfInheritanceTax =
 service-name.Mib =
-service-name.PfClass3Ni =
+service-name.PfClass3Ni = Pay your National Insurance
 service-name.PtaSa = Pay your Self Assessment
 service-name.PfWineAndCider =
 service-name.PfBioFuels =
 service-name.PfAirPass =
 service-name.PfMgd =
-service-name.PfBeerDuty =
+service-name.PfBeerDuty = Pay your Beer Duty
 service-name.PfGamingOrBingoDuty =
 service-name.PfGbPbRgDuty =
 service-name.PfLandfillTax =
 service-name.PfSdil =
 service-name.PfAggregatesLevy =
 service-name.PfClimateChangeLevy =
-service-name.PfSimpleAssessment =
-service-name.PtaSimpleAssessment =
-service-name.AppSimpleAssessment =
+service-name.PfSimpleAssessment = Pay your Simple Assessment
+service-name.PtaSimpleAssessment = Pay your Simple Assessment
+service-name.AppSimpleAssessment = Pay your Simple Assessment
 service-name.PfTpes =
-service-name.CapitalGainsTax =
+service-name.CapitalGainsTax = Pay your Capital Gains
 service-name.EconomicCrimeLevy =
 service-name.PfEconomicCrimeLevy =
 service-name.PfJobRetentionScheme =
@@ -79,7 +80,7 @@ service-name.PfAmls =
 service-name.PfAted =
 service-name.PfCdsDeferment =
 service-name.PfTrust =
-service-name.PtaClass3Ni =
+service-name.PtaClass3Ni = Pay your National Insurance
 service-name.AlcoholDuty = Pay your Alcohol Duty
 service-name.PfAlcoholDuty = Pay your Alcohol Duty
 
@@ -162,6 +163,9 @@ date.day-month-year.september = {0} September {1}
 date.day-month-year.october = {0} October {1}
 date.day-month-year.november = {0} November {1}
 date.day-month-year.december = {0} December {1}
+
+## iframe container page
+iframe.heading = Make your payment
 
 ## Payment complete page
 payment-complete.panel.title = Payment received by HMRC
@@ -259,6 +263,7 @@ payment-complete.tax-name.AlcoholDuty = Alcohol Duty
 payment-complete.tax-name.PfAlcoholDuty = Alcohol Duty
 
 ## Payment Cancelled page
+
 payment-cancelled.heading = Payment cancelled
 payment-cancelled.p1 = You have cancelled your payment.
 payment-cancelled.p2 = No payment has been taken from your account.

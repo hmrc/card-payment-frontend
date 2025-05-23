@@ -22,7 +22,7 @@ import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
 import uk.gov.hmrc.cardpaymentfrontend.models.openbanking.OriginSpecificSessionData
 import uk.gov.hmrc.cardpaymentfrontend.models.{CheckYourAnswersRow, PaymentMethod}
 
-class ExtendedPfP800 extends ExtendedOrigin {
+object ExtendedPfP800 extends ExtendedOrigin {
   override val serviceNameMessageKey: String = "add.message.key.here"
   override val taxNameMessageKey: String = "payment-complete.tax-name.PfP800"
   def cardFeesPagePaymentMethods: Set[PaymentMethod] = Set.empty[PaymentMethod]

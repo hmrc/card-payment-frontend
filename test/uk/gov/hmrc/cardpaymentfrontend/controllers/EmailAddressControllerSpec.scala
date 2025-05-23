@@ -17,6 +17,7 @@
 package uk.gov.hmrc.cardpaymentfrontend.controllers
 
 import org.jsoup.Jsoup
+import payapi.corcommon.model.JourneyId
 import play.api.http.Status
 import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded}
 import play.api.test.FakeRequest
@@ -62,6 +63,20 @@ class EmailAddressControllerSpec extends ItSpec {
         val result = systemUnderTest.renderPage(fakeGetRequest)
         val document = Jsoup.parse(contentAsString(result))
         document.select("html").hasClass("govuk-template") shouldBe true withClue "no govuk template"
+      }
+
+      "show the Service Name banner title correctly in English" in {
+        PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyBeforeBeginWebPayment)
+        val result = systemUnderTest.renderPage(fakeGetRequest)
+        val document = Jsoup.parse(contentAsString(result))
+        document.select(".govuk-header__service-name").html shouldBe "Pay your Self Assessment"
+      }
+
+      "show the Service Name banner title correctly in Welsh" in {
+        PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyBeforeBeginWebPayment)
+        val result = systemUnderTest.renderPage(fakeGetRequestInWelsh)
+        val document = Jsoup.parse(contentAsString(result))
+        document.select(".govuk-header__service-name").html shouldBe "Talu eich Hunanasesiad"
       }
 
       "render the page with the h1 correctly in English" in {
@@ -144,6 +159,20 @@ class EmailAddressControllerSpec extends ItSpec {
         link.text() shouldBe "A yw’r dudalen hon yn gweithio’n iawn? (yn agor tab newydd)"
         link.attr("target") shouldBe "_blank"
       }
+
+      "be prepopulated if there is an email address in the session" in {
+          def fakeRequestWithAddressInSession(journeyId: JourneyId = TestJourneys.PfSa.journeyBeforeBeginWebPayment._id): FakeRequest[AnyContentAsEmpty.type] =
+            FakeRequest()
+              .withSessionId()
+              .withEmailInSession(journeyId)
+        PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyBeforeBeginWebPayment)
+
+        val result = systemUnderTest.renderPage(fakeRequestWithAddressInSession())
+        val document = Jsoup.parse(contentAsString(result))
+
+        document.select("input[name=email-address]").attr("value") shouldBe "blah@blah.com"
+      }
+
     }
 
     "POST /email-address" - {

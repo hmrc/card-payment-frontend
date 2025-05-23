@@ -14,11 +14,11 @@
  * limitations under the License.
  *@
 
+@import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
 @import uk.gov.hmrc.cardpaymentfrontend.views.html.Layout
-@import uk.gov.hmrc.govukfrontend.views.Aliases.{Button, ErrorSummary, Hint, Input, Label}
-@import uk.gov.hmrc.govukfrontend.views.html.components.{FormWithCSRF, GovukButton, GovukErrorSummary, GovukInput, GovukSummaryList}
+@import uk.gov.hmrc.govukfrontend.views.Aliases.{Button, SummaryList, ErrorSummary, Hint, Input, Label}
+@import uk.gov.hmrc.govukfrontend.views.html.components.{FormWithCSRF, GovukButton, GovukSummaryList}
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
-@import uk.gov.hmrc.govukfrontend.views.Aliases.SummaryList
 
 @this(
     govukButton: GovukButton,
@@ -27,12 +27,13 @@
     summaryListComponent: GovukSummaryList
 )
 
-@(summaryList: SummaryList)(implicit request: RequestHeader, messages: Messages)
+@(summaryList: SummaryList)(implicit journeyRequest: JourneyRequest[_], messages: Messages)
 
 @heading = @{messages("check-your-details.heading")}
 
-@layout(pageTitle = Some(heading)) {
-   <h1 class="govuk-heading-l govuk-!-margin-bottom-6">@heading</h1>
+@layout(pageTitle = Some(heading), origin = Some(journeyRequest.journey.origin)) {
+
+   <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">@heading</h1>
 
    @summaryListComponent(summaryList)
 
