@@ -16,7 +16,7 @@
 
 @import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
 @import uk.gov.hmrc.cardpaymentfrontend.views.html.Layout
-@import uk.gov.hmrc.govukfrontend.views.Aliases.{Button, SummaryList, ErrorSummary, Hint, Input, Label}
+@import uk.gov.hmrc.govukfrontend.views.Aliases.{Button, SummaryList}
 @import uk.gov.hmrc.govukfrontend.views.html.components.{FormWithCSRF, GovukButton, GovukSummaryList}
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
 
@@ -33,7 +33,7 @@
 
 @layout(pageTitle = Some(heading), origin = Some(journeyRequest.journey.origin)) {
 
-   <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">@heading</h1>
+   <h1 class="govuk-heading-l govuk-!-margin-bottom-6">@heading</h1>
 
    @summaryListComponent(summaryList)
 
