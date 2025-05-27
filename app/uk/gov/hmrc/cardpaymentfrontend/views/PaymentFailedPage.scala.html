@@ -22,6 +22,7 @@
 @import payapi.corcommon.model.Origin
 @import payapi.corcommon.model.Origins._
 @import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
+@import uk.gov.hmrc.cardpaymentfrontend.views.helpers.TitleMaker.journeyTitleMaker
 
 @this(
     errorSummary: GovukErrorSummary,
@@ -35,7 +36,9 @@
 
 @heading= @{messages("payment-failed.heading")}
 
-@layout(pageTitle = Some(heading), origin = Some(journeyRequest.journey.origin)) {
+@title = @{journeyTitleMaker(messages("payment-complete.panel.title"))}
+
+@layout(pageTitle = Some(title), origin = Some(journeyRequest.journey.origin)) {
     @if(hasOpenBanking) {
 
         @if(form.hasErrors) {
@@ -45,7 +48,7 @@
         }
 
         <h1 class="govuk-heading-l">@{
-            messages("payment-failed.heading")
+            messages(heading)
         }</h1>
 
         <p class="govuk-body govuk-!-padding-bottom-6" id="sub-heading">@{

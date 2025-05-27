@@ -23,6 +23,7 @@
 @import uk.gov.hmrc.cardpaymentfrontend.models.EmailAddress
 @import views.html.helper.CSPNonce
 @import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
+@import uk.gov.hmrc.cardpaymentfrontend.views.helpers.TitleMaker.journeyTitleMaker
 @import uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins.ExtendedOrigin.OriginExtended
 
 @this(
@@ -42,7 +43,7 @@
 
 @heading = @{messages("payment-complete.panel.title")}
 
-@title =  @{messages("")} + " - " + @{messages("global.service-name")} + " - " + @{messages("global.title-suffix")}
+@title = @{journeyTitleMaker(messages("payment-complete.panel.title"))}
 
 @panelContent = @{Html(messages("payment-complete.panel.content", taxReference.value))}
 
@@ -53,7 +54,6 @@
         </p>
     }
 }
-
 
 @maybeWhatHappensNextContent = {
     @maybeReturnUrl.fold(Html("")) { returnUrl =>

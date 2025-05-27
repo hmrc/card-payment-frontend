@@ -19,6 +19,7 @@
 @import uk.gov.hmrc.govukfrontend.views.Aliases.{Button, SummaryList}
 @import uk.gov.hmrc.govukfrontend.views.html.components.{FormWithCSRF, GovukButton, GovukSummaryList}
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
+@import uk.gov.hmrc.cardpaymentfrontend.views.helpers.TitleMaker.journeyTitleMaker
 
 @this(
     govukButton: GovukButton,
@@ -31,7 +32,9 @@
 
 @heading = @{messages("check-your-details.heading")}
 
-@layout(pageTitle = Some(heading), origin = Some(journeyRequest.journey.origin)) {
+@title = @{journeyTitleMaker(messages("payment-complete.panel.title"))}
+
+@layout(pageTitle = Some(title), origin = Some(journeyRequest.journey.origin)) {
 
    <h1 class="govuk-heading-l govuk-!-margin-bottom-6">@heading</h1>
 

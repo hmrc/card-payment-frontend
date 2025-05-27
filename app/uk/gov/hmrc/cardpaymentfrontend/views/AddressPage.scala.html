@@ -23,6 +23,7 @@
 @import uk.gov.hmrc.govukfrontend.views.Implicits.RichSelect
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import uk.gov.hmrc.govukfrontend.views.html.components.implicits.RichFormErrors
+@import uk.gov.hmrc.cardpaymentfrontend.views.helpers.TitleMaker.journeyTitleMaker
 
 @this(
     errorSummary: GovukErrorSummary,
@@ -39,9 +40,12 @@
 )(implicit journeyRequest: JourneyRequest[_], messages: Messages)
 
 @heading= @{messages("address.heading")}
+
+@title = @{journeyTitleMaker(messages("payment-complete.panel.title"))}
+
 @key = @{AddressForm.addressKey}
 
-@layout(pageTitle = Some(heading), origin = Some(journeyRequest.journey.origin)) {
+@layout(pageTitle = Some(title), origin = Some(journeyRequest.journey.origin)) {
     @if(form.hasErrors) {
         @errorSummary(ErrorSummary(errorList =
             form.errors.asTextErrorLinks, title = Text(messages("error.there-is-a-problem")))

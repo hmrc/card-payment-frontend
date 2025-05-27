@@ -19,6 +19,7 @@
 @import uk.gov.hmrc.govukfrontend.views.html.components.GovukButton
 @import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
 @import uk.gov.hmrc.cardpaymentfrontend.views.html.Layout
+@import uk.gov.hmrc.cardpaymentfrontend.views.helpers.TitleMaker.journeyTitleMaker
 
 @this(
         appConfig: AppConfig,
@@ -29,7 +30,9 @@
 
 @heading = @{messages("payment-cancelled.heading")}
 
-@layout(pageTitle = Some(heading), origin = Some(journeyRequest.journey.origin), showBackLink = false) {
+@title = @{journeyTitleMaker(messages("payment-complete.panel.title"))}
+
+@layout(pageTitle = Some(title), origin = Some(journeyRequest.journey.origin), showBackLink = false) {
 
     <h1 class="govuk-heading-l">@heading</h1>
     <div id="paragraph-wrapper">
