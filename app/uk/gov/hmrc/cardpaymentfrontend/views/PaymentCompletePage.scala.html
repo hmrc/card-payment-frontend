@@ -42,6 +42,8 @@
 
 @heading = @{messages("payment-complete.panel.title")}
 
+@title =  @{messages("")} + " - " + @{messages("global.service-name")} + " - " + @{messages("global.title-suffix")}
+
 @panelContent = @{Html(messages("payment-complete.panel.content", taxReference.value))}
 
 @maybeEmailContent = {
@@ -63,7 +65,7 @@
 }
 
 @layout(
-    pageTitle = Some(heading),
+    pageTitle = Some(title),
     origin = Some(journeyRequest.journey.origin),
     showBackLink = false,
     additionalScripts = Some(additionalScript)
