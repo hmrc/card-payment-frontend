@@ -27,7 +27,7 @@ object TitleMaker {
 
   private def makeTitle(h1Key: String, origin: String, error: Boolean)(implicit messages: Messages): String = {
     val title = s"""${Messages(h1Key)} - ${Messages(s"service-name.${origin}")} - GOV.UK"""
-    if (error) s"""${Messages("global.error-prefix")} $title""" else title
+    if (error) s"""${Messages("error.title-prefix")} $title""" else title
   }
 
 }
