@@ -22,9 +22,9 @@
     layout: Layout,
     appConfig: AppConfig
 )
-@()(implicit request: JourneyRequest[_], messages: Messages)
+@()(implicit request: Request[_], messages: Messages)
 
-@heading = @{messages("timed-out.title")}
+@heading = @{messages("time-out.title")}
 
 @layout(pageTitle = Some(heading)) {
 
