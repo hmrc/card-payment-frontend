@@ -66,14 +66,14 @@ class FeesControllerSpec extends ItSpec {
         PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyBeforeBeginWebPayment)
         val result = systemUnderTest.renderPage(fakeGetRequest)
         val document = Jsoup.parse(contentAsString(result))
-        document.title shouldBe "Payment received by HMRC - Pay your Self Assessment - GOV.UK"
+        document.title shouldBe "Card fees - Pay your Self Assessment - GOV.UK"
       }
 
       "show the Title tab correctly in Welsh" in {
         PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyBeforeBeginWebPayment)
         val result = systemUnderTest.renderPage(fakeGetRequestInWelsh)
         val document = Jsoup.parse(contentAsString(result))
-        document.title shouldBe "Taliad wedi dod i law CThEM - Talu eich Hunanasesiad - GOV.UK"
+        document.title shouldBe "Ffioedd cerdyn - Talu eich Hunanasesiad - GOV.UK"
       }
 
       "for origin PfSa" - {

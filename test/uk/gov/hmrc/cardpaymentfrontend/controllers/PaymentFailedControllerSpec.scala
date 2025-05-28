@@ -66,14 +66,14 @@ class PaymentFailedControllerSpec extends ItSpec {
         PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyAfterFailWebPayment)
         val result = systemUnderTest.renderPage(fakeGetRequest)
         val document = Jsoup.parse(contentAsString(result))
-        document.title shouldBe "Payment received by HMRC - Pay your Self Assessment - GOV.UK"
+        document.title shouldBe "Payment failed - Pay your Self Assessment - GOV.UK"
       }
 
       "show the Title tab correctly in Welsh" in {
         PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyAfterFailWebPayment)
         val result = systemUnderTest.renderPage(fakeGetRequestInWelsh)
         val document = Jsoup.parse(contentAsString(result))
-        document.title shouldBe "Taliad wedi dod i law CThEM - Talu eich Hunanasesiad - GOV.UK"
+        document.title shouldBe "Taliad wedi methu - Talu eich Hunanasesiad - GOV.UK"
       }
 
       "show the Service Name banner title correctly in English" in {
