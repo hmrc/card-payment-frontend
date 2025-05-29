@@ -22,6 +22,7 @@
 @import views.html.helper.CSPNonce
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.hmrcstandardpage.ServiceURLs
 @import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcTimeoutDialogHelper
+@import uk.gov.hmrc.cardpaymentfrontend.requests.RequestSupport
 @import uk.gov.hmrc.cardpaymentfrontend.requests.RequestSupport.isLoggedIn
 @import uk.gov.hmrc.cardpaymentfrontend.config.AppConfig
 
@@ -64,9 +65,9 @@
               timeout = Some(appConfig.timeoutInSeconds),
               countdown = Some(appConfig.countdownInSeconds),
               title = None,
-              message = Some { if (isLoggedIn) Messages("time-out.dialogue.logged-in.message") else Messages("time-out.dialogue.logged-out.message") },
-              keepAliveButtonText = Some { if (isLoggedIn) Messages("time-out.dialogue.logged-in.keep-alive-button-text") else Messages("time-out.dialogue.logged-out.keep-alive-button-text") },
-              signOutButtonText = Some { if (isLoggedIn) Messages("time-out.dialogue.logged-in.sign-out-button-text") else Messages("time-out.dialogue.logged-out.sign-out-button-text") }
+              message = Some { if (isLoggedIn) messages("time-out.dialogue.logged-in.message") else messages("time-out.dialogue.logged-out.message") },
+              keepAliveButtonText = Some { if (isLoggedIn) messages("time-out.dialogue.logged-in.keep-alive-button-text") else messages("time-out.dialogue.logged-out.keep-alive-button-text") },
+              signOutButtonText = Some { if (isLoggedIn) messages("time-out.dialogue.logged-in.sign-out-button-text") else messages("time-out.dialogue.logged-out.sign-out-button-text") }
           ))
       ),
       serviceURLs = ServiceURLs(
