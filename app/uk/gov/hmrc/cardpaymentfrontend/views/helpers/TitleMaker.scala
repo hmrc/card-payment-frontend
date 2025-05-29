@@ -16,17 +16,19 @@
 
 package uk.gov.hmrc.cardpaymentfrontend.views.helpers
 
+import payapi.corcommon.model.Origin
 import play.api.data.Form
 import play.api.i18n.Messages
-import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
 
 object TitleMaker {
 
-  def journeyTitleMaker(h1Key: String, maybeForm: Option[Form[_]] = None)(implicit messages: Messages, journeyRequest: JourneyRequest[_]): String =
-    makeTitle(h1Key, journeyRequest.journey.origin.entryName, maybeForm.exists(_.hasErrors))
+  def journeyTitleMaker(h1Key: Option[String], origin: Option[Origin], maybeForm: Option[Form[_]] = None)(implicit messages: Messages): String = {
+    val originEntryName = origin.map(_.entryName)
+    makeTitle(h1Key.getOrElse(""), originEntryName.getOrElse(""), maybeForm.exists(_.hasErrors))
+  }
 
   private def makeTitle(h1Key: String, origin: String, error: Boolean)(implicit messages: Messages): String = {
-    val title = s"""${Messages(h1Key)} - ${Messages(s"service-name.${origin}")} - GOV.UK"""
+    val title = s"""${messages(h1Key)} - ${Messages(s"service-name.${origin}")} - GOV.UK"""
     if (error) s"""${Messages("error.title-prefix")} $title""" else title
   }
 

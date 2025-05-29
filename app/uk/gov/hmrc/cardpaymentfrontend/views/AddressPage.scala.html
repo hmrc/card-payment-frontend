@@ -19,11 +19,9 @@
 @import uk.gov.hmrc.cardpaymentfrontend.models.{Address, Country}
 @import uk.gov.hmrc.cardpaymentfrontend.views.html.Layout
 @import uk.gov.hmrc.govukfrontend.views.Aliases.{Button, ErrorSummary, Input, Text}
-@import uk.gov.hmrc.govukfrontend.views.Implicits.RichInput
-@import uk.gov.hmrc.govukfrontend.views.Implicits.RichSelect
+@import uk.gov.hmrc.govukfrontend.views.Implicits.{RichInput, RichSelect}
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import uk.gov.hmrc.govukfrontend.views.html.components.implicits.RichFormErrors
-@import uk.gov.hmrc.cardpaymentfrontend.views.helpers.TitleMaker.journeyTitleMaker
 
 @this(
     errorSummary: GovukErrorSummary,
@@ -41,11 +39,9 @@
 
 @heading= @{messages("address.heading")}
 
-@title = @{journeyTitleMaker(messages("address.heading"))}
-
 @key = @{AddressForm.addressKey}
 
-@layout(pageTitle = Some(title), origin = Some(journeyRequest.journey.origin)) {
+@layout(pageTitle = Some(heading), origin = Some(journeyRequest.journey.origin)) {
     @if(form.hasErrors) {
         @errorSummary(ErrorSummary(errorList =
             form.errors.asTextErrorLinks, title = Text(messages("error.there-is-a-problem")))

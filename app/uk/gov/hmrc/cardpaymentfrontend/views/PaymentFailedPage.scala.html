@@ -36,9 +36,7 @@
 
 @heading= @{messages("payment-failed.heading")}
 
-@title = @{journeyTitleMaker(messages("payment-failed.heading"))}
-
-@layout(pageTitle = Some(title), origin = Some(journeyRequest.journey.origin)) {
+@layout(pageTitle = Some(heading), origin = Some(journeyRequest.journey.origin)) {
     @if(hasOpenBanking) {
 
         @if(form.hasErrors) {

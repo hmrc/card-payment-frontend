@@ -43,8 +43,6 @@
 
 @heading = @{messages("payment-complete.panel.title")}
 
-@title = @{journeyTitleMaker(messages("payment-complete.panel.title"))}
-
 @panelContent = @{Html(messages("payment-complete.panel.content", taxReference.value))}
 
 @maybeEmailContent = {
@@ -65,7 +63,7 @@
 }
 
 @layout(
-    pageTitle = Some(title),
+    pageTitle = Some(heading),
     origin = Some(journeyRequest.journey.origin),
     showBackLink = false,
     additionalScripts = Some(additionalScript)

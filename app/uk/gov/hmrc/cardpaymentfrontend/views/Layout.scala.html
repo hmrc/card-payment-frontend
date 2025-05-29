@@ -16,6 +16,7 @@
 
 @import payapi.corcommon.model.Origin
 @import uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins.ExtendedOrigin.OriginExtended
+@import uk.gov.hmrc.cardpaymentfrontend.views.helpers.TitleMaker.journeyTitleMaker
 @import uk.gov.hmrc.govukfrontend.views.Aliases.BackLink
 @import uk.gov.hmrc.hmrcfrontend.views.html.helpers.{HmrcReportTechnicalIssueHelper, HmrcStandardPage}
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.hmrcstandardpage.{HmrcStandardPageParams, TemplateOverrides}
@@ -27,7 +28,7 @@
 )
 
 @(
-        pageTitle: Option[String] = None,
+        pageTitle: Option[String],
         origin: Option[Origin] = None,
         showBackLink: Boolean = true,
         backLinkOverride: Option[BackLink] = None,
@@ -52,7 +53,7 @@
       templateOverrides = TemplateOverrides(
           additionalScriptsBlock = Some(scripts)
       ),
-      pageTitle = pageTitle,
+      pageTitle = Some(journeyTitleMaker(pageTitle, origin)),
       serviceName = Some(serviceName),
       isWelshTranslationAvailable = welshSupported,
       backLink = {
