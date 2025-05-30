@@ -1,10 +1,10 @@
 service.name = card-payment-frontend
 service.text = This is your new service
 
-
 ## Non page specific
 continue = Continue
 error.there-is-a-problem = There is a problem
+error.title-prefix = Error:
 
 ## Origin service names
 service-name.generic = Pay your tax
