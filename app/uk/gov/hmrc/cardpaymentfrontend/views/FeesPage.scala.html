@@ -20,7 +20,6 @@
 @import uk.gov.hmrc.govukfrontend.views.Aliases.Button
 @import uk.gov.hmrc.govukfrontend.views.html.components.{FormWithCSRF, GovukButton}
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
-@import uk.gov.hmrc.cardpaymentfrontend.views.helpers.TitleMaker.journeyTitleMaker
 
 @this(
     govukButton: GovukButton,
@@ -34,7 +33,7 @@
 
 @layout(pageTitle = Some(heading), origin = Some(journeyRequest.journey.origin)) {
 
-    <h1 class = "govuk-heading-xl govuk-!-margin-bottom-9">@heading</h1>
+    <h1 class = "govuk-heading-l govuk-!-margin-bottom-9">@heading</h1>
      <p id="para1" class="govuk-body">@messages("card-fees.para1")</p>
      <p id="para2" class="govuk-body">@messages("card-fees.para2")</p>
 
