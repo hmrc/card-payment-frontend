@@ -7,12 +7,11 @@ StrictBuilding.strictBuildingSetting
 //---
 
 ThisBuild / majorVersion := 0
-ThisBuild / scalaVersion := "2.13.12"
+ThisBuild / scalaVersion := "2.13.16"
 
 lazy val microservice = Project("card-payment-frontend", file("."))
   .enablePlugins(play.sbt.PlayScala, SbtDistributablesPlugin)
   .disablePlugins(JUnitXmlReportPlugin)
-  .settings(resolvers += Resolver.jcenterRepo)
   .settings(
     libraryDependencies ++= AppDependencies.compile ++ AppDependencies.test,
     scalacOptions ++= ScalaCompilerFlags.scalaCompilerOptions,
@@ -30,7 +29,7 @@ lazy val microservice = Project("card-payment-frontend", file("."))
   .settings(CodeCoverageSettings.settings *)
   .settings(SbtUpdatesSettings.sbtUpdatesSettings *)
   .settings(ScalariformSettings.scalariformSettings *)
-  .settings(WartRemoverSettings.wartRemoverSettings: _*)
+  .settings(WartRemoverSettings.wartRemoverSettings *)
   .settings(
     Compile / unmanagedResourceDirectories += baseDirectory.value / "resources",
     Compile / scalacOptions -= "utf8",

@@ -25,6 +25,7 @@ import uk.gov.hmrc.http.HttpReads.Implicits._
 
 import java.net.URL
 import javax.inject.{Inject, Singleton}
+import play.mvc.Http.HeaderNames.AUTHORIZATION
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
@@ -34,10 +35,12 @@ class CardPaymentConnector @Inject() (appConfig: AppConfig, httpClientV2: HttpCl
   private val initiatePaymentUrl: URL = url"$cardPaymentBaseUrl/card-payment/initiate-payment"
   private val checkPaymentStatusUrl: String => URL = (transactionReference: String) => url"$cardPaymentBaseUrl/card-payment/payment-status/$transactionReference"
   private val authAndSettleUrl: String => URL = (transactionReference: String) => url"$cardPaymentBaseUrl/card-payment/auth-and-settle/$transactionReference"
+  private val openBankingAuthToken: String = appConfig.cardPaymentInternalAuthToken
 
   def initiatePayment(cardPaymentInitiatePaymentRequest: CardPaymentInitiatePaymentRequest)(implicit headerCarrier: HeaderCarrier): Future[CardPaymentInitiatePaymentResponse] =
     httpClientV2
       .post(initiatePaymentUrl)
+      .setHeader(AUTHORIZATION -> openBankingAuthToken)
       .withBody(Json.toJson(cardPaymentInitiatePaymentRequest))
       .execute[CardPaymentInitiatePaymentResponse]
 
@@ -45,11 +48,13 @@ class CardPaymentConnector @Inject() (appConfig: AppConfig, httpClientV2: HttpCl
   def checkPaymentStatus(transactionReference: String)(implicit headerCarrier: HeaderCarrier): Future[JsBoolean] =
     httpClientV2
       .get(checkPaymentStatusUrl(transactionReference))
+      .setHeader(AUTHORIZATION -> openBankingAuthToken)
       .execute[JsBoolean]
 
   //todo should we make this strongly typed and return a CardPaymentResult or Option[CardPaymentResult]?
   def authAndSettle(transactionReference: String)(implicit headerCarrier: HeaderCarrier): Future[HttpResponse] =
     httpClientV2
       .post(authAndSettleUrl(transactionReference))
+      .setHeader(AUTHORIZATION -> openBankingAuthToken)
       .execute[HttpResponse]
 }
