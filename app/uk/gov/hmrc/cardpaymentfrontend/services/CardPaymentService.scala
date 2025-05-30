@@ -17,6 +17,7 @@
 package uk.gov.hmrc.cardpaymentfrontend.services
 
 import payapi.cardpaymentjourney.model.journey.Journey
+import payapi.corcommon.model.TransNumberGenerator
 import play.api.Logging
 import play.api.libs.json.JsBoolean
 import uk.gov.hmrc.cardpaymentfrontend.config.AppConfig
@@ -34,6 +35,7 @@ class CardPaymentService @Inject() (
     appConfig:            AppConfig,
     cardPaymentConnector: CardPaymentConnector,
     payApiConnector:      PayApiConnector,
+    transNoGenerator:     TransNumberGenerator,
     clientIdService:      ClientIdService
 )(implicit executionContext: ExecutionContext) extends Logging {
 
@@ -67,7 +69,8 @@ class CardPaymentService @Inject() (
       purchaseDescription = journey.referenceValue,
       purchaseAmount      = journey.getAmountInPence,
       billingAddress      = addressFromSessionAsBarclaycardAddress,
-      emailAddress        = maybeEmailFromSession
+      emailAddress        = maybeEmailFromSession,
+      transactionNumber   = transNoGenerator.generate(journey.origin)
     )
 
     for {

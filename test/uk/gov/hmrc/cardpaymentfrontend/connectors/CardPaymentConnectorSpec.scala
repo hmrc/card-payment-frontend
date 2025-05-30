@@ -32,7 +32,11 @@ class CardPaymentConnectorSpec extends ItSpec {
 
     "initiatePayment" - {
       "should return a CardPaymentInitiatePaymentResponse when card-payment backend returns valid json" in {
-        val cardPaymentInitiatePaymentRequest = CardPaymentInitiatePaymentRequest("somereturnurl", "MIEE", "1234567895K", AmountInPence(1234), BarclaycardAddress("teststreet", postCode    = "AA11AA", countryCode = "GBR"), Some(EmailAddress("test@email.com")))
+        val cardPaymentInitiatePaymentRequest = CardPaymentInitiatePaymentRequest(
+          "somereturnurl", "MIEE", "1234567895K", AmountInPence(1234),
+                                                  BarclaycardAddress("teststreet", postCode    = "AA11AA", countryCode = "GBR"),
+                                                  Some(EmailAddress("test@email.com")), "00081999999999"
+        )
         val expectedCardPaymentInitiatePaymentResponse = CardPaymentInitiatePaymentResponse("someiframeurl", "sometransactionref")
 
         CardPaymentStub.InitiatePayment.stubForInitiatePayment2xx(cardPaymentInitiatePaymentRequest, expectedCardPaymentInitiatePaymentResponse)
@@ -42,7 +46,11 @@ class CardPaymentConnectorSpec extends ItSpec {
       }
 
       "should throw an exception when card-payment backend returns a 5xx server error" in {
-        val cardPaymentInitiatePaymentRequest = CardPaymentInitiatePaymentRequest("somereturnurl", "MIEE", "1234567895", AmountInPence(123), BarclaycardAddress("teststreet", postCode    = "AA11AA", countryCode = "GBR"), Some(EmailAddress("test@email.com")))
+        val cardPaymentInitiatePaymentRequest = CardPaymentInitiatePaymentRequest(
+          "somereturnurl", "MIEE", "1234567895", AmountInPence(123),
+                                                 BarclaycardAddress("teststreet", postCode    = "AA11AA", countryCode = "GBR"),
+                                                 Some(EmailAddress("test@email.com")), "00081999999999"
+        )
         CardPaymentStub.InitiatePayment.stubForInitiatePayment5xx()
         val error: Exception = intercept[Exception](systemUnderTest.initiatePayment(cardPaymentInitiatePaymentRequest).futureValue)
         error.getCause.getMessage should include(s"POST of 'http://localhost:${wireMockPort.toString}/card-payment/initiate-payment' returned 503.")
