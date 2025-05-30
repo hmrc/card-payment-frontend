@@ -30,11 +30,12 @@ lazy val microservice = Project("card-payment-frontend", file("."))
   .settings(CodeCoverageSettings.settings *)
   .settings(SbtUpdatesSettings.sbtUpdatesSettings *)
   .settings(ScalariformSettings.scalariformSettings *)
-  .settings(WartRemoverSettings.wartRemoverSettings: _*)
+  .settings(WartRemoverSettings.wartRemoverSettings *)
   .settings(
     Compile / unmanagedResourceDirectories += baseDirectory.value / "resources",
     Compile / scalacOptions -= "utf8",
   )
+  .settings(Global / onChangedBuildSource := ReloadOnSourceChanges)
   .settings(
     RoutesKeys.routesImport += "uk.gov.hmrc.play.bootstrap.binders.RedirectUrl"
   )

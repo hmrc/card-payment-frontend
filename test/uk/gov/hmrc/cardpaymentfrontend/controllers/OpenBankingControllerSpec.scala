@@ -37,7 +37,7 @@ class OpenBankingControllerSpec extends ItSpec {
         val exception = intercept[RuntimeException] {
           systemUnderTest.startOpenBankingJourney(fakeRequest).futureValue
         }
-        exception.getMessage shouldBe "The future returned an exception of type: java.lang.RuntimeException, with message: Unable to build createSessionDataRequest, so cannot start an OB journey."
+        exception.getMessage shouldBe "The future returned an exception of type: java.lang.RuntimeException, with message: Unable to build createSessionDataRequest, so cannot start an OB journey for origin PfSa."
       }
 
       "redirect when call to open banking to start a journey succeeds" in {

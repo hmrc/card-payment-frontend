@@ -32,7 +32,7 @@ service-name.BtaEpayePenalty = Pay your PAYE late payment or filing penalty
 service-name.BtaEpayeInterest =
 service-name.BtaEpayeGeneral = Pay your employers’ PAYE and National Insurance
 service-name.BtaClass1aNi = Pay your employers’ PAYE and National Insurance
-service-name.BtaCt =
+service-name.BtaCt = Pay your Corporation Tax
 service-name.BtaSdil =
 service-name.BcPngr =
 service-name.Parcels =
@@ -121,6 +121,9 @@ check-your-details.ItSa.reference = Unique Taxpayer Reference (UTR)
 check-your-details.PfAlcoholDuty.reference = Payment reference
 check-your-details.AlcoholDuty.reference = Payment reference
 check-your-details.AlcoholDuty.charge-reference = Charge reference
+check-your-details.BtaCt.reference = Payment reference
+check-your-details.PfCt.reference = Unique Taxpayer Reference (UTR)
+check-your-details.PfCt.payslip-reference = Payslip reference
 check-your-details.PfVat.reference.title = VAT registration number
 
 
@@ -188,7 +191,7 @@ payment-complete.survey.p2.part1 = Tell us what you think of this service
 payment-complete.survey.p2.part2 = (takes 30 seconds)
 payment-complete.tax-name.PfSa = Self Assessment
 payment-complete.tax-name.PfVat = VAT
-payment-complete.tax-name.PfCt =
+payment-complete.tax-name.PfCt = Corporation Tax
 payment-complete.tax-name.PfEpayeNi =
 payment-complete.tax-name.PfEpayeLpp =
 payment-complete.tax-name.PfEpayeSeta =
@@ -210,7 +213,7 @@ payment-complete.tax-name.BtaEpayePenalty =
 payment-complete.tax-name.BtaEpayeInterest =
 payment-complete.tax-name.BtaEpayeGeneral =
 payment-complete.tax-name.BtaClass1aNi =
-payment-complete.tax-name.BtaCt =
+payment-complete.tax-name.BtaCt = Corporation Tax
 payment-complete.tax-name.BtaSdil =
 payment-complete.tax-name.BcPngr =
 payment-complete.tax-name.Parcels =
@@ -298,6 +301,8 @@ email.tax-name.PfVat = Vat
 email.tax-name.PfP800 = P800
 email.tax-name.PfAlcoholDuty = Alcohol Duty
 email.tax-name.AlcoholDuty = Alcohol Duty
+email.tax-name.BtaCt = Corporation Tax
+email.tax-name.PfCt = Corporation Tax
 
 
 ## Payments survey

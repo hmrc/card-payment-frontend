@@ -39,7 +39,7 @@ class PaymentFailedControllerSpec extends ItSpec {
 
       val fakeGetRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/payment-failed").withSessionId()
       val fakeGetRequestInWelsh: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/payment-failed").withSessionId().withLangWelsh()
-
+      //todo we can rewrite all of these into a more cohesive test.
       "should return 200 OK" in {
         PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyAfterFailWebPayment)
         val result = systemUnderTest.renderPage()(fakeGetRequest)
