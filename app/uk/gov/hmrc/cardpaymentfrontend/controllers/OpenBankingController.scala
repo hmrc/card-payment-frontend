@@ -49,7 +49,10 @@ class OpenBankingController @Inject() (
     }
 
     openBankingConnector.startOpenBankingJourney(createSessionDataRequest)
-      .map(createSessionDataResponse => Redirect(createSessionDataResponse.nextUrl))
+      .map { createSessionDataResponse =>
+        Redirect(createSessionDataResponse.nextUrl)
+          .addingToSession("obSessionDataId" -> createSessionDataResponse.sessionDataId.value) // required by pay-frontend to update the open-banking-mongo.
+      }
   }
 
 }
