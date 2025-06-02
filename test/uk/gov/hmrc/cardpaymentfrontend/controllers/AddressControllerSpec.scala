@@ -117,6 +117,7 @@ class AddressControllerSpec extends ItSpec {
         document.select("input[name=line2]").attr("value") shouldBe "line2"
         document.select("input[name=city]").attr("value") shouldBe "city"
         document.select("input[name=postcode]").attr("value") shouldBe "AA0AA0"
+        document.select("input[name=county]").attr("value") shouldBe "county"
         document.select("select[name=country] option[selected]").attr("value") shouldBe "GBR"
 
       }
