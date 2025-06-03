@@ -150,7 +150,7 @@ class FeesControllerSpec extends ItSpec {
       "for origin BtaSa" - {
 
         "render the static content correctly" in {
-          PayApiStub.stubForFindBySessionId2xx(TestJourneys.BtaSa.journeyAfterSucceedDebitWebPayment)
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.BtaSa.journeyBeforeBeginWebPayment)
           val result = systemUnderTest.renderPage(fakeRequest)
           val document = Jsoup.parse(contentAsString(result))
           document.select(".govuk-header__service-name").html shouldBe "Pay your Self Assessment"
@@ -158,7 +158,7 @@ class FeesControllerSpec extends ItSpec {
         }
 
         "the static content correctly in welsh" in {
-          PayApiStub.stubForFindBySessionId2xx(TestJourneys.BtaSa.journeyAfterSucceedDebitWebPayment)
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.BtaSa.journeyBeforeBeginWebPayment)
           val result = systemUnderTest.renderPage(fakeWelshRequest)
           val document = Jsoup.parse(contentAsString(result))
           document.select(".govuk-header__service-name").html shouldBe "Talu eich Hunanasesiad"
@@ -166,7 +166,7 @@ class FeesControllerSpec extends ItSpec {
         }
 
         "render three options for other ways to pay" in {
-          PayApiStub.stubForFindBySessionId2xx(TestJourneys.BtaSa.journeyAfterSucceedDebitWebPayment)
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.BtaSa.journeyBeforeBeginWebPayment)
           val result = systemUnderTest.renderPage(fakeRequest)
           val document = Jsoup.parse(contentAsString(result))
           val listOfMethods = document.select("#payment-type-list").select("li")
@@ -174,7 +174,7 @@ class FeesControllerSpec extends ItSpec {
         }
 
         "render an option for open banking" in {
-          PayApiStub.stubForFindBySessionId2xx(TestJourneys.BtaSa.journeyAfterSucceedDebitWebPayment)
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.BtaSa.journeyBeforeBeginWebPayment)
           val result = systemUnderTest.renderPage(fakeRequest)
           val document = Jsoup.parse(contentAsString(result))
           val listOfMethods = document.select("#payment-type-list").select("li")
@@ -184,7 +184,7 @@ class FeesControllerSpec extends ItSpec {
         }
 
         "render an option for open banking in welsh" in {
-          PayApiStub.stubForFindBySessionId2xx(TestJourneys.BtaSa.journeyAfterSucceedDebitWebPayment)
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.BtaSa.journeyBeforeBeginWebPayment)
           val result = systemUnderTest.renderPage(fakeWelshRequest)
           val document = Jsoup.parse(contentAsString(result))
           val listOfMethods = document.select("#payment-type-list").select("li")
@@ -194,7 +194,7 @@ class FeesControllerSpec extends ItSpec {
         }
 
         "render an option for one off direct debit" in {
-          PayApiStub.stubForFindBySessionId2xx(TestJourneys.BtaSa.journeyAfterSucceedDebitWebPayment)
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.BtaSa.journeyBeforeBeginWebPayment)
           val result = systemUnderTest.renderPage(fakeRequest)
           val document = Jsoup.parse(contentAsString(result))
           val listOfMethods = document.select("#payment-type-list").select("li")
@@ -204,7 +204,7 @@ class FeesControllerSpec extends ItSpec {
         }
 
         "render an option for one off direct debit in welsh" in {
-          PayApiStub.stubForFindBySessionId2xx(TestJourneys.BtaSa.journeyAfterSucceedDebitWebPayment)
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.BtaSa.journeyBeforeBeginWebPayment)
           val result = systemUnderTest.renderPage(fakeWelshRequest)
           val document = Jsoup.parse(contentAsString(result))
           val listOfMethods = document.select("#payment-type-list").select("li")
@@ -214,7 +214,7 @@ class FeesControllerSpec extends ItSpec {
         }
 
         "render an option for personal debit card" in {
-          PayApiStub.stubForFindBySessionId2xx(TestJourneys.BtaSa.journeyAfterSucceedDebitWebPayment)
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.BtaSa.journeyBeforeBeginWebPayment)
           val result = systemUnderTest.renderPage(fakeRequest)
           val document = Jsoup.parse(contentAsString(result))
           val listOfMethods = document.select("#payment-type-list").select("li")
@@ -223,7 +223,7 @@ class FeesControllerSpec extends ItSpec {
         }
 
         "render an option for personal debit card in welsh" in {
-          PayApiStub.stubForFindBySessionId2xx(TestJourneys.BtaSa.journeyAfterSucceedDebitWebPayment)
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.BtaSa.journeyBeforeBeginWebPayment)
           val result = systemUnderTest.renderPage(fakeWelshRequest)
           val document = Jsoup.parse(contentAsString(result))
           val listOfMethods = document.select("#payment-type-list").select("li")
@@ -235,7 +235,7 @@ class FeesControllerSpec extends ItSpec {
       "for origin PtaSa" - {
 
         "render the static content correctly" in {
-          PayApiStub.stubForFindBySessionId2xx(TestJourneys.PtaSa.journeyAfterSucceedDebitWebPayment)
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.PtaSa.journeyBeforeBeginWebPayment)
           val result = systemUnderTest.renderPage(fakeRequest)
           val document = Jsoup.parse(contentAsString(result))
           document.select(".govuk-header__service-name").html shouldBe "Pay your Self Assessment"
@@ -243,7 +243,7 @@ class FeesControllerSpec extends ItSpec {
         }
 
         "the static content correctly in welsh" in {
-          PayApiStub.stubForFindBySessionId2xx(TestJourneys.PtaSa.journeyAfterSucceedDebitWebPayment)
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.PtaSa.journeyBeforeBeginWebPayment)
           val result = systemUnderTest.renderPage(fakeWelshRequest)
           val document = Jsoup.parse(contentAsString(result))
           document.select(".govuk-header__service-name").html shouldBe "Talu eich Hunanasesiad"
@@ -251,7 +251,7 @@ class FeesControllerSpec extends ItSpec {
         }
 
         "render three options for other ways to pay" in {
-          PayApiStub.stubForFindBySessionId2xx(TestJourneys.PtaSa.journeyAfterSucceedDebitWebPayment)
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.PtaSa.journeyBeforeBeginWebPayment)
           val result = systemUnderTest.renderPage(fakeRequest)
           val document = Jsoup.parse(contentAsString(result))
           val listOfMethods = document.select("#payment-type-list").select("li")
@@ -259,7 +259,7 @@ class FeesControllerSpec extends ItSpec {
         }
 
         "render an option for open banking" in {
-          PayApiStub.stubForFindBySessionId2xx(TestJourneys.PtaSa.journeyAfterSucceedDebitWebPayment)
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.PtaSa.journeyBeforeBeginWebPayment)
           val result = systemUnderTest.renderPage(fakeRequest)
           val document = Jsoup.parse(contentAsString(result))
           val listOfMethods = document.select("#payment-type-list").select("li")
@@ -269,7 +269,7 @@ class FeesControllerSpec extends ItSpec {
         }
 
         "render an option for open banking in welsh" in {
-          PayApiStub.stubForFindBySessionId2xx(TestJourneys.PtaSa.journeyAfterSucceedDebitWebPayment)
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.PtaSa.journeyBeforeBeginWebPayment)
           val result = systemUnderTest.renderPage(fakeWelshRequest)
           val document = Jsoup.parse(contentAsString(result))
           val listOfMethods = document.select("#payment-type-list").select("li")
@@ -279,7 +279,7 @@ class FeesControllerSpec extends ItSpec {
         }
 
         "render an option for one off direct debit" in {
-          PayApiStub.stubForFindBySessionId2xx(TestJourneys.PtaSa.journeyAfterSucceedDebitWebPayment)
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.PtaSa.journeyBeforeBeginWebPayment)
           val result = systemUnderTest.renderPage(fakeRequest)
           val document = Jsoup.parse(contentAsString(result))
           val listOfMethods = document.select("#payment-type-list").select("li")
@@ -289,7 +289,7 @@ class FeesControllerSpec extends ItSpec {
         }
 
         "render an option for one off direct debit in welsh" in {
-          PayApiStub.stubForFindBySessionId2xx(TestJourneys.PtaSa.journeyAfterSucceedDebitWebPayment)
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.PtaSa.journeyBeforeBeginWebPayment)
           val result = systemUnderTest.renderPage(fakeWelshRequest)
           val document = Jsoup.parse(contentAsString(result))
           val listOfMethods = document.select("#payment-type-list").select("li")
@@ -299,7 +299,7 @@ class FeesControllerSpec extends ItSpec {
         }
 
         "render an option for personal debit card" in {
-          PayApiStub.stubForFindBySessionId2xx(TestJourneys.PtaSa.journeyAfterSucceedDebitWebPayment)
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.PtaSa.journeyBeforeBeginWebPayment)
           val result = systemUnderTest.renderPage(fakeRequest)
           val document = Jsoup.parse(contentAsString(result))
           val listOfMethods = document.select("#payment-type-list").select("li")
@@ -308,7 +308,7 @@ class FeesControllerSpec extends ItSpec {
         }
 
         "render an option for personal debit card in welsh" in {
-          PayApiStub.stubForFindBySessionId2xx(TestJourneys.PtaSa.journeyAfterSucceedDebitWebPayment)
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.PtaSa.journeyBeforeBeginWebPayment)
           val result = systemUnderTest.renderPage(fakeWelshRequest)
           val document = Jsoup.parse(contentAsString(result))
           val listOfMethods = document.select("#payment-type-list").select("li")
@@ -320,7 +320,7 @@ class FeesControllerSpec extends ItSpec {
       "for origin ItSa" - {
 
         "render the static content correctly" in {
-          PayApiStub.stubForFindBySessionId2xx(TestJourneys.ItSa.journeyAfterSucceedDebitWebPayment)
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.ItSa.journeyBeforeBeginWebPayment)
           val result = systemUnderTest.renderPage(fakeRequest)
           val document = Jsoup.parse(contentAsString(result))
           document.select(".govuk-header__service-name").html shouldBe "Pay your Self Assessment"
@@ -328,7 +328,7 @@ class FeesControllerSpec extends ItSpec {
         }
 
         "the static content correctly in welsh" in {
-          PayApiStub.stubForFindBySessionId2xx(TestJourneys.ItSa.journeyAfterSucceedDebitWebPayment)
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.ItSa.journeyBeforeBeginWebPayment)
           val result = systemUnderTest.renderPage(fakeWelshRequest)
           val document = Jsoup.parse(contentAsString(result))
           document.select(".govuk-header__service-name").html shouldBe "Talu eich Hunanasesiad"
@@ -336,7 +336,7 @@ class FeesControllerSpec extends ItSpec {
         }
 
         "render two options for other ways to pay" in {
-          PayApiStub.stubForFindBySessionId2xx(TestJourneys.ItSa.journeyAfterSucceedDebitWebPayment)
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.ItSa.journeyBeforeBeginWebPayment)
           val result = systemUnderTest.renderPage(fakeRequest)
           val document = Jsoup.parse(contentAsString(result))
           val listOfMethods = document.select("#payment-type-list").select("li")
@@ -344,7 +344,7 @@ class FeesControllerSpec extends ItSpec {
         }
 
         "render an option for bank transfer" in {
-          PayApiStub.stubForFindBySessionId2xx(TestJourneys.ItSa.journeyAfterSucceedDebitWebPayment)
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.ItSa.journeyBeforeBeginWebPayment)
           val result = systemUnderTest.renderPage(fakeRequest)
           val document = Jsoup.parse(contentAsString(result))
           val listOfMethods = document.select("#payment-type-list").select("li")
@@ -354,7 +354,7 @@ class FeesControllerSpec extends ItSpec {
         }
 
         "render an option for bank transfer in welsh" in {
-          PayApiStub.stubForFindBySessionId2xx(TestJourneys.ItSa.journeyAfterSucceedDebitWebPayment)
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.ItSa.journeyBeforeBeginWebPayment)
           val result = systemUnderTest.renderPage(fakeWelshRequest)
           val document = Jsoup.parse(contentAsString(result))
           val listOfMethods = document.select("#payment-type-list").select("li")
@@ -364,7 +364,7 @@ class FeesControllerSpec extends ItSpec {
         }
 
         "render an option for personal debit card" in {
-          PayApiStub.stubForFindBySessionId2xx(TestJourneys.ItSa.journeyAfterSucceedDebitWebPayment)
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.ItSa.journeyBeforeBeginWebPayment)
           val result = systemUnderTest.renderPage(fakeRequest)
           val document = Jsoup.parse(contentAsString(result))
           val listOfMethods = document.select("#payment-type-list").select("li")
@@ -373,7 +373,7 @@ class FeesControllerSpec extends ItSpec {
         }
 
         "render an option for personal debit card in welsh" in {
-          PayApiStub.stubForFindBySessionId2xx(TestJourneys.ItSa.journeyAfterSucceedDebitWebPayment)
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.ItSa.journeyBeforeBeginWebPayment)
           val result = systemUnderTest.renderPage(fakeWelshRequest)
           val document = Jsoup.parse(contentAsString(result))
           val listOfMethods = document.select("#payment-type-list").select("li")
@@ -439,6 +439,176 @@ class FeesControllerSpec extends ItSpec {
 
         "render an option for personal debit card in welsh" in {
           PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfAlcoholDuty.journeyBeforeBeginWebPayment)
+          val result = systemUnderTest.renderPage(fakeWelshRequest)
+          val document = Jsoup.parse(contentAsString(result))
+          val listOfMethods = document.select("#payment-type-list").select("li")
+          val cardBullet = listOfMethods.select("#personal-debit-card")
+          cardBullet.text() shouldBe "cerdyn debyd personol"
+        }
+      }
+
+      "for origin BtaCt" - {
+
+        "render the static content correctly" in {
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.BtaCt.journeyBeforeBeginWebPayment)
+          val result = systemUnderTest.renderPage(fakeRequest)
+          val document = Jsoup.parse(contentAsString(result))
+          document.select(".govuk-header__service-name").html shouldBe "Pay your Corporation Tax"
+          testStaticContentEnglish(document)
+        }
+
+        "the static content correctly in welsh" in {
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.BtaCt.journeyBeforeBeginWebPayment)
+          val result = systemUnderTest.renderPage(fakeWelshRequest)
+          val document = Jsoup.parse(contentAsString(result))
+          document.select(".govuk-header__service-name").html shouldBe "Talu eich Treth Gorfforaeth"
+          testStaticContentWelsh(document)
+        }
+
+        "render three options for other ways to pay" in {
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.BtaCt.journeyBeforeBeginWebPayment)
+          val result = systemUnderTest.renderPage(fakeRequest)
+          val document = Jsoup.parse(contentAsString(result))
+          val listOfMethods = document.select("#payment-type-list").select("li")
+          listOfMethods.size() shouldBe 3
+        }
+
+        "render an option for open banking" in {
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.BtaCt.journeyBeforeBeginWebPayment)
+          val result = systemUnderTest.renderPage(fakeRequest)
+          val document = Jsoup.parse(contentAsString(result))
+          val listOfMethods = document.select("#payment-type-list").select("li")
+          val openBankingBullet = listOfMethods.select("#open-banking-link")
+          openBankingBullet.text() shouldBe "bank account"
+          openBankingBullet.attr("href") shouldBe "/pay-by-card/start-open-banking"
+        }
+
+        "render an option for open banking in welsh" in {
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.BtaCt.journeyBeforeBeginWebPayment)
+          val result = systemUnderTest.renderPage(fakeWelshRequest)
+          val document = Jsoup.parse(contentAsString(result))
+          val listOfMethods = document.select("#payment-type-list").select("li")
+          val openBankingBullet = listOfMethods.select("#open-banking-link")
+          openBankingBullet.text() shouldBe "cyfrif banc"
+          openBankingBullet.attr("href") shouldBe "/pay-by-card/start-open-banking"
+        }
+
+        "render an option for one off direct debit" in {
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.BtaCt.journeyBeforeBeginWebPayment)
+          val result = systemUnderTest.renderPage(fakeRequest)
+          val document = Jsoup.parse(contentAsString(result))
+          val listOfMethods = document.select("#payment-type-list").select("li")
+          val oneOffDirectDebitBullet = listOfMethods.select("#one-off-direct-debit-link")
+          oneOffDirectDebitBullet.text() shouldBe "Direct Debit (one-off payment)"
+          oneOffDirectDebitBullet.attr("href") shouldBe "http://localhost:9056/pay/pay-by-one-off-direct-debit"
+        }
+
+        "render an option for one off direct debit in welsh" in {
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.BtaCt.journeyBeforeBeginWebPayment)
+          val result = systemUnderTest.renderPage(fakeWelshRequest)
+          val document = Jsoup.parse(contentAsString(result))
+          val listOfMethods = document.select("#payment-type-list").select("li")
+          val oneOffDirectDebitBullet = listOfMethods.select("#one-off-direct-debit-link")
+          oneOffDirectDebitBullet.text() shouldBe "Debyd Uniongyrchol (taliad untro)"
+          oneOffDirectDebitBullet.attr("href") shouldBe "http://localhost:9056/pay/pay-by-one-off-direct-debit"
+        }
+
+        "render an option for personal debit card" in {
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.BtaCt.journeyBeforeBeginWebPayment)
+          val result = systemUnderTest.renderPage(fakeRequest)
+          val document = Jsoup.parse(contentAsString(result))
+          val listOfMethods = document.select("#payment-type-list").select("li")
+          val cardBullet = listOfMethods.select("#personal-debit-card")
+          cardBullet.text() shouldBe "personal debit card"
+        }
+
+        "render an option for personal debit card in welsh" in {
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.BtaCt.journeyBeforeBeginWebPayment)
+          val result = systemUnderTest.renderPage(fakeWelshRequest)
+          val document = Jsoup.parse(contentAsString(result))
+          val listOfMethods = document.select("#payment-type-list").select("li")
+          val cardBullet = listOfMethods.select("#personal-debit-card")
+          cardBullet.text() shouldBe "cerdyn debyd personol"
+        }
+      }
+
+      "for origin PfCt" - {
+
+        "render the static content correctly" in {
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfCt.journeyBeforeBeginWebPayment)
+          val result = systemUnderTest.renderPage(fakeRequest)
+          val document = Jsoup.parse(contentAsString(result))
+          document.select(".govuk-header__service-name").html shouldBe "Pay your Corporation Tax"
+          testStaticContentEnglish(document)
+        }
+
+        "the static content correctly in welsh" in {
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfCt.journeyBeforeBeginWebPayment)
+          val result = systemUnderTest.renderPage(fakeWelshRequest)
+          val document = Jsoup.parse(contentAsString(result))
+          document.select(".govuk-header__service-name").html shouldBe "Talu eich Treth Gorfforaeth"
+          testStaticContentWelsh(document)
+        }
+
+        "render three options for other ways to pay" in {
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfCt.journeyBeforeBeginWebPayment)
+          val result = systemUnderTest.renderPage(fakeRequest)
+          val document = Jsoup.parse(contentAsString(result))
+          val listOfMethods = document.select("#payment-type-list").select("li")
+          listOfMethods.size() shouldBe 3
+        }
+
+        "render an option for open banking" in {
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfCt.journeyBeforeBeginWebPayment)
+          val result = systemUnderTest.renderPage(fakeRequest)
+          val document = Jsoup.parse(contentAsString(result))
+          val listOfMethods = document.select("#payment-type-list").select("li")
+          val openBankingBullet = listOfMethods.select("#open-banking-link")
+          openBankingBullet.text() shouldBe "bank account"
+          openBankingBullet.attr("href") shouldBe "/pay-by-card/start-open-banking"
+        }
+
+        "render an option for open banking in welsh" in {
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfCt.journeyBeforeBeginWebPayment)
+          val result = systemUnderTest.renderPage(fakeWelshRequest)
+          val document = Jsoup.parse(contentAsString(result))
+          val listOfMethods = document.select("#payment-type-list").select("li")
+          val openBankingBullet = listOfMethods.select("#open-banking-link")
+          openBankingBullet.text() shouldBe "cyfrif banc"
+          openBankingBullet.attr("href") shouldBe "/pay-by-card/start-open-banking"
+        }
+
+        "render an option for one off direct debit" in {
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfCt.journeyBeforeBeginWebPayment)
+          val result = systemUnderTest.renderPage(fakeRequest)
+          val document = Jsoup.parse(contentAsString(result))
+          val listOfMethods = document.select("#payment-type-list").select("li")
+          val oneOffDirectDebitBullet = listOfMethods.select("#one-off-direct-debit-link")
+          oneOffDirectDebitBullet.text() shouldBe "Direct Debit (one-off payment)"
+          oneOffDirectDebitBullet.attr("href") shouldBe "http://localhost:9056/pay/pay-by-one-off-direct-debit"
+        }
+
+        "render an option for one off direct debit in welsh" in {
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfCt.journeyBeforeBeginWebPayment)
+          val result = systemUnderTest.renderPage(fakeWelshRequest)
+          val document = Jsoup.parse(contentAsString(result))
+          val listOfMethods = document.select("#payment-type-list").select("li")
+          val oneOffDirectDebitBullet = listOfMethods.select("#one-off-direct-debit-link")
+          oneOffDirectDebitBullet.text() shouldBe "Debyd Uniongyrchol (taliad untro)"
+          oneOffDirectDebitBullet.attr("href") shouldBe "http://localhost:9056/pay/pay-by-one-off-direct-debit"
+        }
+
+        "render an option for personal debit card" in {
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfCt.journeyBeforeBeginWebPayment)
+          val result = systemUnderTest.renderPage(fakeRequest)
+          val document = Jsoup.parse(contentAsString(result))
+          val listOfMethods = document.select("#payment-type-list").select("li")
+          val cardBullet = listOfMethods.select("#personal-debit-card")
+          cardBullet.text() shouldBe "personal debit card"
+        }
+
+        "render an option for personal debit card in welsh" in {
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfCt.journeyBeforeBeginWebPayment)
           val result = systemUnderTest.renderPage(fakeWelshRequest)
           val document = Jsoup.parse(contentAsString(result))
           val listOfMethods = document.select("#payment-type-list").select("li")
@@ -566,7 +736,7 @@ class FeesControllerSpec extends ItSpec {
             case Origins.PtaSa                    => Seq(expectedOpenBankingLink, expectedOneOffDirectDebitLink)
             case Origins.ItSa                     => Seq(expectedBankTransferLink)
             case Origins.PfVat                    => Seq.empty
-            case Origins.PfCt                     => Seq.empty
+            case Origins.PfCt                     => Seq(expectedOpenBankingLink, expectedOneOffDirectDebitLink)
             case Origins.PfEpayeNi                => Seq.empty
             case Origins.PfEpayeLpp               => Seq.empty
             case Origins.PfEpayeSeta              => Seq.empty
@@ -587,7 +757,7 @@ class FeesControllerSpec extends ItSpec {
             case Origins.BtaEpayeInterest         => Seq.empty
             case Origins.BtaEpayeGeneral          => Seq.empty
             case Origins.BtaClass1aNi             => Seq.empty
-            case Origins.BtaCt                    => Seq.empty
+            case Origins.BtaCt                    => Seq(expectedOpenBankingLink, expectedOneOffDirectDebitLink)
             case Origins.BtaSdil                  => Seq.empty
             case Origins.BcPngr                   => Seq.empty
             case Origins.Parcels                  => Seq.empty

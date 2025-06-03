@@ -18,6 +18,7 @@ package uk.gov.hmrc.cardpaymentfrontend.testsupport.testdata
 
 import payapi.cardpaymentjourney.model.journey._
 import payapi.corcommon.model.taxes.ad.{AlcoholDutyChargeReference, AlcoholDutyReference}
+import payapi.corcommon.model.taxes.ct.{CtChargeTypes, CtLivePeriod, CtPeriod, CtUtr}
 import payapi.corcommon.model.taxes.sa.SaUtr
 import payapi.corcommon.model.taxes.vat.{CalendarPeriod, VatChargeReference, Vrn}
 import payapi.corcommon.model.{AmountInPence, JourneyId, PaymentStatuses}
@@ -57,7 +58,7 @@ object TestJourneys {
       sessionId            = Some(SessionId("TestSession-4b87460d-6f43-4c4c-b810-d6f87c774854")),
       amountInPence        = Some(AmountInPence(1234)),
       emailTemplateOptions = None,
-      navigation           = Some(NavigationOptions(returnUrl = Url("https://www.return-to-bta.com"), backUrl = Url("https://www.back-to-bta.com"))),
+      navigation           = Some(NavigationOptions(returnUrl = Url("https://www.return-url.com"), backUrl = Url("https://www.back-to-bta.com"))),
       order                = None,
       status               = PaymentStatuses.Created,
       futureDatedPayment   = None,
@@ -73,7 +74,7 @@ object TestJourneys {
       sessionId            = Some(SessionId("TestSession-4b87460d-6f43-4c4c-b810-d6f87c774854")),
       amountInPence        = Some(AmountInPence(1234)),
       emailTemplateOptions = None,
-      navigation           = Some(NavigationOptions(returnUrl = Url("https://www.return-to-pta.com"), backUrl = Url("https://www.back-to-pta.com"))),
+      navigation           = Some(NavigationOptions(returnUrl = Url("https://www.return-url.com"), backUrl = Url("https://www.back-to-pta.com"))),
       order                = None,
       status               = PaymentStatuses.Created,
       futureDatedPayment   = None,
@@ -89,7 +90,7 @@ object TestJourneys {
       sessionId            = Some(SessionId("TestSession-4b87460d-6f43-4c4c-b810-d6f87c774854")),
       amountInPence        = Some(AmountInPence(1234)),
       emailTemplateOptions = None,
-      navigation           = Some(NavigationOptions(returnUrl = Url("https://www.return-to-itsa.com"), backUrl = Url("https://www.back-to-itsa.com"))),
+      navigation           = Some(NavigationOptions(returnUrl = Url("https://www.return-url.com"), backUrl = Url("https://www.back-to-itsa.com"))),
       order                = None,
       status               = PaymentStatuses.Created,
       createdOn            = LocalDateTime.parse("2027-11-02T16:28:55.185"),
@@ -104,7 +105,7 @@ object TestJourneys {
       sessionId            = Some(SessionId("TestSession-4b87460d-6f43-4c4c-b810-d6f87c774854")),
       amountInPence        = Some(AmountInPence(1234)),
       emailTemplateOptions = None,
-      navigation           = Some(NavigationOptions(returnUrl = Url("https://www.return-to-pfalcoholduty.com"), backUrl = Url("https://www.back-to-pfalcoholduty.com"))),
+      navigation           = None,
       order                = None,
       status               = PaymentStatuses.Created,
       createdOn            = LocalDateTime.parse("2027-11-02T16:28:55.185"),
@@ -119,7 +120,7 @@ object TestJourneys {
       sessionId            = Some(SessionId("TestSession-4b87460d-6f43-4c4c-b810-d6f87c774854")),
       amountInPence        = Some(AmountInPence(1234)),
       emailTemplateOptions = None,
-      navigation           = Some(NavigationOptions(returnUrl = Url("https://www.return-to-pfalcoholduty.com"), backUrl = Url("https://www.back-to-pfalcoholduty.com"))),
+      navigation           = Some(NavigationOptions(returnUrl = Url("https://www.return-url.com"), backUrl = Url("https://www.back-to-alcoholduty.com"))),
       order                = None,
       status               = PaymentStatuses.Created,
       createdOn            = LocalDateTime.parse("2027-11-02T16:28:55.185"),
@@ -132,13 +133,54 @@ object TestJourneys {
     )
   }
 
+  object BtaCt extends JourneyStatuses[JsdBtaCt] {
+    val journeyBeforeBeginWebPayment: Journey[JsdBtaCt] = Journey[JsdBtaCt](
+      _id                  = JourneyId("TestJourneyId-44f9-ad7f-01e1d3d8f151"),
+      sessionId            = Some(SessionId("TestSession-4b87460d-6f43-4c4c-b810-d6f87c774854")),
+      amountInPence        = Some(AmountInPence(1234)),
+      emailTemplateOptions = None,
+      navigation           = Some(NavigationOptions(returnUrl = Url("https://www.return-url.com"), backUrl = Url("https://www.back-to-btact.com"))),
+      order                = None,
+      status               = PaymentStatuses.Created,
+      createdOn            = LocalDateTime.parse("2027-11-02T16:28:55.185"),
+      journeySpecificData  = JsdBtaCt(
+        utr                  = CtUtr("1097172564"),
+        ctPeriod             = Some(CtPeriod(1)),
+        ctChargeType         = Some(CtChargeTypes.A),
+        defaultAmountInPence = AmountInPence(1234),
+        dueDate              = Some(LocalDate.of(2028, 12, 12)),
+        ctLivePeriods        = Some(List(CtLivePeriod(1, LocalDate.of(2028, 11, 12), LocalDate.of(2028, 12, 12))))
+      ),
+      chosenWayToPay       = None
+    )
+  }
+
+  object PfCt extends JourneyStatuses[JsdPfCt] {
+    val journeyBeforeBeginWebPayment: Journey[JsdPfCt] = Journey[JsdPfCt](
+      _id                  = JourneyId("TestJourneyId-44f9-ad7f-01e1d3d8f151"),
+      sessionId            = Some(SessionId("TestSession-4b87460d-6f43-4c4c-b810-d6f87c774854")),
+      amountInPence        = Some(AmountInPence(1234)),
+      emailTemplateOptions = None,
+      navigation           = None,
+      order                = None,
+      status               = PaymentStatuses.Created,
+      createdOn            = LocalDateTime.parse("2027-11-02T16:28:55.185"),
+      journeySpecificData  = JsdPfCt(
+        utr          = Some(CtUtr("1097172564")),
+        ctPeriod     = Some(CtPeriod(1)),
+        ctChargeType = Some(CtChargeTypes.A)
+      ),
+      chosenWayToPay       = None
+    )
+  }
+
   object PfVat extends JourneyStatuses[JsdPfVat] {
     val journeyBeforeBeginWebPayment: Journey[JsdPfVat] = Journey[JsdPfVat](
       _id                  = JourneyId("TestJourneyId-44f9-ad7f-01e1d3d8f151"),
       sessionId            = Some(SessionId("TestSession-4b87460d-6f43-4c4c-b810-d6f87c774854")),
       amountInPence        = Some(AmountInPence(1234)),
       emailTemplateOptions = None,
-      navigation           = Some(NavigationOptions(returnUrl = Url("https://www.return-to-pfvat.com"), backUrl = Url("https://www.back-to-pfvat.com"))),
+      navigation           = Some(NavigationOptions(returnUrl = Url("https://www.return-url.com"), backUrl = Url("https://www.back-to-pfvat.com"))),
       order                = None,
       status               = PaymentStatuses.Created,
       createdOn            = LocalDateTime.parse("2027-11-02T16:28:55.185"),
@@ -156,7 +198,7 @@ object TestJourneys {
       sessionId            = Some(SessionId("TestSession-4b87460d-6f43-4c4c-b810-d6f87c774854")),
       amountInPence        = Some(AmountInPence(1234)),
       emailTemplateOptions = None,
-      navigation           = Some(NavigationOptions(returnUrl = Url("https://www.return-to-btavat.com"), backUrl = Url("https://www.back-to-btavat.com"))),
+      navigation           = Some(NavigationOptions(returnUrl = Url("https://www.return-url.com"), backUrl = Url("https://www.back-to-btavat.com"))),
       order                = None,
       status               = PaymentStatuses.Created,
       createdOn            = LocalDateTime.parse("2027-11-02T16:28:55.185"),
@@ -171,7 +213,7 @@ object TestJourneys {
       sessionId            = Some(SessionId("TestSession-4b87460d-6f43-4c4c-b810-d6f87c774854")),
       amountInPence        = Some(AmountInPence(1234)),
       emailTemplateOptions = None,
-      navigation           = Some(NavigationOptions(returnUrl = Url("https://www.return-to-vcvatreturn.com"), backUrl = Url("https://www.back-to-vcvatreturn.com"))),
+      navigation           = Some(NavigationOptions(returnUrl = Url("https://www.return-url.com"), backUrl = Url("https://www.back-to-vcvatreturn.com"))),
       order                = None,
       status               = PaymentStatuses.Created,
       createdOn            = LocalDateTime.parse("2027-11-02T16:28:55.185"),
@@ -191,7 +233,7 @@ object TestJourneys {
       sessionId            = Some(SessionId("TestSession-4b87460d-6f43-4c4c-b810-d6f87c774854")),
       amountInPence        = Some(AmountInPence(1234)),
       emailTemplateOptions = None,
-      navigation           = Some(NavigationOptions(returnUrl = Url("https://www.return-to-vcvatreturn.com"), backUrl = Url("https://www.back-to-vcvatreturn.com"))),
+      navigation           = Some(NavigationOptions(returnUrl = Url("https://www.return-url.com"), backUrl = Url("https://www.back-to-vcvatreturn.com"))),
       order                = None,
       status               = PaymentStatuses.Created,
       createdOn            = LocalDateTime.parse("2027-11-02T16:28:55.185"),

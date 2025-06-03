@@ -37,6 +37,8 @@ object TestHelpers {
     ItSa,
     PfAlcoholDuty,
     AlcoholDuty,
+    PfCt,
+    BtaCt,
     PfVat,
     BtaVat,
     VcVatReturn,
@@ -64,7 +66,6 @@ object TestHelpers {
     BtaEpayeInterest,
     BtaEpayeGeneral,
     BtaClass1aNi,
-    BtaCt,
     BtaSdil,
     BcPngr,
     Parcels,
@@ -123,7 +124,7 @@ object TestHelpers {
     case Origins.PtaSa                    => TestJourneys.PtaSa
     case Origins.ItSa                     => TestJourneys.ItSa
     case Origins.PfVat                    => TestJourneys.PfVat
-    case Origins.PfCt                     => throw new MatchError("Not implemented yet")
+    case Origins.PfCt                     => TestJourneys.PfCt
     case Origins.PfEpayeNi                => throw new MatchError("Not implemented yet")
     case Origins.PfEpayeLpp               => throw new MatchError("Not implemented yet")
     case Origins.PfEpayeSeta              => throw new MatchError("Not implemented yet")
@@ -144,7 +145,7 @@ object TestHelpers {
     case Origins.BtaEpayeInterest         => throw new MatchError("Not implemented yet")
     case Origins.BtaEpayeGeneral          => throw new MatchError("Not implemented yet")
     case Origins.BtaClass1aNi             => throw new MatchError("Not implemented yet")
-    case Origins.BtaCt                    => throw new MatchError("Not implemented yet")
+    case Origins.BtaCt                    => TestJourneys.BtaCt
     case Origins.BtaSdil                  => throw new MatchError("Not implemented yet")
     case Origins.BcPngr                   => throw new MatchError("Not implemented yet")
     case Origins.Parcels                  => throw new MatchError("Not implemented yet")
