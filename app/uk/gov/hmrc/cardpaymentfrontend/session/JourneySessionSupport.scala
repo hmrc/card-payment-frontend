@@ -34,6 +34,7 @@ trait JourneySessionSupport {
     val address = "address"
     val email = "email"
     val transactionReference = "transactionReference"
+    val vatSelectPaymentType = ""
   }
 
   implicit class ResultOps(r: Result)(implicit request: RequestHeader) {

@@ -121,9 +121,12 @@ check-your-details.ItSa.reference = Unique Taxpayer Reference (UTR)
 check-your-details.PfAlcoholDuty.reference = Payment reference
 check-your-details.AlcoholDuty.reference = Payment reference
 check-your-details.AlcoholDuty.charge-reference = Charge reference
-check-your-details.PfVat.reference.title = VAT registration number
-
-
+check-your-details.PfVat.reference = VAT registration number
+check-your-details.PfVat.charge-reference = Charge reference
+check-your-details.BtaVat.reference = VAT registration number
+check-your-details.VcVatReturn.reference = VAT registration number
+check-your-details.VcVatOther.reference = VAT registration number
+check-your-details.VcVatOther.charge-reference = Charge reference
 
 ## Address Page
 address.heading = Card billing address
@@ -294,11 +297,13 @@ email.tax-name.PfSa = Self Assessment
 email.tax-name.BtaSa = Self Assessment
 email.tax-name.PtaSa = Self Assessment
 email.tax-name.ItSa = Self Assessment
-email.tax-name.PfVat = Vat
 email.tax-name.PfP800 = P800
 email.tax-name.PfAlcoholDuty = Alcohol Duty
 email.tax-name.AlcoholDuty = Alcohol Duty
-
+email.tax-name.PfVat = Vat
+email.tax-name.BtaVat = Vat
+email.tax-name.VcVatReturn = Vat
+email.tax-name.VcVatOther = Vat
 
 ## Payments survey
 payments-survey.bta.return-message = Skip survey, return to business tax account

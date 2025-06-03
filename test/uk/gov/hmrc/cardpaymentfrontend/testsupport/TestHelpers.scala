@@ -36,11 +36,14 @@ object TestHelpers {
     PtaSa,
     ItSa,
     PfAlcoholDuty,
-    AlcoholDuty
+    AlcoholDuty,
+    PfVat,
+    BtaVat,
+    VcVatReturn,
+    VcVatOther
   )
 
   val unimplementedOrigins: Seq[Origin] = Seq[Origin](
-    PfVat,
     PfCt,
     PfEpayeNi,
     PfEpayeLpp,
@@ -56,7 +59,6 @@ object TestHelpers {
     PfInsurancePremium,
     PfPsAdmin,
     AppSa,
-    BtaVat,
     BtaEpayeBill,
     BtaEpayePenalty,
     BtaEpayeInterest,
@@ -68,8 +70,6 @@ object TestHelpers {
     Parcels,
     DdVat,
     DdSdil,
-    VcVatReturn,
-    VcVatOther,
     Amls,
     Ppt,
     PfCdsCash,
@@ -122,7 +122,7 @@ object TestHelpers {
     case Origins.BtaSa                    => TestJourneys.BtaSa
     case Origins.PtaSa                    => TestJourneys.PtaSa
     case Origins.ItSa                     => TestJourneys.ItSa
-    case Origins.PfVat                    => throw new MatchError("Not implemented yet")
+    case Origins.PfVat                    => TestJourneys.PfVat
     case Origins.PfCt                     => throw new MatchError("Not implemented yet")
     case Origins.PfEpayeNi                => throw new MatchError("Not implemented yet")
     case Origins.PfEpayeLpp               => throw new MatchError("Not implemented yet")
@@ -138,7 +138,7 @@ object TestHelpers {
     case Origins.PfInsurancePremium       => throw new MatchError("Not implemented yet")
     case Origins.PfPsAdmin                => throw new MatchError("Not implemented yet")
     case Origins.AppSa                    => throw new MatchError("Not implemented yet")
-    case Origins.BtaVat                   => throw new MatchError("Not implemented yet")
+    case Origins.BtaVat                   => TestJourneys.BtaVat
     case Origins.BtaEpayeBill             => throw new MatchError("Not implemented yet")
     case Origins.BtaEpayePenalty          => throw new MatchError("Not implemented yet")
     case Origins.BtaEpayeInterest         => throw new MatchError("Not implemented yet")
@@ -150,8 +150,8 @@ object TestHelpers {
     case Origins.Parcels                  => throw new MatchError("Not implemented yet")
     case Origins.DdVat                    => throw new MatchError("Not implemented yet")
     case Origins.DdSdil                   => throw new MatchError("Not implemented yet")
-    case Origins.VcVatReturn              => throw new MatchError("Not implemented yet")
-    case Origins.VcVatOther               => throw new MatchError("Not implemented yet")
+    case Origins.VcVatReturn              => TestJourneys.VcVatReturn
+    case Origins.VcVatOther               => TestJourneys.VcVatOther
     case Origins.Amls                     => throw new MatchError("Not implemented yet")
     case Origins.Ppt                      => throw new MatchError("Not implemented yet")
     case Origins.PfCdsCash                => throw new MatchError("Not implemented yet")

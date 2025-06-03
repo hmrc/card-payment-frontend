@@ -16,22 +16,22 @@
 
 package uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins
 
-import payapi.cardpaymentjourney.model.journey.{JourneySpecificData, JsdPfVat}
+import payapi.cardpaymentjourney.model.journey.{JourneySpecificData, JsdVcVatReturn}
 import play.api.mvc.{AnyContent, Call}
 import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
 import uk.gov.hmrc.cardpaymentfrontend.models.PaymentMethod._
-import uk.gov.hmrc.cardpaymentfrontend.models.openbanking.{OriginSpecificSessionData, PfVatSessionData}
+import uk.gov.hmrc.cardpaymentfrontend.models.openbanking.{OriginSpecificSessionData, VcVatReturnSessionData}
 import uk.gov.hmrc.cardpaymentfrontend.models.{CheckYourAnswersRow, Link, PaymentMethod}
 
-object ExtendedPfVat extends ExtendedOrigin {
+object ExtendedVcVatReturn extends ExtendedOrigin {
   override val serviceNameMessageKey: String = "add.message.key.here"
-  override val taxNameMessageKey: String = "payment-complete.tax-name.PfVat"
+  override val taxNameMessageKey: String = "payment-complete.tax-name.VcVatReturn"
   def cardFeesPagePaymentMethods: Set[PaymentMethod] = Set.empty[PaymentMethod]
   def paymentMethods(): Set[PaymentMethod] = Set(Card, OpenBanking, VariableDirectDebit, Bacs)
 
   override def checkYourAnswersReferenceRow(journeyRequest: JourneyRequest[AnyContent])(payFrontendBaseUrl: String): Option[CheckYourAnswersRow] = {
     Some(CheckYourAnswersRow(
-      titleMessageKey = "check-your-details.PfVat.reference",
+      titleMessageKey = "check-your-details.VcVatReturn.reference",
       value           = Seq(journeyRequest.journey.referenceValue),
       changeLink      = Some(Link(
         href       = Call("GET", changeReferenceUrl(payFrontendBaseUrl)),
@@ -42,11 +42,11 @@ object ExtendedPfVat extends ExtendedOrigin {
   }
 
   override def openBankingOriginSpecificSessionData: JourneySpecificData => Option[OriginSpecificSessionData] = {
-    case j: JsdPfVat => Some(PfVatSessionData(j.vrn, j.chargeRef))
-    case _           => throw new RuntimeException("Incorrect origin found")
+    case j: JsdVcVatReturn => Some(VcVatReturnSessionData(j.vrn))
+    case _                 => throw new RuntimeException("Incorrect origin found")
   }
 
-  override def emailTaxTypeMessageKey: String = "email.tax-name.PfVat"
+  override def emailTaxTypeMessageKey: String = "email.tax-name.VcVatReturn"
 
   override def surveyAuditName: String = "vat"
   override def surveyReturnHref: String = "https://www.gov.uk/government/organisations/hm-revenue-customs"

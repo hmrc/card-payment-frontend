@@ -120,8 +120,12 @@ check-your-details.ItSa.reference = Cyfeirnod Unigryw y Trethdalwr (UTR)
 check-your-details.PfAlcoholDuty.reference = Cyfeirnod y taliad
 check-your-details.AlcoholDuty.reference = Cyfeirnod y taliad
 check-your-details.AlcoholDuty.charge-reference = Cyfeirnod y tâl
-check-your-details.PfVat.reference.title = ADD_ME
-
+check-your-details.PfVat.reference = Rhif cofrestru TAW
+check-your-details.PfVat.charge-reference = Cyfeirnod y tâl
+check-your-details.BtaVat.reference = Rhif cofrestru TAW
+check-your-details.VcVatReturn.reference = Rhif cofrestru TAW
+check-your-details.VcVatOther.reference = Rhif cofrestru TAW
+check-your-details.VcVatOther.charge-reference = Cyfeirnod y tâl
 
 ## Address Page
 address.heading = Cyfeiriad bilio’r cerdyn
@@ -298,7 +302,10 @@ email.tax-name.PtaSa = Hunanasesiad
 email.tax-name.ItSa = Hunanasesiad
 email.tax-name.PfAlcoholDuty = Toll Alcohol
 email.tax-name.AlcoholDuty = Toll Alcohol
-
+email.tax-name.PfVat = Vat
+email.tax-name.BtaVat = Vat
+email.tax-name.VcVatReturn = Vat
+email.tax-name.VcVatOther = Vat
 
 ## Payments survey
 payments-survey.bta.return-message = Dim diolch, dychwelyd i cyfrif treth busnes

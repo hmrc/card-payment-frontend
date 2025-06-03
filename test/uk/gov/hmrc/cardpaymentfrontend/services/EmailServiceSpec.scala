@@ -320,6 +320,243 @@ class EmailServiceSpec extends ItSpec {
             result shouldBe expectedResult
           }
         }
+
+        "when origin is PfVat" - {
+
+          "debit in english" in {
+            val expectedResult: EmailParameters = EmailParameters(
+              taxType          = "Vat",
+              taxReference     = "999964805",
+              paymentReference = "Some-transaction-ref",
+              amountPaid       = "12.34",
+              commission       = None,
+              totalPaid        = Some("12.34")
+            )
+
+            val result = systemUnderTest.buildEmailParameters(TestJourneys.PfVat.journeyAfterSucceedDebitWebPayment)(fakeRequest)
+            result shouldBe expectedResult
+          }
+
+          "credit in english" in {
+            val expectedResult: EmailParameters = EmailParameters(
+              taxType          = "Vat",
+              taxReference     = "999964805",
+              paymentReference = "Some-transaction-ref",
+              amountPaid       = "12.34",
+              commission       = Some("1.23"),
+              totalPaid        = Some("13.57")
+            )
+
+            val result = systemUnderTest.buildEmailParameters(TestJourneys.PfVat.journeyAfterSucceedCreditWebPayment)(fakeRequest)
+            result shouldBe expectedResult
+          }
+
+          "debit in welsh" in {
+            val expectedResult: EmailParameters = EmailParameters(
+              taxType          = "Vat",
+              taxReference     = "999964805",
+              paymentReference = "Some-transaction-ref",
+              amountPaid       = "12.34",
+              commission       = None,
+              totalPaid        = Some("12.34")
+            )
+
+            val result = systemUnderTest.buildEmailParameters(TestJourneys.PfVat.journeyAfterSucceedDebitWebPayment)(fakeRequestInWelsh)
+            result shouldBe expectedResult
+          }
+
+          "credit in welsh" in {
+            val expectedResult: EmailParameters = EmailParameters(
+              taxType          = "Vat",
+              taxReference     = "999964805",
+              paymentReference = "Some-transaction-ref",
+              amountPaid       = "12.34",
+              commission       = Some("1.23"),
+              totalPaid        = Some("13.57")
+            )
+
+            val result = systemUnderTest.buildEmailParameters(TestJourneys.PfVat.journeyAfterSucceedCreditWebPayment)(fakeRequestInWelsh)
+            result shouldBe expectedResult
+          }
+        }
+
+        "when origin is BtaVat" - {
+
+          "debit in english" in {
+            val expectedResult: EmailParameters = EmailParameters(
+              taxType          = "Vat",
+              taxReference     = "999964805",
+              paymentReference = "Some-transaction-ref",
+              amountPaid       = "12.34",
+              commission       = None,
+              totalPaid        = Some("12.34")
+            )
+
+            val result = systemUnderTest.buildEmailParameters(TestJourneys.BtaVat.journeyAfterSucceedDebitWebPayment)(fakeRequest)
+            result shouldBe expectedResult
+          }
+
+          "credit in english" in {
+            val expectedResult: EmailParameters = EmailParameters(
+              taxType          = "Vat",
+              taxReference     = "999964805",
+              paymentReference = "Some-transaction-ref",
+              amountPaid       = "12.34",
+              commission       = Some("1.23"),
+              totalPaid        = Some("13.57")
+            )
+
+            val result = systemUnderTest.buildEmailParameters(TestJourneys.PfVat.journeyAfterSucceedCreditWebPayment)(fakeRequest)
+            result shouldBe expectedResult
+          }
+
+          "debit in welsh" in {
+            val expectedResult: EmailParameters = EmailParameters(
+              taxType          = "Vat",
+              taxReference     = "999964805",
+              paymentReference = "Some-transaction-ref",
+              amountPaid       = "12.34",
+              commission       = None,
+              totalPaid        = Some("12.34")
+            )
+
+            val result = systemUnderTest.buildEmailParameters(TestJourneys.PfVat.journeyAfterSucceedDebitWebPayment)(fakeRequestInWelsh)
+            result shouldBe expectedResult
+          }
+
+          "credit in welsh" in {
+            val expectedResult: EmailParameters = EmailParameters(
+              taxType          = "Vat",
+              taxReference     = "999964805",
+              paymentReference = "Some-transaction-ref",
+              amountPaid       = "12.34",
+              commission       = Some("1.23"),
+              totalPaid        = Some("13.57")
+            )
+
+            val result = systemUnderTest.buildEmailParameters(TestJourneys.PfVat.journeyAfterSucceedCreditWebPayment)(fakeRequestInWelsh)
+            result shouldBe expectedResult
+          }
+        }
+
+        "when origin is VcVatReturn" - {
+
+          "debit in english" in {
+            val expectedResult: EmailParameters = EmailParameters(
+              taxType          = "Vat",
+              taxReference     = "999964805",
+              paymentReference = "Some-transaction-ref",
+              amountPaid       = "12.34",
+              commission       = None,
+              totalPaid        = Some("12.34")
+            )
+
+            val result = systemUnderTest.buildEmailParameters(TestJourneys.VcVatReturn.journeyAfterSucceedDebitWebPayment)(fakeRequest)
+            result shouldBe expectedResult
+          }
+
+          "credit in english" in {
+            val expectedResult: EmailParameters = EmailParameters(
+              taxType          = "Vat",
+              taxReference     = "999964805",
+              paymentReference = "Some-transaction-ref",
+              amountPaid       = "12.34",
+              commission       = Some("1.23"),
+              totalPaid        = Some("13.57")
+            )
+
+            val result = systemUnderTest.buildEmailParameters(TestJourneys.VcVatReturn.journeyAfterSucceedCreditWebPayment)(fakeRequest)
+            result shouldBe expectedResult
+          }
+
+          "debit in welsh" in {
+            val expectedResult: EmailParameters = EmailParameters(
+              taxType          = "Vat",
+              taxReference     = "999964805",
+              paymentReference = "Some-transaction-ref",
+              amountPaid       = "12.34",
+              commission       = None,
+              totalPaid        = Some("12.34")
+            )
+
+            val result = systemUnderTest.buildEmailParameters(TestJourneys.VcVatReturn.journeyAfterSucceedDebitWebPayment)(fakeRequestInWelsh)
+            result shouldBe expectedResult
+          }
+
+          "credit in welsh" in {
+            val expectedResult: EmailParameters = EmailParameters(
+              taxType          = "Vat",
+              taxReference     = "999964805",
+              paymentReference = "Some-transaction-ref",
+              amountPaid       = "12.34",
+              commission       = Some("1.23"),
+              totalPaid        = Some("13.57")
+            )
+
+            val result = systemUnderTest.buildEmailParameters(TestJourneys.VcVatReturn.journeyAfterSucceedCreditWebPayment)(fakeRequestInWelsh)
+            result shouldBe expectedResult
+          }
+        }
+
+        "when origin is VcVatOther" - {
+
+          "debit in english" in {
+            val expectedResult: EmailParameters = EmailParameters(
+              taxType          = "Vat",
+              taxReference     = "999964805",
+              paymentReference = "Some-transaction-ref",
+              amountPaid       = "12.34",
+              commission       = None,
+              totalPaid        = Some("12.34")
+            )
+
+            val result = systemUnderTest.buildEmailParameters(TestJourneys.VcVatOther.journeyAfterSucceedDebitWebPayment)(fakeRequest)
+            result shouldBe expectedResult
+          }
+
+          "credit in english" in {
+            val expectedResult: EmailParameters = EmailParameters(
+              taxType          = "Vat",
+              taxReference     = "999964805",
+              paymentReference = "Some-transaction-ref",
+              amountPaid       = "12.34",
+              commission       = Some("1.23"),
+              totalPaid        = Some("13.57")
+            )
+
+            val result = systemUnderTest.buildEmailParameters(TestJourneys.VcVatOther.journeyAfterSucceedCreditWebPayment)(fakeRequest)
+            result shouldBe expectedResult
+          }
+
+          "debit in welsh" in {
+            val expectedResult: EmailParameters = EmailParameters(
+              taxType          = "Vat",
+              taxReference     = "999964805",
+              paymentReference = "Some-transaction-ref",
+              amountPaid       = "12.34",
+              commission       = None,
+              totalPaid        = Some("12.34")
+            )
+
+            val result = systemUnderTest.buildEmailParameters(TestJourneys.VcVatOther.journeyAfterSucceedDebitWebPayment)(fakeRequestInWelsh)
+            result shouldBe expectedResult
+          }
+
+          "credit in welsh" in {
+            val expectedResult: EmailParameters = EmailParameters(
+              taxType          = "Vat",
+              taxReference     = "999964805",
+              paymentReference = "Some-transaction-ref",
+              amountPaid       = "12.34",
+              commission       = Some("1.23"),
+              totalPaid        = Some("13.57")
+            )
+
+            val result = systemUnderTest.buildEmailParameters(TestJourneys.VcVatOther.journeyAfterSucceedCreditWebPayment)(fakeRequestInWelsh)
+            result shouldBe expectedResult
+          }
+        }
+
       }
 
     }

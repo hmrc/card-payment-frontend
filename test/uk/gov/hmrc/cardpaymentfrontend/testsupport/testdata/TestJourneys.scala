@@ -19,6 +19,7 @@ package uk.gov.hmrc.cardpaymentfrontend.testsupport.testdata
 import payapi.cardpaymentjourney.model.journey._
 import payapi.corcommon.model.taxes.ad.{AlcoholDutyChargeReference, AlcoholDutyReference}
 import payapi.corcommon.model.taxes.sa.SaUtr
+import payapi.corcommon.model.taxes.vat.{CalendarPeriod, VatChargeReference, Vrn}
 import payapi.corcommon.model.{AmountInPence, JourneyId, PaymentStatuses}
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.testdata.TestDataUtils._
 
@@ -29,7 +30,7 @@ sealed trait JourneyStatuses[jsd <: JourneySpecificData] {
   def journeyAfterBeginWebPayment: Journey[jsd] = intoSentWithOrder[jsd](journeyBeforeBeginWebPayment, sentOrder)
   def journeyAfterSucceedDebitWebPayment: Journey[jsd] = intoSuccessWithOrder[jsd](journeyAfterBeginWebPayment, debitCardOrder)
   def journeyAfterSucceedCreditWebPayment: Journey[jsd] = intoSuccessWithOrder[jsd](journeyAfterBeginWebPayment, creditCardOrder)
-  def journeyAfterFailWebPayment: Journey[jsd] = intoFailed[jsd](journeyAfterBeginWebPayment, None) //todo failed order, it wasn never done properly.
+  def journeyAfterFailWebPayment: Journey[jsd] = intoFailed[jsd](journeyAfterBeginWebPayment, None) //todo failed order, it was never done properly.
   def journeyAfterCancelWebPayment: Journey[jsd] = intoCancelled[jsd](journeyAfterBeginWebPayment, None) //likewise with cancelled
 }
 
@@ -126,6 +127,80 @@ object TestJourneys {
         alcoholDutyReference       = AlcoholDutyReference("XMADP0123456789"),
         alcoholDutyChargeReference = Some(AlcoholDutyChargeReference("XE1234567890123")),
         defaultAmountInPence       = AmountInPence(1234)
+      ),
+      chosenWayToPay       = None
+    )
+  }
+
+  object PfVat extends JourneyStatuses[JsdPfVat] {
+    val journeyBeforeBeginWebPayment: Journey[JsdPfVat] = Journey[JsdPfVat](
+      _id                  = JourneyId("TestJourneyId-44f9-ad7f-01e1d3d8f151"),
+      sessionId            = Some(SessionId("TestSession-4b87460d-6f43-4c4c-b810-d6f87c774854")),
+      amountInPence        = Some(AmountInPence(1234)),
+      emailTemplateOptions = None,
+      navigation           = Some(NavigationOptions(returnUrl = Url("https://www.return-to-pfvat.com"), backUrl = Url("https://www.back-to-pfvat.com"))),
+      order                = None,
+      status               = PaymentStatuses.Created,
+      createdOn            = LocalDateTime.parse("2027-11-02T16:28:55.185"),
+      journeySpecificData  = JsdPfVat(
+        vrn       = Some(Vrn("999964805")),
+        chargeRef = None
+      ),
+      chosenWayToPay       = None
+    )
+  }
+
+  object BtaVat extends JourneyStatuses[JsdBtaVat] {
+    val journeyBeforeBeginWebPayment: Journey[JsdBtaVat] = Journey[JsdBtaVat](
+      _id                  = JourneyId("TestJourneyId-44f9-ad7f-01e1d3d8f151"),
+      sessionId            = Some(SessionId("TestSession-4b87460d-6f43-4c4c-b810-d6f87c774854")),
+      amountInPence        = Some(AmountInPence(1234)),
+      emailTemplateOptions = None,
+      navigation           = Some(NavigationOptions(returnUrl = Url("https://www.return-to-btavat.com"), backUrl = Url("https://www.back-to-btavat.com"))),
+      order                = None,
+      status               = PaymentStatuses.Created,
+      createdOn            = LocalDateTime.parse("2027-11-02T16:28:55.185"),
+      journeySpecificData  = JsdBtaVat(vrn                  = Vrn("999964805"), defaultAmountInPence = AmountInPence(1234), dueDate = Some(LocalDate.of(2028, 12, 12))),
+      chosenWayToPay       = None
+    )
+  }
+
+  object VcVatReturn extends JourneyStatuses[JsdVcVatReturn] {
+    val journeyBeforeBeginWebPayment: Journey[JsdVcVatReturn] = Journey[JsdVcVatReturn](
+      _id                  = JourneyId("TestJourneyId-44f9-ad7f-01e1d3d8f151"),
+      sessionId            = Some(SessionId("TestSession-4b87460d-6f43-4c4c-b810-d6f87c774854")),
+      amountInPence        = Some(AmountInPence(1234)),
+      emailTemplateOptions = None,
+      navigation           = Some(NavigationOptions(returnUrl = Url("https://www.return-to-vcvatreturn.com"), backUrl = Url("https://www.back-to-vcvatreturn.com"))),
+      order                = None,
+      status               = PaymentStatuses.Created,
+      createdOn            = LocalDateTime.parse("2027-11-02T16:28:55.185"),
+      journeySpecificData  = JsdVcVatReturn(
+        vrn                  = Vrn("999964805"),
+        defaultAmountInPence = AmountInPence(1234),
+        dueDate              = Some(LocalDate.of(2028, 12, 12)),
+        accountingPeriod     = Some(CalendarPeriod(11, 2027))
+      ),
+      chosenWayToPay       = None
+    )
+  }
+
+  object VcVatOther extends JourneyStatuses[JsdVcVatOther] {
+    val journeyBeforeBeginWebPayment: Journey[JsdVcVatOther] = Journey[JsdVcVatOther](
+      _id                  = JourneyId("TestJourneyId-44f9-ad7f-01e1d3d8f151"),
+      sessionId            = Some(SessionId("TestSession-4b87460d-6f43-4c4c-b810-d6f87c774854")),
+      amountInPence        = Some(AmountInPence(1234)),
+      emailTemplateOptions = None,
+      navigation           = Some(NavigationOptions(returnUrl = Url("https://www.return-to-vcvatreturn.com"), backUrl = Url("https://www.back-to-vcvatreturn.com"))),
+      order                = None,
+      status               = PaymentStatuses.Created,
+      createdOn            = LocalDateTime.parse("2027-11-02T16:28:55.185"),
+      journeySpecificData  = JsdVcVatOther(
+        vrn                  = Vrn("999964805"),
+        defaultAmountInPence = AmountInPence(1234),
+        dueDate              = Some(LocalDate.of(2028, 12, 12)),
+        accountingPeriod     = Some(CalendarPeriod(11, 2027)),
+        chargeReference      = VatChargeReference("")
       ),
       chosenWayToPay       = None
     )
