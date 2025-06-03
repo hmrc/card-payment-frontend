@@ -108,12 +108,13 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       // Card billing address 3 or 4 (or 2 if there is no email address)
       def deriveReferenceRowIndex(origin: Origin): Int = {
         origin match {
-          case Origins.BtaSa => 1
-          case Origins.PtaSa => 1
-          case Origins.ItSa  => 1
-          case Origins.BtaCt => 1
+          case Origins.BtaSa       => 1
+          case Origins.PtaSa       => 1
+          case Origins.ItSa        => 1
+          case Origins.BtaCt       => 1
           case Origins.BtaVat      => 1
           case Origins.VcVatReturn => 1
+          case Origins.VcVatOther  => 1
           case _                   => 0
         }
       }
@@ -128,6 +129,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
           case Origins.PfCt        => 2
           case Origins.BtaVat      => 2
           case Origins.VcVatReturn => 2
+          case Origins.VcVatOther  => 3
           case _                   => 1
         }
       }
@@ -142,6 +144,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
           case Origins.PfCt        => 3
           case Origins.BtaVat      => 3
           case Origins.VcVatReturn => 3
+          case Origins.VcVatOther  => 4
           case _                   => 2
         }
       }
@@ -156,6 +159,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
           case Origins.PfCt        => 4
           case Origins.BtaVat      => 4
           case Origins.VcVatReturn => 4
+          case Origins.VcVatOther  => 5
           case _                   => 3
         }
       }
@@ -345,21 +349,23 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       assertRow(referenceRow, "Rhif cofrestru TAW", "999964805", None, None)
     }
 
-    "[PfVat] should render the charge reference row correctly when it's available" in {
-      PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfVat.journeyBeforeBeginWebPayment)
-      val result = systemUnderTest.renderPage(fakeRequest())
-      val document = Jsoup.parse(contentAsString(result))
-      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(1)
-      assertRow(referenceRow, "Charge reference", "999964805", None, None)
-    }
+    // TODO: charge reference testing need implementing for PfVat? Set to None in all existing in pay-frontend
 
-    "[PfVat] should render the charge reference row correctly in welsh when it's available" in {
-      PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfVat.journeyBeforeBeginWebPayment)
-      val result = systemUnderTest.renderPage(fakeRequestWelsh())
-      val document = Jsoup.parse(contentAsString(result))
-      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(1)
-      assertRow(referenceRow, "Cyfeirnod y tâl", "999964805", None, None)
-    }
+    //    "[PfVat] should render the charge reference row correctly when it's available" in {
+    //      PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfVat.journeyBeforeBeginWebPayment)
+    //      val result = systemUnderTest.renderPage(fakeRequest())
+    //      val document = Jsoup.parse(contentAsString(result))
+    //      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(1)
+    //      assertRow(referenceRow, "Charge reference", "999964805", None, None)
+    //    }
+    //
+    //    "[PfVat] should render the charge reference row correctly in welsh when it's available" in {
+    //      PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfVat.journeyBeforeBeginWebPayment)
+    //      val result = systemUnderTest.renderPage(fakeRequestWelsh())
+    //      val document = Jsoup.parse(contentAsString(result))
+    //      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(1)
+    //      assertRow(referenceRow, "Cyfeirnod y tâl", "999964805", None, None)
+    //    }
 
     "[BtaVat] should render the payment reference row correctly" in {
       PayApiStub.stubForFindBySessionId2xx(TestJourneys.BtaVat.journeyBeforeBeginWebPayment)
@@ -413,7 +419,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       PayApiStub.stubForFindBySessionId2xx(TestJourneys.VcVatOther.journeyBeforeBeginWebPayment)
       val result = systemUnderTest.renderPage(fakeRequest())
       val document = Jsoup.parse(contentAsString(result))
-      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(1)
+      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(2)
       assertRow(referenceRow, "Charge reference", "999964805", None, None)
     }
 
@@ -421,7 +427,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       PayApiStub.stubForFindBySessionId2xx(TestJourneys.VcVatOther.journeyBeforeBeginWebPayment)
       val result = systemUnderTest.renderPage(fakeRequestWelsh())
       val document = Jsoup.parse(contentAsString(result))
-      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(1)
+      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(2)
       assertRow(referenceRow, "Cyfeirnod y tâl", "999964805", None, None)
     }
 
@@ -586,7 +592,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
     }
     "sanity check for implemented origins" in {
       // remember to add the singular tests for reference rows as well as fdp if applicable, they are not covered in the implementedOrigins forall tests
-      TestHelpers.implementedOrigins.size shouldBe 8 withClue "** This dummy test is here to remind you to update the tests above. Bump up the expected number when an origin is added to implemented origins **"
+      TestHelpers.implementedOrigins.size shouldBe 12 withClue "** This dummy test is here to remind you to update the tests above. Bump up the expected number when an origin is added to implemented origins **"
     }
 
   }

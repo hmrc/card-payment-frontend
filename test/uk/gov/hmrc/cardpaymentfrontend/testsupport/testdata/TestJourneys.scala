@@ -180,7 +180,7 @@ object TestJourneys {
       sessionId            = Some(SessionId("TestSession-4b87460d-6f43-4c4c-b810-d6f87c774854")),
       amountInPence        = Some(AmountInPence(1234)),
       emailTemplateOptions = None,
-      navigation           = Some(NavigationOptions(returnUrl = Url("https://www.return-url.com"), backUrl = Url("https://www.back-to-pfvat.com"))),
+      navigation           = None,
       order                = None,
       status               = PaymentStatuses.Created,
       createdOn            = LocalDateTime.parse("2027-11-02T16:28:55.185"),
@@ -242,7 +242,7 @@ object TestJourneys {
         defaultAmountInPence = AmountInPence(1234),
         dueDate              = Some(LocalDate.of(2028, 12, 12)),
         accountingPeriod     = Some(CalendarPeriod(11, 2027)),
-        chargeReference      = VatChargeReference("")
+        chargeReference      = VatChargeReference("999964805")
       ),
       chosenWayToPay       = None
     )

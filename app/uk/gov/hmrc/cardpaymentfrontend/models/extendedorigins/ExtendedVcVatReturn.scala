@@ -24,9 +24,9 @@ import uk.gov.hmrc.cardpaymentfrontend.models.openbanking.{OriginSpecificSession
 import uk.gov.hmrc.cardpaymentfrontend.models.{CheckYourAnswersRow, Link, PaymentMethod}
 
 object ExtendedVcVatReturn extends ExtendedOrigin {
-  override val serviceNameMessageKey: String = "add.message.key.here"
+  override val serviceNameMessageKey: String = "service-name.VcVatReturn"
   override val taxNameMessageKey: String = "payment-complete.tax-name.VcVatReturn"
-  def cardFeesPagePaymentMethods: Set[PaymentMethod] = Set.empty[PaymentMethod]
+  def cardFeesPagePaymentMethods: Set[PaymentMethod] = Set(OpenBanking, OneOffDirectDebit)
   def paymentMethods(): Set[PaymentMethod] = Set(Card, OpenBanking, VariableDirectDebit, Bacs)
 
   override def checkYourAnswersReferenceRow(journeyRequest: JourneyRequest[AnyContent])(payFrontendBaseUrl: String): Option[CheckYourAnswersRow] = {
@@ -49,8 +49,8 @@ object ExtendedVcVatReturn extends ExtendedOrigin {
   override def emailTaxTypeMessageKey: String = "email.tax-name.VcVatReturn"
 
   override def surveyAuditName: String = "vat"
-  override def surveyReturnHref: String = "https://www.gov.uk/government/organisations/hm-revenue-customs"
-  override def surveyReturnMessageKey: String = "payments-survey.other.return-message"
+  override def surveyReturnHref: String = "/business-account"
+  override def surveyReturnMessageKey: String = "payments-survey.bta.return-message"
   override def surveyIsWelshSupported: Boolean = true
   override def surveyBannerTitle: String = serviceNameMessageKey
 }

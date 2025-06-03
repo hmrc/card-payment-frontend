@@ -24,9 +24,9 @@ import uk.gov.hmrc.cardpaymentfrontend.models.openbanking.{OriginSpecificSession
 import uk.gov.hmrc.cardpaymentfrontend.models.{CheckYourAnswersRow, Link, PaymentMethod}
 
 object ExtendedPfVat extends ExtendedOrigin {
-  override val serviceNameMessageKey: String = "add.message.key.here"
+  override val serviceNameMessageKey: String = "service-name.PfVat"
   override val taxNameMessageKey: String = "payment-complete.tax-name.PfVat"
-  def cardFeesPagePaymentMethods: Set[PaymentMethod] = Set.empty[PaymentMethod]
+  def cardFeesPagePaymentMethods: Set[PaymentMethod] = Set(OpenBanking, OneOffDirectDebit)
   def paymentMethods(): Set[PaymentMethod] = Set(Card, OpenBanking, VariableDirectDebit, Bacs)
 
   override def checkYourAnswersReferenceRow(journeyRequest: JourneyRequest[AnyContent])(payFrontendBaseUrl: String): Option[CheckYourAnswersRow] = {
@@ -42,8 +42,11 @@ object ExtendedPfVat extends ExtendedOrigin {
   }
 
   override def openBankingOriginSpecificSessionData: JourneySpecificData => Option[OriginSpecificSessionData] = {
-    case j: JsdPfVat => Some(PfVatSessionData(j.vrn, j.chargeRef))
-    case _           => throw new RuntimeException("Incorrect origin found")
+    case j: JsdPfVat => for {
+      vrn <- j.vrn
+      vatChargeRef <- j.chargeRef
+    } yield PfVatSessionData(vrn, Some(vatChargeRef))
+    case _ => throw new RuntimeException("Incorrect origin found")
   }
 
   override def emailTaxTypeMessageKey: String = "email.tax-name.PfVat"

@@ -17,6 +17,7 @@
 package uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins
 
 import payapi.cardpaymentjourney.model.journey.{JourneySpecificData, JsdVcVatOther}
+import payapi.corcommon.model.taxes.vat.VatChargeReference
 import play.api.mvc.{AnyContent, Call}
 import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
 import uk.gov.hmrc.cardpaymentfrontend.models.PaymentMethod._
@@ -24,9 +25,9 @@ import uk.gov.hmrc.cardpaymentfrontend.models.openbanking.{OriginSpecificSession
 import uk.gov.hmrc.cardpaymentfrontend.models.{CheckYourAnswersRow, Link, PaymentMethod}
 
 object ExtendedVcVatOther extends ExtendedOrigin {
-  override val serviceNameMessageKey: String = "add.message.key.here"
+  override val serviceNameMessageKey: String = "service-name.VcVatOther"
   override val taxNameMessageKey: String = "payment-complete.tax-name.VcVatOther"
-  def cardFeesPagePaymentMethods: Set[PaymentMethod] = Set.empty[PaymentMethod]
+  def cardFeesPagePaymentMethods: Set[PaymentMethod] = Set(OpenBanking)
   def paymentMethods(): Set[PaymentMethod] = Set(Card, OpenBanking, Bacs)
 
   override def checkYourAnswersReferenceRow(journeyRequest: JourneyRequest[AnyContent])(payFrontendBaseUrl: String): Option[CheckYourAnswersRow] = {
@@ -41,6 +42,21 @@ object ExtendedVcVatOther extends ExtendedOrigin {
     ))
   }
 
+  private def additionalReference: JourneySpecificData => Option[VatChargeReference] = {
+    case j: JsdVcVatOther => Some(j.chargeReference)
+    case _                => throw new RuntimeException("Incorrect origin found")
+  }
+
+  override def checkYourAnswersAdditionalReferenceRow(journeyRequest: JourneyRequest[AnyContent])(payFrontendBaseUrl: String): Option[CheckYourAnswersRow] = {
+    additionalReference(journeyRequest.journey.journeySpecificData).map { chargeReference =>
+      CheckYourAnswersRow(
+        titleMessageKey = "check-your-details.AlcoholDuty.charge-reference",
+        value           = Seq(chargeReference.reference),
+        changeLink      = None
+      )
+    }
+  }
+
   override def openBankingOriginSpecificSessionData: JourneySpecificData => Option[OriginSpecificSessionData] = {
     case j: JsdVcVatOther => Some(VcVatOtherSessionData(j.vrn, j.chargeReference))
     case _                => throw new RuntimeException("Incorrect origin found")
@@ -49,8 +65,8 @@ object ExtendedVcVatOther extends ExtendedOrigin {
   override def emailTaxTypeMessageKey: String = "email.tax-name.VcVatOther"
 
   override def surveyAuditName: String = "vat"
-  override def surveyReturnHref: String = "https://www.gov.uk/government/organisations/hm-revenue-customs"
-  override def surveyReturnMessageKey: String = "payments-survey.other.Other-message"
+  override def surveyReturnHref: String = "/business-account"
+  override def surveyReturnMessageKey: String = "payments-survey.bta.return-message"
   override def surveyIsWelshSupported: Boolean = true
   override def surveyBannerTitle: String = serviceNameMessageKey
 }
