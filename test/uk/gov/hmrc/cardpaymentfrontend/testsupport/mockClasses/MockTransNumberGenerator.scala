@@ -14,18 +14,11 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.cardpaymentfrontend.config
+package uk.gov.hmrc.cardpaymentfrontend.testsupport.mockClasses
 
-import com.google.inject.{AbstractModule, Provides, Singleton}
-import payapi.corcommon.model.TransNumberGenerator
+import payapi.corcommon.model.{Origin, OriginCode, TransNumberGenerator}
 
-class Module extends AbstractModule {
-
-  override def configure(): Unit = {
-    bind(classOf[AppConfig]).asEagerSingleton()
-  }
-
-  @Provides
-  @Singleton
-  def transNumberGenerator(): TransNumberGenerator = new TransNumberGenerator()
+class MockTransNumberGenerator extends TransNumberGenerator {
+  //create this instead of the random 9 digits at the end.
+  override def generate(origin: Origin): String = s"000${OriginCode.codeForOrigin(origin)}999999999"
 }

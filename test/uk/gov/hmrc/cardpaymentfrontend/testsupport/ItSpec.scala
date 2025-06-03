@@ -16,13 +16,16 @@
 
 package uk.gov.hmrc.cardpaymentfrontend.testsupport
 
+import com.google.inject.{AbstractModule, Provides, Singleton}
 import org.apache.pekko.stream.Materializer
 import org.scalatest.freespec.AnyFreeSpecLike
 import org.scalatestplus.play.guice.GuiceOneServerPerSuite
-import play.api.inject.guice.GuiceApplicationBuilder
+import payapi.corcommon.model.TransNumberGenerator
+import play.api.inject.guice.{GuiceApplicationBuilder, GuiceableModule}
 import play.api.test.{DefaultTestServerFactory, RunningServer}
 import play.api.{Application, Mode}
 import play.core.server.ServerConfig
+import uk.gov.hmrc.cardpaymentfrontend.testsupport.mockClasses.MockTransNumberGenerator
 import uk.gov.hmrc.http.test.WireMockSupport
 
 import scala.concurrent.ExecutionContext
@@ -46,7 +49,8 @@ trait ItSpec extends AnyFreeSpecLike
     "microservice.services.email-service.port" -> self.wireMockPort,
     "microservice.services.open-banking.port" -> self.wireMockPort,
     "microservice.services.pay-api.port" -> self.wireMockPort,
-    "microservice.services.payments-survey.port" -> self.wireMockPort
+    "microservice.services.payments-survey.port" -> self.wireMockPort,
+    "internal-auth.token" -> "testToken"
   )
 
   override def beforeEach(): Unit = {
@@ -57,8 +61,11 @@ trait ItSpec extends AnyFreeSpecLike
     super.afterEach()
   }
 
-  override def fakeApplication(): Application = new GuiceApplicationBuilder()
-    .configure(configMap).build()
+  protected def applicationBuilder: GuiceApplicationBuilder = new GuiceApplicationBuilder()
+    .overrides(GuiceableModule.fromGuiceModules(Seq(testModule)))
+    .configure(configMap)
+
+  override def fakeApplication(): Application = applicationBuilder.build()
 
   override implicit protected lazy val runningServer: RunningServer =
     TestServerFactory.start(app)
@@ -68,5 +75,12 @@ trait ItSpec extends AnyFreeSpecLike
       val sc: ServerConfig = ServerConfig(port    = Some(testServerPort), sslPort = None, mode = Mode.Test, rootDir = app.path)
       sc.copy(configuration = sc.configuration.withFallback(overrideServerConfiguration(app)))
     }
+  }
+
+  private lazy val testModule: AbstractModule = new AbstractModule {
+    @Provides
+    @Singleton
+    def transNumberGenerator(): TransNumberGenerator = new MockTransNumberGenerator
+    transNumberGenerator()
   }
 }

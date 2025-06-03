@@ -45,11 +45,14 @@ class OpenBankingController @Inject() (
         .lift
         .openBankingOriginSpecificSessionData(journey.journeySpecificData)
         .map(originSpecificSessionData => CreateSessionDataRequest(journeyRequest.journey.getAmountInPence, originSpecificSessionData, journeyRequest.journey.futureDatedPayment))
-        .getOrElse(throw new RuntimeException("Unable to build createSessionDataRequest, so cannot start an OB journey"))
+        .getOrElse(throw new RuntimeException(s"Unable to build createSessionDataRequest, so cannot start an OB journey for origin ${journey.origin.toString}"))
     }
 
     openBankingConnector.startOpenBankingJourney(createSessionDataRequest)
-      .map(createSessionDataResponse => Redirect(createSessionDataResponse.nextUrl))
+      .map { createSessionDataResponse =>
+        Redirect(createSessionDataResponse.nextUrl)
+          .addingToSession("obSessionDataId" -> createSessionDataResponse.sessionDataId.value) // required by pay-frontend to update the open-banking-mongo.
+      }
   }
 
 }

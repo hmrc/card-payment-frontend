@@ -72,7 +72,7 @@ trait ExtendedOrigin {
   //hint: the checkYourAnswersReferenceRow should only include a change link when the journey is not prepopulated, i.e., user has manually entered their reference.
   def checkYourAnswersReferenceRow(journeyRequest: JourneyRequest[AnyContent])(payFrontendBaseUrl: String): Option[CheckYourAnswersRow]
 
-  def checkYourAnswersAdditionalReferenceRow(journeyRequest: JourneyRequest[AnyContent]): Option[CheckYourAnswersRow] = None
+  def checkYourAnswersAdditionalReferenceRow(journeyRequest: JourneyRequest[AnyContent])(payFrontendBaseUrl: String): Option[CheckYourAnswersRow] = None
 
   def checkYourAnswersAmountSummaryRow(journeyRequest: JourneyRequest[AnyContent])(payFrontendBaseUrl: String): Option[CheckYourAnswersRow] = Some(CheckYourAnswersRow(
     titleMessageKey = "check-your-details.total-to-pay",
@@ -142,7 +142,7 @@ object ExtendedOrigin {
     def lift: ExtendedOrigin = origin match {
       case Origins.PfSa                     => ExtendedPfSa
       case Origins.PfVat                    => ExtendedPfVat
-      case Origins.PfCt                     => DefaultExtendedOrigin
+      case Origins.PfCt                     => ExtendedPfCt
       case Origins.PfEpayeNi                => DefaultExtendedOrigin
       case Origins.PfEpayeLpp               => DefaultExtendedOrigin
       case Origins.PfEpayeSeta              => DefaultExtendedOrigin
@@ -164,7 +164,7 @@ object ExtendedOrigin {
       case Origins.BtaEpayeInterest         => DefaultExtendedOrigin
       case Origins.BtaEpayeGeneral          => DefaultExtendedOrigin
       case Origins.BtaClass1aNi             => DefaultExtendedOrigin
-      case Origins.BtaCt                    => DefaultExtendedOrigin
+      case Origins.BtaCt                    => ExtendedBtaCt
       case Origins.BtaSdil                  => DefaultExtendedOrigin
       case Origins.BcPngr                   => DefaultExtendedOrigin
       case Origins.Parcels                  => DefaultExtendedOrigin

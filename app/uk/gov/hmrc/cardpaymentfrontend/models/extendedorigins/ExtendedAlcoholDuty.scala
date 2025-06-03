@@ -45,7 +45,7 @@ object ExtendedAlcoholDuty extends ExtendedOrigin {
     case _                 => throw new RuntimeException("Incorrect origin found")
   }
 
-  override def checkYourAnswersAdditionalReferenceRow(journeyRequest: JourneyRequest[AnyContent]): Option[CheckYourAnswersRow] = {
+  override def checkYourAnswersAdditionalReferenceRow(journeyRequest: JourneyRequest[AnyContent])(payFrontendBaseUrl: String): Option[CheckYourAnswersRow] = {
     additionalReference(journeyRequest.journey.journeySpecificData).map{ alcoholDutyChargeReference =>
       CheckYourAnswersRow(
         titleMessageKey = "check-your-details.AlcoholDuty.charge-reference",

@@ -39,7 +39,6 @@
 )(implicit journeyRequest: JourneyRequest[_], messages: Messages)
 
 @heading= @{messages("address.heading")}
-@key = @{AddressForm.addressKey}
 
 @layout(pageTitle = Some(heading), origin = Some(journeyRequest.journey.origin)) {
     @if(form.hasErrors) {
@@ -99,7 +98,7 @@
         @govukInput(
             Input(
                 id = "county",
-                name = s"$key.fieldname.county",
+                name = "county",
                 classes = "govuk-input--width-20",
                 label = Label(
                     content = Text(messages("address.field-name.county"))),

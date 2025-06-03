@@ -349,9 +349,9 @@ final case class PfVatSessionData(vrn: Option[Vrn], chargeRef: Option[XRef14Char
   private def chargeReference: Option[Reference] = chargeRef.map(ReferenceMaker.makeXRef14Char)
 
   def paymentReference: Reference = (vatReference, chargeReference) match {
-    case (Some(vrn), _) => vrn
-    case (_, Some(ref)) => ref
-    case _              => throw new IllegalStateException("[OriginSpecificData][PfVatSessionData] Unable to set paymentReference for PfVatSessionData")
+    case (Some(vatRef), _) => vatRef
+    case (_, Some(ref))    => ref
+    case _                 => throw new IllegalStateException("[OriginSpecificData][PfVatSessionData] Unable to set paymentReference for PfVatSessionData")
   }
 
   def searchTag: SearchTag = SearchTag(paymentReference.value)
