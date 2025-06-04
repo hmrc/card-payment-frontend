@@ -46,7 +46,6 @@ object TestHelpers {
   )
 
   val unimplementedOrigins: Seq[Origin] = Seq[Origin](
-    PfCt,
     PfEpayeNi,
     PfEpayeLpp,
     PfEpayeSeta,

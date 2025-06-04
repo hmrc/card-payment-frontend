@@ -680,6 +680,27 @@ class FeesControllerSpec extends ItSpec {
           val cardBullet = listOfMethods.select("#personal-debit-card")
           cardBullet.text() shouldBe "cerdyn debyd personol"
         }
+
+        "render an option for variable direct debit" in {
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfVat.journeyBeforeBeginWebPayment)
+          val result = systemUnderTest.renderPage(fakeRequest)
+          val document = Jsoup.parse(contentAsString(result))
+          val listOfMethods = document.select("#payment-type-list").select("li")
+          val oneOffDirectDebitBullet = listOfMethods.select("#variable-direct-debit-link")
+          oneOffDirectDebitBullet.text() shouldBe "Direct Debit (variable)"
+          oneOffDirectDebitBullet.attr("href") shouldBe "http://localhost:9056/pay/pay-by-variable-direct-debit"
+        }
+
+        "render an option for variable direct debit in welsh" in {
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfVat.journeyBeforeBeginWebPayment)
+          val result = systemUnderTest.renderPage(fakeWelshRequest)
+          val document = Jsoup.parse(contentAsString(result))
+          val listOfMethods = document.select("#payment-type-list").select("li")
+          val oneOffDirectDebitBullet = listOfMethods.select("#variable-direct-debit-link")
+          oneOffDirectDebitBullet.text() shouldBe "Debyd Uniongyrchol (newidiol)"
+          oneOffDirectDebitBullet.attr("href") shouldBe "http://localhost:9056/pay/pay-by-variable-direct-debit"
+        }
+
       }
 
       "for origin BtaVat" - {
@@ -745,6 +766,27 @@ class FeesControllerSpec extends ItSpec {
           val cardBullet = listOfMethods.select("#personal-debit-card")
           cardBullet.text() shouldBe "cerdyn debyd personol"
         }
+
+        "render an option for variable direct debit" in {
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.BtaVat.journeyBeforeBeginWebPayment)
+          val result = systemUnderTest.renderPage(fakeRequest)
+          val document = Jsoup.parse(contentAsString(result))
+          val listOfMethods = document.select("#payment-type-list").select("li")
+          val oneOffDirectDebitBullet = listOfMethods.select("#variable-direct-debit-link")
+          oneOffDirectDebitBullet.text() shouldBe "Direct Debit (variable)"
+          oneOffDirectDebitBullet.attr("href") shouldBe "http://localhost:9056/pay/pay-by-variable-direct-debit"
+        }
+
+        "render an option for variable direct debit in welsh" in {
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.BtaVat.journeyBeforeBeginWebPayment)
+          val result = systemUnderTest.renderPage(fakeWelshRequest)
+          val document = Jsoup.parse(contentAsString(result))
+          val listOfMethods = document.select("#payment-type-list").select("li")
+          val oneOffDirectDebitBullet = listOfMethods.select("#variable-direct-debit-link")
+          oneOffDirectDebitBullet.text() shouldBe "Debyd Uniongyrchol (newidiol)"
+          oneOffDirectDebitBullet.attr("href") shouldBe "http://localhost:9056/pay/pay-by-variable-direct-debit"
+        }
+
       }
 
       "for origin VcVatReturn" - {
@@ -810,6 +852,27 @@ class FeesControllerSpec extends ItSpec {
           val cardBullet = listOfMethods.select("#personal-debit-card")
           cardBullet.text() shouldBe "cerdyn debyd personol"
         }
+
+        "render an option for variable direct debit" in {
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.VcVatReturn.journeyBeforeBeginWebPayment)
+          val result = systemUnderTest.renderPage(fakeRequest)
+          val document = Jsoup.parse(contentAsString(result))
+          val listOfMethods = document.select("#payment-type-list").select("li")
+          val oneOffDirectDebitBullet = listOfMethods.select("#variable-direct-debit-link")
+          oneOffDirectDebitBullet.text() shouldBe "Direct Debit (variable)"
+          oneOffDirectDebitBullet.attr("href") shouldBe "http://localhost:9056/pay/pay-by-variable-direct-debit"
+        }
+
+        "render an option for variable direct debit in welsh" in {
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.VcVatReturn.journeyBeforeBeginWebPayment)
+          val result = systemUnderTest.renderPage(fakeWelshRequest)
+          val document = Jsoup.parse(contentAsString(result))
+          val listOfMethods = document.select("#payment-type-list").select("li")
+          val oneOffDirectDebitBullet = listOfMethods.select("#variable-direct-debit-link")
+          oneOffDirectDebitBullet.text() shouldBe "Debyd Uniongyrchol (newidiol)"
+          oneOffDirectDebitBullet.attr("href") shouldBe "http://localhost:9056/pay/pay-by-variable-direct-debit"
+        }
+
       }
 
       "for origin VcVatOther" - {
@@ -923,12 +986,11 @@ class FeesControllerSpec extends ItSpec {
         messageKey = "card-fees.para2.one-off-direct-debit"
       )
 
-      //TODO: VARIABLE DD OPTION NEEDED?
-      //      val expectedVariableDirectDebitLink = Link(
-      //        href       = Call("GET", "http://localhost:9056/pay/pay-by-one-off-direct-debit"),
-      //        linkId     = "one-off-direct-debit-link",
-      //        messageKey = "card-fees.para2.one-off-direct-debit"
-      //      )
+      val expectedVariableDirectDebitLink = Link(
+        href       = Call("GET", "http://localhost:9056/pay/pay-by-variable-direct-debit"),
+        linkId     = "variable-direct-debit-link",
+        messageKey = "card-fees.para2.variable-direct-debit"
+      )
 
       "should return the correct links for each origin" in {
         Origins.values.foreach { origin =>
@@ -937,7 +999,7 @@ class FeesControllerSpec extends ItSpec {
             case Origins.BtaSa                    => Seq(expectedOpenBankingLink, expectedOneOffDirectDebitLink)
             case Origins.PtaSa                    => Seq(expectedOpenBankingLink, expectedOneOffDirectDebitLink)
             case Origins.ItSa                     => Seq(expectedBankTransferLink)
-            case Origins.PfVat                    => Seq(expectedOpenBankingLink, expectedOneOffDirectDebitLink)
+            case Origins.PfVat                    => Seq(expectedOpenBankingLink, expectedVariableDirectDebitLink)
             case Origins.PfCt                     => Seq(expectedOpenBankingLink, expectedOneOffDirectDebitLink)
             case Origins.PfEpayeNi                => Seq.empty
             case Origins.PfEpayeLpp               => Seq.empty
@@ -953,7 +1015,7 @@ class FeesControllerSpec extends ItSpec {
             case Origins.PfInsurancePremium       => Seq.empty
             case Origins.PfPsAdmin                => Seq.empty
             case Origins.AppSa                    => Seq.empty
-            case Origins.BtaVat                   => Seq(expectedOpenBankingLink, expectedOneOffDirectDebitLink)
+            case Origins.BtaVat                   => Seq(expectedOpenBankingLink, expectedVariableDirectDebitLink)
             case Origins.BtaEpayeBill             => Seq.empty
             case Origins.BtaEpayePenalty          => Seq.empty
             case Origins.BtaEpayeInterest         => Seq.empty
@@ -965,7 +1027,7 @@ class FeesControllerSpec extends ItSpec {
             case Origins.Parcels                  => Seq.empty
             case Origins.DdVat                    => Seq.empty
             case Origins.DdSdil                   => Seq.empty
-            case Origins.VcVatReturn              => Seq(expectedOpenBankingLink, expectedOneOffDirectDebitLink)
+            case Origins.VcVatReturn              => Seq(expectedOpenBankingLink, expectedVariableDirectDebitLink)
             case Origins.VcVatOther               => Seq(expectedOpenBankingLink)
             case Origins.Amls                     => Seq.empty
             case Origins.Ppt                      => Seq.empty
