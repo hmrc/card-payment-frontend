@@ -37,3 +37,6 @@ GET        /sign-out                             uk.gov.hmrc.cardpaymentfrontend
 GET        /session-timed-out                    uk.gov.hmrc.cardpaymentfrontend.controllers.SignOutController.signOutFromTimeout
 GET        /timed-out                            uk.gov.hmrc.cardpaymentfrontend.controllers.SignOutController.timedOut
 GET        /keep-alive                           uk.gov.hmrc.cardpaymentfrontend.controllers.SignOutController.keepAlive
+GET        /delete-answers                       uk.gov.hmrc.cardpaymentfrontend.controllers.TimeOutController.showDeleteAnswersPage
+GET        /force-delete-answers                 uk.gov.hmrc.cardpaymentfrontend.controllers.TimeOutController.showForceDeleteAnswersLoggedOutPage
+GET        /force-sign-out                       uk.gov.hmrc.cardpaymentfrontend.controllers.TimeOutController.showForceDeleteAnswersLoggedInPage

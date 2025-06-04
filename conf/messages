@@ -323,6 +323,12 @@ time-out.dialogue.logged-in.sign-out-button-text = Sign out
 time-out.dialogue.logged-out.message = For your security, we will time you out in
 time-out.dialogue.logged-out.keep-alive-button-text = Continue
 time-out.dialogue.logged-out.sign-out-button-text = Delete your answers
+delete-answers.heading = You deleted your answers
+delete-answers.button = Start again
+force-delete-answers.heading.logged-out = For your security, we deleted your answers
+force-delete-answers.button.logged-out= Start again
+force-delete-answers.heading.logged-in = For your security, we signed you out
+force-delete-answers.button.logged-in= Sign in
 
 
 

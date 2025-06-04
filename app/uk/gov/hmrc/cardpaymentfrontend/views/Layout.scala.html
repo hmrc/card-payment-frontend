@@ -59,8 +59,20 @@
       templateOverrides = TemplateOverrides(
           additionalScriptsBlock = Some(scripts),
           additionalHeadBlock = Some(hmrcTimeoutDialogHelper(
-              signOutUrl = if (isLoggedIn) uk.gov.hmrc.cardpaymentfrontend.controllers.routes.SignOutController.signOut.url else ,
-              timeoutUrl = Some(if (isLoggedIn) uk.gov.hmrc.cardpaymentfrontend.controllers.routes.SignOutController.timedOut.url else ),
+              signOutUrl =
+                  if(isLoggedIn) {
+                      uk.gov.hmrc.cardpaymentfrontend.controllers.routes.SignOutController.signOut.url
+                  } else {
+                      uk.gov.hmrc.cardpaymentfrontend.controllers.routes.TimeOutController.showForceDeleteAnswersLoggedInPage.url
+                  },
+              timeoutUrl =
+                  Some(
+                      if(isLoggedIn) {
+                          uk.gov.hmrc.cardpaymentfrontend.controllers.routes.SignOutController.timedOut.url
+                      } else {
+                          uk.gov.hmrc.cardpaymentfrontend.controllers.routes.TimeOutController.showForceDeleteAnswersLoggedOutPage.url
+                      }
+                  ),
               keepAliveUrl = Some(uk.gov.hmrc.cardpaymentfrontend.controllers.routes.SignOutController.keepAlive.url),
               timeout = Some(appConfig.timeoutInSeconds),
               countdown = Some(appConfig.countdownInSeconds),
