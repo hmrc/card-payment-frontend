@@ -922,7 +922,13 @@ class FeesControllerSpec extends ItSpec {
         linkId     = "one-off-direct-debit-link",
         messageKey = "card-fees.para2.one-off-direct-debit"
       )
+
       //TODO: VARIABLE DD OPTION NEEDED?
+      //      val expectedVariableDirectDebitLink = Link(
+      //        href       = Call("GET", "http://localhost:9056/pay/pay-by-one-off-direct-debit"),
+      //        linkId     = "one-off-direct-debit-link",
+      //        messageKey = "card-fees.para2.one-off-direct-debit"
+      //      )
 
       "should return the correct links for each origin" in {
         Origins.values.foreach { origin =>

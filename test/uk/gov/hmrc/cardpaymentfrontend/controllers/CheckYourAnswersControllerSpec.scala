@@ -349,23 +349,21 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       assertRow(referenceRow, "Rhif cofrestru TAW", "999964805", None, None)
     }
 
-    // TODO: charge reference testing need implementing for PfVat? Set to None in all existing in pay-frontend
+    "[PfVat] should render the charge reference row correctly when it's available" in {
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfVatWithChargeReference.journeyBeforeBeginWebPayment)
+      val result = systemUnderTest.renderPage(fakeRequest())
+      val document = Jsoup.parse(contentAsString(result))
+      val additionalReferenceRow = document.select(".govuk-summary-list__row").asScala.toList(0)
+      assertRow(additionalReferenceRow, "Charge reference", "XE123456789012", None, None)
+    }
 
-    //    "[PfVat] should render the charge reference row correctly when it's available" in {
-    //      PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfVat.journeyBeforeBeginWebPayment)
-    //      val result = systemUnderTest.renderPage(fakeRequest())
-    //      val document = Jsoup.parse(contentAsString(result))
-    //      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(1)
-    //      assertRow(referenceRow, "Charge reference", "999964805", None, None)
-    //    }
-    //
-    //    "[PfVat] should render the charge reference row correctly in welsh when it's available" in {
-    //      PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfVat.journeyBeforeBeginWebPayment)
-    //      val result = systemUnderTest.renderPage(fakeRequestWelsh())
-    //      val document = Jsoup.parse(contentAsString(result))
-    //      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(1)
-    //      assertRow(referenceRow, "Cyfeirnod y tâl", "999964805", None, None)
-    //    }
+    "[PfVat] should render the charge reference row correctly in welsh when it's available" in {
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfVatWithChargeReference.journeyBeforeBeginWebPayment)
+      val result = systemUnderTest.renderPage(fakeRequestWelsh())
+      val document = Jsoup.parse(contentAsString(result))
+      val additionalReferenceRow = document.select(".govuk-summary-list__row").asScala.toList(0)
+      assertRow(additionalReferenceRow, "Cyfeirnod y tâl", "XE123456789012", None, None)
+    }
 
     "[BtaVat] should render the payment reference row correctly" in {
       PayApiStub.stubForFindBySessionId2xx(TestJourneys.BtaVat.journeyBeforeBeginWebPayment)

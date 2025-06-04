@@ -18,11 +18,11 @@ package uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins
 
 import payapi.cardpaymentjourney.model.journey.{JourneySpecificData, JsdVcVatOther}
 import payapi.corcommon.model.taxes.vat.VatChargeReference
-import play.api.mvc.{AnyContent, Call}
+import play.api.mvc.AnyContent
 import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
 import uk.gov.hmrc.cardpaymentfrontend.models.PaymentMethod._
 import uk.gov.hmrc.cardpaymentfrontend.models.openbanking.{OriginSpecificSessionData, VcVatOtherSessionData}
-import uk.gov.hmrc.cardpaymentfrontend.models.{CheckYourAnswersRow, Link, PaymentMethod}
+import uk.gov.hmrc.cardpaymentfrontend.models.{CheckYourAnswersRow, PaymentMethod}
 
 object ExtendedVcVatOther extends ExtendedOrigin {
   override val serviceNameMessageKey: String = "service-name.VcVatOther"
@@ -34,11 +34,7 @@ object ExtendedVcVatOther extends ExtendedOrigin {
     Some(CheckYourAnswersRow(
       titleMessageKey = "check-your-details.VcVatOther.reference",
       value           = Seq(journeyRequest.journey.referenceValue),
-      changeLink      = Some(Link(
-        href       = Call("GET", changeReferenceUrl(payFrontendBaseUrl)),
-        linkId     = "check-your-details-reference-change-link",
-        messageKey = "check-your-details.change"
-      ))
+      changeLink      = None
     ))
   }
 
