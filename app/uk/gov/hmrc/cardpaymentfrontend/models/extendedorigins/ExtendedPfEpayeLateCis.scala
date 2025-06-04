@@ -1,0 +1,44 @@
+package uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins
+
+import payapi.cardpaymentjourney.model.journey.{JourneySpecificData, JsdPfEpayeLateCis}
+import play.api.mvc.AnyContent
+import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
+import uk.gov.hmrc.cardpaymentfrontend.models.PaymentMethod.{Card, OneOffDirectDebit, OpenBanking}
+import uk.gov.hmrc.cardpaymentfrontend.models.{CheckYourAnswersRow, PaymentMethod}
+import uk.gov.hmrc.cardpaymentfrontend.models.openbanking.{OriginSpecificSessionData, PfEpayeLateCisSessionData}
+
+object ExtendedPfEpayeLateCis extends ExtendedOrigin {
+//DONE
+  override def serviceNameMessageKey: String = "service-name.PfEpayeLateCis"
+
+  override def taxNameMessageKey: String = "payment-complete.tax-name.PfEpayeLateCis"
+
+  override def cardFeesPagePaymentMethods: Set[PaymentMethod] = Set(OpenBanking, OneOffDirectDebit)
+
+  override def paymentMethods(): Set[PaymentMethod] = Set(OneOffDirectDebit, Card, OpenBanking)
+
+  override def checkYourAnswersReferenceRow(journeyRequest: JourneyRequest[AnyContent])
+                                           (payFrontendBaseUrl: String): Option[CheckYourAnswersRow] =
+    Some(CheckYourAnswersRow(
+      titleMessageKey = "check-your-details.PfEpayeLateCis.reference",
+      value           = Seq(journeyRequest.journey.referenceValue),
+      changeLink      = None
+    ))
+
+  override def openBankingOriginSpecificSessionData: JourneySpecificData => Option[OriginSpecificSessionData] = {
+    case j: JsdPfEpayeLateCis => j.prn.map(PfEpayeLateCisSessionData(_))
+    case _ => throw new RuntimeException("Incorrect origin found")
+  }
+
+  override def emailTaxTypeMessageKey: String = "email.tax-name.PfEpayeLateCis"
+
+  override def surveyAuditName: String = "paye-late-cis"
+
+  override def surveyReturnHref: String = "https://www.gov.uk/government/organisations/hm-revenue-customs"
+
+  override def surveyReturnMessageKey: String = "payments-survey.other.return-message"
+
+  override def surveyIsWelshSupported: Boolean = true
+
+  override def surveyBannerTitle: String = serviceNameMessageKey
+}
