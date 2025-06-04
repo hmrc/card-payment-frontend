@@ -573,7 +573,7 @@ class EmailServiceSpec extends ItSpec {
 
           "debit in welsh" in {
             val expectedResult: EmailParameters = EmailParameters(
-              taxType          = "Vat",
+              taxType          = "TAW",
               taxReference     = "999964805",
               paymentReference = "Some-transaction-ref",
               amountPaid       = "12.34",
@@ -587,7 +587,7 @@ class EmailServiceSpec extends ItSpec {
 
           "credit in welsh" in {
             val expectedResult: EmailParameters = EmailParameters(
-              taxType          = "Vat",
+              taxType          = "TAW",
               taxReference     = "999964805",
               paymentReference = "Some-transaction-ref",
               amountPaid       = "12.34",
@@ -632,7 +632,7 @@ class EmailServiceSpec extends ItSpec {
 
           "debit in welsh" in {
             val expectedResult: EmailParameters = EmailParameters(
-              taxType          = "Vat",
+              taxType          = "TAW",
               taxReference     = "999964805",
               paymentReference = "Some-transaction-ref",
               amountPaid       = "12.34",
@@ -646,7 +646,7 @@ class EmailServiceSpec extends ItSpec {
 
           "credit in welsh" in {
             val expectedResult: EmailParameters = EmailParameters(
-              taxType          = "Vat",
+              taxType          = "TAW",
               taxReference     = "999964805",
               paymentReference = "Some-transaction-ref",
               amountPaid       = "12.34",
@@ -691,7 +691,7 @@ class EmailServiceSpec extends ItSpec {
 
           "debit in welsh" in {
             val expectedResult: EmailParameters = EmailParameters(
-              taxType          = "Vat",
+              taxType          = "TAW",
               taxReference     = "999964805",
               paymentReference = "Some-transaction-ref",
               amountPaid       = "12.34",
@@ -705,7 +705,7 @@ class EmailServiceSpec extends ItSpec {
 
           "credit in welsh" in {
             val expectedResult: EmailParameters = EmailParameters(
-              taxType          = "Vat",
+              taxType          = "TAW",
               taxReference     = "999964805",
               paymentReference = "Some-transaction-ref",
               amountPaid       = "12.34",
@@ -750,7 +750,7 @@ class EmailServiceSpec extends ItSpec {
 
           "debit in welsh" in {
             val expectedResult: EmailParameters = EmailParameters(
-              taxType          = "Vat",
+              taxType          = "TAW",
               taxReference     = "999964805",
               paymentReference = "Some-transaction-ref",
               amountPaid       = "12.34",
@@ -764,7 +764,7 @@ class EmailServiceSpec extends ItSpec {
 
           "credit in welsh" in {
             val expectedResult: EmailParameters = EmailParameters(
-              taxType          = "Vat",
+              taxType          = "TAW",
               taxReference     = "999964805",
               paymentReference = "Some-transaction-ref",
               amountPaid       = "12.34",
