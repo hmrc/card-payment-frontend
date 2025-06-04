@@ -308,10 +308,10 @@ email.tax-name.PfAlcoholDuty = Toll Alcohol
 email.tax-name.AlcoholDuty = Toll Alcohol
 email.tax-name.BtaCt = Treth Gorfforaeth
 email.tax-name.PfCt = Treth Gorfforaeth
-email.tax-name.PfVat = Vat
-email.tax-name.BtaVat = Vat
-email.tax-name.VcVatReturn = Vat
-email.tax-name.VcVatOther = Vat
+email.tax-name.PfVat = TAW
+email.tax-name.BtaVat = TAW
+email.tax-name.VcVatReturn = TAW
+email.tax-name.VcVatOther = TAW
 
 ## Payments survey
 payments-survey.bta.return-message = Dim diolch, dychwelyd i cyfrif treth busnes

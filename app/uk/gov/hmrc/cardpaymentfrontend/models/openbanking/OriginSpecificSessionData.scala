@@ -344,12 +344,16 @@ final case class VcVatOtherSessionData(vrn: Vrn, vatChargeReference: VatChargeRe
   def searchTag: SearchTag = SearchTag(vatChargeReference.reference)
 }
 
-final case class PfVatSessionData(vrn: Vrn, chargeRef: Option[XRef14Char], returnUrl: Option[Url] = None) extends VatSessionData(PfVat) {
-  //try and use charge reference as reference, if not provided, use alcoholDutyReference instead.
-  def paymentReference: Reference =
-    chargeRef.fold(ReferenceMaker.makeVatReference(vrn)) {
-      vatcr => ReferenceMaker.makeXRef14Char(vatcr)
-    }
+final case class PfVatSessionData(vrn: Option[Vrn], chargeRef: Option[XRef14Char], returnUrl: Option[Url] = None) extends VatSessionData(PfVat) {
+  private def vatReference: Option[Reference] = vrn.map(ReferenceMaker.makeVatReference)
+
+  private def chargeReference: Option[Reference] = chargeRef.map(ReferenceMaker.makeXRef14Char)
+
+  def paymentReference: Reference = (vatReference, chargeReference) match {
+    case (Some(vatRef), _) => vatRef
+    case (_, Some(ref))    => ref
+    case _                 => throw new IllegalStateException("[OriginSpecificData][PfVatSessionData] Unable to set paymentReference for PfVatSessionData")
+  }
 
   def searchTag: SearchTag = SearchTag(paymentReference.value)
 }

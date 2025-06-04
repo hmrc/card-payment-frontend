@@ -46,7 +46,7 @@ object ExtendedVcVatOther extends ExtendedOrigin {
   override def checkYourAnswersAdditionalReferenceRow(journeyRequest: JourneyRequest[AnyContent])(payFrontendBaseUrl: String): Option[CheckYourAnswersRow] = {
     additionalReference(journeyRequest.journey.journeySpecificData).map { chargeReference =>
       CheckYourAnswersRow(
-        titleMessageKey = "check-your-details.AlcoholDuty.charge-reference",
+        titleMessageKey = "check-your-details.VcVatOther.charge-reference",
         value           = Seq(chargeReference.reference),
         changeLink      = None
       )

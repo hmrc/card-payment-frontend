@@ -353,16 +353,16 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfVatWithChargeReference.journeyBeforeBeginWebPayment)
       val result = systemUnderTest.renderPage(fakeRequest())
       val document = Jsoup.parse(contentAsString(result))
-      val additionalReferenceRow = document.select(".govuk-summary-list__row").asScala.toList(0)
-      assertRow(additionalReferenceRow, "Charge reference", "XE123456789012", None, None)
+      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(0)
+      assertRow(referenceRow, "Charge reference", "XE123456789012", None, None)
     }
 
     "[PfVat] should render the charge reference row correctly in welsh when it's available" in {
       PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfVatWithChargeReference.journeyBeforeBeginWebPayment)
       val result = systemUnderTest.renderPage(fakeRequestWelsh())
       val document = Jsoup.parse(contentAsString(result))
-      val additionalReferenceRow = document.select(".govuk-summary-list__row").asScala.toList(0)
-      assertRow(additionalReferenceRow, "Cyfeirnod y tâl", "XE123456789012", None, None)
+      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(0)
+      assertRow(referenceRow, "Cyfeirnod y tâl", "XE123456789012", None, None)
     }
 
     "[BtaVat] should render the payment reference row correctly" in {

@@ -62,11 +62,8 @@ object ExtendedPfVat extends ExtendedOrigin {
   }
 
   override def openBankingOriginSpecificSessionData: JourneySpecificData => Option[OriginSpecificSessionData] = {
-    case j: JsdPfVat => for {
-      vrn <- j.vrn
-      vatChargeRef <- j.chargeRef
-    } yield PfVatSessionData(vrn, Some(vatChargeRef))
-    case _ => throw new RuntimeException("Incorrect origin found")
+    case j: JsdPfVat => Some(PfVatSessionData(j.vrn, j.chargeRef))
+    case _           => throw new RuntimeException("Incorrect origin found")
   }
 
   override def emailTaxTypeMessageKey: String = "email.tax-name.PfVat"

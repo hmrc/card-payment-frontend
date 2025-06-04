@@ -659,7 +659,7 @@ object PaymentCompleteControllerSpec {
         "Cyfanswm a dalwyd" -> "£13.57"
       )),
       hasWelshTest                    = true,
-      hasAReturnUrl                   = false
+      hasAReturnUrl                   = true
     )
 
     case Origins.VcVatReturn => TestScenarioInfo(
@@ -690,7 +690,7 @@ object PaymentCompleteControllerSpec {
         "Cyfanswm a dalwyd" -> "£13.57"
       )),
       hasWelshTest                    = true,
-      hasAReturnUrl                   = false
+      hasAReturnUrl                   = true
     )
 
     case Origins.VcVatOther => TestScenarioInfo(
@@ -721,7 +721,7 @@ object PaymentCompleteControllerSpec {
         "Cyfanswm a dalwyd" -> "£13.57"
       )),
       hasWelshTest                    = true,
-      hasAReturnUrl                   = false
+      hasAReturnUrl                   = true
     )
 
     case o: Origin => throw new MatchError(s"Add testdata for now origin you've added [${o.entryName}] to implemented origins.")
