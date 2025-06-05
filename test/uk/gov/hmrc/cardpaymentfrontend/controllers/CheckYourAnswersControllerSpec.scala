@@ -60,14 +60,14 @@ class CheckYourAnswersControllerSpec extends ItSpec {
 
     "show the Title tab correctly in English" in {
       PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyBeforeBeginWebPayment)
-      val result = systemUnderTest.renderPage(fakeGetRequest())
+      val result = systemUnderTest.renderPage(fakeRequest())
       val document = Jsoup.parse(contentAsString(result))
       document.title shouldBe "Check your details - Pay your Self Assessment - GOV.UK"
     }
 
     "show the Title tab correctly in Welsh" in {
       PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyBeforeBeginWebPayment)
-      val result = systemUnderTest.renderPage(fakeGetRequestInWelsh())
+      val result = systemUnderTest.renderPage(fakeRequestWelsh())
       val document = Jsoup.parse(contentAsString(result))
       document.title shouldBe "Gwiriwch eich manylion - Talu eich Hunanasesiad - GOV.UK"
     }
