@@ -25,10 +25,10 @@
 
 @heading = @{messages("time-out.title")}
 
-@layout(pageTitle = Some(heading)) {
+@layout(pageTitle = Some(heading), showTimeoutDialogue = false) {
 
     <h1 class="govuk-heading-l">
-    @heading
+        @heading
     </h1>
 
     <p class="govuk-body">
