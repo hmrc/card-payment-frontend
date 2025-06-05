@@ -34,6 +34,7 @@ lazy val microservice = Project("card-payment-frontend", file("."))
     Compile / unmanagedResourceDirectories += baseDirectory.value / "resources",
     Compile / scalacOptions -= "utf8",
   )
+  .settings(Global / onChangedBuildSource := ReloadOnSourceChanges)
   .settings(
     RoutesKeys.routesImport += "uk.gov.hmrc.play.bootstrap.binders.RedirectUrl"
   )

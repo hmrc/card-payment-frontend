@@ -26,7 +26,8 @@ final case class CardPaymentInitiatePaymentRequest(
     purchaseDescription: String, // i.e. tax reference
     purchaseAmount:      AmountInPence, //in pennies
     billingAddress:      BarclaycardAddress,
-    emailAddress:        Option[EmailAddress]
+    emailAddress:        Option[EmailAddress],
+    transactionNumber:   String
 )
 
 object CardPaymentInitiatePaymentRequest {

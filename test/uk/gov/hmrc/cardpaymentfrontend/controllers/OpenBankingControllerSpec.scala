@@ -17,8 +17,9 @@
 package uk.gov.hmrc.cardpaymentfrontend.controllers
 
 import payapi.cardpaymentjourney.model.journey.JsdPfSa
+import play.api.mvc.Session
 import play.api.test.FakeRequest
-import play.api.test.Helpers.{defaultAwaitTimeout, redirectLocation}
+import play.api.test.Helpers.{defaultAwaitTimeout, redirectLocation, session}
 import uk.gov.hmrc.cardpaymentfrontend.models.openbanking.{CreateSessionDataResponse, SessionDataId}
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.ItSpec
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.TestOps.FakeRequestOps
@@ -37,7 +38,7 @@ class OpenBankingControllerSpec extends ItSpec {
         val exception = intercept[RuntimeException] {
           systemUnderTest.startOpenBankingJourney(fakeRequest).futureValue
         }
-        exception.getMessage shouldBe "The future returned an exception of type: java.lang.RuntimeException, with message: Unable to build createSessionDataRequest, so cannot start an OB journey."
+        exception.getMessage shouldBe "The future returned an exception of type: java.lang.RuntimeException, with message: Unable to build createSessionDataRequest, so cannot start an OB journey for origin PfSa."
       }
 
       "redirect when call to open banking to start a journey succeeds" in {
@@ -46,6 +47,7 @@ class OpenBankingControllerSpec extends ItSpec {
         val fakeRequest = FakeRequest().withSessionId()
         val result = systemUnderTest.startOpenBankingJourney(fakeRequest)
         redirectLocation(result) shouldBe Some("http://www.some-redirect-url-for-ob.co.uk")
+        session(result) shouldBe Session(Map("sessionId" -> "some-valid-session-id", "obSessionDataId" -> "some-session-data-id"))
       }
     }
   }

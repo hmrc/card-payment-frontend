@@ -10,7 +10,7 @@ error.there-is-a-problem = Mae problem wedi codi
 service-name.generic = Talwch eich treth
 service-name.PfSa = Talu eich Hunanasesiad
 service-name.PfVat = Talu eich TAW
-service-name.PfCt =
+service-name.PfCt = Talu eich Treth Gorfforaeth
 service-name.PfEpayeNi = Talwch eich TWE a’ch Yswiriant Gwladol y cyflogwr
 service-name.PfEpayeLpp = Talu’ch cosb am dalu neu gyflwyno TWE yn hwyr
 service-name.PfEpayeSeta =
@@ -32,7 +32,7 @@ service-name.BtaEpayePenalty = Talu’ch cosb am dalu neu gyflwyno TWE yn hwyr
 service-name.BtaEpayeInterest =
 service-name.BtaEpayeGeneral = Talwch eich TWE a’ch Yswiriant Gwladol y cyflogwr
 service-name.BtaClass1aNi = Talwch eich TWE a’ch Yswiriant Gwladol y cyflogwr
-service-name.BtaCt =
+service-name.BtaCt = Talu eich Treth Gorfforaeth
 service-name.BtaSdil =
 service-name.BcPngr =
 service-name.Parcels =
@@ -120,6 +120,9 @@ check-your-details.ItSa.reference = Cyfeirnod Unigryw y Trethdalwr (UTR)
 check-your-details.PfAlcoholDuty.reference = Cyfeirnod y taliad
 check-your-details.AlcoholDuty.reference = Cyfeirnod y taliad
 check-your-details.AlcoholDuty.charge-reference = Cyfeirnod y tâl
+check-your-details.BtaCt.reference = Cyfeirnod y taliad
+check-your-details.PfCt.reference = Cyfeirnod Unigryw y Trethdalwr (UTR)
+check-your-details.PfCt.payslip-reference = Cyfeirnod slip talu
 check-your-details.PfVat.reference.title = ADD_ME
 
 
@@ -192,7 +195,7 @@ payment-complete.survey.p2.part1 = Rhowch wybod i ni beth yw eich barn am y gwas
 payment-complete.survey.p2.part2 = (mae’n cymryd 30 eiliad)
 payment-complete.tax-name.PfSa = Hunanasesiad
 payment-complete.tax-name.PfVat =
-payment-complete.tax-name.PfCt =
+payment-complete.tax-name.PfCt = Treth Gorfforaeth
 payment-complete.tax-name.PfEpayeNi =
 payment-complete.tax-name.PfEpayeLpp =
 payment-complete.tax-name.PfEpayeSeta =
@@ -214,7 +217,7 @@ payment-complete.tax-name.BtaEpayePenalty =
 payment-complete.tax-name.BtaEpayeInterest =
 payment-complete.tax-name.BtaEpayeGeneral =
 payment-complete.tax-name.BtaClass1aNi =
-payment-complete.tax-name.BtaCt =
+payment-complete.tax-name.BtaCt = Treth Gorfforaeth
 payment-complete.tax-name.BtaSdil =
 payment-complete.tax-name.BcPngr =
 payment-complete.tax-name.Parcels =
@@ -298,6 +301,8 @@ email.tax-name.PtaSa = Hunanasesiad
 email.tax-name.ItSa = Hunanasesiad
 email.tax-name.PfAlcoholDuty = Toll Alcohol
 email.tax-name.AlcoholDuty = Toll Alcohol
+email.tax-name.BtaCt = Treth Gorfforaeth
+email.tax-name.PfCt = Treth Gorfforaeth
 
 
 ## Payments survey

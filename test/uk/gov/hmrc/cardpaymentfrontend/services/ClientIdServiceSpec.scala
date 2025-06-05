@@ -16,8 +16,12 @@
 
 package uk.gov.hmrc.cardpaymentfrontend.services
 
+import org.scalatest.prop.TableDrivenPropertyChecks.forAll
+import org.scalatest.prop.TableFor2
+import org.scalatest.prop.Tables.Table
+import payapi.cardpaymentjourney.model.journey.{Journey, JourneySpecificData}
 import uk.gov.hmrc.cardpaymentfrontend.models.Languages
-import uk.gov.hmrc.cardpaymentfrontend.models.cardpayment.ClientIds
+import uk.gov.hmrc.cardpaymentfrontend.models.cardpayment.{ClientId, ClientIds}
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.testdata.TestJourneys
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.{ItSpec, TestHelpers}
 
@@ -28,27 +32,45 @@ class ClientIdServiceSpec extends ItSpec {
   "ClientIdService" - {
 
     "should return the correct client id for a given tax regime when language is english" in {
-      systemUnderTest.determineClientId(TestJourneys.PfSa.journeyBeforeBeginWebPayment, Languages.English) shouldBe ClientIds.SAEE
-      systemUnderTest.determineClientId(TestJourneys.BtaSa.journeyBeforeBeginWebPayment, Languages.English) shouldBe ClientIds.SAEE
-      systemUnderTest.determineClientId(TestJourneys.PtaSa.journeyBeforeBeginWebPayment, Languages.English) shouldBe ClientIds.SAEE
-      systemUnderTest.determineClientId(TestJourneys.ItSa.journeyBeforeBeginWebPayment, Languages.English) shouldBe ClientIds.SAEE
-      systemUnderTest.determineClientId(TestJourneys.PfAlcoholDuty.journeyBeforeBeginWebPayment, Languages.English) shouldBe ClientIds.ETEE
-      systemUnderTest.determineClientId(TestJourneys.AlcoholDuty.journeyBeforeBeginWebPayment, Languages.English) shouldBe ClientIds.ETEE
+      val scenarios: TableFor2[Journey[JourneySpecificData], ClientId] = Table(
+        ("test journey", "expected client id"),
+        (TestJourneys.PfSa.journeyBeforeBeginWebPayment, ClientIds.SAEE),
+        (TestJourneys.BtaSa.journeyBeforeBeginWebPayment, ClientIds.SAEE),
+        (TestJourneys.PtaSa.journeyBeforeBeginWebPayment, ClientIds.SAEE),
+        (TestJourneys.ItSa.journeyBeforeBeginWebPayment, ClientIds.SAEE),
+        (TestJourneys.PfAlcoholDuty.journeyBeforeBeginWebPayment, ClientIds.ETEE),
+        (TestJourneys.AlcoholDuty.journeyBeforeBeginWebPayment, ClientIds.ETEE),
+        (TestJourneys.BtaCt.journeyBeforeBeginWebPayment, ClientIds.COEE),
+        (TestJourneys.PfCt.journeyBeforeBeginWebPayment, ClientIds.COEE)
+      )
+      forAll(scenarios) {
+        case (journey, clientId) =>
+          systemUnderTest.determineClientId(journey, Languages.English) shouldBe clientId withClue s"check scenario for origin ${journey.origin.toString}"
+      }
     }
 
     "should return the correct client id for a given tax regime when language is welsh" in {
-      systemUnderTest.determineClientId(TestJourneys.PfSa.journeyBeforeBeginWebPayment, Languages.Welsh) shouldBe ClientIds.SAEC
-      systemUnderTest.determineClientId(TestJourneys.BtaSa.journeyBeforeBeginWebPayment, Languages.Welsh) shouldBe ClientIds.SAEC
-      systemUnderTest.determineClientId(TestJourneys.PtaSa.journeyBeforeBeginWebPayment, Languages.Welsh) shouldBe ClientIds.SAEC
-      systemUnderTest.determineClientId(TestJourneys.ItSa.journeyBeforeBeginWebPayment, Languages.Welsh) shouldBe ClientIds.SAEC
-      systemUnderTest.determineClientId(TestJourneys.PfAlcoholDuty.journeyBeforeBeginWebPayment, Languages.Welsh) shouldBe ClientIds.ETEC
-      systemUnderTest.determineClientId(TestJourneys.AlcoholDuty.journeyBeforeBeginWebPayment, Languages.Welsh) shouldBe ClientIds.ETEC
+      val scenarios: TableFor2[Journey[JourneySpecificData], ClientId] = Table(
+        ("test journey", "expected client id"),
+        (TestJourneys.PfSa.journeyBeforeBeginWebPayment, ClientIds.SAEC),
+        (TestJourneys.BtaSa.journeyBeforeBeginWebPayment, ClientIds.SAEC),
+        (TestJourneys.PtaSa.journeyBeforeBeginWebPayment, ClientIds.SAEC),
+        (TestJourneys.ItSa.journeyBeforeBeginWebPayment, ClientIds.SAEC),
+        (TestJourneys.PfAlcoholDuty.journeyBeforeBeginWebPayment, ClientIds.ETEC),
+        (TestJourneys.AlcoholDuty.journeyBeforeBeginWebPayment, ClientIds.ETEC),
+        (TestJourneys.BtaCt.journeyBeforeBeginWebPayment, ClientIds.COEC),
+        (TestJourneys.PfCt.journeyBeforeBeginWebPayment, ClientIds.COEC)
+      )
+      forAll(scenarios) {
+        case (journey, clientId) =>
+          systemUnderTest.determineClientId(journey, Languages.Welsh) shouldBe clientId withClue s"check scenario for origin ${journey.origin.toString}"
+      }
     }
 
   }
 
   "sanity check for implemented origins" in {
-    TestHelpers.implementedOrigins.size shouldBe 6 withClue "** This dummy test is here to remind you to update the tests above. Bump up the expected number when an origin is added to implemented origins **"
+    TestHelpers.implementedOrigins.size shouldBe 8 withClue "** This dummy test is here to remind you to update the tests above. Bump up the expected number when an origin is added to implemented origins **"
   }
 
 }

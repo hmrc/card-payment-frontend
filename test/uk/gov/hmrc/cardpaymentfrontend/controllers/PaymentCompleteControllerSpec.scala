@@ -22,18 +22,19 @@ import org.jsoup.select.Elements
 import payapi.cardpaymentjourney.model.barclays.BarclaysOrder
 import payapi.cardpaymentjourney.model.journey.{Journey, JourneySpecificData, Url}
 import payapi.corcommon.model.barclays.{CardCategories, TransactionReference}
-import payapi.corcommon.model.{AmountInPence, JourneyId}
+import payapi.corcommon.model.{AmountInPence, JourneyId, Origin, Origins}
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.mvc.Http.Status
+import uk.gov.hmrc.cardpaymentfrontend.controllers.PaymentCompleteControllerSpec.{TestScenarioInfo, originToTdAndSummaryListRows}
 import uk.gov.hmrc.cardpaymentfrontend.models.EmailAddress
-import uk.gov.hmrc.cardpaymentfrontend.testsupport.ItSpec
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.TestOps._
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.stubs.{EmailStub, PayApiStub}
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.testdata.TestJourneys
+import uk.gov.hmrc.cardpaymentfrontend.testsupport.{ItSpec, TestHelpers}
 import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{Key, SummaryListRow, Value}
@@ -217,356 +218,63 @@ class PaymentCompleteControllerSpec extends ItSpec {
           keyValuePairsOfSummaryRows should contain theSameElementsInOrderAs expectedSummaryListRows
         }
 
-      "for origin PfSa" - {
-
-        "when paying by debit card" - {
-
-          "render the summary list correctly" in {
-            val expectedSummaryListRows: List[(String, String)] = List(
-              "Tax" -> "Self Assessment",
-              "Date" -> "2 November 2027",
-              "Amount" -> "£12.34"
-            )
-            testSummaryRows(TestJourneys.PfSa.journeyAfterSucceedDebitWebPayment, fakeGetRequest, expectedSummaryListRows)
-          }
-
-          "render the summary list correctly in welsh" in {
-            val expectedSummaryListRows: List[(String, String)] = List(
-              "Treth" -> "Hunanasesiad",
-              "Dyddiad" -> "2 Tachwedd 2027",
-              "Swm" -> "£12.34"
-            )
-            testSummaryRows(TestJourneys.PfSa.journeyAfterSucceedDebitWebPayment, fakeGetRequestInWelsh, expectedSummaryListRows)
-          }
-        }
-
-        "when paying by a card that incurs a surcharge" - {
-
-          "render the summary list correctly when payment has a surcharge" in {
-            val expectedSummaryListRows: List[(String, String)] = List(
-              "Tax" -> "Self Assessment",
-              "Date" -> "2 November 2027",
-              "Amount paid to HMRC" -> "£12.34",
-              "Card fee (9.97%), non-refundable" -> "£1.23",
-              "Total paid" -> "£13.57"
-            )
-            testSummaryRows(TestJourneys.PfSa.journeyAfterSucceedCreditWebPayment, fakeGetRequest, expectedSummaryListRows)
-          }
-
-          "render the summary list correctly in welsh when payment has a surcharge" in {
-            val expectedSummaryListRows: List[(String, String)] = List(
-              "Treth" -> "Hunanasesiad",
-              "Dyddiad" -> "2 Tachwedd 2027",
-              "Swm a dalwyd i CThEM" -> "£12.34",
-              "Ffi cerdyn (9.97%), ni ellir ei ad-dalu" -> "£1.23",
-              "Cyfanswm a dalwyd" -> "£13.57"
-            )
-            testSummaryRows(TestJourneys.PfSa.journeyAfterSucceedCreditWebPayment, fakeGetRequestInWelsh, expectedSummaryListRows)
-          }
-        }
-
+      "should have a test for all origins below this one" in {
+        TestHelpers.implementedOrigins.size shouldBe 8 withClue "** This dummy test is here to remind you to update the tests below. Bump up the expected number when an origin is added to implemented origins **"
       }
 
-      "for origin BtaSa" - {
+      TestHelpers.implementedOrigins.foreach { origin =>
 
-        "when paying by debit card" - {
+        val testScenario: TestScenarioInfo = originToTdAndSummaryListRows(origin)
 
-          "render the summary list correctly" in {
-            val expectedSummaryListRows: List[(String, String)] = List(
-              "Tax" -> "Self Assessment",
-              "Date" -> "2 November 2027",
-              "Amount" -> "£12.34"
-            )
-            testSummaryRows(TestJourneys.BtaSa.journeyAfterSucceedDebitWebPayment, fakeGetRequest, expectedSummaryListRows)
+        s"for origin ${origin.entryName}" - {
+          //generic table content tests all origins should have.
+          "when paying by debit card" - {
+
+            "render the summary list correctly" in {
+              testSummaryRows(testScenario.debitCardJourney, fakeGetRequest, testScenario.englishSummaryRowsDebitCard)
+            }
+
+            if (testScenario.hasWelshTest) {
+              "render the summary list correctly in welsh" in {
+                testSummaryRows(testScenario.debitCardJourney, fakeGetRequestInWelsh, testScenario.maybeWelshSummaryRowsDebitCard.getOrElse(throw new RuntimeException("test failed, missing welsh when it's expected")))
+              }
+            }
           }
 
-          "render the summary list correctly in welsh" in {
-            val expectedSummaryListRows: List[(String, String)] = List(
-              "Treth" -> "Hunanasesiad",
-              "Dyddiad" -> "2 Tachwedd 2027",
-              "Swm" -> "£12.34"
-            )
-            testSummaryRows(TestJourneys.BtaSa.journeyAfterSucceedDebitWebPayment, fakeGetRequestInWelsh, expectedSummaryListRows)
+          "when paying by a card that incurs a surcharge" - {
+
+            "render the summary list correctly when payment has a surcharge" in {
+              testSummaryRows(testScenario.creditCardJourney, fakeGetRequest, testScenario.englishSummaryRowsCreditCard)
+            }
+
+            if (testScenario.hasWelshTest) {
+              "render the summary list correctly in welsh when payment has a surcharge" in {
+                testSummaryRows(testScenario.creditCardJourney, fakeGetRequestInWelsh, testScenario.maybeWelshSummaryRowsCreditCard.getOrElse(throw new RuntimeException("test failed, missing welsh when it's expected")))
+              }
+            }
           }
 
-          "render the custom what happens next content" in {
-            PayApiStub.stubForFindBySessionId2xx(TestJourneys.BtaSa.journeyAfterSucceedDebitWebPayment)
-            val result = systemUnderTest.renderPage(fakeGetRequest)
-            val document = Jsoup.parse(contentAsString(result))
-            val wrapper = document.select("#what-happens-next-wrapper")
-            wrapper.select("h4").text() shouldBe "What happens next"
-            wrapper.select("p").html() shouldBe "Your payment will take 3 to 5 days to show in your <a class=\"govuk-link\" href=\"https://www.return-to-bta.com\">HMRC online account.</a>"
-          }
+          //i.e. a logged in journey, so it has a returnUrl which is to bta or similar
+          if (testScenario.hasAReturnUrl) {
 
-          "render the custom what happens next content in welsh" in {
-            PayApiStub.stubForFindBySessionId2xx(TestJourneys.BtaSa.journeyAfterSucceedDebitWebPayment)
-            val result = systemUnderTest.renderPage(fakeGetRequestInWelsh)
-            val document = Jsoup.parse(contentAsString(result))
-            val wrapper = document.select("#what-happens-next-wrapper")
-            wrapper.select("h4").text() shouldBe "Yr hyn sy’n digwydd nesaf"
-            wrapper.select("p").html() shouldBe "Bydd eich taliad yn cymryd 3 i 5 diwrnod i ymddangos yn eich <a class=\"govuk-link\" href=\"https://www.return-to-bta.com\">cyfrif CThEM ar-lein.</a>"
-          }
-        }
+            "render the custom what happens next content" in {
+              PayApiStub.stubForFindBySessionId2xx(testScenario.debitCardJourney)
+              val result = systemUnderTest.renderPage(fakeGetRequest)
+              val document = Jsoup.parse(contentAsString(result))
+              val wrapper = document.select("#what-happens-next-wrapper")
+              wrapper.select("h4").text() shouldBe "What happens next"
+              wrapper.select("p").html() shouldBe "Your payment will take 3 to 5 days to show in your <a class=\"govuk-link\" href=\"https://www.return-url.com\">HMRC online account.</a>"
+            }
 
-        "when paying by a card that incurs a surcharge" - {
+            "render the custom what happens next content in welsh" in {
+              PayApiStub.stubForFindBySessionId2xx(testScenario.debitCardJourney)
+              val result = systemUnderTest.renderPage(fakeGetRequestInWelsh)
+              val document = Jsoup.parse(contentAsString(result))
+              val wrapper = document.select("#what-happens-next-wrapper")
+              wrapper.select("h4").text() shouldBe "Yr hyn sy’n digwydd nesaf"
+              wrapper.select("p").html() shouldBe "Bydd eich taliad yn cymryd 3 i 5 diwrnod i ymddangos yn eich <a class=\"govuk-link\" href=\"https://www.return-url.com\">cyfrif CThEM ar-lein.</a>"
+            }
 
-          "render the summary list correctly when payment has a surcharge" in {
-            val expectedSummaryListRows: List[(String, String)] = List(
-              "Tax" -> "Self Assessment",
-              "Date" -> "2 November 2027",
-              "Amount paid to HMRC" -> "£12.34",
-              "Card fee (9.97%), non-refundable" -> "£1.23",
-              "Total paid" -> "£13.57"
-            )
-            testSummaryRows(TestJourneys.BtaSa.journeyAfterSucceedCreditWebPayment, fakeGetRequest, expectedSummaryListRows)
-          }
-
-          "render the summary list correctly in welsh when payment has a surcharge" in {
-            val expectedSummaryListRows: List[(String, String)] = List(
-              "Treth" -> "Hunanasesiad",
-              "Dyddiad" -> "2 Tachwedd 2027",
-              "Swm a dalwyd i CThEM" -> "£12.34",
-              "Ffi cerdyn (9.97%), ni ellir ei ad-dalu" -> "£1.23",
-              "Cyfanswm a dalwyd" -> "£13.57"
-            )
-            testSummaryRows(TestJourneys.BtaSa.journeyAfterSucceedCreditWebPayment, fakeGetRequestInWelsh, expectedSummaryListRows)
-          }
-        }
-      }
-
-      "for origin PtaSa" - {
-
-        "when paying by debit card" - {
-
-          "render the summary list correctly" in {
-            val expectedSummaryListRows: List[(String, String)] = List(
-              "Tax" -> "Self Assessment",
-              "Date" -> "2 November 2027",
-              "Amount" -> "£12.34"
-            )
-            testSummaryRows(TestJourneys.PtaSa.journeyAfterSucceedDebitWebPayment, fakeGetRequest, expectedSummaryListRows)
-
-          }
-
-          "render the summary list correctly in welsh" in {
-            val expectedSummaryListRows: List[(String, String)] = List(
-              "Treth" -> "Hunanasesiad",
-              "Dyddiad" -> "2 Tachwedd 2027",
-              "Swm" -> "£12.34"
-            )
-            testSummaryRows(TestJourneys.PtaSa.journeyAfterSucceedDebitWebPayment, fakeGetRequestInWelsh, expectedSummaryListRows)
-          }
-
-          "render the custom what happens next content" in {
-            PayApiStub.stubForFindBySessionId2xx(TestJourneys.PtaSa.journeyAfterSucceedDebitWebPayment)
-            val result = systemUnderTest.renderPage(fakeGetRequest)
-            val document = Jsoup.parse(contentAsString(result))
-            val wrapper = document.select("#what-happens-next-wrapper")
-            wrapper.select("h4").text() shouldBe "What happens next"
-            wrapper.select("p").html() shouldBe "Your payment will take 3 to 5 days to show in your <a class=\"govuk-link\" href=\"https://www.return-to-pta.com\">HMRC online account.</a>"
-          }
-
-          "render the custom what happens next content in welsh" in {
-            PayApiStub.stubForFindBySessionId2xx(TestJourneys.PtaSa.journeyAfterSucceedDebitWebPayment)
-            val result = systemUnderTest.renderPage(fakeGetRequestInWelsh)
-            val document = Jsoup.parse(contentAsString(result))
-            val wrapper = document.select("#what-happens-next-wrapper")
-            wrapper.select("h4").text() shouldBe "Yr hyn sy’n digwydd nesaf"
-            wrapper.select("p").html() shouldBe "Bydd eich taliad yn cymryd 3 i 5 diwrnod i ymddangos yn eich <a class=\"govuk-link\" href=\"https://www.return-to-pta.com\">cyfrif CThEM ar-lein.</a>"
-          }
-        }
-
-        "when paying by a card that incurs a surcharge" - {
-
-          "render the summary list correctly when payment has a surcharge" in {
-            val expectedSummaryListRows: List[(String, String)] = List(
-              "Tax" -> "Self Assessment",
-              "Date" -> "2 November 2027",
-              "Amount paid to HMRC" -> "£12.34",
-              "Card fee (9.97%), non-refundable" -> "£1.23",
-              "Total paid" -> "£13.57"
-            )
-            testSummaryRows(TestJourneys.PtaSa.journeyAfterSucceedCreditWebPayment, fakeGetRequest, expectedSummaryListRows)
-          }
-
-          "render the summary list correctly in welsh when payment has a surcharge" in {
-            val expectedSummaryListRows: List[(String, String)] = List(
-              "Treth" -> "Hunanasesiad",
-              "Dyddiad" -> "2 Tachwedd 2027",
-              "Swm a dalwyd i CThEM" -> "£12.34",
-              "Ffi cerdyn (9.97%), ni ellir ei ad-dalu" -> "£1.23",
-              "Cyfanswm a dalwyd" -> "£13.57"
-            )
-            testSummaryRows(TestJourneys.PtaSa.journeyAfterSucceedCreditWebPayment, fakeGetRequestInWelsh, expectedSummaryListRows)
-          }
-        }
-      }
-
-      "for origin Itsa" - {
-        "when paying by debit card" - {
-
-          "render the summary list correctly" in {
-            val expectedSummaryListRows: List[(String, String)] = List(
-              "Tax" -> "Self Assessment",
-              "Date" -> "2 November 2027",
-              "Amount" -> "£12.34"
-            )
-            testSummaryRows(TestJourneys.ItSa.journeyAfterSucceedDebitWebPayment, fakeGetRequest, expectedSummaryListRows)
-
-          }
-
-          "render the summary list correctly in welsh" in {
-            val expectedSummaryListRows: List[(String, String)] = List(
-              "Treth" -> "Hunanasesiad",
-              "Dyddiad" -> "2 Tachwedd 2027",
-              "Swm" -> "£12.34"
-            )
-            testSummaryRows(TestJourneys.ItSa.journeyAfterSucceedDebitWebPayment, fakeGetRequestInWelsh, expectedSummaryListRows)
-          }
-
-          "render the custom what happens next content" in {
-            PayApiStub.stubForFindBySessionId2xx(TestJourneys.ItSa.journeyAfterSucceedDebitWebPayment)
-            val result = systemUnderTest.renderPage(fakeGetRequest)
-            val document = Jsoup.parse(contentAsString(result))
-            val wrapper = document.select("#what-happens-next-wrapper")
-            wrapper.select("h4").text() shouldBe "What happens next"
-            wrapper.select("p").html() shouldBe "Your payment will take 3 to 5 days to show in your <a class=\"govuk-link\" href=\"https://www.return-to-itsa.com\">HMRC online account.</a>"
-          }
-
-          "render the custom what happens next content in welsh" in {
-            PayApiStub.stubForFindBySessionId2xx(TestJourneys.ItSa.journeyAfterSucceedDebitWebPayment)
-            val result = systemUnderTest.renderPage(fakeGetRequestInWelsh)
-            val document = Jsoup.parse(contentAsString(result))
-            val wrapper = document.select("#what-happens-next-wrapper")
-            wrapper.select("h4").text() shouldBe "Yr hyn sy’n digwydd nesaf"
-            wrapper.select("p").html() shouldBe "Bydd eich taliad yn cymryd 3 i 5 diwrnod i ymddangos yn eich <a class=\"govuk-link\" href=\"https://www.return-to-itsa.com\">cyfrif CThEM ar-lein.</a>"
-          }
-        }
-
-        "when paying by a card that incurs a surcharge" - {
-
-          "render the summary list correctly when payment has a surcharge" in {
-            val expectedSummaryListRows: List[(String, String)] = List(
-              "Tax" -> "Self Assessment",
-              "Date" -> "2 November 2027",
-              "Amount paid to HMRC" -> "£12.34",
-              "Card fee (9.97%), non-refundable" -> "£1.23",
-              "Total paid" -> "£13.57"
-            )
-            testSummaryRows(TestJourneys.ItSa.journeyAfterSucceedCreditWebPayment, fakeGetRequest, expectedSummaryListRows)
-          }
-
-          "render the summary list correctly in welsh when payment has a surcharge" in {
-            val expectedSummaryListRows: List[(String, String)] = List(
-              "Treth" -> "Hunanasesiad",
-              "Dyddiad" -> "2 Tachwedd 2027",
-              "Swm a dalwyd i CThEM" -> "£12.34",
-              "Ffi cerdyn (9.97%), ni ellir ei ad-dalu" -> "£1.23",
-              "Cyfanswm a dalwyd" -> "£13.57"
-            )
-            testSummaryRows(TestJourneys.ItSa.journeyAfterSucceedCreditWebPayment, fakeGetRequestInWelsh, expectedSummaryListRows)
-          }
-        }
-      }
-
-      "for origin PfAlcoholDuty" - {
-
-        "when paying by debit card" - {
-
-          "render the summary list correctly" in {
-            val expectedSummaryListRows: List[(String, String)] = List(
-              "Tax" -> "Alcohol Duty",
-              "Date" -> "2 November 2027",
-              "Amount" -> "£12.34"
-            )
-            testSummaryRows(TestJourneys.PfAlcoholDuty.journeyAfterSucceedDebitWebPayment, fakeGetRequest, expectedSummaryListRows)
-          }
-
-          "render the summary list correctly in welsh" in {
-            val expectedSummaryListRows: List[(String, String)] = List(
-              "Treth" -> "Toll Alcohol",
-              "Dyddiad" -> "2 Tachwedd 2027",
-              "Swm" -> "£12.34"
-            )
-            testSummaryRows(TestJourneys.PfAlcoholDuty.journeyAfterSucceedDebitWebPayment, fakeGetRequestInWelsh, expectedSummaryListRows)
-          }
-        }
-
-        "when paying by a card that incurs a surcharge" - {
-
-          "render the summary list correctly when payment has a surcharge" in {
-            val expectedSummaryListRows: List[(String, String)] = List(
-              "Tax" -> "Alcohol Duty",
-              "Date" -> "2 November 2027",
-              "Amount paid to HMRC" -> "£12.34",
-              "Card fee (9.97%), non-refundable" -> "£1.23",
-              "Total paid" -> "£13.57"
-            )
-            testSummaryRows(TestJourneys.PfAlcoholDuty.journeyAfterSucceedCreditWebPayment, fakeGetRequest, expectedSummaryListRows)
-          }
-
-          "render the summary list correctly in welsh when payment has a surcharge" in {
-            val expectedSummaryListRows: List[(String, String)] = List(
-              "Treth" -> "Toll Alcohol",
-              "Dyddiad" -> "2 Tachwedd 2027",
-              "Swm a dalwyd i CThEM" -> "£12.34",
-              "Ffi cerdyn (9.97%), ni ellir ei ad-dalu" -> "£1.23",
-              "Cyfanswm a dalwyd" -> "£13.57"
-            )
-            testSummaryRows(TestJourneys.PfAlcoholDuty.journeyAfterSucceedCreditWebPayment, fakeGetRequestInWelsh, expectedSummaryListRows)
-          }
-        }
-      }
-
-      "for origin AlcoholDuty" - {
-
-        "when paying by debit card" - {
-
-          "render the summary list correctly" in {
-            val expectedSummaryListRows: List[(String, String)] = List(
-              "Tax" -> "Alcohol Duty",
-              "Date" -> "2 November 2027",
-              "Charge reference" -> "XE1234567890123",
-              "Amount" -> "£12.34"
-            )
-            testSummaryRows(TestJourneys.AlcoholDuty.journeyAfterSucceedDebitWebPayment, fakeGetRequest, expectedSummaryListRows)
-          }
-
-          "render the summary list correctly in welsh" in {
-            val expectedSummaryListRows: List[(String, String)] = List(
-              "Treth" -> "Toll Alcohol",
-              "Dyddiad" -> "2 Tachwedd 2027",
-              "Cyfeirnod y tâl" -> "XE1234567890123",
-              "Swm" -> "£12.34"
-            )
-            testSummaryRows(TestJourneys.AlcoholDuty.journeyAfterSucceedDebitWebPayment, fakeGetRequestInWelsh, expectedSummaryListRows)
-          }
-        }
-
-        "when paying by a card that incurs a surcharge" - {
-
-          "render the summary list correctly when payment has a surcharge" in {
-            val expectedSummaryListRows: List[(String, String)] = List(
-              "Tax" -> "Alcohol Duty",
-              "Date" -> "2 November 2027",
-              "Charge reference" -> "XE1234567890123",
-              "Amount paid to HMRC" -> "£12.34",
-              "Card fee (9.97%), non-refundable" -> "£1.23",
-              "Total paid" -> "£13.57"
-            )
-            testSummaryRows(TestJourneys.AlcoholDuty.journeyAfterSucceedCreditWebPayment, fakeGetRequest, expectedSummaryListRows)
-          }
-
-          "render the summary list correctly in welsh when payment has a surcharge" in {
-            val expectedSummaryListRows: List[(String, String)] = List(
-              "Treth" -> "Toll Alcohol",
-              "Dyddiad" -> "2 Tachwedd 2027",
-              "Cyfeirnod y tâl" -> "XE1234567890123",
-              "Swm a dalwyd i CThEM" -> "£12.34",
-              "Ffi cerdyn (9.97%), ni ellir ei ad-dalu" -> "£1.23",
-              "Cyfanswm a dalwyd" -> "£13.57"
-            )
-            testSummaryRows(TestJourneys.AlcoholDuty.journeyAfterSucceedCreditWebPayment, fakeGetRequestInWelsh, expectedSummaryListRows)
           }
         }
       }
@@ -635,6 +343,279 @@ class PaymentCompleteControllerSpec extends ItSpec {
         summaryListRows shouldBe expectedSummaryListRows
       }
     }
+  }
+
+}
+
+object PaymentCompleteControllerSpec {
+
+  final case class TestScenarioInfo(
+      debitCardJourney:                Journey[JourneySpecificData],
+      creditCardJourney:               Journey[JourneySpecificData],
+      englishSummaryRowsDebitCard:     List[(String, String)],
+      maybeWelshSummaryRowsDebitCard:  Option[List[(String, String)]],
+      englishSummaryRowsCreditCard:    List[(String, String)],
+      maybeWelshSummaryRowsCreditCard: Option[List[(String, String)]],
+      hasWelshTest:                    Boolean,
+      hasAReturnUrl:                   Boolean
+  )
+
+  //helper function, so you can just add td to match case and testing is done for you :)
+  def originToTdAndSummaryListRows: Origin => TestScenarioInfo = {
+
+    case Origins.PfSa => TestScenarioInfo(
+      debitCardJourney                = TestJourneys.PfSa.journeyAfterSucceedDebitWebPayment,
+      creditCardJourney               = TestJourneys.PfSa.journeyAfterSucceedCreditWebPayment,
+      englishSummaryRowsDebitCard     = List(
+        "Tax" -> "Self Assessment",
+        "Date" -> "2 November 2027",
+        "Amount" -> "£12.34"
+      ),
+      maybeWelshSummaryRowsDebitCard  = Some(List(
+        "Treth" -> "Hunanasesiad",
+        "Dyddiad" -> "2 Tachwedd 2027",
+        "Swm" -> "£12.34"
+      )),
+      englishSummaryRowsCreditCard    = List(
+        "Tax" -> "Self Assessment",
+        "Date" -> "2 November 2027",
+        "Amount paid to HMRC" -> "£12.34",
+        "Card fee (9.97%), non-refundable" -> "£1.23",
+        "Total paid" -> "£13.57"
+      ),
+      maybeWelshSummaryRowsCreditCard = Some(List(
+        "Treth" -> "Hunanasesiad",
+        "Dyddiad" -> "2 Tachwedd 2027",
+        "Swm a dalwyd i CThEM" -> "£12.34",
+        "Ffi cerdyn (9.97%), ni ellir ei ad-dalu" -> "£1.23",
+        "Cyfanswm a dalwyd" -> "£13.57"
+      )),
+      hasWelshTest                    = true,
+      hasAReturnUrl                   = false
+    )
+
+    case Origins.BtaSa => TestScenarioInfo(
+      debitCardJourney                = TestJourneys.BtaSa.journeyAfterSucceedDebitWebPayment,
+      creditCardJourney               = TestJourneys.BtaSa.journeyAfterSucceedCreditWebPayment,
+      englishSummaryRowsDebitCard     = List(
+        "Tax" -> "Self Assessment",
+        "Date" -> "2 November 2027",
+        "Amount" -> "£12.34"
+      ),
+      maybeWelshSummaryRowsDebitCard  = Some(List(
+        "Treth" -> "Hunanasesiad",
+        "Dyddiad" -> "2 Tachwedd 2027",
+        "Swm" -> "£12.34"
+      )),
+      englishSummaryRowsCreditCard    = List(
+        "Tax" -> "Self Assessment",
+        "Date" -> "2 November 2027",
+        "Amount paid to HMRC" -> "£12.34",
+        "Card fee (9.97%), non-refundable" -> "£1.23",
+        "Total paid" -> "£13.57"
+      ),
+      maybeWelshSummaryRowsCreditCard = Some(List(
+        "Treth" -> "Hunanasesiad",
+        "Dyddiad" -> "2 Tachwedd 2027",
+        "Swm a dalwyd i CThEM" -> "£12.34",
+        "Ffi cerdyn (9.97%), ni ellir ei ad-dalu" -> "£1.23",
+        "Cyfanswm a dalwyd" -> "£13.57"
+      )),
+      hasWelshTest                    = true,
+      hasAReturnUrl                   = true
+    )
+
+    case Origins.PtaSa => TestScenarioInfo(
+      debitCardJourney                = TestJourneys.PtaSa.journeyAfterSucceedDebitWebPayment,
+      creditCardJourney               = TestJourneys.PtaSa.journeyAfterSucceedCreditWebPayment,
+      englishSummaryRowsDebitCard     = List(
+        "Tax" -> "Self Assessment",
+        "Date" -> "2 November 2027",
+        "Amount" -> "£12.34"
+      ),
+      maybeWelshSummaryRowsDebitCard  = Some(List(
+        "Treth" -> "Hunanasesiad",
+        "Dyddiad" -> "2 Tachwedd 2027",
+        "Swm" -> "£12.34"
+      )),
+      englishSummaryRowsCreditCard    = List(
+        "Tax" -> "Self Assessment",
+        "Date" -> "2 November 2027",
+        "Amount paid to HMRC" -> "£12.34",
+        "Card fee (9.97%), non-refundable" -> "£1.23",
+        "Total paid" -> "£13.57"
+      ),
+      maybeWelshSummaryRowsCreditCard = Some(List(
+        "Treth" -> "Hunanasesiad",
+        "Dyddiad" -> "2 Tachwedd 2027",
+        "Swm a dalwyd i CThEM" -> "£12.34",
+        "Ffi cerdyn (9.97%), ni ellir ei ad-dalu" -> "£1.23",
+        "Cyfanswm a dalwyd" -> "£13.57"
+      )),
+      hasWelshTest                    = true,
+      hasAReturnUrl                   = true
+    )
+
+    case Origins.ItSa => TestScenarioInfo(
+      debitCardJourney                = TestJourneys.ItSa.journeyAfterSucceedDebitWebPayment,
+      creditCardJourney               = TestJourneys.ItSa.journeyAfterSucceedCreditWebPayment,
+      englishSummaryRowsDebitCard     = List(
+        "Tax" -> "Self Assessment",
+        "Date" -> "2 November 2027",
+        "Amount" -> "£12.34"
+      ),
+      maybeWelshSummaryRowsDebitCard  = Some(List(
+        "Treth" -> "Hunanasesiad",
+        "Dyddiad" -> "2 Tachwedd 2027",
+        "Swm" -> "£12.34"
+      )),
+      englishSummaryRowsCreditCard    = List(
+        "Tax" -> "Self Assessment",
+        "Date" -> "2 November 2027",
+        "Amount paid to HMRC" -> "£12.34",
+        "Card fee (9.97%), non-refundable" -> "£1.23",
+        "Total paid" -> "£13.57"
+      ),
+      maybeWelshSummaryRowsCreditCard = Some(List(
+        "Treth" -> "Hunanasesiad",
+        "Dyddiad" -> "2 Tachwedd 2027",
+        "Swm a dalwyd i CThEM" -> "£12.34",
+        "Ffi cerdyn (9.97%), ni ellir ei ad-dalu" -> "£1.23",
+        "Cyfanswm a dalwyd" -> "£13.57"
+      )),
+      hasWelshTest                    = true,
+      hasAReturnUrl                   = true
+    )
+
+    case Origins.AlcoholDuty => TestScenarioInfo(
+      debitCardJourney                = TestJourneys.AlcoholDuty.journeyAfterSucceedDebitWebPayment,
+      creditCardJourney               = TestJourneys.AlcoholDuty.journeyAfterSucceedCreditWebPayment,
+      englishSummaryRowsDebitCard     = List(
+        "Tax" -> "Alcohol Duty",
+        "Date" -> "2 November 2027",
+        "Charge reference" -> "XE1234567890123",
+        "Amount" -> "£12.34"
+      ),
+      maybeWelshSummaryRowsDebitCard  = Some(List(
+        "Treth" -> "Toll Alcohol",
+        "Dyddiad" -> "2 Tachwedd 2027",
+        "Cyfeirnod y tâl" -> "XE1234567890123",
+        "Swm" -> "£12.34"
+      )),
+      englishSummaryRowsCreditCard    = List(
+        "Tax" -> "Alcohol Duty",
+        "Date" -> "2 November 2027",
+        "Charge reference" -> "XE1234567890123",
+        "Amount paid to HMRC" -> "£12.34",
+        "Card fee (9.97%), non-refundable" -> "£1.23",
+        "Total paid" -> "£13.57"
+      ),
+      maybeWelshSummaryRowsCreditCard = Some(List(
+        "Treth" -> "Toll Alcohol",
+        "Dyddiad" -> "2 Tachwedd 2027",
+        "Cyfeirnod y tâl" -> "XE1234567890123",
+        "Swm a dalwyd i CThEM" -> "£12.34",
+        "Ffi cerdyn (9.97%), ni ellir ei ad-dalu" -> "£1.23",
+        "Cyfanswm a dalwyd" -> "£13.57"
+      )),
+      hasWelshTest                    = true,
+      hasAReturnUrl                   = true
+    )
+
+    case Origins.PfAlcoholDuty => TestScenarioInfo(
+      debitCardJourney                = TestJourneys.PfAlcoholDuty.journeyAfterSucceedDebitWebPayment,
+      creditCardJourney               = TestJourneys.PfAlcoholDuty.journeyAfterSucceedCreditWebPayment,
+      englishSummaryRowsDebitCard     = List(
+        "Tax" -> "Alcohol Duty",
+        "Date" -> "2 November 2027",
+        "Amount" -> "£12.34"
+      ),
+      maybeWelshSummaryRowsDebitCard  = Some(List(
+        "Treth" -> "Toll Alcohol",
+        "Dyddiad" -> "2 Tachwedd 2027",
+        "Swm" -> "£12.34"
+      )),
+      englishSummaryRowsCreditCard    = List(
+        "Tax" -> "Alcohol Duty",
+        "Date" -> "2 November 2027",
+        "Amount paid to HMRC" -> "£12.34",
+        "Card fee (9.97%), non-refundable" -> "£1.23",
+        "Total paid" -> "£13.57"
+      ),
+      maybeWelshSummaryRowsCreditCard = Some(List(
+        "Treth" -> "Toll Alcohol",
+        "Dyddiad" -> "2 Tachwedd 2027",
+        "Swm a dalwyd i CThEM" -> "£12.34",
+        "Ffi cerdyn (9.97%), ni ellir ei ad-dalu" -> "£1.23",
+        "Cyfanswm a dalwyd" -> "£13.57"
+      )),
+      hasWelshTest                    = true,
+      hasAReturnUrl                   = false
+    )
+
+    case Origins.BtaCt => TestScenarioInfo(
+      debitCardJourney                = TestJourneys.BtaCt.journeyAfterSucceedDebitWebPayment,
+      creditCardJourney               = TestJourneys.BtaCt.journeyAfterSucceedCreditWebPayment,
+      englishSummaryRowsDebitCard     = List(
+        "Tax" -> "Corporation Tax",
+        "Date" -> "2 November 2027",
+        "Amount" -> "£12.34"
+      ),
+      maybeWelshSummaryRowsDebitCard  = Some(List(
+        "Treth" -> "Treth Gorfforaeth",
+        "Dyddiad" -> "2 Tachwedd 2027",
+        "Swm" -> "£12.34"
+      )),
+      englishSummaryRowsCreditCard    = List(
+        "Tax" -> "Corporation Tax",
+        "Date" -> "2 November 2027",
+        "Amount paid to HMRC" -> "£12.34",
+        "Card fee (9.97%), non-refundable" -> "£1.23",
+        "Total paid" -> "£13.57"
+      ),
+      maybeWelshSummaryRowsCreditCard = Some(List(
+        "Treth" -> "Treth Gorfforaeth",
+        "Dyddiad" -> "2 Tachwedd 2027",
+        "Swm a dalwyd i CThEM" -> "£12.34",
+        "Ffi cerdyn (9.97%), ni ellir ei ad-dalu" -> "£1.23",
+        "Cyfanswm a dalwyd" -> "£13.57"
+      )),
+      hasWelshTest                    = true,
+      hasAReturnUrl                   = true
+    )
+
+    case Origins.PfCt => TestScenarioInfo(
+      debitCardJourney                = TestJourneys.PfCt.journeyAfterSucceedDebitWebPayment,
+      creditCardJourney               = TestJourneys.PfCt.journeyAfterSucceedCreditWebPayment,
+      englishSummaryRowsDebitCard     = List(
+        "Tax" -> "Corporation Tax",
+        "Date" -> "2 November 2027",
+        "Amount" -> "£12.34"
+      ),
+      maybeWelshSummaryRowsDebitCard  = Some(List(
+        "Treth" -> "Treth Gorfforaeth",
+        "Dyddiad" -> "2 Tachwedd 2027",
+        "Swm" -> "£12.34"
+      )),
+      englishSummaryRowsCreditCard    = List(
+        "Tax" -> "Corporation Tax",
+        "Date" -> "2 November 2027",
+        "Amount paid to HMRC" -> "£12.34",
+        "Card fee (9.97%), non-refundable" -> "£1.23",
+        "Total paid" -> "£13.57"
+      ),
+      maybeWelshSummaryRowsCreditCard = Some(List(
+        "Treth" -> "Treth Gorfforaeth",
+        "Dyddiad" -> "2 Tachwedd 2027",
+        "Swm a dalwyd i CThEM" -> "£12.34",
+        "Ffi cerdyn (9.97%), ni ellir ei ad-dalu" -> "£1.23",
+        "Cyfanswm a dalwyd" -> "£13.57"
+      )),
+      hasWelshTest                    = true,
+      hasAReturnUrl                   = false
+    )
+
+    case o: Origin => throw new MatchError(s"Add testdata for now origin you've added [${o.entryName}] to implemented origins.")
   }
 
 }

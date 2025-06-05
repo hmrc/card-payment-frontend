@@ -15,10 +15,10 @@ object AppDependencies {
 
   val compile: Seq[ModuleID] = Seq[ModuleID](
     "uk.gov.hmrc"  %% "bootstrap-frontend-play-30"       % bootstrapVersion,
-    "uk.gov.hmrc"  %% "play-frontend-hmrc-play-30"       % "12.3.0",
+    "uk.gov.hmrc"  %% "play-frontend-hmrc-play-30"       % "12.2.0",
     "com.beachape" %% "enumeratum"                       % "1.9.0",
     "com.beachape" %% "enumeratum-play"                  % "1.9.0",
-    "uk.gov.hmrc"  %% "pay-api-cor-card-payment-journey" % payApiCorVersion excludeAll(payApiExclusionRules: _*)
+    "uk.gov.hmrc"  %% "pay-api-cor-card-payment-journey" % payApiCorVersion excludeAll(payApiExclusionRules *)
   )
 
   val test: Seq[ModuleID] = Seq[ModuleID](
