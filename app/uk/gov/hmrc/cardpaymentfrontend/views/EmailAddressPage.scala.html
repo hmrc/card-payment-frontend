@@ -37,7 +37,7 @@
 
 @key = @{EmailAddressForm.emailAddressKey}
 
-@layout(pageTitle = Some(heading), origin = Some(journeyRequest.journey.origin)) {
+@layout(pageTitle = Some(heading), origin = Some(journeyRequest.journey.origin), maybeForm = Some(form)) {
 
     @if(form.hasErrors) { @errorSummary(ErrorSummary(errorList = form.errors.asTextErrorLinks, title = Text(messages("error.there-is-a-problem")))) }
 

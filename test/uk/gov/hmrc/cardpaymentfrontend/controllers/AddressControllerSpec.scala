@@ -159,6 +159,34 @@ class AddressControllerSpec extends ItSpec {
         redirectLocation(result) shouldBe Some("/pay-by-card/check-your-details")
       }
 
+      "Should show the correct error Title content in English" in {
+        val firstLineMissing = List(
+          ("line1", ""),
+          ("line2", "Fake Street"),
+          ("city", "Imaginaryshire"),
+          ("county", "East Imaginationland"),
+          ("postcode", "IM2 4HJ"),
+          ("country", "GBR")
+        )
+        val result = systemUnderTest.submit(fakePostRequest(firstLineMissing: _*))
+        val document = Jsoup.parse(contentAsString(result))
+        document.title() shouldBe "Error: Card billing address - Pay your Self Assessment - GOV.UK"
+      }
+
+      "Should show the correct error Title content in Welsh" in {
+        val firstLineMissing = List(
+          ("line1", ""),
+          ("line2", "Fake Street"),
+          ("city", "Imaginaryshire"),
+          ("county", "East Imaginationland"),
+          ("postcode", "IM2 4HJ"),
+          ("country", "GBR")
+        )
+        val result = systemUnderTest.submit(fakePostRequestInWelsh(firstLineMissing: _*))
+        val document = Jsoup.parse(contentAsString(result))
+        document.title() shouldBe "Error: Cyfeiriad bilio’r cerdyn - Talu eich Hunanasesiad - GOV.UK"
+      }
+
       "should return html containing the correct error messages when first line of address is missing" in {
         val firstLineMissing = List(
           ("line1", ""),

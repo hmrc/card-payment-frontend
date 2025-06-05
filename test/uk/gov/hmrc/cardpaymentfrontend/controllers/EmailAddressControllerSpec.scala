@@ -221,6 +221,20 @@ class EmailAddressControllerSpec extends ItSpec {
         status(result) shouldBe Status.BAD_REQUEST
       }
 
+      "should return the correct Title when Error invalid email address submitted" in {
+        val validFormData = ("email-address", "notALegitEmail")
+        val result = systemUnderTest.submit(fakePostRequest(validFormData))
+        val document = Jsoup.parse(contentAsString(result))
+        document.title() shouldBe "Error: What is your email address? (optional) - Pay your Self Assessment - GOV.UK"
+      }
+
+      "should return the correct Title when Error invalid email address submitted in Welsh" in {
+        val validFormData = ("email-address", "notALegitEmail")
+        val result = systemUnderTest.submit(fakePostRequestInWelsh(validFormData))
+        val document = Jsoup.parse(contentAsString(result))
+        document.title() shouldBe "Error: Beth yw’ch cyfeiriad e-bost? (dewisol) - Talu eich Hunanasesiad - GOV.UK"
+      }
+
       "should return html containing the correct error messages when an invalid email address is submitted" in {
         val validFormData = ("email-address", "notALegitEmail")
         val result = systemUnderTest.submit(fakePostRequest(validFormData))

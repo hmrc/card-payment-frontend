@@ -76,13 +76,6 @@ class PaymentFailedControllerSpec extends ItSpec {
         document.title shouldBe "Taliad wedi methu - Talu eich Hunanasesiad - GOV.UK"
       }
 
-      "show the Title tab correctly when there is an Error in English" in {
-        PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyAfterFailWebPayment)
-        val result = systemUnderTest.renderPage(fakeGetRequest)
-        val document = Jsoup.parse(contentAsString(result))
-        document.title shouldBe "Error - Pay your Self Assessment - GOV.UK"
-      }
-
       "show the Service Name banner title correctly in English" in {
         PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyBeforeBeginWebPayment)
         val result = systemUnderTest.renderPage(fakeGetRequest)
@@ -261,6 +254,22 @@ class PaymentFailedControllerSpec extends ItSpec {
     }
 
     "When No radio option is selected" - {
+
+      "Should show the correct error Title content in English" in {
+        val fakeGetRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("POST", "/payment-failed").withSessionId()
+        PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyAfterFailWebPayment)
+        val result = systemUnderTest.submit(fakeGetRequest)
+        val document = Jsoup.parse(contentAsString(result))
+        document.title() shouldBe "Error: Payment failed - Pay your Self Assessment - GOV.UK"
+      }
+
+      "Should show the correct error Title content in Welsh" in {
+        val fakeGetRequestInWelsh: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/payment-failed").withSessionId().withLangWelsh()
+        PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyAfterFailWebPayment)
+        val result = systemUnderTest.submit(fakeGetRequestInWelsh)
+        val document = Jsoup.parse(contentAsString(result))
+        document.title() shouldBe "Error: Taliad wedi methu - Talu eich Hunanasesiad - GOV.UK"
+      }
 
       "Should show the correct error content in English - BadRequest" in {
         val fakeGetRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("POST", "/payment-failed").withSessionId()

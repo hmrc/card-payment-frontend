@@ -30,6 +30,7 @@
 @(
         pageTitle: Option[String] = None,
         origin: Option[Origin] = None,
+        maybeForm: Option[Form[_]] = None,
         showBackLink: Boolean = true,
         backLinkOverride: Option[BackLink] = None,
         welshSupported: Boolean = true,
@@ -53,7 +54,7 @@
       templateOverrides = TemplateOverrides(
           additionalScriptsBlock = Some(scripts)
       ),
-      pageTitle = Some(journeyTitleMaker(pageTitle, origin)),
+      pageTitle = Some(journeyTitleMaker(h1Key = pageTitle, origin = origin, maybeForm = maybeForm)),
       serviceName = Some(serviceName),
       isWelshTranslationAvailable = welshSupported,
       backLink = {
