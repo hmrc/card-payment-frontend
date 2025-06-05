@@ -37,7 +37,6 @@ class SignOutControllerSpec extends ItSpec {
       PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyBeforeBeginWebPayment)
       val expectedContinueUrl = "http://localhost:10155/pay-by-card/timed-out"
       val result = systemUnderTest.signOutFromTimeout(fakeGetRequest)
-
       status(result) shouldBe SEE_OTHER
       redirectLocation(result) shouldBe Some(s"http://localhost:9553/bas-gateway/sign-out-without-state?continue=${expectedContinueUrl}")
     }
@@ -56,6 +55,7 @@ class SignOutControllerSpec extends ItSpec {
       val document = Jsoup.parse(contentAsString(result))
 
       document.select(".govuk-button").text() shouldBe "Sign in"
+      println(document)
       status(result) shouldBe OK
       session(result).data shouldBe empty
     }
