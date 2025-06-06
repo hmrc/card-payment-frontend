@@ -11,6 +11,6 @@ addSbtPlugin("org.scoverage"      %  "sbt-scoverage"      % "2.3.1")
 addSbtPlugin("org.wartremover"    %  "sbt-wartremover"    % "3.3.4")
 addSbtPlugin("org.scalariform"    %% "sbt-scalariform"    % "1.8.3")
 addSbtPlugin("com.timushev.sbt"   %  "sbt-updates"        % "0.6.3")
-addSbtPlugin("com.github.sbt"     % "sbt-gzip"            % "1.0.2")
-addSbtPlugin("io.github.irundaia" % "sbt-sassify"         % "1.5.2")
+addSbtPlugin("com.github.sbt"     %  "sbt-gzip"           % "2.0.0")
+addSbtPlugin("io.github.irundaia" %  "sbt-sassify"        % "1.5.2")
 addDependencyTreePlugin
