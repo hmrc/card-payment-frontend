@@ -305,6 +305,11 @@ email.tax-name.PfAlcoholDuty = Toll Alcohol
 email.tax-name.AlcoholDuty = Toll Alcohol
 email.tax-name.BtaCt = Treth Gorfforaeth
 email.tax-name.PfCt = Treth Gorfforaeth
+email.tax-name.PfEpayeNi = TWE ac Yswiriant Gwladol y Cyflogwr
+email.tax-name.PfEpayeLpp = Cosb y Cyflogwr am dalu TWE yn hwyr
+email.tax-name.PfEpayeSeta = Cytundeb Setliad TWE y Cyflogwr
+email.tax-name.PfEpayeLateCis = Cynllun y Diwydiant Adeiladu (CIS) - cosb am dalu’n hwyr
+email.tax-name.PfEpayeP11d = Yswiriant Gwladol Dosbarth 1A y Cyflogwr
 
 
 ## Payments survey

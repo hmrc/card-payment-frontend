@@ -143,11 +143,11 @@ object ExtendedOrigin {
       case Origins.PfSa                     => ExtendedPfSa
       case Origins.PfVat                    => ExtendedPfVat
       case Origins.PfCt                     => ExtendedPfCt
-      case Origins.PfEpayeNi                => DefaultExtendedOrigin
-      case Origins.PfEpayeLpp               => DefaultExtendedOrigin
-      case Origins.PfEpayeSeta              => DefaultExtendedOrigin
-      case Origins.PfEpayeLateCis           => DefaultExtendedOrigin
-      case Origins.PfEpayeP11d              => DefaultExtendedOrigin
+      case Origins.PfEpayeNi                => ExtendedPfEpayeNi
+      case Origins.PfEpayeLpp               => ExtendedPfEpayeLpp
+      case Origins.PfEpayeSeta              => ExtendedPfEpayeSeta
+      case Origins.PfEpayeLateCis           => ExtendedPfEpayeLateCis
+      case Origins.PfEpayeP11d              => ExtendedPfEpayeP11d
       case Origins.PfSdlt                   => DefaultExtendedOrigin
       case Origins.PfCds                    => DefaultExtendedOrigin
       case Origins.PfOther                  => DefaultExtendedOrigin

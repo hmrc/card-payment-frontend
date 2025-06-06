@@ -3,7 +3,7 @@ package uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins
 import payapi.cardpaymentjourney.model.journey.{JourneySpecificData, JsdPfEpayeSeta}
 import play.api.mvc.AnyContent
 import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
-import uk.gov.hmrc.cardpaymentfrontend.models.PaymentMethod.OneOffDirectDebit
+import uk.gov.hmrc.cardpaymentfrontend.models.PaymentMethod.{Card, OneOffDirectDebit, OpenBanking}
 import uk.gov.hmrc.cardpaymentfrontend.models.{CheckYourAnswersRow, PaymentMethod}
 import uk.gov.hmrc.cardpaymentfrontend.models.openbanking.{OriginSpecificSessionData, PfEpayeSetaSessionData}
 
@@ -13,16 +13,16 @@ object ExtendedPfEpayeSeta extends ExtendedOrigin {
 
   override def taxNameMessageKey: String = "payment-complete.tax-name.PfEpayeSeta"
 
-  override def cardFeesPagePaymentMethods: Set[PaymentMethod] = Set()
+  override def cardFeesPagePaymentMethods: Set[PaymentMethod] = Set(OneOffDirectDebit, OpenBanking)
 
-  override def paymentMethods(): Set[PaymentMethod] = Set(OneOffDirectDebit)
+  override def paymentMethods(): Set[PaymentMethod] = Set(OneOffDirectDebit, OpenBanking, Card)
 
   override def checkYourAnswersReferenceRow(journeyRequest: JourneyRequest[AnyContent])
                                            (payFrontendBaseUrl: String): Option[CheckYourAnswersRow] =
     Some(CheckYourAnswersRow(
       titleMessageKey = "check-your-details.PfEpayeSeta.reference",
       value           = Seq(journeyRequest.journey.referenceValue),
-      changeLink      = None // TODO: is this true?
+      changeLink      = None
     ))
 
   override def openBankingOriginSpecificSessionData: JourneySpecificData => Option[OriginSpecificSessionData] = {
