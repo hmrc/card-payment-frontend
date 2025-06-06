@@ -26,7 +26,6 @@ import uk.gov.hmrc.cardpaymentfrontend.views.html.{DeleteAnswersPage, ForceDelet
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
 import javax.inject.Inject
-import scala.concurrent.Future
 
 @Singleton
 final class TimeOutController @Inject() (
@@ -38,21 +37,21 @@ final class TimeOutController @Inject() (
 ) extends FrontendController(mcc) with I18nSupport {
 
   def showDeleteAnswersPage: Action[AnyContent] =
-    actions.journeyAction.async { implicit request =>
-      Future.successful(Ok(deleteAnswersPage()).withNewSession)
+    actions.journeyAction { implicit request =>
+      Ok(deleteAnswersPage()).withNewSession
     }
 
   def showForceDeleteAnswersLoggedOutPage: Action[AnyContent] =
-    actions.journeyAction.async { implicit request =>
-      val redirectUrl = Some(Url(""))
-      Future.successful(Ok(forceDeleteAnswersPage("logged-out", redirectUrl)).withNewSession)
+    actions.journeyAction { implicit request =>
+      val redirectUrl = Some(Url("www.backUrl.com"))
+      Ok(forceDeleteAnswersPage("logged-out", redirectUrl)).withNewSession
     }
 
   def showForceDeleteAnswersLoggedInPage: Action[AnyContent] =
-    actions.journeyAction.async { implicit request =>
+    actions.journeyAction { implicit request =>
       val continueUrl: String = "%2Ffeedback%2Fpay-online"
       val redirectUrl = Some(Url(s"${appConfig.signOutUrl}?continue=$continueUrl"))
-      Future.successful(Ok(forceDeleteAnswersPage("logged-in", redirectUrl)).withNewSession)
+      Ok(forceDeleteAnswersPage("logged-in", redirectUrl)).withNewSession
     }
 
 }
