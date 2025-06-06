@@ -22,11 +22,12 @@ import play.api.Logging
 import play.api.libs.json.JsBoolean
 import uk.gov.hmrc.cardpaymentfrontend.config.AppConfig
 import uk.gov.hmrc.cardpaymentfrontend.connectors.{CardPaymentConnector, PayApiConnector}
-import uk.gov.hmrc.cardpaymentfrontend.models.cardpayment.{BarclaycardAddress, CardPaymentInitiatePaymentRequest, CardPaymentInitiatePaymentResponse, CardPaymentResult, ClientId}
+import uk.gov.hmrc.cardpaymentfrontend.models.cardpayment.{BarclaycardAddress, CardPaymentFinishPaymentResponses, CardPaymentInitiatePaymentRequest, CardPaymentInitiatePaymentResponse, CardPaymentResult, ClientId}
 import uk.gov.hmrc.cardpaymentfrontend.models.payapi.{BeginWebPaymentRequest, FailWebPaymentRequest, FinishedWebPaymentRequest, SucceedWebPaymentRequest}
 import uk.gov.hmrc.cardpaymentfrontend.models.{Address, EmailAddress, Language}
 import uk.gov.hmrc.http.HeaderCarrier
 
+import java.time.{Clock, LocalDateTime}
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -34,6 +35,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class CardPaymentService @Inject() (
     appConfig:            AppConfig,
     cardPaymentConnector: CardPaymentConnector,
+    clock:                Clock,
     payApiConnector:      PayApiConnector,
     transNoGenerator:     TransNumberGenerator,
     clientIdService:      ClientIdService
@@ -85,16 +87,30 @@ class CardPaymentService @Inject() (
   }
 
   def finishPayment(transactionReference: String, journeyId: String)(implicit headerCarrier: HeaderCarrier): Future[Option[CardPaymentResult]] = {
-    logger.info("TransactionReference: " + transactionReference) //todo take me out before go live
     for {
       result <- cardPaymentConnector.authAndSettle(transactionReference)
       cardPaymentResult = result.json.asOpt[CardPaymentResult]
-      maybeWebPaymentRequest: Option[FinishedWebPaymentRequest] = cardPaymentResult.flatMap(_.intoUpdateWebPaymentRequest)
+      maybeWebPaymentRequest: Option[FinishedWebPaymentRequest] = cardPaymentResult.flatMap(cardPaymentResultIntoUpdateWebPaymentRequest)
       _ <- maybeWebPaymentRequest.fold(payApiConnector.JourneyUpdates.updateCancelWebPayment(journeyId)) {
         case r: FailWebPaymentRequest    => payApiConnector.JourneyUpdates.updateFailWebPayment(journeyId, r)
         case r: SucceedWebPaymentRequest => payApiConnector.JourneyUpdates.updateSucceedWebPayment(journeyId, r)
       }
     } yield cardPaymentResult
+  }
+
+  private[services] def cardPaymentResultIntoUpdateWebPaymentRequest: CardPaymentResult => Option[FinishedWebPaymentRequest] = {
+    case CardPaymentResult(CardPaymentFinishPaymentResponses.Successful, additionalPaymentInfo) =>
+      Some(SucceedWebPaymentRequest(
+        additionalPaymentInfo.cardCategory.getOrElse("debit"),
+        additionalPaymentInfo.commissionInPence,
+        additionalPaymentInfo.transactionTime.getOrElse(LocalDateTime.now(clock)),
+      ))
+    case CardPaymentResult(CardPaymentFinishPaymentResponses.Failed, additionalPaymentInfo) =>
+      Some(FailWebPaymentRequest(
+        additionalPaymentInfo.transactionTime.getOrElse(LocalDateTime.now(clock)),
+        additionalPaymentInfo.cardCategory.getOrElse("debit") //todo check if can this be anything?
+      ))
+    case CardPaymentResult(CardPaymentFinishPaymentResponses.Cancelled, _) => None
   }
 
 }
