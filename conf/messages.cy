@@ -4,7 +4,9 @@ service.text = Dyma'ch gwasanaeth newydd
 
 ## Non page specific
 continue = Yn eich blaen
+
 error.there-is-a-problem = Mae problem wedi codi
+error.title-prefix = Gwall:
 
 ## Origin service names
 service-name.generic = Talwch eich treth

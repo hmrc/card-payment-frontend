@@ -232,7 +232,7 @@ class EmailAddressControllerSpec extends ItSpec {
         val validFormData = ("email-address", "notALegitEmail")
         val result = systemUnderTest.submit(fakePostRequestInWelsh(validFormData))
         val document = Jsoup.parse(contentAsString(result))
-        document.title() shouldBe "Error: Beth yw’ch cyfeiriad e-bost? (dewisol) - Talu eich Hunanasesiad - GOV.UK"
+        document.title() shouldBe "Gwall: Beth yw’ch cyfeiriad e-bost? (dewisol) - Talu eich Hunanasesiad - GOV.UK"
       }
 
       "should return html containing the correct error messages when an invalid email address is submitted" in {
