@@ -44,7 +44,7 @@ class PaymentStatusControllerSpec extends ItSpec {
 
         status(result) shouldBe Status.OK
         val document = Jsoup.parse(contentAsString(result))
-        document.title shouldBe "Make your payment"
+        document.title shouldBe "Make your payment - Pay your Self Assessment - GOV.UK"
         document.select("h1").text() shouldBe "Make your payment"
         document.select(".govuk-header__service-name").text() shouldBe "Pay your Self Assessment"
 

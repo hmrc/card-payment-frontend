@@ -62,6 +62,20 @@ class FeesControllerSpec extends ItSpec {
           para4.text() shouldBe "Dylech ganiatáu 3 diwrnod gwaith i’ch taliad gyrraedd cyfrif banc CThEM."
         }
 
+      "show the Title tab correctly in English" in {
+        PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyBeforeBeginWebPayment)
+        val result = systemUnderTest.renderPage(fakeRequest)
+        val document = Jsoup.parse(contentAsString(result))
+        document.title shouldBe "Card fees - Pay your Self Assessment - GOV.UK"
+      }
+
+      "show the Title tab correctly in Welsh" in {
+        PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyBeforeBeginWebPayment)
+        val result = systemUnderTest.renderPage(fakeWelshRequest)
+        val document = Jsoup.parse(contentAsString(result))
+        document.title shouldBe "Ffioedd cerdyn - Talu eich Hunanasesiad - GOV.UK"
+      }
+
       "for origin PfSa" - {
 
         "render the static content correctly" in {
