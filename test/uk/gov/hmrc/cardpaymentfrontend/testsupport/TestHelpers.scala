@@ -18,7 +18,7 @@ package uk.gov.hmrc.cardpaymentfrontend.testsupport
 
 import org.scalatest.AppendedClues.convertToClueful
 import payapi.cardpaymentjourney.model.journey.JourneySpecificData
-import payapi.corcommon.model.Origins._
+import payapi.corcommon.model.Origins.{PfEpayeNi, _}
 import payapi.corcommon.model.{Origin, Origins}
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.testdata.TestJourneys
 
@@ -38,16 +38,16 @@ object TestHelpers {
     PfAlcoholDuty,
     AlcoholDuty,
     PfCt,
-    BtaCt
+    BtaCt,
+    PfEpayeNi,
+    PfEpayeLpp,
+    PfEpayeLateCis,
+    PfEpayeP11d,
+    PfEpayeSeta
   )
 
   val unimplementedOrigins: Seq[Origin] = Seq[Origin](
     PfVat,
-    PfEpayeNi,
-    PfEpayeLpp,
-    PfEpayeSeta,
-    PfEpayeLateCis,
-    PfEpayeP11d,
     PfSdlt,
     PfCds,
     PfOther,

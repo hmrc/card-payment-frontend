@@ -303,6 +303,11 @@ email.tax-name.PfAlcoholDuty = Alcohol Duty
 email.tax-name.AlcoholDuty = Alcohol Duty
 email.tax-name.BtaCt = Corporation Tax
 email.tax-name.PfCt = Corporation Tax
+email.tax-name.PfEpayeNi = Employers’ PAYE and National Insurance
+email.tax-name.PfEpayeLpp = Employers’ PAYE late payment penalty
+email.tax-name.PfEpayeSeta = Employers’ PAYE Settlement Agreement
+email.tax-name.PfEpayeLateCis = Construction Industry Scheme (CIS) late filing penalty
+email.tax-name.PfEpayeP11d = Employers’ Class 1A National Insurance
 
 
 ## Payments survey
