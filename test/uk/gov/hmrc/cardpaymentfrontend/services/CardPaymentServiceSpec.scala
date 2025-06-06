@@ -22,6 +22,7 @@ import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import uk.gov.hmrc.cardpaymentfrontend.models.Languages.English
 import uk.gov.hmrc.cardpaymentfrontend.models.cardpayment._
+import uk.gov.hmrc.cardpaymentfrontend.models.payapi.{FailWebPaymentRequest, SucceedWebPaymentRequest}
 import uk.gov.hmrc.cardpaymentfrontend.models.{Address, EmailAddress}
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.ItSpec
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.stubs.{CardPaymentStub, PayApiStub}
@@ -29,7 +30,6 @@ import uk.gov.hmrc.cardpaymentfrontend.testsupport.testdata.TestJourneys
 import uk.gov.hmrc.http.HeaderCarrier
 
 import java.time.LocalDateTime
-import java.time.temporal.ChronoUnit
 
 class CardPaymentServiceSpec extends ItSpec {
 
@@ -45,9 +45,17 @@ class CardPaymentServiceSpec extends ItSpec {
   "CardPaymentService" - {
     "initiatePayment" - {
       val cardPaymentInitiatePaymentRequest = CardPaymentInitiatePaymentRequest(
-        "http://localhost:10155/pay-by-card/return-to-hmrc", "SAEE", "1234567895K", AmountInPence(1234),
-                                                                                    BarclaycardAddress("made up street", postCode    = "AA11AA", countryCode = "GBR"),
-                                                                                    Some(EmailAddress("some@email.com")), "00001999999999"
+        redirectUrl         = "http://localhost:10155/pay-by-card/return-to-hmrc",
+        clientId            = "SAEE",
+        purchaseDescription = "1234567895K",
+        purchaseAmount      = AmountInPence(1234),
+        billingAddress      = BarclaycardAddress(
+          line1       = "made up street",
+          postCode    = "AA11AA",
+          countryCode = "GBR"
+        ),
+        emailAddress        = Some(EmailAddress("some@email.com")),
+        transactionNumber   = "00001999999999"
       )
       val expectedCardPaymentInitiatePaymentResponse = CardPaymentInitiatePaymentResponse("someiframeurl", "sometransactionref")
 
@@ -66,7 +74,7 @@ class CardPaymentServiceSpec extends ItSpec {
 
     "finishPayment" - {
       "should return Some[CardPaymentResult] when one is returned from card-payment backend" in {
-        val testTime = LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS)
+        val testTime = LocalDateTime.now()
         val testCardPaymentResult = CardPaymentResult(CardPaymentFinishPaymentResponses.Successful, AdditionalPaymentInfo(Some("debit"), Some(123), Some(testTime)))
         CardPaymentStub.AuthAndCapture.stubForAuthAndCapture2xx("sometransactionref", testCardPaymentResult)
         val result = systemUnderTest.finishPayment("sometransactionref", testJourney._id.value).futureValue
@@ -74,19 +82,19 @@ class CardPaymentServiceSpec extends ItSpec {
       }
 
       "should update pay-api with SucceedWebPaymentRequest when call to card-payment backend succeeds" in {
-        val testTime = LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS)
+        val testTime = LocalDateTime.now()
         val testCardPaymentResult = CardPaymentResult(CardPaymentFinishPaymentResponses.Successful, AdditionalPaymentInfo(Some("debit"), Some(123), Some(testTime)))
         CardPaymentStub.AuthAndCapture.stubForAuthAndCapture2xx("sometransactionref", testCardPaymentResult)
         systemUnderTest.finishPayment("sometransactionref", testJourney._id.value).futureValue
-        PayApiStub.verifyUpdateSucceedWebPayment(1, testJourney._id.value, testTime.toString)
+        PayApiStub.verifyUpdateSucceedWebPayment(1, testJourney._id.value, testTime)
       }
 
       "should update pay-api with FailWebPaymentRequest when call to card-payment backend indicates failure" in {
-        val testTime = LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS)
+        val testTime = LocalDateTime.now()
         val testCardPaymentResult = CardPaymentResult(CardPaymentFinishPaymentResponses.Failed, AdditionalPaymentInfo(Some("debit"), None, Some(testTime)))
         CardPaymentStub.AuthAndCapture.stubForAuthAndCapture2xx("sometransactionref", testCardPaymentResult)
         systemUnderTest.finishPayment("sometransactionref", testJourney._id.value).futureValue
-        PayApiStub.verifyUpdateFailWebPayment(1, testJourney._id.value, testTime.toString)
+        PayApiStub.verifyUpdateFailWebPayment(1, testJourney._id.value, testTime)
       }
 
       "should update pay-api with CancelWebPaymentRequest when call to card-payment backend indicates Cancelled" in {
@@ -94,6 +102,26 @@ class CardPaymentServiceSpec extends ItSpec {
         CardPaymentStub.AuthAndCapture.stubForAuthAndCapture2xx("sometransactionref", testCardPaymentResult)
         systemUnderTest.finishPayment("sometransactionref", testJourney._id.value).futureValue
         PayApiStub.verifyUpdateCancelWebPayment(1, testJourney._id.value)
+      }
+    }
+
+    "cardPaymentResultIntoUpdateWebPaymentRequest" - {
+      "return None when response inside CardPaymentResult is CardPaymentFinishPaymentResponses.Cancelled" in {
+        val testCardPaymentResult = CardPaymentResult(CardPaymentFinishPaymentResponses.Cancelled, AdditionalPaymentInfo(None, None, None))
+        val result = systemUnderTest.cardPaymentResultIntoUpdateWebPaymentRequest(testCardPaymentResult)
+        result shouldBe None
+      }
+
+      "return Some[SucceedWebPaymentRequest] with payment info when response inside CardPaymentResult is CardPaymentFinishPaymentResponses.Successful " in {
+        val testCardPaymentResult = CardPaymentResult(CardPaymentFinishPaymentResponses.Successful, AdditionalPaymentInfo(Some("cardcategory"), Some(123), Some(LocalDateTime.now(FrozenTime.clock))))
+        val result = systemUnderTest.cardPaymentResultIntoUpdateWebPaymentRequest(testCardPaymentResult)
+        result shouldBe Some(SucceedWebPaymentRequest("cardcategory", Some(123), LocalDateTime.parse("2059-11-25T16:33:51.880")))
+      }
+
+      "return Some[FailWebPaymentRequest] when response inside CardPaymentResult is CardPaymentFinishPaymentResponses.Failed" in {
+        val testCardPaymentResult = CardPaymentResult(CardPaymentFinishPaymentResponses.Failed, AdditionalPaymentInfo(Some("cardcategory"), None, Some(LocalDateTime.now(FrozenTime.clock))))
+        val result = systemUnderTest.cardPaymentResultIntoUpdateWebPaymentRequest(testCardPaymentResult)
+        result shouldBe Some(FailWebPaymentRequest(LocalDateTime.parse("2059-11-25T16:33:51.880"), "cardcategory"))
       }
     }
   }

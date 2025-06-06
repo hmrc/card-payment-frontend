@@ -19,6 +19,8 @@ package uk.gov.hmrc.cardpaymentfrontend.config
 import com.google.inject.{AbstractModule, Provides, Singleton}
 import payapi.corcommon.model.TransNumberGenerator
 
+import java.time.{Clock, ZoneOffset}
+
 class Module extends AbstractModule {
 
   override def configure(): Unit = {
@@ -28,4 +30,8 @@ class Module extends AbstractModule {
   @Provides
   @Singleton
   def transNumberGenerator(): TransNumberGenerator = new TransNumberGenerator()
+
+  @Provides
+  @Singleton
+  def clock(): Clock = Clock.systemDefaultZone.withZone(ZoneOffset.UTC)
 }
