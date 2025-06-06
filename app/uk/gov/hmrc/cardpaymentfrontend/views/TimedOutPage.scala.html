@@ -1,4 +1,4 @@
-/*
+@*
  * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,17 +12,31 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ *@
 
-package uk.gov.hmrc.cardpaymentfrontend.testsupport.testdata
+@import uk.gov.hmrc.cardpaymentfrontend.config.AppConfig
+@import uk.gov.hmrc.cardpaymentfrontend.views.html.Layout
 
-import payapi.corcommon.model.taxes.sa.SaUtr
-import uk.gov.hmrc.cardpaymentfrontend.models.openbanking.PfSaSessionData
+@this(
+    layout: Layout,
+    appConfig: AppConfig
+)
+@()(implicit request: Request[_], messages: Messages)
 
-object TestOpenBankingData {
+@heading = @{messages("time-out.title")}
 
-  object TestOriginSpecificSessionData {
-    val pfSaOriginSpecificData: PfSaSessionData = PfSaSessionData(SaUtr("1234567895"))
-  }
+@layout(pageTitle = Some(heading), showTimeoutDialogue = false) {
 
+    <h1 class="govuk-heading-l">
+        @heading
+    </h1>
+
+    <p class="govuk-body">
+        <a href="@{
+            appConfig.signInUrl
+        }" class="govuk-button govuk-!-margin-bottom-0">
+            @{messages("time-out.sign-in")}
+        </a>
+    </p>
 }
+
