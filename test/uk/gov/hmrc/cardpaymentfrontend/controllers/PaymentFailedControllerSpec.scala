@@ -268,7 +268,7 @@ class PaymentFailedControllerSpec extends ItSpec {
         PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyAfterFailWebPayment)
         val result = systemUnderTest.submit(fakeGetRequestInWelsh)
         val document = Jsoup.parse(contentAsString(result))
-        document.title() shouldBe "Error: Taliad wedi methu - Talu eich Hunanasesiad - GOV.UK"
+        document.title() shouldBe "Gwall: Taliad wedi methu - Talu eich Hunanasesiad - GOV.UK"
       }
 
       "Should show the correct error content in English - BadRequest" in {

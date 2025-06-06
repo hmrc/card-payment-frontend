@@ -184,7 +184,7 @@ class AddressControllerSpec extends ItSpec {
         )
         val result = systemUnderTest.submit(fakePostRequestInWelsh(firstLineMissing: _*))
         val document = Jsoup.parse(contentAsString(result))
-        document.title() shouldBe "Error: Cyfeiriad bilio’r cerdyn - Talu eich Hunanasesiad - GOV.UK"
+        document.title() shouldBe "Gwall: Cyfeiriad bilio’r cerdyn - Talu eich Hunanasesiad - GOV.UK"
       }
 
       "should return html containing the correct error messages when first line of address is missing" in {
