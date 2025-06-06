@@ -62,6 +62,20 @@ class AddressControllerSpec extends ItSpec {
         langToggleText should contain theSameElementsAs List("English", "Newid yr iaith ir Gymraeg Cymraeg") //checking the visually hidden text, it's simpler
       }
 
+      "show the Title tab correctly in English" in {
+        PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyBeforeBeginWebPayment)
+        val result = systemUnderTest.renderPage(fakeGetRequest)
+        val document = Jsoup.parse(contentAsString(result))
+        document.title shouldBe "Card billing address - Pay your Self Assessment - GOV.UK"
+      }
+
+      "show the Title tab correctly in Welsh" in {
+        PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyBeforeBeginWebPayment)
+        val result = systemUnderTest.renderPage(fakeGetRequestInWelsh)
+        val document = Jsoup.parse(contentAsString(result))
+        document.title shouldBe "Cyfeiriad bilio’r cerdyn - Talu eich Hunanasesiad - GOV.UK"
+      }
+
       "show the Service Name banner title correctly in English" in {
         PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyBeforeBeginWebPayment)
         val result = systemUnderTest.renderPage(fakeGetRequest)
@@ -143,6 +157,34 @@ class AddressControllerSpec extends ItSpec {
         val result = systemUnderTest.submit(fakePostRequest(address: _*))
         status(result) shouldBe Status.SEE_OTHER
         redirectLocation(result) shouldBe Some("/pay-by-card/check-your-details")
+      }
+
+      "Should show the correct error Title content in English" in {
+        val firstLineMissing = List(
+          ("line1", ""),
+          ("line2", "Fake Street"),
+          ("city", "Imaginaryshire"),
+          ("county", "East Imaginationland"),
+          ("postcode", "IM2 4HJ"),
+          ("country", "GBR")
+        )
+        val result = systemUnderTest.submit(fakePostRequest(firstLineMissing: _*))
+        val document = Jsoup.parse(contentAsString(result))
+        document.title() shouldBe "Error: Card billing address - Pay your Self Assessment - GOV.UK"
+      }
+
+      "Should show the correct error Title content in Welsh" in {
+        val firstLineMissing = List(
+          ("line1", ""),
+          ("line2", "Fake Street"),
+          ("city", "Imaginaryshire"),
+          ("county", "East Imaginationland"),
+          ("postcode", "IM2 4HJ"),
+          ("country", "GBR")
+        )
+        val result = systemUnderTest.submit(fakePostRequestInWelsh(firstLineMissing: _*))
+        val document = Jsoup.parse(contentAsString(result))
+        document.title() shouldBe "Gwall: Cyfeiriad bilio’r cerdyn - Talu eich Hunanasesiad - GOV.UK"
       }
 
       "should return html containing the correct error messages when first line of address is missing" in {

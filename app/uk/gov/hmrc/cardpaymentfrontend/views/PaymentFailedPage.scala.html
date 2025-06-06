@@ -14,14 +14,14 @@
  * limitations under the License.
  *@
 
+@import payapi.corcommon.model.Origin
+@import payapi.corcommon.model.Origins._
+@import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
 @import uk.gov.hmrc.cardpaymentfrontend.forms.ChooseAPaymentMethodFormValues
 @import uk.gov.hmrc.cardpaymentfrontend.views.html.Layout
 @import uk.gov.hmrc.govukfrontend.views.Implicits.RichRadios
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import uk.gov.hmrc.govukfrontend.views.html.components.implicits.RichFormErrors
-@import payapi.corcommon.model.Origin
-@import payapi.corcommon.model.Origins._
-@import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
 
 @this(
     errorSummary: GovukErrorSummary,
@@ -35,7 +35,7 @@
 
 @heading= @{messages("payment-failed.heading")}
 
-@layout(pageTitle = Some(heading), origin = Some(journeyRequest.journey.origin)) {
+@layout(pageTitle = Some(heading), origin = Some(journeyRequest.journey.origin), maybeForm = Some(form)) {
     @if(hasOpenBanking) {
 
         @if(form.hasErrors) {
@@ -45,7 +45,7 @@
         }
 
         <h1 class="govuk-heading-l">@{
-            messages("payment-failed.heading")
+            messages(heading)
         }</h1>
 
         <p class="govuk-body govuk-!-padding-bottom-6" id="sub-heading">@{

@@ -22,6 +22,9 @@ import payapi.cardpaymentjourney.model.journey.{Journey, JourneySpecificData}
 import play.api.http.Status
 import play.api.libs.json.Json
 
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+
 object PayApiStub {
 
   private val findLatestBySessionIdPath: String = s"/pay-api/journey/find-latest-by-session-id"
@@ -67,7 +70,7 @@ object PayApiStub {
 
   private def updateSucceedWebPaymentPath(journeyId: String): String = s"/pay-api/journey/$journeyId/update/succeed-web-payment"
 
-  def verifyUpdateSucceedWebPayment(count: Int = 1, journeyId: String, expectedTransactionTime: String): Unit = verify(
+  def verifyUpdateSucceedWebPayment(count: Int = 1, journeyId: String, expectedTransactionTime: LocalDateTime): Unit = verify(
     count,
     putRequestedFor(urlEqualTo(updateSucceedWebPaymentPath(journeyId)))
       .withRequestBody(equalToJson(
@@ -75,7 +78,7 @@ object PayApiStub {
           |{
           | "cardCategory": "debit",
           | "commissionInPence": 123,
-          | "transactionTime": "$expectedTransactionTime"
+          | "transactionTime": "${expectedTransactionTime.format(DateTimeFormatter.ISO_DATE_TIME)}"
           |}
           |""".stripMargin,
         true,
@@ -85,13 +88,13 @@ object PayApiStub {
 
   private def updateFailWebPaymentPath(journeyId: String): String = s"/pay-api/journey/$journeyId/update/fail-web-payment"
 
-  def verifyUpdateFailWebPayment(count: Int = 1, journeyId: String, expectedTransactionTime: String): Unit = verify(
+  def verifyUpdateFailWebPayment(count: Int = 1, journeyId: String, expectedTransactionTime: LocalDateTime): Unit = verify(
     count,
     putRequestedFor(urlEqualTo(updateFailWebPaymentPath(journeyId)))
       .withRequestBody(equalToJson(
         s"""
           |{
-          | "transactionTime": "$expectedTransactionTime",
+          | "transactionTime": "${expectedTransactionTime.format(DateTimeFormatter.ISO_DATE_TIME)}",
           | "cardCategory": "debit"
           |}
           |""".stripMargin,

@@ -65,6 +65,20 @@ class EmailAddressControllerSpec extends ItSpec {
         document.select("html").hasClass("govuk-template") shouldBe true withClue "no govuk template"
       }
 
+      "show the Title tab correctly in English" in {
+        PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyBeforeBeginWebPayment)
+        val result = systemUnderTest.renderPage(fakeGetRequest)
+        val document = Jsoup.parse(contentAsString(result))
+        document.title shouldBe "What is your email address? (optional) - Pay your Self Assessment - GOV.UK"
+      }
+
+      "show the Title tab correctly in Welsh" in {
+        PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyBeforeBeginWebPayment)
+        val result = systemUnderTest.renderPage(fakeGetRequestInWelsh)
+        val document = Jsoup.parse(contentAsString(result))
+        document.title shouldBe "Beth yw’ch cyfeiriad e-bost? (dewisol) - Talu eich Hunanasesiad - GOV.UK"
+      }
+
       "show the Service Name banner title correctly in English" in {
         PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyBeforeBeginWebPayment)
         val result = systemUnderTest.renderPage(fakeGetRequest)
@@ -205,6 +219,20 @@ class EmailAddressControllerSpec extends ItSpec {
         val validFormData = ("email-address", "notALegitEmail")
         val result = systemUnderTest.submit(fakePostRequest(validFormData))
         status(result) shouldBe Status.BAD_REQUEST
+      }
+
+      "should return the correct Title when Error invalid email address submitted" in {
+        val validFormData = ("email-address", "notALegitEmail")
+        val result = systemUnderTest.submit(fakePostRequest(validFormData))
+        val document = Jsoup.parse(contentAsString(result))
+        document.title() shouldBe "Error: What is your email address? (optional) - Pay your Self Assessment - GOV.UK"
+      }
+
+      "should return the correct Title when Error invalid email address submitted in Welsh" in {
+        val validFormData = ("email-address", "notALegitEmail")
+        val result = systemUnderTest.submit(fakePostRequestInWelsh(validFormData))
+        val document = Jsoup.parse(contentAsString(result))
+        document.title() shouldBe "Gwall: Beth yw’ch cyfeiriad e-bost? (dewisol) - Talu eich Hunanasesiad - GOV.UK"
       }
 
       "should return html containing the correct error messages when an invalid email address is submitted" in {

@@ -28,6 +28,9 @@ import play.core.server.ServerConfig
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.mockClasses.MockTransNumberGenerator
 import uk.gov.hmrc.http.test.WireMockSupport
 
+import java.time.format.DateTimeFormatter
+import java.time.{Clock, Instant, LocalDateTime, ZoneId, ZoneOffset}
+import scala.annotation.unused
 import scala.concurrent.ExecutionContext
 
 trait ItSpec extends AnyFreeSpecLike
@@ -78,9 +81,27 @@ trait ItSpec extends AnyFreeSpecLike
   }
 
   private lazy val testModule: AbstractModule = new AbstractModule {
+
     @Provides
     @Singleton
+    @unused
     def transNumberGenerator(): TransNumberGenerator = new MockTransNumberGenerator
-    transNumberGenerator()
+
+    @Provides
+    @Singleton
+    @unused
+    def clock(): Clock = FrozenTime.clock
+  }
+
+  object FrozenTime {
+    lazy val dateString: String = "2059-11-25"
+    lazy val timeString: String = s"${dateString}T16:33:51.880"
+    lazy val localDateTime: LocalDateTime = {
+      //the frozen time has to be in future otherwise things will disappear from mongodb because of ttl
+      LocalDateTime.parse(timeString, DateTimeFormatter.ISO_DATE_TIME)
+    }
+    lazy val instant: Instant = localDateTime.toInstant(ZoneOffset.UTC)
+    lazy val frozenInstant: Instant = instant
+    lazy val clock: Clock = Clock.fixed(frozenInstant, ZoneId.of("UTC"))
   }
 }
