@@ -39,7 +39,7 @@ class TimeOutControllerSpec extends ItSpec {
       val document = Jsoup.parse(contentAsString(result))
       println(document)
       document.select(".govuk-button").text() shouldBe "Start again"
-      document.title() shouldBe "You deleted your answers"
+      document.title() shouldBe "You deleted your answers - Pay your Self Assessment - GOV.UK"
       status(result) shouldBe OK
       session(result).data shouldBe empty
     }
@@ -50,7 +50,7 @@ class TimeOutControllerSpec extends ItSpec {
       val document = Jsoup.parse(contentAsString(result))
       println(document)
       document.select(".govuk-button").text() shouldBe "Start again"
-      document.title() shouldBe "For your security, we deleted your answers"
+      document.title() shouldBe "For your security, we deleted your answers - Pay your Self Assessment - GOV.UK"
       status(result) shouldBe OK
       session(result).data shouldBe empty
     }

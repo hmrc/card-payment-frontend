@@ -24,11 +24,11 @@
         govukButton: GovukButton
 )
 
-@()(implicit request: JourneyRequest[_], messages: Messages)
+@()(implicit journeyRequest: JourneyRequest[_], messages: Messages)
 
 @heading = @{messages("delete-answers.heading")}
 
-@layout(pageTitle = Some(heading), showTimeoutDialogue = false) {
+@layout(pageTitle = Some(heading), origin = Some(journeyRequest.journey.origin), showTimeoutDialogue = false) {
 
     <h1 class="govuk-heading-l govuk-!-margin-bottom-6">@heading</h1>
 
