@@ -43,7 +43,7 @@ final class TimeOutController @Inject() (
 
   def showForceDeleteAnswersLoggedOutPage: Action[AnyContent] =
     actions.journeyAction { implicit request =>
-      val redirectUrl = Some(Url("www.backUrl.com"))
+      val redirectUrl = Some(Url(s"${appConfig.payFrontendBaseUrl}"))
       Ok(forceDeleteAnswersPage("logged-out", redirectUrl)).withNewSession
     }
 

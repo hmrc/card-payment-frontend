@@ -36,14 +36,15 @@
     <h1 class="govuk-heading-l govuk-!-margin-bottom-6">@heading</h1>
 
     <div>
-    @redirectLink.fold{
         <p class="govuk-body">
             @messages(s"force-delete-answers.heading.${statusMessageKey}")
             <a class="govuk-link" href="https://www.gov.uk/topic/dealing-with-hmrc/paying-hmrc"> @messages(s"force-delete-answers.heading.${statusMessageKey}")</a>.
         </p>
-    }   {link =>
-        @govukButton(Button(attributes = Map("id" -> "continue"), content = Text(messages(s"force-delete-answers.button.${statusMessageKey}")), href = Some({link.value})))
-    }
+        @govukButton(Button(
+            id = Some("submit"),
+            content = Text(messages(s"force-delete-answers.button.${statusMessageKey}")),
+            href = Some({redirectLink.value})
+        ))
     </div>
 
 }
