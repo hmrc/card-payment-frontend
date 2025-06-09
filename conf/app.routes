@@ -30,7 +30,6 @@ GET        /payment-complete                     uk.gov.hmrc.cardpaymentfrontend
 GET        /payment-cancelled                    uk.gov.hmrc.cardpaymentfrontend.controllers.PaymentCancelledController.renderPage
 
 GET        /payment-failed                       uk.gov.hmrc.cardpaymentfrontend.controllers.PaymentFailedController.renderPage
-
 POST       /payment-failed                       uk.gov.hmrc.cardpaymentfrontend.controllers.PaymentFailedController.submit
 
 GET        /sign-out                             uk.gov.hmrc.cardpaymentfrontend.controllers.SignOutController.signOut
@@ -40,3 +39,4 @@ GET        /keep-alive                           uk.gov.hmrc.cardpaymentfrontend
 GET        /delete-answers                       uk.gov.hmrc.cardpaymentfrontend.controllers.TimeOutController.showDeleteAnswersPage
 GET        /force-delete-answers                 uk.gov.hmrc.cardpaymentfrontend.controllers.TimeOutController.showForceDeleteAnswersLoggedOutPage
 GET        /force-sign-out                       uk.gov.hmrc.cardpaymentfrontend.controllers.TimeOutController.showForceDeleteAnswersLoggedInPage
+

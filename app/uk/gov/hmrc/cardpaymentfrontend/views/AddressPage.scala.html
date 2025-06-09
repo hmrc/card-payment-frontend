@@ -19,8 +19,7 @@
 @import uk.gov.hmrc.cardpaymentfrontend.models.{Address, Country}
 @import uk.gov.hmrc.cardpaymentfrontend.views.html.Layout
 @import uk.gov.hmrc.govukfrontend.views.Aliases.{Button, ErrorSummary, Input, Text}
-@import uk.gov.hmrc.govukfrontend.views.Implicits.RichInput
-@import uk.gov.hmrc.govukfrontend.views.Implicits.RichSelect
+@import uk.gov.hmrc.govukfrontend.views.Implicits.{RichInput, RichSelect}
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import uk.gov.hmrc.govukfrontend.views.html.components.implicits.RichFormErrors
 
@@ -40,7 +39,7 @@
 
 @heading= @{messages("address.heading")}
 
-@layout(pageTitle = Some(heading), origin = Some(journeyRequest.journey.origin)) {
+@layout(pageTitle = Some(heading), origin = Some(journeyRequest.journey.origin), maybeForm = Some(form)) {
     @if(form.hasErrors) {
         @errorSummary(ErrorSummary(errorList =
             form.errors.asTextErrorLinks, title = Text(messages("error.there-is-a-problem")))

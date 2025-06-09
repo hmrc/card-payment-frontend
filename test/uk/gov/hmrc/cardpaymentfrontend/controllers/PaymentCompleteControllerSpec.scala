@@ -79,6 +79,20 @@ class PaymentCompleteControllerSpec extends ItSpec {
         langToggleText should contain theSameElementsAs List("English", "Newid yr iaith ir Gymraeg Cymraeg") //checking the visually hidden text, it's simpler
       }
 
+      "show the Title tab correctly in English" in {
+        PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyAfterSucceedDebitWebPayment)
+        val result = systemUnderTest.renderPage(fakeGetRequest)
+        val document = Jsoup.parse(contentAsString(result))
+        document.title shouldBe "Payment received by HMRC - Pay your Self Assessment - GOV.UK"
+      }
+
+      "show the Title tab correctly in Welsh" in {
+        PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyAfterSucceedDebitWebPayment)
+        val result = systemUnderTest.renderPage(fakeGetRequestInWelsh)
+        val document = Jsoup.parse(contentAsString(result))
+        document.title shouldBe "Taliad wedi dod i law CThEM - Talu eich Hunanasesiad - GOV.UK"
+      }
+
       "render the page without a back link" in {
         PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyAfterSucceedDebitWebPayment)
         val result = systemUnderTest.renderPage(fakeGetRequest)
