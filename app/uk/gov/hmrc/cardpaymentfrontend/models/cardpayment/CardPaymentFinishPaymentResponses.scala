@@ -18,7 +18,7 @@ package uk.gov.hmrc.cardpaymentfrontend.models.cardpayment
 
 import play.api.libs.json._
 import uk.gov.hmrc.cardpaymentfrontend.models.cardpayment.CardPaymentFinishPaymentResponses.CardPaymentFinishPaymentResponse
-import uk.gov.hmrc.cardpaymentfrontend.models.payapi.{FailWebPaymentRequest, FinishedWebPaymentRequest, SucceedWebPaymentRequest}
+import uk.gov.hmrc.cardpaymentfrontend.models.payapirequest.{FailWebPaymentRequest, FinishedWebPaymentRequest, SucceedWebPaymentRequest}
 import uk.gov.hmrc.cardpaymentfrontend.util.SafeEquals.EqualsOps
 
 import java.time.LocalDateTime

@@ -72,7 +72,7 @@ trait ExtendedOrigin {
   //hint: the checkYourAnswersReferenceRow should only include a change link when the journey is not prepopulated, i.e., user has manually entered their reference.
   def checkYourAnswersReferenceRow(journeyRequest: JourneyRequest[AnyContent])(payFrontendBaseUrl: String): Option[CheckYourAnswersRow]
 
-  def checkYourAnswersAdditionalReferenceRow(journeyRequest: JourneyRequest[AnyContent])(payFrontendBaseUrl: String): Option[CheckYourAnswersRow] = None
+  def checkYourAnswersAdditionalReferenceRow(journeyRequest: JourneyRequest[AnyContent])(payFrontendBaseUrl: String): Option[AnswersRow] = None
 
   def checkYourAnswersAmountSummaryRow(journeyRequest: JourneyRequest[AnyContent])(payFrontendBaseUrl: String): Option[CheckYourAnswersRow] = Some(CheckYourAnswersRow(
     titleMessageKey = "check-your-details.total-to-pay",

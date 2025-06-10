@@ -18,7 +18,7 @@ package uk.gov.hmrc.cardpaymentfrontend.testsupport
 
 import org.scalatest.AppendedClues.convertToClueful
 import payapi.cardpaymentjourney.model.journey.JourneySpecificData
-import payapi.corcommon.model.Origins.{PfEpayeNi, _}
+import payapi.corcommon.model.Origins._
 import payapi.corcommon.model.{Origin, Origins}
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.testdata.TestJourneys
 
@@ -124,11 +124,11 @@ object TestHelpers {
     case Origins.ItSa                     => TestJourneys.ItSa
     case Origins.PfVat                    => throw new MatchError("Not implemented yet")
     case Origins.PfCt                     => TestJourneys.PfCt
-    case Origins.PfEpayeNi                => throw new MatchError("Not implemented yet")
-    case Origins.PfEpayeLpp               => throw new MatchError("Not implemented yet")
-    case Origins.PfEpayeSeta              => throw new MatchError("Not implemented yet")
-    case Origins.PfEpayeLateCis           => throw new MatchError("Not implemented yet")
-    case Origins.PfEpayeP11d              => throw new MatchError("Not implemented yet")
+    case Origins.PfEpayeNi                => TestJourneys.PfEpayeNi
+    case Origins.PfEpayeLpp               => TestJourneys.PfEpayeLpp
+    case Origins.PfEpayeSeta              => TestJourneys.PfEpayeSeta
+    case Origins.PfEpayeLateCis           => TestJourneys.PfEpayeLateCis
+    case Origins.PfEpayeP11d              => TestJourneys.PfEpayeP11d
     case Origins.PfSdlt                   => throw new MatchError("Not implemented yet")
     case Origins.PfCds                    => throw new MatchError("Not implemented yet")
     case Origins.PfOther                  => throw new MatchError("Not implemented yet")

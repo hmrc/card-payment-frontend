@@ -19,7 +19,7 @@ package uk.gov.hmrc.cardpaymentfrontend.controllers
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.cardpaymentfrontend.actions.{Actions, JourneyRequest}
 import uk.gov.hmrc.cardpaymentfrontend.config.AppConfig
-import uk.gov.hmrc.cardpaymentfrontend.models.{Address, CheckYourAnswersRow, EmailAddress}
+import uk.gov.hmrc.cardpaymentfrontend.models.{Address, AnswersRow, CheckYourAnswersRow, EmailAddress}
 import uk.gov.hmrc.cardpaymentfrontend.models.CheckYourAnswersRow.summarise
 import uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins.ExtendedOrigin
 import uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins.ExtendedOrigin.OriginExtended
@@ -51,7 +51,7 @@ class CheckYourAnswersController @Inject() (
 
     val paymentDate: Option[CheckYourAnswersRow] = extendedOrigin.checkYourAnswersPaymentDateRow(journeyRequest)(appConfig.payFrontendBaseUrl)
     val referenceRow: Option[CheckYourAnswersRow] = extendedOrigin.checkYourAnswersReferenceRow(journeyRequest)(appConfig.payFrontendBaseUrl)
-    val additionalReferenceRow: Option[CheckYourAnswersRow] = extendedOrigin.checkYourAnswersAdditionalReferenceRow(journeyRequest)(appConfig.payFrontendBaseUrl)
+    val additionalReferenceRow: Option[AnswersRow] = extendedOrigin.checkYourAnswersAdditionalReferenceRow(journeyRequest)(appConfig.payFrontendBaseUrl)
     val amountRow: Option[CheckYourAnswersRow] = extendedOrigin.checkYourAnswersAmountSummaryRow(journeyRequest)(appConfig.payFrontendBaseUrl)
     val cardBillingAddressRow: Option[CheckYourAnswersRow] = extendedOrigin.checkYourAnswersCardBillingAddressRow(journeyRequest)
     // If no email is present in the session, no Email Row is shown

@@ -1,12 +1,27 @@
+/*
+ * Copyright 2025 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins
 
 import payapi.cardpaymentjourney.model.journey.{JourneySpecificData, JsdPfEpayeNi}
 import play.api.mvc.{AnyContent, Call}
 import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
 import uk.gov.hmrc.cardpaymentfrontend.models.PaymentMethod.{Card, OneOffDirectDebit, OpenBanking, VariableDirectDebit}
-import uk.gov.hmrc.cardpaymentfrontend.models.{CheckYourAnswersRow, Link, PaymentMethod}
+import uk.gov.hmrc.cardpaymentfrontend.models.{CheckYourAnswersPeriodRow, CheckYourAnswersRow, Link, PaymentMethod}
 import uk.gov.hmrc.cardpaymentfrontend.models.openbanking.{OriginSpecificSessionData, PfEpayeNiSessionData}
-
 
 object ExtendedPfEpayeNi extends ExtendedOrigin {
 
@@ -14,18 +29,31 @@ object ExtendedPfEpayeNi extends ExtendedOrigin {
 
   override def taxNameMessageKey: String = "payment-complete.tax-name.PfEpayeNi"
 
-  override def cardFeesPagePaymentMethods: Set[PaymentMethod] = Set(OpenBanking, OneOffDirectDebit, VariableDirectDebit)
+  override def cardFeesPagePaymentMethods: Set[PaymentMethod] = Set(OpenBanking, VariableDirectDebit, OneOffDirectDebit)
 
   override def paymentMethods(): Set[PaymentMethod] = Set(OneOffDirectDebit, VariableDirectDebit, Card, OpenBanking)
 
   override def checkYourAnswersReferenceRow(journeyRequest: JourneyRequest[AnyContent])
-                                           (payFrontendBaseUrl: String): Option[CheckYourAnswersRow] =
+    (payFrontendBaseUrl: String): Option[CheckYourAnswersRow] =
     Some(CheckYourAnswersRow(
       titleMessageKey = "check-your-details.PfEpayeNi.reference",
       value           = Seq(journeyRequest.journey.referenceValue),
       changeLink      = Some(Link(
-        href       = Call("GET", changeReferenceUrl(payFrontendBaseUrl)),//TODO: may neeed chaging to this //pay/accounts-office-reference/change-reference-number
+        href       = Call("GET", changeReferenceUrl(payFrontendBaseUrl)),
         linkId     = "check-your-details-reference-change-link",
+        messageKey = "check-your-details.change"
+      ))
+    ))
+
+  override def checkYourAnswersAdditionalReferenceRow(journeyRequest: JourneyRequest[AnyContent])
+    (payFrontendBaseUrl: String): Option[CheckYourAnswersPeriodRow] =
+    Some(CheckYourAnswersPeriodRow(
+      titleMessageKey = "check-your-details.PfEpayeNi.tax-period",
+      value           = Seq(journeyRequest.journey.journeySpecificData.asInstanceOf[JsdPfEpayeNi].period),
+      changeLink      = Some(Link(
+        href = Call("GET", s"$payFrontendBaseUrl/change-employers-paye-period"), //TODO: may need to adde new endpoint to handle this
+
+        linkId     = "check-your-details-period-change-link",
         messageKey = "check-your-details.change"
       ))
     ))

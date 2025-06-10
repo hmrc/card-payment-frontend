@@ -13,9 +13,9 @@ service-name.PfVat = Pay your VAT
 service-name.PfCt = Pay your Corporation Tax
 service-name.PfEpayeNi = Pay your employers’ PAYE and National Insurance
 service-name.PfEpayeLpp = Pay your PAYE late payment or filing penalty
-service-name.PfEpayeSeta =
-service-name.PfEpayeLateCis =
-service-name.PfEpayeP11d =
+service-name.PfEpayeSeta = Pay your PAYE Settlement Agreement
+service-name.PfEpayeLateCis = Pay your Construction Industry Scheme penalty
+service-name.PfEpayeP11d = Pay your employers’ Class 1A National Insurance (P11D bill)
 service-name.PfSdlt =
 service-name.PfCds =
 service-name.PfOther =
@@ -125,7 +125,12 @@ check-your-details.BtaCt.reference = Payment reference
 check-your-details.PfCt.reference = Unique Taxpayer Reference (UTR)
 check-your-details.PfCt.payslip-reference = Payslip reference
 check-your-details.PfVat.reference.title = VAT registration number
-
+check-your-details.PfEpayeNi.reference = Accounts Office reference
+check-your-details.PfEpayeNi.tax-period = Tax period
+check-your-details.PfEpayeLpp.reference = Penalty reference number
+check-your-details.PfEpayeSeta.reference = Settlement Agreement (PSA) reference number
+check-your-details.PfEpayeLateCis.reference = Penalty reference number
+check-your-details.PfEpayeP11d.reference = Na
 
 
 ## Address Page
@@ -192,11 +197,11 @@ payment-complete.survey.p2.part2 = (takes 30 seconds)
 payment-complete.tax-name.PfSa = Self Assessment
 payment-complete.tax-name.PfVat = VAT
 payment-complete.tax-name.PfCt = Corporation Tax
-payment-complete.tax-name.PfEpayeNi =
-payment-complete.tax-name.PfEpayeLpp =
-payment-complete.tax-name.PfEpayeSeta =
-payment-complete.tax-name.PfEpayeLateCis =
-payment-complete.tax-name.PfEpayeP11d =
+payment-complete.tax-name.PfEpayeNi = Employers' PAYE and National Insurance
+payment-complete.tax-name.PfEpayeLpp = Employers' PAYE late payment penalty
+payment-complete.tax-name.PfEpayeSeta = Employers’ PAYE Settlement Agreement
+payment-complete.tax-name.PfEpayeLateCis = Construction Industry Scheme (CIS) late filing penalty
+payment-complete.tax-name.PfEpayeP11d = Employers’ Class 1A National Insurance
 payment-complete.tax-name.PfSdlt =
 payment-complete.tax-name.PfCds =
 payment-complete.tax-name.PfOther =
