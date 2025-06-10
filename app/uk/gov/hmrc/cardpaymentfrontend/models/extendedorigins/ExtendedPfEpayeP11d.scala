@@ -1,3 +1,19 @@
+/*
+ * Copyright 2025 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins
 
 import payapi.cardpaymentjourney.model.journey.{JourneySpecificData, JsdPfEpayeP11d}
@@ -18,12 +34,12 @@ object ExtendedPfEpayeP11d extends ExtendedOrigin {
   override def paymentMethods(): Set[PaymentMethod] = Set(OneOffDirectDebit, OpenBanking, Card)
 
   override def checkYourAnswersReferenceRow(journeyRequest: JourneyRequest[AnyContent])
-                                           (payFrontendBaseUrl: String): Option[CheckYourAnswersRow] =
+    (payFrontendBaseUrl: String): Option[CheckYourAnswersRow] =
     Some(CheckYourAnswersRow(
       titleMessageKey = "check-your-details.PfEpayeP11d.reference",
       value           = Seq(journeyRequest.journey.referenceValue),
       changeLink      = Some(Link(
-        href       = Call("GET", changeReferenceUrl(payFrontendBaseUrl)),//TODO: may neeed chaging to this //pay/accounts-office-reference/change-reference-number
+        href       = Call("GET", changeReferenceUrl(payFrontendBaseUrl)), //TODO: may neeed chaging to this //pay/accounts-office-reference/change-reference-number
         linkId     = "check-your-details-reference-change-link",
         messageKey = "check-your-details.change"
       ))
@@ -31,8 +47,8 @@ object ExtendedPfEpayeP11d extends ExtendedOrigin {
 
   override def openBankingOriginSpecificSessionData: JourneySpecificData => Option[OriginSpecificSessionData] = {
     case j: JsdPfEpayeP11d => j.accountsOfficeReference.flatMap { accountsOfficeReference =>
-        j.period.map( PfEpayeP11dSessionData(accountsOfficeReference, _) )
-      }
+      j.period.map(PfEpayeP11dSessionData(accountsOfficeReference, _))
+    }
     case _ => throw new RuntimeException("Incorrect origin found")
   }
 

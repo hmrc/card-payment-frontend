@@ -18,6 +18,7 @@ package uk.gov.hmrc.cardpaymentfrontend.models.cardpayment
 
 import play.api.libs.json._
 import uk.gov.hmrc.cardpaymentfrontend.models.cardpayment.CardPaymentFinishPaymentResponses.CardPaymentFinishPaymentResponse
+import uk.gov.hmrc.cardpaymentfrontend.models.payapirequest.{FailWebPaymentRequest, FinishedWebPaymentRequest, SucceedWebPaymentRequest}
 import uk.gov.hmrc.cardpaymentfrontend.util.SafeEquals.EqualsOps
 
 import java.time.LocalDateTime
@@ -53,7 +54,24 @@ object AdditionalPaymentInfo {
   implicit val format: Format[AdditionalPaymentInfo] = Json.format[AdditionalPaymentInfo]
 }
 
-final case class CardPaymentResult(cardPaymentResult: CardPaymentFinishPaymentResponse, additionalPaymentInfo: AdditionalPaymentInfo)
+final case class CardPaymentResult(cardPaymentResult: CardPaymentFinishPaymentResponse, additionalPaymentInfo: AdditionalPaymentInfo) {
+
+  //todo this should probably live somewhere else? also we need to write test for it
+  def intoUpdateWebPaymentRequest: Option[FinishedWebPaymentRequest] = this.cardPaymentResult match {
+    case CardPaymentFinishPaymentResponses.Successful =>
+      Some(SucceedWebPaymentRequest(
+        additionalPaymentInfo.cardCategory.getOrElse("debit"),
+        additionalPaymentInfo.commissionInPence,
+        additionalPaymentInfo.transactionTime.getOrElse(LocalDateTime.now()),
+      ))
+    case CardPaymentFinishPaymentResponses.Failed =>
+      Some(FailWebPaymentRequest(
+        additionalPaymentInfo.transactionTime.getOrElse(LocalDateTime.now()),
+        additionalPaymentInfo.cardCategory.getOrElse("debit") //todo check if can this be anything?
+      ))
+    case CardPaymentFinishPaymentResponses.Cancelled => None
+  }
+}
 
 object CardPaymentResult {
   @SuppressWarnings(Array("org.wartremover.warts.Any"))

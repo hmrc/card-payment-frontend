@@ -16,7 +16,8 @@
 
 package uk.gov.hmrc.cardpaymentfrontend.services
 
-import org.scalatest.prop.TableDrivenPropertyChecks
+import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor6}
+import payapi.cardpaymentjourney.model.journey._
 import play.api.i18n.{Lang, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.AnyContentAsEmpty
@@ -26,7 +27,7 @@ import uk.gov.hmrc.cardpaymentfrontend.models.email.{EmailParameters, EmailReque
 import uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins.ExtendedOrigin.OriginExtended
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.TestOps.FakeRequestOps
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.stubs.EmailStub
-import uk.gov.hmrc.cardpaymentfrontend.testsupport.testdata.TestJourneys
+import uk.gov.hmrc.cardpaymentfrontend.testsupport.testdata.{JourneyStatuses, TestJourneys}
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.testdata.TestJourneys._
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.{ItSpec, TestHelpers}
 import uk.gov.hmrc.http.HeaderCarrier
@@ -41,7 +42,7 @@ class EmailServiceSpec extends ItSpec with TableDrivenPropertyChecks {
   "buildEmailParameters should return EmailParameters" - {
     val commission = Some("1.23")
 
-    val scenarios = Table(
+    val scenarios: TableFor6[JourneyStatuses[_ >: JsdBtaSa with JsdAlcoholDuty with JsdPfAlcoholDuty with JsdPfEpayeP11d with JsdPfEpayeSeta with JsdPfEpayeLpp with JsdPfEpayeNi with JsdPtaSa with JsdBtaCt with JsdItSa with JsdPfCt with JsdPfSa with JsdPfEpayeLateCis <: JourneySpecificData], String, String, Option[String], Some[String], String] = Table(
       ("Journey", "Tax Type", "Tax Reference", "Commission", "Total Paid", "lang"),
       (PfSa, "Self Assessment", "1234567895K", None, Some("12.34"), "en"),
       (PfSa, "Self Assessment", "1234567895K", commission, Some("13.57"), "en"),
@@ -114,9 +115,9 @@ class EmailServiceSpec extends ItSpec with TableDrivenPropertyChecks {
       val cardType = if (commission.isDefined) "credit" else "debit"
       val origin = j.journeyBeforeBeginWebPayment.origin
       val request: FakeRequest[AnyContentAsEmpty.type] = if (lang == "en") fakeRequest else fakeRequestInWelsh
-      val journey = if (cardType == "credit") j.journeyAfterSucceedCreditWebPayment else j.journeyAfterSucceedDebitWebPayment
+      val journey: Journey[_ >: JsdBtaSa with JsdAlcoholDuty with JsdPfAlcoholDuty with JsdPfEpayeP11d with JsdPfEpayeSeta with JsdPfEpayeLpp with JsdPfEpayeNi with JsdPtaSa with JsdBtaCt with JsdItSa with JsdPfCt with JsdPfSa with JsdPfEpayeLateCis <: JourneySpecificData] = if (cardType == "credit") j.journeyAfterSucceedCreditWebPayment else j.journeyAfterSucceedDebitWebPayment
 
-      s"when origin is $origin, card type is $cardType in $lang" in {
+      s"when origin is ${origin.entryName}, card type is $cardType in $lang" in {
         val expectedResult: EmailParameters = EmailParameters(
           taxType          = taxType,
           taxReference     = taxReference,

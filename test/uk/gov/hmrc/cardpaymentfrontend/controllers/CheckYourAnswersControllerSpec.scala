@@ -138,6 +138,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
           case Origins.AlcoholDuty => 2
           case Origins.BtaCt       => 2
           case Origins.PfCt        => 2
+          case Origins.PfEpayeNi   => 2
           case _                   => 1
         }
       }
@@ -150,6 +151,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
           case Origins.AlcoholDuty => 3
           case Origins.BtaCt       => 3
           case Origins.PfCt        => 3
+          case Origins.PfEpayeNi   => 3
           case _                   => 2
         }
       }
@@ -162,6 +164,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
           case Origins.AlcoholDuty => 4
           case Origins.BtaCt       => 4
           case Origins.PfCt        => 4
+          case Origins.PfEpayeNi   => 4
           case _                   => 3
         }
       }
@@ -449,7 +452,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
 
     "sanity check for implemented origins" in {
       // remember to add the singular tests for reference rows as well as fdp if applicable, they are not covered in the implementedOrigins forall tests
-      TestHelpers.implementedOrigins.size shouldBe 8 withClue "** This dummy test is here to remind you to update the tests above. Bump up the expected number when an origin is added to implemented origins **"
+      TestHelpers.implementedOrigins.size shouldBe 13 withClue "** This dummy test is here to remind you to update the tests above. Bump up the expected number when an origin is added to implemented origins **"
     }
 
   }

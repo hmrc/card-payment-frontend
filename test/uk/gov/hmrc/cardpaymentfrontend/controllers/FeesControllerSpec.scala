@@ -686,11 +686,11 @@ class FeesControllerSpec extends ItSpec {
             case Origins.ItSa                     => Seq(expectedBankTransferLink)
             case Origins.PfVat                    => Seq.empty
             case Origins.PfCt                     => Seq(expectedOpenBankingLink, expectedOneOffDirectDebitLink)
-            case Origins.PfEpayeNi                => Seq.empty
-            case Origins.PfEpayeLpp               => Seq.empty
-            case Origins.PfEpayeSeta              => Seq.empty
-            case Origins.PfEpayeLateCis           => Seq.empty
-            case Origins.PfEpayeP11d              => Seq.empty
+            case Origins.PfEpayeNi                => Seq(expectedOpenBankingLink, expectedOneOffDirectDebitLink) //TODO: fix for variable dd maybe
+            case Origins.PfEpayeLpp               => Seq(expectedOpenBankingLink, expectedOneOffDirectDebitLink) //TODO: fix for variable dd maybe
+            case Origins.PfEpayeSeta              => Seq(expectedOpenBankingLink, expectedOneOffDirectDebitLink) //TODO: fix for variable dd maybe
+            case Origins.PfEpayeLateCis           => Seq(expectedOpenBankingLink, expectedOneOffDirectDebitLink) //TODO: fix for variable dd maybe
+            case Origins.PfEpayeP11d              => Seq(expectedOpenBankingLink, expectedOneOffDirectDebitLink) //TODO: fix for variable dd maybe
             case Origins.PfSdlt                   => Seq.empty
             case Origins.PfCds                    => Seq.empty
             case Origins.PfOther                  => Seq.empty

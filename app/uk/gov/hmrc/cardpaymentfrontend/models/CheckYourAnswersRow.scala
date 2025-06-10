@@ -16,41 +16,65 @@
 
 package uk.gov.hmrc.cardpaymentfrontend.models
 
+import payapi.corcommon.model.taxes.epaye.SubYearlyEpayeTaxPeriod
 import play.api.i18n.Messages
+import uk.gov.hmrc.cardpaymentfrontend.util.Period.humanReadablePeriod
 import uk.gov.hmrc.govukfrontend.views.Aliases.{Key, SummaryListRow, Text, Value}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{ActionItem, Actions}
 
-final case class CheckYourAnswersRow(titleMessageKey: String, value: Seq[String], changeLink: Option[Link])
+abstract class AnswersRow
+
+final case class CheckYourAnswersRow(titleMessageKey: String, value: Seq[String], changeLink: Option[Link]) extends AnswersRow
+final case class CheckYourAnswersPeriodRow(titleMessageKey: String, value: Seq[Option[SubYearlyEpayeTaxPeriod]], changeLink: Option[Link]) extends AnswersRow
 
 object CheckYourAnswersRow {
 
-  def summarise(checkYourAnswerRow: CheckYourAnswersRow)(implicit messages: Messages): SummaryListRow = {
-    checkYourAnswerRow.value match {
-      case seqOfString if seqOfString.nonEmpty => SummaryListRow(
-        key     = Key(content = Text(Messages(checkYourAnswerRow.titleMessageKey))),
-        value   = Value(content = HtmlContent(Messages(seqOfString.mkString("</br>")))),
-        actions = checkYourAnswerRow.changeLink match {
-          case Some(changeLink) => Some(
-            Actions(items = Seq(ActionItem(
-              href               = changeLink.href.url,
-              content            = Text(Messages(changeLink.messageKey)),
-              visuallyHiddenText = changeLink.visuallyHiddenMessageKey,
-              attributes         = Map(
-                "id" -> changeLink.linkId
-              )
-            )))
-          )
-          case None => None
+  def summarise(answerRow: AnswersRow)(implicit messages: Messages): SummaryListRow = {
+
+    answerRow match {
+      case checkYourAnswersPeriodRow: CheckYourAnswersPeriodRow =>
+        checkYourAnswersPeriodRow.value match {
+          case seqOfPeriods if seqOfPeriods.nonEmpty =>
+            summaryListRow(checkYourAnswersPeriodRow.titleMessageKey, seqOfPeriods.flatMap(_.map(humanReadablePeriod(_, messages.lang))), checkYourAnswersPeriodRow.changeLink)
+          case _ => summaryListWithoutValue(checkYourAnswersPeriodRow.titleMessageKey, checkYourAnswersPeriodRow.changeLink)
         }
-      )
-      case _ => SummaryListRow(
-        key   = Key(content = Text(Messages(checkYourAnswerRow.titleMessageKey))),
-        value = checkYourAnswerRow.changeLink match {
-          case Some(link) => Value(HtmlContent(s"""<a id="${link.linkId}" href="${link.href.url}" class="govuk-link">${messages(link.messageKey)}</a>"""))
-          case None       => Value()
+      case checkYourAnswerRow: CheckYourAnswersRow =>
+        checkYourAnswerRow.value match {
+          case seqOfString if seqOfString.nonEmpty => summaryListRow(checkYourAnswerRow.titleMessageKey, seqOfString, checkYourAnswerRow.changeLink)
+          case _                                   => summaryListWithoutValue(checkYourAnswerRow.titleMessageKey, checkYourAnswerRow.changeLink)
         }
-      )
+      case _ => throw new IllegalArgumentException("Unknown AnswersRow type")
     }
+  }
+
+  private def summaryListRow(titleMessageKey: String, seqOfString: Seq[String], changeLink: Option[Link])(implicit messages: Messages): SummaryListRow = {
+    SummaryListRow(
+      key     = Key(content = Text(Messages(titleMessageKey))),
+      value   = Value(content = HtmlContent(Messages(seqOfString.mkString("</br>")))),
+      actions = changeLink match {
+        case Some(link) => Some(
+          Actions(items = Seq(ActionItem(
+            href               = link.href.url,
+            content            = Text(Messages(link.messageKey)),
+            visuallyHiddenText = link.visuallyHiddenMessageKey,
+            attributes         = Map(
+              "id" -> link.linkId
+            )
+          )))
+        )
+        case None => None
+      }
+    )
+  }
+
+  private def summaryListWithoutValue(titleMessageKey: String, changeLink: Option[Link])(implicit messages: Messages): SummaryListRow = {
+    SummaryListRow(
+      key   = Key(content = Text(Messages(titleMessageKey))),
+      value = changeLink match {
+        case Some(link) => Value(HtmlContent(s"""<a id="${link.linkId}" href="${link.href.url}" class="govuk-link">${messages(link.messageKey)}</a>"""))
+        case None       => Value()
+      }
+    )
   }
 }

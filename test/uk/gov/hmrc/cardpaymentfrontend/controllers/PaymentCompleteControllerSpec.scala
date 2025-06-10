@@ -219,7 +219,7 @@ class PaymentCompleteControllerSpec extends ItSpec {
         }
 
       "should have a test for all origins below this one" in {
-        TestHelpers.implementedOrigins.size shouldBe 8 withClue "** This dummy test is here to remind you to update the tests below. Bump up the expected number when an origin is added to implemented origins **"
+        TestHelpers.implementedOrigins.size shouldBe 13 withClue "** This dummy test is here to remind you to update the tests below. Bump up the expected number when an origin is added to implemented origins **"
       }
 
       TestHelpers.implementedOrigins.foreach { origin =>
@@ -613,6 +613,161 @@ object PaymentCompleteControllerSpec {
       )),
       hasWelshTest                    = true,
       hasAReturnUrl                   = false
+    )
+
+    case Origins.PfEpayeNi => TestScenarioInfo(
+      debitCardJourney                = TestJourneys.PfEpayeNi.journeyAfterSucceedDebitWebPayment,
+      creditCardJourney               = TestJourneys.PfEpayeNi.journeyAfterSucceedCreditWebPayment,
+      englishSummaryRowsDebitCard     = List(
+        "Tax" -> "Employers PAYE and National Insurance",
+        "Date" -> "2 November 2027",
+        "Amount" -> "£12.34"
+      ),
+      maybeWelshSummaryRowsDebitCard  = Some(List(
+        "Treth" -> "TWE ac Yswiriant Gwladol y Cyflogwr",
+        "Dyddiad" -> "2 Tachwedd 2027",
+        "Swm" -> "£12.34"
+      )),
+      englishSummaryRowsCreditCard    = List(
+        "Tax" -> "Employers PAYE and National Insurance",
+        "Date" -> "2 November 2027",
+        "Amount paid to HMRC" -> "£12.34",
+        "Card fee (9.97%), non-refundable" -> "£1.23",
+        "Total paid" -> "£13.57"
+      ),
+      maybeWelshSummaryRowsCreditCard = Some(List(
+        "Treth" -> "TWE ac Yswiriant Gwladol y Cyflogwr",
+        "Dyddiad" -> "2 Tachwedd 2027",
+        "Swm a dalwyd i CThEM" -> "£12.34",
+        "Ffi cerdyn (9.97%), ni ellir ei ad-dalu" -> "£1.23",
+        "Cyfanswm a dalwyd" -> "£13.57"
+      )),
+      hasWelshTest                    = true,
+      hasAReturnUrl                   = true
+    )
+
+    case Origins.PfEpayeLpp => TestScenarioInfo(
+      debitCardJourney                = TestJourneys.PfEpayeLpp.journeyAfterSucceedDebitWebPayment,
+      creditCardJourney               = TestJourneys.PfEpayeLpp.journeyAfterSucceedCreditWebPayment,
+      englishSummaryRowsDebitCard     = List(
+        "Tax" -> "Employers PAYE late payment penalty",
+        "Date" -> "2 November 2027",
+        "Amount" -> "£12.34"
+      ),
+      maybeWelshSummaryRowsDebitCard  = Some(List(
+        "Treth" -> "Cosb y Cyflogwr am dalu TWE yn hwyr",
+        "Dyddiad" -> "2 Tachwedd 2027",
+        "Swm" -> "£12.34"
+      )),
+      englishSummaryRowsCreditCard    = List(
+        "Tax" -> "Employers PAYE late payment penalty",
+        "Date" -> "2 November 2027",
+        "Amount paid to HMRC" -> "£12.34",
+        "Card fee (9.97%), non-refundable" -> "£1.23",
+        "Total paid" -> "£13.57"
+      ),
+      maybeWelshSummaryRowsCreditCard = Some(List(
+        "Treth" -> "Cosb y Cyflogwr am dalu TWE yn hwyr",
+        "Dyddiad" -> "2 Tachwedd 2027",
+        "Swm a dalwyd i CThEM" -> "£12.34",
+        "Ffi cerdyn (9.97%), ni ellir ei ad-dalu" -> "£1.23",
+        "Cyfanswm a dalwyd" -> "£13.57"
+      )),
+      hasWelshTest                    = true,
+      hasAReturnUrl                   = true
+    )
+
+    case Origins.PfEpayeLateCis => TestScenarioInfo(
+      debitCardJourney                = TestJourneys.PfEpayeLateCis.journeyAfterSucceedDebitWebPayment,
+      creditCardJourney               = TestJourneys.PfEpayeLateCis.journeyAfterSucceedCreditWebPayment,
+      englishSummaryRowsDebitCard     = List(
+        "Tax" -> "Construction Industry Scheme (CIS) late filing penalty",
+        "Date" -> "2 November 2027",
+        "Amount" -> "£12.34"
+      ),
+      maybeWelshSummaryRowsDebitCard  = Some(List(
+        "Treth" -> "Cynllun y Diwydiant Adeiladu (CIS) - cosb am dalun hwyr",
+        "Dyddiad" -> "2 Tachwedd 2027",
+        "Swm" -> "£12.34"
+      )),
+      englishSummaryRowsCreditCard    = List(
+        "Tax" -> "Construction Industry Scheme (CIS) late filing penalty",
+        "Date" -> "2 November 2027",
+        "Amount paid to HMRC" -> "£12.34",
+        "Card fee (9.97%), non-refundable" -> "£1.23",
+        "Total paid" -> "£13.57"
+      ),
+      maybeWelshSummaryRowsCreditCard = Some(List(
+        "Treth" -> "Cynllun y Diwydiant Adeiladu (CIS) - cosb am dalun hwyr",
+        "Dyddiad" -> "2 Tachwedd 2027",
+        "Swm a dalwyd i CThEM" -> "£12.34",
+        "Ffi cerdyn (9.97%), ni ellir ei ad-dalu" -> "£1.23",
+        "Cyfanswm a dalwyd" -> "£13.57"
+      )),
+      hasWelshTest                    = true,
+      hasAReturnUrl                   = true
+    )
+
+    case Origins.PfEpayeP11d => TestScenarioInfo(
+      debitCardJourney                = TestJourneys.PfEpayeP11d.journeyAfterSucceedDebitWebPayment,
+      creditCardJourney               = TestJourneys.PfEpayeP11d.journeyAfterSucceedCreditWebPayment,
+      englishSummaryRowsDebitCard     = List(
+        "Tax" -> "Employers’ Class 1A National Insurance",
+        "Date" -> "2 November 2027",
+        "Amount" -> "£12.34"
+      ),
+      maybeWelshSummaryRowsDebitCard  = Some(List(
+        "Treth" -> "Yswiriant Gwladol Dosbarth 1A y Cyflogwr",
+        "Dyddiad" -> "2 Tachwedd 2027",
+        "Swm" -> "£12.34"
+      )),
+      englishSummaryRowsCreditCard    = List(
+        "Tax" -> "Employers’ Class 1A National Insurance",
+        "Date" -> "2 November 2027",
+        "Amount paid to HMRC" -> "£12.34",
+        "Card fee (9.97%), non-refundable" -> "£1.23",
+        "Total paid" -> "£13.57"
+      ),
+      maybeWelshSummaryRowsCreditCard = Some(List(
+        "Treth" -> "Yswiriant Gwladol Dosbarth 1A y Cyflogwr",
+        "Dyddiad" -> "2 Tachwedd 2027",
+        "Swm a dalwyd i CThEM" -> "£12.34",
+        "Ffi cerdyn (9.97%), ni ellir ei ad-dalu" -> "£1.23",
+        "Cyfanswm a dalwyd" -> "£13.57"
+      )),
+      hasWelshTest                    = true,
+      hasAReturnUrl                   = true
+    )
+
+    case Origins.PfEpayeSeta => TestScenarioInfo(
+      debitCardJourney                = TestJourneys.PfEpayeSeta.journeyAfterSucceedDebitWebPayment,
+      creditCardJourney               = TestJourneys.PfEpayeSeta.journeyAfterSucceedCreditWebPayment,
+      englishSummaryRowsDebitCard     = List(
+        "Tax" -> "Employers’ PAYE Settlement Agreement",
+        "Date" -> "2 November 2027",
+        "Amount" -> "£12.34"
+      ),
+      maybeWelshSummaryRowsDebitCard  = Some(List(
+        "Treth" -> "Cytundeb Setliad TWE y Cyflogwr",
+        "Dyddiad" -> "2 Tachwedd 2027",
+        "Swm" -> "£12.34"
+      )),
+      englishSummaryRowsCreditCard    = List(
+        "Tax" -> "Employers’ PAYE Settlement Agreement",
+        "Date" -> "2 November 2027",
+        "Amount paid to HMRC" -> "£12.34",
+        "Card fee (9.97%), non-refundable" -> "£1.23",
+        "Total paid" -> "£13.57"
+      ),
+      maybeWelshSummaryRowsCreditCard = Some(List(
+        "Treth" -> "Cytundeb Setliad TWE y Cyflogwr",
+        "Dyddiad" -> "2 Tachwedd 2027",
+        "Swm a dalwyd i CThEM" -> "£12.34",
+        "Ffi cerdyn (9.97%), ni ellir ei ad-dalu" -> "£1.23",
+        "Cyfanswm a dalwyd" -> "£13.57"
+      )),
+      hasWelshTest                    = true,
+      hasAReturnUrl                   = true
     )
 
     case o: Origin => throw new MatchError(s"Add testdata for now origin you've added [${o.entryName}] to implemented origins.")

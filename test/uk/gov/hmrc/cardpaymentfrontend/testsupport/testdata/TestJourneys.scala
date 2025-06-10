@@ -183,7 +183,7 @@ object TestJourneys {
       sessionId            = Some(SessionId("TestSession-4b87460d-6f43-4c4c-b810-d6f87c774854")),
       amountInPence        = Some(AmountInPence(1234)),
       emailTemplateOptions = None,
-      navigation           = Some(NavigationOptions(returnUrl = Url("https://www.return-to-pfepayeni.com"), backUrl = Url("https://www.back-to-pfepayeni.com"))),
+      navigation           = Some(NavigationOptions(returnUrl = Url("https://www.return-url.com"), backUrl = Url("https://www.back-to-pfepayeni.com"))),
       order                = None,
       status               = PaymentStatuses.Created,
       createdOn            = LocalDateTime.parse("2027-11-02T16:28:55.185"),
@@ -201,13 +201,14 @@ object TestJourneys {
       sessionId            = Some(SessionId("TestSession-4b87460d-6f43-4c4c-b810-d6f87c774854")),
       amountInPence        = Some(AmountInPence(1234)),
       emailTemplateOptions = None,
-      navigation           = Some(NavigationOptions(returnUrl = Url("https://www.return-to-pfepayep11d.com"), backUrl = Url("https://www.back-to-pfepayep11d.com"))),
+      navigation           = Some(NavigationOptions(returnUrl = Url("https://www.return-url.com"), backUrl = Url("https://www.back-to-pfepayep11d.com"))),
       order                = None,
       status               = PaymentStatuses.Created,
       createdOn            = LocalDateTime.parse("2027-11-02T16:28:55.185"),
       journeySpecificData  = JsdPfEpayeP11d(
         Some(AccountsOfficeReference("123PH45678900")),
-        Some(YearlyEpayeTaxPeriod(TaxYear(2025)))),
+        Some(YearlyEpayeTaxPeriod(TaxYear(2025)))
+      ),
       chosenWayToPay       = None
     )
   }
@@ -218,11 +219,11 @@ object TestJourneys {
       sessionId            = Some(SessionId("TestSession-4b87460d-6f43-4c4c-b810-d6f87c774854")),
       amountInPence        = Some(AmountInPence(1234)),
       emailTemplateOptions = None,
-      navigation           = Some(NavigationOptions(returnUrl = Url("https://www.return-to-pfepayelpp.com"), backUrl = Url("https://www.back-to-pfepayelpp.com"))),
+      navigation           = Some(NavigationOptions(returnUrl = Url("https://www.return-url.com"), backUrl = Url("https://www.back-to-pfepayelpp.com"))),
       order                = None,
       status               = PaymentStatuses.Created,
       createdOn            = LocalDateTime.parse("2027-11-02T16:28:55.185"),
-      journeySpecificData  = JsdPfEpayeLpp(prn = Some(XRef("XE123456789012"))),//TODO: change to valid XRef
+      journeySpecificData  = JsdPfEpayeLpp(prn = Some(XRef("XE123456789012"))),
       chosenWayToPay       = None
     )
   }
@@ -233,11 +234,11 @@ object TestJourneys {
       sessionId            = Some(SessionId("TestSession-4b87460d-6f43-4c4c-b810-d6f87c774854")),
       amountInPence        = Some(AmountInPence(1234)),
       emailTemplateOptions = None,
-      navigation           = Some(NavigationOptions(returnUrl = Url("https://www.return-to-pfepayelatecis.com"), backUrl = Url("https://www.back-to-pfepayelatecis.com"))),
+      navigation           = Some(NavigationOptions(returnUrl = Url("https://www.return-url.com"), backUrl = Url("https://www.back-to-pfepayelatecis.com"))),
       order                = None,
       status               = PaymentStatuses.Created,
       createdOn            = LocalDateTime.parse("2027-11-02T16:28:55.185"),
-      journeySpecificData  = JsdPfEpayeLateCis(prn = Some(XRef14Char("123PH45678900"))), //TODO: change to valid XRef
+      journeySpecificData  = JsdPfEpayeLateCis(prn = Some(XRef14Char("123PH45678900"))),
       chosenWayToPay       = None
     )
   }
@@ -248,7 +249,7 @@ object TestJourneys {
       sessionId            = Some(SessionId("TestSession-4b87460d-6f43-4c4c-b810-d6f87c774854")),
       amountInPence        = Some(AmountInPence(1234)),
       emailTemplateOptions = None,
-      navigation           = Some(NavigationOptions(returnUrl = Url("https://www.return-to-pfepayeseta.com"), backUrl = Url("https://www.back-to-pfepayeseta.com"))),
+      navigation           = Some(NavigationOptions(returnUrl = Url("https://www.return-url.com"), backUrl = Url("https://www.back-to-pfepayeseta.com"))),
       order                = None,
       status               = PaymentStatuses.Created,
       createdOn            = LocalDateTime.parse("2027-11-02T16:28:55.185"),

@@ -22,8 +22,9 @@ import play.api.Logging
 import play.api.libs.json.JsBoolean
 import uk.gov.hmrc.cardpaymentfrontend.config.AppConfig
 import uk.gov.hmrc.cardpaymentfrontend.connectors.{CardPaymentConnector, PayApiConnector}
+import uk.gov.hmrc.cardpaymentfrontend.models.cardpayment.{BarclaycardAddress, CardPaymentInitiatePaymentRequest, CardPaymentInitiatePaymentResponse, CardPaymentResult, ClientId}
+import uk.gov.hmrc.cardpaymentfrontend.models.payapirequest.{BeginWebPaymentRequest, FailWebPaymentRequest, FinishedWebPaymentRequest, SucceedWebPaymentRequest}
 import uk.gov.hmrc.cardpaymentfrontend.models.cardpayment.{BarclaycardAddress, CardPaymentFinishPaymentResponses, CardPaymentInitiatePaymentRequest, CardPaymentInitiatePaymentResponse, CardPaymentResult, ClientId}
-import uk.gov.hmrc.cardpaymentfrontend.models.payapi.{BeginWebPaymentRequest, FailWebPaymentRequest, FinishedWebPaymentRequest, SucceedWebPaymentRequest}
 import uk.gov.hmrc.cardpaymentfrontend.models.{Address, EmailAddress, Language}
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -87,10 +88,11 @@ class CardPaymentService @Inject() (
   }
 
   def finishPayment(transactionReference: String, journeyId: String)(implicit headerCarrier: HeaderCarrier): Future[Option[CardPaymentResult]] = {
+    logger.info("TransactionReference: " + transactionReference) //todo take me out before go live
     for {
       result <- cardPaymentConnector.authAndSettle(transactionReference)
       cardPaymentResult = result.json.asOpt[CardPaymentResult]
-      maybeWebPaymentRequest: Option[FinishedWebPaymentRequest] = cardPaymentResult.flatMap(cardPaymentResultIntoUpdateWebPaymentRequest)
+      maybeWebPaymentRequest: Option[FinishedWebPaymentRequest] = cardPaymentResult.flatMap(_.intoUpdateWebPaymentRequest)
       _ <- maybeWebPaymentRequest.fold(payApiConnector.JourneyUpdates.updateCancelWebPayment(journeyId)) {
         case r: FailWebPaymentRequest    => payApiConnector.JourneyUpdates.updateFailWebPayment(journeyId, r)
         case r: SucceedWebPaymentRequest => payApiConnector.JourneyUpdates.updateSucceedWebPayment(journeyId, r)
