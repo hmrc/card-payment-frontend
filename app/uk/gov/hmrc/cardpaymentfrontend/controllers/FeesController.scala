@@ -57,6 +57,7 @@ class FeesController @Inject() (
     val showOpenBankingLink: Boolean = paymentMethodToBeShown(PaymentMethod.OpenBanking, paymentMethodsToShow)
     val showBankTransferLink: Boolean = paymentMethodToBeShown(PaymentMethod.Bacs, paymentMethodsToShow)
     val showOneOffDirectDebitLink: Boolean = paymentMethodToBeShown(PaymentMethod.OneOffDirectDebit, paymentMethodsToShow)
+    val showVariableDirectDebitLink: Boolean = paymentMethodToBeShown(PaymentMethod.VariableDirectDebit, paymentMethodsToShow)
 
     val maybeOpenBankingLink = if (showOpenBankingLink) {
       Seq(Link(
@@ -74,6 +75,14 @@ class FeesController @Inject() (
       ))
     } else Seq.empty[Link]
 
+    val maybeVariableDirectDebitLink = if (showVariableDirectDebitLink) {
+      Seq(Link(
+        href       = Call("GET", appConfig.payFrontendBaseUrl + appConfig.variableDirectDebitRelativeUrl),
+        linkId     = "variable-direct-debit-link",
+        messageKey = "card-fees.para2.variable-direct-debit"
+      ))
+    } else Seq.empty[Link]
+
     val maybeOneOffDirectDebitLink = if (showOneOffDirectDebitLink) {
       Seq(Link(
         href       = Call("GET", appConfig.payFrontendBaseUrl + appConfig.oneOffDirectDebitRelativeUrl),
@@ -82,7 +91,7 @@ class FeesController @Inject() (
       ))
     } else Seq.empty[Link]
 
-    maybeOpenBankingLink ++ maybeBankTransferLink ++ maybeOneOffDirectDebitLink
+    maybeOpenBankingLink ++ maybeBankTransferLink ++ maybeVariableDirectDebitLink ++ maybeOneOffDirectDebitLink
   }
 
 }

@@ -98,7 +98,7 @@ card-fees.para1 = Bydd ffi na ellir ei had-dalu yn cael ei chodi os talwch â ch
 card-fees.para2 = Nid oes ffi yn cael ei chodi os talwch drwy un o’r dulliau canlynol:
 card-fees.para2.bank-transfer = drosglwyddiad banc
 card-fees.para2.open-banking = cyfrif banc
-card-fees.para2.direct-debit = ADD_ME
+card-fees.para2.variable-direct-debit = Debyd Uniongyrchol (newidiol)
 card-fees.para2.one-off-direct-debit = Debyd Uniongyrchol (taliad untro)
 card-fees.para2.personal-debit-card = cerdyn debyd personol
 card-fees.para3 = Ni allwch dalu â cherdyn credyd personol.
@@ -131,7 +131,8 @@ check-your-details.PfEpayeNi.tax-period = Cyfnod talu
 check-your-details.PfEpayeLpp.reference = Cyfeirnod y gosb
 check-your-details.PfEpayeSeta.reference = Cyfeirnod Cytundeb Setliad (PSA)
 check-your-details.PfEpayeLateCis.reference = Cyfeirnod y gosb
-check-your-details.PfEpayeP11d.reference = Na
+check-your-details.PfEpayeP11d.reference = Cyfeirnod y Swyddfa Gyfrifon
+check-your-details.PfEpayeP11d.tax-year = Blwyddyn dreth
 
 
 ## Address Page

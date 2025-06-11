@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.cardpaymentfrontend.models
 
-import payapi.corcommon.model.taxes.epaye.SubYearlyEpayeTaxPeriod
+import payapi.corcommon.model.taxes.epaye.FixedLengthEpayeTaxPeriod
 import play.api.i18n.Messages
 import uk.gov.hmrc.cardpaymentfrontend.util.Period.humanReadablePeriod
 import uk.gov.hmrc.govukfrontend.views.Aliases.{Key, SummaryListRow, Text, Value}
@@ -26,7 +26,7 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{ActionItem, Actio
 abstract class AnswersRow
 
 final case class CheckYourAnswersRow(titleMessageKey: String, value: Seq[String], changeLink: Option[Link]) extends AnswersRow
-final case class CheckYourAnswersPeriodRow(titleMessageKey: String, value: Seq[Option[SubYearlyEpayeTaxPeriod]], changeLink: Option[Link]) extends AnswersRow
+final case class CheckYourAnswersPeriodRow(titleMessageKey: String, value: Seq[Option[FixedLengthEpayeTaxPeriod]], changeLink: Option[Link]) extends AnswersRow
 
 object CheckYourAnswersRow {
 
