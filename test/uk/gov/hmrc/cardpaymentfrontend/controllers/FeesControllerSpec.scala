@@ -702,7 +702,7 @@ class FeesControllerSpec extends ItSpec {
           val listOfMethods = document.select("#payment-type-list").select("li")
           val oneOffDirectDebitBullet = listOfMethods.select("#variable-direct-debit-link")
           oneOffDirectDebitBullet.text() shouldBe "Direct Debit (variable)"
-          oneOffDirectDebitBullet.attr("href") shouldBe "http://localhost:9056/pay/pay-by-variable-direct-debit"
+          oneOffDirectDebitBullet.attr("href") shouldBe "http://localhost:9056/pay/pay-by-direct-debit/go"
         }
 
         "render an option for variable direct debit in welsh" in {
@@ -712,7 +712,7 @@ class FeesControllerSpec extends ItSpec {
           val listOfMethods = document.select("#payment-type-list").select("li")
           val oneOffDirectDebitBullet = listOfMethods.select("#variable-direct-debit-link")
           oneOffDirectDebitBullet.text() shouldBe "Debyd Uniongyrchol (newidiol)"
-          oneOffDirectDebitBullet.attr("href") shouldBe "http://localhost:9056/pay/pay-by-variable-direct-debit"
+          oneOffDirectDebitBullet.attr("href") shouldBe "http://localhost:9056/pay/pay-by-direct-debit/go"
         }
 
       }
@@ -788,7 +788,7 @@ class FeesControllerSpec extends ItSpec {
           val listOfMethods = document.select("#payment-type-list").select("li")
           val oneOffDirectDebitBullet = listOfMethods.select("#variable-direct-debit-link")
           oneOffDirectDebitBullet.text() shouldBe "Direct Debit (variable)"
-          oneOffDirectDebitBullet.attr("href") shouldBe "http://localhost:9056/pay/pay-by-variable-direct-debit"
+          oneOffDirectDebitBullet.attr("href") shouldBe "http://localhost:9056/pay/pay-by-direct-debit/go"
         }
 
         "render an option for variable direct debit in welsh" in {
@@ -798,7 +798,7 @@ class FeesControllerSpec extends ItSpec {
           val listOfMethods = document.select("#payment-type-list").select("li")
           val oneOffDirectDebitBullet = listOfMethods.select("#variable-direct-debit-link")
           oneOffDirectDebitBullet.text() shouldBe "Debyd Uniongyrchol (newidiol)"
-          oneOffDirectDebitBullet.attr("href") shouldBe "http://localhost:9056/pay/pay-by-variable-direct-debit"
+          oneOffDirectDebitBullet.attr("href") shouldBe "http://localhost:9056/pay/pay-by-direct-debit/go"
         }
 
       }
@@ -874,7 +874,7 @@ class FeesControllerSpec extends ItSpec {
           val listOfMethods = document.select("#payment-type-list").select("li")
           val oneOffDirectDebitBullet = listOfMethods.select("#variable-direct-debit-link")
           oneOffDirectDebitBullet.text() shouldBe "Direct Debit (variable)"
-          oneOffDirectDebitBullet.attr("href") shouldBe "http://localhost:9056/pay/pay-by-variable-direct-debit"
+          oneOffDirectDebitBullet.attr("href") shouldBe "http://localhost:9056/pay/pay-by-direct-debit/go"
         }
 
         "render an option for variable direct debit in welsh" in {
@@ -884,7 +884,7 @@ class FeesControllerSpec extends ItSpec {
           val listOfMethods = document.select("#payment-type-list").select("li")
           val oneOffDirectDebitBullet = listOfMethods.select("#variable-direct-debit-link")
           oneOffDirectDebitBullet.text() shouldBe "Debyd Uniongyrchol (newidiol)"
-          oneOffDirectDebitBullet.attr("href") shouldBe "http://localhost:9056/pay/pay-by-variable-direct-debit"
+          oneOffDirectDebitBullet.attr("href") shouldBe "http://localhost:9056/pay/pay-by-direct-debit/go"
         }
 
       }
@@ -1001,7 +1001,7 @@ class FeesControllerSpec extends ItSpec {
       )
 
       val expectedVariableDirectDebitLink = Link(
-        href       = Call("GET", "http://localhost:9056/pay/pay-by-variable-direct-debit"),
+        href       = Call("GET", "http://localhost:9056/pay/pay-by-direct-debit/go"),
         linkId     = "variable-direct-debit-link",
         messageKey = "card-fees.para2.variable-direct-debit"
       )
