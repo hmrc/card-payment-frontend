@@ -302,6 +302,7 @@ email.tax-name.PfAlcoholDuty = Alcohol Duty
 email.tax-name.AlcoholDuty = Alcohol Duty
 email.tax-name.BtaCt = Corporation Tax
 email.tax-name.PfCt = Corporation Tax
+email.tax-name.BtaEpayeBill = PAYE
 
 
 ## Payments survey

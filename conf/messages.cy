@@ -307,6 +307,8 @@ email.tax-name.PfAlcoholDuty = Toll Alcohol
 email.tax-name.AlcoholDuty = Toll Alcohol
 email.tax-name.BtaCt = Treth Gorfforaeth
 email.tax-name.PfCt = Treth Gorfforaeth
+email.tax-name.BtaEpayeBill = TAW
+
 
 
 ## Payments survey
