@@ -238,7 +238,7 @@ object TestJourneys {
       order                = None,
       status               = PaymentStatuses.Created,
       createdOn            = LocalDateTime.parse("2027-11-02T16:28:55.185"),
-      journeySpecificData  = JsdPfEpayeLateCis(prn = Some(XRef14Char("123PH45678900"))),
+      journeySpecificData  = JsdPfEpayeLateCis(prn = Some(XRef14Char("XE123456789012"))),
       chosenWayToPay       = None
     )
   }

@@ -36,6 +36,7 @@ class AppConfig @Inject() (config: Configuration, servicesConfig: ServicesConfig
 
   val bankTransferRelativeUrl: String = config.get[String]("urls.pay-frontend.bank-transfer")
   val oneOffDirectDebitRelativeUrl: String = config.get[String]("urls.pay-frontend.one-off-direct-debit")
+  val variableDirectDebitRelativeUrl: String = config.get[String]("urls.pay-frontend.variable-direct-debit")
 
   val iframeHostNameAllowList: Set[String] = config.get[Seq[String]]("iframeHostNameAllowList").toSet
   val useProductionClientIds: Boolean = servicesConfig.getBoolean("use-production-client-ids")

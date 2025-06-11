@@ -98,6 +98,7 @@ card-fees.para2.bank-transfer = bank transfer
 card-fees.para2.open-banking = bank account
 card-fees.para2.direct-debit = direct debit
 card-fees.para2.one-off-direct-debit = Direct Debit (one-off payment)
+card-fees.para2.variable-direct-debit = Direct Debit (variable)
 card-fees.para2.personal-debit-card = personal debit card
 card-fees.para3 = You cannot pay using a personal credit card.
 card-fees.para4 = Allow 3 working days for your payment to reach HMRC’s bank account.
@@ -130,7 +131,8 @@ check-your-details.PfEpayeNi.tax-period = Tax period
 check-your-details.PfEpayeLpp.reference = Penalty reference number
 check-your-details.PfEpayeSeta.reference = Settlement Agreement (PSA) reference number
 check-your-details.PfEpayeLateCis.reference = Penalty reference number
-check-your-details.PfEpayeP11d.reference = Na
+check-your-details.PfEpayeP11d.reference = Accounts Office reference
+check-your-details.PfEpayeP11d.tax-year = Tax year
 
 
 ## Address Page

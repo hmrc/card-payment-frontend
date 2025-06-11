@@ -21,7 +21,7 @@ import play.api.mvc.{AnyContent, Call}
 import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
 import uk.gov.hmrc.cardpaymentfrontend.models.PaymentMethod.{Card, OneOffDirectDebit, OpenBanking}
 import uk.gov.hmrc.cardpaymentfrontend.models.openbanking.{OriginSpecificSessionData, PfEpayeP11dSessionData}
-import uk.gov.hmrc.cardpaymentfrontend.models.{CheckYourAnswersRow, Link, PaymentMethod}
+import uk.gov.hmrc.cardpaymentfrontend.models.{CheckYourAnswersPeriodRow, CheckYourAnswersRow, Link, PaymentMethod}
 
 object ExtendedPfEpayeP11d extends ExtendedOrigin {
 
@@ -39,8 +39,20 @@ object ExtendedPfEpayeP11d extends ExtendedOrigin {
       titleMessageKey = "check-your-details.PfEpayeP11d.reference",
       value           = Seq(journeyRequest.journey.referenceValue),
       changeLink      = Some(Link(
-        href       = Call("GET", changeReferenceUrl(payFrontendBaseUrl)), //TODO: may neeed chaging to this //pay/accounts-office-reference/change-reference-number
+        href       = Call("GET", changeReferenceUrl(payFrontendBaseUrl)),
         linkId     = "check-your-details-reference-change-link",
+        messageKey = "check-your-details.change"
+      ))
+    ))
+
+  override def checkYourAnswersAdditionalReferenceRow(journeyRequest: JourneyRequest[AnyContent])
+    (payFrontendBaseUrl: String): Option[CheckYourAnswersPeriodRow] =
+    Some(CheckYourAnswersPeriodRow(
+      titleMessageKey = "check-your-details.PfEpayeP11d.tax-year",
+      value           = Seq(journeyRequest.journey.journeySpecificData.asInstanceOf[JsdPfEpayeP11d].period),
+      changeLink      = Some(Link(
+        href       = Call("GET", s"$payFrontendBaseUrl/change-employers-paye-period?fromCardPayment=true"),
+        linkId     = "check-your-details-period-change-link",
         messageKey = "check-your-details.change"
       ))
     ))
