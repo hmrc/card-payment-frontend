@@ -186,10 +186,10 @@ object TestJourneys {
       status               = PaymentStatuses.Created,
       createdOn            = LocalDateTime.parse("2027-11-02T16:28:55.185"),
       journeySpecificData  = JsdBtaEpayeBill(
-        accountsOfficeReference  = AccountsOfficeReference("123PH45678900"),
-        period                   = testSubYearlyPeriod,
-        defaultAmountInPence = AmountInPence(1234),
-        dueDate              = Some(LocalDate.of(2028, 12, 12))
+        accountsOfficeReference = AccountsOfficeReference("123PH45678900"),
+        period                  = testSubYearlyPeriod,
+        defaultAmountInPence    = AmountInPence(1234),
+        dueDate                 = Some(LocalDate.of(2028, 12, 12))
       ),
       chosenWayToPay       = None
     )

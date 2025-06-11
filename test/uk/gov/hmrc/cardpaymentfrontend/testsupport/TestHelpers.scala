@@ -139,7 +139,7 @@ object TestHelpers {
     case Origins.PfPsAdmin                => throw new MatchError("Not implemented yet")
     case Origins.AppSa                    => throw new MatchError("Not implemented yet")
     case Origins.BtaVat                   => throw new MatchError("Not implemented yet")
-    case Origins.BtaEpayeBill             => throw new MatchError("Not implemented yet")
+    case Origins.BtaEpayeBill             => TestJourneys.BtaEpayeBill
     case Origins.BtaEpayePenalty          => throw new MatchError("Not implemented yet")
     case Origins.BtaEpayeInterest         => throw new MatchError("Not implemented yet")
     case Origins.BtaEpayeGeneral          => throw new MatchError("Not implemented yet")

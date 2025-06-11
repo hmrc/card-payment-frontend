@@ -122,51 +122,51 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       // Card billing address 3 or 4 (or 2 if there is no email address)
       def deriveReferenceRowIndex(origin: Origin): Int = {
         origin match {
-          case Origins.BtaSa => 1
-          case Origins.PtaSa => 1
-          case Origins.ItSa  => 1
-          case Origins.BtaCt => 1
+          case Origins.BtaSa        => 1
+          case Origins.PtaSa        => 1
+          case Origins.ItSa         => 1
+          case Origins.BtaCt        => 1
           case Origins.BtaEpayeBill => 1
-          case _             => 0
+          case _                    => 0
         }
       }
 
       def deriveAmountRowIndex(origin: Origin): Int = {
         origin match {
-          case Origins.BtaSa       => 2
-          case Origins.PtaSa       => 2
-          case Origins.ItSa        => 2
-          case Origins.AlcoholDuty => 2
-          case Origins.BtaCt       => 2
-          case Origins.PfCt        => 2
+          case Origins.BtaSa        => 2
+          case Origins.PtaSa        => 2
+          case Origins.ItSa         => 2
+          case Origins.AlcoholDuty  => 2
+          case Origins.BtaCt        => 2
+          case Origins.PfCt         => 2
           case Origins.BtaEpayeBill => 2
-          case _                   => 1
+          case _                    => 1
         }
       }
 
       def deriveEmailRowIndex(origin: Origin): Int = {
         origin match {
-          case Origins.BtaSa       => 3
-          case Origins.PtaSa       => 3
-          case Origins.ItSa        => 3
-          case Origins.AlcoholDuty => 3
-          case Origins.BtaCt       => 3
-          case Origins.PfCt        => 3
+          case Origins.BtaSa        => 3
+          case Origins.PtaSa        => 3
+          case Origins.ItSa         => 3
+          case Origins.AlcoholDuty  => 3
+          case Origins.BtaCt        => 3
+          case Origins.PfCt         => 3
           case Origins.BtaEpayeBill => 3
-          case _                   => 2
+          case _                    => 2
         }
       }
 
       def deriveCardBillingAddressRowIndex(origin: Origin): Int = {
         origin match {
-          case Origins.BtaSa       => 4
-          case Origins.PtaSa       => 4
-          case Origins.ItSa        => 4
-          case Origins.AlcoholDuty => 4
-          case Origins.BtaCt       => 4
-          case Origins.PfCt        => 4
+          case Origins.BtaSa        => 4
+          case Origins.PtaSa        => 4
+          case Origins.ItSa         => 4
+          case Origins.AlcoholDuty  => 4
+          case Origins.BtaCt        => 4
+          case Origins.PfCt         => 4
           case Origins.BtaEpayeBill => 4
-          case _                   => 3
+          case _                    => 3
         }
       }
 
@@ -469,7 +469,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
 
     "sanity check for implemented origins" in {
       // remember to add the singular tests for reference rows as well as fdp if applicable, they are not covered in the implementedOrigins forall tests
-      TestHelpers.implementedOrigins.size shouldBe 8 withClue "** This dummy test is here to remind you to update the tests above. Bump up the expected number when an origin is added to implemented origins **"
+      TestHelpers.implementedOrigins.size shouldBe 9 withClue "** This dummy test is here to remind you to update the tests above. Bump up the expected number when an origin is added to implemented origins **"
     }
 
   }

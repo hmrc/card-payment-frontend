@@ -40,7 +40,7 @@ object ExtendedBtaEpayeBill extends ExtendedOrigin {
 
   override def openBankingOriginSpecificSessionData: JourneySpecificData => Option[OriginSpecificSessionData] = {
     case j: JsdBtaEpayeBill => Some(BtaEpayeBillSessionData(j.accountsOfficeReference, period = j.period))
-    case _ => throw new RuntimeException("Incorrect origin found")
+    case _                  => throw new RuntimeException("Incorrect origin found")
   }
 
   override def surveyAuditName: String = "epaye"
