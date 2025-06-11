@@ -27,8 +27,8 @@ object ExtendedBtaEpayeBill extends ExtendedOrigin {
   override val serviceNameMessageKey: String = "service-name.BtaEpayeBill"
   override val taxNameMessageKey: String = "payment-complete.tax-name.BtaEpayeBill"
 
-  def cardFeesPagePaymentMethods: Set[PaymentMethod] = Set(OpenBanking, OneOffDirectDebit)
-  def paymentMethods(): Set[PaymentMethod] = Set(Card, OpenBanking, OneOffDirectDebit, Bacs)
+  def cardFeesPagePaymentMethods: Set[PaymentMethod] = Set(OpenBanking, OneOffDirectDebit, VariableDirectDebit)
+  def paymentMethods(): Set[PaymentMethod] = Set(Card, OpenBanking, OneOffDirectDebit, VariableDirectDebit, Bacs)
 
   override def checkYourAnswersReferenceRow(journeyRequest: JourneyRequest[AnyContent])(payFrontendBaseUrl: String): Option[CheckYourAnswersRow] = {
     Some(CheckYourAnswersRow(
@@ -39,7 +39,7 @@ object ExtendedBtaEpayeBill extends ExtendedOrigin {
   }
 
   override def openBankingOriginSpecificSessionData: JourneySpecificData => Option[OriginSpecificSessionData] = {
-    case j: JsdBtaEpayeBill => BtaEpayeBillSessionData(j.accountsOfficeReference, period = j.period)
+    case j: JsdBtaEpayeBill => Some(BtaEpayeBillSessionData(j.accountsOfficeReference, period = j.period))
     case _ => throw new RuntimeException("Incorrect origin found")
   }
 

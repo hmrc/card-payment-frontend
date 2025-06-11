@@ -38,7 +38,8 @@ object TestHelpers {
     PfAlcoholDuty,
     AlcoholDuty,
     PfCt,
-    BtaCt
+    BtaCt,
+    BtaEpayeBill
   )
 
   val unimplementedOrigins: Seq[Origin] = Seq[Origin](
@@ -58,7 +59,6 @@ object TestHelpers {
     PfPsAdmin,
     AppSa,
     BtaVat,
-    BtaEpayeBill,
     BtaEpayePenalty,
     BtaEpayeInterest,
     BtaEpayeGeneral,

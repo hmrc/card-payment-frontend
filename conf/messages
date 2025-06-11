@@ -125,8 +125,7 @@ check-your-details.BtaCt.reference = Payment reference
 check-your-details.PfCt.reference = Unique Taxpayer Reference (UTR)
 check-your-details.PfCt.payslip-reference = Payslip reference
 check-your-details.PfVat.reference.title = VAT registration number
-
-
+check-your-details.BtaEpayeBill.reference = Payment reference
 
 ## Address Page
 address.heading = Card billing address
@@ -208,7 +207,7 @@ payment-complete.tax-name.PfPsAdmin =
 payment-complete.tax-name.BtaSa = Self Assessment
 payment-complete.tax-name.AppSa = Self Assessment
 payment-complete.tax-name.BtaVat = VAT
-payment-complete.tax-name.BtaEpayeBill =
+payment-complete.tax-name.BtaEpayeBill = PAYE and National Insurance
 payment-complete.tax-name.BtaEpayePenalty =
 payment-complete.tax-name.BtaEpayeInterest =
 payment-complete.tax-name.BtaEpayeGeneral =

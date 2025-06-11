@@ -19,9 +19,11 @@ package uk.gov.hmrc.cardpaymentfrontend.testsupport.testdata
 import payapi.cardpaymentjourney.model.journey._
 import payapi.corcommon.model.taxes.ad.{AlcoholDutyChargeReference, AlcoholDutyReference}
 import payapi.corcommon.model.taxes.ct.{CtChargeTypes, CtLivePeriod, CtPeriod, CtUtr}
+import payapi.corcommon.model.taxes.epaye.AccountsOfficeReference
 import payapi.corcommon.model.taxes.sa.SaUtr
 import payapi.corcommon.model.{AmountInPence, JourneyId, PaymentStatuses}
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.testdata.TestDataUtils._
+import uk.gov.hmrc.cardpaymentfrontend.testsupport.testdata.TestPayApiData.testSubYearlyPeriod
 
 import java.time.{LocalDate, LocalDateTime}
 
@@ -168,6 +170,26 @@ object TestJourneys {
         utr          = Some(CtUtr("1097172564")),
         ctPeriod     = Some(CtPeriod(1)),
         ctChargeType = Some(CtChargeTypes.A)
+      ),
+      chosenWayToPay       = None
+    )
+  }
+
+  object BtaEpayeBill extends JourneyStatuses[JsdBtaEpayeBill] {
+    val journeyBeforeBeginWebPayment: Journey[JsdBtaEpayeBill] = Journey[JsdBtaEpayeBill](
+      _id                  = JourneyId("TestJourneyId-44f9-ad7f-01e1d3d8f151"),
+      sessionId            = Some(SessionId("TestSession-4b87460d-6f43-4c4c-b810-d6f87c774854")),
+      amountInPence        = Some(AmountInPence(1234)),
+      emailTemplateOptions = None,
+      navigation           = Some(NavigationOptions(returnUrl = Url("https://www.return-url.com"), backUrl = Url("https://www.back-to-btaepayebill.com"))),
+      order                = None,
+      status               = PaymentStatuses.Created,
+      createdOn            = LocalDateTime.parse("2027-11-02T16:28:55.185"),
+      journeySpecificData  = JsdBtaEpayeBill(
+        accountsOfficeReference  = AccountsOfficeReference("123PH45678900"),
+        period                   = testSubYearlyPeriod,
+        defaultAmountInPence = AmountInPence(1234),
+        dueDate              = Some(LocalDate.of(2028, 12, 12))
       ),
       chosenWayToPay       = None
     )

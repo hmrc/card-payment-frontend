@@ -126,6 +126,8 @@ check-your-details.BtaCt.reference = Cyfeirnod y taliad
 check-your-details.PfCt.reference = Cyfeirnod Unigryw y Trethdalwr (UTR)
 check-your-details.PfCt.payslip-reference = Cyfeirnod slip talu
 check-your-details.PfVat.reference.title = ADD_ME
+check-your-details.BtaEpayeBill.reference = Cyfeirnod y taliad
+
 
 
 ## Address Page
@@ -214,7 +216,7 @@ payment-complete.tax-name.PfPsAdmin =
 payment-complete.tax-name.BtaSa = Hunanasesiad
 payment-complete.tax-name.AppSa = Hunanasesiad
 payment-complete.tax-name.BtaVat = VAT
-payment-complete.tax-name.BtaEpayeBill =
+payment-complete.tax-name.BtaEpayeBill = TWE a’ch Yswiriant Gwladol y cyflogwr
 payment-complete.tax-name.BtaEpayePenalty =
 payment-complete.tax-name.BtaEpayeInterest =
 payment-complete.tax-name.BtaEpayeGeneral =
