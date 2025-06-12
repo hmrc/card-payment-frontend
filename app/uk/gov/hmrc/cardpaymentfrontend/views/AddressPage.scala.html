@@ -28,6 +28,7 @@
     govukInput: GovukInput,
     govukButton: GovukButton,
     govukSelect: GovukSelect,
+    govukFieldset: GovukFieldset,
     layout: Layout,
     formWithCSRF: FormWithCSRF
 )
@@ -39,6 +40,107 @@
 
 @heading= @{messages("address.heading")}
 
+@theHTML = {
+@formWithCSRF(action = uk.gov.hmrc.cardpaymentfrontend.controllers.routes.AddressController.submit) {
+
+    <div id="address-hint" class="govuk-hint">
+        @messages("address.line1.hint")
+        <span>@messages("address.line2.hint")</span>
+    </div>
+
+
+    @govukInput(
+        Input(
+            id = "line1",
+            name = "line1",
+            classes = "govuk-input govuk-!-width-three-quarters",
+            label = Label(
+                content = Text(messages("address.field-name.line1"))),
+            inputType = "text",
+            autocomplete = Some("off"),
+            spellcheck = Some(false),
+            errorMessage = form.error("line1").map(e => ErrorMessage.errorMessageWithDefaultStringsTranslated(
+                content = Text(messages(e.message))
+            )),
+        ).withFormField(form("line1"))
+    )
+
+    @govukInput(
+        Input(
+            id = "line2",
+            name = "line2",
+            classes = "govuk-input govuk-!-width-three-quarters",
+            label = Label(
+                content = Text(messages("address.field-name.line2"))),
+            inputType = "text",
+            autocomplete = Some("off"),
+            spellcheck = Some(false)
+        ).withFormField(form("line2"))
+    )
+    @govukInput(
+        Input(
+            id = "city",
+            name = "city",
+            classes = "govuk-input govuk-!-width-three-quarters",
+            label = Label(
+                content = Text(messages("address.field-name.city"))),
+            inputType = "text",
+            autocomplete = Some("off"),
+            spellcheck = Some(false)
+        ).withFormField(form("city"))
+    )
+    @govukInput(
+        Input(
+            id = "county",
+            name = "county",
+            classes = "govuk-input govuk-!-width-three-quarters",
+            label = Label(
+                content = Text(messages("address.field-name.county"))),
+            inputType = "text",
+            autocomplete = Some("off"),
+            spellcheck = Some(false)
+        ).withFormField(form("county"))
+    )
+    @govukInput(
+        Input(
+            id = "postcode",
+            name = "postcode",
+            classes = "govuk-input govuk-input--width-10",
+            label = Label(
+                content = Text(messages("address.field-name.postcode"))),
+            inputType = "text",
+            autocomplete = Some("off"),
+            spellcheck = Some(false),
+            errorMessage = form.error("postcode").map(e => ErrorMessage.errorMessageWithDefaultStringsTranslated(
+                content = Text(messages(e.message))
+            ))
+        ).withFormField(form("postcode"))
+    )
+    @govukSelect(
+        Select(
+            id = "country",
+            name = "country",
+            classes = "govuk-select",
+            label = Label(content = Text(messages("address.field-name.country"))),
+            errorMessage = form.error("country").map(e => ErrorMessage.errorMessageWithDefaultStringsTranslated(
+                content = Text(messages(e.message))
+            )),
+            items = Seq(SelectItem(
+                Some(""),
+                text = messages("address.country.select.message"),
+            )) ++ countries.map(c => SelectItem(Some(c.code), c.name))
+        ).withFormField(form("country"))
+    )
+
+    @govukButton(Button(
+        id = Some("submit"),
+        content = Text(messages("continue"))
+    ))
+
+
+}
+}
+
 @layout(pageTitle = Some(heading), origin = Some(journeyRequest.journey.origin), maybeForm = Some(form)) {
     @if(form.hasErrors) {
         @errorSummary(ErrorSummary(errorList =
@@ -46,102 +148,17 @@
         )
     }
 
-    <fieldset class="govuk-fieldset" aria-describedby="fieldset-hint">
-        <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-            <h1 class="govuk-fieldset__heading">@heading</h1>
-        </legend>
-        <p class="govuk-hint govuk-!-margin-bottom-2" id="fieldset-hint"> @{messages("address.line1.hint")} <span> @{messages("address.line2.hint")} </span></p>
-    </fieldset>
 
-    @formWithCSRF(action = uk.gov.hmrc.cardpaymentfrontend.controllers.routes.AddressController.submit) {
-        @govukInput(
-            Input(
-                id = "line1",
-                name = "line1",
-                classes = "govuk-input--width-20",
-                label = Label(
-                    content = Text(messages("address.field-name.line1"))),
-                inputType = "text",
-                autocomplete = Some("off"),
-                spellcheck = Some(false),
-                errorMessage = form.error("line1").map(e => ErrorMessage.errorMessageWithDefaultStringsTranslated(
-                    content = Text(messages(e.message))
-                )),
-            ).withFormField(form("line1"))
-        )
 
-        @govukInput(
-            Input(
-                id = "line2",
-                name = "line2",
-                classes = "govuk-input--width-20",
-                label = Label(
-                    content = Text(messages("address.field-name.line2"))),
-                inputType = "text",
-                autocomplete = Some("off"),
-                spellcheck = Some(false)
-            ).withFormField(form("line2"))
-        )
-        @govukInput(
-            Input(
-                id = "city",
-                name = "city",
-                classes = "govuk-input--width-20",
-                label = Label(
-                    content = Text(messages("address.field-name.city"))),
-                inputType = "text",
-                autocomplete = Some("off"),
-                spellcheck = Some(false)
-            ).withFormField(form("city"))
-        )
-        @govukInput(
-            Input(
-                id = "county",
-                name = "county",
-                classes = "govuk-input--width-20",
-                label = Label(
-                    content = Text(messages("address.field-name.county"))),
-                inputType = "text",
-                autocomplete = Some("off"),
-                spellcheck = Some(false)
-            ).withFormField(form("county"))
-        )
-        @govukInput(
-            Input(
-                id = "postcode",
-                name = "postcode",
-                classes = "govuk-input--width-20",
-                label = Label(
-                    content = Text(messages("address.field-name.postcode"))),
-                inputType = "text",
-                autocomplete = Some("off"),
-                spellcheck = Some(false),
-                errorMessage = form.error("postcode").map(e => ErrorMessage.errorMessageWithDefaultStringsTranslated(
-                    content = Text(messages(e.message))
-                ))
-            ).withFormField(form("postcode"))
-        )
-        @govukSelect(
-            Select(
-                id = "country",
-                name = "country",
-                classes = "govuk-select address-input-width",
-                label = Label(content = Text(messages("address.field-name.country"))),
-                errorMessage = form.error("country").map(e => ErrorMessage.errorMessageWithDefaultStringsTranslated(
-                    content = Text(messages(e.message))
-                )),
-                items = Seq(SelectItem(
-                    Some(""),
-                    text = messages("address.country.select.message"),
-                )) ++ countries.map(c => SelectItem(Some(c.code), c.name))
-            ).withFormField(form("country"))
-        )
 
-        @govukButton(Button(
-            id = Some("submit"),
-            content = Text(messages("continue"))
-        ))
-
-    }
+    @govukFieldset(Fieldset(
+        legend = Some(Legend(
+            content = Text(heading),
+            classes = "govuk-fieldset__legend--l",
+            isPageHeading = true
+        )),
+        describedBy = Some("address-hint"),
+        html = theHTML
+    ))
 
 }
