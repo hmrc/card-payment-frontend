@@ -191,6 +191,7 @@ object TestJourneys {
       ),
       chosenWayToPay       = None
     )
+
   }
 
   object PfVatWithChargeReference extends JourneyStatuses[JsdPfVat] {

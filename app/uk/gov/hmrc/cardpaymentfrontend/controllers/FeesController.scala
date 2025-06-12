@@ -40,7 +40,7 @@ class FeesController @Inject() (
   import requestSupport._
 
   def renderPage: Action[AnyContent] = actions.journeyAction { implicit journeyRequest: JourneyRequest[AnyContent] =>
-    val altPayments = linksAvailableOnFeesPage(journeyRequest.journey.origin)
+    val altPayments = linksAvailableOnFeesPage(journeyRequest)
     if (altPayments.isEmpty) Redirect("http://nextpage.html")
     else Ok(feesPage(altPayments))
   }
@@ -51,8 +51,8 @@ class FeesController @Inject() (
 
   private[controllers] def paymentMethodToBeShown(paymentMethod: PaymentMethod, paymentMethods: Set[PaymentMethod]): Boolean = paymentMethods.contains(paymentMethod)
 
-  private[controllers] def linksAvailableOnFeesPage(origin: Origin): Seq[Link] = {
-    val extendedOrigin = origin.lift
+  private[controllers] def linksAvailableOnFeesPage(journeyRequest: JourneyRequest[AnyContent]): Seq[Link] = {
+    val extendedOrigin = journeyRequest.journey.origin.lift
     val paymentMethodsToShow: Set[PaymentMethod] = extendedOrigin.cardFeesPagePaymentMethods
     val showOpenBankingLink: Boolean = paymentMethodToBeShown(PaymentMethod.OpenBanking, paymentMethodsToShow)
     val showBankTransferLink: Boolean = paymentMethodToBeShown(PaymentMethod.Bacs, paymentMethodsToShow)
@@ -83,7 +83,7 @@ class FeesController @Inject() (
       ))
     } else Seq.empty[Link]
 
-    val maybeVariableDirectDebitLink = if (showVariableDirectDebitLink) {
+    val maybeVariableDirectDebitLink = if (showVariableDirectDebitLink && (extendedOrigin.)) {
       Seq(Link(
         href       = Call("GET", appConfig.payFrontendBaseUrl + appConfig.variableDirectDebitRelativeUrl),
         linkId     = "variable-direct-debit-link",

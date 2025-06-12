@@ -715,6 +715,26 @@ class FeesControllerSpec extends ItSpec {
           oneOffDirectDebitBullet.attr("href") shouldBe "http://localhost:9056/pay/pay-by-direct-debit"
         }
 
+        "render NO option for direct debit when is a Surcharge payment" in {
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfVatWithChargeReference.journeyBeforeBeginWebPayment)
+          val result = systemUnderTest.renderPage(fakeRequest)
+          val document = Jsoup.parse(contentAsString(result))
+          val listOfMethods = document.select("#payment-type-list").select("li")
+          val oneOffDirectDebitBullet = listOfMethods.select("#variable-direct-debit-link")
+          oneOffDirectDebitBullet.text() shouldBe "Direct Debit (variable)"
+          oneOffDirectDebitBullet.attr("href") shouldBe "http://localhost:9056/pay/pay-by-direct-debit"
+        }
+
+        "render NO option for direct debit when is a Surcharge payment in welsh" in {
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfVatWithChargeReference.journeyBeforeBeginWebPayment)
+          val result = systemUnderTest.renderPage(fakeWelshRequest)
+          val document = Jsoup.parse(contentAsString(result))
+          val listOfMethods = document.select("#payment-type-list").select("li")
+          val oneOffDirectDebitBullet = listOfMethods.select("#variable-direct-debit-link")
+          oneOffDirectDebitBullet.text() shouldBe "Debyd Uniongyrchol (newidiol)"
+          oneOffDirectDebitBullet.attr("href") shouldBe "http://localhost:9056/pay/pay-by-direct-debit"
+        }
+
       }
 
       "for origin BtaVat" - {
