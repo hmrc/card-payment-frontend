@@ -790,9 +790,9 @@ class FeesControllerSpec extends ItSpec {
             case Origins.BtaVat                   => Seq.empty
             // TODO: ADD VARIABLE ONCE VAT IS ON MAIN
             case Origins.BtaEpayeBill             => Seq(expectedOpenBankingLink, expectedOneOffDirectDebitLink)
-            case Origins.BtaEpayePenalty          => Seq.empty
-            case Origins.BtaEpayeInterest         => Seq.empty
-            case Origins.BtaEpayeGeneral          => Seq.empty
+            case Origins.BtaEpayePenalty          => Seq(expectedOpenBankingLink, expectedOneOffDirectDebitLink)
+            case Origins.BtaEpayeInterest         => Seq(expectedOpenBankingLink, expectedOneOffDirectDebitLink)
+            case Origins.BtaEpayeGeneral          => Seq(expectedOpenBankingLink, expectedOneOffDirectDebitLink)
             case Origins.BtaClass1aNi             => Seq.empty
             case Origins.BtaCt                    => Seq(expectedOpenBankingLink, expectedOneOffDirectDebitLink)
             case Origins.BtaSdil                  => Seq.empty

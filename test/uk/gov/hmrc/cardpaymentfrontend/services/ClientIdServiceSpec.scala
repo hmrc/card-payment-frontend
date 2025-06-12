@@ -42,8 +42,10 @@ class ClientIdServiceSpec extends ItSpec {
         (TestJourneys.AlcoholDuty.journeyBeforeBeginWebPayment, ClientIds.ETEE),
         (TestJourneys.BtaCt.journeyBeforeBeginWebPayment, ClientIds.COEE),
         (TestJourneys.PfCt.journeyBeforeBeginWebPayment, ClientIds.COEE),
-        (TestJourneys.BtaEpayeBill.journeyBeforeBeginWebPayment, ClientIds.PAEE)
-
+        (TestJourneys.BtaEpayeBill.journeyBeforeBeginWebPayment, ClientIds.PAEE),
+        (TestJourneys.BtaEpayeGeneral.journeyBeforeBeginWebPayment, ClientIds.PAEE),
+        (TestJourneys.BtaEpayePenalty.journeyBeforeBeginWebPayment, ClientIds.MIEE),
+        (TestJourneys.BtaEpayeInterest.journeyBeforeBeginWebPayment, ClientIds.MIEE),
       )
       forAll(scenarios) {
         case (journey, clientId) =>
@@ -62,7 +64,10 @@ class ClientIdServiceSpec extends ItSpec {
         (TestJourneys.AlcoholDuty.journeyBeforeBeginWebPayment, ClientIds.ETEC),
         (TestJourneys.BtaCt.journeyBeforeBeginWebPayment, ClientIds.COEC),
         (TestJourneys.PfCt.journeyBeforeBeginWebPayment, ClientIds.COEC),
-        (TestJourneys.BtaEpayeBill.journeyBeforeBeginWebPayment, ClientIds.PAEC)
+        (TestJourneys.BtaEpayeBill.journeyBeforeBeginWebPayment, ClientIds.PAEC),
+        (TestJourneys.BtaEpayeGeneral.journeyBeforeBeginWebPayment, ClientIds.PAEC),
+        (TestJourneys.BtaEpayePenalty.journeyBeforeBeginWebPayment, ClientIds.MIEC),
+        (TestJourneys.BtaEpayeInterest.journeyBeforeBeginWebPayment, ClientIds.MIEC),
       )
       forAll(scenarios) {
         case (journey, clientId) =>
@@ -73,7 +78,7 @@ class ClientIdServiceSpec extends ItSpec {
   }
 
   "sanity check for implemented origins" in {
-    TestHelpers.implementedOrigins.size shouldBe 9 withClue "** This dummy test is here to remind you to update the tests above. Bump up the expected number when an origin is added to implemented origins **"
+    TestHelpers.implementedOrigins.size shouldBe 12 withClue "** This dummy test is here to remind you to update the tests above. Bump up the expected number when an origin is added to implemented origins **"
   }
 
 }

@@ -31,7 +31,7 @@ service-name.AppSa = Talu eich Hunanasesiad
 service-name.BtaVat = Talu eich TAW
 service-name.BtaEpayeBill = Talwch eich TWE a’ch Yswiriant Gwladol y cyflogwr
 service-name.BtaEpayePenalty = Talu’ch cosb am dalu neu gyflwyno TWE yn hwyr
-service-name.BtaEpayeInterest =
+service-name.BtaEpayeInterest = Talwch eich TWE a’ch Yswiriant Gwladol y cyflogwr
 service-name.BtaEpayeGeneral = Talwch eich TWE a’ch Yswiriant Gwladol y cyflogwr
 service-name.BtaClass1aNi = Talwch eich TWE a’ch Yswiriant Gwladol y cyflogwr
 service-name.BtaCt = Talu eich Treth Gorfforaeth
@@ -127,8 +127,9 @@ check-your-details.PfCt.reference = Cyfeirnod Unigryw y Trethdalwr (UTR)
 check-your-details.PfCt.payslip-reference = Cyfeirnod slip talu
 check-your-details.PfVat.reference.title = ADD_ME
 check-your-details.BtaEpayeBill.reference = Cyfeirnod y taliad
-
-
+check-your-details.BtaEpayePenalty.reference = Cyfeirnod y taliad
+check-your-details.BtaEpayeInterest.reference = Cyfeirnod y taliad
+check-your-details.BtaEpayeGeneral.reference = Cyfeirnod y taliad
 
 ## Address Page
 address.heading = Cyfeiriad bilio’r cerdyn
@@ -217,9 +218,9 @@ payment-complete.tax-name.BtaSa = Hunanasesiad
 payment-complete.tax-name.AppSa = Hunanasesiad
 payment-complete.tax-name.BtaVat = VAT
 payment-complete.tax-name.BtaEpayeBill = TWE a’ch Yswiriant Gwladol y cyflogwr
-payment-complete.tax-name.BtaEpayePenalty =
-payment-complete.tax-name.BtaEpayeInterest =
-payment-complete.tax-name.BtaEpayeGeneral =
+payment-complete.tax-name.BtaEpayePenalty = TWE a’ch Yswiriant Gwladol y cyflogwr
+payment-complete.tax-name.BtaEpayeInterest = TWE a’ch Yswiriant Gwladol y cyflogwr
+payment-complete.tax-name.BtaEpayeGeneral = TWE a’ch Yswiriant Gwladol y cyflogwr
 payment-complete.tax-name.BtaClass1aNi =
 payment-complete.tax-name.BtaCt = Treth Gorfforaeth
 payment-complete.tax-name.BtaSdil =
@@ -308,8 +309,9 @@ email.tax-name.AlcoholDuty = Toll Alcohol
 email.tax-name.BtaCt = Treth Gorfforaeth
 email.tax-name.PfCt = Treth Gorfforaeth
 email.tax-name.BtaEpayeBill = TAW
-
-
+email.tax-name.BtaEpayePenalty = TAW
+email.tax-name.BtaEpayeInterest = TAW
+email.tax-name.BtaEpayeGeneral = TAW
 
 ## Payments survey
 payments-survey.bta.return-message = Dim diolch, dychwelyd i cyfrif treth busnes

@@ -29,7 +29,7 @@ service-name.AppSa = Pay your Self Assessment
 service-name.BtaVat = Pay your VAT
 service-name.BtaEpayeBill = Pay your employers’ PAYE and National Insurance
 service-name.BtaEpayePenalty = Pay your PAYE late payment or filing penalty
-service-name.BtaEpayeInterest =
+service-name.BtaEpayeInterest = Pay your employers’ PAYE and National Insurance
 service-name.BtaEpayeGeneral = Pay your employers’ PAYE and National Insurance
 service-name.BtaClass1aNi = Pay your employers’ PAYE and National Insurance
 service-name.BtaCt = Pay your Corporation Tax
@@ -126,6 +126,10 @@ check-your-details.PfCt.reference = Unique Taxpayer Reference (UTR)
 check-your-details.PfCt.payslip-reference = Payslip reference
 check-your-details.PfVat.reference.title = VAT registration number
 check-your-details.BtaEpayeBill.reference = Payment reference
+check-your-details.BtaEpayePenalty.reference = Payment reference
+check-your-details.BtaEpayeInterest.reference = Payment reference
+check-your-details.BtaEpayeGeneral.reference = Payment reference
+
 
 ## Address Page
 address.heading = Card billing address
@@ -208,9 +212,9 @@ payment-complete.tax-name.BtaSa = Self Assessment
 payment-complete.tax-name.AppSa = Self Assessment
 payment-complete.tax-name.BtaVat = VAT
 payment-complete.tax-name.BtaEpayeBill = PAYE and National Insurance
-payment-complete.tax-name.BtaEpayePenalty =
-payment-complete.tax-name.BtaEpayeInterest =
-payment-complete.tax-name.BtaEpayeGeneral =
+payment-complete.tax-name.BtaEpayePenalty = PAYE and National Insurance
+payment-complete.tax-name.BtaEpayeInterest = PAYE and National Insurance
+payment-complete.tax-name.BtaEpayeGeneral = PAYE and National Insurance
 payment-complete.tax-name.BtaClass1aNi =
 payment-complete.tax-name.BtaCt = Corporation Tax
 payment-complete.tax-name.BtaSdil =
@@ -303,7 +307,9 @@ email.tax-name.AlcoholDuty = Alcohol Duty
 email.tax-name.BtaCt = Corporation Tax
 email.tax-name.PfCt = Corporation Tax
 email.tax-name.BtaEpayeBill = PAYE
-
+email.tax-name.BtaEpayePenalty = PAYE
+email.tax-name.BtaEpayeInterest = PAYE
+email.tax-name.BtaEpayeGeneral = PAYE
 
 ## Payments survey
 payments-survey.bta.return-message = Skip survey, return to business tax account
