@@ -63,4 +63,27 @@ class ActionRefinerSpec extends ItSpec {
     }
   }
 
+  "paymentStatusActionRefiner" - {
+    val systemUnderTest: PaymentStatusActionRefiner = app.injector.instanceOf[PaymentStatusActionRefiner]
+
+      def fakeRequest(journey: Journey[JourneySpecificData]): JourneyRequest[AnyContent] = new JourneyRequest(journey, FakeRequest())
+
+    "should return a left when journey in JourneyRequest is not in sent state - Finished" in {
+      val request = fakeRequest(TestJourneys.PfSa.journeyAfterSucceedDebitWebPayment)
+      systemUnderTest.refine(request).futureValue shouldBe Left(Results.NotFound("Journey not in valid state"))
+    }
+
+    "should return a left when journey in JourneyRequest is not in sent state - Created" in {
+      val request = fakeRequest(TestJourneys.PfSa.journeyBeforeBeginWebPayment)
+      systemUnderTest.refine(request).futureValue shouldBe Left(Results.NotFound("Journey not in valid state"))
+    }
+
+    "should return a right when journey in JourneyRequest is in sent state" in {
+      val request = fakeRequest(TestJourneys.PfSa.journeyAfterBeginWebPayment)
+      val result: Either[Result, JourneyRequest[AnyContent]] = systemUnderTest.refine(request).futureValue
+      result.isRight shouldBe true
+      result.map(_.journey) shouldBe Right(TestJourneys.PfSa.journeyAfterBeginWebPayment)
+    }
+  }
+
 }
