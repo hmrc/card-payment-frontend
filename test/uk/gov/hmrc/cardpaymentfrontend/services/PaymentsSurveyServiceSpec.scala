@@ -263,7 +263,7 @@ class PaymentsSurveyServiceSpec extends ItSpec with TableDrivenPropertyChecks {
             audit          = AuditOptions(
               userType  = "LoggedOut",
               journey   = Some("Successful"),
-              orderId   = Some("123PH45678900"),
+              orderId   = Some("XE123456789012"),
               liability = Some("paye-late-cis")
             ),
             contentOptions = SurveyContentOptions(

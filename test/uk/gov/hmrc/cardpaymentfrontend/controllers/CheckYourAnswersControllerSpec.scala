@@ -139,6 +139,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
           case Origins.BtaCt       => 2
           case Origins.PfCt        => 2
           case Origins.PfEpayeNi   => 2
+          case Origins.PfEpayeP11d => 2
           case _                   => 1
         }
       }
@@ -152,6 +153,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
           case Origins.BtaCt       => 3
           case Origins.PfCt        => 3
           case Origins.PfEpayeNi   => 3
+          case Origins.PfEpayeP11d => 3
           case _                   => 2
         }
       }
@@ -165,6 +167,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
           case Origins.BtaCt       => 4
           case Origins.PfCt        => 4
           case Origins.PfEpayeNi   => 4
+          case Origins.PfEpayeP11d => 4
           case _                   => 3
         }
       }
@@ -448,6 +451,38 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       val document = Jsoup.parse(contentAsString(result))
       val paymentDateRow = document.select(".govuk-summary-list__row").asScala.toList(0)
       assertRow(paymentDateRow, "Dyddiad talu", "Heddiw", Some("Newid"), Some("http://localhost:9056/pay/change-when-do-you-want-to-pay?toPayFrontendConfirmation=true"))
+    }
+
+    "[PfEpayeNi] should render the Tax period row correctly" in {
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfEpayeNi.journeyBeforeBeginWebPayment)
+      val result = systemUnderTest.renderPage(fakeRequest())
+      val document = Jsoup.parse(contentAsString(result))
+      val taxPeriodRow = document.select(".govuk-summary-list__row").asScala.toList(1)
+      assertRow(taxPeriodRow, "Tax period", "6 April 2024 to 5 July 2024 (first quarter)", Some("Change"), Some("http://localhost:9056/pay/change-employers-paye-period?fromCardPayment=true"))
+    }
+
+    "[PfEpayeNi] should render the Tax period row correctly in Welsh" in {
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfEpayeNi.journeyBeforeBeginWebPayment)
+      val result = systemUnderTest.renderPage(fakeRequestWelsh())
+      val document = Jsoup.parse(contentAsString(result))
+      val taxPeriodRow = document.select(".govuk-summary-list__row").asScala.toList(1)
+      assertRow(taxPeriodRow, "Cyfnod talu", "6 Ebrill 2024 i 5 Gorffennaf 2024 (chwarter cyntaf)", Some("Newid"), Some("http://localhost:9056/pay/change-employers-paye-period?fromCardPayment=true"))
+    }
+
+    "[PfEpayeP11d] should render the Tax year correctly" in {
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfEpayeP11d.journeyBeforeBeginWebPayment)
+      val result = systemUnderTest.renderPage(fakeRequest())
+      val document = Jsoup.parse(contentAsString(result))
+      val taxPeriodRow = document.select(".govuk-summary-list__row").asScala.toList(1)
+      assertRow(taxPeriodRow, "Tax year", "2024 to 2025", Some("Change"), Some("http://localhost:9056/pay/change-tax-year?fromCardPayment=true"))
+    }
+
+    "[PfEpayeP11d] should render the Tax year correctly in Welsh" in {
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfEpayeP11d.journeyBeforeBeginWebPayment)
+      val result = systemUnderTest.renderPage(fakeRequestWelsh())
+      val document = Jsoup.parse(contentAsString(result))
+      val taxPeriodRow = document.select(".govuk-summary-list__row").asScala.toList(1)
+      assertRow(taxPeriodRow, "Blwyddyn dreth", "2024 i 2025", Some("Newid"), Some("http://localhost:9056/pay/change-tax-year?fromCardPayment=true"))
     }
 
     "sanity check for implemented origins" in {

@@ -678,7 +678,7 @@ class FeesControllerSpec extends ItSpec {
       )
 
       val expectedVariableDirectDebitLink = Link(
-        href       = Call("GET", "http://localhost:9056/pay/pay-by-direct-debit/go"),
+        href       = Call("GET", "http://localhost:9056/pay/pay-by-direct-debit"),
         linkId     = "variable-direct-debit-link",
         messageKey = "card-fees.para2.variable-direct-debit"
       )
@@ -692,7 +692,7 @@ class FeesControllerSpec extends ItSpec {
             case Origins.ItSa                     => Seq(expectedBankTransferLink)
             case Origins.PfVat                    => Seq.empty
             case Origins.PfCt                     => Seq(expectedOpenBankingLink, expectedOneOffDirectDebitLink)
-            case Origins.PfEpayeNi                => Seq(expectedOpenBankingLink, expectedOneOffDirectDebitLink, expectedVariableDirectDebitLink)
+            case Origins.PfEpayeNi                => Seq(expectedOpenBankingLink, expectedVariableDirectDebitLink, expectedOneOffDirectDebitLink)
             case Origins.PfEpayeLpp               => Seq(expectedOpenBankingLink, expectedOneOffDirectDebitLink)
             case Origins.PfEpayeSeta              => Seq(expectedOpenBankingLink, expectedOneOffDirectDebitLink)
             case Origins.PfEpayeLateCis           => Seq(expectedOpenBankingLink, expectedOneOffDirectDebitLink)
