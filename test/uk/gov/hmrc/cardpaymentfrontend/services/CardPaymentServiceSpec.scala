@@ -44,11 +44,7 @@ class CardPaymentServiceSpec extends ItSpec {
 
   "CardPaymentService" - {
     "initiatePayment" - {
-      val cardPaymentInitiatePaymentRequest = CardPaymentInitiatePaymentRequest(
-        "http://localhost:10155/pay-by-card/return-to-hmrc", "SAEE", "1234567895K", AmountInPence(1234),
-                                                                                    BarclaycardAddress("made up street", postCode    = "AA11AA", countryCode = "GBR"),
-                                                                                    Some(EmailAddress("some@email.com")), "00001999999999"
-      )
+      val cardPaymentInitiatePaymentRequest = CardPaymentInitiatePaymentRequest("http://localhost:10155/pay-by-card/return-to-hmrc", "SAEE", "1234567895K", AmountInPence(1234), BarclaycardAddress("made up street", postCode    = "AA11AA", countryCode = "GBR"), Some(EmailAddress("some@email.com")), "00001999999999")
       val expectedCardPaymentInitiatePaymentResponse = CardPaymentInitiatePaymentResponse("someiframeurl", "sometransactionref")
 
       "should return a CardPaymentInitiatePaymentResponse when card-payment backend returns one" in {

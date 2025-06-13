@@ -51,7 +51,7 @@ object ExtendedPfEpayeP11d extends ExtendedOrigin {
       titleMessageKey = "check-your-details.PfEpayeP11d.tax-year",
       value           = Seq(journeyRequest.journey.journeySpecificData.asInstanceOf[JsdPfEpayeP11d].period),
       changeLink      = Some(Link(
-        href       = Call("GET", s"$payFrontendBaseUrl/change-employers-paye-period?fromCardPayment=true"),
+        href       = Call("GET", s"$payFrontendBaseUrl/change-tax-year?fromCardPayment=true"),
         linkId     = "check-your-details-period-change-link",
         messageKey = "check-your-details.change"
       ))

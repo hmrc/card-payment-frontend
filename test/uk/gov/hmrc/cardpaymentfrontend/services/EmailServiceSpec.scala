@@ -99,10 +99,10 @@ class EmailServiceSpec extends ItSpec with TableDrivenPropertyChecks {
       (PfEpayeSeta, "Cytundeb Setliad TWE y Cyflogwr", "XA123456789012", None, Some("12.34"), "cy"),
       (PfEpayeSeta, "Cytundeb Setliad TWE y Cyflogwr", "XA123456789012", commission, Some("13.57"), "cy"),
 
-      (PfEpayeLateCis, "Construction Industry Scheme (CIS) late filing penalty", "123PH45678900", None, Some("12.34"), "en"),
-      (PfEpayeLateCis, "Construction Industry Scheme (CIS) late filing penalty", "123PH45678900", commission, Some("13.57"), "en"),
-      (PfEpayeLateCis, "Cynllun y Diwydiant Adeiladu (CIS) - cosb am dalu’n hwyr", "123PH45678900", None, Some("12.34"), "cy"),
-      (PfEpayeLateCis, "Cynllun y Diwydiant Adeiladu (CIS) - cosb am dalu’n hwyr", "123PH45678900", commission, Some("13.57"), "cy"),
+      (PfEpayeLateCis, "Construction Industry Scheme (CIS) late filing penalty", "XE123456789012", None, Some("12.34"), "en"),
+      (PfEpayeLateCis, "Construction Industry Scheme (CIS) late filing penalty", "XE123456789012", commission, Some("13.57"), "en"),
+      (PfEpayeLateCis, "Cynllun y Diwydiant Adeiladu (CIS) - cosb am dalu’n hwyr", "XE123456789012", None, Some("12.34"), "cy"),
+      (PfEpayeLateCis, "Cynllun y Diwydiant Adeiladu (CIS) - cosb am dalu’n hwyr", "XE123456789012", commission, Some("13.57"), "cy"),
 
       (PfEpayeP11d, "Employers’ Class 1A National Insurance", "123PH456789002513", None, Some("12.34"), "en"),
       (PfEpayeP11d, "Employers’ Class 1A National Insurance", "123PH456789002513", commission, Some("13.57"), "en"),
