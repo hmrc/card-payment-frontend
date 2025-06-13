@@ -16,7 +16,6 @@
 
 package uk.gov.hmrc.cardpaymentfrontend.controllers
 
-import payapi.corcommon.model.Origin
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import uk.gov.hmrc.cardpaymentfrontend.actions.{Actions, JourneyRequest}
 import uk.gov.hmrc.cardpaymentfrontend.config.AppConfig
@@ -83,7 +82,7 @@ class FeesController @Inject() (
       ))
     } else Seq.empty[Link]
 
-    val maybeVariableDirectDebitLink = if (showVariableDirectDebitLink && (extendedOrigin.)) {
+    val maybeVariableDirectDebitLink = if (showVariableDirectDebitLink) {
       Seq(Link(
         href       = Call("GET", appConfig.payFrontendBaseUrl + appConfig.variableDirectDebitRelativeUrl),
         linkId     = "variable-direct-debit-link",
