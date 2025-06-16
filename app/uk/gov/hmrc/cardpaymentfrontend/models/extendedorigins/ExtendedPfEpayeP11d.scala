@@ -37,7 +37,7 @@ object ExtendedPfEpayeP11d extends ExtendedOrigin {
     (payFrontendBaseUrl: String): Option[CheckYourAnswersRow] =
     Some(CheckYourAnswersRow(
       titleMessageKey = "check-your-details.PfEpayeP11d.reference",
-      value           = Seq(journeyRequest.journey.referenceValue),
+      value           = Seq(journeyRequest.journey.journeySpecificData.asInstanceOf[JsdPfEpayeP11d].accountsOfficeReference.fold("")(_.value)),
       changeLink      = Some(Link(
         href       = Call("GET", changeReferenceUrl(payFrontendBaseUrl)),
         linkId     = "check-your-details-reference-change-link",

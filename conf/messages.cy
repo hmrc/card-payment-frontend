@@ -137,7 +137,7 @@ check-your-details.PfEpayeP11d.tax-year = Blwyddyn dreth
 
 ## Address Page
 address.heading = Cyfeiriad bilio’r cerdyn
-address.line1.hint = Eich cyfeiriad bilio yw’r cyfeiriad y gwnaethoch gofrestru eich cerdyn ag ef
+address.line1.hint = Eich cyfeiriad bilio yw’r cyfeiriad y gwnaethoch gofrestru eich cerdyn ag ef.
 address.line2.hint = Os nad yw’n cyd-fynd, bydd y taliad yn methu.
 
 address.field-name.line1 = Cyfeiriad - llinell 1
