@@ -87,7 +87,7 @@ class CardPaymentServiceSpec extends ItSpec {
         val testCardPaymentResult = CardPaymentResult(CardPaymentFinishPaymentResponses.Successful, AdditionalPaymentInfo(Some("debit"), Some(123), Some(testTime)))
         CardPaymentStub.AuthAndCapture.stubForAuthAndCapture2xx("sometransactionref", testCardPaymentResult)
         systemUnderTest.finishPayment("sometransactionref", testJourney._id.value).futureValue
-        PayApiStub.verifyUpdateSucceedWebPayment(1, testJourney._id.value, testTime.toString)
+        PayApiStub.verifyUpdateSucceedWebPayment(1, testJourney._id.value, testTime)
       }
 
       "should update pay-api with FailWebPaymentRequest when call to card-payment backend indicates failure" in {
@@ -95,7 +95,7 @@ class CardPaymentServiceSpec extends ItSpec {
         val testCardPaymentResult = CardPaymentResult(CardPaymentFinishPaymentResponses.Failed, AdditionalPaymentInfo(Some("debit"), None, Some(testTime)))
         CardPaymentStub.AuthAndCapture.stubForAuthAndCapture2xx("sometransactionref", testCardPaymentResult)
         systemUnderTest.finishPayment("sometransactionref", testJourney._id.value).futureValue
-        PayApiStub.verifyUpdateFailWebPayment(1, testJourney._id.value, testTime.toString)
+        PayApiStub.verifyUpdateFailWebPayment(1, testJourney._id.value, testTime)
       }
 
       "should update pay-api with CancelWebPaymentRequest when call to card-payment backend indicates Cancelled" in {
