@@ -46,7 +46,7 @@ object ExtendedPfVat extends ExtendedOrigin {
     }
   }
 
-  private def chargeReference: JourneySpecificData => Option[XRef14Char] = {
+  def chargeReference: JourneySpecificData => Option[XRef14Char] = {
     case j: JsdPfVat => j.chargeRef
     case _           => throw new RuntimeException("Incorrect origin found")
   }

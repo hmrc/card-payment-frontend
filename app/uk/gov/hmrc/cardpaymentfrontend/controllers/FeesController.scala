@@ -20,6 +20,7 @@ import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import uk.gov.hmrc.cardpaymentfrontend.actions.{Actions, JourneyRequest}
 import uk.gov.hmrc.cardpaymentfrontend.config.AppConfig
 import uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins.ExtendedOrigin.OriginExtended
+import uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins.ExtendedPfVat
 import uk.gov.hmrc.cardpaymentfrontend.models.{Link, PaymentMethod}
 import uk.gov.hmrc.cardpaymentfrontend.requests.RequestSupport
 import uk.gov.hmrc.cardpaymentfrontend.views.html.FeesPage
@@ -58,6 +59,11 @@ class FeesController @Inject() (
     val showOneOffDirectDebitLink: Boolean = paymentMethodToBeShown(PaymentMethod.OneOffDirectDebit, paymentMethodsToShow)
     val showVariableDirectDebitLink: Boolean = paymentMethodToBeShown(PaymentMethod.VariableDirectDebit, paymentMethodsToShow)
 
+      def pfVatChargeReferenceExists: Boolean = extendedOrigin match {
+        case ExtendedPfVat => ExtendedPfVat.chargeReference.apply(journeyRequest.journey.journeySpecificData).isDefined
+        case _             => false
+      }
+
     val maybeOpenBankingLink = if (showOpenBankingLink) {
       Seq(Link(
         href       = Call("GET", routes.OpenBankingController.startOpenBankingJourney.url),
@@ -82,7 +88,7 @@ class FeesController @Inject() (
       ))
     } else Seq.empty[Link]
 
-    val maybeVariableDirectDebitLink = if (showVariableDirectDebitLink) {
+    val maybeVariableDirectDebitLink = if (showVariableDirectDebitLink && !pfVatChargeReferenceExists) {
       Seq(Link(
         href       = Call("GET", appConfig.payFrontendBaseUrl + appConfig.variableDirectDebitRelativeUrl),
         linkId     = "variable-direct-debit-link",
