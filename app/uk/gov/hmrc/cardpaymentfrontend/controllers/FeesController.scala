@@ -16,6 +16,7 @@
 
 package uk.gov.hmrc.cardpaymentfrontend.controllers
 
+import payapi.cardpaymentjourney.model.journey.JourneySpecificData
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import uk.gov.hmrc.cardpaymentfrontend.actions.{Actions, JourneyRequest}
 import uk.gov.hmrc.cardpaymentfrontend.config.AppConfig
@@ -40,7 +41,7 @@ class FeesController @Inject() (
   import requestSupport._
 
   def renderPage: Action[AnyContent] = actions.journeyAction { implicit journeyRequest: JourneyRequest[AnyContent] =>
-    val altPayments = linksAvailableOnFeesPage(journeyRequest)
+    val altPayments = linksAvailableOnFeesPage(journeyRequest.journey.journeySpecificData)
     if (altPayments.isEmpty) Redirect("http://nextpage.html")
     else Ok(feesPage(altPayments))
   }
@@ -51,8 +52,8 @@ class FeesController @Inject() (
 
   private[controllers] def paymentMethodToBeShown(paymentMethod: PaymentMethod, paymentMethods: Set[PaymentMethod]): Boolean = paymentMethods.contains(paymentMethod)
 
-  private[controllers] def linksAvailableOnFeesPage(journeyRequest: JourneyRequest[AnyContent]): Seq[Link] = {
-    val extendedOrigin = journeyRequest.journey.origin.lift
+  private[controllers] def linksAvailableOnFeesPage(jsd: JourneySpecificData): Seq[Link] = {
+    val extendedOrigin = jsd.origin.lift
     val paymentMethodsToShow: Set[PaymentMethod] = extendedOrigin.cardFeesPagePaymentMethods
     val showOpenBankingLink: Boolean = paymentMethodToBeShown(PaymentMethod.OpenBanking, paymentMethodsToShow)
     val showBankTransferLink: Boolean = paymentMethodToBeShown(PaymentMethod.Bacs, paymentMethodsToShow)
@@ -60,7 +61,7 @@ class FeesController @Inject() (
     val showVariableDirectDebitLink: Boolean = paymentMethodToBeShown(PaymentMethod.VariableDirectDebit, paymentMethodsToShow)
 
       def pfVatChargeReferenceExists: Boolean = extendedOrigin match {
-        case ExtendedPfVat => ExtendedPfVat.chargeReference.apply(journeyRequest.journey.journeySpecificData).isDefined
+        case ExtendedPfVat => ExtendedPfVat.chargeReference.apply(jsd).isDefined
         case _             => false
       }
 

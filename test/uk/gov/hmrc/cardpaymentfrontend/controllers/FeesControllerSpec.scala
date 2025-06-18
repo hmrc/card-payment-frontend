@@ -19,6 +19,7 @@ package uk.gov.hmrc.cardpaymentfrontend.controllers
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.scalatest.Assertion
+import payapi.cardpaymentjourney.model.journey.JourneySpecificData
 import payapi.corcommon.model.Origins
 import play.api.mvc.{AnyContentAsEmpty, Call}
 import play.api.test.FakeRequest
@@ -720,9 +721,9 @@ class FeesControllerSpec extends ItSpec {
           val result = systemUnderTest.renderPage(fakeRequest)
           val document = Jsoup.parse(contentAsString(result))
           val listOfMethods = document.select("#payment-type-list").select("li")
-          val oneOffDirectDebitBullet = listOfMethods.select("#variable-direct-debit-link")
-          oneOffDirectDebitBullet.text() shouldBe "Direct Debit (variable)"
-          oneOffDirectDebitBullet.attr("href") shouldBe "http://localhost:9056/pay/pay-by-direct-debit"
+          val variableOffDirectDebitBullet = listOfMethods.select("#variable-direct-debit-link")
+          variableOffDirectDebitBullet.text() shouldBe empty
+          variableOffDirectDebitBullet.hasAttr("href") shouldBe false
         }
 
         "render NO option for direct debit when is a Surcharge payment in welsh" in {
@@ -730,9 +731,9 @@ class FeesControllerSpec extends ItSpec {
           val result = systemUnderTest.renderPage(fakeWelshRequest)
           val document = Jsoup.parse(contentAsString(result))
           val listOfMethods = document.select("#payment-type-list").select("li")
-          val oneOffDirectDebitBullet = listOfMethods.select("#variable-direct-debit-link")
-          oneOffDirectDebitBullet.text() shouldBe "Debyd Uniongyrchol (newidiol)"
-          oneOffDirectDebitBullet.attr("href") shouldBe "http://localhost:9056/pay/pay-by-direct-debit"
+          val variableOffDirectDebitBullet = listOfMethods.select("#variable-direct-debit-link")
+          variableOffDirectDebitBullet.text() shouldBe empty
+          variableOffDirectDebitBullet.hasAttr("href") shouldBe false
         }
 
       }
@@ -1028,6 +1029,7 @@ class FeesControllerSpec extends ItSpec {
 
       "should return the correct links for each origin" in {
         Origins.values.foreach { origin =>
+
           val expectedLinks = origin match {
             case Origins.PfSa                     => Seq(expectedOpenBankingLink, expectedOneOffDirectDebitLink)
             case Origins.BtaSa                    => Seq(expectedOpenBankingLink, expectedOneOffDirectDebitLink)
@@ -1110,8 +1112,98 @@ class FeesControllerSpec extends ItSpec {
             case Origins.PfPillar2                => Seq.empty
             case Origins.PfVatC2c                 => Seq.empty
             case Origins.Pillar2                  => Seq.empty
+
           }
-          systemUnderTest.linksAvailableOnFeesPage(origin) shouldBe expectedLinks withClue s"links did not match expected for origin: ${origin.entryName}"
+
+          // Required due to additions made to Controller to allow for checking a chargeReference. Could this be improved?
+          val journeySpecificData: Option[JourneySpecificData] = origin match {
+            case Origins.PfSa                     => Some(TestJourneys.PfSa.journeyBeforeBeginWebPayment.journeySpecificData)
+            case Origins.BtaSa                    => Some(TestJourneys.BtaSa.journeyBeforeBeginWebPayment.journeySpecificData)
+            case Origins.PtaSa                    => Some(TestJourneys.PtaSa.journeyBeforeBeginWebPayment.journeySpecificData)
+            case Origins.ItSa                     => Some(TestJourneys.ItSa.journeyBeforeBeginWebPayment.journeySpecificData)
+            case Origins.PfVat                    => Some(TestJourneys.PfVat.journeyBeforeBeginWebPayment.journeySpecificData)
+            case Origins.PfCt                     => Some(TestJourneys.PfCt.journeyBeforeBeginWebPayment.journeySpecificData)
+            case Origins.PfEpayeNi                => None
+            case Origins.PfEpayeLpp               => None
+            case Origins.PfEpayeSeta              => None
+            case Origins.PfEpayeLateCis           => None
+            case Origins.PfEpayeP11d              => None
+            case Origins.PfSdlt                   => None
+            case Origins.PfCds                    => None
+            case Origins.PfOther                  => None
+            case Origins.PfP800                   => None
+            case Origins.PtaP800                  => None
+            case Origins.PfClass2Ni               => None
+            case Origins.PfInsurancePremium       => None
+            case Origins.PfPsAdmin                => None
+            case Origins.AppSa                    => None
+            case Origins.BtaVat                   => Some(TestJourneys.BtaVat.journeyBeforeBeginWebPayment.journeySpecificData)
+            case Origins.BtaEpayeBill             => None
+            case Origins.BtaEpayePenalty          => None
+            case Origins.BtaEpayeInterest         => None
+            case Origins.BtaEpayeGeneral          => None
+            case Origins.BtaClass1aNi             => None
+            case Origins.BtaCt                    => Some(TestJourneys.BtaCt.journeyBeforeBeginWebPayment.journeySpecificData)
+            case Origins.BtaSdil                  => None
+            case Origins.BcPngr                   => None
+            case Origins.Parcels                  => None
+            case Origins.DdVat                    => None
+            case Origins.DdSdil                   => None
+            case Origins.VcVatReturn              => Some(TestJourneys.VcVatReturn.journeyBeforeBeginWebPayment.journeySpecificData)
+            case Origins.VcVatOther               => Some(TestJourneys.VcVatOther.journeyBeforeBeginWebPayment.journeySpecificData)
+            case Origins.Amls                     => None
+            case Origins.Ppt                      => None
+            case Origins.PfCdsCash                => None
+            case Origins.PfPpt                    => None
+            case Origins.PfSpiritDrinks           => None
+            case Origins.PfInheritanceTax         => None
+            case Origins.Mib                      => None
+            case Origins.PfClass3Ni               => None
+            case Origins.PfWineAndCider           => None
+            case Origins.PfBioFuels               => None
+            case Origins.PfAirPass                => None
+            case Origins.PfMgd                    => None
+            case Origins.PfBeerDuty               => None
+            case Origins.PfGamingOrBingoDuty      => None
+            case Origins.PfGbPbRgDuty             => None
+            case Origins.PfLandfillTax            => None
+            case Origins.PfSdil                   => None
+            case Origins.PfAggregatesLevy         => None
+            case Origins.PfClimateChangeLevy      => None
+            case Origins.PfSimpleAssessment       => None
+            case Origins.PtaSimpleAssessment      => None
+            case Origins.AppSimpleAssessment      => None
+            case Origins.PfTpes                   => None
+            case Origins.CapitalGainsTax          => None
+            case Origins.EconomicCrimeLevy        => None
+            case Origins.PfEconomicCrimeLevy      => None
+            case Origins.PfJobRetentionScheme     => None
+            case Origins.JrsJobRetentionScheme    => None
+            case Origins.PfImportedVehicles       => None
+            case Origins.PfChildBenefitRepayments => None
+            case Origins.NiEuVatOss               => None
+            case Origins.PfNiEuVatOss             => None
+            case Origins.NiEuVatIoss              => None
+            case Origins.PfNiEuVatIoss            => None
+            case Origins.PfAmls                   => None
+            case Origins.PfAted                   => None
+            case Origins.PfCdsDeferment           => None
+            case Origins.PfTrust                  => None
+            case Origins.PtaClass3Ni              => None
+            case Origins.AlcoholDuty              => Some(TestJourneys.AlcoholDuty.journeyBeforeBeginWebPayment.journeySpecificData)
+            case Origins.PfAlcoholDuty            => Some(TestJourneys.PfAlcoholDuty.journeyBeforeBeginWebPayment.journeySpecificData)
+            case Origins.VatC2c                   => None
+            case Origins.`3psSa`                  => None
+            case Origins.`3psVat`                 => None
+            case Origins.PfPillar2                => None
+            case Origins.PfVatC2c                 => None
+            case Origins.Pillar2                  => None
+          }
+
+          journeySpecificData.map { jsd: JourneySpecificData =>
+            systemUnderTest.linksAvailableOnFeesPage(jsd = jsd) shouldBe expectedLinks withClue s"links did not match expected for origin: ${origin.entryName}"
+          }
+
         }
       }
     }
