@@ -317,3 +317,20 @@ email.tax-name.BtaEpayeGeneral = TAW
 payments-survey.bta.return-message = Dim diolch, dychwelyd i cyfrif treth busnes
 payments-survey.pta.return-message = Dim diolch, dychwelyd i cyfrif treth personol
 payments-survey.other.return-message = Dim diolch
+
+## Timed Out
+timed-out.title = Er eich diogelwch, gwnaethom eich allgofnodi
+timed-out.warning = Rydych ar fin cael eich allgofnodi
+timed-out.sign-in = Mewngofnodi
+time-out.dialogue.logged-in.message = Er eich diogelwch, byddwn yn eich allgofnodi cyn pen
+time-out.dialogue.logged-in.keep-alive-button-text = Parhau i fod wedi’ch mewngofnodi
+time-out.dialogue.logged-in.sign-out-button-text = Allgofnodi
+time-out.dialogue.logged-out.message = Er eich diogelwch, byddwn yn dod â’ch sesiwn i ben cyn pen
+time-out.dialogue.logged-out.keep-alive-button-text = Nesaf
+time-out.dialogue.logged-out.sign-out-button-text = Dileu’ch atebion
+delete-answers.heading = Gwnaethoch ddileu’ch atebion
+delete-answers.button = Dechrau eto
+force-delete-answers.heading.logged-out = Er eich diogelwch, gwnaethom ddileu’ch atebion
+force-delete-answers.button.logged-out = Dechrau eto
+force-delete-answers.heading.logged-in = Er eich diogelwch, gwnaethom eich allgofnodi
+force-delete-answers.button.logged-in = Meewngofnodi

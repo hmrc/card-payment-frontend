@@ -316,3 +316,25 @@ payments-survey.bta.return-message = Skip survey, return to business tax account
 payments-survey.pta.return-message = Skip survey, return to personal tax account
 payments-survey.other.return-message = Skip survey
 payments-survey.bta.banner-title = Business tax account
+
+
+## Time Out
+time-out.title = For your security, we signed you out
+time-out.warning = You're about to be signed out
+time-out.sign-in = Sign in
+
+time-out.dialogue.logged-in.message = For your security, we will time you out in
+time-out.dialogue.logged-in.keep-alive-button-text = Stay signed in
+time-out.dialogue.logged-in.sign-out-button-text = Sign out
+time-out.dialogue.logged-out.message = For your security, we will time you out in
+time-out.dialogue.logged-out.keep-alive-button-text = Continue
+time-out.dialogue.logged-out.sign-out-button-text = Delete your answers
+delete-answers.heading = You deleted your answers
+delete-answers.button = Start again
+force-delete-answers.heading.logged-out = For your security, we deleted your answers
+force-delete-answers.button.logged-out= Start again
+force-delete-answers.heading.logged-in = For your security, we signed you out
+force-delete-answers.button.logged-in= Sign in
+
+
+
