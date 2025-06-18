@@ -84,14 +84,6 @@ class PaymentStatusControllerSpec extends ItSpec {
       }
 
     }
-
-    "paymentStatus" - {
-      "should throw an error when we can't find the transaction reference in the journey, despite the payment having been started" in {
-        PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyBeforeBeginWebPayment)
-        val error = intercept[RuntimeException] (systemUnderTest.paymentStatus()(fakeRequest).futureValue)
-        error.getMessage shouldBe "The future returned an exception of type: java.lang.RuntimeException, with message: Could not find transaction ref, therefore we can't auth and settle.."
-      }
-    }
   }
 
 }

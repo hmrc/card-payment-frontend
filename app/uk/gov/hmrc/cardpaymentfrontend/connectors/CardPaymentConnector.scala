@@ -16,16 +16,16 @@
 
 package uk.gov.hmrc.cardpaymentfrontend.connectors
 
-import play.api.libs.json.{JsBoolean, Json}
+import play.api.libs.json.Json
+import play.mvc.Http.HeaderNames.AUTHORIZATION
 import uk.gov.hmrc.cardpaymentfrontend.config.AppConfig
 import uk.gov.hmrc.cardpaymentfrontend.models.cardpayment.{CardPaymentInitiatePaymentRequest, CardPaymentInitiatePaymentResponse}
-import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, StringContextOps}
-import uk.gov.hmrc.http.client.HttpClientV2
 import uk.gov.hmrc.http.HttpReads.Implicits._
+import uk.gov.hmrc.http.client.HttpClientV2
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, StringContextOps}
 
 import java.net.URL
 import javax.inject.{Inject, Singleton}
-import play.mvc.Http.HeaderNames.AUTHORIZATION
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
@@ -33,28 +33,19 @@ class CardPaymentConnector @Inject() (appConfig: AppConfig, httpClientV2: HttpCl
 
   private val cardPaymentBaseUrl: URL = url"""${appConfig.cardPaymentBaseUrl}"""
   private val initiatePaymentUrl: URL = url"$cardPaymentBaseUrl/card-payment/initiate-payment"
-  private val checkPaymentStatusUrl: String => URL = (transactionReference: String) => url"$cardPaymentBaseUrl/card-payment/payment-status/$transactionReference"
   private val authAndSettleUrl: String => URL = (transactionReference: String) => url"$cardPaymentBaseUrl/card-payment/auth-and-settle/$transactionReference"
-  private val openBankingAuthToken: String = appConfig.cardPaymentInternalAuthToken
+  private val cardPaymentAuthToken: String = appConfig.cardPaymentInternalAuthToken
 
   def initiatePayment(cardPaymentInitiatePaymentRequest: CardPaymentInitiatePaymentRequest)(implicit headerCarrier: HeaderCarrier): Future[CardPaymentInitiatePaymentResponse] =
     httpClientV2
       .post(initiatePaymentUrl)
-      .setHeader(AUTHORIZATION -> openBankingAuthToken)
+      .setHeader(AUTHORIZATION -> cardPaymentAuthToken)
       .withBody(Json.toJson(cardPaymentInitiatePaymentRequest))
       .execute[CardPaymentInitiatePaymentResponse]
 
-  //todo probably delete?
-  def checkPaymentStatus(transactionReference: String)(implicit headerCarrier: HeaderCarrier): Future[JsBoolean] =
-    httpClientV2
-      .get(checkPaymentStatusUrl(transactionReference))
-      .setHeader(AUTHORIZATION -> openBankingAuthToken)
-      .execute[JsBoolean]
-
-  //todo should we make this strongly typed and return a CardPaymentResult or Option[CardPaymentResult]?
   def authAndSettle(transactionReference: String)(implicit headerCarrier: HeaderCarrier): Future[HttpResponse] =
     httpClientV2
       .post(authAndSettleUrl(transactionReference))
-      .setHeader(AUTHORIZATION -> openBankingAuthToken)
+      .setHeader(AUTHORIZATION -> cardPaymentAuthToken)
       .execute[HttpResponse]
 }

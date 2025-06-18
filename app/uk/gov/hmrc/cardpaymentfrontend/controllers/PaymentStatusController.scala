@@ -23,7 +23,6 @@ import uk.gov.hmrc.cardpaymentfrontend.models.cardpayment.CardPaymentFinishPayme
 import uk.gov.hmrc.cardpaymentfrontend.requests.RequestSupport
 import uk.gov.hmrc.cardpaymentfrontend.services.CardPaymentService
 import uk.gov.hmrc.cardpaymentfrontend.views.html.iframe.{IframeContainerPage, RedirectToParentPage}
-import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.binders.RedirectUrl.idFunctor
 import uk.gov.hmrc.play.bootstrap.binders.RedirectUrlPolicy.Id
 import uk.gov.hmrc.play.bootstrap.binders.{AbsoluteWithHostnameFromAllowlist, RedirectUrl, RedirectUrlPolicy}
@@ -62,9 +61,8 @@ class PaymentStatusController @Inject() (
   }
 
   //todo append something to the return url so we can extract/work out the session/journey - are we allowed to do this or do we use session?
-  def paymentStatus(): Action[AnyContent] = actions.journeyAction.async { implicit journeyRequest =>
+  def paymentStatus(): Action[AnyContent] = actions.paymentStatusAction.async { implicit journeyRequest =>
 
-    implicit val hc: HeaderCarrier = requestSupport.hc
     val transactionRefFromJourney: Option[String] = journeyRequest.journey.order.map(_.transactionReference.value)
 
     val maybeCardPaymentResultF = for {

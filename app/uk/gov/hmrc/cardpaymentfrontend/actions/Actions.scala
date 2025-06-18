@@ -24,12 +24,15 @@ import javax.inject.{Inject, Singleton}
 class Actions @Inject() (
     actionBuilder:                DefaultActionBuilder,
     getJourneyActionRefiner:      GetJourneyActionRefiner,
-    journeyFinishedActionRefiner: JourneyFinishedActionRefiner
+    journeyFinishedActionRefiner: JourneyFinishedActionRefiner,
+    paymentStatusActionRefiner:   PaymentStatusActionRefiner
 ) {
 
   val default: ActionBuilder[Request, AnyContent] = actionBuilder
 
   val journeyAction: ActionBuilder[JourneyRequest, AnyContent] = default.andThen[JourneyRequest](getJourneyActionRefiner)
+
+  val paymentStatusAction: ActionBuilder[JourneyRequest, AnyContent] = journeyAction.andThen[JourneyRequest](paymentStatusActionRefiner)
 
   val journeyFinishedAction: ActionBuilder[JourneyRequest, AnyContent] = journeyAction.andThen[JourneyRequest](journeyFinishedActionRefiner)
 
