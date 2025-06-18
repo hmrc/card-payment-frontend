@@ -22,9 +22,10 @@ import org.scalatest.Assertion
 import payapi.cardpaymentjourney.model.journey.{Journey, JourneySpecificData}
 import payapi.corcommon.model.{JourneyId, Origin, Origins}
 import play.api.http.Status
+import play.api.http.Status.SEE_OTHER
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
-import play.api.test.Helpers.{contentAsString, defaultAwaitTimeout, status}
+import play.api.test.Helpers.{contentAsString, defaultAwaitTimeout, redirectLocation, status}
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.TestOps.FakeRequestOps
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.stubs.PayApiStub
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.testdata.TestJourneys
@@ -112,6 +113,14 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       val result = systemUnderTest.renderPage(fakeRequestWelsh())
       val document = Jsoup.parse(contentAsString(result))
       document.select("#submit").text() shouldBe "Yn eich blaen"
+    }
+
+    "should redirect to the Address page if no Address in session" in {
+        def fakeRequestWithoutAddressInSession: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withSessionId()
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyBeforeBeginWebPayment)
+      val result = systemUnderTest.submit(fakeRequestWithoutAddressInSession)
+      status(result) shouldBe SEE_OTHER
+      redirectLocation(result) shouldBe Some(s"www.google.com")
     }
 
       // derives correct row in summary list due to Origins that may include FDP.
