@@ -1,0 +1,52 @@
+@*
+ * Copyright 2025 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import payapi.cardpaymentjourney.model.journey.Url
+@import uk.gov.hmrc.cardpaymentfrontend.views.html.Layout
+@import uk.gov.hmrc.govukfrontend.views.Aliases.{Button, Text}
+@import uk.gov.hmrc.govukfrontend.views.html.components.GovukButton
+@import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
+
+@this(
+        layout: Layout,
+        govukButton: GovukButton
+)
+
+@(
+        statusMessageKey: String,
+        redirectLink: Option[Url]
+)(implicit journeyRequest: JourneyRequest[_], messages: Messages)
+
+@heading = @{messages(s"force-delete-answers.heading.${statusMessageKey}")}
+
+@layout(pageTitle = Some(heading), origin = Some(journeyRequest.journey.origin), showTimeoutDialogue = false) {
+
+    <h1 class="govuk-heading-l govuk-!-margin-bottom-6">@heading</h1>
+    @redirectLink.fold {
+        <p class="govuk-body">
+            @messages(s"force-delete-answers.heading.${statusMessageKey}")
+            <a class="govuk-link" href="https://www.gov.uk/topic/dealing-with-hmrc/paying-hmrc"> @messages(s"force-delete-answers.heading.${statusMessageKey}")</a>.
+        </p>
+    } {link =>
+        @govukButton(Button(
+            id = Some("submit"),
+            content = Text(messages(s"force-delete-answers.button.${statusMessageKey}")),
+            href = Some({link.value})
+        ))
+    }
+
+}
+

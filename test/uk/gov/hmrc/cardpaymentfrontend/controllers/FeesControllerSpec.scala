@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -1037,11 +1037,11 @@ class FeesControllerSpec extends ItSpec {
             case Origins.ItSa                     => Seq(expectedBankTransferLink)
             case Origins.PfVat                    => Seq(expectedOpenBankingLink, expectedVariableDirectDebitLink)
             case Origins.PfCt                     => Seq(expectedOpenBankingLink, expectedOneOffDirectDebitLink)
-            case Origins.PfEpayeNi                => Seq.empty
-            case Origins.PfEpayeLpp               => Seq.empty
-            case Origins.PfEpayeSeta              => Seq.empty
-            case Origins.PfEpayeLateCis           => Seq.empty
-            case Origins.PfEpayeP11d              => Seq.empty
+            case Origins.PfEpayeNi                => Seq(expectedOpenBankingLink, expectedVariableDirectDebitLink, expectedOneOffDirectDebitLink)
+            case Origins.PfEpayeLpp               => Seq(expectedOpenBankingLink, expectedOneOffDirectDebitLink)
+            case Origins.PfEpayeSeta              => Seq(expectedOpenBankingLink, expectedOneOffDirectDebitLink)
+            case Origins.PfEpayeLateCis           => Seq(expectedOpenBankingLink, expectedOneOffDirectDebitLink)
+            case Origins.PfEpayeP11d              => Seq(expectedOpenBankingLink, expectedOneOffDirectDebitLink)
             case Origins.PfSdlt                   => Seq.empty
             case Origins.PfCds                    => Seq.empty
             case Origins.PfOther                  => Seq.empty

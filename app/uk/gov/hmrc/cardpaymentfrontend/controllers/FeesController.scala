@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -81,6 +81,14 @@ class FeesController @Inject() (
       ))
     } else Seq.empty[Link]
 
+    val maybeVariableDirectDebitLink = if (showVariableDirectDebitLink) {
+      Seq(Link(
+        href       = Call("GET", appConfig.payFrontendBaseUrl + appConfig.variableDirectDebitRelativeUrl),
+        linkId     = "variable-direct-debit-link",
+        messageKey = "card-fees.para2.variable-direct-debit"
+      ))
+    } else Seq.empty[Link]
+
     val maybeOneOffDirectDebitLink = if (showOneOffDirectDebitLink) {
       Seq(Link(
         href       = Call("GET", appConfig.payFrontendBaseUrl + appConfig.oneOffDirectDebitRelativeUrl),
@@ -89,15 +97,7 @@ class FeesController @Inject() (
       ))
     } else Seq.empty[Link]
 
-    val maybeVariableDirectDebitLink = if (showVariableDirectDebitLink && !pfVatChargeReferenceExists) {
-      Seq(Link(
-        href       = Call("GET", appConfig.payFrontendBaseUrl + appConfig.variableDirectDebitRelativeUrl),
-        linkId     = "variable-direct-debit-link",
-        messageKey = "card-fees.para2.variable-direct-debit"
-      ))
-    } else Seq.empty[Link]
-
-    maybeOpenBankingLink ++ maybeBankTransferLink ++ maybeOneOffDirectDebitLink ++ maybeVariableDirectDebitLink
+    maybeOpenBankingLink ++ maybeBankTransferLink ++ maybeVariableDirectDebitLink ++ maybeOneOffDirectDebitLink
   }
 
 }

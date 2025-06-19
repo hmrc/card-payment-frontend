@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.cardpaymentfrontend.models.payapi
+package uk.gov.hmrc.cardpaymentfrontend.models.payapirequest
 
 import play.api.libs.json.{Json, OFormat}
 

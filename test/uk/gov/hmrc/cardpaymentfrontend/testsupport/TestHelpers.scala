@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,6 +39,11 @@ object TestHelpers {
     AlcoholDuty,
     PfCt,
     BtaCt,
+    PfEpayeNi,
+    PfEpayeLpp,
+    PfEpayeLateCis,
+    PfEpayeP11d,
+    PfEpayeSeta,
     PfVat,
     BtaVat,
     VcVatReturn,
@@ -46,11 +51,7 @@ object TestHelpers {
   )
 
   val unimplementedOrigins: Seq[Origin] = Seq[Origin](
-    PfEpayeNi,
-    PfEpayeLpp,
-    PfEpayeSeta,
-    PfEpayeLateCis,
-    PfEpayeP11d,
+    PfVat,
     PfSdlt,
     PfCds,
     PfOther,
@@ -124,11 +125,11 @@ object TestHelpers {
     case Origins.ItSa                     => TestJourneys.ItSa
     case Origins.PfVat                    => TestJourneys.PfVat
     case Origins.PfCt                     => TestJourneys.PfCt
-    case Origins.PfEpayeNi                => throw new MatchError("Not implemented yet")
-    case Origins.PfEpayeLpp               => throw new MatchError("Not implemented yet")
-    case Origins.PfEpayeSeta              => throw new MatchError("Not implemented yet")
-    case Origins.PfEpayeLateCis           => throw new MatchError("Not implemented yet")
-    case Origins.PfEpayeP11d              => throw new MatchError("Not implemented yet")
+    case Origins.PfEpayeNi                => TestJourneys.PfEpayeNi
+    case Origins.PfEpayeLpp               => TestJourneys.PfEpayeLpp
+    case Origins.PfEpayeSeta              => TestJourneys.PfEpayeSeta
+    case Origins.PfEpayeLateCis           => TestJourneys.PfEpayeLateCis
+    case Origins.PfEpayeP11d              => TestJourneys.PfEpayeP11d
     case Origins.PfSdlt                   => throw new MatchError("Not implemented yet")
     case Origins.PfCds                    => throw new MatchError("Not implemented yet")
     case Origins.PfOther                  => throw new MatchError("Not implemented yet")
