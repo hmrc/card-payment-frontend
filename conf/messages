@@ -42,9 +42,9 @@ service-name.VcVatReturn = Business tax account
 service-name.VcVatOther = Business tax account
 service-name.ItSa = Pay your Self Assessment
 service-name.Amls =
-service-name.Ppt =
+service-name.Ppt = Pay your Plastic Packaging Tax
 service-name.PfCdsCash =
-service-name.PfPpt =
+service-name.PfPpt = Pay your Plastic Packaging Tax
 service-name.PfSpiritDrinks =
 service-name.PfInheritanceTax =
 service-name.Mib =
@@ -125,8 +125,8 @@ check-your-details.BtaCt.reference = Payment reference
 check-your-details.PfCt.reference = Unique Taxpayer Reference (UTR)
 check-your-details.PfCt.payslip-reference = Payslip reference
 check-your-details.PfVat.reference.title = VAT registration number
-
-
+check-your-details.Ppt.reference = Plastic Packaging Tax Reference
+check-your-details.PfPpt.reference = Plastic Packaging Tax Reference
 
 ## Address Page
 address.heading = Card billing address
@@ -223,9 +223,9 @@ payment-complete.tax-name.VcVatReturn =
 payment-complete.tax-name.VcVatOther =
 payment-complete.tax-name.ItSa = Self Assessment
 payment-complete.tax-name.Amls =
-payment-complete.tax-name.Ppt =
+payment-complete.tax-name.Ppt = Plastic Packaging Tax
 payment-complete.tax-name.PfCdsCash =
-payment-complete.tax-name.PfPpt =
+payment-complete.tax-name.PfPpt = Plastic Packaging Tax
 payment-complete.tax-name.PfSpiritDrinks =
 payment-complete.tax-name.PfInheritanceTax =
 payment-complete.tax-name.Mib =
@@ -303,6 +303,8 @@ email.tax-name.PfAlcoholDuty = Alcohol Duty
 email.tax-name.AlcoholDuty = Alcohol Duty
 email.tax-name.BtaCt = Corporation Tax
 email.tax-name.PfCt = Corporation Tax
+email.tax-name.Ppt = Plastic Packaging Tax
+email.tax-name.PfPpt = Plastic Packaging Tax
 
 
 ## Payments survey

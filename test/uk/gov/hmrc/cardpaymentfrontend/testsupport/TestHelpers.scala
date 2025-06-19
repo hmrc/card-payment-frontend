@@ -38,7 +38,9 @@ object TestHelpers {
     PfAlcoholDuty,
     AlcoholDuty,
     PfCt,
-    BtaCt
+    BtaCt,
+    Ppt,
+    PfPpt
   )
 
   val unimplementedOrigins: Seq[Origin] = Seq[Origin](
@@ -71,9 +73,7 @@ object TestHelpers {
     VcVatReturn,
     VcVatOther,
     Amls,
-    Ppt,
     PfCdsCash,
-    PfPpt,
     PfSpiritDrinks,
     PfInheritanceTax,
     Mib,
@@ -153,9 +153,9 @@ object TestHelpers {
     case Origins.VcVatReturn              => throw new MatchError("Not implemented yet")
     case Origins.VcVatOther               => throw new MatchError("Not implemented yet")
     case Origins.Amls                     => throw new MatchError("Not implemented yet")
-    case Origins.Ppt                      => throw new MatchError("Not implemented yet")
+    case Origins.Ppt                      => TestJourneys.Ppt
     case Origins.PfCdsCash                => throw new MatchError("Not implemented yet")
-    case Origins.PfPpt                    => throw new MatchError("Not implemented yet")
+    case Origins.PfPpt                    => TestJourneys.PfPpt
     case Origins.PfSpiritDrinks           => throw new MatchError("Not implemented yet")
     case Origins.PfInheritanceTax         => throw new MatchError("Not implemented yet")
     case Origins.Mib                      => throw new MatchError("Not implemented yet")

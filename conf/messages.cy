@@ -44,9 +44,9 @@ service-name.VcVatReturn = Cyfrif treth busnes
 service-name.VcVatOther = Cyfrif treth busnes
 service-name.ItSa = Talu eich Hunanasesiad
 service-name.Amls =
-service-name.Ppt =
+service-name.Ppt = Talu’ch Treth Deunydd Pacio Plastig
 service-name.PfCdsCash =
-service-name.PfPpt =
+service-name.PfPpt = Talu’ch Treth Deunydd Pacio Plastig
 service-name.PfSpiritDrinks =
 service-name.PfInheritanceTax =
 service-name.Mib =
@@ -126,7 +126,8 @@ check-your-details.BtaCt.reference = Cyfeirnod y taliad
 check-your-details.PfCt.reference = Cyfeirnod Unigryw y Trethdalwr (UTR)
 check-your-details.PfCt.payslip-reference = Cyfeirnod slip talu
 check-your-details.PfVat.reference.title = ADD_ME
-
+check-your-details.Ppt.reference = Treth Deunydd Pacio Plastig
+check-your-details.PfPpt.reference = Treth Deunydd Pacio Plastig
 
 ## Address Page
 address.heading = Cyfeiriad bilio’r cerdyn
@@ -229,9 +230,9 @@ payment-complete.tax-name.VcVatReturn =
 payment-complete.tax-name.VcVatOther =
 payment-complete.tax-name.ItSa = Hunanasesiad
 payment-complete.tax-name.Amls =
-payment-complete.tax-name.Ppt =
+payment-complete.tax-name.Ppt = Dreth Deunydd Pacio Plastig
 payment-complete.tax-name.PfCdsCash =
-payment-complete.tax-name.PfPpt =
+payment-complete.tax-name.PfPpt = Dreth Deunydd Pacio Plastig
 payment-complete.tax-name.PfSpiritDrinks =
 payment-complete.tax-name.PfInheritanceTax =
 payment-complete.tax-name.Mib =
@@ -305,6 +306,8 @@ email.tax-name.PfAlcoholDuty = Toll Alcohol
 email.tax-name.AlcoholDuty = Toll Alcohol
 email.tax-name.BtaCt = Treth Gorfforaeth
 email.tax-name.PfCt = Treth Gorfforaeth
+email.tax-name.Ppt = Dreth Deunydd Pacio Plastig
+email.tax-name.PfPpt = Dreth Deunydd Pacio Plastig
 
 
 ## Payments survey

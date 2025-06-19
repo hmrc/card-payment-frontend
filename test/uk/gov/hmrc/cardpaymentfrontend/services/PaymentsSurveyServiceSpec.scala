@@ -239,8 +239,8 @@ class PaymentsSurveyServiceSpec extends ItSpec {
             audit          = AuditOptions(
               userType  = "LoggedOut",
               journey   = Some("Successful"),
-              orderId   = Some("1097172564A00101A"),
-              liability = Some("plastic-packing-tax")
+              orderId   = Some("XAPPT0000012345"),
+              liability = Some("plastic-packaging-tax")
             ),
             contentOptions = SurveyContentOptions(
               isWelshSupported = true,
@@ -262,8 +262,8 @@ class PaymentsSurveyServiceSpec extends ItSpec {
             audit          = AuditOptions(
               userType  = "LoggedOut",
               journey   = Some("Successful"),
-              orderId   = Some("1097172564A00101A"),
-              liability = Some("plastic-packing-tax")
+              orderId   = Some("XAPPT0000012345"),
+              liability = Some("plastic-packaging-tax")
             ),
             contentOptions = SurveyContentOptions(
               isWelshSupported = true,

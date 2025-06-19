@@ -545,7 +545,7 @@ class EmailServiceSpec extends ItSpec {
           "debit in english" in {
             val expectedResult: EmailParameters = EmailParameters(
               taxType          = "Plastic Packaging Tax",
-              taxReference     = "1097172564A00101A",
+              taxReference     = "XAPPT0000012345",
               paymentReference = "Some-transaction-ref",
               amountPaid       = "12.34",
               commission       = None,
@@ -558,7 +558,7 @@ class EmailServiceSpec extends ItSpec {
           "credit in english" in {
             val expectedResult: EmailParameters = EmailParameters(
               taxType          = "Plastic Packaging Tax",
-              taxReference     = "1097172564A00101A",
+              taxReference     = "XAPPT0000012345",
               paymentReference = "Some-transaction-ref",
               amountPaid       = "12.34",
               commission       = Some("1.23"),
@@ -571,7 +571,7 @@ class EmailServiceSpec extends ItSpec {
           "debit in welsh" in {
             val expectedResult: EmailParameters = EmailParameters(
               taxType          = "Dreth Deunydd Pacio Plastig",
-              taxReference     = "1097172564A00101A",
+              taxReference     = "XAPPT0000012345",
               paymentReference = "Some-transaction-ref",
               amountPaid       = "12.34",
               commission       = None,
@@ -584,7 +584,7 @@ class EmailServiceSpec extends ItSpec {
           "credit in welsh" in {
             val expectedResult: EmailParameters = EmailParameters(
               taxType          = "Dreth Deunydd Pacio Plastig",
-              taxReference     = "1097172564A00101A",
+              taxReference     = "XAPPT0000012345",
               paymentReference = "Some-transaction-ref",
               amountPaid       = "12.34",
               commission       = Some("1.23"),
@@ -600,7 +600,7 @@ class EmailServiceSpec extends ItSpec {
           "debit in english" in {
             val expectedResult: EmailParameters = EmailParameters(
               taxType          = "Plastic Packaging Tax",
-              taxReference     = "1097172564A00101A",
+              taxReference     = "XAPPT0000012345",
               paymentReference = "Some-transaction-ref",
               amountPaid       = "12.34",
               commission       = None,
@@ -613,7 +613,7 @@ class EmailServiceSpec extends ItSpec {
           "credit in english" in {
             val expectedResult: EmailParameters = EmailParameters(
               taxType          = "Plastic Packaging Tax",
-              taxReference     = "1097172564A00101A",
+              taxReference     = "XAPPT0000012345",
               paymentReference = "Some-transaction-ref",
               amountPaid       = "12.34",
               commission       = Some("1.23"),
@@ -626,7 +626,7 @@ class EmailServiceSpec extends ItSpec {
           "debit in welsh" in {
             val expectedResult: EmailParameters = EmailParameters(
               taxType          = "Dreth Deunydd Pacio Plastig",
-              taxReference     = "1097172564A00101A",
+              taxReference     = "XAPPT0000012345",
               paymentReference = "Some-transaction-ref",
               amountPaid       = "12.34",
               commission       = None,
@@ -639,7 +639,7 @@ class EmailServiceSpec extends ItSpec {
           "credit in welsh" in {
             val expectedResult: EmailParameters = EmailParameters(
               taxType          = "Dreth Deunydd Pacio Plastig",
-              taxReference     = "1097172564A00101A",
+              taxReference     = "XAPPT0000012345",
               paymentReference = "Some-transaction-ref",
               amountPaid       = "12.34",
               commission       = Some("1.23"),

@@ -126,6 +126,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
           case Origins.PtaSa => 1
           case Origins.ItSa  => 1
           case Origins.BtaCt => 1
+          case Origins.Ppt   => 1
           case _             => 0
         }
       }
@@ -138,6 +139,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
           case Origins.AlcoholDuty => 2
           case Origins.BtaCt       => 2
           case Origins.PfCt        => 2
+          case Origins.Ppt         => 2
           case _                   => 1
         }
       }
@@ -150,6 +152,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
           case Origins.AlcoholDuty => 3
           case Origins.BtaCt       => 3
           case Origins.PfCt        => 3
+          case Origins.Ppt         => 3
           case _                   => 2
         }
       }
@@ -162,6 +165,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
           case Origins.AlcoholDuty => 4
           case Origins.BtaCt       => 4
           case Origins.PfCt        => 4
+          case Origins.Ppt         => 4
           case _                   => 3
         }
       }
@@ -399,6 +403,38 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       assertRow(referenceRow, "Cyfeirnod slip talu", "1097172564A00101A", Some("Newid"), Some("http://localhost:9056/pay/pay-by-card-change-reference-number"))
     }
 
+    "[Ppt] should render the payment reference row correctly" in {
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.Ppt.journeyBeforeBeginWebPayment)
+      val result = systemUnderTest.renderPage(fakeRequest())
+      val document = Jsoup.parse(contentAsString(result))
+      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.Ppt))
+      assertRow(referenceRow, "Plastic Packaging Tax Reference", "XAPPT0000012345", None, None)
+    }
+
+    "[Ppt] should render the payment reference row correctly in Welsh" in {
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.Ppt.journeyBeforeBeginWebPayment)
+      val result = systemUnderTest.renderPage(fakeRequestWelsh())
+      val document = Jsoup.parse(contentAsString(result))
+      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.Ppt))
+      assertRow(referenceRow, "Treth Deunydd Pacio Plastig", "XAPPT0000012345", None, None)
+    }
+
+    "[PfPpt] should render the payment reference row correctly" in {
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfPpt.journeyBeforeBeginWebPayment)
+      val result = systemUnderTest.renderPage(fakeRequest())
+      val document = Jsoup.parse(contentAsString(result))
+      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.PfPpt))
+      assertRow(referenceRow, "Plastic Packaging Tax Reference", "XAPPT0000012345", None, None)
+    }
+
+    "[PfPpt] should render the payment reference row correctly in Welsh" in {
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfPpt.journeyBeforeBeginWebPayment)
+      val result = systemUnderTest.renderPage(fakeRequestWelsh())
+      val document = Jsoup.parse(contentAsString(result))
+      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.PfPpt))
+      assertRow(referenceRow, "Treth Deunydd Pacio Plastig", "XAPPT0000012345", None, None)
+    }
+
     "[BtaSa] should render the payment date row correctly" in {
       PayApiStub.stubForFindBySessionId2xx(TestJourneys.BtaSa.journeyBeforeBeginWebPayment)
       val result = systemUnderTest.renderPage(fakeRequest())
@@ -465,7 +501,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
 
     "sanity check for implemented origins" in {
       // remember to add the singular tests for reference rows as well as fdp if applicable, they are not covered in the implementedOrigins forall tests
-      TestHelpers.implementedOrigins.size shouldBe 8 withClue "** This dummy test is here to remind you to update the tests above. Bump up the expected number when an origin is added to implemented origins **"
+      TestHelpers.implementedOrigins.size shouldBe 10 withClue "** This dummy test is here to remind you to update the tests above. Bump up the expected number when an origin is added to implemented origins **"
     }
 
   }
