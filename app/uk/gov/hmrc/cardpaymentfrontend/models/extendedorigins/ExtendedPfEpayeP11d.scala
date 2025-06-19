@@ -49,18 +49,16 @@ object ExtendedPfEpayeP11d extends ExtendedOrigin {
 
   override def checkYourAnswersAdditionalReferenceRow(journeyRequest: JourneyRequest[AnyContent])
     (payFrontendBaseUrl: String)(implicit lang: Lang): Option[CheckYourAnswersRow] =
-    journeyRequest.journey.journeySpecificData.asInstanceOf[JsdPfEpayeP11d].period match {
-      case Some(period) =>
-        Some(CheckYourAnswersRow(
-          titleMessageKey = "check-your-details.PfEpayeP11d.tax-year",
-          value           = Seq(humanReadablePeriod(period)),
-          changeLink      = Some(Link(
-            href       = Call("GET", s"$payFrontendBaseUrl/change-tax-year?fromCardPayment=true"),
-            linkId     = "check-your-details-period-change-link",
-            messageKey = "check-your-details.change"
-          ))
+    journeyRequest.journey.journeySpecificData.asInstanceOf[JsdPfEpayeP11d].period.map { taxYear =>
+      CheckYourAnswersRow(
+        titleMessageKey = "check-your-details.PfEpayeP11d.tax-year",
+        value           = Seq(humanReadablePeriod(taxYear)),
+        changeLink      = Some(Link(
+          href       = Call("GET", s"$payFrontendBaseUrl/change-tax-year?fromCardPayment=true"),
+          linkId     = "check-your-details-period-change-link",
+          messageKey = "check-your-details.change"
         ))
-      case None => None
+      )
     }
 
   override def openBankingOriginSpecificSessionData: JourneySpecificData => Option[OriginSpecificSessionData] = {

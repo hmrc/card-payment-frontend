@@ -49,18 +49,16 @@ object ExtendedPfEpayeNi extends ExtendedOrigin {
 
   override def checkYourAnswersAdditionalReferenceRow(journeyRequest: JourneyRequest[AnyContent])
     (payFrontendBaseUrl: String)(implicit lang: Lang): Option[CheckYourAnswersRow] = {
-    journeyRequest.journey.journeySpecificData.asInstanceOf[JsdPfEpayeNi].period match {
-      case Some(period) =>
-        Some(CheckYourAnswersRow(
-          titleMessageKey = "check-your-details.PfEpayeNi.tax-period",
-          value           = Seq(humanReadablePeriod(period)),
-          changeLink      = Some(Link(
-            href       = Call("GET", s"$payFrontendBaseUrl/change-employers-paye-period?fromCardPayment=true"),
-            linkId     = "check-your-details-period-change-link",
-            messageKey = "check-your-details.change"
-          ))
+    journeyRequest.journey.journeySpecificData.asInstanceOf[JsdPfEpayeNi].period.map { period =>
+      CheckYourAnswersRow(
+        titleMessageKey = "check-your-details.PfEpayeNi.tax-period",
+        value           = Seq(humanReadablePeriod(period)),
+        changeLink      = Some(Link(
+          href       = Call("GET", s"$payFrontendBaseUrl/change-employers-paye-period?fromCardPayment=true"),
+          linkId     = "check-your-details-period-change-link",
+          messageKey = "check-your-details.change"
         ))
-      case None => None
+      )
     }
   }
 

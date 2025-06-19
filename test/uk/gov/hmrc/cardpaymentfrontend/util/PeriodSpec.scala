@@ -33,7 +33,7 @@ class PeriodSpec extends UnitSpec with TableDrivenPropertyChecks {
         (YearlyEpayeTaxPeriod(TaxYear(2025)), Lang("cy"), "2024 i 2025"),
 
         (MonthlyEpayeTaxPeriod(JanuaryFebruary, TaxYear(2025)), Lang("en"), "6 January 2025 to 5 February 2025 (month 10)"),
-        (MonthlyEpayeTaxPeriod(FebruaryMarch, TaxYear(2025)), Lang("en"), "6 February 2025 to 5 March 2025 (month 11)"), //todo5march
+        (MonthlyEpayeTaxPeriod(FebruaryMarch, TaxYear(2025)), Lang("en"), "6 February 2025 to 5 March 2025 (month 11)"),
         (MonthlyEpayeTaxPeriod(MarchApril, TaxYear(2025)), Lang("en"), "6 March 2025 to 5 April 2025 (month 12)"),
         (MonthlyEpayeTaxPeriod(AprilMay, TaxYear(2025)), Lang("en"), "6 April 2024 to 5 May 2024 (month 1)"),
         (MonthlyEpayeTaxPeriod(MayJune, TaxYear(2025)), Lang("en"), "6 May 2024 to 5 June 2024 (month 2)"),
