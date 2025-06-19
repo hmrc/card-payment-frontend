@@ -16,11 +16,12 @@
 
 package uk.gov.hmrc.cardpaymentfrontend.controllers
 
-import payapi.corcommon.model.Origin
+import payapi.cardpaymentjourney.model.journey.JourneySpecificData
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import uk.gov.hmrc.cardpaymentfrontend.actions.{Actions, JourneyRequest}
 import uk.gov.hmrc.cardpaymentfrontend.config.AppConfig
 import uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins.ExtendedOrigin.OriginExtended
+import uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins.ExtendedPfVat
 import uk.gov.hmrc.cardpaymentfrontend.models.{Link, PaymentMethod}
 import uk.gov.hmrc.cardpaymentfrontend.requests.RequestSupport
 import uk.gov.hmrc.cardpaymentfrontend.views.html.FeesPage
@@ -40,7 +41,7 @@ class FeesController @Inject() (
   import requestSupport._
 
   def renderPage: Action[AnyContent] = actions.journeyAction { implicit journeyRequest: JourneyRequest[AnyContent] =>
-    val altPayments = linksAvailableOnFeesPage(journeyRequest.journey.origin)
+    val altPayments = linksAvailableOnFeesPage(journeyRequest.journey.journeySpecificData)
     if (altPayments.isEmpty) Redirect("http://nextpage.html")
     else Ok(feesPage(altPayments))
   }
@@ -51,13 +52,18 @@ class FeesController @Inject() (
 
   private[controllers] def paymentMethodToBeShown(paymentMethod: PaymentMethod, paymentMethods: Set[PaymentMethod]): Boolean = paymentMethods.contains(paymentMethod)
 
-  private[controllers] def linksAvailableOnFeesPage(origin: Origin): Seq[Link] = {
-    val extendedOrigin = origin.lift
+  private[controllers] def linksAvailableOnFeesPage(jsd: JourneySpecificData): Seq[Link] = {
+    val extendedOrigin = jsd.origin.lift
     val paymentMethodsToShow: Set[PaymentMethod] = extendedOrigin.cardFeesPagePaymentMethods
     val showOpenBankingLink: Boolean = paymentMethodToBeShown(PaymentMethod.OpenBanking, paymentMethodsToShow)
     val showBankTransferLink: Boolean = paymentMethodToBeShown(PaymentMethod.Bacs, paymentMethodsToShow)
     val showOneOffDirectDebitLink: Boolean = paymentMethodToBeShown(PaymentMethod.OneOffDirectDebit, paymentMethodsToShow)
     val showVariableDirectDebitLink: Boolean = paymentMethodToBeShown(PaymentMethod.VariableDirectDebit, paymentMethodsToShow)
+
+      def pfVatChargeReferenceExists: Boolean = extendedOrigin match {
+        case ExtendedPfVat => ExtendedPfVat.chargeReference.apply(jsd).isDefined
+        case _             => false
+      }
 
     val maybeOpenBankingLink = if (showOpenBankingLink) {
       Seq(Link(
@@ -75,7 +81,7 @@ class FeesController @Inject() (
       ))
     } else Seq.empty[Link]
 
-    val maybeVariableDirectDebitLink = if (showVariableDirectDebitLink) {
+    val maybeVariableDirectDebitLink = if (showVariableDirectDebitLink && !pfVatChargeReferenceExists) {
       Seq(Link(
         href       = Call("GET", appConfig.payFrontendBaseUrl + appConfig.variableDirectDebitRelativeUrl),
         linkId     = "variable-direct-debit-link",

@@ -159,7 +159,7 @@ object ExtendedOrigin {
       case Origins.PfPsAdmin                => DefaultExtendedOrigin
       case Origins.BtaSa                    => ExtendedBtaSa
       case Origins.AppSa                    => DefaultExtendedOrigin
-      case Origins.BtaVat                   => DefaultExtendedOrigin
+      case Origins.BtaVat                   => ExtendedBtaVat
       case Origins.BtaEpayeBill             => DefaultExtendedOrigin
       case Origins.BtaEpayePenalty          => DefaultExtendedOrigin
       case Origins.BtaEpayeInterest         => DefaultExtendedOrigin
@@ -171,8 +171,8 @@ object ExtendedOrigin {
       case Origins.Parcels                  => DefaultExtendedOrigin
       case Origins.DdVat                    => DefaultExtendedOrigin
       case Origins.DdSdil                   => DefaultExtendedOrigin
-      case Origins.VcVatReturn              => DefaultExtendedOrigin
-      case Origins.VcVatOther               => DefaultExtendedOrigin
+      case Origins.VcVatReturn              => ExtendedVcVatReturn
+      case Origins.VcVatOther               => ExtendedVcVatOther
       case Origins.ItSa                     => ExtendedItSa
       case Origins.Amls                     => DefaultExtendedOrigin
       case Origins.Ppt                      => DefaultExtendedOrigin
