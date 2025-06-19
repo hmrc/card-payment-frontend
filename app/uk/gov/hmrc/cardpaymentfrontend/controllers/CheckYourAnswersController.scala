@@ -34,7 +34,7 @@ import uk.gov.hmrc.play.bootstrap.binders.RedirectUrl
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton()
 class CheckYourAnswersController @Inject() (
@@ -72,16 +72,21 @@ class CheckYourAnswersController @Inject() (
   }
 
   def submit: Action[AnyContent] = actions.journeyAction.async { implicit journeyRequest: JourneyRequest[AnyContent] =>
-    cardPaymentService
-      .initiatePayment(
-        journey               = journeyRequest.journey,
-        addressFromSession    = journeyRequest.readFromSession[Address](journeyRequest.journeyId, Keys.address).getOrElse(throw new RuntimeException("We can't process a card payment without the billing address.")),
-        maybeEmailFromSession = journeyRequest.readFromSession[EmailAddress](journeyRequest.journeyId, Keys.email),
-        language              = requestSupport.usableLanguage
-      )(requestSupport.hc)
-      .map { cardPaymentInitiatePaymentResponse =>
-        Redirect(routes.PaymentStatusController.showIframe(RedirectUrl(cardPaymentInitiatePaymentResponse.redirectUrl)))
-      }
+    journeyRequest.readFromSession[Address](journeyRequest.journeyId, Keys.address) match {
+      case Some(address) =>
+        cardPaymentService
+          .initiatePayment(
+            journey               = journeyRequest.journey,
+            addressFromSession    = address,
+            maybeEmailFromSession = journeyRequest.readFromSession[EmailAddress](journeyRequest.journeyId, Keys.email),
+            language              = requestSupport.usableLanguage
+          )(requestSupport.hc)
+          .map { cardPaymentInitiatePaymentResponse =>
+            Redirect(routes.PaymentStatusController.showIframe(RedirectUrl(cardPaymentInitiatePaymentResponse.redirectUrl)))
+          }
+      case None =>
+        Future.successful(Redirect(routes.AddressController.renderPage))
+    }
   }
 
 }

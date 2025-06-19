@@ -120,7 +120,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyBeforeBeginWebPayment)
       val result = systemUnderTest.submit(fakeRequestWithoutAddressInSession)
       status(result) shouldBe SEE_OTHER
-      redirectLocation(result) shouldBe Some(s"www.google.com")
+      redirectLocation(result) shouldBe Some("/pay-by-card/address")
     }
 
       // derives correct row in summary list due to Origins that may include FDP.
