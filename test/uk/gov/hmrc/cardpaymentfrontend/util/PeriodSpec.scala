@@ -69,7 +69,7 @@ class PeriodSpec extends UnitSpec with TableDrivenPropertyChecks {
       )
 
       forAll(testCases) { (period: FixedLengthEpayeTaxPeriod, lang: Lang, expectedResult: String) =>
-        Period.humanReadablePeriod(period, lang) shouldBe expectedResult
+        Period.humanReadablePeriod(period)(lang) shouldBe expectedResult
       }
     }
   }

@@ -21,7 +21,7 @@ import play.api.i18n.Lang
 
 object Period {
 
-  def humanReadablePeriod(period: FixedLengthEpayeTaxPeriod, lang: Lang): String =
+  def humanReadablePeriod(period: FixedLengthEpayeTaxPeriod)(implicit lang: Lang): String =
     if (lang.code.contains("cy")) {
       period.humanReadablePeriodInWelsh
     } else {

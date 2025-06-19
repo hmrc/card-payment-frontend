@@ -17,11 +17,13 @@
 package uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins
 
 import payapi.cardpaymentjourney.model.journey.{JourneySpecificData, JsdPfEpayeNi}
+import play.api.i18n.Lang
 import play.api.mvc.{AnyContent, Call}
 import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
 import uk.gov.hmrc.cardpaymentfrontend.models.PaymentMethod.{Card, OneOffDirectDebit, OpenBanking, VariableDirectDebit}
-import uk.gov.hmrc.cardpaymentfrontend.models.{CheckYourAnswersPeriodRow, CheckYourAnswersRow, Link, PaymentMethod}
+import uk.gov.hmrc.cardpaymentfrontend.models.{CheckYourAnswersRow, Link, PaymentMethod}
 import uk.gov.hmrc.cardpaymentfrontend.models.openbanking.{OriginSpecificSessionData, PfEpayeNiSessionData}
+import uk.gov.hmrc.cardpaymentfrontend.util.Period.humanReadablePeriod
 
 object ExtendedPfEpayeNi extends ExtendedOrigin {
 
@@ -46,16 +48,21 @@ object ExtendedPfEpayeNi extends ExtendedOrigin {
     ))
 
   override def checkYourAnswersAdditionalReferenceRow(journeyRequest: JourneyRequest[AnyContent])
-    (payFrontendBaseUrl: String): Option[CheckYourAnswersPeriodRow] =
-    Some(CheckYourAnswersPeriodRow(
-      titleMessageKey = "check-your-details.PfEpayeNi.tax-period",
-      value           = Seq(journeyRequest.journey.journeySpecificData.asInstanceOf[JsdPfEpayeNi].period),
-      changeLink      = Some(Link(
-        href       = Call("GET", s"$payFrontendBaseUrl/change-employers-paye-period?fromCardPayment=true"),
-        linkId     = "check-your-details-period-change-link",
-        messageKey = "check-your-details.change"
-      ))
-    ))
+    (payFrontendBaseUrl: String)(implicit lang: Lang): Option[CheckYourAnswersRow] = {
+    journeyRequest.journey.journeySpecificData.asInstanceOf[JsdPfEpayeNi].period match {
+      case Some(period) =>
+        Some(CheckYourAnswersRow(
+          titleMessageKey = "check-your-details.PfEpayeNi.tax-period",
+          value           = Seq(humanReadablePeriod(period)),
+          changeLink      = Some(Link(
+            href       = Call("GET", s"$payFrontendBaseUrl/change-employers-paye-period?fromCardPayment=true"),
+            linkId     = "check-your-details-period-change-link",
+            messageKey = "check-your-details.change"
+          ))
+        ))
+      case None => None
+    }
+  }
 
   override def openBankingOriginSpecificSessionData: JourneySpecificData => Option[OriginSpecificSessionData] = {
     case j: JsdPfEpayeNi => j.accountsOfficeReference.flatMap { accountsOfficeReference =>
