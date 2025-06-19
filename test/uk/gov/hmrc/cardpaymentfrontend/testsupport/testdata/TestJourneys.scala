@@ -19,8 +19,12 @@ package uk.gov.hmrc.cardpaymentfrontend.testsupport.testdata
 import payapi.cardpaymentjourney.model.journey._
 import payapi.corcommon.model.taxes.ad.{AlcoholDutyChargeReference, AlcoholDutyReference}
 import payapi.corcommon.model.taxes.ct.{CtChargeTypes, CtLivePeriod, CtPeriod, CtUtr}
+import payapi.corcommon.model.taxes.epaye.{AccountsOfficeReference, PsaNumber, QuarterlyEpayeTaxPeriod, YearlyEpayeTaxPeriod}
+import payapi.corcommon.model.taxes.other.{XRef, XRef14Char}
 import payapi.corcommon.model.taxes.ppt.PptReference
 import payapi.corcommon.model.taxes.sa.SaUtr
+import payapi.corcommon.model.times.period.TaxQuarter.AprilJuly
+import payapi.corcommon.model.times.period.TaxYear
 import payapi.corcommon.model.{AmountInPence, JourneyId, PaymentStatuses}
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.testdata.TestDataUtils._
 
@@ -170,6 +174,87 @@ object TestJourneys {
         ctPeriod     = Some(CtPeriod(1)),
         ctChargeType = Some(CtChargeTypes.A)
       ),
+      chosenWayToPay       = None
+    )
+  }
+
+  object PfEpayeNi extends JourneyStatuses[JsdPfEpayeNi] {
+    val journeyBeforeBeginWebPayment: Journey[JsdPfEpayeNi] = Journey[JsdPfEpayeNi](
+      _id                  = JourneyId("TestJourneyId-44f9-ad7f-01e1d3d8f151"),
+      sessionId            = Some(SessionId("TestSession-4b87460d-6f43-4c4c-b810-d6f87c774854")),
+      amountInPence        = Some(AmountInPence(1234)),
+      emailTemplateOptions = None,
+      navigation           = Some(NavigationOptions(returnUrl = Url("https://www.return-url.com"), backUrl = Url("https://www.back-to-pfepayeni.com"))),
+      order                = None,
+      status               = PaymentStatuses.Created,
+      createdOn            = LocalDateTime.parse("2027-11-02T16:28:55.185"),
+      journeySpecificData  = JsdPfEpayeNi(
+        Some(AccountsOfficeReference("123PH45678900")),
+        Some(QuarterlyEpayeTaxPeriod(AprilJuly, TaxYear(2025)))
+      ),
+      chosenWayToPay       = None
+    )
+  }
+
+  object PfEpayeP11d extends JourneyStatuses[JsdPfEpayeP11d] {
+    val journeyBeforeBeginWebPayment: Journey[JsdPfEpayeP11d] = Journey[JsdPfEpayeP11d](
+      _id                  = JourneyId("TestJourneyId-44f9-ad7f-01e1d3d8f151"),
+      sessionId            = Some(SessionId("TestSession-4b87460d-6f43-4c4c-b810-d6f87c774854")),
+      amountInPence        = Some(AmountInPence(1234)),
+      emailTemplateOptions = None,
+      navigation           = Some(NavigationOptions(returnUrl = Url("https://www.return-url.com"), backUrl = Url("https://www.back-to-pfepayep11d.com"))),
+      order                = None,
+      status               = PaymentStatuses.Created,
+      createdOn            = LocalDateTime.parse("2027-11-02T16:28:55.185"),
+      journeySpecificData  = JsdPfEpayeP11d(
+        Some(AccountsOfficeReference("123PH45678900")),
+        Some(YearlyEpayeTaxPeriod(TaxYear(2025)))
+      ),
+      chosenWayToPay       = None
+    )
+  }
+
+  object PfEpayeLpp extends JourneyStatuses[JsdPfEpayeLpp] {
+    val journeyBeforeBeginWebPayment: Journey[JsdPfEpayeLpp] = Journey[JsdPfEpayeLpp](
+      _id                  = JourneyId("TestJourneyId-44f9-ad7f-01e1d3d8f151"),
+      sessionId            = Some(SessionId("TestSession-4b87460d-6f43-4c4c-b810-d6f87c774854")),
+      amountInPence        = Some(AmountInPence(1234)),
+      emailTemplateOptions = None,
+      navigation           = Some(NavigationOptions(returnUrl = Url("https://www.return-url.com"), backUrl = Url("https://www.back-to-pfepayelpp.com"))),
+      order                = None,
+      status               = PaymentStatuses.Created,
+      createdOn            = LocalDateTime.parse("2027-11-02T16:28:55.185"),
+      journeySpecificData  = JsdPfEpayeLpp(prn = Some(XRef("XE123456789012"))),
+      chosenWayToPay       = None
+    )
+  }
+
+  object PfEpayeLateCis extends JourneyStatuses[JsdPfEpayeLateCis] {
+    val journeyBeforeBeginWebPayment: Journey[JsdPfEpayeLateCis] = Journey[JsdPfEpayeLateCis](
+      _id                  = JourneyId("TestJourneyId-44f9-ad7f-01e1d3d8f151"),
+      sessionId            = Some(SessionId("TestSession-4b87460d-6f43-4c4c-b810-d6f87c774854")),
+      amountInPence        = Some(AmountInPence(1234)),
+      emailTemplateOptions = None,
+      navigation           = Some(NavigationOptions(returnUrl = Url("https://www.return-url.com"), backUrl = Url("https://www.back-to-pfepayelatecis.com"))),
+      order                = None,
+      status               = PaymentStatuses.Created,
+      createdOn            = LocalDateTime.parse("2027-11-02T16:28:55.185"),
+      journeySpecificData  = JsdPfEpayeLateCis(prn = Some(XRef14Char("XE123456789012"))),
+      chosenWayToPay       = None
+    )
+  }
+
+  object PfEpayeSeta extends JourneyStatuses[JsdPfEpayeSeta] {
+    val journeyBeforeBeginWebPayment: Journey[JsdPfEpayeSeta] = Journey[JsdPfEpayeSeta](
+      _id                  = JourneyId("TestJourneyId-44f9-ad7f-01e1d3d8f151"),
+      sessionId            = Some(SessionId("TestSession-4b87460d-6f43-4c4c-b810-d6f87c774854")),
+      amountInPence        = Some(AmountInPence(1234)),
+      emailTemplateOptions = None,
+      navigation           = Some(NavigationOptions(returnUrl = Url("https://www.return-url.com"), backUrl = Url("https://www.back-to-pfepayeseta.com"))),
+      order                = None,
+      status               = PaymentStatuses.Created,
+      createdOn            = LocalDateTime.parse("2027-11-02T16:28:55.185"),
+      journeySpecificData  = JsdPfEpayeSeta(psaNumber = Some(PsaNumber("XA123456789012"))),
       chosenWayToPay       = None
     )
   }

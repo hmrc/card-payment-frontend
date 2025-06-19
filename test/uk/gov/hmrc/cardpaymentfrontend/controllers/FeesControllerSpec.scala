@@ -847,6 +847,12 @@ class FeesControllerSpec extends ItSpec {
         messageKey = "card-fees.para2.one-off-direct-debit"
       )
 
+      val expectedVariableDirectDebitLink = Link(
+        href       = Call("GET", "http://localhost:9056/pay/pay-by-direct-debit"),
+        linkId     = "variable-direct-debit-link",
+        messageKey = "card-fees.para2.variable-direct-debit"
+      )
+
       "should return the correct links for each origin" in {
         Origins.values.foreach { origin =>
           val expectedLinks = origin match {
@@ -856,11 +862,11 @@ class FeesControllerSpec extends ItSpec {
             case Origins.ItSa                     => Seq(expectedBankTransferLink)
             case Origins.PfVat                    => Seq.empty
             case Origins.PfCt                     => Seq(expectedOpenBankingLink, expectedOneOffDirectDebitLink)
-            case Origins.PfEpayeNi                => Seq.empty
-            case Origins.PfEpayeLpp               => Seq.empty
-            case Origins.PfEpayeSeta              => Seq.empty
-            case Origins.PfEpayeLateCis           => Seq.empty
-            case Origins.PfEpayeP11d              => Seq.empty
+            case Origins.PfEpayeNi                => Seq(expectedOpenBankingLink, expectedVariableDirectDebitLink, expectedOneOffDirectDebitLink)
+            case Origins.PfEpayeLpp               => Seq(expectedOpenBankingLink, expectedOneOffDirectDebitLink)
+            case Origins.PfEpayeSeta              => Seq(expectedOpenBankingLink, expectedOneOffDirectDebitLink)
+            case Origins.PfEpayeLateCis           => Seq(expectedOpenBankingLink, expectedOneOffDirectDebitLink)
+            case Origins.PfEpayeP11d              => Seq(expectedOpenBankingLink, expectedOneOffDirectDebitLink)
             case Origins.PfSdlt                   => Seq.empty
             case Origins.PfCds                    => Seq.empty
             case Origins.PfOther                  => Seq.empty
