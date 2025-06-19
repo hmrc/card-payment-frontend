@@ -42,7 +42,7 @@ class EmailServiceSpec extends ItSpec with TableDrivenPropertyChecks {
   "buildEmailParameters should return EmailParameters" - {
     val commission = Some("1.23")
 
-    val scenarios: TableFor6[JourneyStatuses[_ >: JsdBtaSa with JsdAlcoholDuty with JsdPfAlcoholDuty with JsdPfEpayeP11d with JsdPfEpayeSeta with JsdPfEpayeLpp with JsdPfEpayeNi with JsdPtaSa with JsdBtaCt with JsdItSa with JsdPfCt with JsdPfSa with JsdPfEpayeLateCis <: JourneySpecificData], String, String, Option[String], Some[String], String] = Table(
+    val scenarios: TableFor6[JourneyStatuses[_ >: JsdBtaSa with JsdAlcoholDuty with JsdPfAlcoholDuty with JsdPfEpayeP11d with JsdPfEpayeSeta with JsdPfEpayeLpp with JsdPfEpayeNi with JsdPtaSa with JsdBtaCt with JsdItSa with JsdPfCt with JsdPfSa with JsdPfEpayeLateCis with JsdPpt with JsdPfPpt <: JourneySpecificData], String, String, Option[String], Some[String], String] = Table(
       ("Journey", "Tax Type", "Tax Reference", "Commission", "Total Paid", "lang"),
       (PfSa, "Self Assessment", "1234567895K", None, Some("12.34"), "en"),
       (PfSa, "Self Assessment", "1234567895K", commission, Some("13.57"), "en"),
@@ -107,7 +107,17 @@ class EmailServiceSpec extends ItSpec with TableDrivenPropertyChecks {
       (PfEpayeP11d, "Employers’ Class 1A National Insurance", "123PH456789002513", None, Some("12.34"), "en"),
       (PfEpayeP11d, "Employers’ Class 1A National Insurance", "123PH456789002513", commission, Some("13.57"), "en"),
       (PfEpayeP11d, "Yswiriant Gwladol Dosbarth 1A y Cyflogwr", "123PH456789002513", None, Some("12.34"), "cy"),
-      (PfEpayeP11d, "Yswiriant Gwladol Dosbarth 1A y Cyflogwr", "123PH456789002513", commission, Some("13.57"), "cy")
+      (PfEpayeP11d, "Yswiriant Gwladol Dosbarth 1A y Cyflogwr", "123PH456789002513", commission, Some("13.57"), "cy"),
+
+      (Ppt, "Plastic Packaging Tax", "XAPPT0000012345", None, Some("12.34"), "en"),
+      (Ppt, "Plastic Packaging Tax", "XAPPT0000012345", commission, Some("13.57"), "en"),
+      (Ppt, "Dreth Deunydd Pacio Plastig", "XAPPT0000012345", None, Some("12.34"), "cy"),
+      (Ppt, "Dreth Deunydd Pacio Plastig", "XAPPT0000012345", commission, Some("13.57"), "cy"),
+
+      (PfPpt, "Plastic Packaging Tax", "XAPPT0000012345", None, Some("12.34"), "en"),
+      (PfPpt, "Plastic Packaging Tax", "XAPPT0000012345", commission, Some("13.57"), "en"),
+      (PfPpt, "Dreth Deunydd Pacio Plastig", "XAPPT0000012345", None, Some("12.34"), "cy"),
+      (PfPpt, "Dreth Deunydd Pacio Plastig", "XAPPT0000012345", commission, Some("13.57"), "cy")
 
     )
 
