@@ -22,7 +22,7 @@ import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import uk.gov.hmrc.cardpaymentfrontend.models.Languages.English
 import uk.gov.hmrc.cardpaymentfrontend.models.cardpayment._
-import uk.gov.hmrc.cardpaymentfrontend.models.payapi.{FailWebPaymentRequest, SucceedWebPaymentRequest}
+import uk.gov.hmrc.cardpaymentfrontend.models.payapirequest.{FailWebPaymentRequest, SucceedWebPaymentRequest}
 import uk.gov.hmrc.cardpaymentfrontend.models.{Address, EmailAddress}
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.ItSpec
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.stubs.{CardPaymentStub, PayApiStub}
@@ -30,6 +30,7 @@ import uk.gov.hmrc.cardpaymentfrontend.testsupport.testdata.TestJourneys
 import uk.gov.hmrc.http.HeaderCarrier
 
 import java.time.LocalDateTime
+import java.time.temporal.ChronoUnit
 
 class CardPaymentServiceSpec extends ItSpec {
 
@@ -74,7 +75,7 @@ class CardPaymentServiceSpec extends ItSpec {
 
     "finishPayment" - {
       "should return Some[CardPaymentResult] when one is returned from card-payment backend" in {
-        val testTime = LocalDateTime.now()
+        val testTime = LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS)
         val testCardPaymentResult = CardPaymentResult(CardPaymentFinishPaymentResponses.Successful, AdditionalPaymentInfo(Some("debit"), Some(123), Some(testTime)))
         CardPaymentStub.AuthAndCapture.stubForAuthAndCapture2xx("sometransactionref", testCardPaymentResult)
         val result = systemUnderTest.finishPayment("sometransactionref", testJourney._id.value).futureValue
@@ -82,7 +83,7 @@ class CardPaymentServiceSpec extends ItSpec {
       }
 
       "should update pay-api with SucceedWebPaymentRequest when call to card-payment backend succeeds" in {
-        val testTime = LocalDateTime.now()
+        val testTime = LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS)
         val testCardPaymentResult = CardPaymentResult(CardPaymentFinishPaymentResponses.Successful, AdditionalPaymentInfo(Some("debit"), Some(123), Some(testTime)))
         CardPaymentStub.AuthAndCapture.stubForAuthAndCapture2xx("sometransactionref", testCardPaymentResult)
         systemUnderTest.finishPayment("sometransactionref", testJourney._id.value).futureValue
@@ -90,7 +91,7 @@ class CardPaymentServiceSpec extends ItSpec {
       }
 
       "should update pay-api with FailWebPaymentRequest when call to card-payment backend indicates failure" in {
-        val testTime = LocalDateTime.now()
+        val testTime = LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS)
         val testCardPaymentResult = CardPaymentResult(CardPaymentFinishPaymentResponses.Failed, AdditionalPaymentInfo(Some("debit"), None, Some(testTime)))
         CardPaymentStub.AuthAndCapture.stubForAuthAndCapture2xx("sometransactionref", testCardPaymentResult)
         systemUnderTest.finishPayment("sometransactionref", testJourney._id.value).futureValue

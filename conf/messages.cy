@@ -15,9 +15,9 @@ service-name.PfVat = Talu eich TAW
 service-name.PfCt = Talu eich Treth Gorfforaeth
 service-name.PfEpayeNi = Talwch eich TWE a’ch Yswiriant Gwladol y cyflogwr
 service-name.PfEpayeLpp = Talu’ch cosb am dalu neu gyflwyno TWE yn hwyr
-service-name.PfEpayeSeta =
-service-name.PfEpayeLateCis =
-service-name.PfEpayeP11d =
+service-name.PfEpayeSeta = Talwch eich Cytundeb Setliad TWE y cyflogwr
+service-name.PfEpayeLateCis = Talwch eich cosb - Cynllun y Diwydiant Adeiladu
+service-name.PfEpayeP11d = Talu’ch Yswiriant Gwladol Dosbarth 1A y cyflogwr (bil P11D)
 service-name.PfSdlt =
 service-name.PfCds =
 service-name.PfOther =
@@ -98,7 +98,7 @@ card-fees.para1 = Bydd ffi na ellir ei had-dalu yn cael ei chodi os talwch â ch
 card-fees.para2 = Nid oes ffi yn cael ei chodi os talwch drwy un o’r dulliau canlynol:
 card-fees.para2.bank-transfer = drosglwyddiad banc
 card-fees.para2.open-banking = cyfrif banc
-card-fees.para2.direct-debit = ADD_ME
+card-fees.para2.variable-direct-debit = Debyd Uniongyrchol (newidiol)
 card-fees.para2.one-off-direct-debit = Debyd Uniongyrchol (taliad untro)
 card-fees.para2.personal-debit-card = cerdyn debyd personol
 card-fees.para3 = Ni allwch dalu â cherdyn credyd personol.
@@ -126,12 +126,19 @@ check-your-details.BtaCt.reference = Cyfeirnod y taliad
 check-your-details.PfCt.reference = Cyfeirnod Unigryw y Trethdalwr (UTR)
 check-your-details.PfCt.payslip-reference = Cyfeirnod slip talu
 check-your-details.PfVat.reference.title = ADD_ME
+check-your-details.PfEpayeNi.reference = Cyfeirnod y Swyddfa Gyfrifon
+check-your-details.PfEpayeNi.tax-period = Cyfnod talu
+check-your-details.PfEpayeLpp.reference = Cyfeirnod y gosb
+check-your-details.PfEpayeSeta.reference = Cyfeirnod Cytundeb Setliad (PSA)
+check-your-details.PfEpayeLateCis.reference = Cyfeirnod y gosb
+check-your-details.PfEpayeP11d.reference = Cyfeirnod y Swyddfa Gyfrifon
+check-your-details.PfEpayeP11d.tax-year = Blwyddyn dreth
 
 
 ## Address Page
 address.heading = Cyfeiriad bilio’r cerdyn
-address.field-name.line1.hint = Eich cyfeiriad bilio yw’r cyfeiriad y gwnaethoch gofrestru eich cerdyn ag ef
-address.field-name.line2.hint = Os nad yw’n cyd-fynd, bydd y taliad yn methu.
+address.line1.hint = Eich cyfeiriad bilio yw’r cyfeiriad y gwnaethoch gofrestru eich cerdyn ag ef.
+address.line2.hint = Os nad yw’n cyd-fynd, bydd y taliad yn methu.
 
 address.field-name.line1 = Cyfeiriad - llinell 1
 address.field-name.line2 = Cyfeiriad - llinell 2 (dewisol)
@@ -198,11 +205,11 @@ payment-complete.survey.p2.part2 = (mae’n cymryd 30 eiliad)
 payment-complete.tax-name.PfSa = Hunanasesiad
 payment-complete.tax-name.PfVat =
 payment-complete.tax-name.PfCt = Treth Gorfforaeth
-payment-complete.tax-name.PfEpayeNi =
-payment-complete.tax-name.PfEpayeLpp =
-payment-complete.tax-name.PfEpayeSeta =
-payment-complete.tax-name.PfEpayeLateCis =
-payment-complete.tax-name.PfEpayeP11d =
+payment-complete.tax-name.PfEpayeNi = TWE ac Yswiriant Gwladol y Cyflogwr
+payment-complete.tax-name.PfEpayeLpp = Cosb y Cyflogwr am dalu TWE yn hwyr
+payment-complete.tax-name.PfEpayeSeta = Cytundeb Setliad TWE y Cyflogwr
+payment-complete.tax-name.PfEpayeLateCis = Cynllun y Diwydiant Adeiladu (CIS) - cosb am dalu'n hwyr
+payment-complete.tax-name.PfEpayeP11d = Yswiriant Gwladol Dosbarth 1A y Cyflogwr
 payment-complete.tax-name.PfSdlt =
 payment-complete.tax-name.PfCds =
 payment-complete.tax-name.PfOther =
@@ -305,6 +312,11 @@ email.tax-name.PfAlcoholDuty = Toll Alcohol
 email.tax-name.AlcoholDuty = Toll Alcohol
 email.tax-name.BtaCt = Treth Gorfforaeth
 email.tax-name.PfCt = Treth Gorfforaeth
+email.tax-name.PfEpayeNi = TWE ac Yswiriant Gwladol y Cyflogwr
+email.tax-name.PfEpayeLpp = Cosb y Cyflogwr am dalu TWE yn hwyr
+email.tax-name.PfEpayeSeta = Cytundeb Setliad TWE y Cyflogwr
+email.tax-name.PfEpayeLateCis = Cynllun y Diwydiant Adeiladu (CIS) - cosb am dalu’n hwyr
+email.tax-name.PfEpayeP11d = Yswiriant Gwladol Dosbarth 1A y Cyflogwr
 
 
 ## Payments survey

@@ -18,6 +18,7 @@ package uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins
 
 import payapi.cardpaymentjourney.model.journey.{JourneySpecificData, JsdAlcoholDuty}
 import payapi.corcommon.model.taxes.ad.AlcoholDutyChargeReference
+import play.api.i18n.Lang
 import play.api.mvc.AnyContent
 import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
 import uk.gov.hmrc.cardpaymentfrontend.models.PaymentMethod.{Bacs, Card, OpenBanking}
@@ -45,7 +46,9 @@ object ExtendedAlcoholDuty extends ExtendedOrigin {
     case _                 => throw new RuntimeException("Incorrect origin found")
   }
 
-  override def checkYourAnswersAdditionalReferenceRow(journeyRequest: JourneyRequest[AnyContent])(payFrontendBaseUrl: String): Option[CheckYourAnswersRow] = {
+  override def checkYourAnswersAdditionalReferenceRow(journeyRequest: JourneyRequest[AnyContent])
+    (payFrontendBaseUrl: String)
+    (implicit lang: Lang): Option[CheckYourAnswersRow] = {
     additionalReference(journeyRequest.journey.journeySpecificData).map{ alcoholDutyChargeReference =>
       CheckYourAnswersRow(
         titleMessageKey = "check-your-details.AlcoholDuty.charge-reference",

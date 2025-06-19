@@ -38,16 +38,16 @@ object TestHelpers {
     PfAlcoholDuty,
     AlcoholDuty,
     PfCt,
-    BtaCt
+    BtaCt,
+    PfEpayeNi,
+    PfEpayeLpp,
+    PfEpayeLateCis,
+    PfEpayeP11d,
+    PfEpayeSeta
   )
 
   val unimplementedOrigins: Seq[Origin] = Seq[Origin](
     PfVat,
-    PfEpayeNi,
-    PfEpayeLpp,
-    PfEpayeSeta,
-    PfEpayeLateCis,
-    PfEpayeP11d,
     PfSdlt,
     PfCds,
     PfOther,
@@ -124,11 +124,11 @@ object TestHelpers {
     case Origins.ItSa                     => TestJourneys.ItSa
     case Origins.PfVat                    => throw new MatchError("Not implemented yet")
     case Origins.PfCt                     => TestJourneys.PfCt
-    case Origins.PfEpayeNi                => throw new MatchError("Not implemented yet")
-    case Origins.PfEpayeLpp               => throw new MatchError("Not implemented yet")
-    case Origins.PfEpayeSeta              => throw new MatchError("Not implemented yet")
-    case Origins.PfEpayeLateCis           => throw new MatchError("Not implemented yet")
-    case Origins.PfEpayeP11d              => throw new MatchError("Not implemented yet")
+    case Origins.PfEpayeNi                => TestJourneys.PfEpayeNi
+    case Origins.PfEpayeLpp               => TestJourneys.PfEpayeLpp
+    case Origins.PfEpayeSeta              => TestJourneys.PfEpayeSeta
+    case Origins.PfEpayeLateCis           => TestJourneys.PfEpayeLateCis
+    case Origins.PfEpayeP11d              => TestJourneys.PfEpayeP11d
     case Origins.PfSdlt                   => throw new MatchError("Not implemented yet")
     case Origins.PfCds                    => throw new MatchError("Not implemented yet")
     case Origins.PfOther                  => throw new MatchError("Not implemented yet")
