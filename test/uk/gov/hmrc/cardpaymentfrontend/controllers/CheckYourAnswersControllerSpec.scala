@@ -447,6 +447,22 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       assertRow(paymentDateRow, "Dyddiad talu", "Heddiw", Some("Newid"), Some("http://localhost:9056/pay/change-when-do-you-want-to-pay?toPayFrontendConfirmation=true"))
     }
 
+    "[Ppt] should render the payment date row correctly" in {
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.Ppt.journeyBeforeBeginWebPayment)
+      val result = systemUnderTest.renderPage(fakeRequest())
+      val document = Jsoup.parse(contentAsString(result))
+      val paymentDateRow = document.select(".govuk-summary-list__row").asScala.toList(0)
+      assertRow(paymentDateRow, "Payment date", "Today", Some("Change"), Some("http://localhost:9056/pay/change-when-do-you-want-to-pay?toPayFrontendConfirmation=true"))
+    }
+
+    "[Ppt] should render the payment date row correctly in Welsh" in {
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.Ppt.journeyBeforeBeginWebPayment)
+      val result = systemUnderTest.renderPage(fakeRequestWelsh())
+      val document = Jsoup.parse(contentAsString(result))
+      val paymentDateRow = document.select(".govuk-summary-list__row").asScala.toList(0)
+      assertRow(paymentDateRow, "Dyddiad talu", "Heddiw", Some("Newid"), Some("http://localhost:9056/pay/change-when-do-you-want-to-pay?toPayFrontendConfirmation=true"))
+    }
+
     "sanity check for implemented origins" in {
       // remember to add the singular tests for reference rows as well as fdp if applicable, they are not covered in the implementedOrigins forall tests
       TestHelpers.implementedOrigins.size shouldBe 8 withClue "** This dummy test is here to remind you to update the tests above. Bump up the expected number when an origin is added to implemented origins **"

@@ -16,16 +16,16 @@
 
 package uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins
 
-import payapi.cardpaymentjourney.model.journey.{JourneySpecificData, JsdPfPpt}
+import payapi.cardpaymentjourney.model.journey.{JourneySpecificData, JsdPpt}
 import play.api.mvc.{AnyContent, Call}
 import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
 import uk.gov.hmrc.cardpaymentfrontend.models.PaymentMethod.{Bacs, Card, OneOffDirectDebit, OpenBanking}
-import uk.gov.hmrc.cardpaymentfrontend.models.openbanking.{OriginSpecificSessionData, PfPptSessionData}
+import uk.gov.hmrc.cardpaymentfrontend.models.openbanking.{OriginSpecificSessionData, PptSessionData}
 import uk.gov.hmrc.cardpaymentfrontend.models.{CheckYourAnswersRow, Link, PaymentMethod}
 
-object ExtendedPfPpt extends ExtendedOrigin {
-  override val serviceNameMessageKey: String = "service-name.PfPpt"
-  override val taxNameMessageKey: String = "payment-complete.tax-name.PfPpt"
+object ExtendedPpt extends ExtendedOrigin {
+  override val serviceNameMessageKey: String = "service-name.Ppt"
+  override val taxNameMessageKey: String = "payment-complete.tax-name.Ppt"
 
   def cardFeesPagePaymentMethods: Set[PaymentMethod] = Set(OpenBanking, OneOffDirectDebit)
 
@@ -33,7 +33,7 @@ object ExtendedPfPpt extends ExtendedOrigin {
 
   override def checkYourAnswersReferenceRow(journeyRequest: JourneyRequest[AnyContent])(payFrontendBaseUrl: String): Option[CheckYourAnswersRow] = {
     Some(CheckYourAnswersRow(
-      titleMessageKey = "check-your-details.PfPpt.reference",
+      titleMessageKey = "check-your-details.Ppt.reference",
       value           = Seq(journeyRequest.journey.referenceValue),
       changeLink      = Some(Link(
         href       = Call("GET", changeReferenceUrl(payFrontendBaseUrl)),
@@ -44,11 +44,11 @@ object ExtendedPfPpt extends ExtendedOrigin {
   }
 
   override def openBankingOriginSpecificSessionData: JourneySpecificData => Option[OriginSpecificSessionData] = {
-    case j: JsdPfPpt => j.pptReference.map(PfPptSessionData(_))
-    case _           => throw new RuntimeException("Incorrect origin found")
+    case j: JsdPpt => Some(PptSessionData(j.pptReference))
+    case _         => throw new RuntimeException("Incorrect origin found")
   }
 
-  override def emailTaxTypeMessageKey: String = "email.tax-name.PfPpt"
+  override def emailTaxTypeMessageKey: String = "email.tax-name.Ppt"
 
   override def surveyAuditName: String = "plastic-packaging-tax"
   override def surveyReturnHref: String = "https://www.gov.uk/government/organisations/hm-revenue-customs"

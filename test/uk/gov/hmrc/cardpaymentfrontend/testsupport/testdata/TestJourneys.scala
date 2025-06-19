@@ -19,6 +19,7 @@ package uk.gov.hmrc.cardpaymentfrontend.testsupport.testdata
 import payapi.cardpaymentjourney.model.journey._
 import payapi.corcommon.model.taxes.ad.{AlcoholDutyChargeReference, AlcoholDutyReference}
 import payapi.corcommon.model.taxes.ct.{CtChargeTypes, CtLivePeriod, CtPeriod, CtUtr}
+import payapi.corcommon.model.taxes.ppt.PptReference
 import payapi.corcommon.model.taxes.sa.SaUtr
 import payapi.corcommon.model.{AmountInPence, JourneyId, PaymentStatuses}
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.testdata.TestDataUtils._
@@ -169,6 +170,40 @@ object TestJourneys {
         ctPeriod     = Some(CtPeriod(1)),
         ctChargeType = Some(CtChargeTypes.A)
       ),
+      chosenWayToPay       = None
+    )
+  }
+
+  object Ppt extends JourneyStatuses[JsdPpt] {
+    val journeyBeforeBeginWebPayment: Journey[JsdPpt] = Journey[JsdPpt](
+      _id                  = JourneyId("TestJourneyId-44f9-ad7f-01e1d3d8f151"),
+      sessionId            = Some(SessionId("TestSession-4b87460d-6f43-4c4c-b810-d6f87c774854")),
+      amountInPence        = Some(AmountInPence(1234)),
+      emailTemplateOptions = None,
+      navigation           = None,
+      order                = None,
+      status               = PaymentStatuses.Created,
+      createdOn            = LocalDateTime.parse("2027-11-02T16:28:55.185"),
+      journeySpecificData  = JsdPpt(
+        pptReference         = PptReference("XAPPT0000012345"),
+        defaultAmountInPence = AmountInPence(1234),
+        dueDate              = Some(LocalDate.of(2028, 12, 12))
+      ),
+      chosenWayToPay       = None
+    )
+  }
+
+  object PfPpt extends JourneyStatuses[JsdPfPpt] {
+    val journeyBeforeBeginWebPayment: Journey[JsdPfPpt] = Journey[JsdPfPpt](
+      _id                  = JourneyId("TestJourneyId-44f9-ad7f-01e1d3d8f151"),
+      sessionId            = Some(SessionId("TestSession-4b87460d-6f43-4c4c-b810-d6f87c774854")),
+      amountInPence        = Some(AmountInPence(1234)),
+      emailTemplateOptions = None,
+      navigation           = None,
+      order                = None,
+      status               = PaymentStatuses.Created,
+      createdOn            = LocalDateTime.parse("2027-11-02T16:28:55.185"),
+      journeySpecificData  = JsdPfPpt(pptReference = Some(PptReference("XAPPT0000012345"))),
       chosenWayToPay       = None
     )
   }

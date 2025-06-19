@@ -229,6 +229,52 @@ class PaymentsSurveyServiceSpec extends ItSpec {
           val result = systemUnderTest.makeSsjJourneyRequest(TestJourneys.PfCt.journeyAfterSucceedDebitWebPayment)(loggedOutFakeRequest)
           result shouldBe expectedPaymentSurveyJourneyRequest
         }
+
+        "for PfPpt" in {
+          val expectedPaymentSurveyJourneyRequest = PaymentSurveyJourneyRequest(
+            origin         = "PfPpt",
+            returnMsg      = "Skip survey",
+            returnHref     = "https://www.gov.uk/government/organisations/hm-revenue-customs",
+            auditName      = "plastic-packaging-tax",
+            audit          = AuditOptions(
+              userType  = "LoggedOut",
+              journey   = Some("Successful"),
+              orderId   = Some("1097172564A00101A"),
+              liability = Some("plastic-packing-tax")
+            ),
+            contentOptions = SurveyContentOptions(
+              isWelshSupported = true,
+              title            = SurveyBannerTitle(
+                englishValue = "Pay your Plastic Packaging Tax", welshValue = Some("Talu’ch Treth Deunydd Pacio Plastig")
+              )
+            )
+          )
+          val result = systemUnderTest.makeSsjJourneyRequest(TestJourneys.PfPpt.journeyAfterSucceedDebitWebPayment)(loggedOutFakeRequest)
+          result shouldBe expectedPaymentSurveyJourneyRequest
+        }
+
+        "for Ppt" in {
+          val expectedPaymentSurveyJourneyRequest = PaymentSurveyJourneyRequest(
+            origin         = "Ppt",
+            returnMsg      = "Skip survey",
+            returnHref     = "https://www.gov.uk/government/organisations/hm-revenue-customs",
+            auditName      = "plastic-packaging-tax",
+            audit          = AuditOptions(
+              userType  = "LoggedOut",
+              journey   = Some("Successful"),
+              orderId   = Some("1097172564A00101A"),
+              liability = Some("plastic-packing-tax")
+            ),
+            contentOptions = SurveyContentOptions(
+              isWelshSupported = true,
+              title            = SurveyBannerTitle(
+                englishValue = "Pay your Plastic Packaging Tax", welshValue = Some("Talu’ch Treth Deunydd Pacio Plastig")
+              )
+            )
+          )
+          val result = systemUnderTest.makeSsjJourneyRequest(TestJourneys.Ppt.journeyAfterSucceedDebitWebPayment)(loggedOutFakeRequest)
+          result shouldBe expectedPaymentSurveyJourneyRequest
+        }
       }
     }
   }

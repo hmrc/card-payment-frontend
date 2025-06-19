@@ -540,6 +540,116 @@ class EmailServiceSpec extends ItSpec {
             result shouldBe expectedResult
           }
         }
+
+        "when origin is Ppt" - {
+          "debit in english" in {
+            val expectedResult: EmailParameters = EmailParameters(
+              taxType          = "Plastic Packaging Tax",
+              taxReference     = "1097172564A00101A",
+              paymentReference = "Some-transaction-ref",
+              amountPaid       = "12.34",
+              commission       = None,
+              totalPaid        = Some("12.34")
+            )
+
+            val result = systemUnderTest.buildEmailParameters(TestJourneys.Ppt.journeyAfterSucceedDebitWebPayment)(fakeRequest)
+            result shouldBe expectedResult
+          }
+          "credit in english" in {
+            val expectedResult: EmailParameters = EmailParameters(
+              taxType          = "Plastic Packaging Tax",
+              taxReference     = "1097172564A00101A",
+              paymentReference = "Some-transaction-ref",
+              amountPaid       = "12.34",
+              commission       = Some("1.23"),
+              totalPaid        = Some("13.57")
+            )
+
+            val result = systemUnderTest.buildEmailParameters(TestJourneys.Ppt.journeyAfterSucceedCreditWebPayment)(fakeRequest)
+            result shouldBe expectedResult
+          }
+          "debit in welsh" in {
+            val expectedResult: EmailParameters = EmailParameters(
+              taxType          = "Dreth Deunydd Pacio Plastig",
+              taxReference     = "1097172564A00101A",
+              paymentReference = "Some-transaction-ref",
+              amountPaid       = "12.34",
+              commission       = None,
+              totalPaid        = Some("12.34")
+            )
+
+            val result = systemUnderTest.buildEmailParameters(TestJourneys.Ppt.journeyAfterSucceedDebitWebPayment)(fakeRequestInWelsh)
+            result shouldBe expectedResult
+          }
+          "credit in welsh" in {
+            val expectedResult: EmailParameters = EmailParameters(
+              taxType          = "Dreth Deunydd Pacio Plastig",
+              taxReference     = "1097172564A00101A",
+              paymentReference = "Some-transaction-ref",
+              amountPaid       = "12.34",
+              commission       = Some("1.23"),
+              totalPaid        = Some("13.57")
+            )
+
+            val result = systemUnderTest.buildEmailParameters(TestJourneys.Ppt.journeyAfterSucceedCreditWebPayment)(fakeRequestInWelsh)
+            result shouldBe expectedResult
+          }
+        }
+
+        "when origin is PfPpt" - {
+          "debit in english" in {
+            val expectedResult: EmailParameters = EmailParameters(
+              taxType          = "Plastic Packaging Tax",
+              taxReference     = "1097172564A00101A",
+              paymentReference = "Some-transaction-ref",
+              amountPaid       = "12.34",
+              commission       = None,
+              totalPaid        = Some("12.34")
+            )
+
+            val result = systemUnderTest.buildEmailParameters(TestJourneys.PfPpt.journeyAfterSucceedDebitWebPayment)(fakeRequest)
+            result shouldBe expectedResult
+          }
+          "credit in english" in {
+            val expectedResult: EmailParameters = EmailParameters(
+              taxType          = "Plastic Packaging Tax",
+              taxReference     = "1097172564A00101A",
+              paymentReference = "Some-transaction-ref",
+              amountPaid       = "12.34",
+              commission       = Some("1.23"),
+              totalPaid        = Some("13.57")
+            )
+
+            val result = systemUnderTest.buildEmailParameters(TestJourneys.PfPpt.journeyAfterSucceedCreditWebPayment)(fakeRequest)
+            result shouldBe expectedResult
+          }
+          "debit in welsh" in {
+            val expectedResult: EmailParameters = EmailParameters(
+              taxType          = "Dreth Deunydd Pacio Plastig",
+              taxReference     = "1097172564A00101A",
+              paymentReference = "Some-transaction-ref",
+              amountPaid       = "12.34",
+              commission       = None,
+              totalPaid        = Some("12.34")
+            )
+
+            val result = systemUnderTest.buildEmailParameters(TestJourneys.PfPpt.journeyAfterSucceedDebitWebPayment)(fakeRequestInWelsh)
+            result shouldBe expectedResult
+          }
+          "credit in welsh" in {
+            val expectedResult: EmailParameters = EmailParameters(
+              taxType          = "Dreth Deunydd Pacio Plastig",
+              taxReference     = "1097172564A00101A",
+              paymentReference = "Some-transaction-ref",
+              amountPaid       = "12.34",
+              commission       = Some("1.23"),
+              totalPaid        = Some("13.57")
+            )
+
+            val result = systemUnderTest.buildEmailParameters(TestJourneys.PfPpt.journeyAfterSucceedCreditWebPayment)(fakeRequestInWelsh)
+            result shouldBe expectedResult
+          }
+        }
       }
 
     }
