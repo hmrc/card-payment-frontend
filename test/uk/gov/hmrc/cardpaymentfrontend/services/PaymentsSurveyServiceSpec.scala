@@ -346,7 +346,6 @@ class PaymentsSurveyServiceSpec extends ItSpec with TableDrivenPropertyChecks {
           result shouldBe expectedPaymentSurveyJourneyRequest
         }
 
-
         "for PfVat" in {
           val expectedPaymentSurveyJourneyRequest = PaymentSurveyJourneyRequest(
             origin         = "PfVat",
