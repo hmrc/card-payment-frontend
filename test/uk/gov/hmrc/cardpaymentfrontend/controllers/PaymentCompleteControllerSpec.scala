@@ -643,7 +643,7 @@ object PaymentCompleteControllerSpec {
         "Cyfanswm a dalwyd" -> "£13.57"
       )),
       hasWelshTest                    = true,
-      hasAReturnUrl                   = true
+      hasAReturnUrl                   = false
     )
 
     case Origins.PfEpayeLpp => TestScenarioInfo(
@@ -674,7 +674,7 @@ object PaymentCompleteControllerSpec {
         "Cyfanswm a dalwyd" -> "£13.57"
       )),
       hasWelshTest                    = true,
-      hasAReturnUrl                   = true
+      hasAReturnUrl                   = false
     )
 
     case Origins.PfEpayeLateCis => TestScenarioInfo(
@@ -705,7 +705,7 @@ object PaymentCompleteControllerSpec {
         "Cyfanswm a dalwyd" -> "£13.57"
       )),
       hasWelshTest                    = true,
-      hasAReturnUrl                   = true
+      hasAReturnUrl                   = false
     )
 
     case Origins.PfEpayeP11d => TestScenarioInfo(
@@ -736,7 +736,7 @@ object PaymentCompleteControllerSpec {
         "Cyfanswm a dalwyd" -> "£13.57"
       )),
       hasWelshTest                    = true,
-      hasAReturnUrl                   = true
+      hasAReturnUrl                   = false
     )
 
     case Origins.PfEpayeSeta => TestScenarioInfo(
@@ -767,7 +767,7 @@ object PaymentCompleteControllerSpec {
         "Cyfanswm a dalwyd" -> "£13.57"
       )),
       hasWelshTest                    = true,
-      hasAReturnUrl                   = true
+      hasAReturnUrl                   = false
     )
 
     case o: Origin => throw new MatchError(s"Add testdata for now origin you've added [${o.entryName}] to implemented origins.")
