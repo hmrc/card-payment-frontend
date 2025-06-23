@@ -99,14 +99,11 @@ class CardPaymentService @Inject() (
       cardPaymentResult = result.json.asOpt[CardPaymentResult]
       maybeWebPaymentRequest: Option[FinishedWebPaymentRequest] = cardPaymentResult.flatMap(cardPaymentResultIntoUpdateWebPaymentRequest)
       _ <- maybeWebPaymentRequest.fold(payApiConnector.JourneyUpdates.updateCancelWebPayment(journeyId)) {
-        case r: FailWebPaymentRequest => payApiConnector.JourneyUpdates.updateFailWebPayment(journeyId, r)
+        case r: FailWebPaymentRequest =>
+          payApiConnector.JourneyUpdates.updateFailWebPayment(journeyId, r)
         case r: SucceedWebPaymentRequest =>
-          payApiConnector.JourneyUpdates.updateSucceedWebPayment(journeyId, r).map(_ => maybeSendEmailF())
-        //
-        //          for {
-        //            _ <- payApiConnector.JourneyUpdates.updateSucceedWebPayment(journeyId, r)
-        //            _ <- maybeSendEmailF()
-        //          } yield ()
+          payApiConnector.JourneyUpdates.updateSucceedWebPayment(journeyId, r)
+            .map(_ => maybeSendEmailF())
       }
     } yield cardPaymentResult
   }
