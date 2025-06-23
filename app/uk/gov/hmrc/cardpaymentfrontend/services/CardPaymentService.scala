@@ -17,14 +17,18 @@
 package uk.gov.hmrc.cardpaymentfrontend.services
 
 import payapi.cardpaymentjourney.model.journey.Journey
-import payapi.corcommon.model.TransNumberGenerator
+import payapi.corcommon.model.{PaymentStatuses, TransNumberGenerator}
 import play.api.Logging
-import play.api.libs.json.JsBoolean
+import play.api.i18n.MessagesApi
+import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
 import uk.gov.hmrc.cardpaymentfrontend.config.AppConfig
 import uk.gov.hmrc.cardpaymentfrontend.connectors.{CardPaymentConnector, PayApiConnector}
 import uk.gov.hmrc.cardpaymentfrontend.models.cardpayment._
 import uk.gov.hmrc.cardpaymentfrontend.models.payapirequest.{BeginWebPaymentRequest, FailWebPaymentRequest, FinishedWebPaymentRequest, SucceedWebPaymentRequest}
 import uk.gov.hmrc.cardpaymentfrontend.models.{Address, EmailAddress, Language}
+import uk.gov.hmrc.cardpaymentfrontend.requests.RequestSupport
+import uk.gov.hmrc.cardpaymentfrontend.session.JourneySessionSupport.{Keys, RequestOps}
+import uk.gov.hmrc.cardpaymentfrontend.util.SafeEquals.EqualsOps
 import uk.gov.hmrc.http.HeaderCarrier
 
 import java.time.{Clock, LocalDateTime}
@@ -35,11 +39,15 @@ import scala.concurrent.{ExecutionContext, Future}
 class CardPaymentService @Inject() (
     appConfig:            AppConfig,
     cardPaymentConnector: CardPaymentConnector,
+    clientIdService:      ClientIdService,
     clock:                Clock,
+    emailService:         EmailService,
     payApiConnector:      PayApiConnector,
-    transNoGenerator:     TransNumberGenerator,
-    clientIdService:      ClientIdService
+    requestSupport:       RequestSupport,
+    transNoGenerator:     TransNumberGenerator
 )(implicit executionContext: ExecutionContext) extends Logging {
+
+  import requestSupport._
 
   // the url barclaycard make an empty post to after user completes payment
   private def returnToHmrcUrl: String =
@@ -82,18 +90,20 @@ class CardPaymentService @Inject() (
     } yield initiatePaymentResponse
   }
 
-  def checkPaymentStatus(transactionReference: String)(implicit headerCarrier: HeaderCarrier): Future[JsBoolean] = {
-    cardPaymentConnector.checkPaymentStatus(transactionReference)
-  }
-
-  def finishPayment(transactionReference: String, journeyId: String)(implicit headerCarrier: HeaderCarrier): Future[Option[CardPaymentResult]] = {
+  def finishPayment(
+      transactionReference: String,
+      journeyId:            String
+  )(implicit journeyRequest: JourneyRequest[_], messagesApi: MessagesApi): Future[Option[CardPaymentResult]] = {
     for {
       result <- cardPaymentConnector.authAndSettle(transactionReference)
       cardPaymentResult = result.json.asOpt[CardPaymentResult]
       maybeWebPaymentRequest: Option[FinishedWebPaymentRequest] = cardPaymentResult.flatMap(cardPaymentResultIntoUpdateWebPaymentRequest)
       _ <- maybeWebPaymentRequest.fold(payApiConnector.JourneyUpdates.updateCancelWebPayment(journeyId)) {
-        case r: FailWebPaymentRequest    => payApiConnector.JourneyUpdates.updateFailWebPayment(journeyId, r)
-        case r: SucceedWebPaymentRequest => payApiConnector.JourneyUpdates.updateSucceedWebPayment(journeyId, r)
+        case r: FailWebPaymentRequest =>
+          payApiConnector.JourneyUpdates.updateFailWebPayment(journeyId, r)
+        case r: SucceedWebPaymentRequest =>
+          payApiConnector.JourneyUpdates.updateSucceedWebPayment(journeyId, r)
+            .map(_ => maybeSendEmailF())
       }
     } yield cardPaymentResult
   }
@@ -111,6 +121,27 @@ class CardPaymentService @Inject() (
         additionalPaymentInfo.cardCategory.getOrElse("debit") //todo check if can this be anything?
       ))
     case CardPaymentResult(CardPaymentFinishPaymentResponses.Cancelled, _) => None
+  }
+
+  /**
+   * If journey is not in completed state (i.e. they've been on the iframe, so sent) and they have an email in session, send an email.
+   * Otherwise return future.unit.
+   */
+  private[services] def maybeSendEmailF()(implicit headerCarrier: HeaderCarrier, journeyRequest: JourneyRequest[_], messagesApi: MessagesApi): Unit = {
+    if (journeyRequest.journey.status === PaymentStatuses.Sent) {
+
+      val maybeEmailFromSession: Option[EmailAddress] =
+        journeyRequest.readFromSession[EmailAddress](journeyRequest.journeyId, Keys.email)
+          .filter(!_.value.isBlank)
+          .map(email => EmailAddress(email.value))
+
+      maybeEmailFromSession.fold(()) { emailAddress =>
+        emailService
+          .sendEmail(journeyRequest.journey, emailAddress, journeyRequest.request.lang.code =!= "cy")(headerCarrier, journeyRequest)
+          .onComplete(_ => ())
+      }
+
+    } else ()
   }
 
 }

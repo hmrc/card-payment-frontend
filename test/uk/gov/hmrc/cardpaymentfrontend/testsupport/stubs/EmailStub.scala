@@ -26,10 +26,12 @@ object EmailStub {
 
   private val path: String = s"/hmrc/email"
 
-  def verifyEmailWasNotSend(): Unit = verify(0, postRequestedFor(urlEqualTo(path)))
+  def verifyEmailWasNotSent(): Unit = verify(0, postRequestedFor(urlEqualTo(path)))
 
   def verifyEmailWasSent(expectedRequestBody: JsValue): Unit =
     verify(1, postRequestedFor(urlEqualTo(path)).withRequestBody(equalToJson(expectedRequestBody.toString())))
+
+  def verifySomeEmailWasSent(): Unit = verify(1, postRequestedFor(urlEqualTo(path)))
 
   def stubForSendEmail(emailRequest: EmailRequest): StubMapping = stubFor(
     post(urlPathEqualTo(path)).willReturn(
