@@ -103,25 +103,28 @@ trait ExtendedOrigin {
 
   // TODO: Update tests to not include country - check doesn't show country
   def checkYourAnswersCardBillingAddressRow(journeyRequest: JourneyRequest[AnyContent]): Option[CheckYourAnswersRow] = {
-    //todo error? we can't take a card payment without an address
-    val addressFromSession: Address = journeyRequest.readFromSession[Address](journeyRequest.journeyId, Keys.address).getOrElse(throw new RuntimeException("Cannot take a card payment without an address"))
-    val addressValues: Seq[String] = Seq[String](
-      addressFromSession.line1,
-      addressFromSession.line2.getOrElse(""),
-      addressFromSession.city.getOrElse(""),
-      addressFromSession.county.getOrElse(""),
-      addressFromSession.postcode
-    ).filter(_.nonEmpty)
+    val addressFromSession: Option[Address] = journeyRequest.readFromSession[Address](journeyRequest.journeyId, Keys.address)
+    val addressValues: Option[Seq[String]] = {
+      for {
+        line1 <- addressFromSession.map(_.line1)
+        line2 <- addressFromSession.map(_.line2)
+        city <- addressFromSession.map(_.city)
+        county <- addressFromSession.map(_.county)
+        postcode <- addressFromSession.map(_.postcode)
+      } yield Seq(line1, line2.getOrElse(""), city.getOrElse(""), county.getOrElse(""), postcode)
+    }.map(_.filter(_.nonEmpty))
 
-    Some(CheckYourAnswersRow(
-      titleMessageKey = "check-your-details.card-billing-address",
-      value           = addressValues,
-      changeLink      = Some(Link(
-        href       = uk.gov.hmrc.cardpaymentfrontend.controllers.routes.AddressController.renderPage,
-        linkId     = "check-your-details-card-billing-address-change-link",
-        messageKey = "check-your-details.change"
-      ))
-    ))
+    addressValues.map { address: Seq[String] =>
+      CheckYourAnswersRow(
+        titleMessageKey = "check-your-details.card-billing-address",
+        value           = address,
+        changeLink      = Some(Link(
+          href       = uk.gov.hmrc.cardpaymentfrontend.controllers.routes.AddressController.renderPage,
+          linkId     = "check-your-details-card-billing-address-change-link",
+          messageKey = "check-your-details.change"
+        ))
+      )
+    }
   }
 
   def openBankingOriginSpecificSessionData: JourneySpecificData => Option[OriginSpecificSessionData]

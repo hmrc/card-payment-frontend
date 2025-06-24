@@ -16,6 +16,7 @@
 
 package uk.gov.hmrc.cardpaymentfrontend.controllers
 
+import play.api.Logging
 import play.api.i18n.Lang
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.cardpaymentfrontend.actions.{Actions, JourneyRequest}
@@ -44,7 +45,7 @@ class CheckYourAnswersController @Inject() (
     checkYourAnswersPage: CheckYourAnswersPage,
     mcc:                  MessagesControllerComponents,
     requestSupport:       RequestSupport
-)(implicit executionContext: ExecutionContext) extends FrontendController(mcc) {
+)(implicit executionContext: ExecutionContext) extends FrontendController(mcc) with Logging {
   import requestSupport._
 
   def renderPage: Action[AnyContent] = actions.journeyAction { implicit journeyRequest: JourneyRequest[AnyContent] =>
@@ -59,16 +60,21 @@ class CheckYourAnswersController @Inject() (
     // If no email is present in the session, no Email Row is shown
     val maybeEmailRow: Option[CheckYourAnswersRow] = extendedOrigin.checkYourAnswersEmailAddressRow(journeyRequest)
 
-    val summaryListRows: Seq[SummaryListRow] = Seq(
-      paymentDate,
-      referenceRow,
-      additionalReferenceRow,
-      amountRow,
-      maybeEmailRow,
-      cardBillingAddressRow
-    ).flatten.map(summarise)
+      def summaryListRows: Seq[SummaryListRow] = Seq(
+        paymentDate,
+        referenceRow,
+        additionalReferenceRow,
+        amountRow,
+        maybeEmailRow,
+        cardBillingAddressRow
+      ).flatten.map(summarise)
 
-    Ok(checkYourAnswersPage(SummaryList(summaryListRows)))
+    // if there is no address, we shouldn't error,instead redirect user to the
+    if (cardBillingAddressRow.isDefined) Ok(checkYourAnswersPage(SummaryList(summaryListRows)))
+    else {
+      logger.warn("Missing address from session, redirecting to enter address page.")
+      Redirect(routes.AddressController.renderPage)
+    }
   }
 
   def submit: Action[AnyContent] = actions.journeyAction.async { implicit journeyRequest: JourneyRequest[AnyContent] =>
