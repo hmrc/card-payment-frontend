@@ -414,7 +414,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       val result = systemUnderTest.renderPage(fakeRequest())
       val document = Jsoup.parse(contentAsString(result))
       val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.Ppt))
-      assertRow(referenceRow, "Plastic Packaging Tax Reference", "XAPPT0000012345", None, None)
+      assertRow(referenceRow, "Reference number", "XAPPT0000012345", None, None)
     }
 
     "[Ppt] should render the payment reference row correctly in Welsh" in {
@@ -422,15 +422,16 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       val result = systemUnderTest.renderPage(fakeRequestWelsh())
       val document = Jsoup.parse(contentAsString(result))
       val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.Ppt))
-      assertRow(referenceRow, "Treth Deunydd Pacio Plastig", "XAPPT0000012345", None, None)
+      assertRow(referenceRow, "Cyfeirnod", "XAPPT0000012345", None, None)
     }
 
     "[PfPpt] should render the payment reference row correctly" in {
       PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfPpt.journeyBeforeBeginWebPayment)
       val result = systemUnderTest.renderPage(fakeRequest())
       val document = Jsoup.parse(contentAsString(result))
+      println(document.toString)
       val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.PfPpt))
-      assertRow(referenceRow, "Plastic Packaging Tax Reference", "XAPPT0000012345", None, None)
+      assertRow(referenceRow, "Reference number", "XAPPT0000012345", Some("Change"), Some("http://localhost:9056/pay/pay-by-card-change-reference-number"))
     }
 
     "[PfPpt] should render the payment reference row correctly in Welsh" in {
@@ -438,7 +439,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       val result = systemUnderTest.renderPage(fakeRequestWelsh())
       val document = Jsoup.parse(contentAsString(result))
       val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.PfPpt))
-      assertRow(referenceRow, "Treth Deunydd Pacio Plastig", "XAPPT0000012345", None, None)
+      assertRow(referenceRow, "Cyfeirnod", "XAPPT0000012345", Some("Newid"), Some("http://localhost:9056/pay/pay-by-card-change-reference-number"))
     }
 
     "[BtaSa] should render the payment date row correctly" in {
@@ -539,7 +540,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
 
     "sanity check for implemented origins" in {
       // remember to add the singular tests for reference rows as well as fdp if applicable, they are not covered in the implementedOrigins forall tests
-      TestHelpers.implementedOrigins.size shouldBe 14 withClue "** This dummy test is here to remind you to update the tests above. Bump up the expected number when an origin is added to implemented origins **"
+      TestHelpers.implementedOrigins.size shouldBe 15 withClue "** This dummy test is here to remind you to update the tests above. Bump up the expected number when an origin is added to implemented origins **"
     }
 
   }
@@ -550,7 +551,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
 
     actionText.fold {
       element.toString should not contain "Change"
-      element.select(".govuk-summary-list__actions").asScala.size shouldBe 0
+      element.select(".govuk-summary-list__actions").asScala.size shouldBe 0 withClue "Expected No change links but there was one"
     }(content => element.select(".govuk-summary-list__actions").text() shouldBe content)
 
     actionHref.fold(element.select(".govuk-summary-list__actions").select("a").text() shouldBe "")(href => element.select(".govuk-summary-list__actions").select("a").attr("href") shouldBe href)

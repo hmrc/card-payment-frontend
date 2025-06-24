@@ -133,8 +133,8 @@ check-your-details.PfEpayeSeta.reference = Settlement Agreement (PSA) reference 
 check-your-details.PfEpayeLateCis.reference = Penalty reference number
 check-your-details.PfEpayeP11d.reference = Accounts Office reference
 check-your-details.PfEpayeP11d.tax-year = Tax year
-check-your-details.Ppt.reference = Plastic Packaging Tax Reference
-check-your-details.PfPpt.reference = Plastic Packaging Tax Reference
+check-your-details.Ppt.reference = Reference number
+check-your-details.PfPpt.reference = Reference number
 
 ## Address Page
 address.heading = Card billing address

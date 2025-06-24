@@ -133,8 +133,8 @@ check-your-details.PfEpayeSeta.reference = Cyfeirnod Cytundeb Setliad (PSA)
 check-your-details.PfEpayeLateCis.reference = Cyfeirnod y gosb
 check-your-details.PfEpayeP11d.reference = Cyfeirnod y Swyddfa Gyfrifon
 check-your-details.PfEpayeP11d.tax-year = Blwyddyn dreth
-check-your-details.Ppt.reference = Treth Deunydd Pacio Plastig
-check-your-details.PfPpt.reference = Treth Deunydd Pacio Plastig
+check-your-details.Ppt.reference = Cyfeirnod
+check-your-details.PfPpt.reference = Cyfeirnod
 
 ## Address Page
 address.heading = Cyfeiriad bilio’r cerdyn
