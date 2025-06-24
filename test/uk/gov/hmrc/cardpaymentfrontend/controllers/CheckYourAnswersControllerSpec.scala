@@ -20,13 +20,16 @@ import org.jsoup.Jsoup
 import org.jsoup.nodes.Element
 import org.scalatest.Assertion
 import payapi.cardpaymentjourney.model.journey.{Journey, JourneySpecificData}
-import payapi.corcommon.model.{JourneyId, Origin, Origins}
+import payapi.corcommon.model.{AmountInPence, JourneyId, Origin, Origins}
 import play.api.http.Status
+import play.api.http.Status.SEE_OTHER
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
-import play.api.test.Helpers.{contentAsString, defaultAwaitTimeout, status}
+import play.api.test.Helpers.{contentAsString, defaultAwaitTimeout, redirectLocation, status}
+import uk.gov.hmrc.cardpaymentfrontend.models.EmailAddress
+import uk.gov.hmrc.cardpaymentfrontend.models.cardpayment.{BarclaycardAddress, CardPaymentInitiatePaymentRequest, CardPaymentInitiatePaymentResponse}
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.TestOps.FakeRequestOps
-import uk.gov.hmrc.cardpaymentfrontend.testsupport.stubs.PayApiStub
+import uk.gov.hmrc.cardpaymentfrontend.testsupport.stubs.{CardPaymentStub, PayApiStub}
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.testdata.TestJourneys
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.{ItSpec, TestHelpers}
 
@@ -40,6 +43,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
     FakeRequest()
       .withSessionId()
       .withEmailAndAddressInSession(journeyId)
+
   def fakeRequestWelsh(journeyId: JourneyId = TestJourneys.PfSa.journeyBeforeBeginWebPayment._id): FakeRequest[AnyContentAsEmpty.type] = fakeRequest(journeyId).withLangWelsh()
 
   "GET /check-your-details" - {
@@ -248,12 +252,11 @@ class CheckYourAnswersControllerSpec extends ItSpec {
         assertRow(cardBillingAddressRow, "Cyfeiriad bilio", "line1 AA0AA0", Some("Newid"), Some("/pay-by-card/address"))
       }
 
-      s"[${origin.entryName}] throw an exception when there is no card billing address in the session" in {
+      s"[${origin.entryName}] should redirect to the Address page if no Address in session" in {
         PayApiStub.stubForFindBySessionId2xx(tdJourney)
-        val exception: RuntimeException = intercept[RuntimeException] {
-          systemUnderTest.renderPage(FakeRequest().withSessionId()).futureValue
-        }
-        exception.getMessage should include("Cannot take a card payment without an address.")
+        val result = systemUnderTest.renderPage(FakeRequest().withSessionId())
+        status(result) shouldBe SEE_OTHER
+        redirectLocation(result) shouldBe Some("/pay-by-card/address")
       }
     }
 
@@ -657,6 +660,40 @@ class CheckYourAnswersControllerSpec extends ItSpec {
     }(content => element.select(".govuk-summary-list__actions").text() shouldBe content)
 
     actionHref.fold(element.select(".govuk-summary-list__actions").select("a").text() shouldBe "")(href => element.select(".govuk-summary-list__actions").select("a").attr("href") shouldBe href)
+  }
+
+  "POST /check-your-details" - {
+
+    "should redirect to the iframe page when there is an address in session" in {
+      val cardPaymentInitiatePaymentRequest = CardPaymentInitiatePaymentRequest(
+        redirectUrl         = "http://localhost:10155/pay-by-card/return-to-hmrc",
+        clientId            = "SAEE",
+        purchaseDescription = "1234567895K",
+        purchaseAmount      = AmountInPence(1234),
+        billingAddress      = BarclaycardAddress(
+          line1       = "line1",
+          postCode    = "AA0AA0",
+          countryCode = "GBR"
+        ),
+        emailAddress        = Some(EmailAddress("blah@blah.com")),
+        transactionNumber   = "00001999999999"
+      )
+      val expectedCardPaymentInitiatePaymentResponse = CardPaymentInitiatePaymentResponse("http://localhost:10155/this-would-be-iframe", "sometransactionref")
+      CardPaymentStub.InitiatePayment.stubForInitiatePayment2xx(cardPaymentInitiatePaymentRequest, expectedCardPaymentInitiatePaymentResponse)
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyBeforeBeginWebPayment)
+
+      val result = systemUnderTest.submit(fakeRequest(TestJourneys.PfSa.journeyBeforeBeginWebPayment._id))
+      status(result) shouldBe SEE_OTHER
+      redirectLocation(result) shouldBe Some("/pay-by-card/show-iframe?iframeUrl=http%3A%2F%2Flocalhost%3A10155%2Fthis-would-be-iframe")
+    }
+
+    "should redirect to the Address page if there is no Address in session" in {
+        def fakeRequestWithoutAddressInSession: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withSessionId()
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyBeforeBeginWebPayment)
+      val result = systemUnderTest.submit(fakeRequestWithoutAddressInSession)
+      status(result) shouldBe SEE_OTHER
+      redirectLocation(result) shouldBe Some("/pay-by-card/address")
+    }
   }
 
 }
