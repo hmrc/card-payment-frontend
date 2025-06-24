@@ -43,7 +43,7 @@ class EmailServiceSpec extends ItSpec with TableDrivenPropertyChecks {
     val commission = Some("1.23")
 
     // needed for compiler. if you're adding a new extended origin, add the jsd to this type/list of types.
-    type JsdBounds = JsdBtaSa with JsdAlcoholDuty with JsdPfAlcoholDuty with JsdPfEpayeP11d with JsdPfEpayeSeta with JsdPfEpayeLpp with JsdPfEpayeNi with JsdPtaSa with JsdBtaCt with JsdItSa with JsdPfCt with JsdPfSa with JsdPfEpayeLateCis
+    type JsdBounds = JsdBtaSa with JsdAlcoholDuty with JsdPfAlcoholDuty with JsdPfEpayeP11d with JsdPfEpayeSeta with JsdPfEpayeLpp with JsdPfEpayeNi with JsdPtaSa with JsdBtaCt with JsdItSa with JsdPfCt with JsdPfSa with JsdPfEpayeLateCis with JsdPfVat with JsdBtaVat with JsdVcVatOther with JsdVcVatReturn
 
     val scenarios: TableFor6[JourneyStatuses[_ >: JsdBounds <: JourneySpecificData], String, String, Option[String], Some[String], String] = Table(
       ("Journey", "Tax Type", "Tax Reference", "Commission", "Total Paid", "lang"),
@@ -110,7 +110,27 @@ class EmailServiceSpec extends ItSpec with TableDrivenPropertyChecks {
       (PfEpayeP11d, "Employers’ Class 1A National Insurance", "ending with 02513", None, Some("12.34"), "en"),
       (PfEpayeP11d, "Employers’ Class 1A National Insurance", "ending with 02513", commission, Some("13.57"), "en"),
       (PfEpayeP11d, "Yswiriant Gwladol Dosbarth 1A y Cyflogwr", "yn gorffen gyda 02513", None, Some("12.34"), "cy"),
-      (PfEpayeP11d, "Yswiriant Gwladol Dosbarth 1A y Cyflogwr", "yn gorffen gyda 02513", commission, Some("13.57"), "cy")
+      (PfEpayeP11d, "Yswiriant Gwladol Dosbarth 1A y Cyflogwr", "yn gorffen gyda 02513", commission, Some("13.57"), "cy"),
+      
+      (PfVat, "Vat", "ending with 64805", None, Some("12.34"), "en"),
+      (PfVat, "Vat", "ending with 64805", commission, Some("13.57"), "en"),
+      (PfVat, "TAW", "yn gorffen gyda 64805", None, Some("12.34"), "cy"),
+      (PfVat, "TAW", "yn gorffen gyda 64805", commission, Some("13.57"), "cy"),
+
+      (BtaVat, "Vat", "ending with 64805", None, Some("12.34"), "en"),
+      (BtaVat, "Vat", "ending with 64805", commission, Some("13.57"), "en"),
+      (BtaVat, "TAW", "yn gorffen gyda 64805", None, Some("12.34"), "cy"),
+      (BtaVat, "TAW", "yn gorffen gyda 64805", commission, Some("13.57"), "cy"),
+
+      (VcVatOther, "Vat", "ending with 64805", None, Some("12.34"), "en"),
+      (VcVatOther, "Vat", "ending with 64805", commission, Some("13.57"), "en"),
+      (VcVatOther, "TAW", "yn gorffen gyda 64805", None, Some("12.34"), "cy"),
+      (VcVatOther, "TAW", "yn gorffen gyda 64805", commission, Some("13.57"), "cy"),
+
+      (VcVatReturn, "Vat", "ending with 64805", None, Some("12.34"), "en"),
+      (VcVatReturn, "Vat", "ending with 64805", commission, Some("13.57"), "en"),
+      (VcVatReturn, "TAW", "yn gorffen gyda 64805", None, Some("12.34"), "cy"),
+      (VcVatReturn, "TAW", "yn gorffen gyda 64805", commission, Some("13.57"), "cy")
 
     )
 

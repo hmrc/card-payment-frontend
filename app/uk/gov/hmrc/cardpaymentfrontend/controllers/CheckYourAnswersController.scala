@@ -16,6 +16,7 @@
 
 package uk.gov.hmrc.cardpaymentfrontend.controllers
 
+import play.api.Logging
 import play.api.i18n.Lang
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.cardpaymentfrontend.actions.{Actions, JourneyRequest}
@@ -34,7 +35,7 @@ import uk.gov.hmrc.play.bootstrap.binders.RedirectUrl
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton()
 class CheckYourAnswersController @Inject() (
@@ -44,7 +45,7 @@ class CheckYourAnswersController @Inject() (
     checkYourAnswersPage: CheckYourAnswersPage,
     mcc:                  MessagesControllerComponents,
     requestSupport:       RequestSupport
-)(implicit executionContext: ExecutionContext) extends FrontendController(mcc) {
+)(implicit executionContext: ExecutionContext) extends FrontendController(mcc) with Logging {
   import requestSupport._
 
   def renderPage: Action[AnyContent] = actions.journeyAction { implicit journeyRequest: JourneyRequest[AnyContent] =>
@@ -59,29 +60,39 @@ class CheckYourAnswersController @Inject() (
     // If no email is present in the session, no Email Row is shown
     val maybeEmailRow: Option[CheckYourAnswersRow] = extendedOrigin.checkYourAnswersEmailAddressRow(journeyRequest)
 
-    val summaryListRows: Seq[SummaryListRow] = Seq(
-      paymentDate,
-      referenceRow,
-      additionalReferenceRow,
-      amountRow,
-      maybeEmailRow,
-      cardBillingAddressRow
-    ).flatten.map(summarise)
+      def summaryListRows: Seq[SummaryListRow] = Seq(
+        paymentDate,
+        referenceRow,
+        additionalReferenceRow,
+        amountRow,
+        maybeEmailRow,
+        cardBillingAddressRow
+      ).flatten.map(summarise)
 
-    Ok(checkYourAnswersPage(SummaryList(summaryListRows)))
+    // if there is no address, we shouldn't error,instead redirect user to the
+    if (cardBillingAddressRow.isDefined) Ok(checkYourAnswersPage(SummaryList(summaryListRows)))
+    else {
+      logger.warn("Missing address from session, redirecting to enter address page.")
+      Redirect(routes.AddressController.renderPage)
+    }
   }
 
   def submit: Action[AnyContent] = actions.journeyAction.async { implicit journeyRequest: JourneyRequest[AnyContent] =>
-    cardPaymentService
-      .initiatePayment(
-        journey               = journeyRequest.journey,
-        addressFromSession    = journeyRequest.readFromSession[Address](journeyRequest.journeyId, Keys.address).getOrElse(throw new RuntimeException("We can't process a card payment without the billing address.")),
-        maybeEmailFromSession = journeyRequest.readFromSession[EmailAddress](journeyRequest.journeyId, Keys.email),
-        language              = requestSupport.usableLanguage
-      )(requestSupport.hc)
-      .map { cardPaymentInitiatePaymentResponse =>
-        Redirect(routes.PaymentStatusController.showIframe(RedirectUrl(cardPaymentInitiatePaymentResponse.redirectUrl)))
-      }
+    journeyRequest.readFromSession[Address](journeyRequest.journeyId, Keys.address) match {
+      case Some(address) =>
+        cardPaymentService
+          .initiatePayment(
+            journey               = journeyRequest.journey,
+            addressFromSession    = address,
+            maybeEmailFromSession = journeyRequest.readFromSession[EmailAddress](journeyRequest.journeyId, Keys.email),
+            language              = requestSupport.usableLanguage
+          )(requestSupport.hc)
+          .map { cardPaymentInitiatePaymentResponse =>
+            Redirect(routes.PaymentStatusController.showIframe(RedirectUrl(cardPaymentInitiatePaymentResponse.redirectUrl)))
+          }
+      case None =>
+        Future.successful(Redirect(routes.AddressController.renderPage))
+    }
   }
 
 }

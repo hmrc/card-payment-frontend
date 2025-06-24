@@ -46,7 +46,7 @@ trait JourneySessionSupport {
       r.withSession(newSession)
     }
 
-    def removingFromSession(journeyId: JourneyId, keys: String*): Result = {
+    def removingJourneyFromSession(journeyId: JourneyId, keys: String*): Result = {
       val newSession = keys.foldLeft[Session](r.session) { (session, key) =>
         remove(key, session, journeyId)
       }

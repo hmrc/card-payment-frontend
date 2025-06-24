@@ -346,6 +346,97 @@ class PaymentsSurveyServiceSpec extends ItSpec with TableDrivenPropertyChecks {
           result shouldBe expectedPaymentSurveyJourneyRequest
         }
 
+        "for PfVat" in {
+          val expectedPaymentSurveyJourneyRequest = PaymentSurveyJourneyRequest(
+            origin         = "PfVat",
+            returnMsg      = "Skip survey",
+            returnHref     = "https://www.gov.uk/government/organisations/hm-revenue-customs",
+            auditName      = "vat",
+            audit          = AuditOptions(
+              userType  = "LoggedOut",
+              journey   = Some("Successful"),
+              orderId   = Some("999964805"),
+              liability = Some("vat")
+            ),
+            contentOptions = SurveyContentOptions(
+              isWelshSupported = true,
+              title            = SurveyBannerTitle(
+                englishValue = "Pay your VAT", welshValue = Some("Talu eich TAW")
+              )
+            )
+          )
+          val result = systemUnderTest.makeSsjJourneyRequest(TestJourneys.PfVat.journeyAfterSucceedDebitWebPayment)(loggedOutFakeRequest)
+          result shouldBe expectedPaymentSurveyJourneyRequest
+        }
+
+        "for BtaVat" in {
+          val expectedPaymentSurveyJourneyRequest = PaymentSurveyJourneyRequest(
+            origin         = "BtaVat",
+            returnMsg      = "Skip survey, return to business tax account",
+            returnHref     = "/business-account",
+            auditName      = "vat",
+            audit          = AuditOptions(
+              userType  = "LoggedIn",
+              journey   = Some("Successful"),
+              orderId   = Some("999964805"),
+              liability = Some("vat")
+            ),
+            contentOptions = SurveyContentOptions(
+              isWelshSupported = true,
+              title            = SurveyBannerTitle(
+                englishValue = "Pay your VAT", welshValue = Some("Talu eich TAW")
+              )
+            )
+          )
+          val result = systemUnderTest.makeSsjJourneyRequest(TestJourneys.BtaVat.journeyAfterSucceedDebitWebPayment)(loggedInFakeRequest)
+          result shouldBe expectedPaymentSurveyJourneyRequest
+        }
+
+        "for VcVatReturn" in {
+          val expectedPaymentSurveyJourneyRequest = PaymentSurveyJourneyRequest(
+            origin         = "VcVatReturn",
+            returnMsg      = "Skip survey, return to business tax account",
+            returnHref     = "/business-account",
+            auditName      = "vat",
+            audit          = AuditOptions(
+              userType  = "LoggedIn",
+              journey   = Some("Successful"),
+              orderId   = Some("999964805"),
+              liability = Some("vat")
+            ),
+            contentOptions = SurveyContentOptions(
+              isWelshSupported = true,
+              title            = SurveyBannerTitle(
+                englishValue = "Business tax account", welshValue = Some("Cyfrif treth busnes")
+              )
+            )
+          )
+          val result = systemUnderTest.makeSsjJourneyRequest(TestJourneys.VcVatReturn.journeyAfterSucceedDebitWebPayment)(loggedInFakeRequest)
+          result shouldBe expectedPaymentSurveyJourneyRequest
+        }
+
+        "for VcVatOther" in {
+          val expectedPaymentSurveyJourneyRequest = PaymentSurveyJourneyRequest(
+            origin         = "VcVatOther",
+            returnMsg      = "Skip survey, return to business tax account",
+            returnHref     = "/business-account",
+            auditName      = "vat",
+            audit          = AuditOptions(
+              userType  = "LoggedIn",
+              journey   = Some("Successful"),
+              orderId   = Some("999964805"),
+              liability = Some("vat")
+            ),
+            contentOptions = SurveyContentOptions(
+              isWelshSupported = true,
+              title            = SurveyBannerTitle(
+                englishValue = "Business tax account", welshValue = Some("Cyfrif treth busnes")
+              )
+            )
+          )
+          val result = systemUnderTest.makeSsjJourneyRequest(TestJourneys.VcVatOther.journeyAfterSucceedDebitWebPayment)(loggedInFakeRequest)
+          result shouldBe expectedPaymentSurveyJourneyRequest
+        }
       }
     }
   }

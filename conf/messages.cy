@@ -98,8 +98,9 @@ card-fees.para1 = Bydd ffi na ellir ei had-dalu yn cael ei chodi os talwch â ch
 card-fees.para2 = Nid oes ffi yn cael ei chodi os talwch drwy un o’r dulliau canlynol:
 card-fees.para2.bank-transfer = drosglwyddiad banc
 card-fees.para2.open-banking = cyfrif banc
-card-fees.para2.variable-direct-debit = Debyd Uniongyrchol (newidiol)
+card-fees.para2.direct-debit = Debyd Uniongyrchol
 card-fees.para2.one-off-direct-debit = Debyd Uniongyrchol (taliad untro)
+card-fees.para2.variable-direct-debit = Debyd Uniongyrchol (newidiol)
 card-fees.para2.personal-debit-card = cerdyn debyd personol
 card-fees.para3 = Ni allwch dalu â cherdyn credyd personol.
 card-fees.para4 = Dylech ganiatáu 3 diwrnod gwaith i’ch taliad gyrraedd cyfrif banc CThEM.
@@ -133,7 +134,12 @@ check-your-details.PfEpayeSeta.reference = Cyfeirnod Cytundeb Setliad (PSA)
 check-your-details.PfEpayeLateCis.reference = Cyfeirnod y gosb
 check-your-details.PfEpayeP11d.reference = Cyfeirnod y Swyddfa Gyfrifon
 check-your-details.PfEpayeP11d.tax-year = Blwyddyn dreth
-
+check-your-details.PfVat.reference = Rhif cofrestru TAW
+check-your-details.PfVat.charge-reference = Cyfeirnod y tâl
+check-your-details.BtaVat.reference = Rhif cofrestru TAW
+check-your-details.VcVatReturn.reference = Rhif cofrestru TAW
+check-your-details.VcVatOther.reference = Rhif cofrestru TAW
+check-your-details.VcVatOther.charge-reference = Cyfeirnod y tâl
 
 ## Address Page
 address.heading = Cyfeiriad bilio’r cerdyn
@@ -203,7 +209,7 @@ payment-complete.survey.p1 = Rydym yn defnyddio’ch adborth i wella ein gwasana
 payment-complete.survey.p2.part1 = Rhowch wybod i ni beth yw eich barn am y gwasanaeth hwn
 payment-complete.survey.p2.part2 = (mae’n cymryd 30 eiliad)
 payment-complete.tax-name.PfSa = Hunanasesiad
-payment-complete.tax-name.PfVat =
+payment-complete.tax-name.PfVat = TAW
 payment-complete.tax-name.PfCt = Treth Gorfforaeth
 payment-complete.tax-name.PfEpayeNi = TWE ac Yswiriant Gwladol y Cyflogwr
 payment-complete.tax-name.PfEpayeLpp = Cosb y Cyflogwr am dalu TWE yn hwyr
@@ -220,7 +226,7 @@ payment-complete.tax-name.PfInsurancePremium =
 payment-complete.tax-name.PfPsAdmin =
 payment-complete.tax-name.BtaSa = Hunanasesiad
 payment-complete.tax-name.AppSa = Hunanasesiad
-payment-complete.tax-name.BtaVat = VAT
+payment-complete.tax-name.BtaVat = TAW
 payment-complete.tax-name.BtaEpayeBill =
 payment-complete.tax-name.BtaEpayePenalty =
 payment-complete.tax-name.BtaEpayeInterest =
@@ -232,8 +238,8 @@ payment-complete.tax-name.BcPngr =
 payment-complete.tax-name.Parcels =
 payment-complete.tax-name.DdVat =
 payment-complete.tax-name.DdSdil =
-payment-complete.tax-name.VcVatReturn =
-payment-complete.tax-name.VcVatOther =
+payment-complete.tax-name.VcVatReturn = TAW
+payment-complete.tax-name.VcVatOther = TAW
 payment-complete.tax-name.ItSa = Hunanasesiad
 payment-complete.tax-name.Amls =
 payment-complete.tax-name.Ppt =
@@ -318,7 +324,10 @@ email.tax-name.PfEpayeLpp = Cosb y Cyflogwr am dalu TWE yn hwyr
 email.tax-name.PfEpayeSeta = Cytundeb Setliad TWE y Cyflogwr
 email.tax-name.PfEpayeLateCis = Cynllun y Diwydiant Adeiladu (CIS) - cosb am dalu’n hwyr
 email.tax-name.PfEpayeP11d = Yswiriant Gwladol Dosbarth 1A y Cyflogwr
-
+email.tax-name.PfVat = TAW
+email.tax-name.BtaVat = TAW
+email.tax-name.VcVatReturn = TAW
+email.tax-name.VcVatOther = TAW
 
 ## Payments survey
 payments-survey.bta.return-message = Dim diolch, dychwelyd i cyfrif treth busnes
