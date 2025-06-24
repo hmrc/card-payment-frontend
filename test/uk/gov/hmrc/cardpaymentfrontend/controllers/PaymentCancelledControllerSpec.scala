@@ -182,13 +182,20 @@ class PaymentCancelledControllerSpec extends ItSpec {
         link.text() shouldBe "Gadewch heb dalu"
       }
 
-      //todo update this to test each of {survey url, returnUrl (from spj request), govuk url} are shown as in pay-frontend.
-      "the exit without paying link should link to X" in {
+      "the exit without paying link should link to survey if returnUrl is not set for journey" in {
         PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyAfterCancelWebPayment)
         val result = systemUnderTest.renderPage(fakeGetRequestInWelsh)
         val document = Jsoup.parse(contentAsString(result))
         val link = document.select("#exit-wthout-paying-link")
-        link.attr("href") shouldBe "https://www.gov.uk/"
+        link.attr("href") shouldBe "/pay-by-card/start-payment-survey"
+      }
+
+      "the exit without paying link should link to returnUrl if returnUrl is set for journey" in {
+        PayApiStub.stubForFindBySessionId2xx(TestJourneys.BtaSa.journeyAfterCancelWebPayment)
+        val result = systemUnderTest.renderPage(fakeGetRequestInWelsh)
+        val document = Jsoup.parse(contentAsString(result))
+        val link = document.select("#exit-wthout-paying-link")
+        link.attr("href") shouldBe "https://www.return-url.com"
       }
     }
   }
