@@ -62,12 +62,16 @@ class EmailService @Inject() (emailConnector: EmailConnector, requestSupport: Re
     val extendedOrigin: ExtendedOrigin = journey.origin.lift
     EmailParameters(
       taxType          = messages(extendedOrigin.emailTaxTypeMessageKey),
-      taxReference     = journey.referenceValue,
+      taxReference     = obfuscateReference(journey.referenceValue),
       paymentReference = journey.getTransactionReference.value,
       amountPaid       = journey.getAmountInPence.formatInDecimal,
       commission       = journey.getCommissionInPence.map(_.formatInDecimal),
       totalPaid        = Some(journey.getTotalAmountInPence.formatInDecimal)
     )
+  }
+
+  private[services] def obfuscateReference(taxReference: String)(implicit request: Request[_]): String = {
+    request.messages.messages("email.obfuscated-tax-reference", taxReference.takeRight(5))
   }
 
 }

@@ -300,6 +300,7 @@ payment-failed.failed-check-again = Check the details you entered are correct or
 payment-failed.choose-a-payment-method.error = Select how you want to pay
 
 ## Email messages
+email.obfuscated-tax-reference = ending with {0}
 email.tax-name.PfSa = Self Assessment
 email.tax-name.BtaSa = Self Assessment
 email.tax-name.PtaSa = Self Assessment

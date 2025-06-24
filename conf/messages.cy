@@ -304,6 +304,7 @@ payment-failed.failed-check-again = Gwiriwch fod y manylion a nodwyd gennych yn 
 payment-failed.choose-a-payment-method.error = Dewiswch sut yr ydych am dalu
 
 ## Email messages
+email.obfuscated-tax-reference = yn gorffen gyda {0}
 email.tax-name.PfSa = Hunanasesiad
 email.tax-name.BtaSa = Hunanasesiad
 email.tax-name.PtaSa = Hunanasesiad
