@@ -14,17 +14,11 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.cardpaymentfrontend.utils
+package uk.gov.hmrc.cardpaymentfrontend.testsupport.mockclasses
 
-import payapi.cardpaymentjourney.model.journey._
+import payapi.corcommon.model.{Origin, OriginCode, TransNumberGenerator}
 
-object ExternalNavigation {
-
-  private def navigationOptions(journey: Journey[JourneySpecificData]): NavigationOptions =
-    journey.navigation.getOrElse(NavigationOptions(None, None, None, None))
-
-  def returnUrlCancelled(journey: Journey[JourneySpecificData]): Option[Url] = {
-    val nav = navigationOptions(journey)
-    nav.returnUrlCancelled.orElse(nav.returnUrl)
-  }
+class MockTransNumberGenerator extends TransNumberGenerator {
+  //create this instead of the random 9 digits at the end.
+  override def generate(origin: Origin): String = s"000${OriginCode.codeForOrigin(origin)}999999999"
 }
