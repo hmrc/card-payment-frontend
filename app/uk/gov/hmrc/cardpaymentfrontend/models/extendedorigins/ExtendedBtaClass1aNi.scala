@@ -17,18 +17,20 @@
 package uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins
 
 import payapi.cardpaymentjourney.model.journey.{JourneySpecificData, JsdBtaClass1aNi}
+import play.api.i18n.Lang
 import play.api.mvc.AnyContent
 import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
 import uk.gov.hmrc.cardpaymentfrontend.models.PaymentMethod._
 import uk.gov.hmrc.cardpaymentfrontend.models._
 import uk.gov.hmrc.cardpaymentfrontend.models.openbanking.{BtaClass1aNiSessionData, OriginSpecificSessionData}
+import uk.gov.hmrc.cardpaymentfrontend.util.Period.humanReadablePeriod
 
 object ExtendedBtaClass1aNi extends ExtendedOrigin {
   override val serviceNameMessageKey: String = "service-name.BtaClass1aNi"
   override val taxNameMessageKey: String = "payment-complete.tax-name.BtaClass1aNi"
 
-  def cardFeesPagePaymentMethods: Set[PaymentMethod] = Set(OpenBanking, OneOffDirectDebit, VariableDirectDebit)
-  def paymentMethods(): Set[PaymentMethod] = Set(Card, OpenBanking, OneOffDirectDebit, VariableDirectDebit, Bacs)
+  def cardFeesPagePaymentMethods: Set[PaymentMethod] = Set(OpenBanking, OneOffDirectDebit)
+  def paymentMethods(): Set[PaymentMethod] = Set(Card, OpenBanking, OneOffDirectDebit, Bacs)
 
   override def checkYourAnswersReferenceRow(journeyRequest: JourneyRequest[AnyContent])(payFrontendBaseUrl: String): Option[CheckYourAnswersRow] = {
     Some(CheckYourAnswersRow(
@@ -37,6 +39,14 @@ object ExtendedBtaClass1aNi extends ExtendedOrigin {
       changeLink      = None
     ))
   }
+
+  override def checkYourAnswersAdditionalReferenceRow(journeyRequest: JourneyRequest[AnyContent])
+    (payFrontendBaseUrl: String)(implicit lang: Lang): Option[CheckYourAnswersRow] =
+    Some(CheckYourAnswersRow(
+      titleMessageKey = "check-your-details.BtaClass1aNi.tax-period",
+      value           = Seq(humanReadablePeriod(journeyRequest.journey.journeySpecificData.asInstanceOf[JsdBtaClass1aNi].period)),
+      changeLink      = None
+    ))
 
   override def openBankingOriginSpecificSessionData: JourneySpecificData => Option[OriginSpecificSessionData] = {
     case j: JsdBtaClass1aNi => Some(BtaClass1aNiSessionData(j.accountsOfficeReference, period = j.period))

@@ -159,7 +159,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
           case Origins.BtaEpayePenalty  => 2
           case Origins.BtaEpayeInterest => 2
           case Origins.BtaEpayeGeneral  => 2
-          case Origins.BtaClass1aNi     => 2
+          case Origins.BtaClass1aNi     => 3
           case _                        => 1
         }
       }
@@ -181,7 +181,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
           case Origins.BtaEpayePenalty  => 3
           case Origins.BtaEpayeInterest => 3
           case Origins.BtaEpayeGeneral  => 3
-          case Origins.BtaClass1aNi     => 3
+          case Origins.BtaClass1aNi     => 4
           case _                        => 2
         }
       }
@@ -203,7 +203,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
           case Origins.BtaEpayePenalty  => 4
           case Origins.BtaEpayeInterest => 4
           case Origins.BtaEpayeGeneral  => 4
-          case Origins.BtaClass1aNi     => 4
+          case Origins.BtaClass1aNi     => 5
           case _                        => 3
         }
       }
@@ -694,6 +694,22 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       val document = Jsoup.parse(contentAsString(result))
       val taxPeriodRow = document.select(".govuk-summary-list__row").asScala.toList(1)
       assertRow(taxPeriodRow, "Blwyddyn dreth", "2024 i 2025", Some("Newid"), Some("http://localhost:9056/pay/change-tax-year?fromCardPayment=true"))
+    }
+
+    "[BtaClass1aNi] should render the Tax period correctly" in {
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.BtaClass1aNi.journeyBeforeBeginWebPayment)
+      val result = systemUnderTest.renderPage(fakeRequest())
+      val document = Jsoup.parse(contentAsString(result))
+      val taxPeriodRow = document.select(".govuk-summary-list__row").asScala.toList(2)
+      assertRow(taxPeriodRow, "Tax period", "2026 to 2027", None, None)
+    }
+
+    "[BtaClass1aNi] should render the Tax period correctly in Welsh" in {
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.BtaClass1aNi.journeyBeforeBeginWebPayment)
+      val result = systemUnderTest.renderPage(fakeRequestWelsh())
+      val document = Jsoup.parse(contentAsString(result))
+      val taxPeriodRow = document.select(".govuk-summary-list__row").asScala.toList(2)
+      assertRow(taxPeriodRow, "Cyfnod talu", "2026 i 2027", None, None)
     }
 
     "[BtaVat] should render the payment date row correctly" in {

@@ -145,6 +145,7 @@ check-your-details.BtaEpayePenalty.reference = Cyfeirnod y taliad
 check-your-details.BtaEpayeInterest.reference = Cyfeirnod y taliad
 check-your-details.BtaEpayeGeneral.reference = Cyfeirnod y taliad
 check-your-details.BtaClass1aNi.reference = Cyfeirnod y taliad
+check-your-details.BtaClass1aNi.tax-period = Cyfnod talu
 
 
 ## Address Page
