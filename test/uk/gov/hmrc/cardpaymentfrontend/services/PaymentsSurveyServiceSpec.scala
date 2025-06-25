@@ -466,12 +466,12 @@ class PaymentsSurveyServiceSpec extends ItSpec with TableDrivenPropertyChecks {
             origin         = "BtaEpayePenalty",
             returnMsg      = "Skip survey, return to business tax account",
             returnHref     = "/business-account",
-            auditName      = "epaye",
+            auditName      = "paye-penalty",
             audit          = AuditOptions(
               userType  = "LoggedIn",
               journey   = Some("Successful"),
               orderId   = Some("123PH45678900"),
-              liability = Some("epaye")
+              liability = Some("paye-penalty")
             ),
             contentOptions = SurveyContentOptions(
               isWelshSupported = true,
@@ -489,12 +489,12 @@ class PaymentsSurveyServiceSpec extends ItSpec with TableDrivenPropertyChecks {
             origin         = "BtaEpayeInterest",
             returnMsg      = "Skip survey, return to business tax account",
             returnHref     = "/business-account",
-            auditName      = "epaye",
+            auditName      = "paye-interest",
             audit          = AuditOptions(
               userType  = "LoggedIn",
               journey   = Some("Successful"),
               orderId   = Some("X1234567890123"),
-              liability = Some("epaye")
+              liability = Some("paye-interest")
             ),
             contentOptions = SurveyContentOptions(
               isWelshSupported = true,

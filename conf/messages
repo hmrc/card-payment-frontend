@@ -31,7 +31,7 @@ service-name.BtaEpayeBill = Pay your employers’ PAYE and National Insurance
 service-name.BtaEpayePenalty = Pay your PAYE late payment or filing penalty
 service-name.BtaEpayeInterest = Pay your employers’ PAYE and National Insurance
 service-name.BtaEpayeGeneral = Pay your employers’ PAYE and National Insurance
-service-name.BtaClass1aNi = Pay your employers’ Class 1A National Insurance (P11D bill)
+service-name.BtaClass1aNi = Pay your employers’ Class 1A National Insurance
 service-name.BtaCt = Pay your Corporation Tax
 service-name.BtaSdil =
 service-name.BcPngr =
@@ -143,6 +143,7 @@ check-your-details.BtaEpayeBill.reference = Payment reference
 check-your-details.BtaEpayePenalty.reference = Payment reference
 check-your-details.BtaEpayeInterest.reference = Payment reference
 check-your-details.BtaEpayeGeneral.reference = Payment reference
+check-your-details.BtaClass1aNi.reference = Payment reference
 
 
 ## Address Page
@@ -229,7 +230,7 @@ payment-complete.tax-name.BtaEpayeBill = PAYE and National Insurance
 payment-complete.tax-name.BtaEpayePenalty = PAYE and National Insurance
 payment-complete.tax-name.BtaEpayeInterest = PAYE and National Insurance
 payment-complete.tax-name.BtaEpayeGeneral = PAYE and National Insurance
-payment-complete.tax-name.BtaClass1aNi =
+payment-complete.tax-name.BtaClass1aNi = Employers’ Class 1A National Insurance
 payment-complete.tax-name.BtaCt = Corporation Tax
 payment-complete.tax-name.BtaSdil =
 payment-complete.tax-name.BcPngr =
@@ -329,10 +330,11 @@ email.tax-name.PfVat = Vat
 email.tax-name.BtaVat = Vat
 email.tax-name.VcVatReturn = Vat
 email.tax-name.VcVatOther = Vat
-email.tax-name.BtaEpayeBill = PAYE
-email.tax-name.BtaEpayePenalty = PAYE
-email.tax-name.BtaEpayeInterest = PAYE
-email.tax-name.BtaEpayeGeneral = PAYE
+email.tax-name.BtaEpayeBill = Employers’ PAYE and National Insurance
+email.tax-name.BtaEpayePenalty = Employers’ PAYE late payment or filing penalty
+email.tax-name.BtaEpayeInterest = Employers’ PAYE and National Insurance
+email.tax-name.BtaEpayeGeneral = Employers’ PAYE and National Insurance
+email.tax-name.BtaClass1aNi = Employers’ Class 1A National Insurance
 
 ## Payments survey
 payments-survey.bta.return-message = Skip survey, return to business tax account

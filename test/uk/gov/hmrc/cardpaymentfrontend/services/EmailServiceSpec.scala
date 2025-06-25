@@ -43,7 +43,7 @@ class EmailServiceSpec extends ItSpec with TableDrivenPropertyChecks {
     val commission = Some("1.23")
 
     // needed for compiler. if you're adding a new extended origin, add the jsd to this type/list of types.
-    type JsdBounds = JsdBtaSa with JsdAlcoholDuty with JsdPfAlcoholDuty with JsdPfEpayeP11d with JsdPfEpayeSeta with JsdPfEpayeLpp with JsdPfEpayeNi with JsdPtaSa with JsdBtaCt with JsdItSa with JsdPfCt with JsdPfSa with JsdPfEpayeLateCis with JsdPfVat with JsdBtaVat with JsdVcVatOther with JsdVcVatReturn
+    type JsdBounds = JsdBtaSa with JsdAlcoholDuty with JsdPfAlcoholDuty with JsdPfEpayeP11d with JsdPfEpayeSeta with JsdPfEpayeLpp with JsdPfEpayeNi with JsdPtaSa with JsdBtaCt with JsdItSa with JsdPfCt with JsdPfSa with JsdPfEpayeLateCis with JsdPfVat with JsdBtaVat with JsdVcVatOther with JsdVcVatReturn with JsdBtaEpayeBill with JsdBtaEpayePenalty with JsdBtaEpayeGeneral with JsdBtaEpayeInterest with JsdBtaClass1aNi
 
     val scenarios: TableFor6[JourneyStatuses[_ >: JsdBounds <: JourneySpecificData], String, String, Option[String], Some[String], String] = Table(
       ("Journey", "Tax Type", "Tax Reference", "Commission", "Total Paid", "lang"),
@@ -130,7 +130,34 @@ class EmailServiceSpec extends ItSpec with TableDrivenPropertyChecks {
       (VcVatReturn, "Vat", "ending with 64805", None, Some("12.34"), "en"),
       (VcVatReturn, "Vat", "ending with 64805", commission, Some("13.57"), "en"),
       (VcVatReturn, "TAW", "yn gorffen gyda 64805", None, Some("12.34"), "cy"),
-      (VcVatReturn, "TAW", "yn gorffen gyda 64805", commission, Some("13.57"), "cy")
+      (VcVatReturn, "TAW", "yn gorffen gyda 64805", commission, Some("13.57"), "cy"),
+
+      (BtaEpayeBill, "Employers’ PAYE and National Insurance", "ending with 02702", None, Some("12.34"), "en"),
+      (BtaEpayeBill, "Employers’ PAYE and National Insurance", "ending with 02702", commission, Some("13.57"), "en"),
+      (BtaEpayeBill, "TWE ac Yswiriant Gwladol y Cyflogwr", "yn gorffen gyda 02702", None, Some("12.34"), "cy"),
+      (BtaEpayeBill, "TWE ac Yswiriant Gwladol y Cyflogwr", "yn gorffen gyda 02702", commission, Some("13.57"), "cy"),
+
+      // TODO: CHECK
+      (BtaEpayePenalty, "Employers’ PAYE late payment or filing penalty", "ending with 78900", None, Some("12.34"), "en"),
+      (BtaEpayePenalty, "Employers’ PAYE late payment or filing penalty", "ending with 78900", commission, Some("13.57"), "en"),
+      (BtaEpayePenalty, "Cosb y Cyflogwr am dalu TWE yn hwyr", "yn gorffen gyda 78900", None, Some("12.34"), "cy"),
+      (BtaEpayePenalty, "Cosb y Cyflogwr am dalu TWE yn hwyr", "yn gorffen gyda 78900", commission, Some("13.57"), "cy"),
+
+      (BtaEpayeGeneral, "Employers’ PAYE and National Insurance", "ending with 02702", None, Some("12.34"), "en"),
+      (BtaEpayeGeneral, "Employers’ PAYE and National Insurance", "ending with 02702", commission, Some("13.57"), "en"),
+      (BtaEpayeGeneral, "TWE ac Yswiriant Gwladol y Cyflogwr", "yn gorffen gyda 02702", None, Some("12.34"), "cy"),
+      (BtaEpayeGeneral, "TWE ac Yswiriant Gwladol y Cyflogwr", "yn gorffen gyda 02702", commission, Some("13.57"), "cy"),
+
+      // TODO: CHECK
+      (BtaEpayeInterest, "Employers’ PAYE and National Insurance", "ending with 90123", None, Some("12.34"), "en"),
+      (BtaEpayeInterest, "Employers’ PAYE and National Insurance", "ending with 90123", commission, Some("13.57"), "en"),
+      (BtaEpayeInterest, "TWE ac Yswiriant Gwladol y Cyflogwr", "yn gorffen gyda 90123", None, Some("12.34"), "cy"),
+      (BtaEpayeInterest, "TWE ac Yswiriant Gwladol y Cyflogwr", "yn gorffen gyda 90123", commission, Some("13.57"), "cy"),
+
+      (BtaClass1aNi, "Employers’ Class 1A National Insurance", "ending with 02713", None, Some("12.34"), "en"),
+      (BtaClass1aNi, "Employers’ Class 1A National Insurance", "ending with 02713", commission, Some("13.57"), "en"),
+      (BtaClass1aNi, "Yswiriant Gwladol Dosbarth 1A y Cyflogwr", "yn gorffen gyda 02713", None, Some("12.34"), "cy"),
+      (BtaClass1aNi, "Yswiriant Gwladol Dosbarth 1A y Cyflogwr", "yn gorffen gyda 02713", commission, Some("13.57"), "cy"),
 
     )
 

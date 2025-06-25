@@ -167,7 +167,7 @@ object ExtendedOrigin {
       case Origins.BtaEpayePenalty          => ExtendedBtaEpayePenalty
       case Origins.BtaEpayeInterest         => ExtendedBtaEpayeInterest
       case Origins.BtaEpayeGeneral          => ExtendedBtaEpayeGeneral
-      case Origins.BtaClass1aNi             => DefaultExtendedOrigin
+      case Origins.BtaClass1aNi             => ExtendedBtaClass1aNi
       case Origins.BtaCt                    => ExtendedBtaCt
       case Origins.BtaSdil                  => DefaultExtendedOrigin
       case Origins.BcPngr                   => DefaultExtendedOrigin

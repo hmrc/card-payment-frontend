@@ -993,12 +993,12 @@ class FeesControllerSpec extends ItSpec {
           testStaticContentWelsh(document)
         }
 
-        "render three options for other ways to pay" in {
+        "render four options for other ways to pay" in {
           PayApiStub.stubForFindBySessionId2xx(TestJourneys.BtaEpayeBill.journeyBeforeBeginWebPayment)
           val result = systemUnderTest.renderPage(fakeRequest)
           val document = Jsoup.parse(contentAsString(result))
           val listOfMethods = document.select("#payment-type-list").select("li")
-          listOfMethods.size() shouldBe 3
+          listOfMethods.size() shouldBe 4
         }
 
         "render an option for open banking" in {

@@ -144,6 +144,8 @@ check-your-details.BtaEpayeBill.reference = Cyfeirnod y taliad
 check-your-details.BtaEpayePenalty.reference = Cyfeirnod y taliad
 check-your-details.BtaEpayeInterest.reference = Cyfeirnod y taliad
 check-your-details.BtaEpayeGeneral.reference = Cyfeirnod y taliad
+check-your-details.BtaClass1aNi.reference = Cyfeirnod y taliad
+
 
 ## Address Page
 address.heading = Cyfeiriad bilio’r cerdyn
@@ -235,7 +237,7 @@ payment-complete.tax-name.BtaEpayeBill = TWE a’ch Yswiriant Gwladol y cyflogwr
 payment-complete.tax-name.BtaEpayePenalty = TWE a’ch Yswiriant Gwladol y cyflogwr
 payment-complete.tax-name.BtaEpayeInterest = TWE a’ch Yswiriant Gwladol y cyflogwr
 payment-complete.tax-name.BtaEpayeGeneral = TWE a’ch Yswiriant Gwladol y cyflogwr
-payment-complete.tax-name.BtaClass1aNi =
+payment-complete.tax-name.BtaClass1aNi = Yswiriant Gwladol Dosbarth 1A y Cyflogwr
 payment-complete.tax-name.BtaCt = Treth Gorfforaeth
 payment-complete.tax-name.BtaSdil =
 payment-complete.tax-name.BcPngr =
@@ -332,10 +334,11 @@ email.tax-name.PfVat = TAW
 email.tax-name.BtaVat = TAW
 email.tax-name.VcVatReturn = TAW
 email.tax-name.VcVatOther = TAW
-email.tax-name.BtaEpayeBill = TAW
-email.tax-name.BtaEpayePenalty = TAW
-email.tax-name.BtaEpayeInterest = TAW
-email.tax-name.BtaEpayeGeneral = TAW
+email.tax-name.BtaEpayeBill = TWE ac Yswiriant Gwladol y Cyflogwr
+email.tax-name.BtaEpayePenalty = Cosb y Cyflogwr am dalu TWE yn hwyr
+email.tax-name.BtaEpayeInterest = TWE ac Yswiriant Gwladol y Cyflogwr
+email.tax-name.BtaEpayeGeneral = TWE ac Yswiriant Gwladol y Cyflogwr
+email.tax-name.BtaClass1aNi = Yswiriant Gwladol Dosbarth 1A y Cyflogwr
 
 ## Payments survey
 payments-survey.bta.return-message = Dim diolch, dychwelyd i cyfrif treth busnes

@@ -55,7 +55,7 @@ class ClientIdServiceSpec extends ItSpec {
         (TestJourneys.BtaEpayeGeneral.journeyBeforeBeginWebPayment, ClientIds.PAEE),
         (TestJourneys.BtaEpayePenalty.journeyBeforeBeginWebPayment, ClientIds.MIEE),
         (TestJourneys.BtaEpayeInterest.journeyBeforeBeginWebPayment, ClientIds.MIEE),
-        (TestJourneys.BtaClass1aNi.journeyBeforeBeginWebPayment, ClientIds.MIEE)
+        (TestJourneys.BtaClass1aNi.journeyBeforeBeginWebPayment, ClientIds.PAEE)
       )
       forAll(scenarios) {
         case (journey, clientId) =>
@@ -87,7 +87,7 @@ class ClientIdServiceSpec extends ItSpec {
         (TestJourneys.BtaEpayeGeneral.journeyBeforeBeginWebPayment, ClientIds.PAEC),
         (TestJourneys.BtaEpayePenalty.journeyBeforeBeginWebPayment, ClientIds.MIEC),
         (TestJourneys.BtaEpayeInterest.journeyBeforeBeginWebPayment, ClientIds.MIEC),
-        (TestJourneys.BtaClass1aNi.journeyBeforeBeginWebPayment, ClientIds.MIEC)
+        (TestJourneys.BtaClass1aNi.journeyBeforeBeginWebPayment, ClientIds.PAEC)
       )
       forAll(scenarios) {
         case (journey, clientId) =>
@@ -98,7 +98,7 @@ class ClientIdServiceSpec extends ItSpec {
   }
 
   "sanity check for implemented origins" in {
-    TestHelpers.implementedOrigins.size shouldBe 21 withClue "** This dummy test is here to remind you to update the tests above. Bump up the expected number when an origin is added to implemented origins **"
+    TestHelpers.implementedOrigins.size shouldBe 22 withClue "** This dummy test is here to remind you to update the tests above. Bump up the expected number when an origin is added to implemented origins **"
   }
 
 }
