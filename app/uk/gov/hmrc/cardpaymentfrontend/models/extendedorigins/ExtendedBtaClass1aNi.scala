@@ -16,38 +16,38 @@
 
 package uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins
 
-import payapi.cardpaymentjourney.model.journey.{JourneySpecificData, JsdBtaEpayeInterest}
+import payapi.cardpaymentjourney.model.journey.{JourneySpecificData, JsdBtaClass1aNi}
 import play.api.mvc.AnyContent
 import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
 import uk.gov.hmrc.cardpaymentfrontend.models.PaymentMethod._
 import uk.gov.hmrc.cardpaymentfrontend.models._
-import uk.gov.hmrc.cardpaymentfrontend.models.openbanking.{BtaEpayeInterestSessionData, OriginSpecificSessionData}
+import uk.gov.hmrc.cardpaymentfrontend.models.openbanking.{BtaClass1aNiSessionData, OriginSpecificSessionData}
 
-object ExtendedBtaEpayeInterest extends ExtendedOrigin {
-  override val serviceNameMessageKey: String = "service-name.BtaEpayeInterest"
-  override val taxNameMessageKey: String = "payment-complete.tax-name.BtaEpayeInterest"
+object ExtendedBtaClass1aNi extends ExtendedOrigin {
+  override val serviceNameMessageKey: String = "service-name.BtaClass1aNi"
+  override val taxNameMessageKey: String = "payment-complete.tax-name.BtaClass1aNi"
 
-  def cardFeesPagePaymentMethods: Set[PaymentMethod] = Set(OpenBanking, OneOffDirectDebit)
-  def paymentMethods(): Set[PaymentMethod] = Set(Card, OpenBanking, OneOffDirectDebit, Bacs)
+  def cardFeesPagePaymentMethods: Set[PaymentMethod] = Set(OpenBanking, OneOffDirectDebit, VariableDirectDebit)
+  def paymentMethods(): Set[PaymentMethod] = Set(Card, OpenBanking, OneOffDirectDebit, VariableDirectDebit, Bacs)
 
   override def checkYourAnswersReferenceRow(journeyRequest: JourneyRequest[AnyContent])(payFrontendBaseUrl: String): Option[CheckYourAnswersRow] = {
     Some(CheckYourAnswersRow(
-      titleMessageKey = "check-your-details.BtaEpayeInterest.reference",
+      titleMessageKey = "check-your-details.BtaClass1aNi.reference",
       value           = Seq(journeyRequest.journey.referenceValue),
       changeLink      = None
     ))
   }
 
   override def openBankingOriginSpecificSessionData: JourneySpecificData => Option[OriginSpecificSessionData] = {
-    case j: JsdBtaEpayeInterest => Some(BtaEpayeInterestSessionData(j.xRef))
-    case _                      => throw new RuntimeException("Incorrect origin found")
+    case j: JsdBtaClass1aNi => Some(BtaClass1aNiSessionData(j.accountsOfficeReference, period = j.period))
+    case _                  => throw new RuntimeException("Incorrect origin found")
   }
 
-  override def surveyAuditName: String = "paye-interest"
+  override def surveyAuditName: String = "class-1a-national-insurance"
   override def surveyReturnHref: String = "/business-account"
   override def surveyReturnMessageKey: String = "payments-survey.bta.return-message"
   override def surveyIsWelshSupported: Boolean = true
   override def surveyBannerTitle: String = serviceNameMessageKey
 
-  override def emailTaxTypeMessageKey: String = "email.tax-name.BtaEpayeInterest"
+  override def emailTaxTypeMessageKey: String = "email.tax-name.BtaClass1aNi"
 }

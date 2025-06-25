@@ -24,7 +24,7 @@ import payapi.corcommon.model.taxes.other.XRef
 import payapi.corcommon.model.taxes.sa.SaUtr
 import payapi.corcommon.model.{AmountInPence, JourneyId, PaymentStatuses}
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.testdata.TestDataUtils._
-import uk.gov.hmrc.cardpaymentfrontend.testsupport.testdata.TestPayApiData.testSubYearlyPeriod
+import uk.gov.hmrc.cardpaymentfrontend.testsupport.testdata.TestPayApiData.{testSubYearlyPeriod, testYearlyPeriod}
 
 import java.time.{LocalDate, LocalDateTime}
 
@@ -252,6 +252,26 @@ object TestJourneys {
         accountsOfficeReference = AccountsOfficeReference("123PH45678900"),
         dueDate                 = Some(LocalDate.of(2028, 12, 12)),
         period                  = Some(testSubYearlyPeriod)
+      ),
+      chosenWayToPay       = None
+    )
+  }
+
+  object BtaClass1aNi extends JourneyStatuses[JsdBtaClass1aNi] {
+    val journeyBeforeBeginWebPayment: Journey[JsdBtaClass1aNi] = Journey[JsdBtaClass1aNi](
+      _id                  = JourneyId("TestJourneyId-44f9-ad7f-01e1d3d8f151"),
+      sessionId            = Some(SessionId("TestSession-4b87460d-6f43-4c4c-b810-d6f87c774854")),
+      amountInPence        = Some(AmountInPence(1234)),
+      emailTemplateOptions = None,
+      navigation           = Some(NavigationOptions(returnUrl = Url("https://www.return-url.com"), backUrl = Url("https://www.back-to-btaepayebill.com"))),
+      order                = None,
+      status               = PaymentStatuses.Created,
+      createdOn            = LocalDateTime.parse("2027-11-02T16:28:55.185"),
+      journeySpecificData  = JsdBtaClass1aNi(
+        accountsOfficeReference = AccountsOfficeReference("123PH45678900"),
+        period                  = testYearlyPeriod,
+        defaultAmountInPence    = AmountInPence(1234),
+        dueDate                 = Some(LocalDate.of(2028, 12, 12))
       ),
       chosenWayToPay       = None
     )

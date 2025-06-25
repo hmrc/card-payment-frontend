@@ -43,7 +43,7 @@ object ExtendedBtaEpayePenalty extends ExtendedOrigin {
     case _                     => throw new RuntimeException("Incorrect origin found")
   }
 
-  override def surveyAuditName: String = "epaye"
+  override def surveyAuditName: String = "paye-penalty"
   override def surveyReturnHref: String = "/business-account"
   override def surveyReturnMessageKey: String = "payments-survey.bta.return-message"
   override def surveyIsWelshSupported: Boolean = true
