@@ -19,6 +19,7 @@ package uk.gov.hmrc.cardpaymentfrontend.controllers
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.scalatest.Assertion
+import payapi.cardpaymentjourney.model.journey.JourneySpecificData
 import payapi.corcommon.model.Origins
 import play.api.mvc.{AnyContentAsEmpty, Call}
 import play.api.test.FakeRequest
@@ -631,6 +632,349 @@ class FeesControllerSpec extends ItSpec {
         }
       }
 
+      "for origin PfVat" - {
+
+        "render the static content correctly" in {
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfVat.journeyBeforeBeginWebPayment)
+          val result = systemUnderTest.renderPage(fakeRequest)
+          val document = Jsoup.parse(contentAsString(result))
+          document.select(".govuk-header__service-name").html shouldBe "Pay your VAT"
+          testStaticContentEnglish(document)
+        }
+
+        "the static content correctly in welsh" in {
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfVat.journeyBeforeBeginWebPayment)
+          val result = systemUnderTest.renderPage(fakeWelshRequest)
+          val document = Jsoup.parse(contentAsString(result))
+          document.select(".govuk-header__service-name").html shouldBe "Talu eich TAW"
+          testStaticContentWelsh(document)
+        }
+
+        "render two options for other ways to pay" in {
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfVat.journeyBeforeBeginWebPayment)
+          val result = systemUnderTest.renderPage(fakeRequest)
+          val document = Jsoup.parse(contentAsString(result))
+          val listOfMethods = document.select("#payment-type-list").select("li")
+          listOfMethods.size() shouldBe 3
+        }
+
+        "render an option for open banking" in {
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfVat.journeyBeforeBeginWebPayment)
+          val result = systemUnderTest.renderPage(fakeRequest)
+          val document = Jsoup.parse(contentAsString(result))
+          val listOfMethods = document.select("#payment-type-list").select("li")
+          val openBankingBullet = listOfMethods.select("#open-banking-link")
+          openBankingBullet.text() shouldBe "bank account"
+          openBankingBullet.attr("href") shouldBe "/pay-by-card/start-open-banking"
+        }
+
+        "render an option for open banking in welsh" in {
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfVat.journeyBeforeBeginWebPayment)
+          val result = systemUnderTest.renderPage(fakeWelshRequest)
+          val document = Jsoup.parse(contentAsString(result))
+          val listOfMethods = document.select("#payment-type-list").select("li")
+          val openBankingBullet = listOfMethods.select("#open-banking-link")
+          openBankingBullet.text() shouldBe "cyfrif banc"
+          openBankingBullet.attr("href") shouldBe "/pay-by-card/start-open-banking"
+        }
+
+        "render an option for personal debit card" in {
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfVat.journeyBeforeBeginWebPayment)
+          val result = systemUnderTest.renderPage(fakeRequest)
+          val document = Jsoup.parse(contentAsString(result))
+          val listOfMethods = document.select("#payment-type-list").select("li")
+          val cardBullet = listOfMethods.select("#personal-debit-card")
+          cardBullet.text() shouldBe "personal debit card"
+        }
+
+        "render an option for personal debit card in welsh" in {
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfVat.journeyBeforeBeginWebPayment)
+          val result = systemUnderTest.renderPage(fakeWelshRequest)
+          val document = Jsoup.parse(contentAsString(result))
+          val listOfMethods = document.select("#payment-type-list").select("li")
+          val cardBullet = listOfMethods.select("#personal-debit-card")
+          cardBullet.text() shouldBe "cerdyn debyd personol"
+        }
+
+        "render an option for variable direct debit" in {
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfVat.journeyBeforeBeginWebPayment)
+          val result = systemUnderTest.renderPage(fakeRequest)
+          val document = Jsoup.parse(contentAsString(result))
+          val listOfMethods = document.select("#payment-type-list").select("li")
+          val oneOffDirectDebitBullet = listOfMethods.select("#variable-direct-debit-link")
+          oneOffDirectDebitBullet.text() shouldBe "Direct Debit (variable)"
+          oneOffDirectDebitBullet.attr("href") shouldBe "http://localhost:9056/pay/pay-by-direct-debit"
+        }
+
+        "render an option for variable direct debit in welsh" in {
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfVat.journeyBeforeBeginWebPayment)
+          val result = systemUnderTest.renderPage(fakeWelshRequest)
+          val document = Jsoup.parse(contentAsString(result))
+          val listOfMethods = document.select("#payment-type-list").select("li")
+          val oneOffDirectDebitBullet = listOfMethods.select("#variable-direct-debit-link")
+          oneOffDirectDebitBullet.text() shouldBe "Debyd Uniongyrchol (newidiol)"
+          oneOffDirectDebitBullet.attr("href") shouldBe "http://localhost:9056/pay/pay-by-direct-debit"
+        }
+
+        "render NO option for direct debit when is a Surcharge payment" in {
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfVatWithChargeReference.journeyBeforeBeginWebPayment)
+          val result = systemUnderTest.renderPage(fakeRequest)
+          val document = Jsoup.parse(contentAsString(result))
+          val listOfMethods = document.select("#payment-type-list").select("li")
+          val variableOffDirectDebitBullet = listOfMethods.select("#variable-direct-debit-link")
+          variableOffDirectDebitBullet.text() shouldBe empty
+          variableOffDirectDebitBullet.hasAttr("href") shouldBe false
+        }
+
+        "render NO option for direct debit when is a Surcharge payment in welsh" in {
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfVatWithChargeReference.journeyBeforeBeginWebPayment)
+          val result = systemUnderTest.renderPage(fakeWelshRequest)
+          val document = Jsoup.parse(contentAsString(result))
+          val listOfMethods = document.select("#payment-type-list").select("li")
+          val variableOffDirectDebitBullet = listOfMethods.select("#variable-direct-debit-link")
+          variableOffDirectDebitBullet.text() shouldBe empty
+          variableOffDirectDebitBullet.hasAttr("href") shouldBe false
+        }
+
+      }
+
+      "for origin BtaVat" - {
+
+        "render the static content correctly" in {
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.BtaVat.journeyBeforeBeginWebPayment)
+          val result = systemUnderTest.renderPage(fakeRequest)
+          val document = Jsoup.parse(contentAsString(result))
+          document.select(".govuk-header__service-name").html shouldBe "Pay your VAT"
+          testStaticContentEnglish(document)
+        }
+
+        "the static content correctly in welsh" in {
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.BtaVat.journeyBeforeBeginWebPayment)
+          val result = systemUnderTest.renderPage(fakeWelshRequest)
+          val document = Jsoup.parse(contentAsString(result))
+          document.select(".govuk-header__service-name").html shouldBe "Talu eich TAW"
+          testStaticContentWelsh(document)
+        }
+
+        "render two options for other ways to pay" in {
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.BtaVat.journeyBeforeBeginWebPayment)
+          val result = systemUnderTest.renderPage(fakeRequest)
+          val document = Jsoup.parse(contentAsString(result))
+          val listOfMethods = document.select("#payment-type-list").select("li")
+          listOfMethods.size() shouldBe 3
+        }
+
+        "render an option for open banking" in {
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.BtaVat.journeyBeforeBeginWebPayment)
+          val result = systemUnderTest.renderPage(fakeRequest)
+          val document = Jsoup.parse(contentAsString(result))
+          val listOfMethods = document.select("#payment-type-list").select("li")
+          val openBankingBullet = listOfMethods.select("#open-banking-link")
+          openBankingBullet.text() shouldBe "bank account"
+          openBankingBullet.attr("href") shouldBe "/pay-by-card/start-open-banking"
+        }
+
+        "render an option for open banking in welsh" in {
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.BtaVat.journeyBeforeBeginWebPayment)
+          val result = systemUnderTest.renderPage(fakeWelshRequest)
+          val document = Jsoup.parse(contentAsString(result))
+          val listOfMethods = document.select("#payment-type-list").select("li")
+          val openBankingBullet = listOfMethods.select("#open-banking-link")
+          openBankingBullet.text() shouldBe "cyfrif banc"
+          openBankingBullet.attr("href") shouldBe "/pay-by-card/start-open-banking"
+        }
+
+        "render an option for personal debit card" in {
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.BtaVat.journeyBeforeBeginWebPayment)
+          val result = systemUnderTest.renderPage(fakeRequest)
+          val document = Jsoup.parse(contentAsString(result))
+          val listOfMethods = document.select("#payment-type-list").select("li")
+          val cardBullet = listOfMethods.select("#personal-debit-card")
+          cardBullet.text() shouldBe "personal debit card"
+        }
+
+        "render an option for personal debit card in welsh" in {
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.BtaVat.journeyBeforeBeginWebPayment)
+          val result = systemUnderTest.renderPage(fakeWelshRequest)
+          val document = Jsoup.parse(contentAsString(result))
+          val listOfMethods = document.select("#payment-type-list").select("li")
+          val cardBullet = listOfMethods.select("#personal-debit-card")
+          cardBullet.text() shouldBe "cerdyn debyd personol"
+        }
+
+        "render an option for variable direct debit" in {
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.BtaVat.journeyBeforeBeginWebPayment)
+          val result = systemUnderTest.renderPage(fakeRequest)
+          val document = Jsoup.parse(contentAsString(result))
+          val listOfMethods = document.select("#payment-type-list").select("li")
+          val oneOffDirectDebitBullet = listOfMethods.select("#variable-direct-debit-link")
+          oneOffDirectDebitBullet.text() shouldBe "Direct Debit (variable)"
+          oneOffDirectDebitBullet.attr("href") shouldBe "http://localhost:9056/pay/pay-by-direct-debit"
+        }
+
+        "render an option for variable direct debit in welsh" in {
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.BtaVat.journeyBeforeBeginWebPayment)
+          val result = systemUnderTest.renderPage(fakeWelshRequest)
+          val document = Jsoup.parse(contentAsString(result))
+          val listOfMethods = document.select("#payment-type-list").select("li")
+          val oneOffDirectDebitBullet = listOfMethods.select("#variable-direct-debit-link")
+          oneOffDirectDebitBullet.text() shouldBe "Debyd Uniongyrchol (newidiol)"
+          oneOffDirectDebitBullet.attr("href") shouldBe "http://localhost:9056/pay/pay-by-direct-debit"
+        }
+
+      }
+
+      "for origin VcVatReturn" - {
+
+        "render the static content correctly" in {
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.VcVatReturn.journeyBeforeBeginWebPayment)
+          val result = systemUnderTest.renderPage(fakeRequest)
+          val document = Jsoup.parse(contentAsString(result))
+          document.select(".govuk-header__service-name").html shouldBe "Business tax account"
+          testStaticContentEnglish(document)
+        }
+
+        "the static content correctly in welsh" in {
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.VcVatReturn.journeyBeforeBeginWebPayment)
+          val result = systemUnderTest.renderPage(fakeWelshRequest)
+          val document = Jsoup.parse(contentAsString(result))
+          document.select(".govuk-header__service-name").html shouldBe "Cyfrif treth busnes"
+          testStaticContentWelsh(document)
+        }
+
+        "render two options for other ways to pay" in {
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.VcVatReturn.journeyBeforeBeginWebPayment)
+          val result = systemUnderTest.renderPage(fakeRequest)
+          val document = Jsoup.parse(contentAsString(result))
+          val listOfMethods = document.select("#payment-type-list").select("li")
+          listOfMethods.size() shouldBe 3
+        }
+
+        "render an option for open banking" in {
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.VcVatReturn.journeyBeforeBeginWebPayment)
+          val result = systemUnderTest.renderPage(fakeRequest)
+          val document = Jsoup.parse(contentAsString(result))
+          val listOfMethods = document.select("#payment-type-list").select("li")
+          val openBankingBullet = listOfMethods.select("#open-banking-link")
+          openBankingBullet.text() shouldBe "bank account"
+          openBankingBullet.attr("href") shouldBe "/pay-by-card/start-open-banking"
+        }
+
+        "render an option for open banking in welsh" in {
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.VcVatReturn.journeyBeforeBeginWebPayment)
+          val result = systemUnderTest.renderPage(fakeWelshRequest)
+          val document = Jsoup.parse(contentAsString(result))
+          val listOfMethods = document.select("#payment-type-list").select("li")
+          val openBankingBullet = listOfMethods.select("#open-banking-link")
+          openBankingBullet.text() shouldBe "cyfrif banc"
+          openBankingBullet.attr("href") shouldBe "/pay-by-card/start-open-banking"
+        }
+
+        "render an option for personal debit card" in {
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.VcVatReturn.journeyBeforeBeginWebPayment)
+          val result = systemUnderTest.renderPage(fakeRequest)
+          val document = Jsoup.parse(contentAsString(result))
+          val listOfMethods = document.select("#payment-type-list").select("li")
+          val cardBullet = listOfMethods.select("#personal-debit-card")
+          cardBullet.text() shouldBe "personal debit card"
+        }
+
+        "render an option for personal debit card in welsh" in {
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.VcVatReturn.journeyBeforeBeginWebPayment)
+          val result = systemUnderTest.renderPage(fakeWelshRequest)
+          val document = Jsoup.parse(contentAsString(result))
+          val listOfMethods = document.select("#payment-type-list").select("li")
+          val cardBullet = listOfMethods.select("#personal-debit-card")
+          cardBullet.text() shouldBe "cerdyn debyd personol"
+        }
+
+        "render an option for variable direct debit" in {
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.VcVatReturn.journeyBeforeBeginWebPayment)
+          val result = systemUnderTest.renderPage(fakeRequest)
+          val document = Jsoup.parse(contentAsString(result))
+          val listOfMethods = document.select("#payment-type-list").select("li")
+          val oneOffDirectDebitBullet = listOfMethods.select("#variable-direct-debit-link")
+          oneOffDirectDebitBullet.text() shouldBe "Direct Debit (variable)"
+          oneOffDirectDebitBullet.attr("href") shouldBe "http://localhost:9056/pay/pay-by-direct-debit"
+        }
+
+        "render an option for variable direct debit in welsh" in {
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.VcVatReturn.journeyBeforeBeginWebPayment)
+          val result = systemUnderTest.renderPage(fakeWelshRequest)
+          val document = Jsoup.parse(contentAsString(result))
+          val listOfMethods = document.select("#payment-type-list").select("li")
+          val oneOffDirectDebitBullet = listOfMethods.select("#variable-direct-debit-link")
+          oneOffDirectDebitBullet.text() shouldBe "Debyd Uniongyrchol (newidiol)"
+          oneOffDirectDebitBullet.attr("href") shouldBe "http://localhost:9056/pay/pay-by-direct-debit"
+        }
+
+      }
+
+      "for origin VcVatOther" - {
+
+        "render the static content correctly" in {
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.VcVatOther.journeyBeforeBeginWebPayment)
+          val result = systemUnderTest.renderPage(fakeRequest)
+          val document = Jsoup.parse(contentAsString(result))
+          document.select(".govuk-header__service-name").html shouldBe "Business tax account"
+          testStaticContentEnglish(document)
+        }
+
+        "the static content correctly in welsh" in {
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.VcVatOther.journeyBeforeBeginWebPayment)
+          val result = systemUnderTest.renderPage(fakeWelshRequest)
+          val document = Jsoup.parse(contentAsString(result))
+          document.select(".govuk-header__service-name").html shouldBe "Cyfrif treth busnes"
+          testStaticContentWelsh(document)
+        }
+
+        "render two options for other ways to pay" in {
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.VcVatOther.journeyBeforeBeginWebPayment)
+          val result = systemUnderTest.renderPage(fakeRequest)
+          val document = Jsoup.parse(contentAsString(result))
+          val listOfMethods = document.select("#payment-type-list").select("li")
+          listOfMethods.size() shouldBe 2
+        }
+
+        "render an option for open banking" in {
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.VcVatOther.journeyBeforeBeginWebPayment)
+          val result = systemUnderTest.renderPage(fakeRequest)
+          val document = Jsoup.parse(contentAsString(result))
+          val listOfMethods = document.select("#payment-type-list").select("li")
+          val openBankingBullet = listOfMethods.select("#open-banking-link")
+          openBankingBullet.text() shouldBe "bank account"
+          openBankingBullet.attr("href") shouldBe "/pay-by-card/start-open-banking"
+        }
+
+        "render an option for open banking in welsh" in {
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.VcVatOther.journeyBeforeBeginWebPayment)
+          val result = systemUnderTest.renderPage(fakeWelshRequest)
+          val document = Jsoup.parse(contentAsString(result))
+          val listOfMethods = document.select("#payment-type-list").select("li")
+          val openBankingBullet = listOfMethods.select("#open-banking-link")
+          openBankingBullet.text() shouldBe "cyfrif banc"
+          openBankingBullet.attr("href") shouldBe "/pay-by-card/start-open-banking"
+        }
+
+        "render an option for personal debit card" in {
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.VcVatOther.journeyBeforeBeginWebPayment)
+          val result = systemUnderTest.renderPage(fakeRequest)
+          val document = Jsoup.parse(contentAsString(result))
+          val listOfMethods = document.select("#payment-type-list").select("li")
+          val cardBullet = listOfMethods.select("#personal-debit-card")
+          cardBullet.text() shouldBe "personal debit card"
+        }
+
+        "render an option for personal debit card in welsh" in {
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.VcVatOther.journeyBeforeBeginWebPayment)
+          val result = systemUnderTest.renderPage(fakeWelshRequest)
+          val document = Jsoup.parse(contentAsString(result))
+          val listOfMethods = document.select("#payment-type-list").select("li")
+          val cardBullet = listOfMethods.select("#personal-debit-card")
+          cardBullet.text() shouldBe "cerdyn debyd personol"
+        }
+      }
+
       "for origin BtaEpayeBill" - {
 
         "render the static content correctly" in {
@@ -764,20 +1108,27 @@ class FeesControllerSpec extends ItSpec {
         messageKey = "card-fees.para2.one-off-direct-debit"
       )
 
+      val expectedVariableDirectDebitLink = Link(
+        href       = Call("GET", "http://localhost:9056/pay/pay-by-direct-debit"),
+        linkId     = "variable-direct-debit-link",
+        messageKey = "card-fees.para2.variable-direct-debit"
+      )
+
       "should return the correct links for each origin" in {
         Origins.values.foreach { origin =>
+
           val expectedLinks = origin match {
             case Origins.PfSa                     => Seq(expectedOpenBankingLink, expectedOneOffDirectDebitLink)
             case Origins.BtaSa                    => Seq(expectedOpenBankingLink, expectedOneOffDirectDebitLink)
             case Origins.PtaSa                    => Seq(expectedOpenBankingLink, expectedOneOffDirectDebitLink)
             case Origins.ItSa                     => Seq(expectedBankTransferLink)
-            case Origins.PfVat                    => Seq.empty
+            case Origins.PfVat                    => Seq(expectedOpenBankingLink, expectedVariableDirectDebitLink)
             case Origins.PfCt                     => Seq(expectedOpenBankingLink, expectedOneOffDirectDebitLink)
-            case Origins.PfEpayeNi                => Seq.empty
-            case Origins.PfEpayeLpp               => Seq.empty
-            case Origins.PfEpayeSeta              => Seq.empty
-            case Origins.PfEpayeLateCis           => Seq.empty
-            case Origins.PfEpayeP11d              => Seq.empty
+            case Origins.PfEpayeNi                => Seq(expectedOpenBankingLink, expectedVariableDirectDebitLink, expectedOneOffDirectDebitLink)
+            case Origins.PfEpayeLpp               => Seq(expectedOpenBankingLink, expectedOneOffDirectDebitLink)
+            case Origins.PfEpayeSeta              => Seq(expectedOpenBankingLink, expectedOneOffDirectDebitLink)
+            case Origins.PfEpayeLateCis           => Seq(expectedOpenBankingLink, expectedOneOffDirectDebitLink)
+            case Origins.PfEpayeP11d              => Seq(expectedOpenBankingLink, expectedOneOffDirectDebitLink)
             case Origins.PfSdlt                   => Seq.empty
             case Origins.PfCds                    => Seq.empty
             case Origins.PfOther                  => Seq.empty
@@ -787,8 +1138,7 @@ class FeesControllerSpec extends ItSpec {
             case Origins.PfInsurancePremium       => Seq.empty
             case Origins.PfPsAdmin                => Seq.empty
             case Origins.AppSa                    => Seq.empty
-            case Origins.BtaVat                   => Seq.empty
-            // TODO: ADD VARIABLE ONCE VAT IS ON MAIN
+            case Origins.BtaVat                   => Seq(expectedOpenBankingLink, expectedVariableDirectDebitLink)
             case Origins.BtaEpayeBill             => Seq(expectedOpenBankingLink, expectedOneOffDirectDebitLink)
             case Origins.BtaEpayePenalty          => Seq(expectedOpenBankingLink, expectedOneOffDirectDebitLink)
             case Origins.BtaEpayeInterest         => Seq(expectedOpenBankingLink, expectedOneOffDirectDebitLink)
@@ -800,8 +1150,8 @@ class FeesControllerSpec extends ItSpec {
             case Origins.Parcels                  => Seq.empty
             case Origins.DdVat                    => Seq.empty
             case Origins.DdSdil                   => Seq.empty
-            case Origins.VcVatReturn              => Seq.empty
-            case Origins.VcVatOther               => Seq.empty
+            case Origins.VcVatReturn              => Seq(expectedOpenBankingLink, expectedVariableDirectDebitLink)
+            case Origins.VcVatOther               => Seq(expectedOpenBankingLink)
             case Origins.Amls                     => Seq.empty
             case Origins.Ppt                      => Seq.empty
             case Origins.PfCdsCash                => Seq.empty
@@ -849,8 +1199,98 @@ class FeesControllerSpec extends ItSpec {
             case Origins.PfPillar2                => Seq.empty
             case Origins.PfVatC2c                 => Seq.empty
             case Origins.Pillar2                  => Seq.empty
+
           }
-          systemUnderTest.linksAvailableOnFeesPage(origin) shouldBe expectedLinks withClue s"links did not match expected for origin: ${origin.entryName}"
+
+          // Required due to additions made to Controller to allow for checking a chargeReference. Could this be improved?
+          val journeySpecificData: Option[JourneySpecificData] = origin match {
+            case Origins.PfSa                     => Some(TestJourneys.PfSa.journeyBeforeBeginWebPayment.journeySpecificData)
+            case Origins.BtaSa                    => Some(TestJourneys.BtaSa.journeyBeforeBeginWebPayment.journeySpecificData)
+            case Origins.PtaSa                    => Some(TestJourneys.PtaSa.journeyBeforeBeginWebPayment.journeySpecificData)
+            case Origins.ItSa                     => Some(TestJourneys.ItSa.journeyBeforeBeginWebPayment.journeySpecificData)
+            case Origins.PfVat                    => Some(TestJourneys.PfVat.journeyBeforeBeginWebPayment.journeySpecificData)
+            case Origins.PfCt                     => Some(TestJourneys.PfCt.journeyBeforeBeginWebPayment.journeySpecificData)
+            case Origins.PfEpayeNi                => None
+            case Origins.PfEpayeLpp               => None
+            case Origins.PfEpayeSeta              => None
+            case Origins.PfEpayeLateCis           => None
+            case Origins.PfEpayeP11d              => None
+            case Origins.PfSdlt                   => None
+            case Origins.PfCds                    => None
+            case Origins.PfOther                  => None
+            case Origins.PfP800                   => None
+            case Origins.PtaP800                  => None
+            case Origins.PfClass2Ni               => None
+            case Origins.PfInsurancePremium       => None
+            case Origins.PfPsAdmin                => None
+            case Origins.AppSa                    => None
+            case Origins.BtaVat                   => Some(TestJourneys.BtaVat.journeyBeforeBeginWebPayment.journeySpecificData)
+            case Origins.BtaEpayeBill             => None
+            case Origins.BtaEpayePenalty          => None
+            case Origins.BtaEpayeInterest         => None
+            case Origins.BtaEpayeGeneral          => None
+            case Origins.BtaClass1aNi             => None
+            case Origins.BtaCt                    => Some(TestJourneys.BtaCt.journeyBeforeBeginWebPayment.journeySpecificData)
+            case Origins.BtaSdil                  => None
+            case Origins.BcPngr                   => None
+            case Origins.Parcels                  => None
+            case Origins.DdVat                    => None
+            case Origins.DdSdil                   => None
+            case Origins.VcVatReturn              => Some(TestJourneys.VcVatReturn.journeyBeforeBeginWebPayment.journeySpecificData)
+            case Origins.VcVatOther               => Some(TestJourneys.VcVatOther.journeyBeforeBeginWebPayment.journeySpecificData)
+            case Origins.Amls                     => None
+            case Origins.Ppt                      => None
+            case Origins.PfCdsCash                => None
+            case Origins.PfPpt                    => None
+            case Origins.PfSpiritDrinks           => None
+            case Origins.PfInheritanceTax         => None
+            case Origins.Mib                      => None
+            case Origins.PfClass3Ni               => None
+            case Origins.PfWineAndCider           => None
+            case Origins.PfBioFuels               => None
+            case Origins.PfAirPass                => None
+            case Origins.PfMgd                    => None
+            case Origins.PfBeerDuty               => None
+            case Origins.PfGamingOrBingoDuty      => None
+            case Origins.PfGbPbRgDuty             => None
+            case Origins.PfLandfillTax            => None
+            case Origins.PfSdil                   => None
+            case Origins.PfAggregatesLevy         => None
+            case Origins.PfClimateChangeLevy      => None
+            case Origins.PfSimpleAssessment       => None
+            case Origins.PtaSimpleAssessment      => None
+            case Origins.AppSimpleAssessment      => None
+            case Origins.PfTpes                   => None
+            case Origins.CapitalGainsTax          => None
+            case Origins.EconomicCrimeLevy        => None
+            case Origins.PfEconomicCrimeLevy      => None
+            case Origins.PfJobRetentionScheme     => None
+            case Origins.JrsJobRetentionScheme    => None
+            case Origins.PfImportedVehicles       => None
+            case Origins.PfChildBenefitRepayments => None
+            case Origins.NiEuVatOss               => None
+            case Origins.PfNiEuVatOss             => None
+            case Origins.NiEuVatIoss              => None
+            case Origins.PfNiEuVatIoss            => None
+            case Origins.PfAmls                   => None
+            case Origins.PfAted                   => None
+            case Origins.PfCdsDeferment           => None
+            case Origins.PfTrust                  => None
+            case Origins.PtaClass3Ni              => None
+            case Origins.AlcoholDuty              => Some(TestJourneys.AlcoholDuty.journeyBeforeBeginWebPayment.journeySpecificData)
+            case Origins.PfAlcoholDuty            => Some(TestJourneys.PfAlcoholDuty.journeyBeforeBeginWebPayment.journeySpecificData)
+            case Origins.VatC2c                   => None
+            case Origins.`3psSa`                  => None
+            case Origins.`3psVat`                 => None
+            case Origins.PfPillar2                => None
+            case Origins.PfVatC2c                 => None
+            case Origins.Pillar2                  => None
+          }
+
+          journeySpecificData.map { jsd: JourneySpecificData =>
+            systemUnderTest.linksAvailableOnFeesPage(jsd = jsd) shouldBe expectedLinks withClue s"links did not match expected for origin: ${origin.entryName}"
+          }
+
         }
       }
     }

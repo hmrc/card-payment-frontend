@@ -18,6 +18,7 @@ package uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins
 
 import payapi.cardpaymentjourney.model.journey.JourneySpecificData
 import payapi.corcommon.model.{Origin, Origins, Reference}
+import play.api.i18n.Lang
 import play.api.mvc.{AnyContent, Call}
 import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
 import uk.gov.hmrc.cardpaymentfrontend.models.openbanking.OriginSpecificSessionData
@@ -72,7 +73,7 @@ trait ExtendedOrigin {
   //hint: the checkYourAnswersReferenceRow should only include a change link when the journey is not prepopulated, i.e., user has manually entered their reference.
   def checkYourAnswersReferenceRow(journeyRequest: JourneyRequest[AnyContent])(payFrontendBaseUrl: String): Option[CheckYourAnswersRow]
 
-  def checkYourAnswersAdditionalReferenceRow(journeyRequest: JourneyRequest[AnyContent])(payFrontendBaseUrl: String): Option[CheckYourAnswersRow] = None
+  def checkYourAnswersAdditionalReferenceRow(journeyRequest: JourneyRequest[AnyContent])(payFrontendBaseUrl: String)(implicit lang: Lang): Option[CheckYourAnswersRow] = None
 
   def checkYourAnswersAmountSummaryRow(journeyRequest: JourneyRequest[AnyContent])(payFrontendBaseUrl: String): Option[CheckYourAnswersRow] = Some(CheckYourAnswersRow(
     titleMessageKey = "check-your-details.total-to-pay",
@@ -102,25 +103,28 @@ trait ExtendedOrigin {
 
   // TODO: Update tests to not include country - check doesn't show country
   def checkYourAnswersCardBillingAddressRow(journeyRequest: JourneyRequest[AnyContent]): Option[CheckYourAnswersRow] = {
-    //todo error? we can't take a card payment without an address
-    val addressFromSession: Address = journeyRequest.readFromSession[Address](journeyRequest.journeyId, Keys.address).getOrElse(throw new RuntimeException("Cannot take a card payment without an address"))
-    val addressValues: Seq[String] = Seq[String](
-      addressFromSession.line1,
-      addressFromSession.line2.getOrElse(""),
-      addressFromSession.city.getOrElse(""),
-      addressFromSession.county.getOrElse(""),
-      addressFromSession.postcode
-    ).filter(_.nonEmpty)
+    val addressFromSession: Option[Address] = journeyRequest.readFromSession[Address](journeyRequest.journeyId, Keys.address)
+    val addressValues: Option[Seq[String]] = {
+      for {
+        line1 <- addressFromSession.map(_.line1)
+        line2 <- addressFromSession.map(_.line2)
+        city <- addressFromSession.map(_.city)
+        county <- addressFromSession.map(_.county)
+        postcode <- addressFromSession.map(_.postcode)
+      } yield Seq(line1, line2.getOrElse(""), city.getOrElse(""), county.getOrElse(""), postcode)
+    }.map(_.filter(_.nonEmpty))
 
-    Some(CheckYourAnswersRow(
-      titleMessageKey = "check-your-details.card-billing-address",
-      value           = addressValues,
-      changeLink      = Some(Link(
-        href       = uk.gov.hmrc.cardpaymentfrontend.controllers.routes.AddressController.renderPage,
-        linkId     = "check-your-details-card-billing-address-change-link",
-        messageKey = "check-your-details.change"
-      ))
-    ))
+    addressValues.map { address: Seq[String] =>
+      CheckYourAnswersRow(
+        titleMessageKey = "check-your-details.card-billing-address",
+        value           = address,
+        changeLink      = Some(Link(
+          href       = uk.gov.hmrc.cardpaymentfrontend.controllers.routes.AddressController.renderPage,
+          linkId     = "check-your-details-card-billing-address-change-link",
+          messageKey = "check-your-details.change"
+        ))
+      )
+    }
   }
 
   def openBankingOriginSpecificSessionData: JourneySpecificData => Option[OriginSpecificSessionData]
@@ -143,11 +147,11 @@ object ExtendedOrigin {
       case Origins.PfSa                     => ExtendedPfSa
       case Origins.PfVat                    => ExtendedPfVat
       case Origins.PfCt                     => ExtendedPfCt
-      case Origins.PfEpayeNi                => DefaultExtendedOrigin
-      case Origins.PfEpayeLpp               => DefaultExtendedOrigin
-      case Origins.PfEpayeSeta              => DefaultExtendedOrigin
-      case Origins.PfEpayeLateCis           => DefaultExtendedOrigin
-      case Origins.PfEpayeP11d              => DefaultExtendedOrigin
+      case Origins.PfEpayeNi                => ExtendedPfEpayeNi
+      case Origins.PfEpayeLpp               => ExtendedPfEpayeLpp
+      case Origins.PfEpayeSeta              => ExtendedPfEpayeSeta
+      case Origins.PfEpayeLateCis           => ExtendedPfEpayeLateCis
+      case Origins.PfEpayeP11d              => ExtendedPfEpayeP11d
       case Origins.PfSdlt                   => DefaultExtendedOrigin
       case Origins.PfCds                    => DefaultExtendedOrigin
       case Origins.PfOther                  => DefaultExtendedOrigin
@@ -158,7 +162,7 @@ object ExtendedOrigin {
       case Origins.PfPsAdmin                => DefaultExtendedOrigin
       case Origins.BtaSa                    => ExtendedBtaSa
       case Origins.AppSa                    => DefaultExtendedOrigin
-      case Origins.BtaVat                   => DefaultExtendedOrigin
+      case Origins.BtaVat                   => ExtendedBtaVat
       case Origins.BtaEpayeBill             => ExtendedBtaEpayeBill
       case Origins.BtaEpayePenalty          => ExtendedBtaEpayePenalty
       case Origins.BtaEpayeInterest         => ExtendedBtaEpayeInterest
@@ -170,8 +174,8 @@ object ExtendedOrigin {
       case Origins.Parcels                  => DefaultExtendedOrigin
       case Origins.DdVat                    => DefaultExtendedOrigin
       case Origins.DdSdil                   => DefaultExtendedOrigin
-      case Origins.VcVatReturn              => DefaultExtendedOrigin
-      case Origins.VcVatOther               => DefaultExtendedOrigin
+      case Origins.VcVatReturn              => ExtendedVcVatReturn
+      case Origins.VcVatOther               => ExtendedVcVatOther
       case Origins.ItSa                     => ExtendedItSa
       case Origins.Amls                     => DefaultExtendedOrigin
       case Origins.Ppt                      => DefaultExtendedOrigin

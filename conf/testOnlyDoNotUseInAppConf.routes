@@ -15,3 +15,4 @@
 GET        /pay-by-card/test-only/view-journey    uk.gov.hmrc.cardpaymentfrontend.testonly.TestOnlyController.showJourney
 
 GET        /pay-by-card/test-only/add-email-to-session    uk.gov.hmrc.cardpaymentfrontend.testonly.TestOnlyController.addAnEmailToSession
+GET        /pay-by-card/test-only/remove-address    uk.gov.hmrc.cardpaymentfrontend.testonly.TestOnlyController.removeAddress

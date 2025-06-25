@@ -14,17 +14,17 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.cardpaymentfrontend.models.payapi
+package uk.gov.hmrc.cardpaymentfrontend.utils
 
-import play.api.libs.json.{Json, OFormat}
+import payapi.cardpaymentjourney.model.journey._
 
-//todo should we use types from cor? I'd rather not to stop being tied to it.
-final case class BeginWebPaymentRequest(
-    transactionReference: String,
-    iFrameUrl:            String
-)
+object ExternalNavigation {
 
-object BeginWebPaymentRequest {
-  @SuppressWarnings(Array("org.wartremover.warts.Any"))
-  implicit val formats: OFormat[BeginWebPaymentRequest] = Json.format
+  private def navigationOptions(journey: Journey[JourneySpecificData]): NavigationOptions =
+    journey.navigation.getOrElse(NavigationOptions(None, None, None, None))
+
+  def returnUrlCancelled(journey: Journey[JourneySpecificData]): Option[Url] = {
+    val nav = navigationOptions(journey)
+    nav.returnUrlCancelled.orElse(nav.returnUrl)
+  }
 }
