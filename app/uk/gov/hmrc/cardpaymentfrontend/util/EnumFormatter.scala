@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.cardpaymentfrontend.utils
+package uk.gov.hmrc.cardpaymentfrontend.util
 
+import cats.syntax.either._
 import enumeratum.{Enum, EnumEntry}
 import play.api.data.FormError
-import cats.syntax.either._
 import play.api.data.format.Formatter
 
 object EnumFormatter {

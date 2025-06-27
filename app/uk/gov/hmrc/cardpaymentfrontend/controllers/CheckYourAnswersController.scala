@@ -21,10 +21,10 @@ import play.api.i18n.Lang
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.cardpaymentfrontend.actions.{Actions, JourneyRequest}
 import uk.gov.hmrc.cardpaymentfrontend.config.AppConfig
-import uk.gov.hmrc.cardpaymentfrontend.models.{Address, CheckYourAnswersRow, EmailAddress}
 import uk.gov.hmrc.cardpaymentfrontend.models.CheckYourAnswersRow.summarise
 import uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins.ExtendedOrigin
 import uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins.ExtendedOrigin.OriginExtended
+import uk.gov.hmrc.cardpaymentfrontend.models.{Address, CheckYourAnswersRow, EmailAddress}
 import uk.gov.hmrc.cardpaymentfrontend.requests.RequestSupport
 import uk.gov.hmrc.cardpaymentfrontend.services.CardPaymentService
 import uk.gov.hmrc.cardpaymentfrontend.session.JourneySessionSupport._
@@ -86,7 +86,7 @@ class CheckYourAnswersController @Inject() (
             addressFromSession    = address,
             maybeEmailFromSession = journeyRequest.readFromSession[EmailAddress](journeyRequest.journeyId, Keys.email),
             language              = requestSupport.usableLanguage
-          )(requestSupport.hc)
+          )(requestSupport.hc, journeyRequest)
           .map { cardPaymentInitiatePaymentResponse =>
             Redirect(routes.PaymentStatusController.showIframe(RedirectUrl(cardPaymentInitiatePaymentResponse.redirectUrl)))
           }

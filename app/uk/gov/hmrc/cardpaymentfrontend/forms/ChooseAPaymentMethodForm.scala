@@ -18,7 +18,7 @@ package uk.gov.hmrc.cardpaymentfrontend.forms
 
 import play.api.data.Forms.{mapping, of}
 import play.api.data.{Form, Mapping}
-import uk.gov.hmrc.cardpaymentfrontend.utils.EnumFormatter
+import uk.gov.hmrc.cardpaymentfrontend.util.EnumFormatter
 
 final case class ChooseAPaymentMethodForm(chosenMethod: ChooseAPaymentMethodFormValues)
 
