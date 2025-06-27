@@ -28,7 +28,7 @@ class ExternalNavigationSpec extends UnitSpec with TableDrivenPropertyChecks {
   "returnUrlCancelled" - {
     val someUrl = Some(Url("https://www.return-url.com"))
 
-    val scenarios: TableFor2[JourneyStatuses[_ >: JsdPfSa with JsdPfCt with JsdPfEpayeP11d with JsdBtaCt with JsdPfEpayeLateCis with JsdPfEpayeLpp with JsdBtaSa with JsdAlcoholDuty with JsdItSa with JsdPfEpayeSeta with JsdPtaSa with JsdPfAlcoholDuty with JsdPfEpayeNi with JsdPfVat with JsdBtaVat with JsdVcVatReturn with JsdVcVatOther <: JourneySpecificData], Option[Url]] = Table(
+    val scenarios: TableFor2[JourneyStatuses[_ >: JsdPfCt with JsdPfEpayeP11d with JsdBtaSa with JsdPfEpayeLateCis with JsdVcVatOther with JsdPfAlcoholDuty with JsdPfEpayeSeta with JsdPfEpayeNi with JsdPfVat with JsdVcVatReturn with JsdAlcoholDuty with JsdPfEpayeLpp with JsdBtaCt with JsdPfSa with JsdBtaVat with JsdPtaSa with JsdItSa <: JourneySpecificData], Option[Url]] = Table(
       ("journey", "expectedUrl"),
       //returnUrls are set in TestJourneys
       //Logged out journeys, Logged out journeys should return None
@@ -49,8 +49,8 @@ class ExternalNavigationSpec extends UnitSpec with TableDrivenPropertyChecks {
       (TestJourneys.ItSa, someUrl),
       (TestJourneys.AlcoholDuty, someUrl),
       (TestJourneys.BtaVat, someUrl),
-      (TestJourneys.VcVatReturn, someUrl),
-      (TestJourneys.VcVatOther, someUrl)
+      (TestJourneys.VcVatOther, someUrl),
+      (TestJourneys.VcVatReturn, someUrl)
     )
 
     forAll(scenarios) { (journey, expectedUrl) =>
