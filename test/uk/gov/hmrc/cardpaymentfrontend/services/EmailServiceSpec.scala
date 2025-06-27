@@ -111,7 +111,7 @@ class EmailServiceSpec extends ItSpec with TableDrivenPropertyChecks {
       (PfEpayeP11d, "Employers’ Class 1A National Insurance", "ending with 02513", commission, Some("13.57"), "en"),
       (PfEpayeP11d, "Yswiriant Gwladol Dosbarth 1A y Cyflogwr", "yn gorffen gyda 02513", None, Some("12.34"), "cy"),
       (PfEpayeP11d, "Yswiriant Gwladol Dosbarth 1A y Cyflogwr", "yn gorffen gyda 02513", commission, Some("13.57"), "cy"),
-      
+
       (PfVat, "Vat", "ending with 64805", None, Some("12.34"), "en"),
       (PfVat, "Vat", "ending with 64805", commission, Some("13.57"), "en"),
       (PfVat, "TAW", "yn gorffen gyda 64805", None, Some("12.34"), "cy"),
