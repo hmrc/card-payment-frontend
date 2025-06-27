@@ -94,11 +94,20 @@ class CardPaymentService @Inject() (
 
   def finishPayment(
       transactionReference: String,
-      journeyId:            String
+      journeyId:            String,
+      language:             Language
   )(implicit journeyRequest: JourneyRequest[_], messagesApi: MessagesApi): Future[Option[CardPaymentResult]] = {
+    val clientId: ClientId = clientIdService.determineClientId(journeyRequest.journey, language)
     for {
       result <- cardPaymentConnector.authAndSettle(transactionReference)
       cardPaymentResult = result.json.asOpt[CardPaymentResult]
+      _ = cardPaymentResult.map { result =>
+        auditService.auditPaymentResult(
+          if (appConfig.useProductionClientIds) clientId.prodCode else clientId.qaCode,
+          transactionReference,
+          result.cardPaymentResult.toString
+        )
+      }
       maybeWebPaymentRequest: Option[FinishedWebPaymentRequest] = cardPaymentResult.flatMap(cardPaymentResultIntoUpdateWebPaymentRequest)
       _ <- maybeWebPaymentRequest.fold(payApiConnector.JourneyUpdates.updateCancelWebPayment(journeyId)) {
         case r: FailWebPaymentRequest =>
@@ -127,7 +136,7 @@ class CardPaymentService @Inject() (
 
   /**
    * If journey is not in completed state (i.e. they've been on the iframe, so sent) and they have an email in session, send an email.
-   * Otherwise return future.unit.
+   * Otherwise, return future.unit.
    */
   private[services] def maybeSendEmailF()(implicit headerCarrier: HeaderCarrier, journeyRequest: JourneyRequest[_], messagesApi: MessagesApi): Unit = {
     if (journeyRequest.journey.status === PaymentStatuses.Sent) {
