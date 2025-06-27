@@ -34,6 +34,7 @@ class CardPaymentConnector @Inject() (appConfig: AppConfig, httpClientV2: HttpCl
   private val cardPaymentBaseUrl: URL = url"""${appConfig.cardPaymentBaseUrl}"""
   private val initiatePaymentUrl: URL = url"$cardPaymentBaseUrl/card-payment/initiate-payment"
   private val authAndSettleUrl: String => URL = (transactionReference: String) => url"$cardPaymentBaseUrl/card-payment/auth-and-settle/$transactionReference"
+  private val cancelPaymentUrl: (String, String) => URL = (transactionReference: String, clientId: String) => url"$cardPaymentBaseUrl/card-payment/cancel-payment/$transactionReference/$clientId"
   private val cardPaymentAuthToken: String = appConfig.cardPaymentInternalAuthToken
 
   def initiatePayment(cardPaymentInitiatePaymentRequest: CardPaymentInitiatePaymentRequest)(implicit headerCarrier: HeaderCarrier): Future[CardPaymentInitiatePaymentResponse] =
@@ -48,4 +49,11 @@ class CardPaymentConnector @Inject() (appConfig: AppConfig, httpClientV2: HttpCl
       .post(authAndSettleUrl(transactionReference))
       .setHeader(AUTHORIZATION -> cardPaymentAuthToken)
       .execute[HttpResponse]
+
+  def cancelPayment(transactionReference: String, clientId: String)(implicit headerCarrier: HeaderCarrier): Future[HttpResponse] =
+    httpClientV2
+      .post(cancelPaymentUrl(transactionReference, clientId))
+      .setHeader(AUTHORIZATION -> cardPaymentAuthToken)
+      .execute[HttpResponse]
+
 }
