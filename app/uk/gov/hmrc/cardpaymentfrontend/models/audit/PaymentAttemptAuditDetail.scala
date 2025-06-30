@@ -31,7 +31,7 @@ final case class PaymentAttemptAuditDetail(
     paymentTotal:         BigDecimal,
     transactionReference: String
 ) extends AuditDetail {
-  override val auditType: String = "paymentAttempt"
+  override val auditType: String = "PaymentAttempt"
 }
 
 object PaymentAttemptAuditDetail {
