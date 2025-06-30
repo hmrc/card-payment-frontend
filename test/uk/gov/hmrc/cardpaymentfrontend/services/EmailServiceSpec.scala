@@ -149,10 +149,10 @@ class EmailServiceSpec extends ItSpec with TableDrivenPropertyChecks {
       (BtaEpayeGeneral, "TWE ac Yswiriant Gwladol y Cyflogwr", "yn gorffen gyda 02702", commission, Some("13.57"), "cy"),
 
       // TODO: CHECK
-      (BtaEpayeInterest, "Employers’ PAYE and National Insurance", "ending with 90123", None, Some("12.34"), "en"),
-      (BtaEpayeInterest, "Employers’ PAYE and National Insurance", "ending with 90123", commission, Some("13.57"), "en"),
-      (BtaEpayeInterest, "TWE ac Yswiriant Gwladol y Cyflogwr", "yn gorffen gyda 90123", None, Some("12.34"), "cy"),
-      (BtaEpayeInterest, "TWE ac Yswiriant Gwladol y Cyflogwr", "yn gorffen gyda 90123", commission, Some("13.57"), "cy"),
+      (BtaEpayeInterest, "Employers’ PAYE interest payment", "ending with 90123", None, Some("12.34"), "en"),
+      (BtaEpayeInterest, "Employers’ PAYE interest payment", "ending with 90123", commission, Some("13.57"), "en"),
+      (BtaEpayeInterest, "Taliad llog TWE cyflogwr", "yn gorffen gyda 90123", None, Some("12.34"), "cy"),
+      (BtaEpayeInterest, "Taliad llog TWE cyflogwr", "yn gorffen gyda 90123", commission, Some("13.57"), "cy"),
 
       (BtaClass1aNi, "Employers’ Class 1A National Insurance", "ending with 02713", None, Some("12.34"), "en"),
       (BtaClass1aNi, "Employers’ Class 1A National Insurance", "ending with 02713", commission, Some("13.57"), "en"),

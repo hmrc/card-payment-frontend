@@ -499,7 +499,7 @@ class PaymentsSurveyServiceSpec extends ItSpec with TableDrivenPropertyChecks {
             contentOptions = SurveyContentOptions(
               isWelshSupported = true,
               title            = SurveyBannerTitle(
-                englishValue = "Pay your employers’ PAYE and National Insurance", welshValue = Some("Talwch eich TWE a’ch Yswiriant Gwladol y cyflogwr")
+                englishValue = "Pay employers’ PAYE interest", welshValue = Some("Taliad llog TWE cyflogwr")
               )
             )
           )
