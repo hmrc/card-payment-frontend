@@ -42,72 +42,95 @@ class EmailServiceSpec extends ItSpec with TableDrivenPropertyChecks {
   "buildEmailParameters should return EmailParameters" - {
     val commission = Some("1.23")
 
-    val scenarios: TableFor6[JourneyStatuses[_ >: JsdBtaSa with JsdAlcoholDuty with JsdPfAlcoholDuty with JsdPfEpayeP11d with JsdPfEpayeSeta with JsdPfEpayeLpp with JsdPfEpayeNi with JsdPtaSa with JsdBtaCt with JsdItSa with JsdPfCt with JsdPfSa with JsdPfEpayeLateCis with JsdPpt with JsdPfPpt <: JourneySpecificData], String, String, Option[String], Some[String], String] = Table(
+    // needed for compiler. if you're adding a new extended origin, add the jsd to this type/list of types.
+    type JsdBounds = JsdBtaSa with JsdAlcoholDuty with JsdPfAlcoholDuty with JsdPfEpayeP11d with JsdPfEpayeSeta with JsdPfEpayeLpp with JsdPfEpayeNi with JsdPtaSa with JsdBtaCt with JsdItSa with JsdPfCt with JsdPfSa with JsdPfEpayeLateCis with JsdPfVat with JsdBtaVat with JsdVcVatOther with JsdVcVatReturn with JsdPpt with JsdPfPpt
+
+    val scenarios: TableFor6[JourneyStatuses[_ >: JsdBounds <: JourneySpecificData], String, String, Option[String], Some[String], String] = Table(
       ("Journey", "Tax Type", "Tax Reference", "Commission", "Total Paid", "lang"),
-      (PfSa, "Self Assessment", "1234567895K", None, Some("12.34"), "en"),
-      (PfSa, "Self Assessment", "1234567895K", commission, Some("13.57"), "en"),
-      (PfSa, "Hunanasesiad", "1234567895K", None, Some("12.34"), "cy"),
-      (PfSa, "Hunanasesiad", "1234567895K", commission, Some("13.57"), "cy"),
+      (PfSa, "Self Assessment", "ending with 7895K", None, Some("12.34"), "en"),
+      (PfSa, "Self Assessment", "ending with 7895K", commission, Some("13.57"), "en"),
+      (PfSa, "Hunanasesiad", "yn gorffen gyda 7895K", None, Some("12.34"), "cy"),
+      (PfSa, "Hunanasesiad", "yn gorffen gyda 7895K", commission, Some("13.57"), "cy"),
 
-      (BtaSa, "Self Assessment", "1234567895K", None, Some("12.34"), "en"),
-      (BtaSa, "Self Assessment", "1234567895K", commission, Some("13.57"), "en"),
-      (BtaSa, "Hunanasesiad", "1234567895K", None, Some("12.34"), "cy"),
-      (BtaSa, "Hunanasesiad", "1234567895K", commission, Some("13.57"), "cy"),
+      (BtaSa, "Self Assessment", "ending with 7895K", None, Some("12.34"), "en"),
+      (BtaSa, "Self Assessment", "ending with 7895K", commission, Some("13.57"), "en"),
+      (BtaSa, "Hunanasesiad", "yn gorffen gyda 7895K", None, Some("12.34"), "cy"),
+      (BtaSa, "Hunanasesiad", "yn gorffen gyda 7895K", commission, Some("13.57"), "cy"),
 
-      (PtaSa, "Self Assessment", "1234567895K", None, Some("12.34"), "en"),
-      (PtaSa, "Self Assessment", "1234567895K", commission, Some("13.57"), "en"),
-      (PtaSa, "Hunanasesiad", "1234567895K", None, Some("12.34"), "cy"),
-      (PtaSa, "Hunanasesiad", "1234567895K", commission, Some("13.57"), "cy"),
+      (PtaSa, "Self Assessment", "ending with 7895K", None, Some("12.34"), "en"),
+      (PtaSa, "Self Assessment", "ending with 7895K", commission, Some("13.57"), "en"),
+      (PtaSa, "Hunanasesiad", "yn gorffen gyda 7895K", None, Some("12.34"), "cy"),
+      (PtaSa, "Hunanasesiad", "yn gorffen gyda 7895K", commission, Some("13.57"), "cy"),
 
-      (ItSa, "Self Assessment", "1234567895K", None, Some("12.34"), "en"),
-      (ItSa, "Self Assessment", "1234567895K", commission, Some("13.57"), "en"),
-      (ItSa, "Hunanasesiad", "1234567895K", None, Some("12.34"), "cy"),
-      (ItSa, "Hunanasesiad", "1234567895K", commission, Some("13.57"), "cy"),
+      (ItSa, "Self Assessment", "ending with 7895K", None, Some("12.34"), "en"),
+      (ItSa, "Self Assessment", "ending with 7895K", commission, Some("13.57"), "en"),
+      (ItSa, "Hunanasesiad", "yn gorffen gyda 7895K", None, Some("12.34"), "cy"),
+      (ItSa, "Hunanasesiad", "yn gorffen gyda 7895K", commission, Some("13.57"), "cy"),
 
-      (AlcoholDuty, "Alcohol Duty", "XMADP0123456789", None, Some("12.34"), "en"),
-      (AlcoholDuty, "Alcohol Duty", "XMADP0123456789", commission, Some("13.57"), "en"),
-      (AlcoholDuty, "Toll Alcohol", "XMADP0123456789", None, Some("12.34"), "cy"),
-      (AlcoholDuty, "Toll Alcohol", "XMADP0123456789", commission, Some("13.57"), "cy"),
+      (AlcoholDuty, "Alcohol Duty", "ending with 56789", None, Some("12.34"), "en"),
+      (AlcoholDuty, "Alcohol Duty", "ending with 56789", commission, Some("13.57"), "en"),
+      (AlcoholDuty, "Toll Alcohol", "yn gorffen gyda 56789", None, Some("12.34"), "cy"),
+      (AlcoholDuty, "Toll Alcohol", "yn gorffen gyda 56789", commission, Some("13.57"), "cy"),
 
-      (PfAlcoholDuty, "Alcohol Duty", "XMADP0123456789", None, Some("12.34"), "en"),
-      (PfAlcoholDuty, "Alcohol Duty", "XMADP0123456789", commission, Some("13.57"), "en"),
-      (PfAlcoholDuty, "Toll Alcohol", "XMADP0123456789", None, Some("12.34"), "cy"),
-      (PfAlcoholDuty, "Toll Alcohol", "XMADP0123456789", commission, Some("13.57"), "cy"),
+      (PfAlcoholDuty, "Alcohol Duty", "ending with 56789", None, Some("12.34"), "en"),
+      (PfAlcoholDuty, "Alcohol Duty", "ending with 56789", commission, Some("13.57"), "en"),
+      (PfAlcoholDuty, "Toll Alcohol", "yn gorffen gyda 56789", None, Some("12.34"), "cy"),
+      (PfAlcoholDuty, "Toll Alcohol", "yn gorffen gyda 56789", commission, Some("13.57"), "cy"),
 
-      (BtaCt, "Corporation Tax", "1097172564A00101A", None, Some("12.34"), "en"),
-      (BtaCt, "Corporation Tax", "1097172564A00101A", commission, Some("13.57"), "en"),
-      (BtaCt, "Treth Gorfforaeth", "1097172564A00101A", None, Some("12.34"), "cy"),
-      (BtaCt, "Treth Gorfforaeth", "1097172564A00101A", commission, Some("13.57"), "cy"),
+      (BtaCt, "Corporation Tax", "ending with 0101A", None, Some("12.34"), "en"),
+      (BtaCt, "Corporation Tax", "ending with 0101A", commission, Some("13.57"), "en"),
+      (BtaCt, "Treth Gorfforaeth", "yn gorffen gyda 0101A", None, Some("12.34"), "cy"),
+      (BtaCt, "Treth Gorfforaeth", "yn gorffen gyda 0101A", commission, Some("13.57"), "cy"),
 
-      (PfCt, "Corporation Tax", "1097172564A00101A", None, Some("12.34"), "en"),
-      (PfCt, "Corporation Tax", "1097172564A00101A", commission, Some("13.57"), "en"),
-      (PfCt, "Treth Gorfforaeth", "1097172564A00101A", None, Some("12.34"), "cy"),
-      (PfCt, "Treth Gorfforaeth", "1097172564A00101A", commission, Some("13.57"), "cy"),
+      (PfCt, "Corporation Tax", "ending with 0101A", None, Some("12.34"), "en"),
+      (PfCt, "Corporation Tax", "ending with 0101A", commission, Some("13.57"), "en"),
+      (PfCt, "Treth Gorfforaeth", "yn gorffen gyda 0101A", None, Some("12.34"), "cy"),
+      (PfCt, "Treth Gorfforaeth", "yn gorffen gyda 0101A", commission, Some("13.57"), "cy"),
 
-      (PfEpayeNi, "Employers’ PAYE and National Insurance", "123PH456789002503", None, Some("12.34"), "en"),
-      (PfEpayeNi, "Employers’ PAYE and National Insurance", "123PH456789002503", commission, Some("13.57"), "en"),
-      (PfEpayeNi, "TWE ac Yswiriant Gwladol y Cyflogwr", "123PH456789002503", None, Some("12.34"), "cy"),
-      (PfEpayeNi, "TWE ac Yswiriant Gwladol y Cyflogwr", "123PH456789002503", commission, Some("13.57"), "cy"),
+      (PfEpayeNi, "Employers’ PAYE and National Insurance", "ending with 02503", None, Some("12.34"), "en"),
+      (PfEpayeNi, "Employers’ PAYE and National Insurance", "ending with 02503", commission, Some("13.57"), "en"),
+      (PfEpayeNi, "TWE ac Yswiriant Gwladol y Cyflogwr", "yn gorffen gyda 02503", None, Some("12.34"), "cy"),
+      (PfEpayeNi, "TWE ac Yswiriant Gwladol y Cyflogwr", "yn gorffen gyda 02503", commission, Some("13.57"), "cy"),
 
-      (PfEpayeLpp, "Employers’ PAYE late payment penalty", "XE123456789012", None, Some("12.34"), "en"),
-      (PfEpayeLpp, "Employers’ PAYE late payment penalty", "XE123456789012", commission, Some("13.57"), "en"),
-      (PfEpayeLpp, "Cosb y Cyflogwr am dalu TWE yn hwyr", "XE123456789012", None, Some("12.34"), "cy"),
-      (PfEpayeLpp, "Cosb y Cyflogwr am dalu TWE yn hwyr", "XE123456789012", commission, Some("13.57"), "cy"),
+      (PfEpayeLpp, "Employers’ PAYE late payment penalty", "ending with 89012", None, Some("12.34"), "en"),
+      (PfEpayeLpp, "Employers’ PAYE late payment penalty", "ending with 89012", commission, Some("13.57"), "en"),
+      (PfEpayeLpp, "Cosb y Cyflogwr am dalu TWE yn hwyr", "yn gorffen gyda 89012", None, Some("12.34"), "cy"),
+      (PfEpayeLpp, "Cosb y Cyflogwr am dalu TWE yn hwyr", "yn gorffen gyda 89012", commission, Some("13.57"), "cy"),
 
-      (PfEpayeSeta, "Employers’ PAYE Settlement Agreement", "XA123456789012", None, Some("12.34"), "en"),
-      (PfEpayeSeta, "Employers’ PAYE Settlement Agreement", "XA123456789012", commission, Some("13.57"), "en"),
-      (PfEpayeSeta, "Cytundeb Setliad TWE y Cyflogwr", "XA123456789012", None, Some("12.34"), "cy"),
-      (PfEpayeSeta, "Cytundeb Setliad TWE y Cyflogwr", "XA123456789012", commission, Some("13.57"), "cy"),
+      (PfEpayeSeta, "Employers’ PAYE Settlement Agreement", "ending with 89012", None, Some("12.34"), "en"),
+      (PfEpayeSeta, "Employers’ PAYE Settlement Agreement", "ending with 89012", commission, Some("13.57"), "en"),
+      (PfEpayeSeta, "Cytundeb Setliad TWE y Cyflogwr", "yn gorffen gyda 89012", None, Some("12.34"), "cy"),
+      (PfEpayeSeta, "Cytundeb Setliad TWE y Cyflogwr", "yn gorffen gyda 89012", commission, Some("13.57"), "cy"),
 
-      (PfEpayeLateCis, "Construction Industry Scheme (CIS) late filing penalty", "XE123456789012", None, Some("12.34"), "en"),
-      (PfEpayeLateCis, "Construction Industry Scheme (CIS) late filing penalty", "XE123456789012", commission, Some("13.57"), "en"),
-      (PfEpayeLateCis, "Cynllun y Diwydiant Adeiladu (CIS) - cosb am dalu’n hwyr", "XE123456789012", None, Some("12.34"), "cy"),
-      (PfEpayeLateCis, "Cynllun y Diwydiant Adeiladu (CIS) - cosb am dalu’n hwyr", "XE123456789012", commission, Some("13.57"), "cy"),
+      (PfEpayeLateCis, "Construction Industry Scheme (CIS) late filing penalty", "ending with 89012", None, Some("12.34"), "en"),
+      (PfEpayeLateCis, "Construction Industry Scheme (CIS) late filing penalty", "ending with 89012", commission, Some("13.57"), "en"),
+      (PfEpayeLateCis, "Cynllun y Diwydiant Adeiladu (CIS) - cosb am dalu’n hwyr", "yn gorffen gyda 89012", None, Some("12.34"), "cy"),
+      (PfEpayeLateCis, "Cynllun y Diwydiant Adeiladu (CIS) - cosb am dalu’n hwyr", "yn gorffen gyda 89012", commission, Some("13.57"), "cy"),
 
-      (PfEpayeP11d, "Employers’ Class 1A National Insurance", "123PH456789002513", None, Some("12.34"), "en"),
-      (PfEpayeP11d, "Employers’ Class 1A National Insurance", "123PH456789002513", commission, Some("13.57"), "en"),
-      (PfEpayeP11d, "Yswiriant Gwladol Dosbarth 1A y Cyflogwr", "123PH456789002513", None, Some("12.34"), "cy"),
-      (PfEpayeP11d, "Yswiriant Gwladol Dosbarth 1A y Cyflogwr", "123PH456789002513", commission, Some("13.57"), "cy"),
+      (PfEpayeP11d, "Employers’ Class 1A National Insurance", "ending with 02513", None, Some("12.34"), "en"),
+      (PfEpayeP11d, "Employers’ Class 1A National Insurance", "ending with 02513", commission, Some("13.57"), "en"),
+      (PfEpayeP11d, "Yswiriant Gwladol Dosbarth 1A y Cyflogwr", "yn gorffen gyda 02513", None, Some("12.34"), "cy"),
+      (PfEpayeP11d, "Yswiriant Gwladol Dosbarth 1A y Cyflogwr", "yn gorffen gyda 02513", commission, Some("13.57"), "cy"),
+
+      (PfVat, "Vat", "ending with 64805", None, Some("12.34"), "en"),
+      (PfVat, "Vat", "ending with 64805", commission, Some("13.57"), "en"),
+      (PfVat, "TAW", "yn gorffen gyda 64805", None, Some("12.34"), "cy"),
+      (PfVat, "TAW", "yn gorffen gyda 64805", commission, Some("13.57"), "cy"),
+
+      (BtaVat, "Vat", "ending with 64805", None, Some("12.34"), "en"),
+      (BtaVat, "Vat", "ending with 64805", commission, Some("13.57"), "en"),
+      (BtaVat, "TAW", "yn gorffen gyda 64805", None, Some("12.34"), "cy"),
+      (BtaVat, "TAW", "yn gorffen gyda 64805", commission, Some("13.57"), "cy"),
+
+      (VcVatOther, "Vat", "ending with 64805", None, Some("12.34"), "en"),
+      (VcVatOther, "Vat", "ending with 64805", commission, Some("13.57"), "en"),
+      (VcVatOther, "TAW", "yn gorffen gyda 64805", None, Some("12.34"), "cy"),
+      (VcVatOther, "TAW", "yn gorffen gyda 64805", commission, Some("13.57"), "cy"),
+
+      (VcVatReturn, "Vat", "ending with 64805", None, Some("12.34"), "en"),
+      (VcVatReturn, "Vat", "ending with 64805", commission, Some("13.57"), "en"),
+      (VcVatReturn, "TAW", "yn gorffen gyda 64805", None, Some("12.34"), "cy"),
+      (VcVatReturn, "TAW", "yn gorffen gyda 64805", commission, Some("13.57"), "cy"),
 
       (Ppt, "Plastic Packaging Tax", "XAPPT0000012345", None, Some("12.34"), "en"),
       (Ppt, "Plastic Packaging Tax", "XAPPT0000012345", commission, Some("13.57"), "en"),
@@ -157,6 +180,19 @@ class EmailServiceSpec extends ItSpec with TableDrivenPropertyChecks {
     }
   }
 
+  "obfuscateReference" - {
+    "should obfuscate the tax reference, appending a string and taking the right most characters" - {
+      "in English" in {
+        val result = systemUnderTest.obfuscateReference("123456789K")(fakeRequest)
+        result shouldBe "ending with 6789K"
+      }
+      "in Welsh" in {
+        val result = systemUnderTest.obfuscateReference("123456789K")(fakeRequestInWelsh)
+        result shouldBe "yn gorffen gyda 6789K"
+      }
+    }
+  }
+
   "EmailService" - {
     "buildEmailRequest" - {
       "Should return an EmailRequest" - {
@@ -166,7 +202,7 @@ class EmailServiceSpec extends ItSpec with TableDrivenPropertyChecks {
             templateId = "payment_successful",
             parameters = EmailParameters(
               taxType          = "Self Assessment",
-              taxReference     = "1234567895K",
+              taxReference     = "ending with 7895K",
               paymentReference = "Some-transaction-ref",
               amountPaid       = "12.34",
               commission       = None,
@@ -189,7 +225,7 @@ class EmailServiceSpec extends ItSpec with TableDrivenPropertyChecks {
             templateId = "payment_successful_cy",
             parameters = EmailParameters(
               taxType          = "Hunanasesiad",
-              taxReference     = "1234567895K",
+              taxReference     = "yn gorffen gyda 7895K",
               paymentReference = "Some-transaction-ref",
               amountPaid       = "12.34",
               commission       = None,
@@ -218,7 +254,7 @@ class EmailServiceSpec extends ItSpec with TableDrivenPropertyChecks {
           "templateId" : "payment_successful",
           "parameters" : {
             "taxType" : "Self Assessment",
-            "taxReference" : "1234567895K",
+            "taxReference" : "ending with 7895K",
             "paymentReference" : "Some-transaction-ref",
             "amountPaid" : "12.34",
             "commission" : "1.23",

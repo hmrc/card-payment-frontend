@@ -43,4 +43,8 @@ class TestOnlyController @Inject() (
     Ok("email added to session").placeInSession[EmailAddress](request.journeyId, (Keys.email, EmailAddress("testemail@blah.com")))
   }
 
+  val removeAddress: Action[AnyContent] = actions.journeyAction { implicit request =>
+    Ok("removed address from session").removingJourneyFromSession(request.journeyId, Keys.address)
+  }
+
 }
