@@ -44,9 +44,9 @@ service-name.VcVatReturn = Cyfrif treth busnes
 service-name.VcVatOther = Cyfrif treth busnes
 service-name.ItSa = Talu eich Hunanasesiad
 service-name.Amls =
-service-name.Ppt =
+service-name.Ppt = Talu’ch Treth Deunydd Pacio Plastig
 service-name.PfCdsCash =
-service-name.PfPpt =
+service-name.PfPpt = Talu’ch Treth Deunydd Pacio Plastig
 service-name.PfSpiritDrinks =
 service-name.PfInheritanceTax =
 service-name.Mib =
@@ -140,6 +140,8 @@ check-your-details.BtaVat.reference = Rhif cofrestru TAW
 check-your-details.VcVatReturn.reference = Rhif cofrestru TAW
 check-your-details.VcVatOther.reference = Rhif cofrestru TAW
 check-your-details.VcVatOther.charge-reference = Cyfeirnod y tâl
+check-your-details.Ppt.reference = Cyfeirnod
+check-your-details.PfPpt.reference = Cyfeirnod
 
 ## Address Page
 address.heading = Cyfeiriad bilio’r cerdyn
@@ -242,9 +244,9 @@ payment-complete.tax-name.VcVatReturn = TAW
 payment-complete.tax-name.VcVatOther = TAW
 payment-complete.tax-name.ItSa = Hunanasesiad
 payment-complete.tax-name.Amls =
-payment-complete.tax-name.Ppt =
+payment-complete.tax-name.Ppt = Dreth Deunydd Pacio Plastig
 payment-complete.tax-name.PfCdsCash =
-payment-complete.tax-name.PfPpt =
+payment-complete.tax-name.PfPpt = Dreth Deunydd Pacio Plastig
 payment-complete.tax-name.PfSpiritDrinks =
 payment-complete.tax-name.PfInheritanceTax =
 payment-complete.tax-name.Mib =
@@ -328,6 +330,8 @@ email.tax-name.PfVat = TAW
 email.tax-name.BtaVat = TAW
 email.tax-name.VcVatReturn = TAW
 email.tax-name.VcVatOther = TAW
+email.tax-name.Ppt = Dreth Deunydd Pacio Plastig
+email.tax-name.PfPpt = Dreth Deunydd Pacio Plastig
 
 ## Payments survey
 payments-survey.bta.return-message = Dim diolch, dychwelyd i cyfrif treth busnes
