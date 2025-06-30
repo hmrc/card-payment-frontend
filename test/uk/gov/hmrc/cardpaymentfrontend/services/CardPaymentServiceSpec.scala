@@ -96,7 +96,7 @@ class CardPaymentServiceSpec extends ItSpec {
         systemUnderTest.initiatePayment(testJourneyBeforeBeginWebPayment, testAddress, Some(testEmail), English).futureValue
         PayApiStub.verifyUpdateBeginWebPayment(1, testJourneyBeforeBeginWebPayment._id.value)
         AuditConnectorStub.verifyEventAudited(
-          auditType  = "paymentAttempt",
+          auditType  = "PaymentAttempt",
           auditEvent = Json.parse(
             """
               |{

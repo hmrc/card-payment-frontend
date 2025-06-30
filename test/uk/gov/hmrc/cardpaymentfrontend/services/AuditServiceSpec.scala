@@ -42,7 +42,7 @@ class AuditServiceSpec extends ItSpec {
       systemUnderTest.auditPaymentAttempt(testAddress, "SAEE", "some-transaction-reference")(journeyRequest, HeaderCarrier())
       eventually {
         AuditConnectorStub.verifyEventAudited(
-          "paymentAttempt",
+          "PaymentAttempt",
           Json.parse(
             """
               |{
