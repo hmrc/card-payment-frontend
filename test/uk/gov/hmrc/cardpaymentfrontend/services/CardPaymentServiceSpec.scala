@@ -174,7 +174,7 @@ class CardPaymentServiceSpec extends ItSpec {
 
         PayApiStub.verifyUpdateSucceedWebPayment(1, testJourneyAfterBeginWebPayment._id.value, testTime)
         AuditConnectorStub.verifyEventAudited(
-          auditType  = "paymentResult",
+          auditType  = "PaymentResult",
           auditEvent = Json.parse(
             """
               |{

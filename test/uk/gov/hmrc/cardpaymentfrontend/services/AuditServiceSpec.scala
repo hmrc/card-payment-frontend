@@ -80,7 +80,7 @@ class AuditServiceSpec extends ItSpec {
     }
 
     "auditPaymentResult" - {
-      "auditPaymentResult should trigger an audit event for paymentResult" in {
+      "auditPaymentResult should trigger an audit event for PaymentResult" in {
         val journeyRequestWithAddress: JourneyRequest[AnyContentAsEmpty.type] = new JourneyRequest(
           TestJourneys.PfSa.journeyBeforeBeginWebPayment,
           fakeRequest.withEmailAndAddressInSession(TestJourneys.PfSa.journeyBeforeBeginWebPayment._id, address = testAddress)
@@ -94,7 +94,7 @@ class AuditServiceSpec extends ItSpec {
 
         eventually {
           AuditConnectorStub.verifyEventAudited(
-            "paymentResult",
+            "PaymentResult",
             Json.parse(
               """
                 |{
