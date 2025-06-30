@@ -53,7 +53,6 @@ object TestHelpers {
   )
 
   val unimplementedOrigins: Seq[Origin] = Seq[Origin](
-    PfVat,
     PfSdlt,
     PfCds,
     PfOther,
@@ -118,7 +117,7 @@ object TestHelpers {
     Pillar2
   )
 
-  def deriveTestDataFromOrigin[jsd <: JourneySpecificData](origin: Origin): JourneyStatuses[_ >: JsdPfSa with JsdBtaSa with JsdPtaSa with JsdItSa with JsdPfVat with JsdPfCt with JsdPfEpayeNi with JsdPfEpayeLpp with JsdPfEpayeSeta with JsdPfEpayeLateCis with JsdPfEpayeP11d with JsdBtaVat with JsdBtaCt with JsdVcVatReturn with JsdVcVatOther with JsdAlcoholDuty with JsdPfAlcoholDuty <: JourneySpecificData] = origin match {
+  def deriveTestDataFromOrigin[jsd <: JourneySpecificData](origin: Origin): JourneyStatuses[_ >: JsdPfSa with JsdBtaSa with JsdPtaSa with JsdItSa with JsdPfVat with JsdPfCt with JsdPfEpayeNi with JsdPfEpayeLpp with JsdPfEpayeSeta with JsdPfEpayeLateCis with JsdPfEpayeP11d with JsdBtaVat with JsdBtaCt with JsdVcVatReturn with JsdVcVatOther with JsdAlcoholDuty with JsdPfAlcoholDuty with JsdPpt with JsdPfPpt <: JourneySpecificData] = origin match {
     case Origins.PfSa                     => TestJourneys.PfSa
     case Origins.BtaSa                    => TestJourneys.BtaSa
     case Origins.PtaSa                    => TestJourneys.PtaSa

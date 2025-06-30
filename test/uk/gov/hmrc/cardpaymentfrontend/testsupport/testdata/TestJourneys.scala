@@ -359,7 +359,7 @@ object TestJourneys {
       sessionId            = Some(SessionId("TestSession-4b87460d-6f43-4c4c-b810-d6f87c774854")),
       amountInPence        = Some(AmountInPence(1234)),
       emailTemplateOptions = None,
-      navigation           = None,
+      navigation           = Some(NavigationOptions(returnUrl = Url("https://www.return-url.com"), backUrl = Url("https://www.back-to-ppt.com"))),
       order                = None,
       status               = PaymentStatuses.Created,
       createdOn            = LocalDateTime.parse("2027-11-02T16:28:55.185"),

@@ -132,15 +132,15 @@ class EmailServiceSpec extends ItSpec with TableDrivenPropertyChecks {
       (VcVatReturn, "TAW", "yn gorffen gyda 64805", None, Some("12.34"), "cy"),
       (VcVatReturn, "TAW", "yn gorffen gyda 64805", commission, Some("13.57"), "cy"),
 
-      (Ppt, "Plastic Packaging Tax", "XAPPT0000012345", None, Some("12.34"), "en"),
-      (Ppt, "Plastic Packaging Tax", "XAPPT0000012345", commission, Some("13.57"), "en"),
-      (Ppt, "Dreth Deunydd Pacio Plastig", "XAPPT0000012345", None, Some("12.34"), "cy"),
-      (Ppt, "Dreth Deunydd Pacio Plastig", "XAPPT0000012345", commission, Some("13.57"), "cy"),
+      (Ppt, "Plastic Packaging Tax", "ending with 12345", None, Some("12.34"), "en"),
+      (Ppt, "Plastic Packaging Tax", "ending with 12345", commission, Some("13.57"), "en"),
+      (Ppt, "Dreth Deunydd Pacio Plastig", "yn gorffen gyda 12345", None, Some("12.34"), "cy"),
+      (Ppt, "Dreth Deunydd Pacio Plastig", "yn gorffen gyda 12345", commission, Some("13.57"), "cy"),
 
-      (PfPpt, "Plastic Packaging Tax", "XAPPT0000012345", None, Some("12.34"), "en"),
-      (PfPpt, "Plastic Packaging Tax", "XAPPT0000012345", commission, Some("13.57"), "en"),
-      (PfPpt, "Dreth Deunydd Pacio Plastig", "XAPPT0000012345", None, Some("12.34"), "cy"),
-      (PfPpt, "Dreth Deunydd Pacio Plastig", "XAPPT0000012345", commission, Some("13.57"), "cy")
+      (PfPpt, "Plastic Packaging Tax", "ending with 12345", None, Some("12.34"), "en"),
+      (PfPpt, "Plastic Packaging Tax", "ending with 12345", commission, Some("13.57"), "en"),
+      (PfPpt, "Dreth Deunydd Pacio Plastig", "yn gorffen gyda 12345", None, Some("12.34"), "cy"),
+      (PfPpt, "Dreth Deunydd Pacio Plastig", "yn gorffen gyda 12345", commission, Some("13.57"), "cy")
 
     )
 
