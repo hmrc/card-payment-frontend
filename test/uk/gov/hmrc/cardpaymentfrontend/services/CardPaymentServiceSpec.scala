@@ -19,6 +19,7 @@ package uk.gov.hmrc.cardpaymentfrontend.services
 import payapi.cardpaymentjourney.model.journey.{Journey, JourneySpecificData, JsdPfSa}
 import payapi.corcommon.model.AmountInPence
 import play.api.i18n.MessagesApi
+import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.{AnyContent, AnyContentAsEmpty}
 import play.api.test.FakeRequest
 import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
@@ -28,15 +29,18 @@ import uk.gov.hmrc.cardpaymentfrontend.models.payapirequest.{FailWebPaymentReque
 import uk.gov.hmrc.cardpaymentfrontend.models.{Address, EmailAddress}
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.ItSpec
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.TestOps.FakeRequestOps
-import uk.gov.hmrc.cardpaymentfrontend.testsupport.stubs.{CardPaymentStub, EmailStub, PayApiStub}
+import uk.gov.hmrc.cardpaymentfrontend.testsupport.stubs.{AuditConnectorStub, CardPaymentStub, EmailStub, PayApiStub}
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.testdata.TestJourneys
 import uk.gov.hmrc.http.HeaderCarrier
 
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 
-@SuppressWarnings(Array("org.wartremover.warts.ThreadSleep"))
 class CardPaymentServiceSpec extends ItSpec {
+
+  override protected lazy val configOverrides: Map[String, Any] = Map[String, Any](
+    "auditing.enabled" -> true
+  )
 
   val systemUnderTest: CardPaymentService = app.injector.instanceOf[CardPaymentService]
   val messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
@@ -57,6 +61,9 @@ class CardPaymentServiceSpec extends ItSpec {
   "CardPaymentService" - {
 
     "initiatePayment" - {
+
+      implicit val journeyRequest: JourneyRequest[_] = fakeJourneyRequest(journey   = testJourneyBeforeBeginWebPayment, withEmail = true)
+
       val cardPaymentInitiatePaymentRequest = CardPaymentInitiatePaymentRequest(
         redirectUrl         = "http://localhost:10155/pay-by-card/return-to-hmrc",
         clientId            = "SAEE",
@@ -82,6 +89,33 @@ class CardPaymentServiceSpec extends ItSpec {
         CardPaymentStub.InitiatePayment.stubForInitiatePayment2xx(cardPaymentInitiatePaymentRequest, expectedCardPaymentInitiatePaymentResponse)
         systemUnderTest.initiatePayment(testJourneyBeforeBeginWebPayment, testAddress, Some(testEmail), English).futureValue
         PayApiStub.verifyUpdateBeginWebPayment(1, testJourneyBeforeBeginWebPayment._id.value)
+      }
+
+      "should trigger an explicit paymentAttempt audit event" in {
+        CardPaymentStub.InitiatePayment.stubForInitiatePayment2xx(cardPaymentInitiatePaymentRequest, expectedCardPaymentInitiatePaymentResponse)
+        systemUnderTest.initiatePayment(testJourneyBeforeBeginWebPayment, testAddress, Some(testEmail), English).futureValue
+        PayApiStub.verifyUpdateBeginWebPayment(1, testJourneyBeforeBeginWebPayment._id.value)
+        AuditConnectorStub.verifyEventAudited(
+          auditType  = "paymentAttempt",
+          auditEvent = Json.parse(
+            """
+              |{
+              | "address": {
+              |   "line1": "made up street",
+              |   "postcode": "AA11AA",
+              |   "country": "GBR"
+              | },
+              | "emailAddress": "blah@blah.com",
+              | "loggedIn": false,
+              | "merchantCode": "SAEE",
+              | "paymentOrigin": "PfSa",
+              | "paymentReference": "1234567895K",
+              | "paymentTaxType": "selfAssessment",
+              | "paymentTotal": 12.34,
+              | "transactionReference": "sometransactionref"
+              |}""".stripMargin
+          ).as[JsObject]
+        )
       }
     }
 
