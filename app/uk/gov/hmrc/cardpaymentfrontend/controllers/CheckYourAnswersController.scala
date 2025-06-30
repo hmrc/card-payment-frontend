@@ -93,7 +93,6 @@ class CheckYourAnswersController @Inject() (
                 Redirect(routes.PaymentStatusController.showIframe(RedirectUrl(response.redirectUrl)))
               }
           }
-
         // If PaymentStatus is Sent then Redirect to the iFrameUrl from the order.
         journeyRequest.journey.status match {
           case PaymentStatuses.Sent =>
