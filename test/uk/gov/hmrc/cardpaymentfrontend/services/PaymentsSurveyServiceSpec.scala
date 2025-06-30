@@ -530,6 +530,29 @@ class PaymentsSurveyServiceSpec extends ItSpec with TableDrivenPropertyChecks {
           result shouldBe expectedPaymentSurveyJourneyRequest
         }
 
+        "for BtaClass1aNi" in {
+          val expectedPaymentSurveyJourneyRequest = PaymentSurveyJourneyRequest(
+            origin         = "BtaClass1aNi",
+            returnMsg      = "Skip survey, return to business tax account",
+            returnHref     = "/business-account",
+            auditName      = "class-1a-national-insurance",
+            audit          = AuditOptions(
+              userType  = "LoggedIn",
+              journey   = Some("Successful"),
+              orderId   = Some("123PH456789002713"),
+              liability = Some("class-1a-national-insurance")
+            ),
+            contentOptions = SurveyContentOptions(
+              isWelshSupported = true,
+              title            = SurveyBannerTitle(
+                englishValue = "Pay your employers’ Class 1A National Insurance (P11D bill)", welshValue = Some("Talu’ch Yswiriant Gwladol Dosbarth 1A y cyflogwr (bil P11D)")
+              )
+            )
+          )
+          val result = systemUnderTest.makeSsjJourneyRequest(TestJourneys.BtaClass1aNi.journeyAfterSucceedDebitWebPayment)(loggedInFakeRequest)
+          result shouldBe expectedPaymentSurveyJourneyRequest
+        }
+
       }
     }
   }
