@@ -337,7 +337,7 @@ email.tax-name.VcVatReturn = TAW
 email.tax-name.VcVatOther = TAW
 email.tax-name.BtaEpayeBill = TWE ac Yswiriant Gwladol y Cyflogwr
 email.tax-name.BtaEpayePenalty = Cosb y Cyflogwr am dalu TWE yn hwyr
-email.tax-name.BtaEpayeInterest = TWE ac Yswiriant Gwladol y Cyflogwr
+email.tax-name.BtaEpayeInterest = Taliad llog TWE cyflogwr
 email.tax-name.BtaEpayeGeneral = TWE ac Yswiriant Gwladol y Cyflogwr
 email.tax-name.BtaClass1aNi = Yswiriant Gwladol Dosbarth 1A y Cyflogwr
 
