@@ -137,7 +137,6 @@ class EmailServiceSpec extends ItSpec with TableDrivenPropertyChecks {
       (BtaEpayeBill, "TWE ac Yswiriant Gwladol y Cyflogwr", "yn gorffen gyda 02702", None, Some("12.34"), "cy"),
       (BtaEpayeBill, "TWE ac Yswiriant Gwladol y Cyflogwr", "yn gorffen gyda 02702", commission, Some("13.57"), "cy"),
 
-      // TODO: CHECK
       (BtaEpayePenalty, "Employers’ PAYE late payment or filing penalty", "ending with 78900", None, Some("12.34"), "en"),
       (BtaEpayePenalty, "Employers’ PAYE late payment or filing penalty", "ending with 78900", commission, Some("13.57"), "en"),
       (BtaEpayePenalty, "Cosb y Cyflogwr am dalu TWE yn hwyr", "yn gorffen gyda 78900", None, Some("12.34"), "cy"),
@@ -148,7 +147,6 @@ class EmailServiceSpec extends ItSpec with TableDrivenPropertyChecks {
       (BtaEpayeGeneral, "TWE ac Yswiriant Gwladol y Cyflogwr", "yn gorffen gyda 02702", None, Some("12.34"), "cy"),
       (BtaEpayeGeneral, "TWE ac Yswiriant Gwladol y Cyflogwr", "yn gorffen gyda 02702", commission, Some("13.57"), "cy"),
 
-      // TODO: CHECK
       (BtaEpayeInterest, "Employers’ PAYE interest payment", "ending with 90123", None, Some("12.34"), "en"),
       (BtaEpayeInterest, "Employers’ PAYE interest payment", "ending with 90123", commission, Some("13.57"), "en"),
       (BtaEpayeInterest, "Taliad llog TWE cyflogwr", "yn gorffen gyda 90123", None, Some("12.34"), "cy"),
