@@ -702,7 +702,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
         ))))
       val result = systemUnderTest.submit(fakeRequestWithSentPaymentStatus())
       status(result) shouldBe SEE_OTHER
-      redirectLocation(result) shouldBe Some("http://localhost:9975/barclays/pages/paypage.jsf/600e1342-0714-4989-ac6c-c11c745f1ce6")
+      redirectLocation(result) shouldBe Some("/pay-by-card/show-iframe?iframeUrl=http%3A%2F%2Flocalhost%3A9975%2Fbarclays%2Fpages%2Fpaypage.jsf%2F600e1342-0714-4989-ac6c-c11c745f1ce6")
     }
 
     "should redirect to the Address page if there is no Address in session" in {

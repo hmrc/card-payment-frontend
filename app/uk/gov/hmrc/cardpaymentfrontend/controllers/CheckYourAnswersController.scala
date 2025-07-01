@@ -98,7 +98,7 @@ class CheckYourAnswersController @Inject() (
           case PaymentStatuses.Sent =>
             journeyRequest.journey.order match {
               case Some(order) =>
-                Future.successful(Redirect(order.iFrameUrl.value))
+                Future.successful(Redirect(routes.PaymentStatusController.showIframe(RedirectUrl(order.iFrameUrl.value))))
               case None =>
                 logger.warn(s"Payment status for journeyId ${journeyRequest.journeyId.toString} was Sent but order was None.")
                 initiatePayment()
