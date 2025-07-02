@@ -38,6 +38,7 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class CardPaymentService @Inject() (
     appConfig:            AppConfig,
+    auditService:         AuditService,
     cardPaymentConnector: CardPaymentConnector,
     clientIdService:      ClientIdService,
     clock:                Clock,
@@ -58,9 +59,9 @@ class CardPaymentService @Inject() (
       addressFromSession:    Address,
       maybeEmailFromSession: Option[EmailAddress],
       language:              Language
-  )(implicit headerCarrier: HeaderCarrier): Future[CardPaymentInitiatePaymentResponse] = {
+  )(implicit headerCarrier: HeaderCarrier, journeyRequest: JourneyRequest[_]): Future[CardPaymentInitiatePaymentResponse] = {
     val clientId: ClientId = clientIdService.determineClientId(journey, language)
-    val clientIdStringToUse = if (appConfig.useProductionClientIds) clientId.prodCode else clientId.qaCode
+    val clientIdStringToUse: String = if (appConfig.useProductionClientIds) clientId.prodCode else clientId.qaCode
 
     //todo eventually we can just use barclaycardaddress model, but we want backwards compatibility with pay-frontend.
     // This way if user ends up on pay-frontend after being on card-payment-frontend (or vice versa) it won't break.
@@ -84,9 +85,10 @@ class CardPaymentService @Inject() (
     )
 
     for {
-      initiatePaymentResponse <- cardPaymentConnector.initiatePayment(cardPaymentInitiatePaymentRequest)
+      initiatePaymentResponse <- cardPaymentConnector.initiatePayment(cardPaymentInitiatePaymentRequest)(headerCarrier)
+      _ = auditService.auditPaymentAttempt(addressFromSession, clientIdStringToUse, initiatePaymentResponse.transactionReference)(journeyRequest, headerCarrier)
       payApiBeginWebPaymentRequest = BeginWebPaymentRequest(initiatePaymentResponse.transactionReference, initiatePaymentResponse.redirectUrl)
-      _ <- payApiConnector.JourneyUpdates.updateBeginWebPayment(journey._id.value, payApiBeginWebPaymentRequest) //should we enhance this and error/retry?
+      _ <- payApiConnector.JourneyUpdates.updateBeginWebPayment(journey._id.value, payApiBeginWebPaymentRequest)(headerCarrier) //should we enhance this and error/retry?
     } yield initiatePaymentResponse
   }
 

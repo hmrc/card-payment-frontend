@@ -50,8 +50,9 @@ class ClientIdServiceSpec extends ItSpec {
         (TestJourneys.PfVat.journeyBeforeBeginWebPayment, ClientIds.VAEE),
         (TestJourneys.BtaVat.journeyBeforeBeginWebPayment, ClientIds.VAEE),
         (TestJourneys.VcVatReturn.journeyBeforeBeginWebPayment, ClientIds.VAEE),
-        (TestJourneys.VcVatOther.journeyBeforeBeginWebPayment, ClientIds.VAEE)
-
+        (TestJourneys.VcVatOther.journeyBeforeBeginWebPayment, ClientIds.VAEE),
+        (TestJourneys.Ppt.journeyBeforeBeginWebPayment, ClientIds.ETEE),
+        (TestJourneys.PfPpt.journeyBeforeBeginWebPayment, ClientIds.MIEE)
       )
       forAll(scenarios) {
         case (journey, clientId) =>
@@ -78,8 +79,9 @@ class ClientIdServiceSpec extends ItSpec {
         (TestJourneys.PfVat.journeyBeforeBeginWebPayment, ClientIds.VAEC),
         (TestJourneys.BtaVat.journeyBeforeBeginWebPayment, ClientIds.VAEC),
         (TestJourneys.VcVatReturn.journeyBeforeBeginWebPayment, ClientIds.VAEC),
-        (TestJourneys.VcVatOther.journeyBeforeBeginWebPayment, ClientIds.VAEC)
-
+        (TestJourneys.VcVatOther.journeyBeforeBeginWebPayment, ClientIds.VAEC),
+        (TestJourneys.Ppt.journeyBeforeBeginWebPayment, ClientIds.ETEC),
+        (TestJourneys.PfPpt.journeyBeforeBeginWebPayment, ClientIds.MIEC)
       )
       forAll(scenarios) {
         case (journey, clientId) =>
@@ -90,7 +92,7 @@ class ClientIdServiceSpec extends ItSpec {
   }
 
   "sanity check for implemented origins" in {
-    TestHelpers.implementedOrigins.size shouldBe 17 withClue "** This dummy test is here to remind you to update the tests above. Bump up the expected number when an origin is added to implemented origins **"
+    TestHelpers.implementedOrigins.size shouldBe 19 withClue "** This dummy test is here to remind you to update the tests above. Bump up the expected number when an origin is added to implemented origins **"
   }
 
 }

@@ -88,7 +88,7 @@ class CheckYourAnswersController @Inject() (
                 addressFromSession    = address,
                 maybeEmailFromSession = journeyRequest.readFromSession[EmailAddress](journeyRequest.journeyId, Keys.email),
                 language              = requestSupport.usableLanguage
-              )(requestSupport.hc)
+              )(requestSupport.hc, journeyRequest)
               .map { response =>
                 Redirect(routes.PaymentStatusController.showIframe(RedirectUrl(response.redirectUrl)))
               }
