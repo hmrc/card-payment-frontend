@@ -178,9 +178,9 @@ object ExtendedOrigin {
       case Origins.VcVatOther               => ExtendedVcVatOther
       case Origins.ItSa                     => ExtendedItSa
       case Origins.Amls                     => DefaultExtendedOrigin
-      case Origins.Ppt                      => DefaultExtendedOrigin
+      case Origins.Ppt                      => ExtendedPpt
       case Origins.PfCdsCash                => DefaultExtendedOrigin
-      case Origins.PfPpt                    => DefaultExtendedOrigin
+      case Origins.PfPpt                    => ExtendedPfPpt
       case Origins.PfSpiritDrinks           => DefaultExtendedOrigin
       case Origins.PfInheritanceTax         => DefaultExtendedOrigin
       case Origins.Mib                      => DefaultExtendedOrigin

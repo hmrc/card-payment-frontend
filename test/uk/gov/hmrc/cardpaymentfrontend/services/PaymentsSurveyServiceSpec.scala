@@ -437,6 +437,51 @@ class PaymentsSurveyServiceSpec extends ItSpec with TableDrivenPropertyChecks {
           val result = systemUnderTest.makeSsjJourneyRequest(TestJourneys.VcVatOther.journeyAfterSucceedDebitWebPayment)(loggedInFakeRequest)
           result shouldBe expectedPaymentSurveyJourneyRequest
         }
+        "for PfPpt" in {
+          val expectedPaymentSurveyJourneyRequest = PaymentSurveyJourneyRequest(
+            origin         = "PfPpt",
+            returnMsg      = "Skip survey",
+            returnHref     = "https://www.gov.uk/government/organisations/hm-revenue-customs",
+            auditName      = "plastic-packaging-tax",
+            audit          = AuditOptions(
+              userType  = "LoggedOut",
+              journey   = Some("Successful"),
+              orderId   = Some("XAPPT0000012345"),
+              liability = Some("plastic-packaging-tax")
+            ),
+            contentOptions = SurveyContentOptions(
+              isWelshSupported = true,
+              title            = SurveyBannerTitle(
+                englishValue = "Pay your Plastic Packaging Tax", welshValue = Some("Talu’ch Treth Deunydd Pacio Plastig")
+              )
+            )
+          )
+          val result = systemUnderTest.makeSsjJourneyRequest(TestJourneys.PfPpt.journeyAfterSucceedDebitWebPayment)(loggedOutFakeRequest)
+          result shouldBe expectedPaymentSurveyJourneyRequest
+        }
+
+        "for Ppt" in {
+          val expectedPaymentSurveyJourneyRequest = PaymentSurveyJourneyRequest(
+            origin         = "Ppt",
+            returnMsg      = "Skip survey",
+            returnHref     = "https://www.gov.uk/government/organisations/hm-revenue-customs",
+            auditName      = "plastic-packaging-tax",
+            audit          = AuditOptions(
+              userType  = "LoggedOut",
+              journey   = Some("Successful"),
+              orderId   = Some("XAPPT0000012345"),
+              liability = Some("plastic-packaging-tax")
+            ),
+            contentOptions = SurveyContentOptions(
+              isWelshSupported = true,
+              title            = SurveyBannerTitle(
+                englishValue = "Pay your Plastic Packaging Tax", welshValue = Some("Talu’ch Treth Deunydd Pacio Plastig")
+              )
+            )
+          )
+          val result = systemUnderTest.makeSsjJourneyRequest(TestJourneys.Ppt.journeyAfterSucceedDebitWebPayment)(loggedOutFakeRequest)
+          result shouldBe expectedPaymentSurveyJourneyRequest
+        }
 
         "for BtaEpayeBill" in {
           val expectedPaymentSurveyJourneyRequest = PaymentSurveyJourneyRequest(

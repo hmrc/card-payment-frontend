@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.cardpaymentfrontend.testsupport.mockClasses
+package uk.gov.hmrc.cardpaymentfrontend.testsupport.mockclasses
 
 import payapi.corcommon.model.{Origin, OriginCode, TransNumberGenerator}
 
