@@ -19,7 +19,7 @@ package uk.gov.hmrc.cardpaymentfrontend.testsupport.testdata
 import payapi.cardpaymentjourney.model.journey._
 import payapi.corcommon.model.taxes.ad.{AlcoholDutyChargeReference, AlcoholDutyReference}
 import payapi.corcommon.model.taxes.ct.{CtChargeTypes, CtLivePeriod, CtPeriod, CtUtr}
-import payapi.corcommon.model.taxes.epaye.{AccountsOfficeReference, PsaNumber, QuarterlyEpayeTaxPeriod, YearlyEpayeTaxPeriod}
+import payapi.corcommon.model.taxes.epaye.{AccountsOfficeReference, PsaNumber, QuarterlyEpayeTaxPeriod, YearlyEpayeTaxPeriod, EpayePenaltyReference}
 import payapi.corcommon.model.taxes.other.{XRef, XRef14Char}
 import payapi.corcommon.model.taxes.ppt.PptReference
 import payapi.corcommon.model.taxes.sa.SaUtr
@@ -28,6 +28,7 @@ import payapi.corcommon.model.times.period.TaxQuarter.AprilJuly
 import payapi.corcommon.model.times.period.TaxYear
 import payapi.corcommon.model.{AmountInPence, JourneyId, PaymentStatuses}
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.testdata.TestDataUtils._
+import uk.gov.hmrc.cardpaymentfrontend.testsupport.testdata.TestPayApiData.{testSubYearlyPeriod, testYearlyPeriod}
 
 import java.time.{LocalDate, LocalDateTime}
 
@@ -383,6 +384,107 @@ object TestJourneys {
       status               = PaymentStatuses.Created,
       createdOn            = LocalDateTime.parse("2027-11-02T16:28:55.185"),
       journeySpecificData  = JsdPfPpt(pptReference = Some(PptReference("XAPPT0000012345"))),
+      chosenWayToPay       = None
+    )
+  }
+
+  object BtaEpayeBill extends JourneyStatuses[JsdBtaEpayeBill] {
+    val journeyBeforeBeginWebPayment: Journey[JsdBtaEpayeBill] = Journey[JsdBtaEpayeBill](
+      _id                  = JourneyId("TestJourneyId-44f9-ad7f-01e1d3d8f151"),
+      sessionId            = Some(SessionId("TestSession-4b87460d-6f43-4c4c-b810-d6f87c774854")),
+      amountInPence        = Some(AmountInPence(1234)),
+      emailTemplateOptions = None,
+      navigation           = Some(NavigationOptions(returnUrl = Url("https://www.return-url.com"), backUrl = Url("https://www.back-to-btaepayebill.com"))),
+      order                = None,
+      status               = PaymentStatuses.Created,
+      createdOn            = LocalDateTime.parse("2027-11-02T16:28:55.185"),
+      journeySpecificData  = JsdBtaEpayeBill(
+        accountsOfficeReference = AccountsOfficeReference("123PH45678900"),
+        period                  = testSubYearlyPeriod,
+        defaultAmountInPence    = AmountInPence(1234),
+        dueDate                 = Some(LocalDate.of(2028, 12, 12))
+      ),
+      chosenWayToPay       = None
+    )
+  }
+
+  object BtaEpayePenalty extends JourneyStatuses[JsdBtaEpayePenalty] {
+    val journeyBeforeBeginWebPayment: Journey[JsdBtaEpayePenalty] = Journey[JsdBtaEpayePenalty](
+      _id                  = JourneyId("TestJourneyId-44f9-ad7f-01e1d3d8f151"),
+      sessionId            = Some(SessionId("TestSession-4b87460d-6f43-4c4c-b810-d6f87c774854")),
+      amountInPence        = Some(AmountInPence(1234)),
+      emailTemplateOptions = None,
+      navigation           = Some(NavigationOptions(returnUrl = Url("https://www.return-url.com"), backUrl = Url("https://www.back-to-btaepayebill.com"))),
+      order                = None,
+      status               = PaymentStatuses.Created,
+      createdOn            = LocalDateTime.parse("2027-11-02T16:28:55.185"),
+      journeySpecificData  = JsdBtaEpayePenalty(
+        epayePenaltyReference   = EpayePenaltyReference("123PH45678900"),
+        accountsOfficeReference = AccountsOfficeReference("123PH45678900"),
+        period                  = testSubYearlyPeriod,
+        defaultAmountInPence    = AmountInPence(1234),
+        dueDate                 = Some(LocalDate.of(2028, 12, 12))
+      ),
+      chosenWayToPay       = None
+    )
+  }
+
+  object BtaEpayeInterest extends JourneyStatuses[JsdBtaEpayeInterest] {
+    val journeyBeforeBeginWebPayment: Journey[JsdBtaEpayeInterest] = Journey[JsdBtaEpayeInterest](
+      _id                  = JourneyId("TestJourneyId-44f9-ad7f-01e1d3d8f151"),
+      sessionId            = Some(SessionId("TestSession-4b87460d-6f43-4c4c-b810-d6f87c774854")),
+      amountInPence        = Some(AmountInPence(1234)),
+      emailTemplateOptions = None,
+      navigation           = Some(NavigationOptions(returnUrl = Url("https://www.return-url.com"), backUrl = Url("https://www.back-to-btaepayebill.com"))),
+      order                = None,
+      status               = PaymentStatuses.Created,
+      createdOn            = LocalDateTime.parse("2027-11-02T16:28:55.185"),
+      journeySpecificData  = JsdBtaEpayeInterest(
+        xRef                    = XRef("X1234567890123"),
+        accountsOfficeReference = AccountsOfficeReference("123PH45678900"),
+        period                  = testSubYearlyPeriod,
+        defaultAmountInPence    = AmountInPence(1234),
+        dueDate                 = Some(LocalDate.of(2028, 12, 12))
+      ),
+      chosenWayToPay       = None
+    )
+  }
+
+  object BtaEpayeGeneral extends JourneyStatuses[JsdBtaEpayeGeneral] {
+    val journeyBeforeBeginWebPayment: Journey[JsdBtaEpayeGeneral] = Journey[JsdBtaEpayeGeneral](
+      _id                  = JourneyId("TestJourneyId-44f9-ad7f-01e1d3d8f151"),
+      sessionId            = Some(SessionId("TestSession-4b87460d-6f43-4c4c-b810-d6f87c774854")),
+      amountInPence        = Some(AmountInPence(1234)),
+      emailTemplateOptions = None,
+      navigation           = Some(NavigationOptions(returnUrl = Url("https://www.return-url.com"), backUrl = Url("https://www.back-to-btaepayebill.com"))),
+      order                = None,
+      status               = PaymentStatuses.Created,
+      createdOn            = LocalDateTime.parse("2027-11-02T16:28:55.185"),
+      journeySpecificData  = JsdBtaEpayeGeneral(
+        accountsOfficeReference = AccountsOfficeReference("123PH45678900"),
+        dueDate                 = Some(LocalDate.of(2028, 12, 12)),
+        period                  = Some(testSubYearlyPeriod)
+      ),
+      chosenWayToPay       = None
+    )
+  }
+
+  object BtaClass1aNi extends JourneyStatuses[JsdBtaClass1aNi] {
+    val journeyBeforeBeginWebPayment: Journey[JsdBtaClass1aNi] = Journey[JsdBtaClass1aNi](
+      _id                  = JourneyId("TestJourneyId-44f9-ad7f-01e1d3d8f151"),
+      sessionId            = Some(SessionId("TestSession-4b87460d-6f43-4c4c-b810-d6f87c774854")),
+      amountInPence        = Some(AmountInPence(1234)),
+      emailTemplateOptions = None,
+      navigation           = Some(NavigationOptions(returnUrl = Url("https://www.return-url.com"), backUrl = Url("https://www.back-to-btaepayebill.com"))),
+      order                = None,
+      status               = PaymentStatuses.Created,
+      createdOn            = LocalDateTime.parse("2027-11-02T16:28:55.185"),
+      journeySpecificData  = JsdBtaClass1aNi(
+        accountsOfficeReference = AccountsOfficeReference("123PH45678900"),
+        period                  = testYearlyPeriod,
+        defaultAmountInPence    = AmountInPence(1234),
+        dueDate                 = Some(LocalDate.of(2028, 12, 12))
+      ),
       chosenWayToPay       = None
     )
   }

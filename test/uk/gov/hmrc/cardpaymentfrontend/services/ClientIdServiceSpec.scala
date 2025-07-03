@@ -52,7 +52,12 @@ class ClientIdServiceSpec extends ItSpec {
         (TestJourneys.VcVatReturn.journeyBeforeBeginWebPayment, ClientIds.VAEE),
         (TestJourneys.VcVatOther.journeyBeforeBeginWebPayment, ClientIds.VAEE),
         (TestJourneys.Ppt.journeyBeforeBeginWebPayment, ClientIds.ETEE),
-        (TestJourneys.PfPpt.journeyBeforeBeginWebPayment, ClientIds.MIEE)
+        (TestJourneys.PfPpt.journeyBeforeBeginWebPayment, ClientIds.MIEE),
+        (TestJourneys.BtaEpayeBill.journeyBeforeBeginWebPayment, ClientIds.PAEE),
+        (TestJourneys.BtaEpayeGeneral.journeyBeforeBeginWebPayment, ClientIds.PAEE),
+        (TestJourneys.BtaEpayePenalty.journeyBeforeBeginWebPayment, ClientIds.MIEE),
+        (TestJourneys.BtaEpayeInterest.journeyBeforeBeginWebPayment, ClientIds.MIEE),
+        (TestJourneys.BtaClass1aNi.journeyBeforeBeginWebPayment, ClientIds.PAEE)
       )
       forAll(scenarios) {
         case (journey, clientId) =>
@@ -81,7 +86,12 @@ class ClientIdServiceSpec extends ItSpec {
         (TestJourneys.VcVatReturn.journeyBeforeBeginWebPayment, ClientIds.VAEC),
         (TestJourneys.VcVatOther.journeyBeforeBeginWebPayment, ClientIds.VAEC),
         (TestJourneys.Ppt.journeyBeforeBeginWebPayment, ClientIds.ETEC),
-        (TestJourneys.PfPpt.journeyBeforeBeginWebPayment, ClientIds.MIEC)
+        (TestJourneys.PfPpt.journeyBeforeBeginWebPayment, ClientIds.MIEC),
+        (TestJourneys.BtaEpayeBill.journeyBeforeBeginWebPayment, ClientIds.PAEC),
+        (TestJourneys.BtaEpayeGeneral.journeyBeforeBeginWebPayment, ClientIds.PAEC),
+        (TestJourneys.BtaEpayePenalty.journeyBeforeBeginWebPayment, ClientIds.MIEC),
+        (TestJourneys.BtaEpayeInterest.journeyBeforeBeginWebPayment, ClientIds.MIEC),
+        (TestJourneys.BtaClass1aNi.journeyBeforeBeginWebPayment, ClientIds.PAEC)
       )
       forAll(scenarios) {
         case (journey, clientId) =>
@@ -92,7 +102,7 @@ class ClientIdServiceSpec extends ItSpec {
   }
 
   "sanity check for implemented origins" in {
-    TestHelpers.implementedOrigins.size shouldBe 19 withClue "** This dummy test is here to remind you to update the tests above. Bump up the expected number when an origin is added to implemented origins **"
+    TestHelpers.implementedOrigins.size shouldBe 24 withClue "** This dummy test is here to remind you to update the tests above. Bump up the expected number when an origin is added to implemented origins **"
   }
 
 }

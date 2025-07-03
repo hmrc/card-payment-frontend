@@ -29,9 +29,9 @@ service-name.AppSa = Pay your Self Assessment
 service-name.BtaVat = Pay your VAT
 service-name.BtaEpayeBill = Pay your employers’ PAYE and National Insurance
 service-name.BtaEpayePenalty = Pay your PAYE late payment or filing penalty
-service-name.BtaEpayeInterest =
+service-name.BtaEpayeInterest = Pay employers’ PAYE interest
 service-name.BtaEpayeGeneral = Pay your employers’ PAYE and National Insurance
-service-name.BtaClass1aNi = Pay your employers’ PAYE and National Insurance
+service-name.BtaClass1aNi = Pay your employers’ Class 1A National Insurance (P11D bill)
 service-name.BtaCt = Pay your Corporation Tax
 service-name.BtaSdil =
 service-name.BcPngr =
@@ -141,6 +141,13 @@ check-your-details.VcVatOther.reference = VAT registration number
 check-your-details.VcVatOther.charge-reference = Charge reference
 check-your-details.Ppt.reference = Reference number
 check-your-details.PfPpt.reference = Reference number
+check-your-details.BtaEpayeBill.reference = Payment reference
+check-your-details.BtaEpayePenalty.reference = Payment reference
+check-your-details.BtaEpayeInterest.reference = Payment reference
+check-your-details.BtaEpayeGeneral.reference = Payment reference
+check-your-details.BtaClass1aNi.reference = Payment reference
+check-your-details.BtaClass1aNi.tax-period = Tax period
+
 
 ## Address Page
 address.heading = Card billing address
@@ -222,11 +229,11 @@ payment-complete.tax-name.PfPsAdmin =
 payment-complete.tax-name.BtaSa = Self Assessment
 payment-complete.tax-name.AppSa = Self Assessment
 payment-complete.tax-name.BtaVat = VAT
-payment-complete.tax-name.BtaEpayeBill =
-payment-complete.tax-name.BtaEpayePenalty =
-payment-complete.tax-name.BtaEpayeInterest =
-payment-complete.tax-name.BtaEpayeGeneral =
-payment-complete.tax-name.BtaClass1aNi =
+payment-complete.tax-name.BtaEpayeBill = PAYE and National Insurance
+payment-complete.tax-name.BtaEpayePenalty = PAYE and National Insurance
+payment-complete.tax-name.BtaEpayeInterest = PAYE and National Insurance
+payment-complete.tax-name.BtaEpayeGeneral = PAYE and National Insurance
+payment-complete.tax-name.BtaClass1aNi = Employers’ Class 1A National Insurance
 payment-complete.tax-name.BtaCt = Corporation Tax
 payment-complete.tax-name.BtaSdil =
 payment-complete.tax-name.BcPngr =
@@ -329,6 +336,11 @@ email.tax-name.VcVatOther = Vat
 email.tax-name.Ppt = Plastic Packaging Tax
 email.tax-name.PfPpt = Plastic Packaging Tax
 
+email.tax-name.BtaEpayeBill = Employers’ PAYE and National Insurance
+email.tax-name.BtaEpayePenalty = Employers’ PAYE late payment or filing penalty
+email.tax-name.BtaEpayeInterest = Employers’ PAYE interest payment
+email.tax-name.BtaEpayeGeneral = Employers’ PAYE and National Insurance
+email.tax-name.BtaClass1aNi = Employers’ Class 1A National Insurance
 
 ## Payments survey
 payments-survey.bta.return-message = Skip survey, return to business tax account

@@ -28,7 +28,7 @@ class ExternalNavigationSpec extends UnitSpec with TableDrivenPropertyChecks {
   "returnUrlCancelled" - {
     val someUrl = Some(Url("https://www.return-url.com"))
 
-    val scenarios: TableFor2[JourneyStatuses[_ >: JsdPfCt with JsdPfEpayeP11d with JsdBtaSa with JsdPfEpayeLateCis with JsdVcVatOther with JsdPfAlcoholDuty with JsdPfEpayeSeta with JsdPfEpayeNi with JsdPfVat with JsdVcVatReturn with JsdAlcoholDuty with JsdPfEpayeLpp with JsdBtaCt with JsdPfSa with JsdBtaVat with JsdPtaSa with JsdItSa with JsdPfPpt with JsdPpt <: JourneySpecificData], Option[Url]] = Table(
+    val scenarios: TableFor2[JourneyStatuses[_ >: JsdPfEpayeSeta with JsdPfEpayeLateCis with JsdPfEpayeLpp with JsdBtaSa with JsdPfAlcoholDuty with JsdAlcoholDuty with JsdPfCt with JsdPtaSa with JsdBtaEpayeGeneral with JsdBtaCt with JsdItSa with JsdPfVat with JsdBtaEpayePenalty with JsdBtaVat with JsdPfEpayeP11d with JsdVcVatReturn with JsdPfSa with JsdPfEpayeNi with JsdBtaEpayeInterest with JsdVcVatOther with JsdBtaEpayeBill with JsdBtaClass1aNi with JsdPfPpt with JsdPpt <: JourneySpecificData], Option[Url]] = Table(
       ("journey", "expectedUrl"),
       //returnUrls are set in TestJourneys
       //Logged out journeys, Logged out journeys should return None
@@ -52,6 +52,11 @@ class ExternalNavigationSpec extends UnitSpec with TableDrivenPropertyChecks {
       (TestJourneys.BtaVat, someUrl),
       (TestJourneys.VcVatOther, someUrl),
       (TestJourneys.VcVatReturn, someUrl),
+      (TestJourneys.BtaEpayeBill, someUrl),
+      (TestJourneys.BtaEpayePenalty, someUrl),
+      (TestJourneys.BtaEpayeGeneral, someUrl),
+      (TestJourneys.BtaEpayeInterest, someUrl),
+      (TestJourneys.BtaClass1aNi, someUrl),
       (TestJourneys.Ppt, someUrl)
     )
 

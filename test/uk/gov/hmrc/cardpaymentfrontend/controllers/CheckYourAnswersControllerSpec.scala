@@ -128,69 +128,89 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       // Card billing address 3 or 4 (or 2 if there is no email address)
       def deriveReferenceRowIndex(origin: Origin): Int = {
         origin match {
-          case Origins.BtaSa       => 1
-          case Origins.PtaSa       => 1
-          case Origins.ItSa        => 1
-          case Origins.BtaCt       => 1
-          case Origins.BtaVat      => 1
-          case Origins.VcVatReturn => 1
-          case Origins.VcVatOther  => 1
-          case Origins.Ppt         => 1
-          case _                   => 0
+          case Origins.BtaSa            => 1
+          case Origins.PtaSa            => 1
+          case Origins.ItSa             => 1
+          case Origins.BtaCt            => 1
+          case Origins.BtaVat           => 1
+          case Origins.VcVatReturn      => 1
+          case Origins.VcVatOther       => 1
+          case Origins.Ppt              => 1
+          case Origins.BtaEpayeBill     => 1
+          case Origins.BtaEpayePenalty  => 1
+          case Origins.BtaEpayeInterest => 1
+          case Origins.BtaEpayeGeneral  => 1
+          case Origins.BtaClass1aNi     => 1
+          case _                        => 0
         }
       }
 
       def deriveAmountRowIndex(origin: Origin): Int = {
         origin match {
-          case Origins.BtaSa       => 2
-          case Origins.PtaSa       => 2
-          case Origins.ItSa        => 2
-          case Origins.AlcoholDuty => 2
-          case Origins.BtaCt       => 2
-          case Origins.PfCt        => 2
-          case Origins.PfEpayeNi   => 2
-          case Origins.PfEpayeP11d => 2
-          case Origins.BtaVat      => 2
-          case Origins.VcVatReturn => 2
-          case Origins.VcVatOther  => 3
-          case Origins.Ppt         => 2
-          case _                   => 1
+          case Origins.BtaSa            => 2
+          case Origins.PtaSa            => 2
+          case Origins.ItSa             => 2
+          case Origins.AlcoholDuty      => 2
+          case Origins.BtaCt            => 2
+          case Origins.PfCt             => 2
+          case Origins.PfEpayeNi        => 2
+          case Origins.PfEpayeP11d      => 2
+          case Origins.BtaVat           => 2
+          case Origins.VcVatReturn      => 2
+          case Origins.VcVatOther       => 3
+          case Origins.Ppt              => 2
+          case Origins.BtaEpayeBill     => 2
+          case Origins.BtaEpayePenalty  => 2
+          case Origins.BtaEpayeInterest => 2
+          case Origins.BtaEpayeGeneral  => 2
+          case Origins.BtaClass1aNi     => 3
+          case _                        => 1
         }
       }
 
       def deriveEmailRowIndex(origin: Origin): Int = {
         origin match {
-          case Origins.BtaSa       => 3
-          case Origins.PtaSa       => 3
-          case Origins.ItSa        => 3
-          case Origins.AlcoholDuty => 3
-          case Origins.BtaCt       => 3
-          case Origins.PfCt        => 3
-          case Origins.PfEpayeNi   => 3
-          case Origins.PfEpayeP11d => 3
-          case Origins.BtaVat      => 3
-          case Origins.VcVatReturn => 3
-          case Origins.VcVatOther  => 4
-          case Origins.Ppt         => 3
-          case _                   => 2
+          case Origins.BtaSa            => 3
+          case Origins.PtaSa            => 3
+          case Origins.ItSa             => 3
+          case Origins.AlcoholDuty      => 3
+          case Origins.BtaCt            => 3
+          case Origins.PfCt             => 3
+          case Origins.PfEpayeNi        => 3
+          case Origins.PfEpayeP11d      => 3
+          case Origins.BtaVat           => 3
+          case Origins.VcVatReturn      => 3
+          case Origins.VcVatOther       => 4
+          case Origins.Ppt              => 3
+          case Origins.BtaEpayeBill     => 3
+          case Origins.BtaEpayePenalty  => 3
+          case Origins.BtaEpayeInterest => 3
+          case Origins.BtaEpayeGeneral  => 3
+          case Origins.BtaClass1aNi     => 4
+          case _                        => 2
         }
       }
 
       def deriveCardBillingAddressRowIndex(origin: Origin): Int = {
         origin match {
-          case Origins.BtaSa       => 4
-          case Origins.PtaSa       => 4
-          case Origins.ItSa        => 4
-          case Origins.AlcoholDuty => 4
-          case Origins.BtaCt       => 4
-          case Origins.PfCt        => 4
-          case Origins.PfEpayeNi   => 4
-          case Origins.PfEpayeP11d => 4
-          case Origins.BtaVat      => 4
-          case Origins.VcVatReturn => 4
-          case Origins.VcVatOther  => 5
-          case Origins.Ppt         => 4
-          case _                   => 3
+          case Origins.BtaSa            => 4
+          case Origins.PtaSa            => 4
+          case Origins.ItSa             => 4
+          case Origins.AlcoholDuty      => 4
+          case Origins.BtaCt            => 4
+          case Origins.PfCt             => 4
+          case Origins.PfEpayeNi        => 4
+          case Origins.PfEpayeP11d      => 4
+          case Origins.BtaVat           => 4
+          case Origins.VcVatReturn      => 4
+          case Origins.VcVatOther       => 5
+          case Origins.Ppt              => 4
+          case Origins.BtaEpayeBill     => 4
+          case Origins.BtaEpayePenalty  => 4
+          case Origins.BtaEpayeInterest => 4
+          case Origins.BtaEpayeGeneral  => 4
+          case Origins.BtaClass1aNi     => 5
+          case _                        => 3
         }
       }
 
@@ -555,6 +575,86 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       assertRow(referenceRow, "Cyfeirnod", "XAPPT0000012345", Some("Newid"), Some("http://localhost:9056/pay/pay-by-card-change-reference-number"))
     }
 
+    "[BtaEpayeBill] should render the payment reference row correctly" in {
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.BtaEpayeBill.journeyBeforeBeginWebPayment)
+      val result = systemUnderTest.renderPage(fakeRequest())
+      val document = Jsoup.parse(contentAsString(result))
+      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.BtaEpayeBill))
+      assertRow(referenceRow, "Payment reference", "123PH456789002702", None, None)
+    }
+
+    "[BtaEpayeBill] should render the payment reference row correctly in Welsh" in {
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.BtaEpayeBill.journeyBeforeBeginWebPayment)
+      val result = systemUnderTest.renderPage(fakeRequestWelsh())
+      val document = Jsoup.parse(contentAsString(result))
+      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.BtaEpayeBill))
+      assertRow(referenceRow, "Cyfeirnod y taliad", "123PH456789002702", None, None)
+    }
+
+    "[BtaEpayePenalty] should render the payment reference row correctly" in {
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.BtaEpayePenalty.journeyBeforeBeginWebPayment)
+      val result = systemUnderTest.renderPage(fakeRequest())
+      val document = Jsoup.parse(contentAsString(result))
+      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.BtaEpayePenalty))
+      assertRow(referenceRow, "Payment reference", "123PH45678900", None, None)
+    }
+
+    "[BtaEpayePenalty] should render the payment reference row correctly in Welsh" in {
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.BtaEpayePenalty.journeyBeforeBeginWebPayment)
+      val result = systemUnderTest.renderPage(fakeRequestWelsh())
+      val document = Jsoup.parse(contentAsString(result))
+      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.BtaEpayePenalty))
+      assertRow(referenceRow, "Cyfeirnod y taliad", "123PH45678900", None, None)
+    }
+
+    "[BtaEpayeInterest] should render the payment reference row correctly" in {
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.BtaEpayeInterest.journeyBeforeBeginWebPayment)
+      val result = systemUnderTest.renderPage(fakeRequest())
+      val document = Jsoup.parse(contentAsString(result))
+      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.BtaEpayeInterest))
+      assertRow(referenceRow, "Payment reference", "X1234567890123", None, None)
+    }
+
+    "[BtaEpayeInterest] should render the payment reference row correctly in Welsh" in {
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.BtaEpayeInterest.journeyBeforeBeginWebPayment)
+      val result = systemUnderTest.renderPage(fakeRequestWelsh())
+      val document = Jsoup.parse(contentAsString(result))
+      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.BtaEpayeInterest))
+      assertRow(referenceRow, "Cyfeirnod y taliad", "X1234567890123", None, None)
+    }
+
+    "[BtaEpayeGeneral] should render the payment reference row correctly" in {
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.BtaEpayeGeneral.journeyBeforeBeginWebPayment)
+      val result = systemUnderTest.renderPage(fakeRequest())
+      val document = Jsoup.parse(contentAsString(result))
+      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.BtaEpayeGeneral))
+      assertRow(referenceRow, "Payment reference", "123PH456789002702", None, None)
+    }
+
+    "[BtaEpayeGeneral] should render the payment reference row correctly in Welsh" in {
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.BtaEpayeGeneral.journeyBeforeBeginWebPayment)
+      val result = systemUnderTest.renderPage(fakeRequestWelsh())
+      val document = Jsoup.parse(contentAsString(result))
+      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.BtaEpayeGeneral))
+      assertRow(referenceRow, "Cyfeirnod y taliad", "123PH456789002702", None, None)
+    }
+
+    "[BtaClass1aNi] should render the payment reference row correctly" in {
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.BtaClass1aNi.journeyBeforeBeginWebPayment)
+      val result = systemUnderTest.renderPage(fakeRequest())
+      val document = Jsoup.parse(contentAsString(result))
+      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.BtaClass1aNi))
+      assertRow(referenceRow, "Payment reference", "123PH456789002713", None, None)
+    }
+
+    "[BtaClass1aNi] should render the payment reference row correctly in Welsh" in {
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.BtaClass1aNi.journeyBeforeBeginWebPayment)
+      val result = systemUnderTest.renderPage(fakeRequestWelsh())
+      val document = Jsoup.parse(contentAsString(result))
+      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.BtaClass1aNi))
+      assertRow(referenceRow, "Cyfeirnod y taliad", "123PH456789002713", None, None)
+    }
+
     "[BtaSa] should render the payment date row correctly" in {
       PayApiStub.stubForFindBySessionId2xx(TestJourneys.BtaSa.journeyBeforeBeginWebPayment)
       val result = systemUnderTest.renderPage(fakeRequest())
@@ -651,6 +751,22 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       assertRow(taxPeriodRow, "Blwyddyn dreth", "2024 i 2025", Some("Newid"), Some("http://localhost:9056/pay/change-tax-year?fromCardPayment=true"))
     }
 
+    "[BtaClass1aNi] should render the Tax period correctly" in {
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.BtaClass1aNi.journeyBeforeBeginWebPayment)
+      val result = systemUnderTest.renderPage(fakeRequest())
+      val document = Jsoup.parse(contentAsString(result))
+      val taxPeriodRow = document.select(".govuk-summary-list__row").asScala.toList(2)
+      assertRow(taxPeriodRow, "Tax period", "2026 to 2027", None, None)
+    }
+
+    "[BtaClass1aNi] should render the Tax period correctly in Welsh" in {
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.BtaClass1aNi.journeyBeforeBeginWebPayment)
+      val result = systemUnderTest.renderPage(fakeRequestWelsh())
+      val document = Jsoup.parse(contentAsString(result))
+      val taxPeriodRow = document.select(".govuk-summary-list__row").asScala.toList(2)
+      assertRow(taxPeriodRow, "Cyfnod talu", "2026 i 2027", None, None)
+    }
+
     "[BtaVat] should render the payment date row correctly" in {
       PayApiStub.stubForFindBySessionId2xx(TestJourneys.BtaVat.journeyBeforeBeginWebPayment)
       val result = systemUnderTest.renderPage(fakeRequest())
@@ -698,9 +814,26 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       val paymentDateRow = document.select(".govuk-summary-list__row").asScala.toList(0)
       assertRow(paymentDateRow, "Dyddiad talu", "Heddiw", Some("Newid"), Some("http://localhost:9056/pay/change-when-do-you-want-to-pay?toPayFrontendConfirmation=true"))
     }
+
+    "[BtaClass1aNi] should render the payment date row correctly" in {
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.BtaClass1aNi.journeyBeforeBeginWebPayment)
+      val result = systemUnderTest.renderPage(fakeRequest())
+      val document = Jsoup.parse(contentAsString(result))
+      val paymentDateRow = document.select(".govuk-summary-list__row").asScala.toList(0)
+      assertRow(paymentDateRow, "Payment date", "Today", Some("Change"), Some("http://localhost:9056/pay/change-when-do-you-want-to-pay?toPayFrontendConfirmation=true"))
+    }
+
+    "[BtaClass1aNi] should render the payment date row correctly in Welsh" in {
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.BtaClass1aNi.journeyBeforeBeginWebPayment)
+      val result = systemUnderTest.renderPage(fakeRequestWelsh())
+      val document = Jsoup.parse(contentAsString(result))
+      val paymentDateRow = document.select(".govuk-summary-list__row").asScala.toList(0)
+      assertRow(paymentDateRow, "Dyddiad talu", "Heddiw", Some("Newid"), Some("http://localhost:9056/pay/change-when-do-you-want-to-pay?toPayFrontendConfirmation=true"))
+    }
+
     "sanity check for implemented origins" in {
       // remember to add the singular tests for reference rows as well as fdp if applicable, they are not covered in the implementedOrigins forall tests
-      TestHelpers.implementedOrigins.size shouldBe 19 withClue "** This dummy test is here to remind you to update the tests above. Bump up the expected number when an origin is added to implemented origins **"
+      TestHelpers.implementedOrigins.size shouldBe 24 withClue "** This dummy test is here to remind you to update the tests above. Bump up the expected number when an origin is added to implemented origins **"
     }
 
   }
