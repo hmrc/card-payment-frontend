@@ -1211,7 +1211,15 @@ class FeesControllerSpec extends ItSpec {
           oneOffDirectDebitBullet.attr("href") shouldBe "http://localhost:9056/pay/pay-by-one-off-direct-debit"
         }
 
-        // TODO: ADD VARIABLE DD CONTENT TESTS
+        "render an option for variable direct debit" in {
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.BtaEpayeBill.journeyBeforeBeginWebPayment)
+          val result = systemUnderTest.renderPage(fakeRequest)
+          val document = Jsoup.parse(contentAsString(result))
+          val listOfMethods = document.select("#payment-type-list").select("li")
+          val variableDirectDebitBullet = listOfMethods.select("#variable-direct-debit-link")
+          variableDirectDebitBullet.text() shouldBe "Direct Debit (variable)"
+          variableDirectDebitBullet.attr("href") shouldBe "http://localhost:9056/pay/pay-by-direct-debit"
+        }
 
         "render an option for personal debit card" in {
           PayApiStub.stubForFindBySessionId2xx(TestJourneys.BtaEpayeBill.journeyBeforeBeginWebPayment)
@@ -1298,8 +1306,6 @@ class FeesControllerSpec extends ItSpec {
           oneOffDirectDebitBullet.attr("href") shouldBe "http://localhost:9056/pay/pay-by-one-off-direct-debit"
         }
 
-        // TODO: ADD VARIABLE DD CONTENT TESTS
-
         "render an option for personal debit card" in {
           PayApiStub.stubForFindBySessionId2xx(TestJourneys.BtaEpayeGeneral.journeyBeforeBeginWebPayment)
           val result = systemUnderTest.renderPage(fakeRequest)
@@ -1384,8 +1390,6 @@ class FeesControllerSpec extends ItSpec {
           oneOffDirectDebitBullet.text() shouldBe "Debyd Uniongyrchol (taliad untro)"
           oneOffDirectDebitBullet.attr("href") shouldBe "http://localhost:9056/pay/pay-by-one-off-direct-debit"
         }
-
-        // TODO: ADD VARIABLE DD CONTENT TESTS
 
         "render an option for personal debit card" in {
           PayApiStub.stubForFindBySessionId2xx(TestJourneys.BtaEpayeInterest.journeyBeforeBeginWebPayment)
@@ -1472,8 +1476,6 @@ class FeesControllerSpec extends ItSpec {
           oneOffDirectDebitBullet.attr("href") shouldBe "http://localhost:9056/pay/pay-by-one-off-direct-debit"
         }
 
-        // TODO: ADD VARIABLE DD CONTENT TESTS
-
         "render an option for personal debit card" in {
           PayApiStub.stubForFindBySessionId2xx(TestJourneys.BtaEpayePenalty.journeyBeforeBeginWebPayment)
           val result = systemUnderTest.renderPage(fakeRequest)
@@ -1558,8 +1560,6 @@ class FeesControllerSpec extends ItSpec {
           oneOffDirectDebitBullet.text() shouldBe "Debyd Uniongyrchol (taliad untro)"
           oneOffDirectDebitBullet.attr("href") shouldBe "http://localhost:9056/pay/pay-by-one-off-direct-debit"
         }
-
-        // TODO: ADD VARIABLE DD CONTENT TESTS
 
         "render an option for personal debit card" in {
           PayApiStub.stubForFindBySessionId2xx(TestJourneys.BtaClass1aNi.journeyBeforeBeginWebPayment)
