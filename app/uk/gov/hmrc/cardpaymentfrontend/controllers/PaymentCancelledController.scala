@@ -20,7 +20,7 @@ import payapi.cardpaymentjourney.model.journey._
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.cardpaymentfrontend.actions.{Actions, JourneyRequest}
 import uk.gov.hmrc.cardpaymentfrontend.requests.RequestSupport
-import uk.gov.hmrc.cardpaymentfrontend.utils.ExternalNavigation
+import uk.gov.hmrc.cardpaymentfrontend.util.ExternalNavigation
 import uk.gov.hmrc.cardpaymentfrontend.views.html.PaymentCancelledPage
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 

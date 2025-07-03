@@ -36,35 +36,89 @@ class AuditServiceSpec extends ItSpec {
   val systemUnderTest: AuditService = app.injector.instanceOf[AuditService]
 
   "AuditService" - {
-    "auditPaymentAttempt should trigger an audit event for paymentAttempt" in {
-      val testAddress: Address = Address(line1    = "made up street", line2 = Some("made up line 2"), postcode = "AA11AA", country = "GBR", city = Some("made up city"), county = Some("East sussex"))
-      val journeyRequest: JourneyRequest[AnyContentAsEmpty.type] = new JourneyRequest(TestJourneys.PfSa.journeyBeforeBeginWebPayment, FakeRequest().withEmailInSession(TestJourneys.PfSa.journeyBeforeBeginWebPayment._id))
-      systemUnderTest.auditPaymentAttempt(testAddress, "SAEE", "some-transaction-reference")(journeyRequest, HeaderCarrier())
-      eventually {
-        AuditConnectorStub.verifyEventAudited(
-          "PaymentAttempt",
-          Json.parse(
-            """
-              |{
-              | "address": {
-              |   "line1" : "made up street",
-              |   "line2" : "made up line 2",
-              |   "city" : "made up city",
-              |   "county" : "East sussex",
-              |   "postcode" : "AA11AA",
-              |   "country" : "GBR"
-              | },
-              | "emailAddress": "blah@blah.com",
-              | "loggedIn": false,
-              | "merchantCode": "SAEE",
-              | "paymentOrigin": "PfSa",
-              | "paymentReference": "1234567895K",
-              | "paymentTaxType": "selfAssessment",
-              | "paymentTotal": 12.34,
-              | "transactionReference": "some-transaction-reference"
-              |}""".stripMargin
-          ).as[JsObject]
+    val testAddress: Address = Address(
+      line1    = "made up street",
+      line2    = Some("made up line 2"),
+      postcode = "AA11AA",
+      country  = "GBR",
+      city     = Some("made up city"),
+      county   = Some("East sussex")
+    )
+    val fakeRequest = FakeRequest().withEmailInSession(TestJourneys.PfSa.journeyBeforeBeginWebPayment._id)
+    val journeyRequest: JourneyRequest[AnyContentAsEmpty.type] = new JourneyRequest(TestJourneys.PfSa.journeyBeforeBeginWebPayment, fakeRequest)
+
+    "auditPaymentAttempt" - {
+      "should trigger an audit event for paymentAttempt" in {
+        systemUnderTest.auditPaymentAttempt(testAddress, "SAEE", "some-transaction-reference")(journeyRequest, HeaderCarrier())
+        eventually {
+          AuditConnectorStub.verifyEventAudited(
+            "PaymentAttempt",
+            Json.parse(
+              """
+                |{
+                | "address": {
+                |   "line1" : "made up street",
+                |   "line2" : "made up line 2",
+                |   "city" : "made up city",
+                |   "county" : "East sussex",
+                |   "postcode" : "AA11AA",
+                |   "country" : "GBR"
+                | },
+                | "emailAddress": "blah@blah.com",
+                | "loggedIn": false,
+                | "merchantCode": "SAEE",
+                | "paymentOrigin": "PfSa",
+                | "paymentReference": "1234567895K",
+                | "paymentTaxType": "selfAssessment",
+                | "paymentTotal": 12.34,
+                | "transactionReference": "some-transaction-reference"
+                |}""".stripMargin
+            ).as[JsObject]
+          )
+        }
+      }
+    }
+
+    "auditPaymentResult" - {
+      "auditPaymentResult should trigger an audit event for PaymentResult" in {
+        val journeyRequestWithAddress: JourneyRequest[AnyContentAsEmpty.type] = new JourneyRequest(
+          TestJourneys.PfSa.journeyBeforeBeginWebPayment,
+          fakeRequest.withEmailAndAddressInSession(TestJourneys.PfSa.journeyBeforeBeginWebPayment._id, address = testAddress)
         )
+
+        systemUnderTest.auditPaymentResult(
+          "SAEE",
+          "some-transaction-reference",
+          "Successful"
+        )(journeyRequestWithAddress, HeaderCarrier())
+
+        eventually {
+          AuditConnectorStub.verifyEventAudited(
+            "PaymentResult",
+            Json.parse(
+              """
+                |{
+                | "address": {
+                |   "line1" : "made up street",
+                |   "line2" : "made up line 2",
+                |   "city" : "made up city",
+                |   "county" : "East sussex",
+                |   "postcode" : "AA11AA",
+                |   "country" : "GBR"
+                | },
+                | "emailAddress": "blah@blah.com",
+                | "loggedIn": false,
+                | "merchantCode": "SAEE",
+                | "paymentOrigin": "PfSa",
+                | "paymentStatus": "Successful",
+                | "paymentReference": "1234567895K",
+                | "paymentTaxType": "selfAssessment",
+                | "paymentTotal": 12.34,
+                | "transactionReference": "some-transaction-reference"
+                |}""".stripMargin
+            ).as[JsObject]
+          )
+        }
       }
     }
   }

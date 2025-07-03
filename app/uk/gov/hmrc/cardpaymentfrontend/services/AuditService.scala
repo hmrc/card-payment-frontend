@@ -18,7 +18,7 @@ package uk.gov.hmrc.cardpaymentfrontend.services
 
 import play.api.libs.json.{Json, Writes}
 import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
-import uk.gov.hmrc.cardpaymentfrontend.models.audit.{AuditDetail, PaymentAttemptAuditDetail}
+import uk.gov.hmrc.cardpaymentfrontend.models.audit.{AuditDetail, PaymentAttemptAuditDetail, PaymentResultAuditDetail}
 import uk.gov.hmrc.cardpaymentfrontend.models.{Address, EmailAddress}
 import uk.gov.hmrc.cardpaymentfrontend.requests.RequestSupport
 import uk.gov.hmrc.cardpaymentfrontend.session.JourneySessionSupport.{Keys, RequestOps}
@@ -72,5 +72,41 @@ class AuditService @Inject() (auditConnector: AuditConnector)(implicit ec: Execu
       transactionReference: String
   )(implicit journeyRequest: JourneyRequest[_], headerCarrier: HeaderCarrier): Unit =
     audit(toPaymentAttempt(address, merchantCode, transactionReference))
+
+  private def toPaymentResult(
+      optionalAddress:      Option[Address],
+      merchantCode:         String,
+      transactionReference: String,
+      paymentStatus:        String,
+      journeyRequest:       JourneyRequest[_]
+  ): PaymentResultAuditDetail = {
+    PaymentResultAuditDetail(
+      optionalAddress,
+      emailAddress = journeyRequest.readFromSession[EmailAddress](journeyRequest.journeyId, Keys.email),
+      loggedIn     = RequestSupport.isLoggedIn(journeyRequest),
+      merchantCode,
+      paymentOrigin    = journeyRequest.journey.origin,
+      paymentStatus    = paymentStatus,
+      paymentReference = journeyRequest.journey.referenceValue,
+      paymentTaxType   = journeyRequest.journey.taxType,
+      paymentTotal     = journeyRequest.journey.getAmountInPence.inPounds,
+      transactionReference
+    )
+  }
+
+  def auditPaymentResult(
+      merchantCode:         String,
+      transactionReference: String,
+      paymentStatus:        String
+  )(implicit journeyRequest: JourneyRequest[_], headerCarrier: HeaderCarrier): Unit = {
+
+    audit(toPaymentResult(
+      journeyRequest.readFromSession[Address](journeyRequest.journeyId, Keys.address),
+      merchantCode,
+      transactionReference,
+      paymentStatus,
+      journeyRequest
+    ))
+  }
 
 }

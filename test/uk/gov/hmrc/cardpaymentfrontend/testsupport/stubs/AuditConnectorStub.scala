@@ -38,7 +38,7 @@ object AuditConnectorStub extends Eventually {
     verify(
       postRequestedFor(urlPathEqualTo(auditUrl))
         .withRequestBody(
-          equalToJson(s"""{ "auditType" : "${auditType}" }""", true, true)
+          equalToJson(s"""{ "auditType" : "$auditType" }""", true, true)
         )
         .withRequestBody(
           equalToJson(s"""{ "auditSource" : "card-payment-frontend" }""", true, true)

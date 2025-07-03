@@ -62,13 +62,13 @@ class PaymentStatusController @Inject() (
 
   //todo append something to the return url so we can extract/work out the session/journey - are we allowed to do this or do we use session?
   def paymentStatus(): Action[AnyContent] = actions.paymentStatusAction.async { implicit journeyRequest =>
-
     val transactionRefFromJourney: Option[String] = journeyRequest.journey.order.map(_.transactionReference.value)
 
     val maybeCardPaymentResultF = for {
       authAndCaptureResult <- cardPaymentService.finishPayment(
         transactionRefFromJourney.getOrElse(throw new RuntimeException("Could not find transaction ref, therefore we can't auth and settle.")),
-        journeyRequest.journeyId.value
+        journeyRequest.journeyId.value,
+        requestSupport.usableLanguage
       )
     } yield authAndCaptureResult
 
