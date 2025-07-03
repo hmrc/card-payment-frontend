@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.cardpaymentfrontend.utils
+package uk.gov.hmrc.cardpaymentfrontend.util
 
 import payapi.cardpaymentjourney.model.journey._
 
