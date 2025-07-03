@@ -22,6 +22,7 @@ import payapi.corcommon.model.taxes.ad.{AlcoholDutyChargeReference, AlcoholDutyR
 import payapi.corcommon.model.taxes.ct.{CtChargeTypes, CtPeriod, CtUtr}
 import payapi.corcommon.model.taxes.epaye.{AccountsOfficeReference, PsaNumber, QuarterlyEpayeTaxPeriod, YearlyEpayeTaxPeriod}
 import payapi.corcommon.model.taxes.other.{XRef, XRef14Char}
+import payapi.corcommon.model.taxes.ppt.PptReference
 import payapi.corcommon.model.taxes.sa.SaUtr
 import payapi.corcommon.model.taxes.vat.{VatChargeReference, Vrn}
 import payapi.corcommon.model.times.period.TaxQuarter.AprilJuly
@@ -173,10 +174,24 @@ class OpenBankingOriginSpecificSessionDataSpec extends UnitSpec {
       roundTripJsonTest(osd, testJson)
     }
 
+    "Ppt" in {
+      val testJson = Json.parse("""{"pptReference":"XAPPT0000012345","origin":"Ppt"}""")
+      val osd = ExtendedPpt.openBankingOriginSpecificSessionData(TestJourneys.Ppt.journeyBeforeBeginWebPayment.journeySpecificData)
+      testOsd(osd, PptSessionData(PptReference("XAPPT0000012345"), None), "XAPPT0000012345", "XAPPT0000012345")
+      roundTripJsonTest(osd, testJson)
+    }
+
+    "PfPpt" in {
+      val testJson = Json.parse("""{"pptReference":"XAPPT0000012345","origin":"PfPpt"}""")
+      val osd = ExtendedPfPpt.openBankingOriginSpecificSessionData(TestJourneys.PfPpt.journeyBeforeBeginWebPayment.journeySpecificData)
+      testOsd(osd, PfPptSessionData(PptReference("XAPPT0000012345"), None), "XAPPT0000012345", "XAPPT0000012345")
+      roundTripJsonTest(osd, testJson)
+    }
+
   }
 
   "sanity check for implemented origins" in {
-    TestHelpers.implementedOrigins.size shouldBe 17 withClue "** This dummy test is here to remind you to update the tests above. Bump up the expected number when an origin is added to implemented origins **"
+    TestHelpers.implementedOrigins.size shouldBe 19 withClue "** This dummy test is here to remind you to update the tests above. Bump up the expected number when an origin is added to implemented origins **"
   }
 
 }

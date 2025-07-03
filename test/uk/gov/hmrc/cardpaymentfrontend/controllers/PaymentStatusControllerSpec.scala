@@ -90,10 +90,10 @@ class PaymentStatusControllerSpec extends ItSpec {
 
     "paymentStatus" - {
 
-      "should return not found due to action refiner when journey state is before Sent, i.e. Created" in {
+      "should return bad request due to action refiner when journey state is before Sent, i.e. Created" in {
         PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyBeforeBeginWebPayment)
         val result = systemUnderTest.paymentStatus()(fakeRequest)
-        status(result) shouldBe Status.NOT_FOUND
+        status(result) shouldBe Status.BAD_REQUEST
       }
 
       "should return a redirect to payment success page when Successful CardPaymentResult is returned from backend after AuthAndCapture" in {

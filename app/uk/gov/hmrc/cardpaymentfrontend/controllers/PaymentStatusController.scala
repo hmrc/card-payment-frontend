@@ -17,12 +17,14 @@
 package uk.gov.hmrc.cardpaymentfrontend.controllers
 
 import play.api.Logging
+import play.api.i18n.Messages
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.cardpaymentfrontend.actions.{Actions, JourneyRequest}
 import uk.gov.hmrc.cardpaymentfrontend.config.AppConfig
 import uk.gov.hmrc.cardpaymentfrontend.models.cardpayment.CardPaymentFinishPaymentResponses
 import uk.gov.hmrc.cardpaymentfrontend.requests.RequestSupport
 import uk.gov.hmrc.cardpaymentfrontend.services.CardPaymentService
+import uk.gov.hmrc.cardpaymentfrontend.views.html.errors.TechnicalDifficultiesPage
 import uk.gov.hmrc.cardpaymentfrontend.views.html.iframe.{IframeContainerPage, RedirectToParentPage}
 import uk.gov.hmrc.http.HttpResponse
 import uk.gov.hmrc.play.bootstrap.binders.RedirectUrl.idFunctor
@@ -35,21 +37,21 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton()
 class PaymentStatusController @Inject() (
-    actions:            Actions,
-    appConfig:          AppConfig,
-    cardPaymentService: CardPaymentService,
-    mcc:                MessagesControllerComponents,
-    requestSupport:     RequestSupport,
-    iframeContainer:    IframeContainerPage,
-    redirectToParent:   RedirectToParentPage
+    actions:                   Actions,
+    appConfig:                 AppConfig,
+    cardPaymentService:        CardPaymentService,
+    mcc:                       MessagesControllerComponents,
+    requestSupport:            RequestSupport,
+    iframeContainer:           IframeContainerPage,
+    redirectToParent:          RedirectToParentPage,
+    technicalDifficultiesPage: TechnicalDifficultiesPage
 )(implicit executionContext: ExecutionContext) extends FrontendController(mcc) with Logging {
 
   import requestSupport._
 
   private val redirectUrlPolicy: RedirectUrlPolicy[Id] = AbsoluteWithHostnameFromAllowlist(appConfig.iframeHostNameAllowList)
 
-  //todo need to write a test for this, where we override the allow list or something to trigger bad request.
-  def showIframe(iframeUrl: RedirectUrl): Action[AnyContent] = actions.journeyAction { implicit journeyRequest =>
+  def showIframe(iframeUrl: RedirectUrl): Action[AnyContent] = actions.iframeAction { implicit journeyRequest =>
     iframeUrl
       .getEither[Id](redirectUrlPolicy)
       .fold[Result](
@@ -88,15 +90,15 @@ class PaymentStatusController @Inject() (
     }
   }
 
-  private def tryAndCancelPayment(cancelReason: Option[String])(implicit journeyRequest: JourneyRequest[_]): Future[Status] = {
+  private def tryAndCancelPayment(cancelReason: Option[String])(implicit journeyRequest: JourneyRequest[_], messages: Messages): Future[Result] = {
     cardPaymentService.cancelPayment().map { httpResponse: HttpResponse =>
       httpResponse.status match {
         case 200 =>
           logger.warn(s"Successfully cancelled the transaction, but now erroring gracefully because of: [ ${cancelReason.toString} ]")
-          InternalServerError
+          InternalServerError(technicalDifficultiesPage()(journeyRequest, messages))
         case _ =>
           logger.warn(s"Something went wrong trying to cancel the transaction. transactionReference: [ ${journeyRequest.journey.order.map(_.transactionReference.value).toString} ]")
-          InternalServerError
+          InternalServerError(technicalDifficultiesPage()(journeyRequest, messages))
       }
     }
   }

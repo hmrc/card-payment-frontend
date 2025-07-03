@@ -209,6 +209,12 @@ class CardPaymentServiceSpec extends ItSpec {
         systemUnderTest.cancelPayment()(new JourneyRequest(testJourneyAfterBeginWebPayment, FakeRequest().withLangWelsh())).futureValue
         CardPaymentStub.CancelPayment.verifyOne("Some-transaction-ref", "SAEC")
       }
+
+      "should update pay api state with cancelled" in {
+        systemUnderTest.cancelPayment()(fakeJourneyRequest(testJourneyAfterBeginWebPayment, false)).futureValue
+        CardPaymentStub.CancelPayment.verifyOne("Some-transaction-ref", "SAEE")
+        PayApiStub.verifyUpdateCancelWebPayment(1, testJourneyAfterBeginWebPayment._id.value)
+      }
     }
 
     "cardPaymentResultIntoUpdateWebPaymentRequest" - {

@@ -124,7 +124,11 @@ class CardPaymentService @Inject() (
     val clientId = clientIdService.determineClientId(journeyRequest.journey, requestSupport.usableLanguage)
     val clientIdStringToUse = if (appConfig.useProductionClientIds) clientId.prodCode else clientId.qaCode
 
-    cardPaymentConnector.cancelPayment(transactionReference.value, clientIdStringToUse)
+    for {
+      cancelPaymentHttpResponse <- cardPaymentConnector.cancelPayment(transactionReference.value, clientIdStringToUse)
+      _ <- payApiConnector.JourneyUpdates.updateCancelWebPayment(journeyRequest.journey._id.value)
+    } yield cancelPaymentHttpResponse
+
   }
 
   private[services] def cardPaymentResultIntoUpdateWebPaymentRequest: CardPaymentResult => Option[FinishedWebPaymentRequest] = {
