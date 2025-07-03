@@ -16,9 +16,10 @@
 
 package uk.gov.hmrc.cardpaymentfrontend.controllers
 
+import payapi.corcommon.model.PaymentStatuses
 import play.api.Logging
 import play.api.i18n.Lang
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.cardpaymentfrontend.actions.{Actions, JourneyRequest}
 import uk.gov.hmrc.cardpaymentfrontend.config.AppConfig
 import uk.gov.hmrc.cardpaymentfrontend.models.CheckYourAnswersRow.summarise
@@ -80,16 +81,32 @@ class CheckYourAnswersController @Inject() (
   def submit: Action[AnyContent] = actions.journeyAction.async { implicit journeyRequest: JourneyRequest[AnyContent] =>
     journeyRequest.readFromSession[Address](journeyRequest.journeyId, Keys.address) match {
       case Some(address) =>
-        cardPaymentService
-          .initiatePayment(
-            journey               = journeyRequest.journey,
-            addressFromSession    = address,
-            maybeEmailFromSession = journeyRequest.readFromSession[EmailAddress](journeyRequest.journeyId, Keys.email),
-            language              = requestSupport.usableLanguage
-          )(requestSupport.hc, journeyRequest)
-          .map { cardPaymentInitiatePaymentResponse =>
-            Redirect(routes.PaymentStatusController.showIframe(RedirectUrl(cardPaymentInitiatePaymentResponse.redirectUrl)))
+        def initiatePayment(): Future[Result] = {
+            cardPaymentService
+              .initiatePayment(
+                journey               = journeyRequest.journey,
+                addressFromSession    = address,
+                maybeEmailFromSession = journeyRequest.readFromSession[EmailAddress](journeyRequest.journeyId, Keys.email),
+                language              = requestSupport.usableLanguage
+              )(requestSupport.hc, journeyRequest)
+              .map { response =>
+                Redirect(routes.PaymentStatusController.showIframe(RedirectUrl(response.redirectUrl)))
+              }
           }
+        // If PaymentStatus is Sent then Redirect to the iFrameUrl from the order.
+        journeyRequest.journey.status match {
+          case PaymentStatuses.Sent =>
+            journeyRequest.journey.order match {
+              case Some(order) =>
+                Future.successful(Redirect(routes.PaymentStatusController.showIframe(RedirectUrl(order.iFrameUrl.value))))
+              case None =>
+                logger.warn(s"Payment status for journeyId ${journeyRequest.journeyId.toString} was Sent but order was None.")
+                initiatePayment()
+            }
+          case _ =>
+            initiatePayment()
+        }
+
       case None =>
         Future.successful(Redirect(routes.AddressController.renderPage))
     }

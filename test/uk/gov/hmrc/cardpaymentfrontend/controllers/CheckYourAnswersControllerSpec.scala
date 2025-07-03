@@ -19,7 +19,9 @@ package uk.gov.hmrc.cardpaymentfrontend.controllers
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Element
 import org.scalatest.Assertion
-import payapi.cardpaymentjourney.model.journey.{Journey, JourneySpecificData}
+import payapi.cardpaymentjourney.model.barclays.BarclaysOrder
+import payapi.cardpaymentjourney.model.journey.{Journey, JourneySpecificData, Url}
+import payapi.corcommon.model.barclays.TransactionReference
 import payapi.corcommon.model.{AmountInPence, JourneyId, Origin, Origins}
 import play.api.http.Status
 import play.api.http.Status.SEE_OTHER
@@ -738,6 +740,22 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       val result = systemUnderTest.submit(fakeRequest(TestJourneys.PfSa.journeyBeforeBeginWebPayment._id))
       status(result) shouldBe SEE_OTHER
       redirectLocation(result) shouldBe Some("/pay-by-card/show-iframe?iframeUrl=http%3A%2F%2Flocalhost%3A10155%2Fthis-would-be-iframe")
+    }
+
+    "should redirect to iFrameUrl if PaymentStatus is Sent and there is an order present" in {
+        def fakeRequestWithSentPaymentStatus(journeyId: JourneyId = TestJourneys.PfSa.journeyAfterBeginWebPayment._id): FakeRequest[AnyContentAsEmpty.type] =
+          FakeRequest().withSessionId().withEmailAndAddressInSession(journeyId)
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyAfterBeginWebPayment.copy(order =
+        Some(BarclaysOrder(
+          transactionReference = TransactionReference("Some-transaction-ref"),
+          iFrameUrl            = Url("http://localhost:9975/barclays/pages/paypage.jsf/600e1342-0714-4989-ac6c-c11c745f1ce6"),
+          cardCategory         = None,
+          commissionInPence    = None,
+          paidOn               = None
+        ))))
+      val result = systemUnderTest.submit(fakeRequestWithSentPaymentStatus())
+      status(result) shouldBe SEE_OTHER
+      redirectLocation(result) shouldBe Some("/pay-by-card/show-iframe?iframeUrl=http%3A%2F%2Flocalhost%3A9975%2Fbarclays%2Fpages%2Fpaypage.jsf%2F600e1342-0714-4989-ac6c-c11c745f1ce6")
     }
 
     "should redirect to the Address page if there is no Address in session" in {
