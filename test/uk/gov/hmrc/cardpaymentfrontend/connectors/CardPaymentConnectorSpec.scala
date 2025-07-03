@@ -17,11 +17,12 @@
 package uk.gov.hmrc.cardpaymentfrontend.connectors
 
 import payapi.corcommon.model.AmountInPence
-import uk.gov.hmrc.cardpaymentfrontend.models.cardpayment.{BarclaycardAddress, CardPaymentInitiatePaymentRequest, CardPaymentInitiatePaymentResponse}
+import play.mvc.Http.Status
 import uk.gov.hmrc.cardpaymentfrontend.models.EmailAddress
+import uk.gov.hmrc.cardpaymentfrontend.models.cardpayment.{BarclaycardAddress, CardPaymentInitiatePaymentRequest, CardPaymentInitiatePaymentResponse}
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.ItSpec
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.stubs.CardPaymentStub
-import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 
 class CardPaymentConnectorSpec extends ItSpec {
 
@@ -59,6 +60,14 @@ class CardPaymentConnectorSpec extends ItSpec {
 
     // todo add some tests, currently we don't really care since it's just a HttpResponse... add this later
     "authAndSettle" is pending
+
+    "cancelPayment" - {
+      "returns HttpResponse when cancel transaction call to card-payment succeeds" in {
+        CardPaymentStub.CancelPayment.stubForCancelPayment2xx("some-transaction-reference", "SAEE")
+        val result: HttpResponse = systemUnderTest.cancelPayment("some-transaction-reference", "SAEE").futureValue
+        result.status shouldBe Status.OK
+      }
+    }
   }
 
 }
