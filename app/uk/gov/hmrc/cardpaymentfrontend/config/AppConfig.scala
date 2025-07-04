@@ -40,6 +40,8 @@ class AppConfig @Inject() (config: Configuration, servicesConfig: ServicesConfig
 
   val signInUrl: String = config.get[String]("urls.sign-in.base-url")
 
+  val accessibilityStatementUrl: Option[String] = config.getOptional[String]("urls.accessibility-statement.service-path")
+
   val timeoutInSeconds: Int = config.get[Int]("timeoutInSeconds")
   val countdownInSeconds: Int = config.get[Int]("countdownInSeconds")
 

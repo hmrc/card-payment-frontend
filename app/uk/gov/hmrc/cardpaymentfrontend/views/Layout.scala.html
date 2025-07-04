@@ -15,17 +15,14 @@
  *@
 
 @import payapi.corcommon.model.Origin
+@import uk.gov.hmrc.cardpaymentfrontend.config.AppConfig
 @import uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins.ExtendedOrigin.OriginExtended
+@import uk.gov.hmrc.cardpaymentfrontend.requests.RequestSupport.isLoggedIn
 @import uk.gov.hmrc.cardpaymentfrontend.views.helpers.TitleMaker.journeyTitleMaker
 @import uk.gov.hmrc.govukfrontend.views.Aliases.BackLink
-@import uk.gov.hmrc.hmrcfrontend.views.html.helpers.{HmrcReportTechnicalIssueHelper, HmrcStandardPage}
-@import uk.gov.hmrc.hmrcfrontend.views.viewmodels.hmrcstandardpage.{HmrcStandardPageParams, TemplateOverrides}
+@import uk.gov.hmrc.hmrcfrontend.views.html.helpers.{HmrcReportTechnicalIssueHelper, HmrcStandardPage, HmrcTimeoutDialogHelper}
+@import uk.gov.hmrc.hmrcfrontend.views.viewmodels.hmrcstandardpage.{HmrcStandardPageParams, ServiceURLs, TemplateOverrides}
 @import views.html.helper.CSPNonce
-@import uk.gov.hmrc.hmrcfrontend.views.viewmodels.hmrcstandardpage.ServiceURLs
-@import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcTimeoutDialogHelper
-@import uk.gov.hmrc.cardpaymentfrontend.requests.RequestSupport
-@import uk.gov.hmrc.cardpaymentfrontend.requests.RequestSupport.isLoggedIn
-@import uk.gov.hmrc.cardpaymentfrontend.config.AppConfig
 
 @this(
         hmrcStandardPage: HmrcStandardPage,
@@ -46,8 +43,6 @@
 )(contentBlock: Html)(implicit request: RequestHeader, messages: Messages)
 
 @serviceName = @{origin.map(eo => messages(eo.lift.serviceNameMessageKey)).getOrElse(messages("service-name.generic"))}
-
-
 
 @headBlock = {
     @if(showTimeoutDialogue) {
@@ -92,8 +87,9 @@
       templateOverrides = TemplateOverrides(
           additionalScriptsBlock = Some(scripts),
           additionalHeadBlock = Some(headBlock)
-    ),
+      ),
       serviceURLs = ServiceURLs(
+          accessibilityStatementUrl = appConfig.accessibilityStatementUrl,
           signOutUrl = if (isLoggedIn) Some(uk.gov.hmrc.cardpaymentfrontend.controllers.routes.SignOutController.signOut.url) else None
       ),
       pageTitle = Some(journeyTitleMaker(h1Key = pageTitle, origin = origin, maybeForm = maybeForm)),
@@ -102,8 +98,6 @@
       backLink = {
           if (showBackLink) {
               if (backLinkOverride.isDefined) backLinkOverride else Some(BackLink.mimicsBrowserBackButtonViaJavaScript)
-          }
-          else None
-      }
-  )
+          } else None
+      })
 )(content)
