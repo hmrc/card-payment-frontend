@@ -440,7 +440,7 @@ object TestJourneys {
       status               = PaymentStatuses.Created,
       createdOn            = LocalDateTime.parse("2027-11-02T16:28:55.185"),
       journeySpecificData  = JsdBtaEpayeInterest(
-        xRef                    = XRef("X1234567890123"),
+        xRef                    = XRef("XE123456789012"),
         accountsOfficeReference = AccountsOfficeReference("123PH45678900"),
         period                  = testSubYearlyPeriod,
         defaultAmountInPence    = AmountInPence(1234),
