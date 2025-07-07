@@ -198,6 +198,25 @@ class CardPaymentServiceSpec extends ItSpec {
       }
     }
 
+    "cancelPayment" - {
+
+      "should call the cancelPayment in the connector and the card-payment backend when given a valid journeyRequest" in {
+        systemUnderTest.cancelPayment()(fakeJourneyRequest(testJourneyAfterBeginWebPayment, false)).futureValue
+        CardPaymentStub.CancelPayment.verifyOne("Some-transaction-ref", "SAEE")
+      }
+
+      "should call the cancelPayment in the connector with welsh clientId when lang is welsh" in {
+        systemUnderTest.cancelPayment()(new JourneyRequest(testJourneyAfterBeginWebPayment, FakeRequest().withLangWelsh())).futureValue
+        CardPaymentStub.CancelPayment.verifyOne("Some-transaction-ref", "SAEC")
+      }
+
+      "should update pay api state with cancelled" in {
+        systemUnderTest.cancelPayment()(fakeJourneyRequest(testJourneyAfterBeginWebPayment, false)).futureValue
+        CardPaymentStub.CancelPayment.verifyOne("Some-transaction-ref", "SAEE")
+        PayApiStub.verifyUpdateCancelWebPayment(1, testJourneyAfterBeginWebPayment._id.value)
+      }
+    }
+
     "cardPaymentResultIntoUpdateWebPaymentRequest" - {
       "return None when response inside CardPaymentResult is CardPaymentFinishPaymentResponses.Cancelled" in {
         val testCardPaymentResult = CardPaymentResult(CardPaymentFinishPaymentResponses.Cancelled, AdditionalPaymentInfo(None, None, None))

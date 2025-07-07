@@ -7,6 +7,8 @@ continue = Yn eich blaen
 
 error.there-is-a-problem = Mae problem wedi codi
 error.title-prefix = Gwall:
+error.problem-with-service = Mae’n ddrwg gennym, mae problem gyda’r gwasanaeth hwn
+error.try-again-in-a-few-minutes = Rhowch gynnig arall arni mewn ychydig o funudau.
 
 ## Origin service names
 service-name.generic = Talwch eich treth

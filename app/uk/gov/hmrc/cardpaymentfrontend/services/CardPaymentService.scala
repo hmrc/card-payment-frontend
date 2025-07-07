@@ -29,7 +29,7 @@ import uk.gov.hmrc.cardpaymentfrontend.models.{Address, EmailAddress, Language}
 import uk.gov.hmrc.cardpaymentfrontend.requests.RequestSupport
 import uk.gov.hmrc.cardpaymentfrontend.session.JourneySessionSupport.{Keys, RequestOps}
 import uk.gov.hmrc.cardpaymentfrontend.util.SafeEquals.EqualsOps
-import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 
 import java.time.{Clock, LocalDateTime}
 import javax.inject.{Inject, Singleton}
@@ -117,6 +117,18 @@ class CardPaymentService @Inject() (
             .map(_ => maybeSendEmailF())
       }
     } yield cardPaymentResult
+  }
+
+  def cancelPayment()(implicit journeyRequest: JourneyRequest[_]): Future[HttpResponse] = {
+    val transactionReference = journeyRequest.journey.getTransactionReference
+    val clientId = clientIdService.determineClientId(journeyRequest.journey, requestSupport.usableLanguage)
+    val clientIdStringToUse = if (appConfig.useProductionClientIds) clientId.prodCode else clientId.qaCode
+
+    for {
+      cancelPaymentHttpResponse <- cardPaymentConnector.cancelPayment(transactionReference.value, clientIdStringToUse)
+      _ <- payApiConnector.JourneyUpdates.updateCancelWebPayment(journeyRequest.journey._id.value)
+    } yield cancelPaymentHttpResponse
+
   }
 
   private[services] def cardPaymentResultIntoUpdateWebPaymentRequest: CardPaymentResult => Option[FinishedWebPaymentRequest] = {
