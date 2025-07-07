@@ -37,7 +37,7 @@ object TestPayApiData {
   val testAccountsOfficeReference: AccountsOfficeReference = AccountsOfficeReference("123PH45678900")
   val testSubYearlyPeriod: SubYearlyEpayeTaxPeriod = MonthlyEpayeTaxPeriod(TaxMonth.MayJune, TaxYear(2027))
   val testYearlyPeriod: YearlyEpayeTaxPeriod = YearlyEpayeTaxPeriod(TaxYear(2027))
-  val testXref: XRef = XRef("X1234567890123")
+  val testXref: XRef = XRef("XE1234567890123")
   val testAmountInPence: AmountInPence = AmountInPence(12345)
   val testReturnUrl: Option[String] = Some("returnUrl")
 }

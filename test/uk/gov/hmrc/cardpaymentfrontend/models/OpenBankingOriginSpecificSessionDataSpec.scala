@@ -20,13 +20,13 @@ import org.scalatest.AppendedClues.convertToClueful
 import org.scalatest.Assertion
 import payapi.corcommon.model.taxes.ad.{AlcoholDutyChargeReference, AlcoholDutyReference}
 import payapi.corcommon.model.taxes.ct.{CtChargeTypes, CtPeriod, CtUtr}
-import payapi.corcommon.model.taxes.epaye.{AccountsOfficeReference, PsaNumber, QuarterlyEpayeTaxPeriod, YearlyEpayeTaxPeriod}
+import payapi.corcommon.model.taxes.epaye.{AccountsOfficeReference, EpayePenaltyReference, MonthlyEpayeTaxPeriod, PsaNumber, QuarterlyEpayeTaxPeriod, YearlyEpayeTaxPeriod}
 import payapi.corcommon.model.taxes.other.{XRef, XRef14Char}
 import payapi.corcommon.model.taxes.ppt.PptReference
 import payapi.corcommon.model.taxes.sa.SaUtr
 import payapi.corcommon.model.taxes.vat.{VatChargeReference, Vrn}
 import payapi.corcommon.model.times.period.TaxQuarter.AprilJuly
-import payapi.corcommon.model.times.period.TaxYear
+import payapi.corcommon.model.times.period.{TaxMonth, TaxYear}
 import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins._
 import uk.gov.hmrc.cardpaymentfrontend.models.openbanking._
@@ -188,10 +188,45 @@ class OpenBankingOriginSpecificSessionDataSpec extends UnitSpec {
       roundTripJsonTest(osd, testJson)
     }
 
+    "BtaEpayeBill" in {
+      val testJson = Json.parse("""{"accountsOfficeReference":"123PH45678900","period":{"taxMonth":"MayJune","taxYear":2027},"origin":"BtaEpayeBill"}""")
+      val osd = ExtendedBtaEpayeBill.openBankingOriginSpecificSessionData(TestJourneys.BtaEpayeBill.journeyBeforeBeginWebPayment.journeySpecificData)
+      testOsd(osd, BtaEpayeBillSessionData(AccountsOfficeReference("123PH45678900"), MonthlyEpayeTaxPeriod(TaxMonth.MayJune, TaxYear(2027)), None), "123PH456789002702", "123PH45678900")
+      roundTripJsonTest(osd, testJson)
+    }
+
+    "BtaEpayePenalty" in {
+      val testJson = Json.parse("""{"epayePenaltyReference":"123PH45678900","origin":"BtaEpayePenalty"}""")
+      val osd = ExtendedBtaEpayePenalty.openBankingOriginSpecificSessionData(TestJourneys.BtaEpayePenalty.journeyBeforeBeginWebPayment.journeySpecificData)
+      testOsd(osd, BtaEpayePenaltySessionData(EpayePenaltyReference("123PH45678900"), None), "123PH45678900", "123PH45678900")
+      roundTripJsonTest(osd, testJson)
+    }
+
+    "BtaEpayeInterest" in {
+      val testJson = Json.parse("""{"payeInterestXRef":"XE123456789012","origin":"BtaEpayeInterest"}""")
+      val osd = ExtendedBtaEpayeInterest.openBankingOriginSpecificSessionData(TestJourneys.BtaEpayeInterest.journeyBeforeBeginWebPayment.journeySpecificData)
+      testOsd(osd, BtaEpayeInterestSessionData(XRef("XE123456789012"), None), "XE123456789012", "XE123456789012")
+      roundTripJsonTest(osd, testJson)
+    }
+
+    "BtaEpayeGeneral" in {
+      val testJson = Json.parse("""{"accountsOfficeReference":"123PH45678900","period":{"taxMonth":"MayJune","taxYear":2027},"origin":"BtaEpayeGeneral"}""")
+      val osd = ExtendedBtaEpayeGeneral.openBankingOriginSpecificSessionData(TestJourneys.BtaEpayeGeneral.journeyBeforeBeginWebPayment.journeySpecificData)
+      testOsd(osd, BtaEpayeGeneralSessionData(AccountsOfficeReference("123PH45678900"), MonthlyEpayeTaxPeriod(TaxMonth.MayJune, TaxYear(2027)), None), "123PH456789002702", "123PH45678900")
+      roundTripJsonTest(osd, testJson)
+    }
+
+    "BtaClass1aNi" in {
+      val testJson = Json.parse("""{"accountsOfficeReference":"123PH45678900","period":{"taxYear":2027},"origin":"BtaClass1aNi"}""")
+      val osd = ExtendedBtaClass1aNi.openBankingOriginSpecificSessionData(TestJourneys.BtaClass1aNi.journeyBeforeBeginWebPayment.journeySpecificData)
+      testOsd(osd, BtaClass1aNiSessionData(AccountsOfficeReference("123PH45678900"), YearlyEpayeTaxPeriod(TaxYear(2027)), None), "123PH456789002713", "123PH45678900")
+      roundTripJsonTest(osd, testJson)
+    }
+
   }
 
   "sanity check for implemented origins" in {
-    TestHelpers.implementedOrigins.size shouldBe 19 withClue "** This dummy test is here to remind you to update the tests above. Bump up the expected number when an origin is added to implemented origins **"
+    TestHelpers.implementedOrigins.size shouldBe 24 withClue "** This dummy test is here to remind you to update the tests above. Bump up the expected number when an origin is added to implemented origins **"
   }
 
 }

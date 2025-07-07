@@ -612,7 +612,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       val result = systemUnderTest.renderPage(fakeRequest())
       val document = Jsoup.parse(contentAsString(result))
       val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.BtaEpayeInterest))
-      assertRow(referenceRow, "Payment reference", "X1234567890123", None, None)
+      assertRow(referenceRow, "Payment reference", "XE123456789012", None, None)
     }
 
     "[BtaEpayeInterest] should render the payment reference row correctly in Welsh" in {
@@ -620,7 +620,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       val result = systemUnderTest.renderPage(fakeRequestWelsh())
       val document = Jsoup.parse(contentAsString(result))
       val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.BtaEpayeInterest))
-      assertRow(referenceRow, "Cyfeirnod y taliad", "X1234567890123", None, None)
+      assertRow(referenceRow, "Cyfeirnod y taliad", "XE123456789012", None, None)
     }
 
     "[BtaEpayeGeneral] should render the payment reference row correctly" in {
