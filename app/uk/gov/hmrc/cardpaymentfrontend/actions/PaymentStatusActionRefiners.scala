@@ -72,7 +72,7 @@ class PaymentStatusActionRefiners @Inject() (
     logAndReturnF(journeyRequest, Results.Redirect(uk.gov.hmrc.cardpaymentfrontend.controllers.routes.PaymentFailedController.renderPage))
 
   private def logAndReturnF[A](journeyRequest: JourneyRequest[A], f: => Result): Future[Left[Result, Nothing]] = {
-    logger.warn(s"Trying to call payment status endpoint when journey is in state [${journeyRequest.journey.status.entryName}], but it should be in state [Sent]")
+    logger.warn(s"Trying to call ${journeyRequest.request.path} endpoint when journey is in state [${journeyRequest.journey.status.entryName}], but it should be in state [Sent]")
     Future.successful(Left(f))
   }
 
