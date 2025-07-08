@@ -43,7 +43,7 @@ class AppConfig @Inject() (config: Configuration, servicesConfig: ServicesConfig
   val timeoutInSeconds: Int = config.get[Int]("timeoutInSeconds")
   val countdownInSeconds: Int = config.get[Int]("countdownInSeconds")
 
-  val payFrontendBaseUrl: String = config.get[String]("urls.pay-frontend.base-url") + "/payF"
+  val payFrontendBaseUrl: String = config.get[String]("urls.pay-frontend.base-url") + "/pay"
   val cardPaymentFrontendBaseUrl: String = config.get[String]("urls.card-payment-frontend.base-url")
 
   val bankTransferRelativeUrl: String = config.get[String]("urls.pay-frontend.bank-transfer")
