@@ -70,7 +70,6 @@ class CheckYourAnswersController @Inject() (
         cardBillingAddressRow
       ).flatten.map(summarise)
 
-    // if there is no address, we shouldn't error,instead redirect user to the
     if (cardBillingAddressRow.isDefined) Ok(checkYourAnswersPage(SummaryList(summaryListRows)))
     else {
       logger.warn("Missing address from session, redirecting to enter address page.")
@@ -108,6 +107,7 @@ class CheckYourAnswersController @Inject() (
         }
 
       case None =>
+        logger.warn("Missing address from session, redirecting to enter address page.")
         Future.successful(Redirect(routes.AddressController.renderPage))
     }
   }

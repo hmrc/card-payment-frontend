@@ -63,6 +63,8 @@ class CardPaymentService @Inject() (
     val clientId: ClientId = clientIdService.determineClientId(journey, language)
     val clientIdStringToUse: String = if (appConfig.useProductionClientIds) clientId.prodCode else clientId.qaCode
 
+    logger.info(s"Initiating payment for journey ${journey._id.value}")
+
     //todo eventually we can just use barclaycardaddress model, but we want backwards compatibility with pay-frontend.
     // This way if user ends up on pay-frontend after being on card-payment-frontend (or vice versa) it won't break.
     val addressFromSessionAsBarclaycardAddress: BarclaycardAddress = BarclaycardAddress(
@@ -89,7 +91,10 @@ class CardPaymentService @Inject() (
       _ = auditService.auditPaymentAttempt(addressFromSession, clientIdStringToUse, initiatePaymentResponse.transactionReference)(journeyRequest, headerCarrier)
       payApiBeginWebPaymentRequest = BeginWebPaymentRequest(initiatePaymentResponse.transactionReference, initiatePaymentResponse.redirectUrl)
       _ <- payApiConnector.JourneyUpdates.updateBeginWebPayment(journey._id.value, payApiBeginWebPaymentRequest)(headerCarrier) //should we enhance this and error/retry?
-    } yield initiatePaymentResponse
+    } yield {
+      logger.info(s"Payment initiated for journey ${journey._id.value}.")
+      initiatePaymentResponse
+    }
   }
 
   def finishPayment(
@@ -98,6 +103,9 @@ class CardPaymentService @Inject() (
       language:             Language
   )(implicit journeyRequest: JourneyRequest[_], messagesApi: MessagesApi): Future[Option[CardPaymentResult]] = {
     val clientId: ClientId = clientIdService.determineClientId(journeyRequest.journey, language)
+
+    logger.info(s"Finishing payment for journey $journeyId.")
+
     for {
       result <- cardPaymentConnector.authAndSettle(transactionReference)
       cardPaymentResult = result.json.asOpt[CardPaymentResult]
@@ -109,10 +117,15 @@ class CardPaymentService @Inject() (
         )
       }
       maybeWebPaymentRequest: Option[FinishedWebPaymentRequest] = cardPaymentResult.flatMap(cardPaymentResultIntoUpdateWebPaymentRequest)
-      _ <- maybeWebPaymentRequest.fold(payApiConnector.JourneyUpdates.updateCancelWebPayment(journeyId)) {
+      _ <- maybeWebPaymentRequest.fold {
+        logger.info(s"Payment cancelled for journey $journeyId.")
+        payApiConnector.JourneyUpdates.updateCancelWebPayment(journeyId)
+      } {
         case r: FailWebPaymentRequest =>
+          logger.info(s"Payment failed for journey $journeyId.")
           payApiConnector.JourneyUpdates.updateFailWebPayment(journeyId, r)
         case r: SucceedWebPaymentRequest =>
+          logger.info(s"Payment finished for journey $journeyId.")
           payApiConnector.JourneyUpdates.updateSucceedWebPayment(journeyId, r)
             .map(_ => maybeSendEmailF())
       }
