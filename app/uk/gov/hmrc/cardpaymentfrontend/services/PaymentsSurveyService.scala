@@ -40,35 +40,28 @@ class PaymentsSurveyService @Inject() (
   import requestSupport._
 
   def startPaySurvey(journey: Journey[JourneySpecificData])(implicit request: Request[_]): Future[Url] = {
-    val paymentSurveyJourneyRequest: PaymentSurveyJourneyRequest = makeSsjJourneyRequest(journey)
     paymentsSurveyConnector
-      .startSurvey(paymentSurveyJourneyRequest)
+      .startSurvey(makeSsjJourneyRequest(journey))
       .map(_.nextUrl)
   }
 
   private[services] def makeSsjJourneyRequest(journey: Journey[JourneySpecificData])(implicit request: Request[_]): PaymentSurveyJourneyRequest = {
     implicit val messages: Messages = request.messages
     val extendedOrigin: ExtendedOrigin = journey.origin.lift
-    val origin: String = journey.origin.entryName
-    val returnMessage: String = messages(extendedOrigin.surveyReturnMessageKey)
-    val returnHref: String = extendedOrigin.surveyReturnHref
-    val auditName: String = extendedOrigin.surveyAuditName
-    val auditOptions: AuditOptions = AuditOptions.getAuditOptions(journey, extendedOrigin)
-    val contentItems: SurveyContentOptions = SurveyContentOptions(
-      isWelshSupported = extendedOrigin.surveyIsWelshSupported,
-      title            = SurveyBannerTitle(
-        englishValue = messages(extendedOrigin.surveyBannerTitle),
-        welshValue   = Some(messagesApi(extendedOrigin.surveyBannerTitle)(Lang("cy")))
-      )
-    )
 
     PaymentSurveyJourneyRequest(
-      origin         = origin,
-      returnMsg      = returnMessage,
-      returnHref     = returnHref,
-      auditName      = auditName,
-      audit          = auditOptions,
-      contentOptions = contentItems
+      origin         = journey.origin.entryName,
+      returnMsg      = messages(extendedOrigin.surveyReturnMessageKey),
+      returnHref     = extendedOrigin.surveyReturnHref,
+      auditName      = extendedOrigin.surveyAuditName,
+      audit          = AuditOptions.getAuditOptions(journey, extendedOrigin),
+      contentOptions = SurveyContentOptions(
+        isWelshSupported = extendedOrigin.surveyIsWelshSupported,
+        title            = SurveyBannerTitle(
+          englishValue = messages(extendedOrigin.surveyBannerTitle),
+          welshValue   = Some(messagesApi(extendedOrigin.surveyBannerTitle)(Lang("cy")))
+        )
+      )
     )
   }
 }
