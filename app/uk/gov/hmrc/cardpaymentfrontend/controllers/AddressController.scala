@@ -47,7 +47,6 @@ class AddressController @Inject() (
   }
 
   val submit: Action[AnyContent] = actions.journeyAction { implicit journeyRequest: JourneyRequest[AnyContent] =>
-
     AddressForm.form()
       .bindFromRequest()
       .fold(
@@ -58,5 +57,4 @@ class AddressController @Inject() (
         }
       )
   }
-
 }

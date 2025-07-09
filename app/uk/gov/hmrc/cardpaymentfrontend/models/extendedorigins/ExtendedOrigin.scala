@@ -163,11 +163,11 @@ object ExtendedOrigin {
       case Origins.BtaSa                    => ExtendedBtaSa
       case Origins.AppSa                    => DefaultExtendedOrigin
       case Origins.BtaVat                   => ExtendedBtaVat
-      case Origins.BtaEpayeBill             => DefaultExtendedOrigin
-      case Origins.BtaEpayePenalty          => DefaultExtendedOrigin
-      case Origins.BtaEpayeInterest         => DefaultExtendedOrigin
-      case Origins.BtaEpayeGeneral          => DefaultExtendedOrigin
-      case Origins.BtaClass1aNi             => DefaultExtendedOrigin
+      case Origins.BtaEpayeBill             => ExtendedBtaEpayeBill
+      case Origins.BtaEpayePenalty          => ExtendedBtaEpayePenalty
+      case Origins.BtaEpayeInterest         => ExtendedBtaEpayeInterest
+      case Origins.BtaEpayeGeneral          => ExtendedBtaEpayeGeneral
+      case Origins.BtaClass1aNi             => ExtendedBtaClass1aNi
       case Origins.BtaCt                    => ExtendedBtaCt
       case Origins.BtaSdil                  => DefaultExtendedOrigin
       case Origins.BcPngr                   => DefaultExtendedOrigin

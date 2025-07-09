@@ -49,7 +49,12 @@ object TestHelpers {
     VcVatReturn,
     VcVatOther,
     Ppt,
-    PfPpt
+    PfPpt,
+    BtaEpayeBill,
+    BtaEpayePenalty,
+    BtaEpayeInterest,
+    BtaEpayeGeneral,
+    BtaClass1aNi
   )
 
   val unimplementedOrigins: Seq[Origin] = Seq[Origin](
@@ -62,11 +67,6 @@ object TestHelpers {
     PfInsurancePremium,
     PfPsAdmin,
     AppSa,
-    BtaEpayeBill,
-    BtaEpayePenalty,
-    BtaEpayeInterest,
-    BtaEpayeGeneral,
-    BtaClass1aNi,
     BtaSdil,
     BcPngr,
     Parcels,
@@ -117,7 +117,7 @@ object TestHelpers {
     Pillar2
   )
 
-  def deriveTestDataFromOrigin[jsd <: JourneySpecificData](origin: Origin): JourneyStatuses[_ >: JsdPfSa with JsdBtaSa with JsdPtaSa with JsdItSa with JsdPfVat with JsdPfCt with JsdPfEpayeNi with JsdPfEpayeLpp with JsdPfEpayeSeta with JsdPfEpayeLateCis with JsdPfEpayeP11d with JsdBtaVat with JsdBtaCt with JsdVcVatReturn with JsdVcVatOther with JsdAlcoholDuty with JsdPfAlcoholDuty with JsdPpt with JsdPfPpt <: JourneySpecificData] = origin match {
+  def deriveTestDataFromOrigin[jsd <: JourneySpecificData](origin: Origin): JourneyStatuses[_ >: JsdPfSa with JsdBtaSa with JsdPtaSa with JsdItSa with JsdPfVat with JsdPfCt with JsdPfEpayeNi with JsdPfEpayeLpp with JsdPfEpayeSeta with JsdPfEpayeLateCis with JsdPfEpayeP11d with JsdBtaVat with JsdBtaCt with JsdVcVatReturn with JsdVcVatOther with JsdAlcoholDuty with JsdPfAlcoholDuty with JsdBtaEpayeBill with JsdBtaEpayePenalty with JsdBtaEpayeGeneral with JsdBtaEpayeInterest with JsdBtaClass1aNi with JsdPpt with JsdPfPpt <: JourneySpecificData] = origin match {
     case Origins.PfSa                     => TestJourneys.PfSa
     case Origins.BtaSa                    => TestJourneys.BtaSa
     case Origins.PtaSa                    => TestJourneys.PtaSa
@@ -139,11 +139,11 @@ object TestHelpers {
     case Origins.PfPsAdmin                => throw new MatchError("Not implemented yet")
     case Origins.AppSa                    => throw new MatchError("Not implemented yet")
     case Origins.BtaVat                   => TestJourneys.BtaVat
-    case Origins.BtaEpayeBill             => throw new MatchError("Not implemented yet")
-    case Origins.BtaEpayePenalty          => throw new MatchError("Not implemented yet")
-    case Origins.BtaEpayeInterest         => throw new MatchError("Not implemented yet")
-    case Origins.BtaEpayeGeneral          => throw new MatchError("Not implemented yet")
-    case Origins.BtaClass1aNi             => throw new MatchError("Not implemented yet")
+    case Origins.BtaEpayeBill             => TestJourneys.BtaEpayeBill
+    case Origins.BtaEpayePenalty          => TestJourneys.BtaEpayePenalty
+    case Origins.BtaEpayeInterest         => TestJourneys.BtaEpayeInterest
+    case Origins.BtaEpayeGeneral          => TestJourneys.BtaEpayeGeneral
+    case Origins.BtaClass1aNi             => TestJourneys.BtaClass1aNi
     case Origins.BtaCt                    => TestJourneys.BtaCt
     case Origins.BtaSdil                  => throw new MatchError("Not implemented yet")
     case Origins.BcPngr                   => throw new MatchError("Not implemented yet")

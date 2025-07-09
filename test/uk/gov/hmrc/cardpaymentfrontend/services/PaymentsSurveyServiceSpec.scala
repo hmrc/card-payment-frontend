@@ -482,6 +482,122 @@ class PaymentsSurveyServiceSpec extends ItSpec with TableDrivenPropertyChecks {
           val result = systemUnderTest.makeSsjJourneyRequest(TestJourneys.Ppt.journeyAfterSucceedDebitWebPayment)(loggedOutFakeRequest)
           result shouldBe expectedPaymentSurveyJourneyRequest
         }
+
+        "for BtaEpayeBill" in {
+          val expectedPaymentSurveyJourneyRequest = PaymentSurveyJourneyRequest(
+            origin         = "BtaEpayeBill",
+            returnMsg      = "Skip survey, return to business tax account",
+            returnHref     = "/business-account",
+            auditName      = "epaye",
+            audit          = AuditOptions(
+              userType  = "LoggedIn",
+              journey   = Some("Successful"),
+              orderId   = Some("123PH456789002702"),
+              liability = Some("epaye")
+            ),
+            contentOptions = SurveyContentOptions(
+              isWelshSupported = true,
+              title            = SurveyBannerTitle(
+                englishValue = "Pay your employers’ PAYE and National Insurance", welshValue = Some("Talwch eich TWE a’ch Yswiriant Gwladol y cyflogwr")
+              )
+            )
+          )
+          val result = systemUnderTest.makeSsjJourneyRequest(TestJourneys.BtaEpayeBill.journeyAfterSucceedDebitWebPayment)(loggedInFakeRequest)
+          result shouldBe expectedPaymentSurveyJourneyRequest
+        }
+
+        "for BtaEpayePenalty" in {
+          val expectedPaymentSurveyJourneyRequest = PaymentSurveyJourneyRequest(
+            origin         = "BtaEpayePenalty",
+            returnMsg      = "Skip survey, return to business tax account",
+            returnHref     = "/business-account",
+            auditName      = "paye-penalty",
+            audit          = AuditOptions(
+              userType  = "LoggedIn",
+              journey   = Some("Successful"),
+              orderId   = Some("123PH45678900"),
+              liability = Some("paye-penalty")
+            ),
+            contentOptions = SurveyContentOptions(
+              isWelshSupported = true,
+              title            = SurveyBannerTitle(
+                englishValue = "Pay your PAYE late payment or filing penalty", welshValue = Some("Talu’ch cosb am dalu neu gyflwyno TWE yn hwyr")
+              )
+            )
+          )
+          val result = systemUnderTest.makeSsjJourneyRequest(TestJourneys.BtaEpayePenalty.journeyAfterSucceedDebitWebPayment)(loggedInFakeRequest)
+          result shouldBe expectedPaymentSurveyJourneyRequest
+        }
+
+        "for BtaEpayeInterest" in {
+          val expectedPaymentSurveyJourneyRequest = PaymentSurveyJourneyRequest(
+            origin         = "BtaEpayeInterest",
+            returnMsg      = "Skip survey, return to business tax account",
+            returnHref     = "/business-account",
+            auditName      = "paye-interest",
+            audit          = AuditOptions(
+              userType  = "LoggedIn",
+              journey   = Some("Successful"),
+              orderId   = Some("XE123456789012"),
+              liability = Some("paye-interest")
+            ),
+            contentOptions = SurveyContentOptions(
+              isWelshSupported = true,
+              title            = SurveyBannerTitle(
+                englishValue = "Pay employers’ PAYE interest", welshValue = Some("Taliad llog TWE cyflogwr")
+              )
+            )
+          )
+          val result = systemUnderTest.makeSsjJourneyRequest(TestJourneys.BtaEpayeInterest.journeyAfterSucceedDebitWebPayment)(loggedInFakeRequest)
+          result shouldBe expectedPaymentSurveyJourneyRequest
+        }
+
+        "for BtaEpayeGeneral" in {
+          val expectedPaymentSurveyJourneyRequest = PaymentSurveyJourneyRequest(
+            origin         = "BtaEpayeGeneral",
+            returnMsg      = "Skip survey, return to business tax account",
+            returnHref     = "/business-account",
+            auditName      = "epaye",
+            audit          = AuditOptions(
+              userType  = "LoggedIn",
+              journey   = Some("Successful"),
+              orderId   = Some("123PH456789002702"),
+              liability = Some("epaye")
+            ),
+            contentOptions = SurveyContentOptions(
+              isWelshSupported = true,
+              title            = SurveyBannerTitle(
+                englishValue = "Pay your employers’ PAYE and National Insurance", welshValue = Some("Talwch eich TWE a’ch Yswiriant Gwladol y cyflogwr")
+              )
+            )
+          )
+          val result = systemUnderTest.makeSsjJourneyRequest(TestJourneys.BtaEpayeGeneral.journeyAfterSucceedDebitWebPayment)(loggedInFakeRequest)
+          result shouldBe expectedPaymentSurveyJourneyRequest
+        }
+
+        "for BtaClass1aNi" in {
+          val expectedPaymentSurveyJourneyRequest = PaymentSurveyJourneyRequest(
+            origin         = "BtaClass1aNi",
+            returnMsg      = "Skip survey, return to business tax account",
+            returnHref     = "/business-account",
+            auditName      = "class-1a-national-insurance",
+            audit          = AuditOptions(
+              userType  = "LoggedIn",
+              journey   = Some("Successful"),
+              orderId   = Some("123PH456789002713"),
+              liability = Some("class-1a-national-insurance")
+            ),
+            contentOptions = SurveyContentOptions(
+              isWelshSupported = true,
+              title            = SurveyBannerTitle(
+                englishValue = "Pay your employers’ Class 1A National Insurance (P11D bill)", welshValue = Some("Talu’ch Yswiriant Gwladol Dosbarth 1A y cyflogwr (bil P11D)")
+              )
+            )
+          )
+          val result = systemUnderTest.makeSsjJourneyRequest(TestJourneys.BtaClass1aNi.journeyAfterSucceedDebitWebPayment)(loggedInFakeRequest)
+          result shouldBe expectedPaymentSurveyJourneyRequest
+        }
+
       }
     }
   }

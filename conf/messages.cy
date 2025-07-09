@@ -7,6 +7,8 @@ continue = Yn eich blaen
 
 error.there-is-a-problem = Mae problem wedi codi
 error.title-prefix = Gwall:
+error.problem-with-service = Mae’n ddrwg gennym, mae problem gyda’r gwasanaeth hwn
+error.try-again-in-a-few-minutes = Rhowch gynnig arall arni mewn ychydig o funudau.
 
 ## Origin service names
 service-name.generic = Talwch eich treth
@@ -31,9 +33,9 @@ service-name.AppSa = Talu eich Hunanasesiad
 service-name.BtaVat = Talu eich TAW
 service-name.BtaEpayeBill = Talwch eich TWE a’ch Yswiriant Gwladol y cyflogwr
 service-name.BtaEpayePenalty = Talu’ch cosb am dalu neu gyflwyno TWE yn hwyr
-service-name.BtaEpayeInterest =
+service-name.BtaEpayeInterest = Taliad llog TWE cyflogwr
 service-name.BtaEpayeGeneral = Talwch eich TWE a’ch Yswiriant Gwladol y cyflogwr
-service-name.BtaClass1aNi = Talwch eich TWE a’ch Yswiriant Gwladol y cyflogwr
+service-name.BtaClass1aNi = Talu’ch Yswiriant Gwladol Dosbarth 1A y cyflogwr (bil P11D)
 service-name.BtaCt = Talu eich Treth Gorfforaeth
 service-name.BtaSdil =
 service-name.BcPngr =
@@ -142,6 +144,13 @@ check-your-details.VcVatOther.reference = Rhif cofrestru TAW
 check-your-details.VcVatOther.charge-reference = Cyfeirnod y tâl
 check-your-details.Ppt.reference = Cyfeirnod
 check-your-details.PfPpt.reference = Cyfeirnod
+check-your-details.BtaEpayeBill.reference = Cyfeirnod y taliad
+check-your-details.BtaEpayePenalty.reference = Cyfeirnod y taliad
+check-your-details.BtaEpayeInterest.reference = Cyfeirnod y taliad
+check-your-details.BtaEpayeGeneral.reference = Cyfeirnod y taliad
+check-your-details.BtaClass1aNi.reference = Cyfeirnod y taliad
+check-your-details.BtaClass1aNi.tax-period = Cyfnod talu
+
 
 ## Address Page
 address.heading = Cyfeiriad bilio’r cerdyn
@@ -229,11 +238,11 @@ payment-complete.tax-name.PfPsAdmin =
 payment-complete.tax-name.BtaSa = Hunanasesiad
 payment-complete.tax-name.AppSa = Hunanasesiad
 payment-complete.tax-name.BtaVat = TAW
-payment-complete.tax-name.BtaEpayeBill =
-payment-complete.tax-name.BtaEpayePenalty =
-payment-complete.tax-name.BtaEpayeInterest =
-payment-complete.tax-name.BtaEpayeGeneral =
-payment-complete.tax-name.BtaClass1aNi =
+payment-complete.tax-name.BtaEpayeBill = TWE a’ch Yswiriant Gwladol y cyflogwr
+payment-complete.tax-name.BtaEpayePenalty = TWE a’ch Yswiriant Gwladol y cyflogwr
+payment-complete.tax-name.BtaEpayeInterest = TWE a’ch Yswiriant Gwladol y cyflogwr
+payment-complete.tax-name.BtaEpayeGeneral = TWE a’ch Yswiriant Gwladol y cyflogwr
+payment-complete.tax-name.BtaClass1aNi = Yswiriant Gwladol Dosbarth 1A y Cyflogwr
 payment-complete.tax-name.BtaCt = Treth Gorfforaeth
 payment-complete.tax-name.BtaSdil =
 payment-complete.tax-name.BcPngr =
@@ -332,6 +341,11 @@ email.tax-name.VcVatReturn = TAW
 email.tax-name.VcVatOther = TAW
 email.tax-name.Ppt = Dreth Deunydd Pacio Plastig
 email.tax-name.PfPpt = Dreth Deunydd Pacio Plastig
+email.tax-name.BtaEpayeBill = TWE ac Yswiriant Gwladol y Cyflogwr
+email.tax-name.BtaEpayePenalty = Cosb y Cyflogwr am dalu TWE yn hwyr
+email.tax-name.BtaEpayeInterest = Taliad llog TWE cyflogwr
+email.tax-name.BtaEpayeGeneral = TWE ac Yswiriant Gwladol y Cyflogwr
+email.tax-name.BtaClass1aNi = Yswiriant Gwladol Dosbarth 1A y Cyflogwr
 
 ## Payments survey
 payments-survey.bta.return-message = Dim diolch, dychwelyd i cyfrif treth busnes
