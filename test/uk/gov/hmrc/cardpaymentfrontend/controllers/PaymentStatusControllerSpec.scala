@@ -90,14 +90,8 @@ class PaymentStatusControllerSpec extends ItSpec {
         val result = systemUnderTest.returnToHmrc()(fakeRequest)
         status(result) shouldBe Status.OK
         val document = Jsoup.parse(contentAsString(result))
-        println(document)
-        document.select(".hmrc-header").isEmpty shouldBe true
-        // Example 2: Check for absence of an element with a specific ID
-        document.getElementById("hmrc-template").shouldBe(null)
-        // Example 3: Check for absence of a specific tag (e.g., <header> with HMRC branding)
-        document.select("header.hmrc-branding").isEmpty shouldBe true
-        // Example 4: Check for absence of elements with a specific attribute
-        document.select("[data-hmrc-template]").isEmpty shouldBe true
+        document.select(".govuk-header").isEmpty shouldBe true
+        document.select(".govuk-footer").isEmpty shouldBe true
       }
 
     }
