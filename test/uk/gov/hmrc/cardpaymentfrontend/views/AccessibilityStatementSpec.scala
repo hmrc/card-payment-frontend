@@ -24,7 +24,6 @@ import uk.gov.hmrc.cardpaymentfrontend.testsupport.ItSpec
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.TestOps.FakeRequestOps
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.stubs.PayApiStub
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.testdata.TestJourneys
-
 import scala.jdk.CollectionConverters.CollectionHasAsScala
 
 class AccessibilityStatementSpec extends ItSpec {
@@ -39,7 +38,7 @@ class AccessibilityStatementSpec extends ItSpec {
     val result = feesController.renderPage(fakeRequest)
     val document = Jsoup.parse(contentAsString(result))
     val accessibilityItem = document.select("ul.govuk-footer__inline-list li.govuk-footer__inline-list-item a").asScala.find(_.text().trim == "Accessibility statement")
-    accessibilityItem.flatMap(item => Option(item.attr("href"))) shouldBe Some("http://localhost:12346/accessibility-statement/pay?referrerUrl=%2F")
+    accessibilityItem.flatMap(item => Option(item.attr("href"))) shouldBe Some("http://localhost:12346/accessibility-statement/pay?referrerUrl=%2Fpay")
   }
 
 }
