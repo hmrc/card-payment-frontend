@@ -14,19 +14,17 @@
  * limitations under the License.
  *@
 
-@import uk.gov.hmrc.cardpaymentfrontend.views.html.Layout
 @import views.html.helper.CSPNonce
 
-@this(layout: Layout)
+@this()
 
-@()(implicit requestHeader: RequestHeader, messages: Messages)
+@()(implicit requestHeader: RequestHeader)
 
-@scripts = {<script src="@{controllers.routes.Assets.versioned("javascripts/escape-iframe.js")}" @{CSPNonce.attr}></script>}
+<script src="@{controllers.routes.Assets.versioned("javascripts/escape-iframe.js")}" @{CSPNonce.attr}></script>
 
-@layout(pageTitle = None, additionalScripts = Some(scripts)) {
     @*This is how we redirect the user out of the iframe and we can then call auth and settle etc. *@
-    <a rel="noreferrer"
-    id="returnControlLink"
-    target="_parent"
-    href="@{uk.gov.hmrc.cardpaymentfrontend.controllers.routes.PaymentStatusController.paymentStatus()}"></a>
-}
+<a rel="noreferrer"
+id="returnControlLink"
+target="_parent"
+href="@{uk.gov.hmrc.cardpaymentfrontend.controllers.routes.PaymentStatusController.paymentStatus()}"></a>
+
