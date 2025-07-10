@@ -1580,6 +1580,53 @@ class FeesControllerSpec extends ItSpec {
         }
       }
 
+      "for origin Amls" - {
+
+        "render the static content correctly" in {
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.Amls.journeyBeforeBeginWebPayment)
+          val result = systemUnderTest.renderPage(fakeRequest)
+          val document = Jsoup.parse(contentAsString(result))
+          document.select(".govuk-header__service-name").html shouldBe "Pay your employers’ Class 1A National Insurance (P11D bill)"
+          testStaticContentEnglish(document)
+        }
+
+        "the static content correctly in welsh" in {
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.Amls.journeyBeforeBeginWebPayment)
+          val result = systemUnderTest.renderPage(fakeWelshRequest)
+          val document = Jsoup.parse(contentAsString(result))
+          document.select(".govuk-header__service-name").html shouldBe "Talu’ch Yswiriant Gwladol Dosbarth 1A y cyflogwr (bil P11D)"
+          testStaticContentWelsh(document)
+        }
+
+        "render four options for other ways to pay" in {
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.Amls.journeyBeforeBeginWebPayment)
+          val result = systemUnderTest.renderPage(fakeRequest)
+          val document = Jsoup.parse(contentAsString(result))
+          val listOfMethods = document.select("#payment-type-list").select("li")
+          listOfMethods.size() shouldBe 3
+        }
+
+        "render an option for open banking" in {
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.Amls.journeyBeforeBeginWebPayment)
+          val result = systemUnderTest.renderPage(fakeRequest)
+          val document = Jsoup.parse(contentAsString(result))
+          val listOfMethods = document.select("#payment-type-list").select("li")
+          val openBankingBullet = listOfMethods.select("#open-banking-link")
+          openBankingBullet.text() shouldBe "bank account"
+          openBankingBullet.attr("href") shouldBe "/pay-by-card/start-open-banking"
+        }
+
+        "render an option for open banking in welsh" in {
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.Amls.journeyBeforeBeginWebPayment)
+          val result = systemUnderTest.renderPage(fakeWelshRequest)
+          val document = Jsoup.parse(contentAsString(result))
+          val listOfMethods = document.select("#payment-type-list").select("li")
+          val openBankingBullet = listOfMethods.select("#open-banking-link")
+          openBankingBullet.text() shouldBe "cyfrif banc"
+          openBankingBullet.attr("href") shouldBe "/pay-by-card/start-open-banking"
+        }
+      }
+
     }
 
     "POST /card-fees" - {
@@ -1670,7 +1717,7 @@ class FeesControllerSpec extends ItSpec {
             case Origins.DdSdil                   => Seq.empty
             case Origins.VcVatReturn              => Seq(expectedOpenBankingLink, expectedVariableDirectDebitLink)
             case Origins.VcVatOther               => Seq(expectedOpenBankingLink)
-            case Origins.Amls                     => Seq.empty
+            case Origins.Amls                     => Seq(expectedOpenBankingLink)
             case Origins.Ppt                      => Seq(expectedOpenBankingLink, expectedOneOffDirectDebitLink)
             case Origins.PfCdsCash                => Seq.empty
             case Origins.PfPpt                    => Seq(expectedOpenBankingLink, expectedOneOffDirectDebitLink)
@@ -1704,7 +1751,7 @@ class FeesControllerSpec extends ItSpec {
             case Origins.PfNiEuVatOss             => Seq.empty
             case Origins.NiEuVatIoss              => Seq.empty
             case Origins.PfNiEuVatIoss            => Seq.empty
-            case Origins.PfAmls                   => Seq.empty
+            case Origins.PfAmls                   => Seq(expectedOpenBankingLink)
             case Origins.PfAted                   => Seq.empty
             case Origins.PfCdsDeferment           => Seq.empty
             case Origins.PfTrust                  => Seq.empty
@@ -1756,7 +1803,7 @@ class FeesControllerSpec extends ItSpec {
             case Origins.DdSdil                   => None
             case Origins.VcVatReturn              => Some(TestJourneys.VcVatReturn.journeyBeforeBeginWebPayment.journeySpecificData)
             case Origins.VcVatOther               => Some(TestJourneys.VcVatOther.journeyBeforeBeginWebPayment.journeySpecificData)
-            case Origins.Amls                     => None
+            case Origins.Amls                     => Some(TestJourneys.Amls.journeyBeforeBeginWebPayment.journeySpecificData)
             case Origins.Ppt                      => None
             case Origins.PfCdsCash                => None
             case Origins.PfPpt                    => None
@@ -1790,7 +1837,7 @@ class FeesControllerSpec extends ItSpec {
             case Origins.PfNiEuVatOss             => None
             case Origins.NiEuVatIoss              => None
             case Origins.PfNiEuVatIoss            => None
-            case Origins.PfAmls                   => None
+            case Origins.PfAmls                   => Some(TestJourneys.PfAmls.journeyBeforeBeginWebPayment.journeySpecificData)
             case Origins.PfAted                   => None
             case Origins.PfCdsDeferment           => None
             case Origins.PfTrust                  => None

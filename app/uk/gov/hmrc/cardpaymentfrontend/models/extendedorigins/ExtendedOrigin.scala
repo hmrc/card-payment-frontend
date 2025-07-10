@@ -177,7 +177,7 @@ object ExtendedOrigin {
       case Origins.VcVatReturn              => ExtendedVcVatReturn
       case Origins.VcVatOther               => ExtendedVcVatOther
       case Origins.ItSa                     => ExtendedItSa
-      case Origins.Amls                     => DefaultExtendedOrigin
+      case Origins.Amls                     => ExtendedAmls
       case Origins.Ppt                      => ExtendedPpt
       case Origins.PfCdsCash                => DefaultExtendedOrigin
       case Origins.PfPpt                    => ExtendedPfPpt
@@ -212,7 +212,7 @@ object ExtendedOrigin {
       case Origins.PfNiEuVatOss             => DefaultExtendedOrigin
       case Origins.NiEuVatIoss              => DefaultExtendedOrigin
       case Origins.PfNiEuVatIoss            => DefaultExtendedOrigin
-      case Origins.PfAmls                   => DefaultExtendedOrigin
+      case Origins.PfAmls                   => ExtendedPfAmls
       case Origins.PfAted                   => DefaultExtendedOrigin
       case Origins.PfCdsDeferment           => DefaultExtendedOrigin
       case Origins.PfTrust                  => DefaultExtendedOrigin
