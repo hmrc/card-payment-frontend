@@ -17,18 +17,24 @@
 package uk.gov.hmrc.cardpaymentfrontend.actions
 
 import play.api.Logging
+import play.api.i18n.MessagesApi
 import play.api.mvc.{ActionRefiner, Request, Result, Results}
 import uk.gov.hmrc.cardpaymentfrontend.connectors.PayApiConnector
 import uk.gov.hmrc.cardpaymentfrontend.requests.RequestSupport
+import uk.gov.hmrc.cardpaymentfrontend.views.html.TimedOutPage
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class GetJourneyActionRefiner @Inject() (
+    val messagesApi: MessagesApi,
     payApiConnector: PayApiConnector,
-    requestSupport:  RequestSupport
+    requestSupport:  RequestSupport,
+    timedOutPage:    TimedOutPage
 )(implicit ec: ExecutionContext) extends ActionRefiner[Request, JourneyRequest] with Logging {
+
+  import requestSupport._
 
   override protected[actions] def refine[A](request: Request[A]): Future[Either[Result, JourneyRequest[A]]] = {
 
@@ -38,8 +44,8 @@ class GetJourneyActionRefiner @Inject() (
       .map {
         case Some(journey) => Right(new JourneyRequest(journey, request))
         case None =>
-          logger.warn("No journey found for session id")
-          Left(Results.Unauthorized("need a session id")) //should probably be a redirect to pay-frontend /pay
+          logger.warn("No journey found for session id, sending to timed out page.")
+          Left(Results.Unauthorized(timedOutPage())) //should probably be a redirect to pay-frontend /pay
       }
   }
 
