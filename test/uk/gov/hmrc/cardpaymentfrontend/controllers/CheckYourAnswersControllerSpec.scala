@@ -660,7 +660,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       val result = systemUnderTest.renderPage(fakeRequest())
       val document = Jsoup.parse(contentAsString(result))
       val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.PfAmls))
-      assertRow(referenceRow, "Payment reference", "123PH456789002713", None, None)
+      assertRow(referenceRow, "Payment reference", "XE123456789012", None, None)
     }
 
     "[PfAmls] should render the payment reference row correctly in Welsh" in {
@@ -668,7 +668,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       val result = systemUnderTest.renderPage(fakeRequestWelsh())
       val document = Jsoup.parse(contentAsString(result))
       val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.PfAmls))
-      assertRow(referenceRow, "Cyfeirnod y taliad", "123PH456789002713", None, None)
+      assertRow(referenceRow, "Cyfeirnod y taliad", "XE123456789012", None, None)
     }
 
     "[Amls] should render the payment reference row correctly" in {
@@ -676,7 +676,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       val result = systemUnderTest.renderPage(fakeRequest())
       val document = Jsoup.parse(contentAsString(result))
       val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.Amls))
-      assertRow(referenceRow, "Payment reference", "123PH456789002713", None, None)
+      assertRow(referenceRow, "Payment reference", "XE123456789012", None, None)
     }
 
     "[Amls] should render the payment reference row correctly in Welsh" in {
@@ -684,7 +684,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       val result = systemUnderTest.renderPage(fakeRequestWelsh())
       val document = Jsoup.parse(contentAsString(result))
       val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.Amls))
-      assertRow(referenceRow, "Cyfeirnod y taliad", "123PH456789002713", None, None)
+      assertRow(referenceRow, "Cyfeirnod y taliad", "XE123456789012", None, None)
     }
 
     "[BtaSa] should render the payment date row correctly" in {
@@ -865,7 +865,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
 
     "sanity check for implemented origins" in {
       // remember to add the singular tests for reference rows as well as fdp if applicable, they are not covered in the implementedOrigins forall tests
-      TestHelpers.implementedOrigins.size shouldBe 24 withClue "** This dummy test is here to remind you to update the tests above. Bump up the expected number when an origin is added to implemented origins **"
+      TestHelpers.implementedOrigins.size shouldBe 26 withClue "** This dummy test is here to remind you to update the tests above. Bump up the expected number when an origin is added to implemented origins **"
     }
 
   }

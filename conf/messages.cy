@@ -45,7 +45,7 @@ service-name.DdSdil =
 service-name.VcVatReturn = Cyfrif treth busnes
 service-name.VcVatOther = Cyfrif treth busnes
 service-name.ItSa = Talu eich Hunanasesiad
-service-name.Amls =
+service-name.Amls = Talu Ffioedd Rheoliadau Gwyngalchu Arian
 service-name.Ppt = Talu’ch Treth Deunydd Pacio Plastig
 service-name.PfCdsCash =
 service-name.PfPpt = Talu’ch Treth Deunydd Pacio Plastig
@@ -80,7 +80,7 @@ service-name.NiEuVatOss =
 service-name.PfNiEuVatOss =
 service-name.NiEuVatIoss =
 service-name.PfNiEuVatIoss =
-service-name.PfAmls =
+service-name.PfAmls = Talu Ffioedd Rheoliadau Gwyngalchu Arian
 service-name.PfAted =
 service-name.PfCdsDeferment =
 service-name.PfTrust =
@@ -150,6 +150,8 @@ check-your-details.BtaEpayeInterest.reference = Cyfeirnod y taliad
 check-your-details.BtaEpayeGeneral.reference = Cyfeirnod y taliad
 check-your-details.BtaClass1aNi.reference = Cyfeirnod y taliad
 check-your-details.BtaClass1aNi.tax-period = Cyfnod talu
+check-your-details.Amls.reference = Cyfeirnod y taliad
+check-your-details.PfAmls.reference = Cyfeirnod y taliad
 
 
 ## Address Page
@@ -252,7 +254,7 @@ payment-complete.tax-name.DdSdil =
 payment-complete.tax-name.VcVatReturn = TAW
 payment-complete.tax-name.VcVatOther = TAW
 payment-complete.tax-name.ItSa = Hunanasesiad
-payment-complete.tax-name.Amls =
+payment-complete.tax-name.Amls = Ffioedd Rheoliadau Gwyngalchu Arian
 payment-complete.tax-name.Ppt = Dreth Deunydd Pacio Plastig
 payment-complete.tax-name.PfCdsCash =
 payment-complete.tax-name.PfPpt = Dreth Deunydd Pacio Plastig
@@ -287,7 +289,7 @@ payment-complete.tax-name.NiEuVatOss =
 payment-complete.tax-name.PfNiEuVatOss =
 payment-complete.tax-name.NiEuVatIoss =
 payment-complete.tax-name.PfNiEuVatIoss =
-payment-complete.tax-name.PfAmls =
+payment-complete.tax-name.PfAmls = Ffioedd Rheoliadau Gwyngalchu Arian
 payment-complete.tax-name.PfAted =
 payment-complete.tax-name.PfCdsDeferment =
 payment-complete.tax-name.PfTrust =
@@ -346,6 +348,8 @@ email.tax-name.BtaEpayePenalty = Cosb y Cyflogwr am dalu TWE yn hwyr
 email.tax-name.BtaEpayeInterest = Taliad llog TWE cyflogwr
 email.tax-name.BtaEpayeGeneral = TWE ac Yswiriant Gwladol y Cyflogwr
 email.tax-name.BtaClass1aNi = Yswiriant Gwladol Dosbarth 1A y Cyflogwr
+email.tax-name.PfAmls = Ffioedd Rheoliadau Gwyngalchu Arian
+email.tax-name.Amls = Ffioedd Rheoliadau Gwyngalchu Arian
 
 ## Payments survey
 payments-survey.bta.return-message = Dim diolch, dychwelyd i cyfrif treth busnes
