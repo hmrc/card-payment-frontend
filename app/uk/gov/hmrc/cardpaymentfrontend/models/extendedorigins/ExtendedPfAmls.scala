@@ -17,11 +17,12 @@
 package uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins
 
 import payapi.cardpaymentjourney.model.journey.{JourneySpecificData, JsdPfAmls}
-import play.api.mvc.AnyContent
+import play.api.mvc.{AnyContent, Call}
 import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
 import uk.gov.hmrc.cardpaymentfrontend.models.PaymentMethod._
+import uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins.ExtendedPfPpt.changeReferenceUrl
 import uk.gov.hmrc.cardpaymentfrontend.models.openbanking.{OriginSpecificSessionData, PfAmlsSessionData}
-import uk.gov.hmrc.cardpaymentfrontend.models.{CheckYourAnswersRow, PaymentMethod}
+import uk.gov.hmrc.cardpaymentfrontend.models.{CheckYourAnswersRow, Link, PaymentMethod}
 
 object ExtendedPfAmls extends ExtendedOrigin {
   override val serviceNameMessageKey: String = "service-name.PfAmls"
@@ -34,7 +35,11 @@ object ExtendedPfAmls extends ExtendedOrigin {
     Some(CheckYourAnswersRow(
       titleMessageKey = "check-your-details.PfAmls.reference",
       value           = Seq(journeyRequest.journey.referenceValue),
-      changeLink      = None
+      changeLink      = Some(Link(
+        href       = Call("GET", changeReferenceUrl(payFrontendBaseUrl)),
+        linkId     = "check-your-details-reference-change-link",
+        messageKey = "check-your-details.change"
+      ))
     ))
   }
 
