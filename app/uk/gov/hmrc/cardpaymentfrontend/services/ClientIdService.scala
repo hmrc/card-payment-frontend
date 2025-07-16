@@ -77,7 +77,7 @@ class ClientIdService @Inject() {
 
       case Origins.PfCds | PfCdsCash | PfCdsDeferment => ClientIds.CDEE
 
-      case PfP800 | PtaP800 | Ppt | PtaSimpleAssessment | CapitalGainsTax | AlcoholDuty | PfAlcoholDuty => language match {
+      case PfP800 | PtaP800 | Ppt | PtaSimpleAssessment | AlcoholDuty | PfAlcoholDuty => language match {
         case Languages.English => ClientIds.ETEE
         case Languages.Welsh   => ClientIds.ETEC
       }
@@ -105,6 +105,11 @@ class ClientIdService @Inject() {
       }
 
       case NiEuVatOss | PfNiEuVatOss | NiEuVatIoss | PfNiEuVatIoss => ClientIds.OSEE
+
+      case CapitalGainsTax => language match {
+        case Languages.English => ClientIds.ETCE
+        case Languages.Welsh   => ClientIds.ETCC
+      }
 
       case o @ (PfClass2Ni | PfInsurancePremium | Parcels | DdVat | DdSdil | PfSpiritDrinks | PfInheritanceTax | PfWineAndCider
         | PfBioFuels | PfAirPass | PfBeerDuty | PfLandfillTax | PfAggregatesLevy | PfClimateChangeLevy | PfImportedVehicles
