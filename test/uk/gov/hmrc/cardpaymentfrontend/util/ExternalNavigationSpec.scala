@@ -17,18 +17,18 @@
 package uk.gov.hmrc.cardpaymentfrontend.util
 
 import org.scalatest.AppendedClues.convertToClueful
-import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor2}
+import org.scalatest.prop.TableDrivenPropertyChecks
 import payapi.cardpaymentjourney.model.journey._
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.TestHelpers.implementedOrigins
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.UnitSpec
-import uk.gov.hmrc.cardpaymentfrontend.testsupport.testdata.{JourneyStatuses, TestJourneys}
+import uk.gov.hmrc.cardpaymentfrontend.testsupport.testdata.TestJourneys
 
 class ExternalNavigationSpec extends UnitSpec with TableDrivenPropertyChecks {
 
   "returnUrlCancelled" - {
     val someUrl = Some(Url("https://www.return-url.com"))
 
-    val scenarios: TableFor2[JourneyStatuses[_ >: JsdPfEpayeSeta with JsdPfEpayeLateCis with JsdPfEpayeLpp with JsdBtaSa with JsdPfAlcoholDuty with JsdAlcoholDuty with JsdPfCt with JsdPtaSa with JsdBtaEpayeGeneral with JsdBtaCt with JsdItSa with JsdPfVat with JsdBtaEpayePenalty with JsdBtaVat with JsdPfEpayeP11d with JsdVcVatReturn with JsdPfSa with JsdPfEpayeNi with JsdBtaEpayeInterest with JsdVcVatOther with JsdBtaEpayeBill with JsdBtaClass1aNi with JsdPfPpt with JsdPpt <: JourneySpecificData], Option[Url]] = Table(
+    val scenarios = Table(
       ("journey", "expectedUrl"),
       //returnUrls are set in TestJourneys
       //Logged out journeys, Logged out journeys should return None
@@ -42,6 +42,7 @@ class ExternalNavigationSpec extends UnitSpec with TableDrivenPropertyChecks {
       (TestJourneys.PfAlcoholDuty, None),
       (TestJourneys.PfVat, None),
       (TestJourneys.PfPpt, None),
+      (TestJourneys.PfSdlt, None),
 
       //Logged in journeys, Logged out journeys will return what ever the calling services sets
       (TestJourneys.BtaSa, someUrl),
@@ -57,7 +58,9 @@ class ExternalNavigationSpec extends UnitSpec with TableDrivenPropertyChecks {
       (TestJourneys.BtaEpayeGeneral, someUrl),
       (TestJourneys.BtaEpayeInterest, someUrl),
       (TestJourneys.BtaClass1aNi, someUrl),
-      (TestJourneys.Ppt, someUrl)
+      (TestJourneys.Ppt, someUrl),
+      (TestJourneys.CapitalGainsTax, someUrl)
+
     )
 
     forAll(scenarios) { (journey, expectedUrl) =>

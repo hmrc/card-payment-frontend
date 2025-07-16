@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.cardpaymentfrontend.services
 
-import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor6}
+import org.scalatest.prop.TableDrivenPropertyChecks
 import payapi.cardpaymentjourney.model.journey._
 import play.api.i18n.{Lang, MessagesApi}
 import play.api.libs.json.Json
@@ -27,7 +27,7 @@ import uk.gov.hmrc.cardpaymentfrontend.models.email.{EmailParameters, EmailReque
 import uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins.ExtendedOrigin.OriginExtended
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.TestOps.FakeRequestOps
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.stubs.EmailStub
-import uk.gov.hmrc.cardpaymentfrontend.testsupport.testdata.{JourneyStatuses, TestJourneys}
+import uk.gov.hmrc.cardpaymentfrontend.testsupport.testdata.TestJourneys
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.testdata.TestJourneys._
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.{ItSpec, TestHelpers}
 import uk.gov.hmrc.http.HeaderCarrier
@@ -43,9 +43,9 @@ class EmailServiceSpec extends ItSpec with TableDrivenPropertyChecks {
     val commission = Some("1.23")
 
     // needed for compiler. if you're adding a new extended origin, add the jsd to this type/list of types.
-    type JsdBounds = JsdBtaSa with JsdAlcoholDuty with JsdPfAlcoholDuty with JsdPfEpayeP11d with JsdPfEpayeSeta with JsdPfEpayeLpp with JsdPfEpayeNi with JsdPtaSa with JsdBtaCt with JsdItSa with JsdPfCt with JsdPfSa with JsdPfEpayeLateCis with JsdPfVat with JsdBtaVat with JsdVcVatOther with JsdVcVatReturn with JsdPpt with JsdPfPpt with JsdBtaEpayeBill with JsdBtaEpayePenalty with JsdBtaEpayeGeneral with JsdBtaEpayeInterest with JsdBtaClass1aNi
+    //type JsdBounds = JsdBtaSa with JsdAlcoholDuty with JsdPfAlcoholDuty with JsdPfEpayeP11d with JsdPfEpayeSeta with JsdPfEpayeLpp with JsdPfEpayeNi with JsdPtaSa with JsdBtaCt with JsdItSa with JsdPfCt with JsdPfSa with JsdPfEpayeLateCis with JsdPfVat with JsdBtaVat with JsdVcVatOther with JsdVcVatReturn with JsdPpt with JsdPfPpt with JsdBtaEpayeBill with JsdBtaEpayePenalty with JsdBtaEpayeGeneral with JsdBtaEpayeInterest with JsdBtaClass1aNi
 
-    val scenarios: TableFor6[JourneyStatuses[_ >: JsdBounds <: JourneySpecificData], String, String, Option[String], Some[String], String] = Table(
+    val scenarios = Table(
       ("Journey", "Tax Type", "Tax Reference", "Commission", "Total Paid", "lang"),
       (PfSa, "Self Assessment", "ending with 7895K", None, Some("12.34"), "en"),
       (PfSa, "Self Assessment", "ending with 7895K", commission, Some("13.57"), "en"),
@@ -165,8 +165,17 @@ class EmailServiceSpec extends ItSpec with TableDrivenPropertyChecks {
       (BtaClass1aNi, "Employers’ Class 1A National Insurance", "ending with 02713", None, Some("12.34"), "en"),
       (BtaClass1aNi, "Employers’ Class 1A National Insurance", "ending with 02713", commission, Some("13.57"), "en"),
       (BtaClass1aNi, "Yswiriant Gwladol Dosbarth 1A y Cyflogwr", "yn gorffen gyda 02713", None, Some("12.34"), "cy"),
-      (BtaClass1aNi, "Yswiriant Gwladol Dosbarth 1A y Cyflogwr", "yn gorffen gyda 02713", commission, Some("13.57"), "cy")
+      (BtaClass1aNi, "Yswiriant Gwladol Dosbarth 1A y Cyflogwr", "yn gorffen gyda 02713", commission, Some("13.57"), "cy"),
 
+      (PfSdlt, "Stamp Duty Land Tax", "ending with 789MA", None, Some("12.34"), "en"),
+      (PfSdlt, "Stamp Duty Land Tax", "ending with 789MA", commission, Some("13.57"), "en"),
+      (PfSdlt, "Treth Dir y Tollau Stamp", "yn gorffen gyda 789MA", None, Some("12.34"), "cy"),
+      (PfSdlt, "Treth Dir y Tollau Stamp", "yn gorffen gyda 789MA", commission, Some("13.57"), "cy"),
+
+      (CapitalGainsTax, "Capital Gains Tax on UK property", "ending with 00290", None, Some("12.34"), "en"),
+      (CapitalGainsTax, "Capital Gains Tax on UK property", "ending with 00290", commission, Some("13.57"), "en"),
+      (CapitalGainsTax, "Treth Enillion Cyfalaf ar eiddo yn y DU", "yn gorffen gyda 00290", None, Some("12.34"), "cy"),
+      (CapitalGainsTax, "Treth Enillion Cyfalaf ar eiddo yn y DU", "yn gorffen gyda 00290", commission, Some("13.57"), "cy")
     )
 
     forAll(scenarios) { (j, taxType, taxReference, commission, totalPaid, lang) =>
@@ -198,7 +207,7 @@ class EmailServiceSpec extends ItSpec with TableDrivenPropertyChecks {
         msgKey.isEmpty shouldBe false
         //Check if the message is defined in either messages file, Doesn't matter which one
         //doesn't seem to care what the language is, if it exists in one of the language file, it'll return true
-        messages.isDefinedAt(msgKey)(Lang("en")) shouldBe true
+        messages.isDefinedAt(msgKey)(Lang("en")) shouldBe true withClue s"email.tax-name message key missing for origin: ${origin.entryName}"
         //Check if the message is different in both languages, if they are the same the message is not in both files
         messages.preferred(Seq(Lang("en")))(msgKey) should not be messages.preferred(Seq(Lang("cy")))(msgKey)
       }

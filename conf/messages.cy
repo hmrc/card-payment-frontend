@@ -20,7 +20,7 @@ service-name.PfEpayeLpp = Talu’ch cosb am dalu neu gyflwyno TWE yn hwyr
 service-name.PfEpayeSeta = Talwch eich Cytundeb Setliad TWE y cyflogwr
 service-name.PfEpayeLateCis = Talwch eich cosb - Cynllun y Diwydiant Adeiladu
 service-name.PfEpayeP11d = Talu’ch Yswiriant Gwladol Dosbarth 1A y cyflogwr (bil P11D)
-service-name.PfSdlt =
+service-name.PfSdlt = Talu eich Treth Dir y Tollau Stamp
 service-name.PfCds =
 service-name.PfOther =
 service-name.PfP800 =
@@ -69,7 +69,7 @@ service-name.PfSimpleAssessment =
 service-name.PtaSimpleAssessment =
 service-name.AppSimpleAssessment =
 service-name.PfTpes =
-service-name.CapitalGainsTax =
+service-name.CapitalGainsTax = Rhoi gwybod am a thalu Treth Enillion Cyfalaf ar eiddo yn y DU
 service-name.EconomicCrimeLevy =
 service-name.PfEconomicCrimeLevy =
 service-name.PfJobRetentionScheme =
@@ -150,7 +150,8 @@ check-your-details.BtaEpayeInterest.reference = Cyfeirnod y taliad
 check-your-details.BtaEpayeGeneral.reference = Cyfeirnod y taliad
 check-your-details.BtaClass1aNi.reference = Cyfeirnod y taliad
 check-your-details.BtaClass1aNi.tax-period = Cyfnod talu
-
+check-your-details.PfSdlt.reference = Cyfeirnod Unigryw y Trafodyn (UTRN)
+check-your-details.CapitalGainsTax.reference = Cyfeirnod y taliad
 
 ## Address Page
 address.heading = Cyfeiriad bilio’r cerdyn
@@ -227,7 +228,7 @@ payment-complete.tax-name.PfEpayeLpp = Cosb y Cyflogwr am dalu TWE yn hwyr
 payment-complete.tax-name.PfEpayeSeta = Cytundeb Setliad TWE y Cyflogwr
 payment-complete.tax-name.PfEpayeLateCis = Cynllun y Diwydiant Adeiladu (CIS) - cosb am dalu'n hwyr
 payment-complete.tax-name.PfEpayeP11d = Yswiriant Gwladol Dosbarth 1A y Cyflogwr
-payment-complete.tax-name.PfSdlt =
+payment-complete.tax-name.PfSdlt = Treth Dir y Tollau Stamp
 payment-complete.tax-name.PfCds =
 payment-complete.tax-name.PfOther =
 payment-complete.tax-name.PfP800 =
@@ -276,7 +277,7 @@ payment-complete.tax-name.PfSimpleAssessment =
 payment-complete.tax-name.PtaSimpleAssessment =
 payment-complete.tax-name.AppSimpleAssessment =
 payment-complete.tax-name.PfTpes =
-payment-complete.tax-name.CapitalGainsTax =
+payment-complete.tax-name.CapitalGainsTax = Treth Enillion Cyfalaf ar eiddo yn y DU
 payment-complete.tax-name.EconomicCrimeLevy =
 payment-complete.tax-name.PfEconomicCrimeLevy =
 payment-complete.tax-name.PfJobRetentionScheme =
@@ -346,6 +347,8 @@ email.tax-name.BtaEpayePenalty = Cosb y Cyflogwr am dalu TWE yn hwyr
 email.tax-name.BtaEpayeInterest = Taliad llog TWE cyflogwr
 email.tax-name.BtaEpayeGeneral = TWE ac Yswiriant Gwladol y Cyflogwr
 email.tax-name.BtaClass1aNi = Yswiriant Gwladol Dosbarth 1A y Cyflogwr
+email.tax-name.PfSdlt = Treth Dir y Tollau Stamp
+email.tax-name.CapitalGainsTax = Treth Enillion Cyfalaf ar eiddo yn y DU
 
 ## Payments survey
 payments-survey.bta.return-message = Dim diolch, dychwelyd i cyfrif treth busnes
