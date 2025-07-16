@@ -28,7 +28,7 @@ import uk.gov.hmrc.cardpaymentfrontend.testsupport.ItSpec
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.TestOps.FakeRequestOps
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.stubs.PayApiStub
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.testdata.TestJourneys
-import uk.gov.hmrc.cardpaymentfrontend.views.html.TimedOutPage
+import uk.gov.hmrc.cardpaymentfrontend.views.html.ForceDeleteAnswersPage
 
 import scala.concurrent.Future
 
@@ -40,11 +40,11 @@ class ActionRefinerSpec extends ItSpec {
 
     val fakeRequest: FakeRequest[AnyContent] = FakeRequest("GET", "/who-cares").withSessionId()
 
-    val timedOutPage = app.injector.instanceOf[TimedOutPage]
+    val forceDeleteAnswersPage = app.injector.instanceOf[ForceDeleteAnswersPage]
     val messagesApi = app.injector.instanceOf[MessagesApi]
 
     "should return a left with unauthorised Result when pay-api returns no journey" in {
-      systemUnderTest.refine(fakeRequest).futureValue shouldBe Left(Results.Unauthorized(timedOutPage()(fakeRequest, messagesApi.preferred(fakeRequest))))
+      systemUnderTest.refine(fakeRequest).futureValue shouldBe Left(Results.Unauthorized(forceDeleteAnswersPage(false, None)(fakeRequest, messagesApi.preferred(fakeRequest))))
     }
 
     "should return a right with JourneyRequest when pay-api returns a journey" in {

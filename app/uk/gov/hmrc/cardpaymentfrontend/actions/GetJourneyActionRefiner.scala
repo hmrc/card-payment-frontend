@@ -21,17 +21,17 @@ import play.api.i18n.MessagesApi
 import play.api.mvc.{ActionRefiner, Request, Result, Results}
 import uk.gov.hmrc.cardpaymentfrontend.connectors.PayApiConnector
 import uk.gov.hmrc.cardpaymentfrontend.requests.RequestSupport
-import uk.gov.hmrc.cardpaymentfrontend.views.html.TimedOutPage
+import uk.gov.hmrc.cardpaymentfrontend.views.html.ForceDeleteAnswersPage
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class GetJourneyActionRefiner @Inject() (
-    val messagesApi: MessagesApi,
-    payApiConnector: PayApiConnector,
-    requestSupport:  RequestSupport,
-    timedOutPage:    TimedOutPage
+    val messagesApi:        MessagesApi,
+    payApiConnector:        PayApiConnector,
+    requestSupport:         RequestSupport,
+    forceDeleteAnswersPage: ForceDeleteAnswersPage
 )(implicit ec: ExecutionContext) extends ActionRefiner[Request, JourneyRequest] with Logging {
 
   import requestSupport._
@@ -45,7 +45,7 @@ class GetJourneyActionRefiner @Inject() (
         case Some(journey) => Right(new JourneyRequest(journey, request))
         case None =>
           logger.warn("No journey found for session id, sending to timed out page.")
-          Left(Results.Unauthorized(timedOutPage())) //should probably be a redirect to pay-frontend /pay
+          Left(Results.Unauthorized(forceDeleteAnswersPage(false, None))) //should probably be a redirect to pay-frontend /pay
       }
   }
 
