@@ -1,12 +1,7 @@
 
 # card-payment-frontend
 
-This is a placeholder README.md for a new repository
-
-### License
-
-This code is open source software licensed under the [Apache 2.0 License]("http://www.apache.org/licenses/LICENSE-2.0.html").
-
+---
 
 To enable the frontend (this service) to successfully talk to the backend microservice (card-payment-backend) you need to enable an internal auth token.
 Make sure you have the internal auth service running, e.g.:
@@ -29,3 +24,6 @@ curl --request POST \
     }]
 }'
 ```
+
+### License
+This code is open source software licensed under the [Apache 2.0 License]("http://www.apache.org/licenses/LICENSE-2.0.html").
