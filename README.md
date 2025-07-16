@@ -3,7 +3,13 @@
 
 ---
 
-To enable the frontend (this service) to successfully talk to the backend microservice (card-payment-backend) you need to enable an internal auth token.
+This repository contains the frontend microservice for card payments.
+It is built using Scala (2.13) and the Play framework (2.8). We use linting tools such as WartRemover and Sclariform.
+This microservice allows users to make card payments for any and all supported tax regimes.
+
+---
+
+To enable the frontend (this service) to successfully talk to the backend microservice (card-payment) you need to enable an internal auth token.
 Make sure you have the internal auth service running, e.g.:
 ```
 sm2 --start INTERNAL_AUTH INTERNAL_AUTH_FRONTEND --appendArgs '{"INTERNAL_AUTH": ["-Dapplication.router=testOnlyDoNotUseInAppConf.Routes"], "INTERNAL_AUTH_FRONTEND": ["-Dapplication.router=testOnlyDoNotUseInAppConf.Routes"]}'
