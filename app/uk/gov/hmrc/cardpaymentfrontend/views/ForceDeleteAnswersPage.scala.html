@@ -44,10 +44,9 @@
     <h1 class="govuk-heading-l govuk-!-margin-bottom-6">@statusMessageHeading</h1>
     @redirectLink.fold {
         <p class="govuk-body">
-            @statusMessageHeading
-            <a class="govuk-link" href="https://www.gov.uk/topic/dealing-with-hmrc/paying-hmrc"> @{statusMessageHeading}</a>.
+            <a class="govuk-link" href="https://www.gov.uk/topic/dealing-with-hmrc/paying-hmrc"> @{buttonMessage}</a>.
         </p>
-    } {link =>
+    } { link =>
         @govukButton(Button(
             id = Some("submit"),
             content = Text(buttonMessage),

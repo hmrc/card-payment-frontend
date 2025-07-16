@@ -17,7 +17,7 @@
 package uk.gov.hmrc.cardpaymentfrontend.actions
 
 import org.scalatest.Assertion
-import payapi.cardpaymentjourney.model.journey.{Journey, JourneySpecificData}
+import payapi.cardpaymentjourney.model.journey.{Journey, JourneySpecificData, Url}
 import payapi.corcommon.model.PaymentStatuses
 import play.api.i18n.MessagesApi
 import play.api.mvc.{ActionRefiner, AnyContent, Result, Results}
@@ -44,7 +44,7 @@ class ActionRefinerSpec extends ItSpec {
     val messagesApi = app.injector.instanceOf[MessagesApi]
 
     "should return a left with unauthorised Result when pay-api returns no journey" in {
-      systemUnderTest.refine(fakeRequest).futureValue shouldBe Left(Results.Unauthorized(forceDeleteAnswersPage(false, None)(fakeRequest, messagesApi.preferred(fakeRequest))))
+      systemUnderTest.refine(fakeRequest).futureValue shouldBe Left(Results.Unauthorized(forceDeleteAnswersPage(false, Some(Url("http://localhost:9056/pay")))(fakeRequest, messagesApi.preferred(fakeRequest))))
     }
 
     "should return a right with JourneyRequest when pay-api returns a journey" in {
