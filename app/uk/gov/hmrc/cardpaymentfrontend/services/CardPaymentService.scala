@@ -176,8 +176,7 @@ class CardPaymentService @Inject() (
           .sendEmail(journeyRequest.journey, emailAddress, journeyRequest.request.lang.code =!= "cy")(headerCarrier, journeyRequest)
           .onComplete(_ => ())
       }
-
-    } else ()
+    }
   }
 
 }
