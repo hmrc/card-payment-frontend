@@ -202,8 +202,8 @@ object ExtendedOrigin {
       case Origins.AppSimpleAssessment      => DefaultExtendedOrigin
       case Origins.PfTpes                   => DefaultExtendedOrigin
       case Origins.CapitalGainsTax          => DefaultExtendedOrigin
-      case Origins.EconomicCrimeLevy        => DefaultExtendedOrigin
-      case Origins.PfEconomicCrimeLevy      => DefaultExtendedOrigin
+      case Origins.EconomicCrimeLevy        => ExtendedEconomicCrimeLevy
+      case Origins.PfEconomicCrimeLevy      => ExtendedPfEconomicCrimeLevy
       case Origins.PfJobRetentionScheme     => DefaultExtendedOrigin
       case Origins.JrsJobRetentionScheme    => DefaultExtendedOrigin
       case Origins.PfImportedVehicles       => DefaultExtendedOrigin
