@@ -45,7 +45,7 @@ object ExtendedPfEconomicCrimeLevy extends ExtendedOrigin {
 
   override def openBankingOriginSpecificSessionData: JourneySpecificData => Option[OriginSpecificSessionData] = {
     case j: JsdPfEconomicCrimeLevy => j.chargeReference.map(PfEconomicCrimeLevySessionData(_))
-    case _           => throw new RuntimeException("Incorrect origin found")
+    case _                         => throw new RuntimeException("Incorrect origin found")
   }
 
   override def emailTaxTypeMessageKey: String = "email.tax-name.PfEconomicCrimeLevy"

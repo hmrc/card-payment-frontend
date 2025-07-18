@@ -40,7 +40,7 @@ object ExtendedEconomicCrimeLevy extends ExtendedOrigin {
 
   override def openBankingOriginSpecificSessionData: JourneySpecificData => Option[OriginSpecificSessionData] = {
     case j: JsdEconomicCrimeLevy => Some(EconomicCrimeLevySessionData(j.chargeReference))
-    case _           => throw new RuntimeException("Incorrect origin found")
+    case _                       => throw new RuntimeException("Incorrect origin found")
   }
 
   override def surveyAuditName: String = "self-assessment"
