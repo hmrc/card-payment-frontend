@@ -65,7 +65,6 @@ class FeesController @Inject() (
         case _             => false
       }
 
-    println(s"showOpenBankingLink: ${showOpenBankingLink.toString()}, showBankTransferLink: ${showBankTransferLink.toString()}, showOneOffDirectDebitLink: ${showOneOffDirectDebitLink.toString()}, showVariableDirectDebitLink: ${showVariableDirectDebitLink.toString()}")
     val maybeOpenBankingLink = if (showOpenBankingLink) {
       Seq(Link(
         href       = Call("GET", routes.OpenBankingController.startOpenBankingJourney.url),
