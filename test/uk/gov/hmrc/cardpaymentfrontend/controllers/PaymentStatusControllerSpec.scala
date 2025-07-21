@@ -83,7 +83,7 @@ class PaymentStatusControllerSpec extends ItSpec {
         status(result) shouldBe Status.OK
         val document = Jsoup.parse(contentAsString(result))
         val anchorElement = document.select("#returnControlLink")
-        anchorElement.attr("href") shouldBe "/payment-status"
+        anchorElement.attr("href") shouldBe "/pay-by-card/payment-status"
         anchorElement.attr("target") shouldBe "_parent"
       }
 
@@ -105,7 +105,7 @@ class PaymentStatusControllerSpec extends ItSpec {
         CardPaymentStub.AuthAndCapture.stubForAuthAndCapture2xx("Some-transaction-ref", testCardPaymentResult)
         val result = systemUnderTest.paymentStatus()(fakeRequest)
         status(result) shouldBe 303
-        redirectLocation(result) shouldBe Some("/payment-complete")
+        redirectLocation(result) shouldBe Some("/pay-by-card/payment-complete")
       }
 
       "should return a redirect to payment failed page when Failed CardPaymentResult is returned from backend after AuthAndCapture" in {
@@ -116,7 +116,7 @@ class PaymentStatusControllerSpec extends ItSpec {
         CardPaymentStub.AuthAndCapture.stubForAuthAndCapture2xx("Some-transaction-ref", testCardPaymentResult)
         val result = systemUnderTest.paymentStatus()(fakeRequest)
         status(result) shouldBe 303
-        redirectLocation(result) shouldBe Some("/payment-failed")
+        redirectLocation(result) shouldBe Some("/pay-by-card/payment-failed")
       }
 
       "should return a redirect to payment cancelled page when Cancelled CardPaymentResult is returned from backend after AuthAndCapture" in {
@@ -127,7 +127,7 @@ class PaymentStatusControllerSpec extends ItSpec {
         CardPaymentStub.AuthAndCapture.stubForAuthAndCapture2xx("Some-transaction-ref", testCardPaymentResult)
         val result = systemUnderTest.paymentStatus()(fakeRequest)
         status(result) shouldBe 303
-        redirectLocation(result) shouldBe Some("/payment-cancelled")
+        redirectLocation(result) shouldBe Some("/pay-by-card/payment-cancelled")
       }
 
       "should throw an exception/error when there's no transaction reference in the order, shouldn't be possible, i.e. order is None, even though we've initiated a payment, and not call backend to auth and settle" in {
