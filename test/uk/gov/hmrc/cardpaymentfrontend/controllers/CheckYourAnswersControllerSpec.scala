@@ -245,7 +245,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
         val result = systemUnderTest.renderPage(fakeRequest())
         val document = Jsoup.parse(contentAsString(result))
         val emailRow: Element = document.select(".govuk-summary-list__row").asScala.toList(deriveEmailRowIndex(origin))
-        assertRow(emailRow, emailAddressKeyText, "blah@blah.com", Some("Change"), Some("/pay-by-card/email-address"))
+        assertRow(emailRow, emailAddressKeyText, "blah@blah.com", Some("Change"), Some("/email-address"))
       }
 
       s"[${origin.entryName}] render the email address row correctly when there is an email in session in Welsh" in {
@@ -253,7 +253,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
         val result = systemUnderTest.renderPage(fakeRequestWelsh())
         val document = Jsoup.parse(contentAsString(result))
         val emailRow: Element = document.select(".govuk-summary-list__row").asScala.toList(deriveEmailRowIndex(origin))
-        assertRow(emailRow, emailAddressKeyTextWelsh, "blah@blah.com", Some("Newid"), Some("/pay-by-card/email-address"))
+        assertRow(emailRow, emailAddressKeyTextWelsh, "blah@blah.com", Some("Newid"), Some("/email-address"))
       }
 
       s"[${origin.entryName}] not render the email address row when there is not an email in session" in {
@@ -267,7 +267,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
         val result = systemUnderTest.renderPage(fakeRequest())
         val document = Jsoup.parse(contentAsString(result))
         val cardBillingAddressRow: Element = document.select(".govuk-summary-list__row").asScala.toList(deriveCardBillingAddressRowIndex(origin))
-        assertRow(cardBillingAddressRow, "Card billing address", "line1 AA0AA0", Some("Change"), Some("/pay-by-card/address"))
+        assertRow(cardBillingAddressRow, "Card billing address", "line1 AA0AA0", Some("Change"), Some("/address"))
       }
 
       s"[${origin.entryName}] render the card billing address row correctly in Welsh" in {
@@ -275,14 +275,14 @@ class CheckYourAnswersControllerSpec extends ItSpec {
         val result = systemUnderTest.renderPage(fakeRequestWelsh())
         val document = Jsoup.parse(contentAsString(result))
         val cardBillingAddressRow: Element = document.select(".govuk-summary-list__row").asScala.toList(deriveCardBillingAddressRowIndex(origin))
-        assertRow(cardBillingAddressRow, "Cyfeiriad bilio", "line1 AA0AA0", Some("Newid"), Some("/pay-by-card/address"))
+        assertRow(cardBillingAddressRow, "Cyfeiriad bilio", "line1 AA0AA0", Some("Newid"), Some("/address"))
       }
 
       s"[${origin.entryName}] should redirect to the Address page if no Address in session" in {
         PayApiStub.stubForFindBySessionId2xx(tdJourney)
         val result = systemUnderTest.renderPage(FakeRequest().withSessionId())
         status(result) shouldBe SEE_OTHER
-        redirectLocation(result) shouldBe Some("/pay-by-card/address")
+        redirectLocation(result) shouldBe Some("/address")
       }
     }
 
@@ -655,6 +655,38 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       assertRow(referenceRow, "Cyfeirnod y taliad", "123PH456789002713", None, None)
     }
 
+    "[PfAmls] should render the payment reference row correctly" in {
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfAmls.journeyBeforeBeginWebPayment)
+      val result = systemUnderTest.renderPage(fakeRequest())
+      val document = Jsoup.parse(contentAsString(result))
+      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.PfAmls))
+      assertRow(referenceRow, "Payment reference", "XE123456789012", Some("Change"), Some("http://localhost:9056/pay/pay-by-card-change-reference-number"))
+    }
+
+    "[PfAmls] should render the payment reference row correctly in Welsh" in {
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfAmls.journeyBeforeBeginWebPayment)
+      val result = systemUnderTest.renderPage(fakeRequestWelsh())
+      val document = Jsoup.parse(contentAsString(result))
+      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.PfAmls))
+      assertRow(referenceRow, "Cyfeirnod y taliad", "XE123456789012", Some("Newid"), Some("http://localhost:9056/pay/pay-by-card-change-reference-number"))
+    }
+
+    "[Amls] should render the payment reference row correctly" in {
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.Amls.journeyBeforeBeginWebPayment)
+      val result = systemUnderTest.renderPage(fakeRequest())
+      val document = Jsoup.parse(contentAsString(result))
+      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.Amls))
+      assertRow(referenceRow, "Payment reference", "XE123456789012", None, None)
+    }
+
+    "[Amls] should render the payment reference row correctly in Welsh" in {
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.Amls.journeyBeforeBeginWebPayment)
+      val result = systemUnderTest.renderPage(fakeRequestWelsh())
+      val document = Jsoup.parse(contentAsString(result))
+      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.Amls))
+      assertRow(referenceRow, "Cyfeirnod y taliad", "XE123456789012", None, None)
+    }
+
     "[BtaSa] should render the payment date row correctly" in {
       PayApiStub.stubForFindBySessionId2xx(TestJourneys.BtaSa.journeyBeforeBeginWebPayment)
       val result = systemUnderTest.renderPage(fakeRequest())
@@ -833,7 +865,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
 
     "sanity check for implemented origins" in {
       // remember to add the singular tests for reference rows as well as fdp if applicable, they are not covered in the implementedOrigins forall tests
-      TestHelpers.implementedOrigins.size shouldBe 24 withClue "** This dummy test is here to remind you to update the tests above. Bump up the expected number when an origin is added to implemented origins **"
+      TestHelpers.implementedOrigins.size shouldBe 26 withClue "** This dummy test is here to remind you to update the tests above. Bump up the expected number when an origin is added to implemented origins **"
     }
 
   }
@@ -854,7 +886,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
 
     "should redirect to the iframe page when there is an address in session" in {
       val cardPaymentInitiatePaymentRequest = CardPaymentInitiatePaymentRequest(
-        redirectUrl         = "http://localhost:10155/pay-by-card/return-to-hmrc",
+        redirectUrl         = "http://localhost:10155/return-to-hmrc",
         clientId            = "SAEE",
         purchaseDescription = "1234567895K",
         purchaseAmount      = AmountInPence(1234),
@@ -872,7 +904,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
 
       val result = systemUnderTest.submit(fakeRequest(TestJourneys.PfSa.journeyBeforeBeginWebPayment._id))
       status(result) shouldBe SEE_OTHER
-      redirectLocation(result) shouldBe Some("/pay-by-card/show-iframe?iframeUrl=http%3A%2F%2Flocalhost%3A10155%2Fthis-would-be-iframe")
+      redirectLocation(result) shouldBe Some("/show-iframe?iframeUrl=http%3A%2F%2Flocalhost%3A10155%2Fthis-would-be-iframe")
     }
 
     "should redirect to iFrameUrl if PaymentStatus is Sent and there is an order present" in {
@@ -888,7 +920,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
         ))))
       val result = systemUnderTest.submit(fakeRequestWithSentPaymentStatus())
       status(result) shouldBe SEE_OTHER
-      redirectLocation(result) shouldBe Some("/pay-by-card/show-iframe?iframeUrl=http%3A%2F%2Flocalhost%3A9975%2Fbarclays%2Fpages%2Fpaypage.jsf%2F600e1342-0714-4989-ac6c-c11c745f1ce6")
+      redirectLocation(result) shouldBe Some("/show-iframe?iframeUrl=http%3A%2F%2Flocalhost%3A9975%2Fbarclays%2Fpages%2Fpaypage.jsf%2F600e1342-0714-4989-ac6c-c11c745f1ce6")
     }
 
     "should redirect to the Address page if there is no Address in session" in {
@@ -896,7 +928,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyBeforeBeginWebPayment)
       val result = systemUnderTest.submit(fakeRequestWithoutAddressInSession)
       status(result) shouldBe SEE_OTHER
-      redirectLocation(result) shouldBe Some("/pay-by-card/address")
+      redirectLocation(result) shouldBe Some("/address")
     }
   }
 

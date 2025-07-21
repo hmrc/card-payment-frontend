@@ -598,6 +598,52 @@ class PaymentsSurveyServiceSpec extends ItSpec with TableDrivenPropertyChecks {
           result shouldBe expectedPaymentSurveyJourneyRequest
         }
 
+        "for Amls" in {
+          val expectedPaymentSurveyJourneyRequest = PaymentSurveyJourneyRequest(
+            origin         = "Amls",
+            returnMsg      = "Skip survey, return to personal tax account",
+            returnHref     = "/personal-account",
+            auditName      = "self-assessment",
+            audit          = AuditOptions(
+              userType  = "LoggedIn",
+              journey   = Some("Successful"),
+              orderId   = Some("XE123456789012"),
+              liability = Some("self-assessment")
+            ),
+            contentOptions = SurveyContentOptions(
+              isWelshSupported = true,
+              title            = SurveyBannerTitle(
+                englishValue = "Pay Money Laundering Regulations fees", welshValue = Some("Talu Ffioedd Rheoliadau Gwyngalchu Arian")
+              )
+            )
+          )
+          val result = systemUnderTest.makeSsjJourneyRequest(TestJourneys.Amls.journeyAfterSucceedDebitWebPayment)(loggedInFakeRequest)
+          result shouldBe expectedPaymentSurveyJourneyRequest
+        }
+
+        "for PfAmls" in {
+          val expectedPaymentSurveyJourneyRequest = PaymentSurveyJourneyRequest(
+            origin         = "PfAmls",
+            returnMsg      = "Skip survey, return to personal tax account",
+            returnHref     = "/personal-account",
+            auditName      = "self-assessment",
+            audit          = AuditOptions(
+              userType  = "LoggedIn",
+              journey   = Some("Successful"),
+              orderId   = Some("XE123456789012"),
+              liability = Some("self-assessment")
+            ),
+            contentOptions = SurveyContentOptions(
+              isWelshSupported = true,
+              title            = SurveyBannerTitle(
+                englishValue = "Pay Money Laundering Regulations fees", welshValue = Some("Talu Ffioedd Rheoliadau Gwyngalchu Arian")
+              )
+            )
+          )
+          val result = systemUnderTest.makeSsjJourneyRequest(TestJourneys.PfAmls.journeyAfterSucceedDebitWebPayment)(loggedInFakeRequest)
+          result shouldBe expectedPaymentSurveyJourneyRequest
+        }
+
       }
     }
   }

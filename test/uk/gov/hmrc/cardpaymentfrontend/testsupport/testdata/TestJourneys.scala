@@ -18,7 +18,10 @@ package uk.gov.hmrc.cardpaymentfrontend.testsupport.testdata
 
 import payapi.cardpaymentjourney.model.journey._
 import payapi.corcommon.model.taxes.ad.{AlcoholDutyChargeReference, AlcoholDutyReference}
+import payapi.corcommon.model.taxes.amls.AmlsPaymentReference
 import payapi.corcommon.model.taxes.ct.{CtChargeTypes, CtLivePeriod, CtPeriod, CtUtr}
+import payapi.corcommon.model.taxes.epaye.{AccountsOfficeReference, EpayePenaltyReference, PsaNumber, QuarterlyEpayeTaxPeriod, YearlyEpayeTaxPeriod}
+import payapi.corcommon.model.taxes.other.{XRef, XRef14Char}
 import payapi.corcommon.model.taxes.epaye.{AccountsOfficeReference, EpayePenaltyReference, PsaNumber, QuarterlyEpayeTaxPeriod, YearlyEpayeTaxPeriod}
 import payapi.corcommon.model.taxes.other.{EconomicCrimeLevyReturnNumber, XRef, XRef14Char}
 import payapi.corcommon.model.taxes.ppt.PptReference
@@ -484,6 +487,41 @@ object TestJourneys {
         period                  = testYearlyPeriod,
         defaultAmountInPence    = AmountInPence(1234),
         dueDate                 = Some(LocalDate.of(2028, 12, 12))
+      ),
+      chosenWayToPay       = None
+    )
+  }
+
+  object Amls extends JourneyStatuses[JsdAmls] {
+    val journeyBeforeBeginWebPayment: Journey[JsdAmls] = Journey[JsdAmls](
+      _id                  = JourneyId("TestJourneyId-44f9-ad7f-01e1d3d8f151"),
+      sessionId            = Some(SessionId("TestSession-4b87460d-6f43-4c4c-b810-d6f87c774854")),
+      amountInPence        = Some(AmountInPence(1234)),
+      emailTemplateOptions = None,
+      navigation           = Some(NavigationOptions(returnUrl = Url("https://www.return-url.com"), backUrl = Url("https://www.back-to-amls.com"))),
+      order                = None,
+      status               = PaymentStatuses.Created,
+      createdOn            = LocalDateTime.parse("2027-11-02T16:28:55.185"),
+      journeySpecificData  = JsdAmls(
+        amlsPaymentReference = AmlsPaymentReference("XE123456789012"),
+        defaultAmountInPence = AmountInPence(1234)
+      ),
+      chosenWayToPay       = None
+    )
+  }
+
+  object PfAmls extends JourneyStatuses[JsdPfAmls] {
+    val journeyBeforeBeginWebPayment: Journey[JsdPfAmls] = Journey[JsdPfAmls](
+      _id                  = JourneyId("TestJourneyId-44f9-ad7f-01e1d3d8f151"),
+      sessionId            = Some(SessionId("TestSession-4b87460d-6f43-4c4c-b810-d6f87c774854")),
+      amountInPence        = Some(AmountInPence(1234)),
+      emailTemplateOptions = None,
+      navigation           = None,
+      order                = None,
+      status               = PaymentStatuses.Created,
+      createdOn            = LocalDateTime.parse("2027-11-02T16:28:55.185"),
+      journeySpecificData  = JsdPfAmls(
+        amlsPaymentReference = Some(AmlsPaymentReference("XE123456789012"))
       ),
       chosenWayToPay       = None
     )

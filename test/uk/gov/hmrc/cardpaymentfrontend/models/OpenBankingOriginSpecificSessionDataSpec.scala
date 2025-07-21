@@ -19,6 +19,7 @@ package uk.gov.hmrc.cardpaymentfrontend.models
 import org.scalatest.AppendedClues.convertToClueful
 import org.scalatest.Assertion
 import payapi.corcommon.model.taxes.ad.{AlcoholDutyChargeReference, AlcoholDutyReference}
+import payapi.corcommon.model.taxes.amls.AmlsPaymentReference
 import payapi.corcommon.model.taxes.ct.{CtChargeTypes, CtPeriod, CtUtr}
 import payapi.corcommon.model.taxes.epaye.{AccountsOfficeReference, EpayePenaltyReference, MonthlyEpayeTaxPeriod, PsaNumber, QuarterlyEpayeTaxPeriod, YearlyEpayeTaxPeriod}
 import payapi.corcommon.model.taxes.other.{XRef, XRef14Char}
@@ -223,10 +224,24 @@ class OpenBankingOriginSpecificSessionDataSpec extends UnitSpec {
       roundTripJsonTest(osd, testJson)
     }
 
+    "Amls" in {
+      val testJson = Json.parse("""{"amlsPaymentReference":"XE123456789012","origin":"Amls"}""")
+      val osd = ExtendedAmls.openBankingOriginSpecificSessionData(TestJourneys.Amls.journeyBeforeBeginWebPayment.journeySpecificData)
+      testOsd(osd, AmlsSessionData(AmlsPaymentReference("XE123456789012"), None), "XE123456789012", "XE123456789012")
+      roundTripJsonTest(osd, testJson)
+    }
+
+    "PfAmls" in {
+      val testJson = Json.parse("""{"amlsPaymentReference":"XE123456789012","origin":"PfAmls"}""")
+      val osd = ExtendedPfAmls.openBankingOriginSpecificSessionData(TestJourneys.PfAmls.journeyBeforeBeginWebPayment.journeySpecificData)
+      testOsd(osd, PfAmlsSessionData(AmlsPaymentReference("XE123456789012"), None), "XE123456789012", "XE123456789012")
+      roundTripJsonTest(osd, testJson)
+    }
+
   }
 
   "sanity check for implemented origins" in {
-    TestHelpers.implementedOrigins.size shouldBe 24 withClue "** This dummy test is here to remind you to update the tests above. Bump up the expected number when an origin is added to implemented origins **"
+    TestHelpers.implementedOrigins.size shouldBe 26 withClue "** This dummy test is here to remind you to update the tests above. Bump up the expected number when an origin is added to implemented origins **"
   }
 
 }
