@@ -102,13 +102,13 @@ class ActionRefinerSpec extends ItSpec {
       }
 
       "return redirect to /payment-complete when journey is in completed state" in {
-        test(TestJourneys.PfSa.journeyAfterSucceedDebitWebPayment, systemUnderTest.paymentStatusActionRefiner, Results.Redirect("/pay-by-card/payment-complete"))
+        test(TestJourneys.PfSa.journeyAfterSucceedDebitWebPayment, systemUnderTest.paymentStatusActionRefiner, Results.Redirect("/payment-complete"))
       }
       "return redirect to /payment-cancelled when journey is in cancelled state" in {
-        test(TestJourneys.PfSa.journeyAfterCancelWebPayment, systemUnderTest.paymentStatusActionRefiner, Results.Redirect("/pay-by-card/payment-cancelled"))
+        test(TestJourneys.PfSa.journeyAfterCancelWebPayment, systemUnderTest.paymentStatusActionRefiner, Results.Redirect("/payment-cancelled"))
       }
       "return redirect to /payment-failed when journey is in failed state" in {
-        test(TestJourneys.PfSa.journeyAfterFailWebPayment, systemUnderTest.paymentStatusActionRefiner, Results.Redirect("/pay-by-card/payment-failed"))
+        test(TestJourneys.PfSa.journeyAfterFailWebPayment, systemUnderTest.paymentStatusActionRefiner, Results.Redirect("/payment-failed"))
       }
 
       "error/bad request when journey state is Created" in {
@@ -136,15 +136,15 @@ class ActionRefinerSpec extends ItSpec {
       }
 
       "return redirect to /payment-complete when journey is in completed state" in {
-        test(TestJourneys.PfSa.journeyAfterSucceedDebitWebPayment, systemUnderTest.iframePageActionRefiner, Results.Redirect("/pay-by-card/payment-complete"))
+        test(TestJourneys.PfSa.journeyAfterSucceedDebitWebPayment, systemUnderTest.iframePageActionRefiner, Results.Redirect("/payment-complete"))
       }
 
       "return redirect to /payment-cancelled when journey is in cancelled state" in {
-        test(TestJourneys.PfSa.journeyAfterCancelWebPayment, systemUnderTest.iframePageActionRefiner, Results.Redirect("/pay-by-card/payment-cancelled"))
+        test(TestJourneys.PfSa.journeyAfterCancelWebPayment, systemUnderTest.iframePageActionRefiner, Results.Redirect("/payment-cancelled"))
       }
 
       "return redirect to /payment-failed when journey is in failed state" in {
-        test(TestJourneys.PfSa.journeyAfterFailWebPayment, systemUnderTest.iframePageActionRefiner, Results.Redirect("/pay-by-card/payment-failed"))
+        test(TestJourneys.PfSa.journeyAfterFailWebPayment, systemUnderTest.iframePageActionRefiner, Results.Redirect("/payment-failed"))
       }
 
       "error/bad request when journey state is Validated" in {
