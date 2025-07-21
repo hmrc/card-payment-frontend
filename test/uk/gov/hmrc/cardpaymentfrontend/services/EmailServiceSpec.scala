@@ -43,7 +43,7 @@ class EmailServiceSpec extends ItSpec with TableDrivenPropertyChecks {
     val commission = Some("1.23")
 
     // needed for compiler. if you're adding a new extended origin, add the jsd to this type/list of types.
-    type JsdBounds = JsdBtaSa with JsdAlcoholDuty with JsdPfAlcoholDuty with JsdPfEpayeP11d with JsdPfEpayeSeta with JsdPfEpayeLpp with JsdPfEpayeNi with JsdPtaSa with JsdBtaCt with JsdItSa with JsdPfCt with JsdPfSa with JsdPfEpayeLateCis with JsdPfVat with JsdBtaVat with JsdVcVatOther with JsdVcVatReturn with JsdPpt with JsdPfPpt with JsdBtaEpayeBill with JsdBtaEpayePenalty with JsdBtaEpayeGeneral with JsdBtaEpayeInterest with JsdBtaClass1aNi with JsdPfAmls with JsdAmls
+    type JsdBounds = JsdBtaSa with JsdAlcoholDuty with JsdPfAlcoholDuty with JsdPfEpayeP11d with JsdPfEpayeSeta with JsdPfEpayeLpp with JsdPfEpayeNi with JsdPtaSa with JsdBtaCt with JsdItSa with JsdPfCt with JsdPfSa with JsdPfEpayeLateCis with JsdPfVat with JsdBtaVat with JsdVcVatOther with JsdVcVatReturn with JsdPpt with JsdPfPpt with JsdBtaEpayeBill with JsdBtaEpayePenalty with JsdBtaEpayeGeneral with JsdBtaEpayeInterest with JsdBtaClass1aNi with JsdPfAmls with JsdAmls with JsdEconomicCrimeLevy with JsdPfEconomicCrimeLevy
 
     val scenarios: TableFor6[JourneyStatuses[_ >: JsdBounds <: JourneySpecificData], String, String, Option[String], Some[String], String] = Table(
       ("Journey", "Tax Type", "Tax Reference", "Commission", "Total Paid", "lang"),
@@ -175,7 +175,17 @@ class EmailServiceSpec extends ItSpec with TableDrivenPropertyChecks {
       (PfAmls, "Money Laundering Regulation Fees", "ending with 89012", None, Some("12.34"), "en"),
       (PfAmls, "Money Laundering Regulation Fees", "ending with 89012", commission, Some("13.57"), "en"),
       (PfAmls, "Ffioedd Rheoliadau Gwyngalchu Arian", "yn gorffen gyda 89012", None, Some("12.34"), "cy"),
-      (PfAmls, "Ffioedd Rheoliadau Gwyngalchu Arian", "yn gorffen gyda 89012", commission, Some("13.57"), "cy")
+      (PfAmls, "Ffioedd Rheoliadau Gwyngalchu Arian", "yn gorffen gyda 89012", commission, Some("13.57"), "cy"),
+
+      (EconomicCrimeLevy, "Economic Crime Levy", "ending with 89012", None, Some("12.34"), "en"),
+      (EconomicCrimeLevy, "Economic Crime Levy", "ending with 89012", commission, Some("13.57"), "en"),
+      (EconomicCrimeLevy, "Ardoll Troseddau Economaidd", "yn gorffen gyda 89012", None, Some("12.34"), "cy"),
+      (EconomicCrimeLevy, "Ardoll Troseddau Economaidd", "yn gorffen gyda 89012", commission, Some("13.57"), "cy"),
+
+      (PfEconomicCrimeLevy, "Economic Crime Levy", "ending with 89012", None, Some("12.34"), "en"),
+      (PfEconomicCrimeLevy, "Economic Crime Levy", "ending with 89012", commission, Some("13.57"), "en"),
+      (PfEconomicCrimeLevy, "Ardoll Troseddau Economaidd", "yn gorffen gyda 89012", None, Some("12.34"), "cy"),
+      (PfEconomicCrimeLevy, "Ardoll Troseddau Economaidd", "yn gorffen gyda 89012", commission, Some("13.57"), "cy")
 
     )
 

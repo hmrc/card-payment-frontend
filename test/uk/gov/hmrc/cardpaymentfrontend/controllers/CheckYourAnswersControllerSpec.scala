@@ -128,89 +128,93 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       // Card billing address 3 or 4 (or 2 if there is no email address)
       def deriveReferenceRowIndex(origin: Origin): Int = {
         origin match {
-          case Origins.BtaSa            => 1
-          case Origins.PtaSa            => 1
-          case Origins.ItSa             => 1
-          case Origins.BtaCt            => 1
-          case Origins.BtaVat           => 1
-          case Origins.VcVatReturn      => 1
-          case Origins.VcVatOther       => 1
-          case Origins.Ppt              => 1
-          case Origins.BtaEpayeBill     => 1
-          case Origins.BtaEpayePenalty  => 1
-          case Origins.BtaEpayeInterest => 1
-          case Origins.BtaEpayeGeneral  => 1
-          case Origins.BtaClass1aNi     => 1
-          case _                        => 0
+          case Origins.BtaSa             => 1
+          case Origins.PtaSa             => 1
+          case Origins.ItSa              => 1
+          case Origins.BtaCt             => 1
+          case Origins.BtaVat            => 1
+          case Origins.VcVatReturn       => 1
+          case Origins.VcVatOther        => 1
+          case Origins.Ppt               => 1
+          case Origins.BtaEpayeBill      => 1
+          case Origins.BtaEpayePenalty   => 1
+          case Origins.BtaEpayeInterest  => 1
+          case Origins.BtaEpayeGeneral   => 1
+          case Origins.BtaClass1aNi      => 1
+          case Origins.EconomicCrimeLevy => 1
+          case _                         => 0
         }
       }
 
       def deriveAmountRowIndex(origin: Origin): Int = {
         origin match {
-          case Origins.BtaSa            => 2
-          case Origins.PtaSa            => 2
-          case Origins.ItSa             => 2
-          case Origins.AlcoholDuty      => 2
-          case Origins.BtaCt            => 2
-          case Origins.PfCt             => 2
-          case Origins.PfEpayeNi        => 2
-          case Origins.PfEpayeP11d      => 2
-          case Origins.BtaVat           => 2
-          case Origins.VcVatReturn      => 2
-          case Origins.VcVatOther       => 3
-          case Origins.Ppt              => 2
-          case Origins.BtaEpayeBill     => 2
-          case Origins.BtaEpayePenalty  => 2
-          case Origins.BtaEpayeInterest => 2
-          case Origins.BtaEpayeGeneral  => 2
-          case Origins.BtaClass1aNi     => 3
-          case _                        => 1
+          case Origins.BtaSa             => 2
+          case Origins.PtaSa             => 2
+          case Origins.ItSa              => 2
+          case Origins.AlcoholDuty       => 2
+          case Origins.BtaCt             => 2
+          case Origins.PfCt              => 2
+          case Origins.PfEpayeNi         => 2
+          case Origins.PfEpayeP11d       => 2
+          case Origins.BtaVat            => 2
+          case Origins.VcVatReturn       => 2
+          case Origins.VcVatOther        => 3
+          case Origins.Ppt               => 2
+          case Origins.BtaEpayeBill      => 2
+          case Origins.BtaEpayePenalty   => 2
+          case Origins.BtaEpayeInterest  => 2
+          case Origins.BtaEpayeGeneral   => 2
+          case Origins.BtaClass1aNi      => 3
+          case Origins.EconomicCrimeLevy => 2
+          case _                         => 1
         }
       }
 
       def deriveEmailRowIndex(origin: Origin): Int = {
         origin match {
-          case Origins.BtaSa            => 3
-          case Origins.PtaSa            => 3
-          case Origins.ItSa             => 3
-          case Origins.AlcoholDuty      => 3
-          case Origins.BtaCt            => 3
-          case Origins.PfCt             => 3
-          case Origins.PfEpayeNi        => 3
-          case Origins.PfEpayeP11d      => 3
-          case Origins.BtaVat           => 3
-          case Origins.VcVatReturn      => 3
-          case Origins.VcVatOther       => 4
-          case Origins.Ppt              => 3
-          case Origins.BtaEpayeBill     => 3
-          case Origins.BtaEpayePenalty  => 3
-          case Origins.BtaEpayeInterest => 3
-          case Origins.BtaEpayeGeneral  => 3
-          case Origins.BtaClass1aNi     => 4
-          case _                        => 2
+          case Origins.BtaSa             => 3
+          case Origins.PtaSa             => 3
+          case Origins.ItSa              => 3
+          case Origins.AlcoholDuty       => 3
+          case Origins.BtaCt             => 3
+          case Origins.PfCt              => 3
+          case Origins.PfEpayeNi         => 3
+          case Origins.PfEpayeP11d       => 3
+          case Origins.BtaVat            => 3
+          case Origins.VcVatReturn       => 3
+          case Origins.VcVatOther        => 4
+          case Origins.Ppt               => 3
+          case Origins.BtaEpayeBill      => 3
+          case Origins.BtaEpayePenalty   => 3
+          case Origins.BtaEpayeInterest  => 3
+          case Origins.BtaEpayeGeneral   => 3
+          case Origins.BtaClass1aNi      => 4
+          case Origins.EconomicCrimeLevy => 3
+          case _                         => 2
         }
       }
 
       def deriveCardBillingAddressRowIndex(origin: Origin): Int = {
         origin match {
-          case Origins.BtaSa            => 4
-          case Origins.PtaSa            => 4
-          case Origins.ItSa             => 4
-          case Origins.AlcoholDuty      => 4
-          case Origins.BtaCt            => 4
-          case Origins.PfCt             => 4
-          case Origins.PfEpayeNi        => 4
-          case Origins.PfEpayeP11d      => 4
-          case Origins.BtaVat           => 4
-          case Origins.VcVatReturn      => 4
-          case Origins.VcVatOther       => 5
-          case Origins.Ppt              => 4
-          case Origins.BtaEpayeBill     => 4
-          case Origins.BtaEpayePenalty  => 4
-          case Origins.BtaEpayeInterest => 4
-          case Origins.BtaEpayeGeneral  => 4
-          case Origins.BtaClass1aNi     => 5
-          case _                        => 3
+          case Origins.BtaSa             => 4
+          case Origins.PtaSa             => 4
+          case Origins.ItSa              => 4
+          case Origins.AlcoholDuty       => 4
+          case Origins.BtaCt             => 4
+          case Origins.PfCt              => 4
+          case Origins.PfEpayeNi         => 4
+          case Origins.PfEpayeP11d       => 4
+          case Origins.BtaVat            => 4
+          case Origins.VcVatReturn       => 4
+          case Origins.VcVatOther        => 5
+          case Origins.Ppt               => 4
+          case Origins.BtaEpayeBill      => 4
+          case Origins.BtaEpayePenalty   => 4
+          case Origins.BtaEpayeInterest  => 4
+          case Origins.BtaEpayeGeneral   => 4
+          case Origins.BtaClass1aNi      => 5
+          case Origins.EconomicCrimeLevy => 4
+          case _                         => 3
         }
       }
 
@@ -687,6 +691,38 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       assertRow(referenceRow, "Cyfeirnod y taliad", "XE123456789012", None, None)
     }
 
+    "[PfEconomicCrimeLevy] should render the payment reference row correctly" in {
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfEconomicCrimeLevy.journeyBeforeBeginWebPayment)
+      val result = systemUnderTest.renderPage(fakeRequest())
+      val document = Jsoup.parse(contentAsString(result))
+      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.PfEconomicCrimeLevy))
+      assertRow(referenceRow, "Payment reference", "XE123456789012", Some("Change"), Some("http://localhost:9056/pay/pay-by-card-change-reference-number"))
+    }
+
+    "[PfEconomicCrimeLevy] should render the payment reference row correctly in Welsh" in {
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfEconomicCrimeLevy.journeyBeforeBeginWebPayment)
+      val result = systemUnderTest.renderPage(fakeRequestWelsh())
+      val document = Jsoup.parse(contentAsString(result))
+      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.PfEconomicCrimeLevy))
+      assertRow(referenceRow, "Cyfeirnod y taliad", "XE123456789012", Some("Newid"), Some("http://localhost:9056/pay/pay-by-card-change-reference-number"))
+    }
+
+    "[EconomicCrimeLevy] should render the payment reference row correctly" in {
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.EconomicCrimeLevy.journeyBeforeBeginWebPayment)
+      val result = systemUnderTest.renderPage(fakeRequest())
+      val document = Jsoup.parse(contentAsString(result))
+      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.EconomicCrimeLevy))
+      assertRow(referenceRow, "Payment reference", "XE123456789012", None, None)
+    }
+
+    "[EconomicCrimeLevy] should render the payment reference row correctly in Welsh" in {
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.EconomicCrimeLevy.journeyBeforeBeginWebPayment)
+      val result = systemUnderTest.renderPage(fakeRequestWelsh())
+      val document = Jsoup.parse(contentAsString(result))
+      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.EconomicCrimeLevy))
+      assertRow(referenceRow, "Cyfeirnod y taliad", "XE123456789012", None, None)
+    }
+
     "[BtaSa] should render the payment date row correctly" in {
       PayApiStub.stubForFindBySessionId2xx(TestJourneys.BtaSa.journeyBeforeBeginWebPayment)
       val result = systemUnderTest.renderPage(fakeRequest())
@@ -865,7 +901,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
 
     "sanity check for implemented origins" in {
       // remember to add the singular tests for reference rows as well as fdp if applicable, they are not covered in the implementedOrigins forall tests
-      TestHelpers.implementedOrigins.size shouldBe 26 withClue "** This dummy test is here to remind you to update the tests above. Bump up the expected number when an origin is added to implemented origins **"
+      TestHelpers.implementedOrigins.size shouldBe 28 withClue "** This dummy test is here to remind you to update the tests above. Bump up the expected number when an origin is added to implemented origins **"
     }
 
   }

@@ -28,7 +28,7 @@ class ExternalNavigationSpec extends UnitSpec with TableDrivenPropertyChecks {
   "returnUrlCancelled" - {
     val someUrl = Some(Url("https://www.return-url.com"))
 
-    val scenarios: TableFor2[JourneyStatuses[_ >: JsdPfEpayeSeta with JsdPfEpayeLateCis with JsdPfEpayeLpp with JsdBtaSa with JsdPfAlcoholDuty with JsdAlcoholDuty with JsdPfCt with JsdPtaSa with JsdBtaEpayeGeneral with JsdBtaCt with JsdItSa with JsdPfVat with JsdBtaEpayePenalty with JsdBtaVat with JsdPfEpayeP11d with JsdVcVatReturn with JsdPfSa with JsdPfEpayeNi with JsdBtaEpayeInterest with JsdVcVatOther with JsdBtaEpayeBill with JsdBtaClass1aNi with JsdPfPpt with JsdPpt with JsdPfAmls with JsdAmls <: JourneySpecificData], Option[Url]] = Table(
+    val scenarios: TableFor2[JourneyStatuses[_ >: JsdPfEpayeSeta with JsdPfEpayeLateCis with JsdPfEpayeLpp with JsdBtaSa with JsdPfAlcoholDuty with JsdAlcoholDuty with JsdPfCt with JsdPtaSa with JsdBtaEpayeGeneral with JsdBtaCt with JsdItSa with JsdPfVat with JsdBtaEpayePenalty with JsdBtaVat with JsdPfEpayeP11d with JsdVcVatReturn with JsdPfSa with JsdPfEpayeNi with JsdBtaEpayeInterest with JsdVcVatOther with JsdBtaEpayeBill with JsdBtaClass1aNi with JsdPfPpt with JsdPpt with JsdPfAmls with JsdAmls with JsdEconomicCrimeLevy with JsdPfEconomicCrimeLevy <: JourneySpecificData], Option[Url]] = Table(
       ("journey", "expectedUrl"),
       //returnUrls are set in TestJourneys
       //Logged out journeys, Logged out journeys should return None
@@ -43,6 +43,7 @@ class ExternalNavigationSpec extends UnitSpec with TableDrivenPropertyChecks {
       (TestJourneys.PfVat, None),
       (TestJourneys.PfPpt, None),
       (TestJourneys.PfAmls, None),
+      (TestJourneys.PfEconomicCrimeLevy, None),
 
       //Logged in journeys, Logged out journeys will return what ever the calling services sets
       (TestJourneys.BtaSa, someUrl),
@@ -59,7 +60,9 @@ class ExternalNavigationSpec extends UnitSpec with TableDrivenPropertyChecks {
       (TestJourneys.BtaEpayeInterest, someUrl),
       (TestJourneys.BtaClass1aNi, someUrl),
       (TestJourneys.Ppt, someUrl),
-      (TestJourneys.Amls, someUrl)
+      (TestJourneys.Amls, someUrl),
+      (TestJourneys.EconomicCrimeLevy, someUrl)
+
     )
 
     forAll(scenarios) { (journey, expectedUrl) =>

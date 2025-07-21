@@ -152,7 +152,8 @@ check-your-details.BtaClass1aNi.reference = Cyfeirnod y taliad
 check-your-details.BtaClass1aNi.tax-period = Cyfnod talu
 check-your-details.Amls.reference = Cyfeirnod y taliad
 check-your-details.PfAmls.reference = Cyfeirnod y taliad
-
+check-your-details.EconomicCrimeLevy.reference = Cyfeirnod y taliad
+check-your-details.PfEconomicCrimeLevy.reference = Cyfeirnod y taliad
 
 ## Address Page
 address.heading = Cyfeiriad bilio’r cerdyn
@@ -279,8 +280,8 @@ payment-complete.tax-name.PtaSimpleAssessment =
 payment-complete.tax-name.AppSimpleAssessment =
 payment-complete.tax-name.PfTpes =
 payment-complete.tax-name.CapitalGainsTax =
-payment-complete.tax-name.EconomicCrimeLevy =
-payment-complete.tax-name.PfEconomicCrimeLevy =
+payment-complete.tax-name.EconomicCrimeLevy = Ardoll Troseddau Economaidd
+payment-complete.tax-name.PfEconomicCrimeLevy = Ardoll Troseddau Economaidd
 payment-complete.tax-name.PfJobRetentionScheme =
 payment-complete.tax-name.JrsJobRetentionScheme =
 payment-complete.tax-name.PfImportedVehicles =
@@ -350,6 +351,8 @@ email.tax-name.BtaEpayeGeneral = TWE ac Yswiriant Gwladol y Cyflogwr
 email.tax-name.BtaClass1aNi = Yswiriant Gwladol Dosbarth 1A y Cyflogwr
 email.tax-name.PfAmls = Ffioedd Rheoliadau Gwyngalchu Arian
 email.tax-name.Amls = Ffioedd Rheoliadau Gwyngalchu Arian
+email.tax-name.EconomicCrimeLevy = Ardoll Troseddau Economaidd
+email.tax-name.PfEconomicCrimeLevy = Ardoll Troseddau Economaidd
 
 ## Payments survey
 payments-survey.bta.return-message = Dim diolch, dychwelyd i cyfrif treth busnes
