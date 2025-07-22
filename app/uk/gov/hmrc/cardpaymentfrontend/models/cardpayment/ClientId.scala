@@ -148,15 +148,4 @@ object ClientIds {
     val prodCode = "NICC"
     val qaCode = "NICC"
   }
-
-  case object ETCE extends ClientId {
-    val prodCode = "ETCE"
-    val qaCode = "DECE1" //TODO
-  }
-
-  case object ETCC extends ClientId {
-    val prodCode = "ETCC"
-    val qaCode = "DECC1" //TODO
-  }
-
 }

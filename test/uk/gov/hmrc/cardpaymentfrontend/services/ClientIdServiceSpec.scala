@@ -62,7 +62,7 @@ class ClientIdServiceSpec extends ItSpec {
         (TestJourneys.PfAmls.journeyBeforeBeginWebPayment, ClientIds.MIEE),
         (TestJourneys.BtaClass1aNi.journeyBeforeBeginWebPayment, ClientIds.PAEE),
         (TestJourneys.PfSdlt.journeyBeforeBeginWebPayment, ClientIds.SDEE),
-        (TestJourneys.CapitalGainsTax.journeyBeforeBeginWebPayment, ClientIds.ETCE)
+        (TestJourneys.CapitalGainsTax.journeyBeforeBeginWebPayment, ClientIds.ETEE)
       )
       forAll(scenarios) {
         case (journey, clientId) =>
@@ -100,7 +100,7 @@ class ClientIdServiceSpec extends ItSpec {
         (TestJourneys.Amls.journeyBeforeBeginWebPayment, ClientIds.MIEC),
         (TestJourneys.PfAmls.journeyBeforeBeginWebPayment, ClientIds.MIEC),
         (TestJourneys.PfSdlt.journeyBeforeBeginWebPayment, ClientIds.SDEC),
-        (TestJourneys.CapitalGainsTax.journeyBeforeBeginWebPayment, ClientIds.ETCC)
+        (TestJourneys.CapitalGainsTax.journeyBeforeBeginWebPayment, ClientIds.ETEC)
       )
       forAll(scenarios) {
         case (journey, clientId) =>
