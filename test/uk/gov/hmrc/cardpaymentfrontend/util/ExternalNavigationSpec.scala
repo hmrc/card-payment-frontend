@@ -28,7 +28,7 @@ class ExternalNavigationSpec extends UnitSpec with TableDrivenPropertyChecks {
   "returnUrlCancelled" - {
     val someUrl = Some(Url("https://www.return-url.com"))
 
-    val scenarios: TableFor2[JourneyStatuses[_ >: JsdPfEpayeSeta with JsdPfEpayeLateCis with JsdPfEpayeLpp with JsdBtaSa with JsdPfAlcoholDuty with JsdAlcoholDuty with JsdPfCt with JsdPtaSa with JsdBtaEpayeGeneral with JsdBtaCt with JsdItSa with JsdPfVat with JsdBtaEpayePenalty with JsdBtaVat with JsdPfEpayeP11d with JsdVcVatReturn with JsdPfSa with JsdPfEpayeNi with JsdBtaEpayeInterest with JsdVcVatOther with JsdBtaEpayeBill with JsdBtaClass1aNi with JsdPfPpt with JsdPpt with JsdPfAmls with JsdAmls with JsdEconomicCrimeLevy with JsdPfEconomicCrimeLevy <: JourneySpecificData], Option[Url]] = Table(
+    val scenarios: TableFor2[JourneyStatuses[_ >: JsdPfEpayeNi with JsdAlcoholDuty with JsdPfPpt with JsdBtaEpayeBill with JsdPfSa with JsdPpt with JsdVcVatReturn with JsdPfEpayeP11d with JsdCapitalGainsTax with JsdBtaCt with JsdPfEpayeLateCis with JsdPfEpayeLpp with JsdPfCt with JsdBtaVat with JsdPfSdlt with JsdBtaEpayeInterest with JsdAmls with JsdBtaEpayeGeneral with JsdPfEpayeSeta with JsdPtaSa with JsdBtaClass1aNi with JsdVcVatOther with JsdPfAmls with JsdPfVat with JsdItSa with JsdBtaSa with JsdPfAlcoholDuty with JsdBtaEpayePenalty with JsdEconomicCrimeLevy with JsdPfEconomicCrimeLevy <: JourneySpecificData], Option[Url]] = Table(
       ("journey", "expectedUrl"),
       //returnUrls are set in TestJourneys
       //Logged out journeys, Logged out journeys should return None
@@ -43,6 +43,7 @@ class ExternalNavigationSpec extends UnitSpec with TableDrivenPropertyChecks {
       (TestJourneys.PfVat, None),
       (TestJourneys.PfPpt, None),
       (TestJourneys.PfAmls, None),
+      (TestJourneys.PfSdlt, None),
       (TestJourneys.PfEconomicCrimeLevy, None),
 
       //Logged in journeys, Logged out journeys will return what ever the calling services sets
@@ -60,6 +61,8 @@ class ExternalNavigationSpec extends UnitSpec with TableDrivenPropertyChecks {
       (TestJourneys.BtaEpayeInterest, someUrl),
       (TestJourneys.BtaClass1aNi, someUrl),
       (TestJourneys.Ppt, someUrl),
+      (TestJourneys.Amls, someUrl),
+      (TestJourneys.CapitalGainsTax, someUrl),
       (TestJourneys.Amls, someUrl),
       (TestJourneys.EconomicCrimeLevy, someUrl)
 

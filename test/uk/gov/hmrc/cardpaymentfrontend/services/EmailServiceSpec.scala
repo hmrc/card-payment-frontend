@@ -43,7 +43,7 @@ class EmailServiceSpec extends ItSpec with TableDrivenPropertyChecks {
     val commission = Some("1.23")
 
     // needed for compiler. if you're adding a new extended origin, add the jsd to this type/list of types.
-    type JsdBounds = JsdBtaSa with JsdAlcoholDuty with JsdPfAlcoholDuty with JsdPfEpayeP11d with JsdPfEpayeSeta with JsdPfEpayeLpp with JsdPfEpayeNi with JsdPtaSa with JsdBtaCt with JsdItSa with JsdPfCt with JsdPfSa with JsdPfEpayeLateCis with JsdPfVat with JsdBtaVat with JsdVcVatOther with JsdVcVatReturn with JsdPpt with JsdPfPpt with JsdBtaEpayeBill with JsdBtaEpayePenalty with JsdBtaEpayeGeneral with JsdBtaEpayeInterest with JsdBtaClass1aNi with JsdPfAmls with JsdAmls with JsdEconomicCrimeLevy with JsdPfEconomicCrimeLevy
+    type JsdBounds = JsdPfEpayeNi with JsdAlcoholDuty with JsdPfPpt with JsdBtaEpayeBill with JsdPfSa with JsdPpt with JsdVcVatReturn with JsdPfEpayeP11d with JsdCapitalGainsTax with JsdBtaCt with JsdPfEpayeLateCis with JsdPfEpayeLpp with JsdPfCt with JsdBtaVat with JsdPfSdlt with JsdBtaEpayeInterest with JsdAmls with JsdBtaEpayeGeneral with JsdPfEpayeSeta with JsdPtaSa with JsdBtaClass1aNi with JsdVcVatOther with JsdPfAmls with JsdPfVat with JsdItSa with JsdBtaSa with JsdPfAlcoholDuty with JsdBtaEpayePenalty with JsdEconomicCrimeLevy with JsdPfEconomicCrimeLevy
 
     val scenarios: TableFor6[JourneyStatuses[_ >: JsdBounds <: JourneySpecificData], String, String, Option[String], Some[String], String] = Table(
       ("Journey", "Tax Type", "Tax Reference", "Commission", "Total Paid", "lang"),
@@ -185,8 +185,17 @@ class EmailServiceSpec extends ItSpec with TableDrivenPropertyChecks {
       (PfEconomicCrimeLevy, "Economic Crime Levy", "ending with 89012", None, Some("12.34"), "en"),
       (PfEconomicCrimeLevy, "Economic Crime Levy", "ending with 89012", commission, Some("13.57"), "en"),
       (PfEconomicCrimeLevy, "Ardoll Troseddau Economaidd", "yn gorffen gyda 89012", None, Some("12.34"), "cy"),
-      (PfEconomicCrimeLevy, "Ardoll Troseddau Economaidd", "yn gorffen gyda 89012", commission, Some("13.57"), "cy")
+      (PfEconomicCrimeLevy, "Ardoll Troseddau Economaidd", "yn gorffen gyda 89012", commission, Some("13.57"), "cy"),
 
+      (PfSdlt, "Stamp Duty Land Tax", "ending with 789MA", None, Some("12.34"), "en"),
+      (PfSdlt, "Stamp Duty Land Tax", "ending with 789MA", commission, Some("13.57"), "en"),
+      (PfSdlt, "Treth Dir y Tollau Stamp", "yn gorffen gyda 789MA", None, Some("12.34"), "cy"),
+      (PfSdlt, "Treth Dir y Tollau Stamp", "yn gorffen gyda 789MA", commission, Some("13.57"), "cy"),
+
+      (CapitalGainsTax, "Capital Gains Tax on UK property", "ending with 00290", None, Some("12.34"), "en"),
+      (CapitalGainsTax, "Capital Gains Tax on UK property", "ending with 00290", commission, Some("13.57"), "en"),
+      (CapitalGainsTax, "Treth Enillion Cyfalaf ar eiddo yn y DU", "yn gorffen gyda 00290", None, Some("12.34"), "cy"),
+      (CapitalGainsTax, "Treth Enillion Cyfalaf ar eiddo yn y DU", "yn gorffen gyda 00290", commission, Some("13.57"), "cy")
     )
 
     forAll(scenarios) { (j, taxType, taxReference, commission, totalPaid, lang) =>
@@ -218,7 +227,7 @@ class EmailServiceSpec extends ItSpec with TableDrivenPropertyChecks {
         msgKey.isEmpty shouldBe false
         //Check if the message is defined in either messages file, Doesn't matter which one
         //doesn't seem to care what the language is, if it exists in one of the language file, it'll return true
-        messages.isDefinedAt(msgKey)(Lang("en")) shouldBe true
+        messages.isDefinedAt(msgKey)(Lang("en")) shouldBe true withClue s"email.tax-name message key missing for origin: ${origin.entryName}"
         //Check if the message is different in both languages, if they are the same the message is not in both files
         messages.preferred(Seq(Lang("en")))(msgKey) should not be messages.preferred(Seq(Lang("cy")))(msgKey)
       }
