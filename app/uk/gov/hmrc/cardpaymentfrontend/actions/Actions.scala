@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,12 +24,17 @@ import javax.inject.{Inject, Singleton}
 class Actions @Inject() (
     actionBuilder:                DefaultActionBuilder,
     getJourneyActionRefiner:      GetJourneyActionRefiner,
-    journeyFinishedActionRefiner: JourneyFinishedActionRefiner
+    journeyFinishedActionRefiner: JourneyFinishedActionRefiner,
+    paymentStatusActionRefiners:  PaymentStatusActionRefiners
 ) {
 
   val default: ActionBuilder[Request, AnyContent] = actionBuilder
 
   val journeyAction: ActionBuilder[JourneyRequest, AnyContent] = default.andThen[JourneyRequest](getJourneyActionRefiner)
+
+  val iframeAction: ActionBuilder[JourneyRequest, AnyContent] = journeyAction.andThen[JourneyRequest](paymentStatusActionRefiners.iframePageActionRefiner)
+
+  val paymentStatusAction: ActionBuilder[JourneyRequest, AnyContent] = journeyAction.andThen[JourneyRequest](paymentStatusActionRefiners.paymentStatusActionRefiner)
 
   val journeyFinishedAction: ActionBuilder[JourneyRequest, AnyContent] = journeyAction.andThen[JourneyRequest](journeyFinishedActionRefiner)
 

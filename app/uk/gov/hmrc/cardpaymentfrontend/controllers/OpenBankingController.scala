@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,7 +44,7 @@ class OpenBankingController @Inject() (
         .origin
         .lift
         .openBankingOriginSpecificSessionData(journey.journeySpecificData)
-        .map(originSpecificSessionData => CreateSessionDataRequest(journeyRequest.journey.getAmountInPence, originSpecificSessionData, journeyRequest.journey.futureDatedPayment))
+        .map(originSpecificSessionData => CreateSessionDataRequest(journey.getAmountInPence, originSpecificSessionData, journey.futureDatedPayment))
         .getOrElse(throw new RuntimeException(s"Unable to build createSessionDataRequest, so cannot start an OB journey for origin ${journey.origin.toString}"))
     }
 

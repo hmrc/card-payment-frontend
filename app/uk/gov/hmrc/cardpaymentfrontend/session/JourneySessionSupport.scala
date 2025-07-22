@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,7 +46,7 @@ trait JourneySessionSupport {
       r.withSession(newSession)
     }
 
-    def removingFromSession(journeyId: JourneyId, keys: String*): Result = {
+    def removingJourneyFromSession(journeyId: JourneyId, keys: String*): Result = {
       val newSession = keys.foldLeft[Session](r.session) { (session, key) =>
         remove(key, session, journeyId)
       }

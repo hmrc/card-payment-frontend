@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,9 +16,11 @@
 
 package uk.gov.hmrc.cardpaymentfrontend.controllers
 
+import payapi.cardpaymentjourney.model.journey._
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.cardpaymentfrontend.actions.{Actions, JourneyRequest}
 import uk.gov.hmrc.cardpaymentfrontend.requests.RequestSupport
+import uk.gov.hmrc.cardpaymentfrontend.util.ExternalNavigation
 import uk.gov.hmrc.cardpaymentfrontend.views.html.PaymentCancelledPage
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
@@ -29,14 +31,14 @@ class PaymentCancelledController @Inject() (
     mcc:                  MessagesControllerComponents,
     paymentCancelledPage: PaymentCancelledPage,
     requestSupport:       RequestSupport
-
 ) extends FrontendController(mcc) {
 
   import requestSupport._
 
-  val renderPage: Action[AnyContent] = actions.journeyAction { implicit journeyRequest: JourneyRequest[AnyContent] =>
-    //just hardcoded exitUrl for now, eventually we'll need some more functionality but that requires spj models etc.
-    Ok(paymentCancelledPage(exitUrl = "https://www.gov.uk/"))
+  val renderPage: Action[AnyContent] = actions.journeyAction { implicit request: JourneyRequest[AnyContent] =>
+    Ok(paymentCancelledPage(
+      ExternalNavigation.returnUrlCancelled(request.journey)
+        .getOrElse(Url(uk.gov.hmrc.cardpaymentfrontend.controllers.routes.PaymentsSurveyController.startSurvey.url)).value
+    ))
   }
-
 }

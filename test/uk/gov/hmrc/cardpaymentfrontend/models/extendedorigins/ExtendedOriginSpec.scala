@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -78,7 +78,7 @@ class ExtendedOriginSpec extends ItSpec {
     "return None when showFuturePayment returns false" in {
       val fakeJourneyRequest: JourneyRequest[AnyContent] = new JourneyRequest(testJourneyNoDueDate, fakeGetRequest)
       val result: Option[CheckYourAnswersRow] = systemUnderTest.checkYourAnswersPaymentDateRow(fakeJourneyRequest)("blah")
-      result shouldBe (None)
+      result shouldBe None
     }
   }
 
@@ -104,7 +104,7 @@ class ExtendedOriginSpec extends ItSpec {
       val testJourneyEmailAddress = TestJourneys.BtaSa.journeyAfterBeginWebPayment
       val fakeJourneyRequest: JourneyRequest[AnyContent] = new JourneyRequest(testJourneyEmailAddress, fakeGetRequest)
       val result: Option[CheckYourAnswersRow] = systemUnderTest.checkYourAnswersEmailAddressRow(fakeJourneyRequest)
-      result shouldBe (None)
+      result shouldBe None
     }
   }
 }

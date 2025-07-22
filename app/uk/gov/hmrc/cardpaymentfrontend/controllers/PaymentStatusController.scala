@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,39 +16,42 @@
 
 package uk.gov.hmrc.cardpaymentfrontend.controllers
 
+import play.api.Logging
+import play.api.i18n.Messages
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
-import uk.gov.hmrc.cardpaymentfrontend.actions.Actions
+import uk.gov.hmrc.cardpaymentfrontend.actions.{Actions, JourneyRequest}
 import uk.gov.hmrc.cardpaymentfrontend.config.AppConfig
 import uk.gov.hmrc.cardpaymentfrontend.models.cardpayment.CardPaymentFinishPaymentResponses
 import uk.gov.hmrc.cardpaymentfrontend.requests.RequestSupport
 import uk.gov.hmrc.cardpaymentfrontend.services.CardPaymentService
+import uk.gov.hmrc.cardpaymentfrontend.views.html.errors.TechnicalDifficultiesPage
 import uk.gov.hmrc.cardpaymentfrontend.views.html.iframe.{IframeContainerPage, RedirectToParentPage}
-import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.http.HttpResponse
 import uk.gov.hmrc.play.bootstrap.binders.RedirectUrl.idFunctor
 import uk.gov.hmrc.play.bootstrap.binders.RedirectUrlPolicy.Id
 import uk.gov.hmrc.play.bootstrap.binders.{AbsoluteWithHostnameFromAllowlist, RedirectUrl, RedirectUrlPolicy}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton()
 class PaymentStatusController @Inject() (
-    actions:            Actions,
-    appConfig:          AppConfig,
-    cardPaymentService: CardPaymentService,
-    mcc:                MessagesControllerComponents,
-    requestSupport:     RequestSupport,
-    iframeContainer:    IframeContainerPage,
-    redirectToParent:   RedirectToParentPage
-)(implicit executionContext: ExecutionContext) extends FrontendController(mcc) {
+    actions:                   Actions,
+    appConfig:                 AppConfig,
+    cardPaymentService:        CardPaymentService,
+    mcc:                       MessagesControllerComponents,
+    requestSupport:            RequestSupport,
+    iframeContainer:           IframeContainerPage,
+    redirectToParent:          RedirectToParentPage,
+    technicalDifficultiesPage: TechnicalDifficultiesPage
+)(implicit executionContext: ExecutionContext) extends FrontendController(mcc) with Logging {
 
   import requestSupport._
 
   private val redirectUrlPolicy: RedirectUrlPolicy[Id] = AbsoluteWithHostnameFromAllowlist(appConfig.iframeHostNameAllowList)
 
-  //todo need to write a test for this, where we override the allow list or something to trigger bad request.
-  def showIframe(iframeUrl: RedirectUrl): Action[AnyContent] = actions.journeyAction { implicit journeyRequest =>
+  def showIframe(iframeUrl: RedirectUrl): Action[AnyContent] = actions.iframeAction { implicit journeyRequest =>
     iframeUrl
       .getEither[Id](redirectUrlPolicy)
       .fold[Result](
@@ -62,26 +65,41 @@ class PaymentStatusController @Inject() (
   }
 
   //todo append something to the return url so we can extract/work out the session/journey - are we allowed to do this or do we use session?
-  def paymentStatus(): Action[AnyContent] = actions.journeyAction.async { implicit journeyRequest =>
-
-    implicit val hc: HeaderCarrier = requestSupport.hc
+  def paymentStatus(): Action[AnyContent] = actions.paymentStatusAction.async { implicit journeyRequest =>
     val transactionRefFromJourney: Option[String] = journeyRequest.journey.order.map(_.transactionReference.value)
 
     val maybeCardPaymentResultF = for {
       authAndCaptureResult <- cardPaymentService.finishPayment(
         transactionRefFromJourney.getOrElse(throw new RuntimeException("Could not find transaction ref, therefore we can't auth and settle.")),
-        journeyRequest.journeyId.value
+        journeyRequest.journeyId.value,
+        requestSupport.usableLanguage
       )
     } yield authAndCaptureResult
 
-    maybeCardPaymentResultF.map {
+    maybeCardPaymentResultF.flatMap {
       case Some(cardPaymentResult) => cardPaymentResult.cardPaymentResult match {
-        case CardPaymentFinishPaymentResponses.Successful => Redirect(routes.PaymentCompleteController.renderPage)
-        case CardPaymentFinishPaymentResponses.Failed     => Redirect(routes.PaymentFailedController.renderPage)
-        case CardPaymentFinishPaymentResponses.Cancelled  => Redirect(routes.PaymentCancelledController.renderPage)
+        case CardPaymentFinishPaymentResponses.Successful => Future.successful(Redirect(routes.PaymentCompleteController.renderPage))
+        case CardPaymentFinishPaymentResponses.Failed     => Future.successful(Redirect(routes.PaymentFailedController.renderPage))
+        case CardPaymentFinishPaymentResponses.Cancelled  => Future.successful(Redirect(routes.PaymentCancelledController.renderPage))
       }
-      case None => InternalServerError
+      case None => tryAndCancelPayment(Some("No cardPaymentResult returned, maybe invalid json returned?"))
+    }.recoverWith {
+      case exception =>
+        logger.error("something went wrong with auth and capture, attempting to cancel payment.")
+        tryAndCancelPayment(Some(exception.getMessage))
     }
   }
 
+  private def tryAndCancelPayment(cancelReason: Option[String])(implicit journeyRequest: JourneyRequest[_], messages: Messages): Future[Result] = {
+    cardPaymentService.cancelPayment().map { httpResponse: HttpResponse =>
+      httpResponse.status match {
+        case 200 =>
+          logger.warn(s"Successfully cancelled the transaction, but now erroring gracefully because of: [ ${cancelReason.toString} ]")
+          InternalServerError(technicalDifficultiesPage()(journeyRequest, messages))
+        case _ =>
+          logger.warn(s"Something went wrong trying to cancel the transaction. transactionReference: [ ${journeyRequest.journey.order.map(_.transactionReference.value).toString} ]")
+          InternalServerError(technicalDifficultiesPage()(journeyRequest, messages))
+      }
+    }
+  }
 }

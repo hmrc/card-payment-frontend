@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,7 +37,7 @@ object TestPayApiData {
   val testAccountsOfficeReference: AccountsOfficeReference = AccountsOfficeReference("123PH45678900")
   val testSubYearlyPeriod: SubYearlyEpayeTaxPeriod = MonthlyEpayeTaxPeriod(TaxMonth.MayJune, TaxYear(2027))
   val testYearlyPeriod: YearlyEpayeTaxPeriod = YearlyEpayeTaxPeriod(TaxYear(2027))
-  val testXref: XRef = XRef("X1234567890123")
+  val testXref: XRef = XRef("XE1234567890123")
   val testAmountInPence: AmountInPence = AmountInPence(12345)
   val testReturnUrl: Option[String] = Some("returnUrl")
 }

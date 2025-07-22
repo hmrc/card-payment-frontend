@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,18 +16,28 @@
 
 package uk.gov.hmrc.cardpaymentfrontend.actions
 
+import payapi.cardpaymentjourney.model.journey.Url
+import play.api.Logging
+import play.api.i18n.MessagesApi
 import play.api.mvc.{ActionRefiner, Request, Result, Results}
+import uk.gov.hmrc.cardpaymentfrontend.config.AppConfig
 import uk.gov.hmrc.cardpaymentfrontend.connectors.PayApiConnector
 import uk.gov.hmrc.cardpaymentfrontend.requests.RequestSupport
+import uk.gov.hmrc.cardpaymentfrontend.views.html.ForceDeleteAnswersPage
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class GetJourneyActionRefiner @Inject() (
-    payApiConnector: PayApiConnector,
-    requestSupport:  RequestSupport
-)(implicit ec: ExecutionContext) extends ActionRefiner[Request, JourneyRequest] {
+    val messagesApi:        MessagesApi,
+    appConfig:              AppConfig,
+    payApiConnector:        PayApiConnector,
+    requestSupport:         RequestSupport,
+    forceDeleteAnswersPage: ForceDeleteAnswersPage
+)(implicit ec: ExecutionContext) extends ActionRefiner[Request, JourneyRequest] with Logging {
+
+  import requestSupport._
 
   override protected[actions] def refine[A](request: Request[A]): Future[Either[Result, JourneyRequest[A]]] = {
 
@@ -36,7 +46,9 @@ class GetJourneyActionRefiner @Inject() (
     payApiConnector.findLatestJourneyBySessionId()(requestSupport.hc)
       .map {
         case Some(journey) => Right(new JourneyRequest(journey, request))
-        case None          => Left(Results.Unauthorized("need a session id")) //should probably be a redirect to pay-frontend /pay
+        case None =>
+          logger.warn("No journey found for session id, sending to timed out page.")
+          Left(Results.Unauthorized(forceDeleteAnswersPage(false, Some(Url(appConfig.payFrontendBaseUrl))))) //should probably be a redirect to pay-frontend /pay
       }
   }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,25 +25,21 @@ import uk.gov.hmrc.cardpaymentfrontend.actions.{Actions, JourneyRequest}
 import uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins.ExtendedOrigin.OriginExtended
 import uk.gov.hmrc.cardpaymentfrontend.models.{EmailAddress, creditCardCommissionRate}
 import uk.gov.hmrc.cardpaymentfrontend.requests.RequestSupport
-import uk.gov.hmrc.cardpaymentfrontend.services.EmailService
 import uk.gov.hmrc.cardpaymentfrontend.session.JourneySessionSupport._
-import uk.gov.hmrc.cardpaymentfrontend.util.SafeEquals.EqualsOps
-import uk.gov.hmrc.cardpaymentfrontend.utils.DateStringBuilder
+import uk.gov.hmrc.cardpaymentfrontend.util.DateStringBuilder
 import uk.gov.hmrc.cardpaymentfrontend.views.html.PaymentCompletePage
 import uk.gov.hmrc.govukfrontend.views.Aliases.{HtmlContent, Text, Value}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{Key, SummaryListRow}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
 
 class PaymentCompleteController @Inject() (
     actions:             Actions,
-    emailService:        EmailService,
     mcc:                 MessagesControllerComponents,
     paymentCompletePage: PaymentCompletePage,
     requestSupport:      RequestSupport
-)(implicit executionContext: ExecutionContext) extends FrontendController(mcc) {
+) extends FrontendController(mcc) {
 
   import requestSupport._
 
@@ -51,17 +47,6 @@ class PaymentCompleteController @Inject() (
 
     val maybeEmailFromSession: Option[EmailAddress] =
       journeyRequest.readFromSession[EmailAddress](journeyRequest.journeyId, Keys.email).filter(!_.value.isBlank).map(email => EmailAddress(email.value))
-
-    val langIsEnglish: Boolean = journeyRequest.lang.code =!= "cy"
-
-    //TODO: Eventually we can call this from the payment-status controller, but we don't have that yet.
-    val _ = maybeEmailFromSession.fold(Future.unit) { email =>
-      emailService.sendEmail(
-        journey      = journeyRequest.journey,
-        emailAddress = email,
-        isEnglish    = langIsEnglish
-      )(RequestSupport.hc, journeyRequest)
-    }.map((_: Unit) => ())
 
     Ok(paymentCompletePage(
       taxReference      = journeyRequest.journey.getReference,

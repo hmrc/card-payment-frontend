@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,17 +16,24 @@
 
 package uk.gov.hmrc.cardpaymentfrontend.actions
 
+import play.api.Logging
 import play.api.mvc.{ActionRefiner, Result, Results}
+import uk.gov.hmrc.cardpaymentfrontend.config.ErrorHandler
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class JourneyFinishedActionRefiner @Inject() ()(implicit ec: ExecutionContext) extends ActionRefiner[JourneyRequest, JourneyRequest] {
+class JourneyFinishedActionRefiner @Inject() (errorHandler: ErrorHandler)(implicit ec: ExecutionContext) extends ActionRefiner[JourneyRequest, JourneyRequest] with Logging {
 
   override protected[actions] def refine[A](request: JourneyRequest[A]): Future[Either[Result, JourneyRequest[A]]] = {
     if (request.journey.status.isTerminalState) Future.successful(Right(request))
-    else Future.successful(Left(Results.NotFound("Journey not in valid state")))
+    else {
+      logger.warn(s"Journey is not in valid state: ${request.journey.status.entryName}, expected terminal state.")
+      errorHandler
+        .notFoundTemplate(request)
+        .map(html => Left(Results.Gone(html)))
+    }
   }
 
   override protected def executionContext: ExecutionContext = ec

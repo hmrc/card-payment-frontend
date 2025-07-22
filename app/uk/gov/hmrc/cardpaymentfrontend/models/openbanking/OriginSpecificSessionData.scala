@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -346,6 +346,7 @@ final case class VcVatOtherSessionData(vrn: Vrn, vatChargeReference: VatChargeRe
 
 final case class PfVatSessionData(vrn: Option[Vrn], chargeRef: Option[XRef14Char], returnUrl: Option[Url] = None) extends VatSessionData(PfVat) {
   private def vatReference: Option[Reference] = vrn.map(ReferenceMaker.makeVatReference)
+
   private def chargeReference: Option[Reference] = chargeRef.map(ReferenceMaker.makeXRef14Char)
 
   def paymentReference: Reference = (vatReference, chargeReference) match {

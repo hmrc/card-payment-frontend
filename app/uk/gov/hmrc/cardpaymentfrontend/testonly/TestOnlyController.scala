@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,6 +41,10 @@ class TestOnlyController @Inject() (
 
   val addAnEmailToSession: Action[AnyContent] = actions.journeyAction { implicit request: JourneyRequest[AnyContent] =>
     Ok("email added to session").placeInSession[EmailAddress](request.journeyId, (Keys.email, EmailAddress("testemail@blah.com")))
+  }
+
+  val removeAddress: Action[AnyContent] = actions.journeyAction { implicit request =>
+    Ok("removed address from session").removingJourneyFromSession(request.journeyId, Keys.address)
   }
 
 }

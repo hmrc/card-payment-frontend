@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@
 package uk.gov.hmrc.cardpaymentfrontend.services
 
 import payapi.cardpaymentjourney.model.journey.{Journey, JourneySpecificData}
+import play.api.Logging
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.mvc.Request
 import uk.gov.hmrc.cardpaymentfrontend.connectors.EmailConnector
@@ -31,13 +32,17 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.Future
 
 @Singleton
-class EmailService @Inject() (emailConnector: EmailConnector, requestSupport: RequestSupport)(implicit messagesApi: MessagesApi) {
+class EmailService @Inject() (emailConnector: EmailConnector, requestSupport: RequestSupport)(implicit messagesApi: MessagesApi)
+  extends Logging {
 
   import requestSupport._
 
-  def sendEmail(journey: Journey[JourneySpecificData], emailAddress: EmailAddress, isEnglish: Boolean)(implicit headerCarrier: HeaderCarrier, request: Request[_]): Future[Unit] = {
-    val emailRequest = buildEmailRequest(journey, emailAddress, isEnglish)
-    emailConnector.sendEmail(emailRequest)(headerCarrier)
+  def sendEmail(journey: Journey[JourneySpecificData], emailAddress: EmailAddress, isEnglish: Boolean)
+    (implicit headerCarrier: HeaderCarrier, request: Request[_]): Future[Unit] = {
+    logger.info("Email sent on successful payment")
+    emailConnector.sendEmail(
+      buildEmailRequest(journey, emailAddress, isEnglish)
+    )(headerCarrier)
   }
 
   private[services] def buildEmailRequest(
@@ -62,12 +67,16 @@ class EmailService @Inject() (emailConnector: EmailConnector, requestSupport: Re
     val extendedOrigin: ExtendedOrigin = journey.origin.lift
     EmailParameters(
       taxType          = messages(extendedOrigin.emailTaxTypeMessageKey),
-      taxReference     = journey.referenceValue,
+      taxReference     = obfuscateReference(journey.referenceValue),
       paymentReference = journey.getTransactionReference.value,
       amountPaid       = journey.getAmountInPence.formatInDecimal,
       commission       = journey.getCommissionInPence.map(_.formatInDecimal),
       totalPaid        = Some(journey.getTotalAmountInPence.formatInDecimal)
     )
+  }
+
+  private[services] def obfuscateReference(taxReference: String)(implicit request: Request[_]): String = {
+    request.messages.messages("email.obfuscated-tax-reference", taxReference.takeRight(5))
   }
 
 }

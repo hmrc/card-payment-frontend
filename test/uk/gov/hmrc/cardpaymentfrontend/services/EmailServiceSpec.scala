@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,36 +16,237 @@
 
 package uk.gov.hmrc.cardpaymentfrontend.services
 
+import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor6}
+import payapi.cardpaymentjourney.model.journey._
+import play.api.i18n.{Lang, MessagesApi}
 import play.api.libs.json.Json
+import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import uk.gov.hmrc.cardpaymentfrontend.models.EmailAddress
 import uk.gov.hmrc.cardpaymentfrontend.models.email.{EmailParameters, EmailRequest}
-import uk.gov.hmrc.cardpaymentfrontend.testsupport.ItSpec
+import uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins.ExtendedOrigin.OriginExtended
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.TestOps.FakeRequestOps
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.stubs.EmailStub
-import uk.gov.hmrc.cardpaymentfrontend.testsupport.testdata.TestJourneys
+import uk.gov.hmrc.cardpaymentfrontend.testsupport.testdata.{JourneyStatuses, TestJourneys}
+import uk.gov.hmrc.cardpaymentfrontend.testsupport.testdata.TestJourneys._
+import uk.gov.hmrc.cardpaymentfrontend.testsupport.{ItSpec, TestHelpers}
 import uk.gov.hmrc.http.HeaderCarrier
 
-class EmailServiceSpec extends ItSpec {
+class EmailServiceSpec extends ItSpec with TableDrivenPropertyChecks {
 
   val systemUnderTest: EmailService = app.injector.instanceOf[EmailService]
 
+  val fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/").withSessionId()
+  val fakeRequestInWelsh: FakeRequest[AnyContentAsEmpty.type] = fakeRequest.withLangWelsh()
+
+  "buildEmailParameters should return EmailParameters" - {
+    val commission = Some("1.23")
+
+    // needed for compiler. if you're adding a new extended origin, add the jsd to this type/list of types.
+    type JsdBounds = JsdPfEpayeNi with JsdAlcoholDuty with JsdPfPpt with JsdBtaEpayeBill with JsdPfSa with JsdPpt with JsdVcVatReturn with JsdPfEpayeP11d with JsdCapitalGainsTax with JsdBtaCt with JsdPfEpayeLateCis with JsdPfEpayeLpp with JsdPfCt with JsdBtaVat with JsdPfSdlt with JsdBtaEpayeInterest with JsdAmls with JsdBtaEpayeGeneral with JsdPfEpayeSeta with JsdPtaSa with JsdBtaClass1aNi with JsdVcVatOther with JsdPfAmls with JsdPfVat with JsdItSa with JsdBtaSa with JsdPfAlcoholDuty with JsdBtaEpayePenalty
+
+    val scenarios: TableFor6[JourneyStatuses[_ >: JsdBounds <: JourneySpecificData], String, String, Option[String], Some[String], String] = Table(
+      ("Journey", "Tax Type", "Tax Reference", "Commission", "Total Paid", "lang"),
+      (PfSa, "Self Assessment", "ending with 7895K", None, Some("12.34"), "en"),
+      (PfSa, "Self Assessment", "ending with 7895K", commission, Some("13.57"), "en"),
+      (PfSa, "Hunanasesiad", "yn gorffen gyda 7895K", None, Some("12.34"), "cy"),
+      (PfSa, "Hunanasesiad", "yn gorffen gyda 7895K", commission, Some("13.57"), "cy"),
+
+      (BtaSa, "Self Assessment", "ending with 7895K", None, Some("12.34"), "en"),
+      (BtaSa, "Self Assessment", "ending with 7895K", commission, Some("13.57"), "en"),
+      (BtaSa, "Hunanasesiad", "yn gorffen gyda 7895K", None, Some("12.34"), "cy"),
+      (BtaSa, "Hunanasesiad", "yn gorffen gyda 7895K", commission, Some("13.57"), "cy"),
+
+      (PtaSa, "Self Assessment", "ending with 7895K", None, Some("12.34"), "en"),
+      (PtaSa, "Self Assessment", "ending with 7895K", commission, Some("13.57"), "en"),
+      (PtaSa, "Hunanasesiad", "yn gorffen gyda 7895K", None, Some("12.34"), "cy"),
+      (PtaSa, "Hunanasesiad", "yn gorffen gyda 7895K", commission, Some("13.57"), "cy"),
+
+      (ItSa, "Self Assessment", "ending with 7895K", None, Some("12.34"), "en"),
+      (ItSa, "Self Assessment", "ending with 7895K", commission, Some("13.57"), "en"),
+      (ItSa, "Hunanasesiad", "yn gorffen gyda 7895K", None, Some("12.34"), "cy"),
+      (ItSa, "Hunanasesiad", "yn gorffen gyda 7895K", commission, Some("13.57"), "cy"),
+
+      (AlcoholDuty, "Alcohol Duty", "ending with 56789", None, Some("12.34"), "en"),
+      (AlcoholDuty, "Alcohol Duty", "ending with 56789", commission, Some("13.57"), "en"),
+      (AlcoholDuty, "Toll Alcohol", "yn gorffen gyda 56789", None, Some("12.34"), "cy"),
+      (AlcoholDuty, "Toll Alcohol", "yn gorffen gyda 56789", commission, Some("13.57"), "cy"),
+
+      (PfAlcoholDuty, "Alcohol Duty", "ending with 56789", None, Some("12.34"), "en"),
+      (PfAlcoholDuty, "Alcohol Duty", "ending with 56789", commission, Some("13.57"), "en"),
+      (PfAlcoholDuty, "Toll Alcohol", "yn gorffen gyda 56789", None, Some("12.34"), "cy"),
+      (PfAlcoholDuty, "Toll Alcohol", "yn gorffen gyda 56789", commission, Some("13.57"), "cy"),
+
+      (BtaCt, "Corporation Tax", "ending with 0101A", None, Some("12.34"), "en"),
+      (BtaCt, "Corporation Tax", "ending with 0101A", commission, Some("13.57"), "en"),
+      (BtaCt, "Treth Gorfforaeth", "yn gorffen gyda 0101A", None, Some("12.34"), "cy"),
+      (BtaCt, "Treth Gorfforaeth", "yn gorffen gyda 0101A", commission, Some("13.57"), "cy"),
+
+      (PfCt, "Corporation Tax", "ending with 0101A", None, Some("12.34"), "en"),
+      (PfCt, "Corporation Tax", "ending with 0101A", commission, Some("13.57"), "en"),
+      (PfCt, "Treth Gorfforaeth", "yn gorffen gyda 0101A", None, Some("12.34"), "cy"),
+      (PfCt, "Treth Gorfforaeth", "yn gorffen gyda 0101A", commission, Some("13.57"), "cy"),
+
+      (PfEpayeNi, "Employers’ PAYE and National Insurance", "ending with 02503", None, Some("12.34"), "en"),
+      (PfEpayeNi, "Employers’ PAYE and National Insurance", "ending with 02503", commission, Some("13.57"), "en"),
+      (PfEpayeNi, "TWE ac Yswiriant Gwladol y Cyflogwr", "yn gorffen gyda 02503", None, Some("12.34"), "cy"),
+      (PfEpayeNi, "TWE ac Yswiriant Gwladol y Cyflogwr", "yn gorffen gyda 02503", commission, Some("13.57"), "cy"),
+
+      (PfEpayeLpp, "Employers’ PAYE late payment penalty", "ending with 89012", None, Some("12.34"), "en"),
+      (PfEpayeLpp, "Employers’ PAYE late payment penalty", "ending with 89012", commission, Some("13.57"), "en"),
+      (PfEpayeLpp, "Cosb y Cyflogwr am dalu TWE yn hwyr", "yn gorffen gyda 89012", None, Some("12.34"), "cy"),
+      (PfEpayeLpp, "Cosb y Cyflogwr am dalu TWE yn hwyr", "yn gorffen gyda 89012", commission, Some("13.57"), "cy"),
+
+      (PfEpayeSeta, "Employers’ PAYE Settlement Agreement", "ending with 89012", None, Some("12.34"), "en"),
+      (PfEpayeSeta, "Employers’ PAYE Settlement Agreement", "ending with 89012", commission, Some("13.57"), "en"),
+      (PfEpayeSeta, "Cytundeb Setliad TWE y Cyflogwr", "yn gorffen gyda 89012", None, Some("12.34"), "cy"),
+      (PfEpayeSeta, "Cytundeb Setliad TWE y Cyflogwr", "yn gorffen gyda 89012", commission, Some("13.57"), "cy"),
+
+      (PfEpayeLateCis, "Construction Industry Scheme (CIS) late filing penalty", "ending with 89012", None, Some("12.34"), "en"),
+      (PfEpayeLateCis, "Construction Industry Scheme (CIS) late filing penalty", "ending with 89012", commission, Some("13.57"), "en"),
+      (PfEpayeLateCis, "Cynllun y Diwydiant Adeiladu (CIS) - cosb am dalu’n hwyr", "yn gorffen gyda 89012", None, Some("12.34"), "cy"),
+      (PfEpayeLateCis, "Cynllun y Diwydiant Adeiladu (CIS) - cosb am dalu’n hwyr", "yn gorffen gyda 89012", commission, Some("13.57"), "cy"),
+
+      (PfEpayeP11d, "Employers’ Class 1A National Insurance", "ending with 02513", None, Some("12.34"), "en"),
+      (PfEpayeP11d, "Employers’ Class 1A National Insurance", "ending with 02513", commission, Some("13.57"), "en"),
+      (PfEpayeP11d, "Yswiriant Gwladol Dosbarth 1A y Cyflogwr", "yn gorffen gyda 02513", None, Some("12.34"), "cy"),
+      (PfEpayeP11d, "Yswiriant Gwladol Dosbarth 1A y Cyflogwr", "yn gorffen gyda 02513", commission, Some("13.57"), "cy"),
+
+      (PfVat, "Vat", "ending with 64805", None, Some("12.34"), "en"),
+      (PfVat, "Vat", "ending with 64805", commission, Some("13.57"), "en"),
+      (PfVat, "TAW", "yn gorffen gyda 64805", None, Some("12.34"), "cy"),
+      (PfVat, "TAW", "yn gorffen gyda 64805", commission, Some("13.57"), "cy"),
+
+      (BtaVat, "Vat", "ending with 64805", None, Some("12.34"), "en"),
+      (BtaVat, "Vat", "ending with 64805", commission, Some("13.57"), "en"),
+      (BtaVat, "TAW", "yn gorffen gyda 64805", None, Some("12.34"), "cy"),
+      (BtaVat, "TAW", "yn gorffen gyda 64805", commission, Some("13.57"), "cy"),
+
+      (VcVatOther, "Vat", "ending with 64805", None, Some("12.34"), "en"),
+      (VcVatOther, "Vat", "ending with 64805", commission, Some("13.57"), "en"),
+      (VcVatOther, "TAW", "yn gorffen gyda 64805", None, Some("12.34"), "cy"),
+      (VcVatOther, "TAW", "yn gorffen gyda 64805", commission, Some("13.57"), "cy"),
+
+      (VcVatReturn, "Vat", "ending with 64805", None, Some("12.34"), "en"),
+      (VcVatReturn, "Vat", "ending with 64805", commission, Some("13.57"), "en"),
+      (VcVatReturn, "TAW", "yn gorffen gyda 64805", None, Some("12.34"), "cy"),
+      (VcVatReturn, "TAW", "yn gorffen gyda 64805", commission, Some("13.57"), "cy"),
+
+      (Ppt, "Plastic Packaging Tax", "ending with 12345", None, Some("12.34"), "en"),
+      (Ppt, "Plastic Packaging Tax", "ending with 12345", commission, Some("13.57"), "en"),
+      (Ppt, "Dreth Deunydd Pacio Plastig", "yn gorffen gyda 12345", None, Some("12.34"), "cy"),
+      (Ppt, "Dreth Deunydd Pacio Plastig", "yn gorffen gyda 12345", commission, Some("13.57"), "cy"),
+
+      (PfPpt, "Plastic Packaging Tax", "ending with 12345", None, Some("12.34"), "en"),
+      (PfPpt, "Plastic Packaging Tax", "ending with 12345", commission, Some("13.57"), "en"),
+      (PfPpt, "Dreth Deunydd Pacio Plastig", "yn gorffen gyda 12345", None, Some("12.34"), "cy"),
+      (PfPpt, "Dreth Deunydd Pacio Plastig", "yn gorffen gyda 12345", commission, Some("13.57"), "cy"),
+
+      (BtaEpayeBill, "Employers’ PAYE and National Insurance", "ending with 02702", None, Some("12.34"), "en"),
+      (BtaEpayeBill, "Employers’ PAYE and National Insurance", "ending with 02702", commission, Some("13.57"), "en"),
+      (BtaEpayeBill, "TWE ac Yswiriant Gwladol y Cyflogwr", "yn gorffen gyda 02702", None, Some("12.34"), "cy"),
+      (BtaEpayeBill, "TWE ac Yswiriant Gwladol y Cyflogwr", "yn gorffen gyda 02702", commission, Some("13.57"), "cy"),
+
+      (BtaEpayePenalty, "Employers’ PAYE late payment or filing penalty", "ending with 78900", None, Some("12.34"), "en"),
+      (BtaEpayePenalty, "Employers’ PAYE late payment or filing penalty", "ending with 78900", commission, Some("13.57"), "en"),
+      (BtaEpayePenalty, "Cosb y Cyflogwr am dalu TWE yn hwyr", "yn gorffen gyda 78900", None, Some("12.34"), "cy"),
+      (BtaEpayePenalty, "Cosb y Cyflogwr am dalu TWE yn hwyr", "yn gorffen gyda 78900", commission, Some("13.57"), "cy"),
+
+      (BtaEpayeGeneral, "Employers’ PAYE and National Insurance", "ending with 02702", None, Some("12.34"), "en"),
+      (BtaEpayeGeneral, "Employers’ PAYE and National Insurance", "ending with 02702", commission, Some("13.57"), "en"),
+      (BtaEpayeGeneral, "TWE ac Yswiriant Gwladol y Cyflogwr", "yn gorffen gyda 02702", None, Some("12.34"), "cy"),
+      (BtaEpayeGeneral, "TWE ac Yswiriant Gwladol y Cyflogwr", "yn gorffen gyda 02702", commission, Some("13.57"), "cy"),
+
+      (BtaEpayeInterest, "Employers’ PAYE interest payment", "ending with 89012", None, Some("12.34"), "en"),
+      (BtaEpayeInterest, "Employers’ PAYE interest payment", "ending with 89012", commission, Some("13.57"), "en"),
+      (BtaEpayeInterest, "Taliad llog TWE cyflogwr", "yn gorffen gyda 89012", None, Some("12.34"), "cy"),
+      (BtaEpayeInterest, "Taliad llog TWE cyflogwr", "yn gorffen gyda 89012", commission, Some("13.57"), "cy"),
+
+      (BtaClass1aNi, "Employers’ Class 1A National Insurance", "ending with 02713", None, Some("12.34"), "en"),
+      (BtaClass1aNi, "Employers’ Class 1A National Insurance", "ending with 02713", commission, Some("13.57"), "en"),
+      (BtaClass1aNi, "Yswiriant Gwladol Dosbarth 1A y Cyflogwr", "yn gorffen gyda 02713", None, Some("12.34"), "cy"),
+      (BtaClass1aNi, "Yswiriant Gwladol Dosbarth 1A y Cyflogwr", "yn gorffen gyda 02713", commission, Some("13.57"), "cy"),
+
+      (Amls, "Money Laundering Regulation Fees", "ending with 89012", None, Some("12.34"), "en"),
+      (Amls, "Money Laundering Regulation Fees", "ending with 89012", commission, Some("13.57"), "en"),
+      (Amls, "Ffioedd Rheoliadau Gwyngalchu Arian", "yn gorffen gyda 89012", None, Some("12.34"), "cy"),
+      (Amls, "Ffioedd Rheoliadau Gwyngalchu Arian", "yn gorffen gyda 89012", commission, Some("13.57"), "cy"),
+
+      (PfAmls, "Money Laundering Regulation Fees", "ending with 89012", None, Some("12.34"), "en"),
+      (PfAmls, "Money Laundering Regulation Fees", "ending with 89012", commission, Some("13.57"), "en"),
+      (PfAmls, "Ffioedd Rheoliadau Gwyngalchu Arian", "yn gorffen gyda 89012", None, Some("12.34"), "cy"),
+      (PfAmls, "Ffioedd Rheoliadau Gwyngalchu Arian", "yn gorffen gyda 89012", commission, Some("13.57"), "cy"),
+
+      (PfSdlt, "Stamp Duty Land Tax", "ending with 789MA", None, Some("12.34"), "en"),
+      (PfSdlt, "Stamp Duty Land Tax", "ending with 789MA", commission, Some("13.57"), "en"),
+      (PfSdlt, "Treth Dir y Tollau Stamp", "yn gorffen gyda 789MA", None, Some("12.34"), "cy"),
+      (PfSdlt, "Treth Dir y Tollau Stamp", "yn gorffen gyda 789MA", commission, Some("13.57"), "cy"),
+
+      (CapitalGainsTax, "Capital Gains Tax on UK property", "ending with 00290", None, Some("12.34"), "en"),
+      (CapitalGainsTax, "Capital Gains Tax on UK property", "ending with 00290", commission, Some("13.57"), "en"),
+      (CapitalGainsTax, "Treth Enillion Cyfalaf ar eiddo yn y DU", "yn gorffen gyda 00290", None, Some("12.34"), "cy"),
+      (CapitalGainsTax, "Treth Enillion Cyfalaf ar eiddo yn y DU", "yn gorffen gyda 00290", commission, Some("13.57"), "cy")
+    )
+
+    forAll(scenarios) { (j, taxType, taxReference, commission, totalPaid, lang) =>
+      val cardType = if (commission.isDefined) "credit" else "debit"
+      val origin = j.journeyBeforeBeginWebPayment.origin
+      val request: FakeRequest[AnyContentAsEmpty.type] = if (lang == "en") fakeRequest else fakeRequestInWelsh
+      val journey: Journey[_ >: JsdBtaSa with JsdAlcoholDuty with JsdPfAlcoholDuty with JsdPfEpayeP11d with JsdPfEpayeSeta with JsdPfEpayeLpp with JsdPfEpayeNi with JsdPtaSa with JsdBtaCt with JsdItSa with JsdPfCt with JsdPfSa with JsdPfEpayeLateCis <: JourneySpecificData] = if (cardType == "credit") j.journeyAfterSucceedCreditWebPayment else j.journeyAfterSucceedDebitWebPayment
+
+      s"when origin is ${origin.entryName}, card type is $cardType in $lang" in {
+        val expectedResult: EmailParameters = EmailParameters(
+          taxType          = taxType,
+          taxReference     = taxReference,
+          paymentReference = "Some-transaction-ref",
+          amountPaid       = "12.34",
+          commission       = commission,
+          totalPaid        = totalPaid
+        )
+
+        systemUnderTest.buildEmailParameters(journey)(request) shouldBe expectedResult
+      }
+    }
+
+    "should have a messages populated for emailTaxTypeMessageKey for all origins" in {
+      val messages: MessagesApi = app.injector.instanceOf[MessagesApi]
+      val implementedOrigins = TestHelpers.implementedOrigins
+      implementedOrigins.foreach { origin =>
+        val msgKey = origin.lift.emailTaxTypeMessageKey
+
+        msgKey.isEmpty shouldBe false
+        //Check if the message is defined in either messages file, Doesn't matter which one
+        //doesn't seem to care what the language is, if it exists in one of the language file, it'll return true
+        messages.isDefinedAt(msgKey)(Lang("en")) shouldBe true withClue s"email.tax-name message key missing for origin: ${origin.entryName}"
+        //Check if the message is different in both languages, if they are the same the message is not in both files
+        messages.preferred(Seq(Lang("en")))(msgKey) should not be messages.preferred(Seq(Lang("cy")))(msgKey)
+      }
+    }
+  }
+
+  "obfuscateReference" - {
+    "should obfuscate the tax reference, appending a string and taking the right most characters" - {
+      "in English" in {
+        val result = systemUnderTest.obfuscateReference("123456789K")(fakeRequest)
+        result shouldBe "ending with 6789K"
+      }
+      "in Welsh" in {
+        val result = systemUnderTest.obfuscateReference("123456789K")(fakeRequestInWelsh)
+        result shouldBe "yn gorffen gyda 6789K"
+      }
+    }
+  }
+
   "EmailService" - {
-
-    val fakeRequest = FakeRequest("GET", "/").withSessionId()
-    val fakeRequestInWelsh = fakeRequest.withLangWelsh()
-
     "buildEmailRequest" - {
-
       "Should return an EmailRequest" - {
-
         "request in english" in {
           val expectedResult: EmailRequest = EmailRequest(
             to         = List(EmailAddress("joe_bloggs@gmail.com")),
             templateId = "payment_successful",
             parameters = EmailParameters(
               taxType          = "Self Assessment",
-              taxReference     = "1234567895K",
+              taxReference     = "ending with 7895K",
               paymentReference = "Some-transaction-ref",
               amountPaid       = "12.34",
               commission       = None,
@@ -68,7 +269,7 @@ class EmailServiceSpec extends ItSpec {
             templateId = "payment_successful_cy",
             parameters = EmailParameters(
               taxType          = "Hunanasesiad",
-              taxReference     = "1234567895K",
+              taxReference     = "yn gorffen gyda 7895K",
               paymentReference = "Some-transaction-ref",
               amountPaid       = "12.34",
               commission       = None,
@@ -84,464 +285,7 @@ class EmailServiceSpec extends ItSpec {
           )(fakeRequestInWelsh.withEmailInSession(TestJourneys.PfSa.journeyAfterSucceedDebitWebPayment._id, EmailAddress("joe_bloggs@gmail.com")))
           result shouldBe expectedResult
         }
-
       }
-
-    }
-
-    "buildEmailParameters" - {
-
-      "should return an EmailParameters" - {
-
-        "when origin is PfSa" - {
-
-          "debit in english" in {
-            val expectedResult: EmailParameters = EmailParameters(
-              taxType          = "Self Assessment",
-              taxReference     = "1234567895K",
-              paymentReference = "Some-transaction-ref",
-              amountPaid       = "12.34",
-              commission       = None,
-              totalPaid        = Some("12.34")
-            )
-
-            val result = systemUnderTest.buildEmailParameters(TestJourneys.PfSa.journeyAfterSucceedDebitWebPayment)(fakeRequest)
-            result shouldBe expectedResult
-          }
-
-          "credit in english" in {
-            val expectedResult: EmailParameters = EmailParameters(
-              taxType          = "Self Assessment",
-              taxReference     = "1234567895K",
-              paymentReference = "Some-transaction-ref",
-              amountPaid       = "12.34",
-              commission       = Some("1.23"),
-              totalPaid        = Some("13.57")
-            )
-
-            val result = systemUnderTest.buildEmailParameters(TestJourneys.PfSa.journeyAfterSucceedCreditWebPayment)(fakeRequest)
-            result shouldBe expectedResult
-          }
-
-          "debit in welsh" in {
-            val expectedResult: EmailParameters = EmailParameters(
-              taxType          = "Hunanasesiad",
-              taxReference     = "1234567895K",
-              paymentReference = "Some-transaction-ref",
-              amountPaid       = "12.34",
-              commission       = None,
-              totalPaid        = Some("12.34")
-            )
-
-            val result = systemUnderTest.buildEmailParameters(TestJourneys.PfSa.journeyAfterSucceedDebitWebPayment)(fakeRequestInWelsh)
-            result shouldBe expectedResult
-          }
-
-          "credit in welsh" in {
-            val expectedResult: EmailParameters = EmailParameters(
-              taxType          = "Hunanasesiad",
-              taxReference     = "1234567895K",
-              paymentReference = "Some-transaction-ref",
-              amountPaid       = "12.34",
-              commission       = Some("1.23"),
-              totalPaid        = Some("13.57")
-            )
-
-            val result = systemUnderTest.buildEmailParameters(TestJourneys.PfSa.journeyAfterSucceedCreditWebPayment)(fakeRequestInWelsh)
-            result shouldBe expectedResult
-          }
-        }
-
-        "when origin is BtaSa" - {
-
-          "debit in english" in {
-            val expectedResult: EmailParameters = EmailParameters(
-              taxType          = "Self Assessment",
-              taxReference     = "1234567895K",
-              paymentReference = "Some-transaction-ref",
-              amountPaid       = "12.34",
-              commission       = None,
-              totalPaid        = Some("12.34")
-            )
-
-            val result = systemUnderTest.buildEmailParameters(TestJourneys.BtaSa.journeyAfterSucceedDebitWebPayment)(fakeRequest)
-            result shouldBe expectedResult
-          }
-
-          "credit in english" in {
-            val expectedResult: EmailParameters = EmailParameters(
-              taxType          = "Self Assessment",
-              taxReference     = "1234567895K",
-              paymentReference = "Some-transaction-ref",
-              amountPaid       = "12.34",
-              commission       = Some("1.23"),
-              totalPaid        = Some("13.57")
-            )
-
-            val result = systemUnderTest.buildEmailParameters(TestJourneys.BtaSa.journeyAfterSucceedCreditWebPayment)(fakeRequest)
-            result shouldBe expectedResult
-          }
-
-          "debit in welsh" in {
-            val expectedResult: EmailParameters = EmailParameters(
-              taxType          = "Hunanasesiad",
-              taxReference     = "1234567895K",
-              paymentReference = "Some-transaction-ref",
-              amountPaid       = "12.34",
-              commission       = None,
-              totalPaid        = Some("12.34")
-            )
-
-            val result = systemUnderTest.buildEmailParameters(TestJourneys.BtaSa.journeyAfterSucceedDebitWebPayment)(fakeRequestInWelsh)
-            result shouldBe expectedResult
-          }
-
-          "credit in welsh" in {
-            val expectedResult: EmailParameters = EmailParameters(
-              taxType          = "Hunanasesiad",
-              taxReference     = "1234567895K",
-              paymentReference = "Some-transaction-ref",
-              amountPaid       = "12.34",
-              commission       = Some("1.23"),
-              totalPaid        = Some("13.57")
-            )
-
-            val result = systemUnderTest.buildEmailParameters(TestJourneys.BtaSa.journeyAfterSucceedCreditWebPayment)(fakeRequestInWelsh)
-            result shouldBe expectedResult
-          }
-        }
-
-        "when origin is PtaSa" - {
-          "debit in english" in {
-            val expectedResult: EmailParameters = EmailParameters(
-              taxType          = "Self Assessment",
-              taxReference     = "1234567895K",
-              paymentReference = "Some-transaction-ref",
-              amountPaid       = "12.34",
-              commission       = None,
-              totalPaid        = Some("12.34")
-            )
-
-            val result = systemUnderTest.buildEmailParameters(TestJourneys.PtaSa.journeyAfterSucceedDebitWebPayment)(fakeRequest)
-            result shouldBe expectedResult
-          }
-          "credit in english" in {
-            val expectedResult: EmailParameters = EmailParameters(
-              taxType          = "Self Assessment",
-              taxReference     = "1234567895K",
-              paymentReference = "Some-transaction-ref",
-              amountPaid       = "12.34",
-              commission       = Some("1.23"),
-              totalPaid        = Some("13.57")
-            )
-
-            val result = systemUnderTest.buildEmailParameters(TestJourneys.PtaSa.journeyAfterSucceedCreditWebPayment)(fakeRequest)
-            result shouldBe expectedResult
-          }
-          "debit in welsh" in {
-            val expectedResult: EmailParameters = EmailParameters(
-              taxType          = "Hunanasesiad",
-              taxReference     = "1234567895K",
-              paymentReference = "Some-transaction-ref",
-              amountPaid       = "12.34",
-              commission       = None,
-              totalPaid        = Some("12.34")
-            )
-
-            val result = systemUnderTest.buildEmailParameters(TestJourneys.PtaSa.journeyAfterSucceedDebitWebPayment)(fakeRequestInWelsh)
-            result shouldBe expectedResult
-          }
-          "credit in welsh" in {
-            val expectedResult: EmailParameters = EmailParameters(
-              taxType          = "Hunanasesiad",
-              taxReference     = "1234567895K",
-              paymentReference = "Some-transaction-ref",
-              amountPaid       = "12.34",
-              commission       = Some("1.23"),
-              totalPaid        = Some("13.57")
-            )
-
-            val result = systemUnderTest.buildEmailParameters(TestJourneys.PtaSa.journeyAfterSucceedCreditWebPayment)(fakeRequestInWelsh)
-            result shouldBe expectedResult
-          }
-        }
-
-        "when origin is ItSa" - {
-          "debit in english" in {
-            val expectedResult: EmailParameters = EmailParameters(
-              taxType          = "Self Assessment",
-              taxReference     = "1234567895K",
-              paymentReference = "Some-transaction-ref",
-              amountPaid       = "12.34",
-              commission       = None,
-              totalPaid        = Some("12.34")
-            )
-
-            val result = systemUnderTest.buildEmailParameters(TestJourneys.ItSa.journeyAfterSucceedDebitWebPayment)(fakeRequest)
-            result shouldBe expectedResult
-          }
-          "credit in english" in {
-            val expectedResult: EmailParameters = EmailParameters(
-              taxType          = "Self Assessment",
-              taxReference     = "1234567895K",
-              paymentReference = "Some-transaction-ref",
-              amountPaid       = "12.34",
-              commission       = Some("1.23"),
-              totalPaid        = Some("13.57")
-            )
-
-            val result = systemUnderTest.buildEmailParameters(TestJourneys.ItSa.journeyAfterSucceedCreditWebPayment)(fakeRequest)
-            result shouldBe expectedResult
-          }
-          "debit in welsh" in {
-            val expectedResult: EmailParameters = EmailParameters(
-              taxType          = "Hunanasesiad",
-              taxReference     = "1234567895K",
-              paymentReference = "Some-transaction-ref",
-              amountPaid       = "12.34",
-              commission       = None,
-              totalPaid        = Some("12.34")
-            )
-
-            val result = systemUnderTest.buildEmailParameters(TestJourneys.ItSa.journeyAfterSucceedDebitWebPayment)(fakeRequestInWelsh)
-            result shouldBe expectedResult
-          }
-          "credit in welsh" in {
-            val expectedResult: EmailParameters = EmailParameters(
-              taxType          = "Hunanasesiad",
-              taxReference     = "1234567895K",
-              paymentReference = "Some-transaction-ref",
-              amountPaid       = "12.34",
-              commission       = Some("1.23"),
-              totalPaid        = Some("13.57")
-            )
-
-            val result = systemUnderTest.buildEmailParameters(TestJourneys.ItSa.journeyAfterSucceedCreditWebPayment)(fakeRequestInWelsh)
-            result shouldBe expectedResult
-          }
-        }
-
-        "when origin is AlcoholDuty" - {
-          "debit in english" in {
-            val expectedResult: EmailParameters = EmailParameters(
-              taxType          = "Alcohol Duty",
-              taxReference     = "XMADP0123456789",
-              paymentReference = "Some-transaction-ref",
-              amountPaid       = "12.34",
-              commission       = None,
-              totalPaid        = Some("12.34")
-            )
-
-            val result = systemUnderTest.buildEmailParameters(TestJourneys.AlcoholDuty.journeyAfterSucceedDebitWebPayment)(fakeRequest)
-            result shouldBe expectedResult
-          }
-          "credit in english" in {
-            val expectedResult: EmailParameters = EmailParameters(
-              taxType          = "Alcohol Duty",
-              taxReference     = "XMADP0123456789",
-              paymentReference = "Some-transaction-ref",
-              amountPaid       = "12.34",
-              commission       = Some("1.23"),
-              totalPaid        = Some("13.57")
-            )
-
-            val result = systemUnderTest.buildEmailParameters(TestJourneys.AlcoholDuty.journeyAfterSucceedCreditWebPayment)(fakeRequest)
-            result shouldBe expectedResult
-          }
-          "debit in welsh" in {
-            val expectedResult: EmailParameters = EmailParameters(
-              taxType          = "Toll Alcohol",
-              taxReference     = "XMADP0123456789",
-              paymentReference = "Some-transaction-ref",
-              amountPaid       = "12.34",
-              commission       = None,
-              totalPaid        = Some("12.34")
-            )
-
-            val result = systemUnderTest.buildEmailParameters(TestJourneys.AlcoholDuty.journeyAfterSucceedDebitWebPayment)(fakeRequestInWelsh)
-            result shouldBe expectedResult
-          }
-          "credit in welsh" in {
-            val expectedResult: EmailParameters = EmailParameters(
-              taxType          = "Toll Alcohol",
-              taxReference     = "XMADP0123456789",
-              paymentReference = "Some-transaction-ref",
-              amountPaid       = "12.34",
-              commission       = Some("1.23"),
-              totalPaid        = Some("13.57")
-            )
-
-            val result = systemUnderTest.buildEmailParameters(TestJourneys.AlcoholDuty.journeyAfterSucceedCreditWebPayment)(fakeRequestInWelsh)
-            result shouldBe expectedResult
-          }
-        }
-
-        "when origin is PfAlcoholDuty" - {
-          "debit in english" in {
-            val expectedResult: EmailParameters = EmailParameters(
-              taxType          = "Alcohol Duty",
-              taxReference     = "XMADP0123456789",
-              paymentReference = "Some-transaction-ref",
-              amountPaid       = "12.34",
-              commission       = None,
-              totalPaid        = Some("12.34")
-            )
-
-            val result = systemUnderTest.buildEmailParameters(TestJourneys.PfAlcoholDuty.journeyAfterSucceedDebitWebPayment)(fakeRequest)
-            result shouldBe expectedResult
-          }
-          "credit in english" in {
-            val expectedResult: EmailParameters = EmailParameters(
-              taxType          = "Alcohol Duty",
-              taxReference     = "XMADP0123456789",
-              paymentReference = "Some-transaction-ref",
-              amountPaid       = "12.34",
-              commission       = Some("1.23"),
-              totalPaid        = Some("13.57")
-            )
-
-            val result = systemUnderTest.buildEmailParameters(TestJourneys.PfAlcoholDuty.journeyAfterSucceedCreditWebPayment)(fakeRequest)
-            result shouldBe expectedResult
-          }
-          "debit in welsh" in {
-            val expectedResult: EmailParameters = EmailParameters(
-              taxType          = "Toll Alcohol",
-              taxReference     = "XMADP0123456789",
-              paymentReference = "Some-transaction-ref",
-              amountPaid       = "12.34",
-              commission       = None,
-              totalPaid        = Some("12.34")
-            )
-
-            val result = systemUnderTest.buildEmailParameters(TestJourneys.PfAlcoholDuty.journeyAfterSucceedDebitWebPayment)(fakeRequestInWelsh)
-            result shouldBe expectedResult
-          }
-          "credit in welsh" in {
-            val expectedResult: EmailParameters = EmailParameters(
-              taxType          = "Toll Alcohol",
-              taxReference     = "XMADP0123456789",
-              paymentReference = "Some-transaction-ref",
-              amountPaid       = "12.34",
-              commission       = Some("1.23"),
-              totalPaid        = Some("13.57")
-            )
-
-            val result = systemUnderTest.buildEmailParameters(TestJourneys.PfAlcoholDuty.journeyAfterSucceedCreditWebPayment)(fakeRequestInWelsh)
-            result shouldBe expectedResult
-          }
-        }
-
-        "when origin is BtaCt" - {
-          "debit in english" in {
-            val expectedResult: EmailParameters = EmailParameters(
-              taxType          = "Corporation Tax",
-              taxReference     = "1097172564A00101A",
-              paymentReference = "Some-transaction-ref",
-              amountPaid       = "12.34",
-              commission       = None,
-              totalPaid        = Some("12.34")
-            )
-
-            val result = systemUnderTest.buildEmailParameters(TestJourneys.BtaCt.journeyAfterSucceedDebitWebPayment)(fakeRequest)
-            result shouldBe expectedResult
-          }
-          "credit in english" in {
-            val expectedResult: EmailParameters = EmailParameters(
-              taxType          = "Corporation Tax",
-              taxReference     = "1097172564A00101A",
-              paymentReference = "Some-transaction-ref",
-              amountPaid       = "12.34",
-              commission       = Some("1.23"),
-              totalPaid        = Some("13.57")
-            )
-
-            val result = systemUnderTest.buildEmailParameters(TestJourneys.BtaCt.journeyAfterSucceedCreditWebPayment)(fakeRequest)
-            result shouldBe expectedResult
-          }
-          "debit in welsh" in {
-            val expectedResult: EmailParameters = EmailParameters(
-              taxType          = "Treth Gorfforaeth",
-              taxReference     = "1097172564A00101A",
-              paymentReference = "Some-transaction-ref",
-              amountPaid       = "12.34",
-              commission       = None,
-              totalPaid        = Some("12.34")
-            )
-
-            val result = systemUnderTest.buildEmailParameters(TestJourneys.BtaCt.journeyAfterSucceedDebitWebPayment)(fakeRequestInWelsh)
-            result shouldBe expectedResult
-          }
-          "credit in welsh" in {
-            val expectedResult: EmailParameters = EmailParameters(
-              taxType          = "Treth Gorfforaeth",
-              taxReference     = "1097172564A00101A",
-              paymentReference = "Some-transaction-ref",
-              amountPaid       = "12.34",
-              commission       = Some("1.23"),
-              totalPaid        = Some("13.57")
-            )
-
-            val result = systemUnderTest.buildEmailParameters(TestJourneys.BtaCt.journeyAfterSucceedCreditWebPayment)(fakeRequestInWelsh)
-            result shouldBe expectedResult
-          }
-        }
-
-        "when origin is PfCt" - {
-          "debit in english" in {
-            val expectedResult: EmailParameters = EmailParameters(
-              taxType          = "Corporation Tax",
-              taxReference     = "1097172564A00101A",
-              paymentReference = "Some-transaction-ref",
-              amountPaid       = "12.34",
-              commission       = None,
-              totalPaid        = Some("12.34")
-            )
-
-            val result = systemUnderTest.buildEmailParameters(TestJourneys.PfCt.journeyAfterSucceedDebitWebPayment)(fakeRequest)
-            result shouldBe expectedResult
-          }
-          "credit in english" in {
-            val expectedResult: EmailParameters = EmailParameters(
-              taxType          = "Corporation Tax",
-              taxReference     = "1097172564A00101A",
-              paymentReference = "Some-transaction-ref",
-              amountPaid       = "12.34",
-              commission       = Some("1.23"),
-              totalPaid        = Some("13.57")
-            )
-
-            val result = systemUnderTest.buildEmailParameters(TestJourneys.PfCt.journeyAfterSucceedCreditWebPayment)(fakeRequest)
-            result shouldBe expectedResult
-          }
-          "debit in welsh" in {
-            val expectedResult: EmailParameters = EmailParameters(
-              taxType          = "Treth Gorfforaeth",
-              taxReference     = "1097172564A00101A",
-              paymentReference = "Some-transaction-ref",
-              amountPaid       = "12.34",
-              commission       = None,
-              totalPaid        = Some("12.34")
-            )
-
-            val result = systemUnderTest.buildEmailParameters(TestJourneys.PfCt.journeyAfterSucceedDebitWebPayment)(fakeRequestInWelsh)
-            result shouldBe expectedResult
-          }
-          "credit in welsh" in {
-            val expectedResult: EmailParameters = EmailParameters(
-              taxType          = "Treth Gorfforaeth",
-              taxReference     = "1097172564A00101A",
-              paymentReference = "Some-transaction-ref",
-              amountPaid       = "12.34",
-              commission       = Some("1.23"),
-              totalPaid        = Some("13.57")
-            )
-
-            val result = systemUnderTest.buildEmailParameters(TestJourneys.PfCt.journeyAfterSucceedCreditWebPayment)(fakeRequestInWelsh)
-            result shouldBe expectedResult
-          }
-        }
-      }
-
     }
 
     "sendEmail" - {
@@ -554,7 +298,7 @@ class EmailServiceSpec extends ItSpec {
           "templateId" : "payment_successful",
           "parameters" : {
             "taxType" : "Self Assessment",
-            "taxReference" : "1234567895K",
+            "taxReference" : "ending with 7895K",
             "paymentReference" : "Some-transaction-ref",
             "amountPaid" : "12.34",
             "commission" : "1.23",

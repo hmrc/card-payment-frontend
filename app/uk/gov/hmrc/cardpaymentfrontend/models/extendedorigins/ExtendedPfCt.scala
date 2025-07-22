@@ -19,6 +19,7 @@ package uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins
 import payapi.cardpaymentjourney.model.journey.{JourneySpecificData, JsdPfCt}
 import payapi.corcommon.model.Reference
 import payapi.corcommon.model.taxes.ReferenceMaker.makeCtReference
+import play.api.i18n.Lang
 import play.api.mvc.{AnyContent, Call}
 import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
 import uk.gov.hmrc.cardpaymentfrontend.models.PaymentMethod.{Bacs, Card, OneOffDirectDebit, OpenBanking}
@@ -57,7 +58,9 @@ object ExtendedPfCt extends ExtendedOrigin {
     ))
   }
 
-  override def checkYourAnswersAdditionalReferenceRow(journeyRequest: JourneyRequest[AnyContent])(payFrontendBaseUrl: String): Option[CheckYourAnswersRow] = {
+  override def checkYourAnswersAdditionalReferenceRow(journeyRequest: JourneyRequest[AnyContent])
+    (payFrontendBaseUrl: String)
+    (implicit lang: Lang): Option[CheckYourAnswersRow] = {
     payslipReference(journeyRequest.journey.journeySpecificData).map { payslipReference =>
       CheckYourAnswersRow(
         titleMessageKey = "check-your-details.PfCt.payslip-reference",

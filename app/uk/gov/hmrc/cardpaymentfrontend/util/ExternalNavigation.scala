@@ -1,5 +1,5 @@
-@*
- * Copyright 2024 HM Revenue & Customs
+/*
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,16 +12,19 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@import uk.gov.hmrc.cardpaymentfrontend.views.html.Layout
-@import uk.gov.hmrc.govukfrontend.views.html.components.Text
+package uk.gov.hmrc.cardpaymentfrontend.util
 
-@this(layout: Layout)
+import payapi.cardpaymentjourney.model.journey._
 
-@(pageTitle: String, heading: String, message: String)(implicit requestheader: RequestHeader, messages: Messages)
+object ExternalNavigation {
 
-@layout(pageTitle = Some(pageTitle)) {
-    <h1 class="govuk-heading-l">@{Text(heading).asHtml}</h1>
-    <p class="govuk-body">@{Text(message).asHtml}</p>
+  private def navigationOptions(journey: Journey[JourneySpecificData]): NavigationOptions =
+    journey.navigation.getOrElse(NavigationOptions(None, None, None, None))
+
+  def returnUrlCancelled(journey: Journey[JourneySpecificData]): Option[Url] = {
+    val nav = navigationOptions(journey)
+    nav.returnUrlCancelled.orElse(nav.returnUrl)
+  }
 }

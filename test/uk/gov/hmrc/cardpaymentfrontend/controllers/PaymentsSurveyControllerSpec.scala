@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 
 package uk.gov.hmrc.cardpaymentfrontend.controllers
 
+import org.jsoup.Jsoup
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{contentAsString, defaultAwaitTimeout, redirectLocation, status}
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.ItSpec
@@ -37,12 +38,13 @@ class PaymentsSurveyControllerSpec extends ItSpec {
         redirectLocation(result) shouldBe Some("http://survey-redirect-url.com")
       }
 
-      "should return 404 when journey is not in terminal state" in {
+      "should return 410 (Gone) when journey is not in terminal state" in {
         PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyBeforeBeginWebPayment)
         val fakeRequest = FakeRequest().withSessionId()
         val result = systemUnderTest.startSurvey()(fakeRequest)
-        status(result) shouldBe 404
-        contentAsString(result) shouldBe "Journey not in valid state"
+        status(result) shouldBe 410
+        val document = Jsoup.parse(contentAsString(result))
+        document.select("h1").html() shouldBe "This page can’t be found"
       }
 
       "should return 401 when journey cannot be found" in {

@@ -17,15 +17,19 @@
 package uk.gov.hmrc.cardpaymentfrontend.services
 
 import payapi.cardpaymentjourney.model.journey.Journey
-import payapi.corcommon.model.TransNumberGenerator
+import payapi.corcommon.model.{PaymentStatuses, TransNumberGenerator}
 import play.api.Logging
-import play.api.libs.json.JsBoolean
+import play.api.i18n.MessagesApi
+import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
 import uk.gov.hmrc.cardpaymentfrontend.config.AppConfig
 import uk.gov.hmrc.cardpaymentfrontend.connectors.{CardPaymentConnector, PayApiConnector}
-import uk.gov.hmrc.cardpaymentfrontend.models.cardpayment.{BarclaycardAddress, CardPaymentFinishPaymentResponses, CardPaymentInitiatePaymentRequest, CardPaymentInitiatePaymentResponse, CardPaymentResult, ClientId}
-import uk.gov.hmrc.cardpaymentfrontend.models.payapi.{BeginWebPaymentRequest, FailWebPaymentRequest, FinishedWebPaymentRequest, SucceedWebPaymentRequest}
+import uk.gov.hmrc.cardpaymentfrontend.models.cardpayment._
+import uk.gov.hmrc.cardpaymentfrontend.models.payapirequest.{BeginWebPaymentRequest, FailWebPaymentRequest, FinishedWebPaymentRequest, SucceedWebPaymentRequest}
 import uk.gov.hmrc.cardpaymentfrontend.models.{Address, EmailAddress, Language}
-import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.cardpaymentfrontend.requests.RequestSupport
+import uk.gov.hmrc.cardpaymentfrontend.session.JourneySessionSupport.{Keys, RequestOps}
+import uk.gov.hmrc.cardpaymentfrontend.util.SafeEquals.EqualsOps
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 
 import java.time.{Clock, LocalDateTime}
 import javax.inject.{Inject, Singleton}
@@ -34,12 +38,17 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class CardPaymentService @Inject() (
     appConfig:            AppConfig,
+    auditService:         AuditService,
     cardPaymentConnector: CardPaymentConnector,
+    clientIdService:      ClientIdService,
     clock:                Clock,
+    emailService:         EmailService,
     payApiConnector:      PayApiConnector,
-    transNoGenerator:     TransNumberGenerator,
-    clientIdService:      ClientIdService
+    requestSupport:       RequestSupport,
+    transNoGenerator:     TransNumberGenerator
 )(implicit executionContext: ExecutionContext) extends Logging {
+
+  import requestSupport._
 
   // the url barclaycard make an empty post to after user completes payment
   private def returnToHmrcUrl: String =
@@ -50,9 +59,11 @@ class CardPaymentService @Inject() (
       addressFromSession:    Address,
       maybeEmailFromSession: Option[EmailAddress],
       language:              Language
-  )(implicit headerCarrier: HeaderCarrier): Future[CardPaymentInitiatePaymentResponse] = {
+  )(implicit headerCarrier: HeaderCarrier, journeyRequest: JourneyRequest[_]): Future[CardPaymentInitiatePaymentResponse] = {
     val clientId: ClientId = clientIdService.determineClientId(journey, language)
-    val clientIdStringToUse = if (appConfig.useProductionClientIds) clientId.prodCode else clientId.qaCode
+    val clientIdStringToUse: String = if (appConfig.useProductionClientIds) clientId.prodCode else clientId.qaCode
+
+    logger.info(s"Initiating payment for journey ${journey._id.value}")
 
     //todo eventually we can just use barclaycardaddress model, but we want backwards compatibility with pay-frontend.
     // This way if user ends up on pay-frontend after being on card-payment-frontend (or vice versa) it won't break.
@@ -76,26 +87,61 @@ class CardPaymentService @Inject() (
     )
 
     for {
-      initiatePaymentResponse <- cardPaymentConnector.initiatePayment(cardPaymentInitiatePaymentRequest)
+      initiatePaymentResponse <- cardPaymentConnector.initiatePayment(cardPaymentInitiatePaymentRequest)(headerCarrier)
+      _ = auditService.auditPaymentAttempt(addressFromSession, clientIdStringToUse, initiatePaymentResponse.transactionReference)(journeyRequest, headerCarrier)
       payApiBeginWebPaymentRequest = BeginWebPaymentRequest(initiatePaymentResponse.transactionReference, initiatePaymentResponse.redirectUrl)
-      _ <- payApiConnector.JourneyUpdates.updateBeginWebPayment(journey._id.value, payApiBeginWebPaymentRequest) //should we enhance this and error/retry?
-    } yield initiatePaymentResponse
+      _ <- payApiConnector.JourneyUpdates.updateBeginWebPayment(journey._id.value, payApiBeginWebPaymentRequest)(headerCarrier) //should we enhance this and error/retry?
+    } yield {
+      logger.info(s"Payment initiated for journey ${journey._id.value}.")
+      initiatePaymentResponse
+    }
   }
 
-  def checkPaymentStatus(transactionReference: String)(implicit headerCarrier: HeaderCarrier): Future[JsBoolean] = {
-    cardPaymentConnector.checkPaymentStatus(transactionReference)
-  }
+  def finishPayment(
+      transactionReference: String,
+      journeyId:            String,
+      language:             Language
+  )(implicit journeyRequest: JourneyRequest[_], messagesApi: MessagesApi): Future[Option[CardPaymentResult]] = {
+    val clientId: ClientId = clientIdService.determineClientId(journeyRequest.journey, language)
 
-  def finishPayment(transactionReference: String, journeyId: String)(implicit headerCarrier: HeaderCarrier): Future[Option[CardPaymentResult]] = {
+    logger.info(s"Finishing payment for journey $journeyId.")
+
     for {
       result <- cardPaymentConnector.authAndSettle(transactionReference)
       cardPaymentResult = result.json.asOpt[CardPaymentResult]
+      _ = cardPaymentResult.map { result =>
+        auditService.auditPaymentResult(
+          if (appConfig.useProductionClientIds) clientId.prodCode else clientId.qaCode,
+          transactionReference,
+          result.cardPaymentResult.toString
+        )
+      }
       maybeWebPaymentRequest: Option[FinishedWebPaymentRequest] = cardPaymentResult.flatMap(cardPaymentResultIntoUpdateWebPaymentRequest)
-      _ <- maybeWebPaymentRequest.fold(payApiConnector.JourneyUpdates.updateCancelWebPayment(journeyId)) {
-        case r: FailWebPaymentRequest    => payApiConnector.JourneyUpdates.updateFailWebPayment(journeyId, r)
-        case r: SucceedWebPaymentRequest => payApiConnector.JourneyUpdates.updateSucceedWebPayment(journeyId, r)
+      _ <- maybeWebPaymentRequest.fold {
+        logger.info(s"Payment cancelled for journey $journeyId.")
+        payApiConnector.JourneyUpdates.updateCancelWebPayment(journeyId)
+      } {
+        case r: FailWebPaymentRequest =>
+          logger.info(s"Payment failed for journey $journeyId.")
+          payApiConnector.JourneyUpdates.updateFailWebPayment(journeyId, r)
+        case r: SucceedWebPaymentRequest =>
+          logger.info(s"Payment finished for journey $journeyId.")
+          payApiConnector.JourneyUpdates.updateSucceedWebPayment(journeyId, r)
+            .map(_ => maybeSendEmailF())
       }
     } yield cardPaymentResult
+  }
+
+  def cancelPayment()(implicit journeyRequest: JourneyRequest[_]): Future[HttpResponse] = {
+    val transactionReference = journeyRequest.journey.getTransactionReference
+    val clientId = clientIdService.determineClientId(journeyRequest.journey, requestSupport.usableLanguage)
+    val clientIdStringToUse = if (appConfig.useProductionClientIds) clientId.prodCode else clientId.qaCode
+
+    for {
+      cancelPaymentHttpResponse <- cardPaymentConnector.cancelPayment(transactionReference.value, clientIdStringToUse)
+      _ <- payApiConnector.JourneyUpdates.updateCancelWebPayment(journeyRequest.journey._id.value)
+    } yield cancelPaymentHttpResponse
+
   }
 
   private[services] def cardPaymentResultIntoUpdateWebPaymentRequest: CardPaymentResult => Option[FinishedWebPaymentRequest] = {
@@ -111,6 +157,26 @@ class CardPaymentService @Inject() (
         additionalPaymentInfo.cardCategory.getOrElse("debit") //todo check if can this be anything?
       ))
     case CardPaymentResult(CardPaymentFinishPaymentResponses.Cancelled, _) => None
+  }
+
+  /**
+   * If journey is not in completed state (i.e. they've been on the iframe, so sent) and they have an email in session, send an email.
+   * Otherwise, return future.unit.
+   */
+  private[services] def maybeSendEmailF()(implicit headerCarrier: HeaderCarrier, journeyRequest: JourneyRequest[_], messagesApi: MessagesApi): Unit = {
+    if (journeyRequest.journey.status === PaymentStatuses.Sent) {
+
+      val maybeEmailFromSession: Option[EmailAddress] =
+        journeyRequest.readFromSession[EmailAddress](journeyRequest.journeyId, Keys.email)
+          .filter(!_.value.isBlank)
+          .map(email => EmailAddress(email.value))
+
+      maybeEmailFromSession.fold(()) { emailAddress =>
+        emailService
+          .sendEmail(journeyRequest.journey, emailAddress, journeyRequest.request.lang.code =!= "cy")(headerCarrier, journeyRequest)
+          .onComplete(_ => ())
+      }
+    }
   }
 
 }

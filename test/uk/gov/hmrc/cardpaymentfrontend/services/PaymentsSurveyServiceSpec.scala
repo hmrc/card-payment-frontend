@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 
 package uk.gov.hmrc.cardpaymentfrontend.services
 
+import org.scalatest.prop.TableDrivenPropertyChecks
 import payapi.cardpaymentjourney.model.journey.Url
 import play.api.test.FakeRequest
 import uk.gov.hmrc.cardpaymentfrontend.models.paymentssurvey.{AuditOptions, PaymentSurveyJourneyRequest, SurveyBannerTitle, SurveyContentOptions}
@@ -24,7 +25,7 @@ import uk.gov.hmrc.cardpaymentfrontend.testsupport.testdata.{TestJourneys, TestP
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.TestOps.FakeRequestOps
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.stubs.PaymentsSurveyStub
 
-class PaymentsSurveyServiceSpec extends ItSpec {
+class PaymentsSurveyServiceSpec extends ItSpec with TableDrivenPropertyChecks {
 
   val systemUnderTest: PaymentsSurveyService = app.injector.instanceOf[PaymentsSurveyService]
 
@@ -229,6 +230,420 @@ class PaymentsSurveyServiceSpec extends ItSpec {
           val result = systemUnderTest.makeSsjJourneyRequest(TestJourneys.PfCt.journeyAfterSucceedDebitWebPayment)(loggedOutFakeRequest)
           result shouldBe expectedPaymentSurveyJourneyRequest
         }
+
+        "for PfEpayeLpp" in {
+          val expectedPaymentSurveyJourneyRequest = PaymentSurveyJourneyRequest(
+            origin         = "PfEpayeLpp",
+            returnMsg      = "Skip survey",
+            returnHref     = "https://www.gov.uk/government/organisations/hm-revenue-customs",
+            auditName      = "paye-lpp",
+            audit          = AuditOptions(
+              userType  = "LoggedOut",
+              journey   = Some("Successful"),
+              orderId   = Some("XE123456789012"),
+              liability = Some("paye-lpp")
+            ),
+            contentOptions = SurveyContentOptions(
+              isWelshSupported = true,
+              title            = SurveyBannerTitle(
+                englishValue = "Pay your PAYE late payment or filing penalty", welshValue = Some("Talu’ch cosb am dalu neu gyflwyno TWE yn hwyr")
+              )
+            )
+          )
+          val result = systemUnderTest.makeSsjJourneyRequest(TestJourneys.PfEpayeLpp.journeyAfterSucceedDebitWebPayment)(loggedOutFakeRequest)
+          result shouldBe expectedPaymentSurveyJourneyRequest
+        }
+
+        "for PfEpayeLateCis" in {
+          val expectedPaymentSurveyJourneyRequest = PaymentSurveyJourneyRequest(
+            origin         = "PfEpayeLateCis",
+            returnMsg      = "Skip survey",
+            returnHref     = "https://www.gov.uk/government/organisations/hm-revenue-customs",
+            auditName      = "paye-late-cis",
+            audit          = AuditOptions(
+              userType  = "LoggedOut",
+              journey   = Some("Successful"),
+              orderId   = Some("XE123456789012"),
+              liability = Some("paye-late-cis")
+            ),
+            contentOptions = SurveyContentOptions(
+              isWelshSupported = true,
+              title            = SurveyBannerTitle(
+                englishValue = "Pay your Construction Industry Scheme penalty", welshValue = Some("Talwch eich cosb - Cynllun y Diwydiant Adeiladu")
+              )
+            )
+          )
+          val result = systemUnderTest.makeSsjJourneyRequest(TestJourneys.PfEpayeLateCis.journeyAfterSucceedDebitWebPayment)(loggedOutFakeRequest)
+          result shouldBe expectedPaymentSurveyJourneyRequest
+        }
+
+        "for PfEpayeNi" in {
+          val expectedPaymentSurveyJourneyRequest = PaymentSurveyJourneyRequest(
+            origin         = "PfEpayeNi",
+            returnMsg      = "Skip survey",
+            returnHref     = "https://www.gov.uk/government/organisations/hm-revenue-customs",
+            auditName      = "paye-ni",
+            audit          = AuditOptions(
+              userType  = "LoggedOut",
+              journey   = Some("Successful"),
+              orderId   = Some("123PH456789002503"),
+              liability = Some("paye-ni")
+            ),
+            contentOptions = SurveyContentOptions(
+              isWelshSupported = true,
+              title            = SurveyBannerTitle(
+                englishValue = "Pay your employers’ PAYE and National Insurance", welshValue = Some("Talwch eich TWE a’ch Yswiriant Gwladol y cyflogwr")
+              )
+            )
+          )
+          val result = systemUnderTest.makeSsjJourneyRequest(TestJourneys.PfEpayeNi.journeyAfterSucceedDebitWebPayment)(loggedOutFakeRequest)
+          result shouldBe expectedPaymentSurveyJourneyRequest
+        }
+
+        "for PfEpayeP11d" in {
+          val expectedPaymentSurveyJourneyRequest = PaymentSurveyJourneyRequest(
+            origin         = "PfEpayeP11d",
+            returnMsg      = "Skip survey",
+            returnHref     = "https://www.gov.uk/government/organisations/hm-revenue-customs",
+            auditName      = "paye-p11d",
+            audit          = AuditOptions(
+              userType  = "LoggedOut",
+              journey   = Some("Successful"),
+              orderId   = Some("123PH456789002513"),
+              liability = Some("paye-p11d")
+            ),
+            contentOptions = SurveyContentOptions(
+              isWelshSupported = true,
+              title            = SurveyBannerTitle(
+                englishValue = "Pay your employers’ Class 1A National Insurance (P11D bill)", welshValue = Some("Talu’ch Yswiriant Gwladol Dosbarth 1A y cyflogwr (bil P11D)")
+              )
+            )
+          )
+          val result = systemUnderTest.makeSsjJourneyRequest(TestJourneys.PfEpayeP11d.journeyAfterSucceedDebitWebPayment)(loggedOutFakeRequest)
+          result shouldBe expectedPaymentSurveyJourneyRequest
+        }
+
+        "for PfEpayeSeta" in {
+          val expectedPaymentSurveyJourneyRequest = PaymentSurveyJourneyRequest(
+            origin         = "PfEpayeSeta",
+            returnMsg      = "Skip survey",
+            returnHref     = "https://www.gov.uk/government/organisations/hm-revenue-customs",
+            auditName      = "paye-seta",
+            audit          = AuditOptions(
+              userType  = "LoggedOut",
+              journey   = Some("Successful"),
+              orderId   = Some("XA123456789012"),
+              liability = Some("paye-seta")
+            ),
+            contentOptions = SurveyContentOptions(
+              isWelshSupported = true,
+              title            = SurveyBannerTitle(
+                englishValue = "Pay your PAYE Settlement Agreement", welshValue = Some("Talwch eich Cytundeb Setliad TWE y cyflogwr")
+              )
+            )
+          )
+          val result = systemUnderTest.makeSsjJourneyRequest(TestJourneys.PfEpayeSeta.journeyAfterSucceedDebitWebPayment)(loggedOutFakeRequest)
+          result shouldBe expectedPaymentSurveyJourneyRequest
+        }
+
+        "for PfVat" in {
+          val expectedPaymentSurveyJourneyRequest = PaymentSurveyJourneyRequest(
+            origin         = "PfVat",
+            returnMsg      = "Skip survey",
+            returnHref     = "https://www.gov.uk/government/organisations/hm-revenue-customs",
+            auditName      = "vat",
+            audit          = AuditOptions(
+              userType  = "LoggedOut",
+              journey   = Some("Successful"),
+              orderId   = Some("999964805"),
+              liability = Some("vat")
+            ),
+            contentOptions = SurveyContentOptions(
+              isWelshSupported = true,
+              title            = SurveyBannerTitle(
+                englishValue = "Pay your VAT", welshValue = Some("Talu eich TAW")
+              )
+            )
+          )
+          val result = systemUnderTest.makeSsjJourneyRequest(TestJourneys.PfVat.journeyAfterSucceedDebitWebPayment)(loggedOutFakeRequest)
+          result shouldBe expectedPaymentSurveyJourneyRequest
+        }
+
+        "for BtaVat" in {
+          val expectedPaymentSurveyJourneyRequest = PaymentSurveyJourneyRequest(
+            origin         = "BtaVat",
+            returnMsg      = "Skip survey, return to business tax account",
+            returnHref     = "/business-account",
+            auditName      = "vat",
+            audit          = AuditOptions(
+              userType  = "LoggedIn",
+              journey   = Some("Successful"),
+              orderId   = Some("999964805"),
+              liability = Some("vat")
+            ),
+            contentOptions = SurveyContentOptions(
+              isWelshSupported = true,
+              title            = SurveyBannerTitle(
+                englishValue = "Pay your VAT", welshValue = Some("Talu eich TAW")
+              )
+            )
+          )
+          val result = systemUnderTest.makeSsjJourneyRequest(TestJourneys.BtaVat.journeyAfterSucceedDebitWebPayment)(loggedInFakeRequest)
+          result shouldBe expectedPaymentSurveyJourneyRequest
+        }
+
+        "for VcVatReturn" in {
+          val expectedPaymentSurveyJourneyRequest = PaymentSurveyJourneyRequest(
+            origin         = "VcVatReturn",
+            returnMsg      = "Skip survey, return to business tax account",
+            returnHref     = "/business-account",
+            auditName      = "vat",
+            audit          = AuditOptions(
+              userType  = "LoggedIn",
+              journey   = Some("Successful"),
+              orderId   = Some("999964805"),
+              liability = Some("vat")
+            ),
+            contentOptions = SurveyContentOptions(
+              isWelshSupported = true,
+              title            = SurveyBannerTitle(
+                englishValue = "Business tax account", welshValue = Some("Cyfrif treth busnes")
+              )
+            )
+          )
+          val result = systemUnderTest.makeSsjJourneyRequest(TestJourneys.VcVatReturn.journeyAfterSucceedDebitWebPayment)(loggedInFakeRequest)
+          result shouldBe expectedPaymentSurveyJourneyRequest
+        }
+
+        "for VcVatOther" in {
+          val expectedPaymentSurveyJourneyRequest = PaymentSurveyJourneyRequest(
+            origin         = "VcVatOther",
+            returnMsg      = "Skip survey, return to business tax account",
+            returnHref     = "/business-account",
+            auditName      = "vat",
+            audit          = AuditOptions(
+              userType  = "LoggedIn",
+              journey   = Some("Successful"),
+              orderId   = Some("999964805"),
+              liability = Some("vat")
+            ),
+            contentOptions = SurveyContentOptions(
+              isWelshSupported = true,
+              title            = SurveyBannerTitle(
+                englishValue = "Business tax account", welshValue = Some("Cyfrif treth busnes")
+              )
+            )
+          )
+          val result = systemUnderTest.makeSsjJourneyRequest(TestJourneys.VcVatOther.journeyAfterSucceedDebitWebPayment)(loggedInFakeRequest)
+          result shouldBe expectedPaymentSurveyJourneyRequest
+        }
+        "for PfPpt" in {
+          val expectedPaymentSurveyJourneyRequest = PaymentSurveyJourneyRequest(
+            origin         = "PfPpt",
+            returnMsg      = "Skip survey",
+            returnHref     = "https://www.gov.uk/government/organisations/hm-revenue-customs",
+            auditName      = "plastic-packaging-tax",
+            audit          = AuditOptions(
+              userType  = "LoggedOut",
+              journey   = Some("Successful"),
+              orderId   = Some("XAPPT0000012345"),
+              liability = Some("plastic-packaging-tax")
+            ),
+            contentOptions = SurveyContentOptions(
+              isWelshSupported = true,
+              title            = SurveyBannerTitle(
+                englishValue = "Pay your Plastic Packaging Tax", welshValue = Some("Talu’ch Treth Deunydd Pacio Plastig")
+              )
+            )
+          )
+          val result = systemUnderTest.makeSsjJourneyRequest(TestJourneys.PfPpt.journeyAfterSucceedDebitWebPayment)(loggedOutFakeRequest)
+          result shouldBe expectedPaymentSurveyJourneyRequest
+        }
+
+        "for Ppt" in {
+          val expectedPaymentSurveyJourneyRequest = PaymentSurveyJourneyRequest(
+            origin         = "Ppt",
+            returnMsg      = "Skip survey",
+            returnHref     = "https://www.gov.uk/government/organisations/hm-revenue-customs",
+            auditName      = "plastic-packaging-tax",
+            audit          = AuditOptions(
+              userType  = "LoggedOut",
+              journey   = Some("Successful"),
+              orderId   = Some("XAPPT0000012345"),
+              liability = Some("plastic-packaging-tax")
+            ),
+            contentOptions = SurveyContentOptions(
+              isWelshSupported = true,
+              title            = SurveyBannerTitle(
+                englishValue = "Pay your Plastic Packaging Tax", welshValue = Some("Talu’ch Treth Deunydd Pacio Plastig")
+              )
+            )
+          )
+          val result = systemUnderTest.makeSsjJourneyRequest(TestJourneys.Ppt.journeyAfterSucceedDebitWebPayment)(loggedOutFakeRequest)
+          result shouldBe expectedPaymentSurveyJourneyRequest
+        }
+
+        "for BtaEpayeBill" in {
+          val expectedPaymentSurveyJourneyRequest = PaymentSurveyJourneyRequest(
+            origin         = "BtaEpayeBill",
+            returnMsg      = "Skip survey, return to business tax account",
+            returnHref     = "/business-account",
+            auditName      = "epaye",
+            audit          = AuditOptions(
+              userType  = "LoggedIn",
+              journey   = Some("Successful"),
+              orderId   = Some("123PH456789002702"),
+              liability = Some("epaye")
+            ),
+            contentOptions = SurveyContentOptions(
+              isWelshSupported = true,
+              title            = SurveyBannerTitle(
+                englishValue = "Pay your employers’ PAYE and National Insurance", welshValue = Some("Talwch eich TWE a’ch Yswiriant Gwladol y cyflogwr")
+              )
+            )
+          )
+          val result = systemUnderTest.makeSsjJourneyRequest(TestJourneys.BtaEpayeBill.journeyAfterSucceedDebitWebPayment)(loggedInFakeRequest)
+          result shouldBe expectedPaymentSurveyJourneyRequest
+        }
+
+        "for BtaEpayePenalty" in {
+          val expectedPaymentSurveyJourneyRequest = PaymentSurveyJourneyRequest(
+            origin         = "BtaEpayePenalty",
+            returnMsg      = "Skip survey, return to business tax account",
+            returnHref     = "/business-account",
+            auditName      = "paye-penalty",
+            audit          = AuditOptions(
+              userType  = "LoggedIn",
+              journey   = Some("Successful"),
+              orderId   = Some("123PH45678900"),
+              liability = Some("paye-penalty")
+            ),
+            contentOptions = SurveyContentOptions(
+              isWelshSupported = true,
+              title            = SurveyBannerTitle(
+                englishValue = "Pay your PAYE late payment or filing penalty", welshValue = Some("Talu’ch cosb am dalu neu gyflwyno TWE yn hwyr")
+              )
+            )
+          )
+          val result = systemUnderTest.makeSsjJourneyRequest(TestJourneys.BtaEpayePenalty.journeyAfterSucceedDebitWebPayment)(loggedInFakeRequest)
+          result shouldBe expectedPaymentSurveyJourneyRequest
+        }
+
+        "for BtaEpayeInterest" in {
+          val expectedPaymentSurveyJourneyRequest = PaymentSurveyJourneyRequest(
+            origin         = "BtaEpayeInterest",
+            returnMsg      = "Skip survey, return to business tax account",
+            returnHref     = "/business-account",
+            auditName      = "paye-interest",
+            audit          = AuditOptions(
+              userType  = "LoggedIn",
+              journey   = Some("Successful"),
+              orderId   = Some("XE123456789012"),
+              liability = Some("paye-interest")
+            ),
+            contentOptions = SurveyContentOptions(
+              isWelshSupported = true,
+              title            = SurveyBannerTitle(
+                englishValue = "Pay employers’ PAYE interest", welshValue = Some("Taliad llog TWE cyflogwr")
+              )
+            )
+          )
+          val result = systemUnderTest.makeSsjJourneyRequest(TestJourneys.BtaEpayeInterest.journeyAfterSucceedDebitWebPayment)(loggedInFakeRequest)
+          result shouldBe expectedPaymentSurveyJourneyRequest
+        }
+
+        "for BtaEpayeGeneral" in {
+          val expectedPaymentSurveyJourneyRequest = PaymentSurveyJourneyRequest(
+            origin         = "BtaEpayeGeneral",
+            returnMsg      = "Skip survey, return to business tax account",
+            returnHref     = "/business-account",
+            auditName      = "epaye",
+            audit          = AuditOptions(
+              userType  = "LoggedIn",
+              journey   = Some("Successful"),
+              orderId   = Some("123PH456789002702"),
+              liability = Some("epaye")
+            ),
+            contentOptions = SurveyContentOptions(
+              isWelshSupported = true,
+              title            = SurveyBannerTitle(
+                englishValue = "Pay your employers’ PAYE and National Insurance", welshValue = Some("Talwch eich TWE a’ch Yswiriant Gwladol y cyflogwr")
+              )
+            )
+          )
+          val result = systemUnderTest.makeSsjJourneyRequest(TestJourneys.BtaEpayeGeneral.journeyAfterSucceedDebitWebPayment)(loggedInFakeRequest)
+          result shouldBe expectedPaymentSurveyJourneyRequest
+        }
+
+        "for BtaClass1aNi" in {
+          val expectedPaymentSurveyJourneyRequest = PaymentSurveyJourneyRequest(
+            origin         = "BtaClass1aNi",
+            returnMsg      = "Skip survey, return to business tax account",
+            returnHref     = "/business-account",
+            auditName      = "class-1a-national-insurance",
+            audit          = AuditOptions(
+              userType  = "LoggedIn",
+              journey   = Some("Successful"),
+              orderId   = Some("123PH456789002713"),
+              liability = Some("class-1a-national-insurance")
+            ),
+            contentOptions = SurveyContentOptions(
+              isWelshSupported = true,
+              title            = SurveyBannerTitle(
+                englishValue = "Pay your employers’ Class 1A National Insurance (P11D bill)", welshValue = Some("Talu’ch Yswiriant Gwladol Dosbarth 1A y cyflogwr (bil P11D)")
+              )
+            )
+          )
+          val result = systemUnderTest.makeSsjJourneyRequest(TestJourneys.BtaClass1aNi.journeyAfterSucceedDebitWebPayment)(loggedInFakeRequest)
+          result shouldBe expectedPaymentSurveyJourneyRequest
+        }
+
+        "for Amls" in {
+          val expectedPaymentSurveyJourneyRequest = PaymentSurveyJourneyRequest(
+            origin         = "Amls",
+            returnMsg      = "Skip survey, return to personal tax account",
+            returnHref     = "/personal-account",
+            auditName      = "self-assessment",
+            audit          = AuditOptions(
+              userType  = "LoggedIn",
+              journey   = Some("Successful"),
+              orderId   = Some("XE123456789012"),
+              liability = Some("self-assessment")
+            ),
+            contentOptions = SurveyContentOptions(
+              isWelshSupported = true,
+              title            = SurveyBannerTitle(
+                englishValue = "Pay Money Laundering Regulations fees", welshValue = Some("Talu Ffioedd Rheoliadau Gwyngalchu Arian")
+              )
+            )
+          )
+          val result = systemUnderTest.makeSsjJourneyRequest(TestJourneys.Amls.journeyAfterSucceedDebitWebPayment)(loggedInFakeRequest)
+          result shouldBe expectedPaymentSurveyJourneyRequest
+        }
+
+        "for PfAmls" in {
+          val expectedPaymentSurveyJourneyRequest = PaymentSurveyJourneyRequest(
+            origin         = "PfAmls",
+            returnMsg      = "Skip survey, return to personal tax account",
+            returnHref     = "/personal-account",
+            auditName      = "self-assessment",
+            audit          = AuditOptions(
+              userType  = "LoggedIn",
+              journey   = Some("Successful"),
+              orderId   = Some("XE123456789012"),
+              liability = Some("self-assessment")
+            ),
+            contentOptions = SurveyContentOptions(
+              isWelshSupported = true,
+              title            = SurveyBannerTitle(
+                englishValue = "Pay Money Laundering Regulations fees", welshValue = Some("Talu Ffioedd Rheoliadau Gwyngalchu Arian")
+              )
+            )
+          )
+          val result = systemUnderTest.makeSsjJourneyRequest(TestJourneys.PfAmls.journeyAfterSucceedDebitWebPayment)(loggedInFakeRequest)
+          result shouldBe expectedPaymentSurveyJourneyRequest
+        }
+
       }
     }
   }

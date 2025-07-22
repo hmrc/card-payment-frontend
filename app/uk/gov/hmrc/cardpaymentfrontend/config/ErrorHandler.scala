@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,18 +19,21 @@ package uk.gov.hmrc.cardpaymentfrontend.config
 import javax.inject.{Inject, Singleton}
 import play.api.i18n.MessagesApi
 import play.api.mvc.RequestHeader
-import play.twirl.api.Html
+import play.twirl.api.{Html, HtmlFormat}
 import uk.gov.hmrc.play.bootstrap.frontend.http.FrontendErrorHandler
-import uk.gov.hmrc.cardpaymentfrontend.views.html.ErrorTemplate
+import uk.gov.hmrc.cardpaymentfrontend.views.html.errors.{ErrorTemplate, TechnicalDifficultiesPage}
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class ErrorHandler @Inject() (
-    errorTemplate:            ErrorTemplate,
-    override val messagesApi: MessagesApi
+    errorTemplate:             ErrorTemplate,
+    technicalDifficultiesPage: TechnicalDifficultiesPage,
+    override val messagesApi:  MessagesApi
 )(implicit override val ec: ExecutionContext) extends FrontendErrorHandler {
 
   override def standardErrorTemplate(pageTitle: String, heading: String, message: String)(implicit request: RequestHeader): Future[Html] =
     Future.successful(errorTemplate(pageTitle, heading, message))
+
+  def technicalDifficulties()(implicit request: RequestHeader): HtmlFormat.Appendable = technicalDifficultiesPage()
 }

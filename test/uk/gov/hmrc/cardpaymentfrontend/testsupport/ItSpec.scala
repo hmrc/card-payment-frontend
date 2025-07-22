@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,7 +25,8 @@ import play.api.inject.guice.{GuiceApplicationBuilder, GuiceableModule}
 import play.api.test.{DefaultTestServerFactory, RunningServer}
 import play.api.{Application, Mode}
 import play.core.server.ServerConfig
-import uk.gov.hmrc.cardpaymentfrontend.testsupport.mockClasses.MockTransNumberGenerator
+import uk.gov.hmrc.cardpaymentfrontend.testsupport.mockclasses.MockTransNumberGenerator
+import uk.gov.hmrc.cardpaymentfrontend.testsupport.stubs.AuditConnectorStub
 import uk.gov.hmrc.http.test.WireMockSupport
 
 import java.time.format.DateTimeFormatter
@@ -43,6 +44,8 @@ trait ItSpec extends AnyFreeSpecLike
 
   private val testServerPort: Int = 19001
 
+  protected lazy val configOverrides: Map[String, Any] = Map()
+
   protected lazy val configMap: Map[String, Any] = Map[String, Any](
     "play.http.router" -> "testOnlyDoNotUseInAppConf.Routes",
     "auditing.consumer.baseUri.port" -> self.wireMockPort,
@@ -54,10 +57,12 @@ trait ItSpec extends AnyFreeSpecLike
     "microservice.services.pay-api.port" -> self.wireMockPort,
     "microservice.services.payments-survey.port" -> self.wireMockPort,
     "internal-auth.token" -> "testToken"
-  )
+  ) ++ configOverrides
 
   override def beforeEach(): Unit = {
     super.beforeEach()
+    AuditConnectorStub.stubForImplicitAudit()
+    ()
   }
 
   override def afterEach(): Unit = {
