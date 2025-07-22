@@ -262,7 +262,7 @@ class PaymentCompleteControllerSpec extends ItSpec {
               val result = systemUnderTest.renderPage(fakeGetRequest)
               val document = Jsoup.parse(contentAsString(result))
               val wrapper = document.select("#what-happens-next-wrapper")
-              wrapper.select("h4").text() shouldBe "What happens next"
+              wrapper.select("h2").text() shouldBe "What happens next"
               wrapper.select("p").html() shouldBe "Your payment will take 3 to 5 days to show in your <a class=\"govuk-link\" href=\"https://www.return-url.com\">HMRC online account.</a>"
             }
 
@@ -271,7 +271,7 @@ class PaymentCompleteControllerSpec extends ItSpec {
               val result = systemUnderTest.renderPage(fakeGetRequestInWelsh)
               val document = Jsoup.parse(contentAsString(result))
               val wrapper = document.select("#what-happens-next-wrapper")
-              wrapper.select("h4").text() shouldBe "Yr hyn sy’n digwydd nesaf"
+              wrapper.select("h2").text() shouldBe "Yr hyn sy’n digwydd nesaf"
               wrapper.select("p").html() shouldBe "Bydd eich taliad yn cymryd 3 i 5 diwrnod i ymddangos yn eich <a class=\"govuk-link\" href=\"https://www.return-url.com\">cyfrif CThEM ar-lein.</a>"
             }
 
