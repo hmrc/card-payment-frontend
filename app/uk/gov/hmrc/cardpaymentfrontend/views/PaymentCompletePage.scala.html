@@ -54,7 +54,7 @@
 @maybeWhatHappensNextContent = {
     @maybeReturnUrl.fold(Html("")) { returnUrl =>
         <div id="what-happens-next-wrapper">
-            <h4 class="govuk-heading-s govuk-!-margin-top-7">@Messages("payment-complete.what-happens-next.header")</h4>
+            <h2 class="govuk-heading-m govuk-!-margin-top-7">@Messages("payment-complete.what-happens-next.header")</h2>
             <p class="govuk-body">@Messages("payment-complete.what-happens-next.p1") <a class="govuk-link" href="@{returnUrl}">@Messages("payment-complete.what-happens-next.link")</a></p>
         </div>
     }
