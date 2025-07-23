@@ -69,8 +69,8 @@ service-name.PtaSimpleAssessment = Pay your Simple Assessment
 service-name.AppSimpleAssessment = Pay your Simple Assessment
 service-name.PfTpes =
 service-name.CapitalGainsTax = Report and pay Capital Gains Tax on UK property
-service-name.EconomicCrimeLevy = Pay your Economic Crime Levy
-service-name.PfEconomicCrimeLevy = Pay your Economic Crime Levy
+service-name.EconomicCrimeLevy = Pay Economic Crime Levy
+service-name.PfEconomicCrimeLevy = Pay Economic Crime Levy
 service-name.PfJobRetentionScheme =
 service-name.JrsJobRetentionScheme =
 service-name.PfImportedVehicles =
@@ -154,8 +154,8 @@ check-your-details.Amls.reference = Payment reference
 check-your-details.PfAmls.reference = Payment reference
 check-your-details.PfSdlt.reference = Unique Transaction Reference Number (UTRN)
 check-your-details.CapitalGainsTax.reference = Payment reference
-check-your-details.EconomicCrimeLevy.reference = Economic Crime Levy return number
-check-your-details.PfEconomicCrimeLevy.reference = Economic Crime Levy return number
+check-your-details.EconomicCrimeLevy.reference = Reference number
+check-your-details.PfEconomicCrimeLevy.reference = Reference number
 
 
 ## Address Page

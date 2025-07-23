@@ -696,7 +696,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       val result = systemUnderTest.renderPage(fakeRequest())
       val document = Jsoup.parse(contentAsString(result))
       val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.PfEconomicCrimeLevy))
-      assertRow(referenceRow, "Economic Crime Levy return number", "XE123456789012", Some("Change"), Some("http://localhost:9056/pay/pay-by-card-change-reference-number"))
+      assertRow(referenceRow, "Reference number", "XE123456789012", Some("Change"), Some("http://localhost:9056/pay/pay-by-card-change-reference-number"))
     }
 
     "[PfEconomicCrimeLevy] should render the payment reference row correctly in Welsh" in {
@@ -712,7 +712,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       val result = systemUnderTest.renderPage(fakeRequest())
       val document = Jsoup.parse(contentAsString(result))
       val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.EconomicCrimeLevy))
-      assertRow(referenceRow, "Economic Crime Levy return number", "XE123456789012", None, None)
+      assertRow(referenceRow, "Reference number", "XE123456789012", None, None)
     }
 
     "[EconomicCrimeLevy] should render the payment reference row correctly in Welsh" in {
