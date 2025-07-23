@@ -5,7 +5,7 @@
 # Purpose and form
 
 This repository contains the frontend microservice for card payments.
-It is built using Scala (2.13) and the Play framework (2.8). We use linting tools such as WartRemover and Sclariform.
+It is built using Scala (2.13) and the Play framework (3.0). We use linting tools such as WartRemover and Sclariform.
 This microservice allows users to make card payments for any and all supported tax regimes.
 
 ---
