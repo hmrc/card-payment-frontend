@@ -50,7 +50,7 @@ object ExtendedPfEconomicCrimeLevy extends ExtendedOrigin {
 
   override def emailTaxTypeMessageKey: String = "email.tax-name.PfEconomicCrimeLevy"
 
-  override def surveyAuditName: String = "plastic-packaging-tax"
+  override def surveyAuditName: String = "economic-crime-levy"
   override def surveyReturnHref: String = "https://www.gov.uk/government/organisations/hm-revenue-customs"
   override def surveyReturnMessageKey: String = "payments-survey.other.return-message"
   override def surveyIsWelshSupported: Boolean = true
