@@ -696,7 +696,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       val result = systemUnderTest.renderPage(fakeRequest())
       val document = Jsoup.parse(contentAsString(result))
       val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.PfEconomicCrimeLevy))
-      assertRow(referenceRow, "Payment reference", "XE123456789012", Some("Change"), Some("http://localhost:9056/pay/pay-by-card-change-reference-number"))
+      assertRow(referenceRow, "Economic Crime Levy return number", "XE123456789012", Some("Change"), Some("http://localhost:9056/pay/pay-by-card-change-reference-number"))
     }
 
     "[PfEconomicCrimeLevy] should render the payment reference row correctly in Welsh" in {
@@ -712,7 +712,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       val result = systemUnderTest.renderPage(fakeRequest())
       val document = Jsoup.parse(contentAsString(result))
       val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.EconomicCrimeLevy))
-      assertRow(referenceRow, "Payment reference", "XE123456789012", None, None)
+      assertRow(referenceRow, "Economic Crime Levy return number", "XE123456789012", None, None)
     }
 
     "[EconomicCrimeLevy] should render the payment reference row correctly in Welsh" in {
@@ -933,7 +933,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
 
     "sanity check for implemented origins" in {
       // remember to add the singular tests for reference rows as well as fdp if applicable, they are not covered in the implementedOrigins forall tests
-      TestHelpers.implementedOrigins.size shouldBe 28 withClue "** This dummy test is here to remind you to update the tests above. Bump up the expected number when an origin is added to implemented origins **"
+      TestHelpers.implementedOrigins.size shouldBe 30 withClue "** This dummy test is here to remind you to update the tests above. Bump up the expected number when an origin is added to implemented origins **"
     }
 
   }

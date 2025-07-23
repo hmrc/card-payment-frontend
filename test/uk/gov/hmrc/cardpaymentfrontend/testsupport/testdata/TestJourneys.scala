@@ -21,13 +21,11 @@ import payapi.corcommon.model.cgt.CgtAccountReference
 import payapi.corcommon.model.taxes.ad.{AlcoholDutyChargeReference, AlcoholDutyReference}
 import payapi.corcommon.model.taxes.amls.AmlsPaymentReference
 import payapi.corcommon.model.taxes.ct.{CtChargeTypes, CtLivePeriod, CtPeriod, CtUtr}
-import payapi.corcommon.model.taxes.epaye.{AccountsOfficeReference, EpayePenaltyReference, PsaNumber, QuarterlyEpayeTaxPeriod, YearlyEpayeTaxPeriod}
-import payapi.corcommon.model.taxes.sdlt.Utrn
-import payapi.corcommon.model.taxes.other.{XRef, XRef14Char}
 import payapi.corcommon.model.taxes.epaye._
 import payapi.corcommon.model.taxes.other.{EconomicCrimeLevyReturnNumber, XRef, XRef14Char}
 import payapi.corcommon.model.taxes.ppt.PptReference
 import payapi.corcommon.model.taxes.sa.SaUtr
+import payapi.corcommon.model.taxes.sdlt.Utrn
 import payapi.corcommon.model.taxes.vat.{CalendarPeriod, VatChargeReference, Vrn}
 import payapi.corcommon.model.times.period.TaxQuarter.AprilJuly
 import payapi.corcommon.model.times.period.TaxYear

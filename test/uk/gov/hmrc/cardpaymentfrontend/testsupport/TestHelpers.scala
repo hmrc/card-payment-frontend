@@ -57,9 +57,10 @@ object TestHelpers {
     BtaClass1aNi,
     PfAmls,
     Amls,
-    Amls,
+    CapitalGainsTax,
     EconomicCrimeLevy,
-    PfEconomicCrimeLevy
+    PfEconomicCrimeLevy,
+    PfSdlt
   )
 
   val unimplementedOrigins: Seq[Origin] = Seq[Origin](
@@ -89,7 +90,6 @@ object TestHelpers {
     PfGamingOrBingoDuty,
     PfGbPbRgDuty,
     PfLandfillTax,
-    PfSdil,
     PfAggregatesLevy,
     PfClimateChangeLevy,
     PfSimpleAssessment,
@@ -113,7 +113,8 @@ object TestHelpers {
     `3psVat`,
     PfPillar2,
     PfVatC2c,
-    Pillar2
+    Pillar2,
+    PfSdil
   )
 
   def deriveTestDataFromOrigin[jsd <: JourneySpecificData](origin: Origin): JourneyStatuses[_ >: JsdPfSa with JsdBtaSa with JsdPtaSa with JsdItSa with JsdPfVat with JsdPfCt with JsdPfEpayeNi with JsdPfEpayeLpp with JsdPfEpayeSeta with JsdPfEpayeLateCis with JsdPfEpayeP11d with JsdPfSdlt with JsdBtaVat with JsdBtaEpayeBill with JsdBtaEpayePenalty with JsdBtaEpayeInterest with JsdBtaEpayeGeneral with JsdBtaClass1aNi with JsdBtaCt with JsdVcVatReturn with JsdVcVatOther with JsdAmls with JsdPpt with JsdPfPpt with JsdCapitalGainsTax with JsdPfAmls with JsdAlcoholDuty with JsdPfAlcoholDuty with JsdEconomicCrimeLevy with JsdPfEconomicCrimeLevy <: JourneySpecificData] = origin match {
