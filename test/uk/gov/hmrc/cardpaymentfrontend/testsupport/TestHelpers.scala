@@ -20,7 +20,7 @@ import org.scalatest.AppendedClues.convertToClueful
 import payapi.cardpaymentjourney.model.journey._
 import payapi.corcommon.model.Origins._
 import payapi.corcommon.model.{Origin, Origins}
-import uk.gov.hmrc.cardpaymentfrontend.testsupport.testdata.{JourneyStatuses, TestJourneys}
+import uk.gov.hmrc.cardpaymentfrontend.testsupport.testdata.TestJourneys
 
 class TestHelpers extends UnitSpec {
   "all origins should be covered in implemented and unimplemented origins" in {
@@ -35,6 +35,7 @@ object TestHelpers {
     BtaSa,
     PtaSa,
     ItSa,
+    WcSa,
     PfAlcoholDuty,
     AlcoholDuty,
     PfCt,
@@ -117,7 +118,7 @@ object TestHelpers {
     PfSdil
   )
 
-  def deriveTestDataFromOrigin[jsd <: JourneySpecificData](origin: Origin): JourneyStatuses[_ >: JsdPfSa with JsdBtaSa with JsdPtaSa with JsdItSa with JsdPfVat with JsdPfCt with JsdPfEpayeNi with JsdPfEpayeLpp with JsdPfEpayeSeta with JsdPfEpayeLateCis with JsdPfEpayeP11d with JsdPfSdlt with JsdBtaVat with JsdBtaEpayeBill with JsdBtaEpayePenalty with JsdBtaEpayeInterest with JsdBtaEpayeGeneral with JsdBtaClass1aNi with JsdBtaCt with JsdVcVatReturn with JsdVcVatOther with JsdAmls with JsdPpt with JsdPfPpt with JsdCapitalGainsTax with JsdPfAmls with JsdAlcoholDuty with JsdPfAlcoholDuty with JsdEconomicCrimeLevy with JsdPfEconomicCrimeLevy <: JourneySpecificData] = origin match {
+  def deriveTestDataFromOrigin[jsd <: JourneySpecificData](origin: Origin) = origin match {
     case Origins.PfSa                     => TestJourneys.PfSa
     case Origins.BtaSa                    => TestJourneys.BtaSa
     case Origins.PtaSa                    => TestJourneys.PtaSa
@@ -199,6 +200,7 @@ object TestHelpers {
     case Origins.PfPillar2                => throw new MatchError("Not implemented yet")
     case Origins.PfVatC2c                 => throw new MatchError("Not implemented yet")
     case Origins.Pillar2                  => throw new MatchError("Not implemented yet")
+    case Origins.WcSa                     => TestJourneys.WcSa
   }
 
 }

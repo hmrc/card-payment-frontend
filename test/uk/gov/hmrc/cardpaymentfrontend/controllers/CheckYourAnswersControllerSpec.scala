@@ -222,13 +222,24 @@ class CheckYourAnswersControllerSpec extends ItSpec {
 
       val tdJourney: Journey[JourneySpecificData] = TestHelpers.deriveTestDataFromOrigin(origin).journeyBeforeBeginWebPayment
 
+      val shouldBeAbleToChangeAmount: Boolean = origin match {
+        case Origins.WcSa => false
+        case _            => true
+      }
+
       s"[${origin.entryName}] should render the amount row correctly" in {
         PayApiStub.stubForFindBySessionId2xx(tdJourney)
         val result = systemUnderTest.renderPage(fakeRequest(tdJourney._id))
         val document = Jsoup.parse(contentAsString(result))
         val amountRowIndex = deriveAmountRowIndex(origin)
         val amountRow = document.select(".govuk-summary-list__row").asScala.toList(amountRowIndex)
-        assertRow(amountRow, "Total to pay", "£12.34", Some("Change"), Some("http://localhost:9056/pay/change-amount?showSummary=false&stayOnPayFrontend=false"))
+        assertRow(
+          element    = amountRow,
+          keyText    = "Total to pay",
+          valueText  = "£12.34",
+          actionText = if (shouldBeAbleToChangeAmount) Some("Change") else None,
+          actionHref = if (shouldBeAbleToChangeAmount) Some("http://localhost:9056/pay/change-amount?showSummary=false&stayOnPayFrontend=false") else None
+        )
       }
 
       s"[${origin.entryName}] should render the amount row correctly in Welsh" in {
@@ -237,7 +248,13 @@ class CheckYourAnswersControllerSpec extends ItSpec {
         val document = Jsoup.parse(contentAsString(result))
         val amountRowIndex = deriveAmountRowIndex(origin)
         val amountRow = document.select(".govuk-summary-list__row").asScala.toList(amountRowIndex)
-        assertRow(amountRow, "Cyfanswm i’w dalu", "£12.34", Some("Newid"), Some("http://localhost:9056/pay/change-amount?showSummary=false&stayOnPayFrontend=false"))
+        assertRow(
+          element    = amountRow,
+          keyText    = "Cyfanswm i’w dalu",
+          valueText  = "£12.34",
+          actionText = if (shouldBeAbleToChangeAmount) Some("Newid") else None,
+          actionHref = if (shouldBeAbleToChangeAmount) Some("http://localhost:9056/pay/change-amount?showSummary=false&stayOnPayFrontend=false") else None
+        )
       }
 
       //hint, this is so test without email address row does not become obsolete if we changed the value. Stops anyone "forgetting" to update the test.
@@ -498,6 +515,22 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       assertRow(referenceRow, "Cyfeirnod Unigryw y Trethdalwr (UTR)", "1234567895K", None, None)
     }
 
+    "[WcSa] should render the payment reference row correctly" in {
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.WcSa.journeyBeforeBeginWebPayment)
+      val result = systemUnderTest.renderPage(fakeRequest())
+      val document = Jsoup.parse(contentAsString(result))
+      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.WcSa))
+      assertRow(referenceRow, "Unique Taxpayer Reference (UTR)", "1234567895K", None, None)
+    }
+
+    "[WcSa] should render the payment reference row correctly in Welsh" in {
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.WcSa.journeyBeforeBeginWebPayment)
+      val result = systemUnderTest.renderPage(fakeRequestWelsh())
+      val document = Jsoup.parse(contentAsString(result))
+      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.WcSa))
+      assertRow(referenceRow, "Cyfeirnod Unigryw y Trethdalwr (UTR)", "1234567895K", None, None)
+    }
+
     "[BtaCt] should render the payment reference row correctly" in {
       PayApiStub.stubForFindBySessionId2xx(TestJourneys.BtaCt.journeyBeforeBeginWebPayment)
       val result = systemUnderTest.renderPage(fakeRequest())
@@ -566,7 +599,6 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfPpt.journeyBeforeBeginWebPayment)
       val result = systemUnderTest.renderPage(fakeRequest())
       val document = Jsoup.parse(contentAsString(result))
-      println(document.toString)
       val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.PfPpt))
       assertRow(referenceRow, "Reference number", "XAPPT0000012345", Some("Change"), Some("http://localhost:9056/pay/pay-by-card-change-reference-number"))
     }

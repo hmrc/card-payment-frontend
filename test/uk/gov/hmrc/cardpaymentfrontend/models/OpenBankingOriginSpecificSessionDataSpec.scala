@@ -86,6 +86,13 @@ class OpenBankingOriginSpecificSessionDataSpec extends UnitSpec {
       roundTripJsonTest(osd, testJson)
     }
 
+    "WcSa" in {
+      val testJson = Json.parse("""{"saUtr":"1234567895","origin":"WcSa"}""")
+      val osd = ExtendedWcSa.openBankingOriginSpecificSessionData(TestJourneys.WcSa.journeyBeforeBeginWebPayment.journeySpecificData)
+      testOsd(osd, WcSaSessionData(SaUtr("1234567895"), None), "1234567895K", "1234567895")
+      roundTripJsonTest(osd, testJson)
+    }
+
     "PfAlcoholDuty" in {
       val testJson = Json.parse("""{"alcoholDutyReference":"XMADP0123456789","origin":"PfAlcoholDuty"}""")
       val osd = ExtendedPfAlcoholDuty.openBankingOriginSpecificSessionData(TestJourneys.PfAlcoholDuty.journeyBeforeBeginWebPayment.journeySpecificData)
