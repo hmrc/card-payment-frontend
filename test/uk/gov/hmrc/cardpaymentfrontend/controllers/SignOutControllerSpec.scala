@@ -55,7 +55,6 @@ class SignOutControllerSpec extends ItSpec {
       val document = Jsoup.parse(contentAsString(result))
 
       document.select(".govuk-button").text() shouldBe "Sign in"
-      println(document)
       status(result) shouldBe OK
       session(result).data shouldBe empty
     }

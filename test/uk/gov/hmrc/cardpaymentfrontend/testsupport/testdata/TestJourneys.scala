@@ -108,6 +108,22 @@ object TestJourneys {
     )
   }
 
+  object WcSa extends JourneyStatuses[JsdWcSa] {
+    val journeyBeforeBeginWebPayment: Journey[JsdWcSa] = Journey[JsdWcSa](
+      _id                  = JourneyId("TestJourneyId-44f9-ad7f-01e1d3d8f151"),
+      sessionId            = Some(SessionId("TestSession-4b87460d-6f43-4c4c-b810-d6f87c774854")),
+      amountInPence        = Some(AmountInPence(1234)),
+      emailTemplateOptions = None,
+      navigation           = None,
+      order                = None,
+      status               = PaymentStatuses.Created,
+      futureDatedPayment   = None,
+      createdOn            = LocalDateTime.parse("2027-11-02T16:28:55.185"),
+      journeySpecificData  = JsdWcSa(saUtr                = SaUtr("1234567895"), defaultAmountInPence = AmountInPence(1234)),
+      chosenWayToPay       = None
+    )
+  }
+
   object PfAlcoholDuty extends JourneyStatuses[JsdPfAlcoholDuty] {
     val journeyBeforeBeginWebPayment: Journey[JsdPfAlcoholDuty] = Journey[JsdPfAlcoholDuty](
       _id                  = JourneyId("TestJourneyId-44f9-ad7f-01e1d3d8f151"),

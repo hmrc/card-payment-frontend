@@ -225,6 +225,27 @@ object ExtendedOrigin {
       case Origins.`3psVat`                 => DefaultExtendedOrigin
       case Origins.PfPillar2                => DefaultExtendedOrigin
       case Origins.Pillar2                  => DefaultExtendedOrigin
+      case Origins.WcSa                     => ExtendedWcSa
+    }
+
+    def isAWebChatOrigin: Boolean = origin match {
+      case Origins.PfSa | Origins.PfVat | Origins.PfCt | Origins.PfEpayeNi | Origins.PfEpayeLpp | Origins.PfEpayeSeta |
+        Origins.PfEpayeLateCis | Origins.PfEpayeP11d | Origins.PfSdlt | Origins.PfCds | Origins.PfOther | Origins.PfP800 |
+        Origins.PtaP800 | Origins.PfClass2Ni | Origins.PfInsurancePremium | Origins.PfPsAdmin | Origins.BtaSa | Origins.AppSa |
+        Origins.BtaVat | Origins.BtaEpayeBill | Origins.BtaEpayePenalty | Origins.BtaEpayeInterest | Origins.BtaEpayeGeneral |
+        Origins.BtaClass1aNi | Origins.BtaCt | Origins.BtaSdil | Origins.BcPngr | Origins.Parcels | Origins.DdVat |
+        Origins.DdSdil | Origins.VcVatReturn | Origins.VcVatOther | Origins.ItSa | Origins.Amls | Origins.Ppt |
+        Origins.PfCdsCash | Origins.PfPpt | Origins.PfSpiritDrinks | Origins.PfInheritanceTax | Origins.Mib |
+        Origins.PfClass3Ni | Origins.PtaSa | Origins.PfWineAndCider | Origins.PfBioFuels | Origins.PfAirPass | Origins.PfMgd |
+        Origins.PfBeerDuty | Origins.PfGamingOrBingoDuty | Origins.PfGbPbRgDuty | Origins.PfLandfillTax | Origins.PfSdil |
+        Origins.PfAggregatesLevy | Origins.PfClimateChangeLevy | Origins.PfSimpleAssessment | Origins.PtaSimpleAssessment |
+        Origins.AppSimpleAssessment | Origins.PfTpes | Origins.CapitalGainsTax | Origins.EconomicCrimeLevy |
+        Origins.PfEconomicCrimeLevy | Origins.PfJobRetentionScheme | Origins.JrsJobRetentionScheme | Origins.PfImportedVehicles |
+        Origins.PfChildBenefitRepayments | Origins.NiEuVatOss | Origins.PfNiEuVatOss | Origins.NiEuVatIoss | Origins.PfNiEuVatIoss |
+        Origins.PfAmls | Origins.PfAted | Origins.PfCdsDeferment | Origins.PfTrust | Origins.PtaClass3Ni | Origins.AlcoholDuty |
+        Origins.PfAlcoholDuty | Origins.VatC2c | Origins.PfVatC2c | Origins.`3psSa` | Origins.`3psVat` | Origins.Pillar2 |
+        Origins.PfPillar2 => false
+      case Origins.WcSa => true
     }
   }
 }

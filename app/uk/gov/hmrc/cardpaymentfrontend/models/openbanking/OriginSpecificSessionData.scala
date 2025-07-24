@@ -131,6 +131,7 @@ object OriginSpecificSessionData {
       case `3psVat`                 => Json.format[`3psVatSessionData`].reads(json)
       case PfPillar2                => Json.format[PfPillar2SessionData].reads(json)
       case Pillar2                  => Json.format[Pillar2SessionData].reads(json)
+      case WcSa                     => Json.format[WcSaSessionData].reads(json)
 
       //Todo: Remove PfP800 when PtaP800 is fully available
       case origin @ (PfOther | PtaP800 | PfP800
@@ -210,8 +211,9 @@ object OriginSpecificSessionData {
       case sessionData: PfVatC2cSessionData            => Json.format[PfVatC2cSessionData].writes(sessionData)
       case sessionData: `3psSaSessionData`             => Json.format[`3psSaSessionData`].writes(sessionData)
       case sessionData: `3psVatSessionData`            => Json.format[`3psVatSessionData`].writes(sessionData)
-      case sessionData: `PfPillar2SessionData`         => Json.format[PfPillar2SessionData].writes(sessionData)
-      case sessionData: `Pillar2SessionData`           => Json.format[Pillar2SessionData].writes(sessionData)
+      case sessionData: PfPillar2SessionData           => Json.format[PfPillar2SessionData].writes(sessionData)
+      case sessionData: Pillar2SessionData             => Json.format[Pillar2SessionData].writes(sessionData)
+      case sessionData: WcSaSessionData                => Json.format[WcSaSessionData].writes(sessionData)
     }) + ("origin" -> Json.toJson(o.origin))
 
   implicit val format: OFormat[OriginSpecificSessionData] = OFormat(reads, writes)
@@ -241,6 +243,10 @@ final case class PtaSaSessionData(saUtr: SaUtr, override val returnUrl: Option[U
 
 final case class ItSaSessionData(saUtr: SaUtr, override val returnUrl: Option[Url] = None) extends SelfAssessmentSessionData(ItSa) {
   def searchTag: SearchTag = SearchTag(saUtr.value)
+}
+
+final case class WcSaSessionData(saUtr: SaUtr, override val returnUrl: Option[Url] = None) extends SelfAssessmentSessionData(WcSa) {
+  def searchTag: SearchTag = SearchTag(saUtr.parseSaUtr.value)
 }
 
 sealed trait ThirdPartySoftwareSessionData {
