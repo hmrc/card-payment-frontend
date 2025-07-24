@@ -28,7 +28,9 @@ class ExternalNavigationSpec extends UnitSpec with TableDrivenPropertyChecks {
   "returnUrlCancelled" - {
     val someUrl = Some(Url("https://www.return-url.com"))
 
-    val scenarios: TableFor2[JourneyStatuses[_ >: JsdPfEpayeNi with JsdAlcoholDuty with JsdPfPpt with JsdBtaEpayeBill with JsdPfSa with JsdPpt with JsdVcVatReturn with JsdPfEpayeP11d with JsdCapitalGainsTax with JsdBtaCt with JsdPfEpayeLateCis with JsdPfEpayeLpp with JsdPfCt with JsdBtaVat with JsdPfSdlt with JsdBtaEpayeInterest with JsdAmls with JsdBtaEpayeGeneral with JsdPfEpayeSeta with JsdPtaSa with JsdBtaClass1aNi with JsdVcVatOther with JsdPfAmls with JsdPfVat with JsdItSa with JsdBtaSa with JsdPfAlcoholDuty with JsdBtaEpayePenalty <: JourneySpecificData], Option[Url]] = Table(
+    type JsdBounds = JsdPfEpayeNi with JsdAlcoholDuty with JsdPfPpt with JsdBtaEpayeBill with JsdPfSa with JsdPpt with JsdVcVatReturn with JsdPfEpayeP11d with JsdCapitalGainsTax with JsdBtaCt with JsdPfEpayeLateCis with JsdPfEpayeLpp with JsdPfCt with JsdBtaVat with JsdPfSdlt with JsdBtaEpayeInterest with JsdAmls with JsdBtaEpayeGeneral with JsdPfEpayeSeta with JsdPtaSa with JsdBtaClass1aNi with JsdVcVatOther with JsdPfAmls with JsdPfVat with JsdItSa with JsdBtaSa with JsdPfAlcoholDuty with JsdBtaEpayePenalty with JsdWcSa
+
+    val scenarios: TableFor2[JourneyStatuses[_ >: JsdBounds <: JourneySpecificData], Option[Url]] = Table(
       ("journey", "expectedUrl"),
       //returnUrls are set in TestJourneys
       //Logged out journeys, Logged out journeys should return None
@@ -44,6 +46,7 @@ class ExternalNavigationSpec extends UnitSpec with TableDrivenPropertyChecks {
       (TestJourneys.PfPpt, None),
       (TestJourneys.PfAmls, None),
       (TestJourneys.PfSdlt, None),
+      (TestJourneys.WcSa, None),
 
       //Logged in journeys, Logged out journeys will return what ever the calling services sets
       (TestJourneys.BtaSa, someUrl),

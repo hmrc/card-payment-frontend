@@ -14,9 +14,10 @@
  * limitations under the License.
  *@
 
-@import payapi.corcommon.model.Reference
+@import payapi.corcommon.model.{Reference, Origins}
 @import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
 @import uk.gov.hmrc.cardpaymentfrontend.models.EmailAddress
+@import uk.gov.hmrc.cardpaymentfrontend.util.SafeEquals.EqualsOps
 @import uk.gov.hmrc.cardpaymentfrontend.views.html.Layout
 @import uk.gov.hmrc.govukfrontend.views.Aliases.{SummaryList, Text}
 @import uk.gov.hmrc.govukfrontend.views.html.components.{GovukPanel, GovukSummaryList, Panel}
@@ -52,9 +53,19 @@
 }
 
 @maybeWhatHappensNextContent = {
-    @maybeReturnUrl.fold(Html("")) { returnUrl =>
+    @maybeReturnUrl.fold {
         <div id="what-happens-next-wrapper">
             <h2 class="govuk-heading-m govuk-!-margin-top-7">@Messages("payment-complete.what-happens-next.header")</h2>
+            @if(journeyRequest.journey.origin === Origins.WcSa) {
+                <p class="govuk-body">@Messages("payment-complete.what-happens-next.web-chat.info")</p>
+            }
+        </div>
+    } { returnUrl =>
+        <div id="what-happens-next-wrapper">
+            <h2 class="govuk-heading-m govuk-!-margin-top-7">@Messages("payment-complete.what-happens-next.header")</h2>
+            @if(journeyRequest.journey.origin === Origins.WcSa) {
+                <p class="govuk-body">@Messages("payment-complete.what-happens-next.web-chat.info")</p>
+            }
             <p class="govuk-body">@Messages("payment-complete.what-happens-next.p1") <a class="govuk-link" href="@{returnUrl}">@Messages("payment-complete.what-happens-next.link")</a></p>
         </div>
     }

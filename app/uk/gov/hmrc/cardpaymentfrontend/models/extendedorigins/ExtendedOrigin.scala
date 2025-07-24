@@ -225,6 +225,7 @@ object ExtendedOrigin {
       case Origins.`3psVat`                 => DefaultExtendedOrigin
       case Origins.PfPillar2                => DefaultExtendedOrigin
       case Origins.Pillar2                  => DefaultExtendedOrigin
+      case Origins.WcSa                     => ExtendedWcSa
     }
   }
 }
