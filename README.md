@@ -5,7 +5,7 @@
 # Purpose and form
 
 This repository contains the frontend microservice for card payments.
-It is built using Scala (2.13) and the Play framework (3.0). We use linting tools such as WartRemover and Sclariform.
+It is built using Scala (2.13) and the Play framework (3.0). We use linting tools such as SbtUpdates (dependencyUpdates) WartRemover and Sclariform.
 This microservice allows users to make card payments for any and all supported tax regimes.
 
 ---
@@ -16,6 +16,10 @@ To enable the frontend (this service) to successfully talk to the backend micros
 Make sure you have the internal auth service running, e.g.:
 ```
 sm2 --start INTERNAL_AUTH INTERNAL_AUTH_FRONTEND --appendArgs '{"INTERNAL_AUTH": ["-Dapplication.router=testOnlyDoNotUseInAppConf.Routes"], "INTERNAL_AUTH_FRONTEND": ["-Dapplication.router=testOnlyDoNotUseInAppConf.Routes"]}'
+```
+
+```
+sm2 -start OPS_ACCEPTANCE --appendArgs '{"PAY_FRONTEND" : ["-Dfeature.percentage-of-users-to-go-use-soap=0"]}'
 ```
 
 And then insert a token:
@@ -44,7 +48,7 @@ This service runs on port **10155**
 # During transition
 
 We currently have a toggle which is limiting the flow of customers to this new service.
-After beginning a journey via pay-frontend, you can access the card-payments journey via hitting the card-fees page:
+After beginning a journey via pay-frontend and making your way to the choose-a-way-to-pay page, select card and then you can access the card-payments journey via hitting the card-fees page here:
 http://localhost:10155/pay-by-card/card-fees
 From here you can continue the journey as normal.
 
