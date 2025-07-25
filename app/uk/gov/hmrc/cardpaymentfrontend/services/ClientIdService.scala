@@ -26,6 +26,10 @@ import uk.gov.hmrc.cardpaymentfrontend.models.{Language, Languages}
 @Singleton
 class ClientIdService @Inject() {
 
+  /**
+   * Note these have been tested prior to other onboardings.
+   * Do not change these unless you are 100% sure, it WILL cause a live incident.
+   */
   def determineClientId(journey: Journey[_], language: Language): ClientId = {
     journey.origin match {
 
@@ -56,7 +60,7 @@ class ClientIdService @Inject() {
         case Languages.Welsh   => ClientIds.COEC
       }
 
-      case PfEpayeNi | PfEpayeP11d | PfEpayeLpp | PfEpayeLateCis | PfEpayeSeta
+      case PfEpayeNi | PfEpayeP11d
         | BtaEpayeBill | BtaEpayeGeneral | BtaClass1aNi => language match {
         case Languages.English => ClientIds.PAEE
         case Languages.Welsh   => ClientIds.PAEC
