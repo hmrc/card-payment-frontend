@@ -38,7 +38,7 @@ class SignOutControllerSpec extends ItSpec {
       val expectedContinueUrl = "http://localhost:10155/pay-by-card/timed-out"
       val result = systemUnderTest.signOutFromTimeout(fakeGetRequest)
       status(result) shouldBe SEE_OTHER
-      redirectLocation(result) shouldBe Some(s"http://localhost:9553/bas-gateway/sign-out-without-state?continue=${expectedContinueUrl}")
+      redirectLocation(result) shouldBe Some(s"http://localhost:9553/bas-gateway/sign-out-without-state?continue=$expectedContinueUrl")
     }
 
     "signOut should redirect to signOutUrl with feedback continue URL" in {

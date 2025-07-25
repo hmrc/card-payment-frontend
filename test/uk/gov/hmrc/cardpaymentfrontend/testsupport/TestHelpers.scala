@@ -54,11 +54,14 @@ object TestHelpers {
     BtaEpayePenalty,
     BtaEpayeInterest,
     BtaEpayeGeneral,
-    BtaClass1aNi
+    BtaClass1aNi,
+    PfAmls,
+    Amls,
+    PfSdlt,
+    CapitalGainsTax
   )
 
   val unimplementedOrigins: Seq[Origin] = Seq[Origin](
-    PfSdlt,
     PfCds,
     PfOther,
     PfP800,
@@ -72,7 +75,6 @@ object TestHelpers {
     Parcels,
     DdVat,
     DdSdil,
-    Amls,
     PfCdsCash,
     PfSpiritDrinks,
     PfInheritanceTax,
@@ -93,7 +95,6 @@ object TestHelpers {
     PtaSimpleAssessment,
     AppSimpleAssessment,
     PfTpes,
-    CapitalGainsTax,
     EconomicCrimeLevy,
     PfEconomicCrimeLevy,
     PfJobRetentionScheme,
@@ -104,7 +105,6 @@ object TestHelpers {
     PfNiEuVatOss,
     NiEuVatIoss,
     PfNiEuVatIoss,
-    PfAmls,
     PfAted,
     PfCdsDeferment,
     PfTrust,
@@ -117,7 +117,7 @@ object TestHelpers {
     Pillar2
   )
 
-  def deriveTestDataFromOrigin[jsd <: JourneySpecificData](origin: Origin): JourneyStatuses[_ >: JsdPfSa with JsdBtaSa with JsdPtaSa with JsdItSa with JsdPfVat with JsdPfCt with JsdPfEpayeNi with JsdPfEpayeLpp with JsdPfEpayeSeta with JsdPfEpayeLateCis with JsdPfEpayeP11d with JsdBtaVat with JsdBtaCt with JsdVcVatReturn with JsdVcVatOther with JsdAlcoholDuty with JsdPfAlcoholDuty with JsdBtaEpayeBill with JsdBtaEpayePenalty with JsdBtaEpayeGeneral with JsdBtaEpayeInterest with JsdBtaClass1aNi with JsdPpt with JsdPfPpt <: JourneySpecificData] = origin match {
+  def deriveTestDataFromOrigin[jsd <: JourneySpecificData](origin: Origin): JourneyStatuses[_ >: JsdPfSa with JsdBtaSa with JsdPtaSa with JsdItSa with JsdPfVat with JsdPfCt with JsdPfEpayeNi with JsdPfEpayeLpp with JsdPfEpayeSeta with JsdPfEpayeLateCis with JsdPfEpayeP11d with JsdPfSdlt with JsdBtaVat with JsdBtaEpayeBill with JsdBtaEpayePenalty with JsdBtaEpayeInterest with JsdBtaEpayeGeneral with JsdBtaClass1aNi with JsdBtaCt with JsdVcVatReturn with JsdVcVatOther with JsdAmls with JsdPpt with JsdPfPpt with JsdCapitalGainsTax with JsdPfAmls with JsdAlcoholDuty with JsdPfAlcoholDuty <: JourneySpecificData] = origin match {
     case Origins.PfSa                     => TestJourneys.PfSa
     case Origins.BtaSa                    => TestJourneys.BtaSa
     case Origins.PtaSa                    => TestJourneys.PtaSa
@@ -129,7 +129,7 @@ object TestHelpers {
     case Origins.PfEpayeSeta              => TestJourneys.PfEpayeSeta
     case Origins.PfEpayeLateCis           => TestJourneys.PfEpayeLateCis
     case Origins.PfEpayeP11d              => TestJourneys.PfEpayeP11d
-    case Origins.PfSdlt                   => throw new MatchError("Not implemented yet")
+    case Origins.PfSdlt                   => TestJourneys.PfSdlt
     case Origins.PfCds                    => throw new MatchError("Not implemented yet")
     case Origins.PfOther                  => throw new MatchError("Not implemented yet")
     case Origins.PfP800                   => throw new MatchError("Not implemented yet")
@@ -152,7 +152,7 @@ object TestHelpers {
     case Origins.DdSdil                   => throw new MatchError("Not implemented yet")
     case Origins.VcVatReturn              => TestJourneys.VcVatReturn
     case Origins.VcVatOther               => TestJourneys.VcVatOther
-    case Origins.Amls                     => throw new MatchError("Not implemented yet")
+    case Origins.Amls                     => TestJourneys.Amls
     case Origins.Ppt                      => TestJourneys.Ppt
     case Origins.PfCdsCash                => throw new MatchError("Not implemented yet")
     case Origins.PfPpt                    => TestJourneys.PfPpt
@@ -175,7 +175,7 @@ object TestHelpers {
     case Origins.PtaSimpleAssessment      => throw new MatchError("Not implemented yet")
     case Origins.AppSimpleAssessment      => throw new MatchError("Not implemented yet")
     case Origins.PfTpes                   => throw new MatchError("Not implemented yet")
-    case Origins.CapitalGainsTax          => throw new MatchError("Not implemented yet")
+    case Origins.CapitalGainsTax          => TestJourneys.CapitalGainsTax
     case Origins.EconomicCrimeLevy        => throw new MatchError("Not implemented yet")
     case Origins.PfEconomicCrimeLevy      => throw new MatchError("Not implemented yet")
     case Origins.PfJobRetentionScheme     => throw new MatchError("Not implemented yet")
@@ -186,7 +186,7 @@ object TestHelpers {
     case Origins.PfNiEuVatOss             => throw new MatchError("Not implemented yet")
     case Origins.NiEuVatIoss              => throw new MatchError("Not implemented yet")
     case Origins.PfNiEuVatIoss            => throw new MatchError("Not implemented yet")
-    case Origins.PfAmls                   => throw new MatchError("Not implemented yet")
+    case Origins.PfAmls                   => TestJourneys.PfAmls
     case Origins.PfAted                   => throw new MatchError("Not implemented yet")
     case Origins.PfCdsDeferment           => throw new MatchError("Not implemented yet")
     case Origins.PfTrust                  => throw new MatchError("Not implemented yet")

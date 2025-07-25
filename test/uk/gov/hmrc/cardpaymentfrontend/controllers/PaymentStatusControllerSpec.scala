@@ -69,6 +69,7 @@ class PaymentStatusControllerSpec extends ItSpec {
       }
 
       "should not render the iframe page with a language toggle" in {
+        PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyAfterBeginWebPayment)
         val result = systemUnderTest.showIframe(RedirectUrl("http://localhost:8080"))(fakeRequest)
         val document = Jsoup.parse(contentAsString(result))
         document.select(".hmrc-language-select__list-item").isEmpty shouldBe true

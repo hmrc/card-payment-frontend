@@ -78,7 +78,7 @@ class ExtendedOriginSpec extends ItSpec {
     "return None when showFuturePayment returns false" in {
       val fakeJourneyRequest: JourneyRequest[AnyContent] = new JourneyRequest(testJourneyNoDueDate, fakeGetRequest)
       val result: Option[CheckYourAnswersRow] = systemUnderTest.checkYourAnswersPaymentDateRow(fakeJourneyRequest)("blah")
-      result shouldBe (None)
+      result shouldBe None
     }
   }
 
@@ -104,7 +104,7 @@ class ExtendedOriginSpec extends ItSpec {
       val testJourneyEmailAddress = TestJourneys.BtaSa.journeyAfterBeginWebPayment
       val fakeJourneyRequest: JourneyRequest[AnyContent] = new JourneyRequest(testJourneyEmailAddress, fakeGetRequest)
       val result: Option[CheckYourAnswersRow] = systemUnderTest.checkYourAnswersEmailAddressRow(fakeJourneyRequest)
-      result shouldBe (None)
+      result shouldBe None
     }
   }
 }

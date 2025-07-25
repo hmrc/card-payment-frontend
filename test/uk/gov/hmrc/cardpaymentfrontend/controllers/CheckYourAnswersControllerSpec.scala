@@ -655,6 +655,38 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       assertRow(referenceRow, "Cyfeirnod y taliad", "123PH456789002713", None, None)
     }
 
+    "[PfAmls] should render the payment reference row correctly" in {
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfAmls.journeyBeforeBeginWebPayment)
+      val result = systemUnderTest.renderPage(fakeRequest())
+      val document = Jsoup.parse(contentAsString(result))
+      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.PfAmls))
+      assertRow(referenceRow, "Payment reference", "XE123456789012", Some("Change"), Some("http://localhost:9056/pay/pay-by-card-change-reference-number"))
+    }
+
+    "[PfAmls] should render the payment reference row correctly in Welsh" in {
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfAmls.journeyBeforeBeginWebPayment)
+      val result = systemUnderTest.renderPage(fakeRequestWelsh())
+      val document = Jsoup.parse(contentAsString(result))
+      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.PfAmls))
+      assertRow(referenceRow, "Cyfeirnod y taliad", "XE123456789012", Some("Newid"), Some("http://localhost:9056/pay/pay-by-card-change-reference-number"))
+    }
+
+    "[Amls] should render the payment reference row correctly" in {
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.Amls.journeyBeforeBeginWebPayment)
+      val result = systemUnderTest.renderPage(fakeRequest())
+      val document = Jsoup.parse(contentAsString(result))
+      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.Amls))
+      assertRow(referenceRow, "Payment reference", "XE123456789012", None, None)
+    }
+
+    "[Amls] should render the payment reference row correctly in Welsh" in {
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.Amls.journeyBeforeBeginWebPayment)
+      val result = systemUnderTest.renderPage(fakeRequestWelsh())
+      val document = Jsoup.parse(contentAsString(result))
+      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.Amls))
+      assertRow(referenceRow, "Cyfeirnod y taliad", "XE123456789012", None, None)
+    }
+
     "[BtaSa] should render the payment date row correctly" in {
       PayApiStub.stubForFindBySessionId2xx(TestJourneys.BtaSa.journeyBeforeBeginWebPayment)
       val result = systemUnderTest.renderPage(fakeRequest())
@@ -831,9 +863,41 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       assertRow(paymentDateRow, "Dyddiad talu", "Heddiw", Some("Newid"), Some("http://localhost:9056/pay/change-when-do-you-want-to-pay?toPayFrontendConfirmation=true"))
     }
 
+    "[PfSdlt] should render the payment reference row correctly" in {
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSdlt.journeyBeforeBeginWebPayment)
+      val result = systemUnderTest.renderPage(fakeRequest())
+      val document = Jsoup.parse(contentAsString(result))
+      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.PfSdlt))
+      assertRow(referenceRow, "Unique Transaction Reference Number (UTRN)", "123456789MA", None, None)
+    }
+
+    "[PfSdlt] should render the payment reference row correctly in Welsh" in {
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSdlt.journeyBeforeBeginWebPayment)
+      val result = systemUnderTest.renderPage(fakeRequestWelsh())
+      val document = Jsoup.parse(contentAsString(result))
+      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.PfSdlt))
+      assertRow(referenceRow, "Cyfeirnod Unigryw y Trafodyn (UTRN)", "123456789MA", None, None)
+    }
+
+    "[CapitalGainsTax] should render the payment reference row correctly" in {
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.CapitalGainsTax.journeyBeforeBeginWebPayment)
+      val result = systemUnderTest.renderPage(fakeRequest())
+      val document = Jsoup.parse(contentAsString(result))
+      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.CapitalGainsTax))
+      assertRow(referenceRow, "Payment reference", "XVCGTP001000290", None, None)
+    }
+
+    "[CapitalGainsTax] should render the payment reference row correctly in Welsh" in {
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.CapitalGainsTax.journeyBeforeBeginWebPayment)
+      val result = systemUnderTest.renderPage(fakeRequestWelsh())
+      val document = Jsoup.parse(contentAsString(result))
+      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.CapitalGainsTax))
+      assertRow(referenceRow, "Cyfeirnod y taliad", "XVCGTP001000290", None, None)
+    }
+
     "sanity check for implemented origins" in {
       // remember to add the singular tests for reference rows as well as fdp if applicable, they are not covered in the implementedOrigins forall tests
-      TestHelpers.implementedOrigins.size shouldBe 24 withClue "** This dummy test is here to remind you to update the tests above. Bump up the expected number when an origin is added to implemented origins **"
+      TestHelpers.implementedOrigins.size shouldBe 28 withClue "** This dummy test is here to remind you to update the tests above. Bump up the expected number when an origin is added to implemented origins **"
     }
 
   }

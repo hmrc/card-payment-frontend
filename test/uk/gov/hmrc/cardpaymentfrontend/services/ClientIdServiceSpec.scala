@@ -43,10 +43,10 @@ class ClientIdServiceSpec extends ItSpec {
         (TestJourneys.BtaCt.journeyBeforeBeginWebPayment, ClientIds.COEE),
         (TestJourneys.PfCt.journeyBeforeBeginWebPayment, ClientIds.COEE),
         (TestJourneys.PfEpayeNi.journeyBeforeBeginWebPayment, ClientIds.PAEE),
-        (TestJourneys.PfEpayeLpp.journeyBeforeBeginWebPayment, ClientIds.PAEE),
+        (TestJourneys.PfEpayeLpp.journeyBeforeBeginWebPayment, ClientIds.MIEE),
         (TestJourneys.PfEpayeP11d.journeyBeforeBeginWebPayment, ClientIds.PAEE),
-        (TestJourneys.PfEpayeLateCis.journeyBeforeBeginWebPayment, ClientIds.PAEE),
-        (TestJourneys.PfEpayeSeta.journeyBeforeBeginWebPayment, ClientIds.PAEE),
+        (TestJourneys.PfEpayeLateCis.journeyBeforeBeginWebPayment, ClientIds.MIEE),
+        (TestJourneys.PfEpayeSeta.journeyBeforeBeginWebPayment, ClientIds.MIEE),
         (TestJourneys.PfVat.journeyBeforeBeginWebPayment, ClientIds.VAEE),
         (TestJourneys.BtaVat.journeyBeforeBeginWebPayment, ClientIds.VAEE),
         (TestJourneys.VcVatReturn.journeyBeforeBeginWebPayment, ClientIds.VAEE),
@@ -57,7 +57,12 @@ class ClientIdServiceSpec extends ItSpec {
         (TestJourneys.BtaEpayeGeneral.journeyBeforeBeginWebPayment, ClientIds.PAEE),
         (TestJourneys.BtaEpayePenalty.journeyBeforeBeginWebPayment, ClientIds.MIEE),
         (TestJourneys.BtaEpayeInterest.journeyBeforeBeginWebPayment, ClientIds.MIEE),
-        (TestJourneys.BtaClass1aNi.journeyBeforeBeginWebPayment, ClientIds.PAEE)
+        (TestJourneys.BtaClass1aNi.journeyBeforeBeginWebPayment, ClientIds.PAEE),
+        (TestJourneys.Amls.journeyBeforeBeginWebPayment, ClientIds.MIEE),
+        (TestJourneys.PfAmls.journeyBeforeBeginWebPayment, ClientIds.MIEE),
+        (TestJourneys.BtaClass1aNi.journeyBeforeBeginWebPayment, ClientIds.PAEE),
+        (TestJourneys.PfSdlt.journeyBeforeBeginWebPayment, ClientIds.SDEE),
+        (TestJourneys.CapitalGainsTax.journeyBeforeBeginWebPayment, ClientIds.ETEE)
       )
       forAll(scenarios) {
         case (journey, clientId) =>
@@ -77,10 +82,10 @@ class ClientIdServiceSpec extends ItSpec {
         (TestJourneys.BtaCt.journeyBeforeBeginWebPayment, ClientIds.COEC),
         (TestJourneys.PfCt.journeyBeforeBeginWebPayment, ClientIds.COEC),
         (TestJourneys.PfEpayeNi.journeyBeforeBeginWebPayment, ClientIds.PAEC),
-        (TestJourneys.PfEpayeLpp.journeyBeforeBeginWebPayment, ClientIds.PAEC),
+        (TestJourneys.PfEpayeLpp.journeyBeforeBeginWebPayment, ClientIds.MIEC),
         (TestJourneys.PfEpayeP11d.journeyBeforeBeginWebPayment, ClientIds.PAEC),
-        (TestJourneys.PfEpayeLateCis.journeyBeforeBeginWebPayment, ClientIds.PAEC),
-        (TestJourneys.PfEpayeSeta.journeyBeforeBeginWebPayment, ClientIds.PAEC),
+        (TestJourneys.PfEpayeLateCis.journeyBeforeBeginWebPayment, ClientIds.MIEC),
+        (TestJourneys.PfEpayeSeta.journeyBeforeBeginWebPayment, ClientIds.MIEC),
         (TestJourneys.PfVat.journeyBeforeBeginWebPayment, ClientIds.VAEC),
         (TestJourneys.BtaVat.journeyBeforeBeginWebPayment, ClientIds.VAEC),
         (TestJourneys.VcVatReturn.journeyBeforeBeginWebPayment, ClientIds.VAEC),
@@ -91,7 +96,11 @@ class ClientIdServiceSpec extends ItSpec {
         (TestJourneys.BtaEpayeGeneral.journeyBeforeBeginWebPayment, ClientIds.PAEC),
         (TestJourneys.BtaEpayePenalty.journeyBeforeBeginWebPayment, ClientIds.MIEC),
         (TestJourneys.BtaEpayeInterest.journeyBeforeBeginWebPayment, ClientIds.MIEC),
-        (TestJourneys.BtaClass1aNi.journeyBeforeBeginWebPayment, ClientIds.PAEC)
+        (TestJourneys.BtaClass1aNi.journeyBeforeBeginWebPayment, ClientIds.PAEC),
+        (TestJourneys.Amls.journeyBeforeBeginWebPayment, ClientIds.MIEC),
+        (TestJourneys.PfAmls.journeyBeforeBeginWebPayment, ClientIds.MIEC),
+        (TestJourneys.PfSdlt.journeyBeforeBeginWebPayment, ClientIds.SDEC),
+        (TestJourneys.CapitalGainsTax.journeyBeforeBeginWebPayment, ClientIds.ETEC)
       )
       forAll(scenarios) {
         case (journey, clientId) =>
@@ -102,7 +111,7 @@ class ClientIdServiceSpec extends ItSpec {
   }
 
   "sanity check for implemented origins" in {
-    TestHelpers.implementedOrigins.size shouldBe 24 withClue "** This dummy test is here to remind you to update the tests above. Bump up the expected number when an origin is added to implemented origins **"
+    TestHelpers.implementedOrigins.size shouldBe 28 withClue "** This dummy test is here to remind you to update the tests above. Bump up the expected number when an origin is added to implemented origins **"
   }
 
 }

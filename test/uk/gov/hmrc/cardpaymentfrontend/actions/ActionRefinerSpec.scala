@@ -17,8 +17,9 @@
 package uk.gov.hmrc.cardpaymentfrontend.actions
 
 import org.scalatest.Assertion
-import payapi.cardpaymentjourney.model.journey.{Journey, JourneySpecificData}
+import payapi.cardpaymentjourney.model.journey.{Journey, JourneySpecificData, Url}
 import payapi.corcommon.model.PaymentStatuses
+import play.api.i18n.MessagesApi
 import play.api.mvc.{ActionRefiner, AnyContent, Result, Results}
 import play.api.test.FakeRequest
 import play.twirl.api.HtmlFormat
@@ -27,6 +28,7 @@ import uk.gov.hmrc.cardpaymentfrontend.testsupport.ItSpec
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.TestOps.FakeRequestOps
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.stubs.PayApiStub
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.testdata.TestJourneys
+import uk.gov.hmrc.cardpaymentfrontend.views.html.ForceDeleteAnswersPage
 
 import scala.concurrent.Future
 
@@ -38,8 +40,11 @@ class ActionRefinerSpec extends ItSpec {
 
     val fakeRequest: FakeRequest[AnyContent] = FakeRequest("GET", "/who-cares").withSessionId()
 
+    val forceDeleteAnswersPage = app.injector.instanceOf[ForceDeleteAnswersPage]
+    val messagesApi = app.injector.instanceOf[MessagesApi]
+
     "should return a left with unauthorised Result when pay-api returns no journey" in {
-      systemUnderTest.refine(fakeRequest).futureValue shouldBe Left(Results.Unauthorized("need a session id"))
+      systemUnderTest.refine(fakeRequest).futureValue shouldBe Left(Results.Unauthorized(forceDeleteAnswersPage(false, Some(Url("http://localhost:9056/pay")))(fakeRequest, messagesApi.preferred(fakeRequest))))
     }
 
     "should return a right with JourneyRequest when pay-api returns a journey" in {
@@ -56,9 +61,11 @@ class ActionRefinerSpec extends ItSpec {
 
       def fakeRequest(journey: Journey[JourneySpecificData]): JourneyRequest[AnyContent] = new JourneyRequest(journey, FakeRequest())
 
+    val errorHandler = app.injector.instanceOf[ErrorHandler]
+
     "should return a left when journey in JourneyRequest is not in a 'terminal state' (i.e. finished)" in {
       val request = fakeRequest(TestJourneys.PfSa.journeyBeforeBeginWebPayment)
-      systemUnderTest.refine(request).futureValue shouldBe Left(Results.NotFound("Journey not in valid state"))
+      systemUnderTest.refine(request).futureValue shouldBe Left(Results.Gone(errorHandler.notFoundTemplate(request).futureValue))
     }
 
     "should return a right when journey in JourneyRequest is in a 'terminal state' (i.e. finished)" in {

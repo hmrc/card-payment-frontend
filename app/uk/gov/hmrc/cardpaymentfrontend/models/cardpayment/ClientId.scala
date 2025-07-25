@@ -148,5 +148,4 @@ object ClientIds {
     val prodCode = "NICC"
     val qaCode = "NICC"
   }
-
 }
