@@ -9,10 +9,9 @@ This microservice allows users to make card payments for any and all supported t
 
 ## Tech Stack
 
-Scala 2.13
-Play Framework 3.0
-WartRemover, Scalariform
-- **Port**: 10155
+* Scala 2.13
+* Play Framework 3.0
+* WartRemover, Scalariform
 
 ## Setup and Running
 
@@ -49,6 +48,8 @@ sm2 -start OPS_ACCEPTANCE --appendArgs '{"PAY_FRONTEND" : ["-Dfeature.percentage
 ```
 
 ### Running the Service
+
+The service runs locally on port `10155`
 
 Compile and run the service:
 
