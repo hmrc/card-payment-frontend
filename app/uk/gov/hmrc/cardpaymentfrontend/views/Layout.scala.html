@@ -89,7 +89,8 @@
           additionalHeadBlock = Some(headBlock)
       ),
       serviceURLs = ServiceURLs(
-          signOutUrl = if (isLoggedIn) Some(uk.gov.hmrc.cardpaymentfrontend.controllers.routes.SignOutController.signOut.url) else None
+          signOutUrl = if (isLoggedIn) Some(uk.gov.hmrc.cardpaymentfrontend.controllers.routes.SignOutController.signOut.url) else None,
+          serviceUrl = Some(appConfig.payFrontendBaseUrl)
       ),
       pageTitle = Some(journeyTitleMaker(h1Key = pageTitle, origin = origin, maybeForm = maybeForm)),
       serviceName = Some(serviceName),
