@@ -77,6 +77,13 @@ class FeesControllerSpec extends ItSpec {
         document.title shouldBe "Ffioedd cerdyn - Talu eich Hunanasesiad - GOV.UK"
       }
 
+      "Title contains href which links to pay-frontend" in {
+        PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyBeforeBeginWebPayment)
+        val result = systemUnderTest.renderPage(fakeRequest)
+        val document = Jsoup.parse(contentAsString(result))
+        document.select(".govuk-header__content a").attr("href") shouldBe "http://localhost:9056/pay"
+      }
+
       "for origin PfSa" - {
 
         "render the static content correctly" in {
