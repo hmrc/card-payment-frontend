@@ -69,8 +69,8 @@ service-name.PtaSimpleAssessment = Pay your Simple Assessment
 service-name.AppSimpleAssessment = Pay your Simple Assessment
 service-name.PfTpes =
 service-name.CapitalGainsTax = Report and pay Capital Gains Tax on UK property
-service-name.EconomicCrimeLevy =
-service-name.PfEconomicCrimeLevy =
+service-name.EconomicCrimeLevy = Pay Economic Crime Levy
+service-name.PfEconomicCrimeLevy = Pay Economic Crime Levy
 service-name.PfJobRetentionScheme =
 service-name.JrsJobRetentionScheme =
 service-name.PfImportedVehicles =
@@ -154,6 +154,9 @@ check-your-details.Amls.reference = Payment reference
 check-your-details.PfAmls.reference = Payment reference
 check-your-details.PfSdlt.reference = Unique Transaction Reference Number (UTRN)
 check-your-details.CapitalGainsTax.reference = Payment reference
+check-your-details.EconomicCrimeLevy.reference = Reference number
+check-your-details.PfEconomicCrimeLevy.reference = Reference number
+
 
 ## Address Page
 address.heading = Card billing address
@@ -274,8 +277,8 @@ payment-complete.tax-name.PtaSimpleAssessment =
 payment-complete.tax-name.AppSimpleAssessment =
 payment-complete.tax-name.PfTpes =
 payment-complete.tax-name.CapitalGainsTax = Capital Gains Tax on UK property
-payment-complete.tax-name.EconomicCrimeLevy =
-payment-complete.tax-name.PfEconomicCrimeLevy =
+payment-complete.tax-name.EconomicCrimeLevy = Economic Crime Levy
+payment-complete.tax-name.PfEconomicCrimeLevy = Economic Crime Levy
 payment-complete.tax-name.PfJobRetentionScheme =
 payment-complete.tax-name.JrsJobRetentionScheme =
 payment-complete.tax-name.PfImportedVehicles =
@@ -343,6 +346,10 @@ email.tax-name.Ppt = Plastic Packaging Tax
 email.tax-name.PfPpt = Plastic Packaging Tax
 email.tax-name.Amls = Money Laundering Regulation Fees
 email.tax-name.PfAmls = Money Laundering Regulation Fees
+email.tax-name.Amls = Money Laundering Regulation Fees
+email.tax-name.PfAmls = Money Laundering Regulation Fees
+email.tax-name.EconomicCrimeLevy = Economic Crime Levy
+email.tax-name.PfEconomicCrimeLevy = Economic Crime Levy
 
 email.tax-name.BtaEpayeBill = Employers’ PAYE and National Insurance
 email.tax-name.BtaEpayePenalty = Employers’ PAYE late payment or filing penalty

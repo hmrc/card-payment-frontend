@@ -23,7 +23,7 @@ import payapi.corcommon.model.taxes.ad.{AlcoholDutyChargeReference, AlcoholDutyR
 import payapi.corcommon.model.taxes.amls.AmlsPaymentReference
 import payapi.corcommon.model.taxes.ct.{CtChargeTypes, CtPeriod, CtUtr}
 import payapi.corcommon.model.taxes.epaye.{AccountsOfficeReference, EpayePenaltyReference, MonthlyEpayeTaxPeriod, PsaNumber, QuarterlyEpayeTaxPeriod, YearlyEpayeTaxPeriod}
-import payapi.corcommon.model.taxes.other.{XRef, XRef14Char}
+import payapi.corcommon.model.taxes.other.{EconomicCrimeLevyReturnNumber, XRef, XRef14Char}
 import payapi.corcommon.model.taxes.ppt.PptReference
 import payapi.corcommon.model.taxes.sa.SaUtr
 import payapi.corcommon.model.taxes.sdlt.Utrn
@@ -253,10 +253,24 @@ class OpenBankingOriginSpecificSessionDataSpec extends UnitSpec {
       testOsd(osd, CapitalGainsTaxSessionData(CgtAccountReference("XVCGTP001000290")), "XVCGTP001000290", "XVCGTP001000290")
       roundTripJsonTest(osd, testJson)
     }
+    "EconomicCrimeLevy" in {
+      val testJson = Json.parse("""{"economicCrimeLevyReturnNumber":"XE123456789012","origin":"EconomicCrimeLevy"}""")
+      val osd = ExtendedEconomicCrimeLevy.openBankingOriginSpecificSessionData(TestJourneys.EconomicCrimeLevy.journeyBeforeBeginWebPayment.journeySpecificData)
+      testOsd(osd, EconomicCrimeLevySessionData(EconomicCrimeLevyReturnNumber("XE123456789012"), None), "XE123456789012", "XE123456789012")
+      roundTripJsonTest(osd, testJson)
+    }
+
+    "PfEconomicCrimeLevy" in {
+      val testJson = Json.parse("""{"economicCrimeLevyReturnNumber":"XE123456789012","origin":"PfEconomicCrimeLevy"}""")
+      val osd = ExtendedPfEconomicCrimeLevy.openBankingOriginSpecificSessionData(TestJourneys.PfEconomicCrimeLevy.journeyBeforeBeginWebPayment.journeySpecificData)
+      testOsd(osd, PfEconomicCrimeLevySessionData(EconomicCrimeLevyReturnNumber("XE123456789012"), None), "XE123456789012", "XE123456789012")
+      roundTripJsonTest(osd, testJson)
+    }
+
   }
 
   "sanity check for implemented origins" in {
-    TestHelpers.implementedOrigins.size shouldBe 28 withClue "** This dummy test is here to remind you to update the tests above. Bump up the expected number when an origin is added to implemented origins **"
+    TestHelpers.implementedOrigins.size shouldBe 30 withClue "** This dummy test is here to remind you to update the tests above. Bump up the expected number when an origin is added to implemented origins **"
   }
 
 }
