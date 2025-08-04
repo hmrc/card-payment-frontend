@@ -22,7 +22,7 @@ import payapi.corcommon.model.taxes.ad.{AlcoholDutyChargeReference, AlcoholDutyR
 import payapi.corcommon.model.taxes.amls.AmlsPaymentReference
 import payapi.corcommon.model.taxes.ct.{CtChargeTypes, CtLivePeriod, CtPeriod, CtUtr}
 import payapi.corcommon.model.taxes.epaye._
-import payapi.corcommon.model.taxes.other.{EconomicCrimeLevyReturnNumber, XRef, XRef14Char}
+import payapi.corcommon.model.taxes.other.{EconomicCrimeLevyReturnNumber, JrsRef, XRef, XRef14Char}
 import payapi.corcommon.model.taxes.ppt.PptReference
 import payapi.corcommon.model.taxes.sa.SaUtr
 import payapi.corcommon.model.taxes.sdlt.Utrn
@@ -593,6 +593,41 @@ object TestJourneys {
       createdOn            = LocalDateTime.parse("2027-11-02T16:28:55.185"),
       journeySpecificData  = JsdPfEconomicCrimeLevy(
         chargeReference = Some(EconomicCrimeLevyReturnNumber("XE123456789012"))
+      ),
+      chosenWayToPay       = None
+    )
+  }
+
+  object JrsJobRetentionScheme extends JourneyStatuses[JsdJrsJobRetentionScheme] {
+    val journeyBeforeBeginWebPayment: Journey[JsdJrsJobRetentionScheme] = Journey[JsdJrsJobRetentionScheme](
+      _id                  = JourneyId("TestJourneyId-44f9-ad7f-01e1d3d8f151"),
+      sessionId            = Some(SessionId("TestSession-4b87460d-6f43-4c4c-b810-d6f87c774854")),
+      amountInPence        = Some(AmountInPence(1234)),
+      emailTemplateOptions = None,
+      navigation           = Some(NavigationOptions(returnUrl = Url("https://www.return-url.com"), backUrl = Url("https://www.back-to-amls.com"))),
+      order                = None,
+      status               = PaymentStatuses.Created,
+      createdOn            = LocalDateTime.parse("2027-11-02T16:28:55.185"),
+      journeySpecificData  = JsdJrsJobRetentionScheme(
+        jrsRef               = JrsRef("XE123456789012"),
+        defaultAmountInPence = AmountInPence(1234)
+      ),
+      chosenWayToPay       = None
+    )
+  }
+
+  object PfJobRetentionScheme extends JourneyStatuses[JsdPfJobRetentionScheme] {
+    val journeyBeforeBeginWebPayment: Journey[JsdPfJobRetentionScheme] = Journey[JsdPfJobRetentionScheme](
+      _id                  = JourneyId("TestJourneyId-44f9-ad7f-01e1d3d8f151"),
+      sessionId            = Some(SessionId("TestSession-4b87460d-6f43-4c4c-b810-d6f87c774854")),
+      amountInPence        = Some(AmountInPence(1234)),
+      emailTemplateOptions = None,
+      navigation           = None,
+      order                = None,
+      status               = PaymentStatuses.Created,
+      createdOn            = LocalDateTime.parse("2027-11-02T16:28:55.185"),
+      journeySpecificData  = JsdPfJobRetentionScheme(
+        prn = Some(JrsRef("XE123456789012"))
       ),
       chosenWayToPay       = None
     )

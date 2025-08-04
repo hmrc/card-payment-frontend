@@ -43,7 +43,7 @@ class EmailServiceSpec extends ItSpec with TableDrivenPropertyChecks {
     val commission = Some("1.23")
 
     // needed for compiler. if you're adding a new extended origin, add the jsd to this type/list of types.
-    type JsdBounds = JsdPfEpayeNi with JsdAlcoholDuty with JsdPfPpt with JsdBtaEpayeBill with JsdPfSa with JsdPpt with JsdVcVatReturn with JsdPfEpayeP11d with JsdCapitalGainsTax with JsdBtaCt with JsdPfEpayeLateCis with JsdPfEpayeLpp with JsdPfCt with JsdBtaVat with JsdPfSdlt with JsdBtaEpayeInterest with JsdAmls with JsdBtaEpayeGeneral with JsdPfEpayeSeta with JsdPtaSa with JsdBtaClass1aNi with JsdVcVatOther with JsdPfAmls with JsdPfVat with JsdItSa with JsdBtaSa with JsdPfAlcoholDuty with JsdBtaEpayePenalty with JsdEconomicCrimeLevy with JsdPfEconomicCrimeLevy
+    type JsdBounds = JsdPfEpayeNi with JsdAlcoholDuty with JsdPfPpt with JsdBtaEpayeBill with JsdPfSa with JsdPpt with JsdVcVatReturn with JsdPfEpayeP11d with JsdCapitalGainsTax with JsdBtaCt with JsdPfEpayeLateCis with JsdPfEpayeLpp with JsdPfCt with JsdBtaVat with JsdPfSdlt with JsdBtaEpayeInterest with JsdAmls with JsdBtaEpayeGeneral with JsdPfEpayeSeta with JsdPtaSa with JsdBtaClass1aNi with JsdVcVatOther with JsdPfAmls with JsdPfVat with JsdItSa with JsdBtaSa with JsdPfAlcoholDuty with JsdBtaEpayePenalty with JsdEconomicCrimeLevy with JsdPfEconomicCrimeLevy with JsdJrsJobRetentionScheme with JsdPfJobRetentionScheme
 
     val scenarios: TableFor6[JourneyStatuses[_ >: JsdBounds <: JourneySpecificData], String, String, Option[String], Some[String], String] = Table(
       ("Journey", "Tax Type", "Tax Reference", "Commission", "Total Paid", "lang"),
@@ -195,7 +195,17 @@ class EmailServiceSpec extends ItSpec with TableDrivenPropertyChecks {
       (CapitalGainsTax, "Capital Gains Tax on UK property", "ending with 00290", None, Some("12.34"), "en"),
       (CapitalGainsTax, "Capital Gains Tax on UK property", "ending with 00290", commission, Some("13.57"), "en"),
       (CapitalGainsTax, "Treth Enillion Cyfalaf ar eiddo yn y DU", "yn gorffen gyda 00290", None, Some("12.34"), "cy"),
-      (CapitalGainsTax, "Treth Enillion Cyfalaf ar eiddo yn y DU", "yn gorffen gyda 00290", commission, Some("13.57"), "cy")
+      (CapitalGainsTax, "Treth Enillion Cyfalaf ar eiddo yn y DU", "yn gorffen gyda 00290", commission, Some("13.57"), "cy"),
+
+      (JrsJobRetentionScheme, "Coronavirus Job Retention Scheme", "ending with 89012", None, Some("12.34"), "en"),
+      (JrsJobRetentionScheme, "Coronavirus Job Retention Scheme", "ending with 89012", commission, Some("13.57"), "en"),
+      (JrsJobRetentionScheme, "Cynllun Cadw Swyddi yn sgil Coronafeirws", "yn gorffen gyda 89012", None, Some("12.34"), "cy"),
+      (JrsJobRetentionScheme, "Cynllun Cadw Swyddi yn sgil Coronafeirws", "yn gorffen gyda 89012", commission, Some("13.57"), "cy"),
+
+      (PfJobRetentionScheme, "Coronavirus Job Retention Scheme", "ending with 89012", None, Some("12.34"), "en"),
+      (PfJobRetentionScheme, "Coronavirus Job Retention Scheme", "ending with 89012", commission, Some("13.57"), "en"),
+      (PfJobRetentionScheme, "Cynllun Cadw Swyddi yn sgil Coronafeirws", "yn gorffen gyda 89012", None, Some("12.34"), "cy"),
+      (PfJobRetentionScheme, "Cynllun Cadw Swyddi yn sgil Coronafeirws", "yn gorffen gyda 89012", commission, Some("13.57"), "cy")
     )
 
     forAll(scenarios) { (j, taxType, taxReference, commission, totalPaid, lang) =>

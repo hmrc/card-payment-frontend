@@ -156,6 +156,8 @@ check-your-details.PfSdlt.reference = Cyfeirnod Unigryw y Trafodyn (UTRN)
 check-your-details.CapitalGainsTax.reference = Cyfeirnod y taliad
 check-your-details.EconomicCrimeLevy.reference = Cyfeirnod y taliad
 check-your-details.PfEconomicCrimeLevy.reference = Cyfeirnod y taliad
+check-your-details.JrsJobRetentionScheme.reference = Cyfeirnod y taliad
+check-your-details.PfJobRetentionScheme.reference = Cyfeirnod y taliad
 
 ## Address Page
 address.heading = Cyfeiriad bilio’r cerdyn
@@ -284,8 +286,8 @@ payment-complete.tax-name.PfTpes =
 payment-complete.tax-name.CapitalGainsTax = Treth Enillion Cyfalaf ar eiddo yn y DU
 payment-complete.tax-name.EconomicCrimeLevy = Ardoll Troseddau Economaidd
 payment-complete.tax-name.PfEconomicCrimeLevy = Ardoll Troseddau Economaidd
-payment-complete.tax-name.PfJobRetentionScheme =
-payment-complete.tax-name.JrsJobRetentionScheme =
+payment-complete.tax-name.PfJobRetentionScheme = Cynllun Cadw Swyddi yn sgil Coronafeirws
+payment-complete.tax-name.JrsJobRetentionScheme = Cynllun Cadw Swyddi yn sgil Coronafeirws
 payment-complete.tax-name.PfImportedVehicles =
 payment-complete.tax-name.PfChildBenefitRepayments =
 payment-complete.tax-name.NiEuVatOss =
@@ -357,6 +359,8 @@ email.tax-name.PfSdlt = Treth Dir y Tollau Stamp
 email.tax-name.CapitalGainsTax = Treth Enillion Cyfalaf ar eiddo yn y DU
 email.tax-name.EconomicCrimeLevy = Ardoll Troseddau Economaidd
 email.tax-name.PfEconomicCrimeLevy = Ardoll Troseddau Economaidd
+email.tax-name.JrsJobRetentionScheme = Cynllun Cadw Swyddi yn sgil Coronafeirws
+email.tax-name.PfJobRetentionScheme = Cynllun Cadw Swyddi yn sgil Coronafeirws
 
 ## Payments survey
 payments-survey.bta.return-message = Dim diolch, dychwelyd i cyfrif treth busnes
