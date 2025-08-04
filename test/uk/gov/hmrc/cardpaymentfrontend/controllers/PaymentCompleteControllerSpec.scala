@@ -192,7 +192,7 @@ class PaymentCompleteControllerSpec extends ItSpec {
       }
 
       "should not render the webchat specific content for origins that are not webchat related" in {
-        PayApiStub.stubForFindBySessionId2xx(TestJourneys.WcSa.journeyAfterSucceedDebitWebPayment)
+        PayApiStub.stubForFindBySessionId2xx(TestJourneys.BtaSa.journeyAfterSucceedDebitWebPayment)
         val result = systemUnderTest.renderPage(fakeGetRequest)
         val document = Jsoup.parse(contentAsString(result))
         document.select("#web-chat-content").size() shouldBe 0
@@ -211,7 +211,7 @@ class PaymentCompleteControllerSpec extends ItSpec {
         }
 
       "should have a test for all origins below this one" in {
-        TestHelpers.implementedOrigins.size shouldBe 30 withClue "** This dummy test is here to remind you to update the tests below. Bump up the expected number when an origin is added to implemented origins **"
+        TestHelpers.implementedOrigins.size shouldBe 31 withClue "** This dummy test is here to remind you to update the tests below. Bump up the expected number when an origin is added to implemented origins **"
       }
 
       TestHelpers.implementedOrigins.foreach { origin =>

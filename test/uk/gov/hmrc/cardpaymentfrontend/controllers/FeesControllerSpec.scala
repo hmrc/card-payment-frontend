@@ -1869,8 +1869,8 @@ class FeesControllerSpec extends ItSpec {
             case Origins.AppSimpleAssessment      => Seq.empty
             case Origins.PfTpes                   => Seq.empty
             case Origins.CapitalGainsTax          => Seq(expectedOpenBankingLink)
-            case Origins.EconomicCrimeLevy        => Seq.empty
-            case Origins.PfEconomicCrimeLevy      => Seq.empty
+            case Origins.EconomicCrimeLevy        => Seq(expectedOpenBankingLink, expectedOneOffDirectDebitLink)
+            case Origins.PfEconomicCrimeLevy      => Seq(expectedOpenBankingLink, expectedOneOffDirectDebitLink)
             case Origins.PfJobRetentionScheme     => Seq.empty
             case Origins.JrsJobRetentionScheme    => Seq.empty
             case Origins.PfImportedVehicles       => Seq.empty
