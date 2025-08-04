@@ -22,6 +22,7 @@ import play.api.i18n.Messages
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import play.twirl.api.Html
 import uk.gov.hmrc.cardpaymentfrontend.actions.{Actions, JourneyRequest}
+import uk.gov.hmrc.cardpaymentfrontend.config.AppConfig
 import uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins.ExtendedOrigin.OriginExtended
 import uk.gov.hmrc.cardpaymentfrontend.models.{EmailAddress, creditCardCommissionRate}
 import uk.gov.hmrc.cardpaymentfrontend.requests.RequestSupport
@@ -36,6 +37,7 @@ import javax.inject.Inject
 
 class PaymentCompleteController @Inject() (
     actions:             Actions,
+    appConfig:           AppConfig,
     mcc:                 MessagesControllerComponents,
     paymentCompletePage: PaymentCompletePage,
     requestSupport:      RequestSupport
@@ -55,7 +57,7 @@ class PaymentCompleteController @Inject() (
         taxType = journeyRequest.journey.origin.lift.taxNameMessageKey
       ),
       maybeEmailAddress = maybeEmailFromSession,
-      maybeReturnUrl    = journeyRequest.journey.navigation.flatMap(_.returnUrl.map(_.value))
+      maybeReturnUrl    = PaymentCompleteController.determineTaxAccountUrl(journeyRequest.journey)(appConfig)
     ))
   }
 }
@@ -122,6 +124,12 @@ object PaymentCompleteController {
           )
         }
     }
+  }
+
+  private def determineTaxAccountUrl(journey: Journey[_])(appConfig: AppConfig): Option[String] = {
+    if (journey.origin.isAWebChatOrigin) {
+      Some(appConfig.businessTaxAccountUrl)
+    } else journey.navigation.flatMap(_.returnUrl.map(_.value))
   }
 
 }
