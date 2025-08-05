@@ -1674,6 +1674,60 @@ class FeesControllerSpec extends ItSpec {
         }
       }
 
+      "for origin JrsJobRetentionScheme" - {
+
+        "render the static content correctly" in {
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.JrsJobRetentionScheme.journeyBeforeBeginWebPayment)
+          val result = systemUnderTest.renderPage(fakeRequest)
+          val document = Jsoup.parse(contentAsString(result))
+          document.select(".govuk-header__service-name").html shouldBe "Pay Coronavirus Job Retention Scheme grants back"
+          testStaticContentEnglish(document)
+        }
+
+        "the static content correctly in welsh" in {
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.JrsJobRetentionScheme.journeyBeforeBeginWebPayment)
+          val result = systemUnderTest.renderPage(fakeWelshRequest)
+          val document = Jsoup.parse(contentAsString(result))
+          document.select(".govuk-header__service-name").html shouldBe "Talu grantiau’r Cynllun Cadw Swyddi yn sgil Coronafeirws yn ôl"
+          testStaticContentWelsh(document)
+        }
+
+        "render four options for other ways to pay" in {
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.JrsJobRetentionScheme.journeyBeforeBeginWebPayment)
+          val result = systemUnderTest.renderPage(fakeRequest)
+          val document = Jsoup.parse(contentAsString(result))
+          val listOfMethods = document.select("#payment-type-list").select("li")
+          listOfMethods.size() shouldBe 2
+        }
+      }
+
+      "for origin PfJobRetentionScheme" - {
+
+        "render the static content correctly" in {
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfJobRetentionScheme.journeyBeforeBeginWebPayment)
+          val result = systemUnderTest.renderPage(fakeRequest)
+          val document = Jsoup.parse(contentAsString(result))
+          document.select(".govuk-header__service-name").html shouldBe "Pay Coronavirus Job Retention Scheme grants back"
+          testStaticContentEnglish(document)
+        }
+
+        "the static content correctly in welsh" in {
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfJobRetentionScheme.journeyBeforeBeginWebPayment)
+          val result = systemUnderTest.renderPage(fakeWelshRequest)
+          val document = Jsoup.parse(contentAsString(result))
+          document.select(".govuk-header__service-name").html shouldBe "Talu grantiau’r Cynllun Cadw Swyddi yn sgil Coronafeirws yn ôl"
+          testStaticContentWelsh(document)
+        }
+
+        "render four options for other ways to pay" in {
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfJobRetentionScheme.journeyBeforeBeginWebPayment)
+          val result = systemUnderTest.renderPage(fakeRequest)
+          val document = Jsoup.parse(contentAsString(result))
+          val listOfMethods = document.select("#payment-type-list").select("li")
+          listOfMethods.size() shouldBe 2
+        }
+      }
+
     }
 
     "POST /card-fees" - {
@@ -1790,8 +1844,8 @@ class FeesControllerSpec extends ItSpec {
             case Origins.CapitalGainsTax          => Seq.empty
             case Origins.EconomicCrimeLevy        => Seq.empty
             case Origins.PfEconomicCrimeLevy      => Seq.empty
-            case Origins.PfJobRetentionScheme     => Seq.empty
-            case Origins.JrsJobRetentionScheme    => Seq.empty
+            case Origins.PfJobRetentionScheme     => Seq(expectedOneOffDirectDebitLink)
+            case Origins.JrsJobRetentionScheme    => Seq(expectedOneOffDirectDebitLink)
             case Origins.PfImportedVehicles       => Seq.empty
             case Origins.PfChildBenefitRepayments => Seq.empty
             case Origins.NiEuVatOss               => Seq.empty
@@ -1876,8 +1930,8 @@ class FeesControllerSpec extends ItSpec {
             case Origins.CapitalGainsTax          => None
             case Origins.EconomicCrimeLevy        => None
             case Origins.PfEconomicCrimeLevy      => None
-            case Origins.PfJobRetentionScheme     => None
-            case Origins.JrsJobRetentionScheme    => None
+            case Origins.PfJobRetentionScheme     => Some(TestJourneys.PfJobRetentionScheme.journeyBeforeBeginWebPayment.journeySpecificData)
+            case Origins.JrsJobRetentionScheme    => Some(TestJourneys.JrsJobRetentionScheme.journeyBeforeBeginWebPayment.journeySpecificData)
             case Origins.PfImportedVehicles       => None
             case Origins.PfChildBenefitRepayments => None
             case Origins.NiEuVatOss               => None
