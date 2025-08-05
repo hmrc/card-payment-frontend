@@ -38,7 +38,8 @@
         showTimeoutDialogue: Boolean = true,
         backLinkOverride: Option[BackLink] = None,
         welshSupported: Boolean = true,
-        additionalScripts: Option[Html] = None
+        additionalScripts: Option[Html] = None,
+        hideStyling: Boolean = false
 )(contentBlock: Html)(implicit request: RequestHeader, messages: Messages)
 
 @serviceName = @{origin.map(eo => messages(eo.lift.serviceNameMessageKey)).getOrElse(messages("service-name.generic"))}
@@ -77,7 +78,10 @@
 }
 
 @scripts = {
-    <script type="module" src="@{controllers.routes.Assets.versioned("lib/jquery/jquery.min.js")}" @{CSPNonce.attr}></script>
+    @if(hideStyling) {
+        @*Css file sets html elements within this page, loaded in iframe to display:none, essentially hiding, apart from a grey box for the iframe, better than seeing a weird partial hmrc page. *@
+        @Html(s"""<link rel="stylesheet" media="all" type="text/css" href="${controllers.routes.Assets.versioned("stylesheets/redirect-to-parent-page.css").toString}">""")
+    }
     @additionalScripts.getOrElse(Html(""))
 }
 
