@@ -28,6 +28,7 @@ import payapi.corcommon.model.taxes.ppt.PptReference
 import payapi.corcommon.model.taxes.sa.SaUtr
 import payapi.corcommon.model.taxes.sdlt.Utrn
 import payapi.corcommon.model.taxes.vat.{VatChargeReference, Vrn}
+import payapi.corcommon.model.taxes.vatc2c.VatC2cReference
 import payapi.corcommon.model.times.period.TaxQuarter.AprilJuly
 import payapi.corcommon.model.times.period.{TaxMonth, TaxYear}
 import play.api.libs.json.{JsValue, Json}
@@ -260,6 +261,7 @@ class OpenBankingOriginSpecificSessionDataSpec extends UnitSpec {
       testOsd(osd, CapitalGainsTaxSessionData(CgtAccountReference("XVCGTP001000290")), "XVCGTP001000290", "XVCGTP001000290")
       roundTripJsonTest(osd, testJson)
     }
+
     "EconomicCrimeLevy" in {
       val testJson = Json.parse("""{"economicCrimeLevyReturnNumber":"XE123456789012","origin":"EconomicCrimeLevy"}""")
       val osd = ExtendedEconomicCrimeLevy.openBankingOriginSpecificSessionData(TestJourneys.EconomicCrimeLevy.journeyBeforeBeginWebPayment.journeySpecificData)
@@ -274,10 +276,24 @@ class OpenBankingOriginSpecificSessionDataSpec extends UnitSpec {
       roundTripJsonTest(osd, testJson)
     }
 
+    "VatC2c" in {
+      val testJson = Json.parse("""{"vatC2cReference":"XVC1A2B3C4D5E6F","origin":"VatC2c"}""")
+      val osd = ExtendedVatC2c.openBankingOriginSpecificSessionData(TestJourneys.VatC2c.journeyBeforeBeginWebPayment.journeySpecificData)
+      testOsd(osd, VatC2cSessionData(VatC2cReference("XVC1A2B3C4D5E6F"), None), "XVC1A2B3C4D5E6F", "XVC1A2B3C4D5E6F")
+      roundTripJsonTest(osd, testJson)
+    }
+
+    "PfVatC2c" in {
+      val testJson = Json.parse("""{"vatC2cReference":"XVC1A2B3C4D5E6F","origin":"PfVatC2c"}""")
+      val osd = ExtendedPfVatC2c.openBankingOriginSpecificSessionData(TestJourneys.PfVatC2c.journeyBeforeBeginWebPayment.journeySpecificData)
+      testOsd(osd, PfVatC2cSessionData(VatC2cReference("XVC1A2B3C4D5E6F"), None), "XVC1A2B3C4D5E6F", "XVC1A2B3C4D5E6F")
+      roundTripJsonTest(osd, testJson)
+    }
+
   }
 
   "sanity check for implemented origins" in {
-    TestHelpers.implementedOrigins.size shouldBe 31 withClue "** This dummy test is here to remind you to update the tests above. Bump up the expected number when an origin is added to implemented origins **"
+    TestHelpers.implementedOrigins.size shouldBe 33 withClue "** This dummy test is here to remind you to update the tests above. Bump up the expected number when an origin is added to implemented origins **"
   }
 
 }

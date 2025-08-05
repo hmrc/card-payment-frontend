@@ -87,6 +87,8 @@ service-name.PfTrust =
 service-name.PtaClass3Ni = Pay your National Insurance
 service-name.AlcoholDuty = Pay your Alcohol Duty
 service-name.PfAlcoholDuty = Pay your Alcohol Duty
+service-name.VatC2c = Pay your import VAT
+service-name.PfVatC2c = Pay your import VAT
 
 
 ## Email address page
@@ -158,7 +160,8 @@ check-your-details.PfSdlt.reference = Unique Transaction Reference Number (UTRN)
 check-your-details.CapitalGainsTax.reference = Payment reference
 check-your-details.EconomicCrimeLevy.reference = Reference number
 check-your-details.PfEconomicCrimeLevy.reference = Reference number
-
+check-your-details.VatC2c.reference = Reference number
+check-your-details.PfVatC2c.reference = Reference number
 
 ## Address Page
 address.heading = Card billing address
@@ -298,6 +301,8 @@ payment-complete.tax-name.PfTrust =
 payment-complete.tax-name.PtaClass3Ni =
 payment-complete.tax-name.AlcoholDuty = Alcohol Duty
 payment-complete.tax-name.PfAlcoholDuty = Alcohol Duty
+payment-complete.tax-name.VatC2c = Import VAT
+payment-complete.tax-name.PfVatC2c = Import VAT
 
 ## Payment Cancelled page
 
@@ -355,6 +360,8 @@ email.tax-name.Amls = Money Laundering Regulation Fees
 email.tax-name.PfAmls = Money Laundering Regulation Fees
 email.tax-name.EconomicCrimeLevy = Economic Crime Levy
 email.tax-name.PfEconomicCrimeLevy = Economic Crime Levy
+email.tax-name.VatC2c = Import VAT
+email.tax-name.PfVatC2c = Import VAT
 
 email.tax-name.BtaEpayeBill = Employers’ PAYE and National Insurance
 email.tax-name.BtaEpayePenalty = Employers’ PAYE late payment or filing penalty
