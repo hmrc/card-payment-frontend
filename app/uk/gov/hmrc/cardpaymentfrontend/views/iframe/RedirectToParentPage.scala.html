@@ -23,11 +23,9 @@
 
 @scripts = {
     <script src="@{controllers.routes.Assets.versioned("javascripts/escape-iframe.js")}" @{CSPNonce.attr}></script>
-    @*Css file sets html elements within this page, loaded in iframe to display:none, essentially hiding, apart from a grey box for the iframe, better than seeing a weird partial hmrc page. *@
-    @Html(s"""<link rel="stylesheet" media="all" type="text/css" href="${controllers.routes.Assets.versioned("stylesheets/redirect-to-parent-page.css").toString}">""")
 }
 
-@layout(pageTitle = None, additionalScripts = Some(scripts)) {
+@layout(pageTitle = None, additionalScripts = Some(scripts), hideStyling = true) {
     @*This is how we redirect the user out of the iframe and we can then call auth and settle etc. *@
     <a rel="noreferrer"
     id="returnControlLink"
