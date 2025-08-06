@@ -204,8 +204,8 @@ object ExtendedOrigin {
       case Origins.CapitalGainsTax          => ExtendedCapitalGainsTax
       case Origins.EconomicCrimeLevy        => ExtendedEconomicCrimeLevy
       case Origins.PfEconomicCrimeLevy      => ExtendedPfEconomicCrimeLevy
-      case Origins.PfJobRetentionScheme     => DefaultExtendedOrigin
-      case Origins.JrsJobRetentionScheme    => DefaultExtendedOrigin
+      case Origins.PfJobRetentionScheme     => ExtendedPfJobRetentionScheme
+      case Origins.JrsJobRetentionScheme    => ExtendedJrsJobRetentionScheme
       case Origins.PfImportedVehicles       => DefaultExtendedOrigin
       case Origins.PfChildBenefitRepayments => DefaultExtendedOrigin
       case Origins.NiEuVatOss               => DefaultExtendedOrigin

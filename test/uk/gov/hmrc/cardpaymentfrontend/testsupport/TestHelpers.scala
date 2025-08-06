@@ -61,7 +61,9 @@ object TestHelpers {
     CapitalGainsTax,
     EconomicCrimeLevy,
     PfEconomicCrimeLevy,
-    PfSdlt
+    PfSdlt,
+    PfJobRetentionScheme,
+    JrsJobRetentionScheme
   )
 
   val unimplementedOrigins: Seq[Origin] = Seq[Origin](
@@ -97,8 +99,6 @@ object TestHelpers {
     PtaSimpleAssessment,
     AppSimpleAssessment,
     PfTpes,
-    PfJobRetentionScheme,
-    JrsJobRetentionScheme,
     PfImportedVehicles,
     PfChildBenefitRepayments,
     NiEuVatOss,
@@ -179,8 +179,8 @@ object TestHelpers {
     case Origins.CapitalGainsTax          => TestJourneys.CapitalGainsTax
     case Origins.EconomicCrimeLevy        => TestJourneys.EconomicCrimeLevy
     case Origins.PfEconomicCrimeLevy      => TestJourneys.PfEconomicCrimeLevy
-    case Origins.PfJobRetentionScheme     => throw new MatchError("Not implemented yet")
-    case Origins.JrsJobRetentionScheme    => throw new MatchError("Not implemented yet")
+    case Origins.PfJobRetentionScheme     => TestJourneys.PfJobRetentionScheme
+    case Origins.JrsJobRetentionScheme    => TestJourneys.JrsJobRetentionScheme
     case Origins.PfImportedVehicles       => throw new MatchError("Not implemented yet")
     case Origins.PfChildBenefitRepayments => throw new MatchError("Not implemented yet")
     case Origins.NiEuVatOss               => throw new MatchError("Not implemented yet")
