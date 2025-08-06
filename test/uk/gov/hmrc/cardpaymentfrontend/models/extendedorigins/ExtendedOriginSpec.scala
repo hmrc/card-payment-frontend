@@ -28,6 +28,7 @@ import uk.gov.hmrc.cardpaymentfrontend.testsupport.testdata.TestJourneys
 
 import java.time.LocalDate
 
+//todo delete or rewrite, it's kind of pointless
 class ExtendedOriginSpec extends ItSpec {
   private val systemUnderTest = ExtendedBtaSa //ExtendedBtaSa is a concrete reification of the trait ExtendedOrigin, we use it as a substitute here.
   private val fakeGetRequest = FakeRequest("GET", "/cya0").withSessionId()
