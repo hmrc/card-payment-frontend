@@ -43,7 +43,7 @@ class EmailServiceSpec extends ItSpec with TableDrivenPropertyChecks {
     val commission = Some("1.23")
 
     // needed for compiler. if you're adding a new extended origin, add the jsd to this type/list of types.
-    type JsdBounds = JsdPfEpayeNi with JsdAlcoholDuty with JsdPfPpt with JsdBtaEpayeBill with JsdPfSa with JsdPpt with JsdVcVatReturn with JsdPfEpayeP11d with JsdCapitalGainsTax with JsdBtaCt with JsdPfEpayeLateCis with JsdPfEpayeLpp with JsdPfCt with JsdBtaVat with JsdPfSdlt with JsdBtaEpayeInterest with JsdAmls with JsdBtaEpayeGeneral with JsdPfEpayeSeta with JsdPtaSa with JsdBtaClass1aNi with JsdVcVatOther with JsdPfAmls with JsdPfVat with JsdItSa with JsdBtaSa with JsdPfAlcoholDuty with JsdBtaEpayePenalty with JsdEconomicCrimeLevy with JsdPfEconomicCrimeLevy with JsdJrsJobRetentionScheme with JsdPfJobRetentionScheme
+    type JsdBounds = JsdPfEpayeNi with JsdAlcoholDuty with JsdPfPpt with JsdBtaEpayeBill with JsdPfSa with JsdPpt with JsdVcVatReturn with JsdPfEpayeP11d with JsdCapitalGainsTax with JsdBtaCt with JsdPfEpayeLateCis with JsdPfEpayeLpp with JsdPfCt with JsdBtaVat with JsdPfSdlt with JsdBtaEpayeInterest with JsdAmls with JsdBtaEpayeGeneral with JsdPfEpayeSeta with JsdPtaSa with JsdBtaClass1aNi with JsdVcVatOther with JsdPfAmls with JsdPfVat with JsdItSa with JsdBtaSa with JsdPfAlcoholDuty with JsdBtaEpayePenalty with JsdEconomicCrimeLevy with JsdPfEconomicCrimeLevy with JsdJrsJobRetentionScheme with JsdPfJobRetentionScheme with JsdWcSa
 
     val scenarios: TableFor6[JourneyStatuses[_ >: JsdBounds <: JourneySpecificData], String, String, Option[String], Some[String], String] = Table(
       ("Journey", "Tax Type", "Tax Reference", "Commission", "Total Paid", "lang"),
@@ -66,6 +66,11 @@ class EmailServiceSpec extends ItSpec with TableDrivenPropertyChecks {
       (ItSa, "Self Assessment", "ending with 7895K", commission, Some("13.57"), "en"),
       (ItSa, "Hunanasesiad", "yn gorffen gyda 7895K", None, Some("12.34"), "cy"),
       (ItSa, "Hunanasesiad", "yn gorffen gyda 7895K", commission, Some("13.57"), "cy"),
+
+      (WcSa, "Self Assessment", "ending with 7895K", None, Some("12.34"), "en"),
+      (WcSa, "Self Assessment", "ending with 7895K", commission, Some("13.57"), "en"),
+      (WcSa, "Hunanasesiad", "yn gorffen gyda 7895K", None, Some("12.34"), "cy"),
+      (WcSa, "Hunanasesiad", "yn gorffen gyda 7895K", commission, Some("13.57"), "cy"),
 
       (AlcoholDuty, "Alcohol Duty", "ending with 56789", None, Some("12.34"), "en"),
       (AlcoholDuty, "Alcohol Duty", "ending with 56789", commission, Some("13.57"), "en"),

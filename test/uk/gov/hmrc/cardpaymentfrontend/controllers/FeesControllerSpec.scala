@@ -25,7 +25,7 @@ import play.api.mvc.{AnyContentAsEmpty, Call}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.cardpaymentfrontend.models.{Link, PaymentMethod}
-import uk.gov.hmrc.cardpaymentfrontend.testsupport.ItSpec
+import uk.gov.hmrc.cardpaymentfrontend.testsupport.{ItSpec, TestHelpers}
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.TestOps.FakeRequestOps
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.stubs.PayApiStub
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.testdata.TestJourneys
@@ -75,6 +75,13 @@ class FeesControllerSpec extends ItSpec {
         val result = systemUnderTest.renderPage(fakeWelshRequest)
         val document = Jsoup.parse(contentAsString(result))
         document.title shouldBe "Ffioedd cerdyn - Talu eich Hunanasesiad - GOV.UK"
+      }
+
+      "Title contains href which links to pay-frontend" in {
+        PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyBeforeBeginWebPayment)
+        val result = systemUnderTest.renderPage(fakeRequest)
+        val document = Jsoup.parse(contentAsString(result))
+        document.select(".govuk-header__content a").attr("href") shouldBe "http://localhost:9056/pay"
       }
 
       "for origin PfSa" - {
@@ -389,6 +396,80 @@ class FeesControllerSpec extends ItSpec {
 
         "render an option for personal debit card in welsh" in {
           PayApiStub.stubForFindBySessionId2xx(TestJourneys.ItSa.journeyBeforeBeginWebPayment)
+          val result = systemUnderTest.renderPage(fakeWelshRequest)
+          val document = Jsoup.parse(contentAsString(result))
+          val listOfMethods = document.select("#payment-type-list").select("li")
+          val cardBullet = listOfMethods.select("#personal-debit-card")
+          cardBullet.text() shouldBe "cerdyn debyd personol"
+        }
+      }
+
+      "for origin WcSa" - {
+
+        "render the static content correctly" in {
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.WcSa.journeyBeforeBeginWebPayment)
+          val result = systemUnderTest.renderPage(fakeRequest)
+          val document = Jsoup.parse(contentAsString(result))
+          document.select(".govuk-header__service-name").html shouldBe "Pay your Self Assessment"
+          testStaticContentEnglish(document)
+        }
+
+        "the static content correctly in welsh" in {
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.WcSa.journeyBeforeBeginWebPayment)
+          val result = systemUnderTest.renderPage(fakeWelshRequest)
+          val document = Jsoup.parse(contentAsString(result))
+          document.select(".govuk-header__service-name").html shouldBe "Talu eich Hunanasesiad"
+          testStaticContentWelsh(document)
+        }
+
+        "render two options for other ways to pay" in {
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.WcSa.journeyBeforeBeginWebPayment)
+          val result = systemUnderTest.renderPage(fakeRequest)
+          val document = Jsoup.parse(contentAsString(result))
+          val listOfMethods = document.select("#payment-type-list").select("li")
+          listOfMethods.size() shouldBe 2
+        }
+
+        "render an option for open banking" in {
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.WcSa.journeyBeforeBeginWebPayment)
+          val result = systemUnderTest.renderPage(fakeRequest)
+          val document = Jsoup.parse(contentAsString(result))
+          val listOfMethods = document.select("#payment-type-list").select("li")
+          val openBankingBullet = listOfMethods.select("#open-banking-link")
+          openBankingBullet.text() shouldBe "bank account"
+          openBankingBullet.attr("href") shouldBe "/pay-by-card/start-open-banking"
+        }
+
+        "render an option for open banking in welsh" in {
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.WcSa.journeyBeforeBeginWebPayment)
+          val result = systemUnderTest.renderPage(fakeWelshRequest)
+          val document = Jsoup.parse(contentAsString(result))
+          val listOfMethods = document.select("#payment-type-list").select("li")
+          val openBankingBullet = listOfMethods.select("#open-banking-link")
+          openBankingBullet.text() shouldBe "cyfrif banc"
+          openBankingBullet.attr("href") shouldBe "/pay-by-card/start-open-banking"
+        }
+
+        "not render an option for one off direct debit" in {
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.WcSa.journeyBeforeBeginWebPayment)
+          val result = systemUnderTest.renderPage(fakeRequest)
+          val document = Jsoup.parse(contentAsString(result))
+          val listOfMethods = document.select("#payment-type-list").select("li")
+          val oneOffDirectDebitBullet = listOfMethods.select("#one-off-direct-debit-link")
+          oneOffDirectDebitBullet.size shouldBe 0
+        }
+
+        "render an option for personal debit card" in {
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.WcSa.journeyBeforeBeginWebPayment)
+          val result = systemUnderTest.renderPage(fakeRequest)
+          val document = Jsoup.parse(contentAsString(result))
+          val listOfMethods = document.select("#payment-type-list").select("li")
+          val cardBullet = listOfMethods.select("#personal-debit-card")
+          cardBullet.text() shouldBe "personal debit card"
+        }
+
+        "render an option for personal debit card in welsh" in {
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.WcSa.journeyBeforeBeginWebPayment)
           val result = systemUnderTest.renderPage(fakeWelshRequest)
           val document = Jsoup.parse(contentAsString(result))
           val listOfMethods = document.select("#payment-type-list").select("li")
@@ -1780,8 +1861,8 @@ class FeesControllerSpec extends ItSpec {
         messageKey = "card-fees.para2.variable-direct-debit"
       )
 
-      "should return the correct links for each origin" in {
-        Origins.values.foreach { origin =>
+      TestHelpers.implementedOrigins.foreach { origin =>
+        s"should return the correct links for each origin: ${origin.entryName}" in {
 
           val expectedLinks = origin match {
             case Origins.PfSa                     => Seq(expectedOpenBankingLink, expectedOneOffDirectDebitLink)
@@ -1795,7 +1876,7 @@ class FeesControllerSpec extends ItSpec {
             case Origins.PfEpayeSeta              => Seq(expectedOpenBankingLink, expectedOneOffDirectDebitLink)
             case Origins.PfEpayeLateCis           => Seq(expectedOpenBankingLink, expectedOneOffDirectDebitLink)
             case Origins.PfEpayeP11d              => Seq(expectedOpenBankingLink, expectedOneOffDirectDebitLink)
-            case Origins.PfSdlt                   => Seq.empty
+            case Origins.PfSdlt                   => Seq(expectedOpenBankingLink)
             case Origins.PfCds                    => Seq.empty
             case Origins.PfOther                  => Seq.empty
             case Origins.PfP800                   => Seq.empty
@@ -1805,11 +1886,11 @@ class FeesControllerSpec extends ItSpec {
             case Origins.PfPsAdmin                => Seq.empty
             case Origins.AppSa                    => Seq.empty
             case Origins.BtaVat                   => Seq(expectedOpenBankingLink, expectedVariableDirectDebitLink)
-            case Origins.BtaEpayeBill             => Seq(expectedOpenBankingLink, expectedOneOffDirectDebitLink)
+            case Origins.BtaEpayeBill             => Seq(expectedOpenBankingLink, expectedVariableDirectDebitLink, expectedOneOffDirectDebitLink)
             case Origins.BtaEpayePenalty          => Seq(expectedOpenBankingLink, expectedOneOffDirectDebitLink)
             case Origins.BtaEpayeInterest         => Seq(expectedOpenBankingLink, expectedOneOffDirectDebitLink)
             case Origins.BtaEpayeGeneral          => Seq(expectedOpenBankingLink, expectedOneOffDirectDebitLink)
-            case Origins.BtaClass1aNi             => Seq.empty
+            case Origins.BtaClass1aNi             => Seq(expectedOpenBankingLink, expectedOneOffDirectDebitLink)
             case Origins.BtaCt                    => Seq(expectedOpenBankingLink, expectedOneOffDirectDebitLink)
             case Origins.BtaSdil                  => Seq.empty
             case Origins.BcPngr                   => Seq.empty
@@ -1841,9 +1922,9 @@ class FeesControllerSpec extends ItSpec {
             case Origins.PtaSimpleAssessment      => Seq.empty
             case Origins.AppSimpleAssessment      => Seq.empty
             case Origins.PfTpes                   => Seq.empty
-            case Origins.CapitalGainsTax          => Seq.empty
-            case Origins.EconomicCrimeLevy        => Seq.empty
-            case Origins.PfEconomicCrimeLevy      => Seq.empty
+            case Origins.CapitalGainsTax          => Seq(expectedOpenBankingLink)
+            case Origins.EconomicCrimeLevy        => Seq(expectedOpenBankingLink, expectedOneOffDirectDebitLink)
+            case Origins.PfEconomicCrimeLevy      => Seq(expectedOpenBankingLink, expectedOneOffDirectDebitLink)
             case Origins.PfJobRetentionScheme     => Seq(expectedOneOffDirectDebitLink)
             case Origins.JrsJobRetentionScheme    => Seq(expectedOneOffDirectDebitLink)
             case Origins.PfImportedVehicles       => Seq.empty
@@ -1865,7 +1946,7 @@ class FeesControllerSpec extends ItSpec {
             case Origins.PfPillar2                => Seq.empty
             case Origins.PfVatC2c                 => Seq.empty
             case Origins.Pillar2                  => Seq.empty
-
+            case Origins.WcSa                     => Seq(expectedOpenBankingLink)
           }
 
           // Required due to additions made to Controller to allow for checking a chargeReference. Could this be improved?
@@ -1928,8 +2009,8 @@ class FeesControllerSpec extends ItSpec {
             case Origins.AppSimpleAssessment      => None
             case Origins.PfTpes                   => None
             case Origins.CapitalGainsTax          => None
-            case Origins.EconomicCrimeLevy        => None
-            case Origins.PfEconomicCrimeLevy      => None
+            case Origins.EconomicCrimeLevy        => Some(TestJourneys.EconomicCrimeLevy.journeyBeforeBeginWebPayment.journeySpecificData)
+            case Origins.PfEconomicCrimeLevy      => Some(TestJourneys.PfEconomicCrimeLevy.journeyBeforeBeginWebPayment.journeySpecificData)
             case Origins.PfJobRetentionScheme     => Some(TestJourneys.PfJobRetentionScheme.journeyBeforeBeginWebPayment.journeySpecificData)
             case Origins.JrsJobRetentionScheme    => Some(TestJourneys.JrsJobRetentionScheme.journeyBeforeBeginWebPayment.journeySpecificData)
             case Origins.PfImportedVehicles       => None
@@ -1953,10 +2034,8 @@ class FeesControllerSpec extends ItSpec {
             case Origins.Pillar2                  => None
           }
 
-          journeySpecificData.map { jsd: JourneySpecificData =>
-            systemUnderTest.linksAvailableOnFeesPage(jsd = jsd) shouldBe expectedLinks withClue s"links did not match expected for origin: ${origin.entryName}"
-          }
-
+          val journeySpecificData: JourneySpecificData = TestHelpers.deriveTestDataFromOrigin(origin).journeyBeforeBeginWebPayment.journeySpecificData
+          systemUnderTest.linksAvailableOnFeesPage(journeySpecificData) shouldBe expectedLinks withClue s"links did not match expected for origin: ${origin.entryName}"
         }
       }
     }

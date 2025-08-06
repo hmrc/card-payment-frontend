@@ -177,6 +177,28 @@ class PaymentCompleteControllerSpec extends ItSpec {
         EmailStub.verifyEmailWasNotSent()
       }
 
+      "should render the webchat specific content for webchat origins" in {
+        PayApiStub.stubForFindBySessionId2xx(TestJourneys.WcSa.journeyAfterSucceedDebitWebPayment)
+        val result = systemUnderTest.renderPage(fakeGetRequest)
+        val document = Jsoup.parse(contentAsString(result))
+        document.select("#web-chat-content").text() shouldBe "If you need further help with a tax bill, return to the webchat and speak with the webchat handler."
+      }
+
+      "should render the webchat specific content in welsh for webchat origins" in {
+        PayApiStub.stubForFindBySessionId2xx(TestJourneys.WcSa.journeyAfterSucceedDebitWebPayment)
+        val result = systemUnderTest.renderPage(fakeGetRequestInWelsh)
+        val document = Jsoup.parse(contentAsString(result))
+        document.select("#web-chat-content").text() shouldBe "If you need further help with a tax bill, return to the webchat and speak with the webchat handler."
+      }
+
+      "should not render the webchat specific content for origins that are not webchat related" in {
+        PayApiStub.stubForFindBySessionId2xx(TestJourneys.BtaSa.journeyAfterSucceedDebitWebPayment)
+        val result = systemUnderTest.renderPage(fakeGetRequest)
+        val document = Jsoup.parse(contentAsString(result))
+        document.select("#web-chat-content").size() shouldBe 0
+        contentAsString(result) shouldNot contain("If you need further help with a tax bill, return to the webchat and speak with the webchat handler.")
+      }
+
         def testSummaryRows(testData: Journey[JourneySpecificData], fakeRequest: FakeRequest[_], expectedSummaryListRows: List[(String, String)]) = {
           PayApiStub.stubForFindBySessionId2xx(testData)
           val result = systemUnderTest.renderPage(fakeRequest)
@@ -189,7 +211,7 @@ class PaymentCompleteControllerSpec extends ItSpec {
         }
 
       "should have a test for all origins below this one" in {
-        TestHelpers.implementedOrigins.size shouldBe 32 withClue "** This dummy test is here to remind you to update the tests below. Bump up the expected number when an origin is added to implemented origins **"
+        TestHelpers.implementedOrigins.size shouldBe 33 withClue "** This dummy test is here to remind you to update the tests below. Bump up the expected number when an origin is added to implemented origins **"
       }
 
       TestHelpers.implementedOrigins.foreach { origin =>
@@ -455,6 +477,37 @@ object PaymentCompleteControllerSpec {
       )),
       hasWelshTest                    = true,
       hasAReturnUrl                   = true
+    )
+
+    case Origins.WcSa => TestScenarioInfo(
+      debitCardJourney                = TestJourneys.WcSa.journeyAfterSucceedDebitWebPayment,
+      creditCardJourney               = TestJourneys.WcSa.journeyAfterSucceedCreditWebPayment,
+      englishSummaryRowsDebitCard     = List(
+        "Tax" -> "Self Assessment",
+        "Date" -> "2 November 2027",
+        "Amount" -> "£12.34"
+      ),
+      maybeWelshSummaryRowsDebitCard  = Some(List(
+        "Treth" -> "Hunanasesiad",
+        "Dyddiad" -> "2 Tachwedd 2027",
+        "Swm" -> "£12.34"
+      )),
+      englishSummaryRowsCreditCard    = List(
+        "Tax" -> "Self Assessment",
+        "Date" -> "2 November 2027",
+        "Amount paid to HMRC" -> "£12.34",
+        "Card fee (9.97%), non-refundable" -> "£1.23",
+        "Total paid" -> "£13.57"
+      ),
+      maybeWelshSummaryRowsCreditCard = Some(List(
+        "Treth" -> "Hunanasesiad",
+        "Dyddiad" -> "2 Tachwedd 2027",
+        "Swm a dalwyd i CThEM" -> "£12.34",
+        "Ffi cerdyn (9.97%), ni ellir ei ad-dalu" -> "£1.23",
+        "Cyfanswm a dalwyd" -> "£13.57"
+      )),
+      hasWelshTest                    = true,
+      hasAReturnUrl                   = false
     )
 
     case Origins.AlcoholDuty => TestScenarioInfo(

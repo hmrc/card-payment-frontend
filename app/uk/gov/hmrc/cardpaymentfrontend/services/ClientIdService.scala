@@ -33,7 +33,7 @@ class ClientIdService @Inject() {
   def determineClientId(journey: Journey[_], language: Language): ClientId = {
     journey.origin match {
 
-      case PfSa | BtaSa | PtaSa | AppSa | ItSa | `3psSa` => language match {
+      case PfSa | BtaSa | PtaSa | AppSa | ItSa | `3psSa` | WcSa => language match {
         case Languages.English => ClientIds.SAEE
         case Languages.Welsh   => ClientIds.SAEC
       }
