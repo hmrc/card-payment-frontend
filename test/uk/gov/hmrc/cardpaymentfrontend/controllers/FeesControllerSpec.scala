@@ -2032,10 +2032,12 @@ class FeesControllerSpec extends ItSpec {
             case Origins.PfPillar2                => None
             case Origins.PfVatC2c                 => None
             case Origins.Pillar2                  => None
+            case Origins.WcSa                     => Some(TestJourneys.WcSa.journeyBeforeBeginWebPayment.journeySpecificData)
           }
 
-          val journeySpecificData: JourneySpecificData = TestHelpers.deriveTestDataFromOrigin(origin).journeyBeforeBeginWebPayment.journeySpecificData
-          systemUnderTest.linksAvailableOnFeesPage(journeySpecificData) shouldBe expectedLinks withClue s"links did not match expected for origin: ${origin.entryName}"
+          journeySpecificData.map { jsd: JourneySpecificData =>
+            systemUnderTest.linksAvailableOnFeesPage(jsd = jsd) shouldBe expectedLinks withClue s"links did not match expected for origin: ${origin.entryName}"
+          }
         }
       }
     }
