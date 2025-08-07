@@ -20,7 +20,7 @@ import payapi.cardpaymentjourney.model.journey.{JourneySpecificData, JsdVatC2c}
 import play.api.mvc.AnyContent
 import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
 import uk.gov.hmrc.cardpaymentfrontend.models.PaymentMethod._
-import uk.gov.hmrc.cardpaymentfrontend.models.openbanking.{VatC2cSessionData, OriginSpecificSessionData}
+import uk.gov.hmrc.cardpaymentfrontend.models.openbanking.{OriginSpecificSessionData, VatC2cSessionData}
 import uk.gov.hmrc.cardpaymentfrontend.models.{CheckYourAnswersRow, PaymentMethod}
 
 object ExtendedVatC2c extends ExtendedOrigin {
@@ -36,6 +36,13 @@ object ExtendedVatC2c extends ExtendedOrigin {
       changeLink      = None
     ))
   }
+
+  override def checkYourAnswersAmountSummaryRow(journeyRequest: JourneyRequest[AnyContent])(payFrontendBaseUrl: String): Option[CheckYourAnswersRow] =
+    Some(CheckYourAnswersRow(
+      titleMessageKey = "check-your-details.total-to-pay",
+      value           = Seq(amount(journeyRequest)),
+      changeLink      = None
+    ))
 
   override def openBankingOriginSpecificSessionData: JourneySpecificData => Option[OriginSpecificSessionData] = {
     case j: JsdVatC2c => Some(VatC2cSessionData(j.vatC2cReference))
