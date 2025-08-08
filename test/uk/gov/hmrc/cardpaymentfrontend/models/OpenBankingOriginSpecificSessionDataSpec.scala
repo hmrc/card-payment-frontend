@@ -121,6 +121,13 @@ class OpenBankingOriginSpecificSessionDataSpec extends UnitSpec {
       roundTripJsonTest(osd, testJson)
     }
 
+    "WcCt" in {
+      val testJson = Json.parse("""{"utr":"1097172564","ctPeriod":1,"ctChargeType":"A","origin":"WcCt"}""")
+      val osd = ExtendedWcCt.openBankingOriginSpecificSessionData(TestJourneys.WcCt.journeyBeforeBeginWebPayment.journeySpecificData)
+      testOsd(osd, WcCtSessionData(CtUtr("1097172564"), CtPeriod(1), CtChargeTypes.A, None), "1097172564A00101A", "1097172564")
+      roundTripJsonTest(osd, testJson)
+    }
+
     "PfEpayeNi" in {
       val testJson = Json.parse("""{"accountsOfficeReference":"123PH45678900","period":{"taxQuarter":"AprilJuly","taxYear":2025},"origin":"PfEpayeNi"}""")
       val osd = ExtendedPfEpayeNi.openBankingOriginSpecificSessionData(TestJourneys.PfEpayeNi.journeyBeforeBeginWebPayment.journeySpecificData)
@@ -260,6 +267,7 @@ class OpenBankingOriginSpecificSessionDataSpec extends UnitSpec {
       testOsd(osd, CapitalGainsTaxSessionData(CgtAccountReference("XVCGTP001000290")), "XVCGTP001000290", "XVCGTP001000290")
       roundTripJsonTest(osd, testJson)
     }
+
     "EconomicCrimeLevy" in {
       val testJson = Json.parse("""{"economicCrimeLevyReturnNumber":"XE123456789012","origin":"EconomicCrimeLevy"}""")
       val osd = ExtendedEconomicCrimeLevy.openBankingOriginSpecificSessionData(TestJourneys.EconomicCrimeLevy.journeyBeforeBeginWebPayment.journeySpecificData)
@@ -277,7 +285,7 @@ class OpenBankingOriginSpecificSessionDataSpec extends UnitSpec {
   }
 
   "sanity check for implemented origins" in {
-    TestHelpers.implementedOrigins.size shouldBe 31 withClue "** This dummy test is here to remind you to update the tests above. Bump up the expected number when an origin is added to implemented origins **"
+    TestHelpers.implementedOrigins.size shouldBe 32 withClue "** This dummy test is here to remind you to update the tests above. Bump up the expected number when an origin is added to implemented origins **"
   }
 
 }
