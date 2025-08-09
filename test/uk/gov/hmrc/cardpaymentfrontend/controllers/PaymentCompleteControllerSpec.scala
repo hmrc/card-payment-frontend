@@ -217,6 +217,24 @@ class PaymentCompleteControllerSpec extends ItSpec {
         wrapper.select("p").html() shouldBe "Bydd eich taliad yn cymryd 3 i 5 diwrnod i ymddangos yn eich cyfrif CThEM ar-lein."
       }
 
+      "should render the x reference/charge reference for PfVat when that's the appropriate reference" in {
+        PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfVatWithChargeReference.journeyAfterSucceedDebitWebPayment)
+        val result = systemUnderTest.renderPage(fakeGetRequest)
+        val document = Jsoup.parse(contentAsString(result))
+        val panel = document.body().select(".govuk-panel--confirmation")
+        panel.select("h1").text() shouldBe "Payment received by HMRC"
+        panel.select(".govuk-panel__body").html() shouldBe "Your payment reference\n<br>\n<strong>XE123456789012</strong>"
+      }
+
+      "should render the x reference/charge reference for WcVat when that's the appropriate reference" in {
+        PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfVatWithChargeReference.journeyAfterSucceedDebitWebPayment)
+        val result = systemUnderTest.renderPage(fakeGetRequest)
+        val document = Jsoup.parse(contentAsString(result))
+        val panel = document.body().select(".govuk-panel--confirmation")
+        panel.select("h1").text() shouldBe "Payment received by HMRC"
+        panel.select(".govuk-panel__body").html() shouldBe "Your payment reference\n<br>\n<strong>XE123456789012</strong>"
+      }
+
         def testSummaryRows(testData: Journey[JourneySpecificData], fakeRequest: FakeRequest[_], expectedSummaryListRows: List[(String, String)]) = {
           PayApiStub.stubForFindBySessionId2xx(testData)
           val result = systemUnderTest.renderPage(fakeRequest)
@@ -229,7 +247,7 @@ class PaymentCompleteControllerSpec extends ItSpec {
         }
 
       "should have a test for all origins below this one" in {
-        TestHelpers.implementedOrigins.size shouldBe 34 withClue "** This dummy test is here to remind you to update the tests below. Bump up the expected number when an origin is added to implemented origins **"
+        TestHelpers.implementedOrigins.size shouldBe 35 withClue "** This dummy test is here to remind you to update the tests below. Bump up the expected number when an origin is added to implemented origins **"
       }
 
       TestHelpers.implementedOrigins.foreach { origin =>
@@ -907,6 +925,37 @@ object PaymentCompleteControllerSpec {
     case Origins.PfVat => TestScenarioInfo(
       debitCardJourney                = TestJourneys.PfVat.journeyAfterSucceedDebitWebPayment,
       creditCardJourney               = TestJourneys.PfVat.journeyAfterSucceedCreditWebPayment,
+      englishSummaryRowsDebitCard     = List(
+        "Tax" -> "VAT",
+        "Date" -> "2 November 2027",
+        "Amount" -> "£12.34"
+      ),
+      maybeWelshSummaryRowsDebitCard  = Some(List(
+        "Treth" -> "TAW",
+        "Dyddiad" -> "2 Tachwedd 2027",
+        "Swm" -> "£12.34"
+      )),
+      englishSummaryRowsCreditCard    = List(
+        "Tax" -> "VAT",
+        "Date" -> "2 November 2027",
+        "Amount paid to HMRC" -> "£12.34",
+        "Card fee (9.97%), non-refundable" -> "£1.23",
+        "Total paid" -> "£13.57"
+      ),
+      maybeWelshSummaryRowsCreditCard = Some(List(
+        "Treth" -> "TAW",
+        "Dyddiad" -> "2 Tachwedd 2027",
+        "Swm a dalwyd i CThEM" -> "£12.34",
+        "Ffi cerdyn (9.97%), ni ellir ei ad-dalu" -> "£1.23",
+        "Cyfanswm a dalwyd" -> "£13.57"
+      )),
+      hasWelshTest                    = true,
+      hasAReturnUrl                   = false
+    )
+
+    case Origins.WcVat => TestScenarioInfo(
+      debitCardJourney                = TestJourneys.WcVat.journeyAfterSucceedDebitWebPayment,
+      creditCardJourney               = TestJourneys.WcVat.journeyAfterSucceedCreditWebPayment,
       englishSummaryRowsDebitCard     = List(
         "Tax" -> "VAT",
         "Date" -> "2 November 2027",

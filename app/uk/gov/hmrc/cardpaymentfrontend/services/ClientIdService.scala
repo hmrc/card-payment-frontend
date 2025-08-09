@@ -17,7 +17,7 @@
 package uk.gov.hmrc.cardpaymentfrontend.services
 
 import com.google.inject.{Inject, Singleton}
-import payapi.cardpaymentjourney.model.journey.{Journey, JsdPfVat}
+import payapi.cardpaymentjourney.model.journey.{Journey, JsdPfVat, JsdWcVat}
 import payapi.corcommon.model.Origins
 import payapi.corcommon.model.Origins._
 import uk.gov.hmrc.cardpaymentfrontend.models.cardpayment.{ClientId, ClientIds}
@@ -46,6 +46,18 @@ class ClientIdService @Inject() {
       //yes, for some reason pfVat has weirdness...
       case PfVat => journey.journeySpecificData match {
         case JsdPfVat(_, Some(_)) => language match {
+          case Languages.English => ClientIds.MIEE
+          case Languages.Welsh   => ClientIds.MIEC
+        }
+        case _ => language match {
+          case Languages.English => ClientIds.VAEE
+          case Languages.Welsh   => ClientIds.VAEC
+        }
+      }
+
+      //yes, copying said weirdness from pfvat...
+      case WcVat => journey.journeySpecificData match {
+        case JsdWcVat(_, Some(_), _) => language match {
           case Languages.English => ClientIds.MIEE
           case Languages.Welsh   => ClientIds.MIEC
         }
