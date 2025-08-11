@@ -166,6 +166,8 @@ check-your-details.EconomicCrimeLevy.reference = Cyfeirnod y taliad
 check-your-details.PfEconomicCrimeLevy.reference = Cyfeirnod y taliad
 check-your-details.VatC2c.reference = Cyfeirnod y taliad
 check-your-details.PfVatC2c.reference = Cyfeirnod y taliad
+check-your-details.WcSimpleAssessment.reference = Cyfeirnod y taliad
+
 
 ## Address Page
 address.heading = Cyfeiriad bilio’r cerdyn
@@ -293,6 +295,7 @@ payment-complete.tax-name.PfClimateChangeLevy =
 payment-complete.tax-name.PfSimpleAssessment =
 payment-complete.tax-name.PtaSimpleAssessment =
 payment-complete.tax-name.AppSimpleAssessment =
+payment-complete.tax-name.WcSimpleAssessment = Asesiad Syml
 payment-complete.tax-name.PfTpes =
 payment-complete.tax-name.CapitalGainsTax = Treth Enillion Cyfalaf ar eiddo yn y DU
 payment-complete.tax-name.EconomicCrimeLevy = Ardoll Troseddau Economaidd
@@ -377,6 +380,7 @@ email.tax-name.EconomicCrimeLevy = Ardoll Troseddau Economaidd
 email.tax-name.PfEconomicCrimeLevy = Ardoll Troseddau Economaidd
 email.tax-name.VatC2c = TAW fewnforio
 email.tax-name.PfVatC2c = TAW fewnforio
+email.tax-name.WcSimpleAssessment = Asesiad Syml
 
 ## Payments survey
 payments-survey.bta.return-message = Dim diolch, dychwelyd i cyfrif treth busnes

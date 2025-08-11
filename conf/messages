@@ -70,6 +70,7 @@ service-name.PfClimateChangeLevy =
 service-name.PfSimpleAssessment = Pay your Simple Assessment
 service-name.PtaSimpleAssessment = Pay your Simple Assessment
 service-name.AppSimpleAssessment = Pay your Simple Assessment
+service-name.WcSimpleAssessment = Pay your Simple Assessment
 service-name.PfTpes =
 service-name.CapitalGainsTax = Report and pay Capital Gains Tax on UK property
 service-name.EconomicCrimeLevy = Pay Economic Crime Levy
@@ -166,6 +167,8 @@ check-your-details.EconomicCrimeLevy.reference = Reference number
 check-your-details.PfEconomicCrimeLevy.reference = Reference number
 check-your-details.VatC2c.reference = Reference number
 check-your-details.PfVatC2c.reference = Reference number
+check-your-details.WcSimpleAssessment.reference = Payment reference
+
 
 ## Address Page
 address.heading = Card billing address
@@ -286,6 +289,7 @@ payment-complete.tax-name.PfSdil =
 payment-complete.tax-name.PfAggregatesLevy =
 payment-complete.tax-name.PfClimateChangeLevy =
 payment-complete.tax-name.PfSimpleAssessment =
+payment-complete.tax-name.WcSimpleAssessment = Simple Assessment
 payment-complete.tax-name.PtaSimpleAssessment =
 payment-complete.tax-name.AppSimpleAssessment =
 payment-complete.tax-name.PfTpes =
@@ -378,6 +382,7 @@ email.tax-name.BtaEpayeGeneral = Employers’ PAYE and National Insurance
 email.tax-name.BtaClass1aNi = Employers’ Class 1A National Insurance
 email.tax-name.PfSdlt = Stamp Duty Land Tax
 email.tax-name.CapitalGainsTax = Capital Gains Tax on UK property
+email.tax-name.WcSimpleAssessment = Simple Assessment
 
 ## Payments survey
 payments-survey.bta.return-message = Skip survey, return to business tax account

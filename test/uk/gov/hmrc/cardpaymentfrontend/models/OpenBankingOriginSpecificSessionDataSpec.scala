@@ -318,6 +318,13 @@ class OpenBankingOriginSpecificSessionDataSpec extends UnitSpec {
       roundTripJsonTest(osd, testJson)
     }
 
+    "WcSimpleAssessment" in {
+      val testJson = Json.parse("""{"simpleAssessmentReference":"XE123456789012","origin":"WcSimpleAssessment"}""")
+      val osd = ExtendedWcSimpleAssessment.openBankingOriginSpecificSessionData(TestJourneys.WcSimpleAssessment.journeyBeforeBeginWebPayment.journeySpecificData)
+      testOsd(osd, WcSimpleAssessmentSessionData(XRef14Char("XE123456789012"), None), "XE123456789012", "XE123456789012")
+      roundTripJsonTest(osd, testJson)
+    }
+
   }
 
   "sanity check for implemented origins" in {

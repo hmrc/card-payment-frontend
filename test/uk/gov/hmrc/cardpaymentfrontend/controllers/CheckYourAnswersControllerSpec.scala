@@ -227,7 +227,8 @@ class CheckYourAnswersControllerSpec extends ItSpec {
         case Origins.WcCt   => false
         case Origins.WcVat  => false
         case Origins.VatC2c => false
-        case _              => true
+        case Origins.WcSimpleAssessment => false
+        case _                          => true
       }
 
       s"[${origin.entryName}] should render the amount row correctly" in {
@@ -1046,9 +1047,25 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       assertRow(referenceRow, "Cyfeirnod y taliad", "XVCGTP001000290", None, None)
     }
 
+    "[WcSimpleAssessment] should render the payment reference row correctly" in {
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.WcSimpleAssessment.journeyBeforeBeginWebPayment)
+      val result = systemUnderTest.renderPage(fakeRequest())
+      val document = Jsoup.parse(contentAsString(result))
+      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.WcSimpleAssessment))
+      assertRow(referenceRow, "Payment reference", "XE123456789012", None, None)
+    }
+
+    "[WcSimpleAssessment] should render the payment reference row correctly in Welsh" in {
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.WcSimpleAssessment.journeyBeforeBeginWebPayment)
+      val result = systemUnderTest.renderPage(fakeRequestWelsh())
+      val document = Jsoup.parse(contentAsString(result))
+      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.WcSimpleAssessment))
+      assertRow(referenceRow, "Cyfeirnod y taliad", "XE123456789012", None, None)
+    }
+
     "sanity check for implemented origins" in {
       // remember to add the singular tests for reference rows as well as fdp if applicable, they are not covered in the implementedOrigins forall tests
-      TestHelpers.implementedOrigins.size shouldBe 35 withClue "** This dummy test is here to remind you to update the tests above. Bump up the expected number when an origin is added to implemented origins **"
+      TestHelpers.implementedOrigins.size shouldBe 36 withClue "** This dummy test is here to remind you to update the tests above. Bump up the expected number when an origin is added to implemented origins **"
     }
 
   }
