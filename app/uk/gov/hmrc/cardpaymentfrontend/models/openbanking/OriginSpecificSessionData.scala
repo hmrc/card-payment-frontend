@@ -133,6 +133,7 @@ object OriginSpecificSessionData {
       case Pillar2                  => Json.format[Pillar2SessionData].reads(json)
       case WcSa                     => Json.format[WcSaSessionData].reads(json)
       case WcCt                     => Json.format[WcCtSessionData].reads(json)
+      case WcSimpleAssessment       => Json.format[WcCtSessionData].reads(json)
 
       //Todo: Remove PfP800 when PtaP800 is fully available
       case origin @ (PfOther | PtaP800 | PfP800
@@ -216,6 +217,7 @@ object OriginSpecificSessionData {
       case sessionData: Pillar2SessionData             => Json.format[Pillar2SessionData].writes(sessionData)
       case sessionData: WcSaSessionData                => Json.format[WcSaSessionData].writes(sessionData)
       case sessionData: WcCtSessionData                => Json.format[WcCtSessionData].writes(sessionData)
+      case sessionData: WcSimpleAssessmentSessionData  => Json.format[WcSimpleAssessmentSessionData].writes(sessionData)
     }) + ("origin" -> Json.toJson(o.origin))
 
   implicit val format: OFormat[OriginSpecificSessionData] = OFormat(reads, writes)
@@ -438,6 +440,11 @@ final case class AppSimpleAssessmentSessionData(p302Ref: P800Ref, override val r
 }
 
 final case class PfSimpleAssessmentSessionData(simpleAssessmentReference: XRef14Char, returnUrl: Option[Url] = None) extends OriginSpecificSessionData(PfSimpleAssessment) {
+  def paymentReference: Reference = ReferenceMaker.makeSimpleAssessmentRef(simpleAssessmentReference)
+  def searchTag: SearchTag = SearchTag(simpleAssessmentReference.canonicalizedValue)
+}
+
+final case class WcSimpleAssessmentSessionData(simpleAssessmentReference: XRef14Char, returnUrl: Option[Url] = None) extends OriginSpecificSessionData(WcSimpleAssessment) {
   def paymentReference: Reference = ReferenceMaker.makeSimpleAssessmentRef(simpleAssessmentReference)
   def searchTag: SearchTag = SearchTag(simpleAssessmentReference.canonicalizedValue)
 }
