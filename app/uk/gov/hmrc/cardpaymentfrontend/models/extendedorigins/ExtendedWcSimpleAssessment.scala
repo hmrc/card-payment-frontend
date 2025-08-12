@@ -53,7 +53,7 @@ object ExtendedWcSimpleAssessment extends ExtendedOrigin {
   override def emailTaxTypeMessageKey: String = "email.tax-name.WcSimpleAssessment"
 
   override def surveyAuditName: String = "simple-assessment"
-  override def surveyReturnHref: String = ""
+  override def surveyReturnHref: String = "https://www.gov.uk/government/organisations/hm-revenue-customs"
   override def surveyReturnMessageKey: String = "payments-survey.other.return-message"
   override def surveyIsWelshSupported: Boolean = true
   override def surveyBannerTitle: String = serviceNameMessageKey
