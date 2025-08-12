@@ -225,7 +225,8 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       val shouldBeAbleToChangeAmount: Boolean = origin match {
         case Origins.WcSa => false
         case Origins.WcCt => false
-        case _            => true
+        case Origins.VatC2c => false
+        case _ => true
       }
 
       s"[${origin.entryName}] should render the amount row correctly" in {
