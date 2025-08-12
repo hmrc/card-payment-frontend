@@ -20,7 +20,7 @@ import payapi.cardpaymentjourney.model.journey._
 import payapi.corcommon.model.cgt.CgtAccountReference
 import payapi.corcommon.model.taxes.ad.{AlcoholDutyChargeReference, AlcoholDutyReference}
 import payapi.corcommon.model.taxes.amls.AmlsPaymentReference
-import payapi.corcommon.model.taxes.ct.{CtChargeTypes, CtLivePeriod, CtPeriod, CtUtr}
+import payapi.corcommon.model.taxes.ct.{CtChargeTypes, CtLivePeriod, CtPayslipReference, CtPeriod, CtUtr}
 import payapi.corcommon.model.taxes.epaye._
 import payapi.corcommon.model.taxes.other.{EconomicCrimeLevyReturnNumber, XRef, XRef14Char}
 import payapi.corcommon.model.taxes.ppt.PptReference
@@ -195,6 +195,24 @@ object TestJourneys {
         utr          = Some(CtUtr("1097172564")),
         ctPeriod     = Some(CtPeriod(1)),
         ctChargeType = Some(CtChargeTypes.A)
+      ),
+      chosenWayToPay       = None
+    )
+  }
+
+  object WcCt extends JourneyStatuses[JsdWcCt] {
+    val journeyBeforeBeginWebPayment: Journey[JsdWcCt] = Journey[JsdWcCt](
+      _id                  = JourneyId("TestJourneyId-44f9-ad7f-01e1d3d8f151"),
+      sessionId            = Some(SessionId("TestSession-4b87460d-6f43-4c4c-b810-d6f87c774854")),
+      amountInPence        = Some(AmountInPence(1234)),
+      emailTemplateOptions = None,
+      navigation           = None,
+      order                = None,
+      status               = PaymentStatuses.Created,
+      createdOn            = LocalDateTime.parse("2027-11-02T16:28:55.185"),
+      journeySpecificData  = JsdWcCt(
+        ctPayslipReference   = CtPayslipReference(CtUtr("1097172564"), CtPeriod(1), CtChargeTypes.A),
+        defaultAmountInPence = AmountInPence(1234)
       ),
       chosenWayToPay       = None
     )

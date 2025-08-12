@@ -40,6 +40,7 @@ object TestHelpers {
     AlcoholDuty,
     PfCt,
     BtaCt,
+    WcCt,
     PfEpayeNi,
     PfEpayeLpp,
     PfEpayeLateCis,
@@ -201,6 +202,7 @@ object TestHelpers {
     case Origins.PfVatC2c                 => TestJourneys.PfVatC2c
     case Origins.Pillar2                  => throw new MatchError("Not implemented yet")
     case Origins.WcSa                     => TestJourneys.WcSa
+    case Origins.WcCt                     => TestJourneys.WcCt
   }
 
 }

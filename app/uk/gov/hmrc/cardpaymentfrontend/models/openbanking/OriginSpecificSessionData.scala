@@ -132,6 +132,7 @@ object OriginSpecificSessionData {
       case PfPillar2                => Json.format[PfPillar2SessionData].reads(json)
       case Pillar2                  => Json.format[Pillar2SessionData].reads(json)
       case WcSa                     => Json.format[WcSaSessionData].reads(json)
+      case WcCt                     => Json.format[WcCtSessionData].reads(json)
 
       //Todo: Remove PfP800 when PtaP800 is fully available
       case origin @ (PfOther | PtaP800 | PfP800
@@ -214,6 +215,7 @@ object OriginSpecificSessionData {
       case sessionData: PfPillar2SessionData           => Json.format[PfPillar2SessionData].writes(sessionData)
       case sessionData: Pillar2SessionData             => Json.format[Pillar2SessionData].writes(sessionData)
       case sessionData: WcSaSessionData                => Json.format[WcSaSessionData].writes(sessionData)
+      case sessionData: WcCtSessionData                => Json.format[WcCtSessionData].writes(sessionData)
     }) + ("origin" -> Json.toJson(o.origin))
 
   implicit val format: OFormat[OriginSpecificSessionData] = OFormat(reads, writes)
@@ -329,6 +331,16 @@ final case class PfCtSessionData(
     ctChargeType: CtChargeType,
     returnUrl:    Option[Url]  = None
 ) extends CoTaxSessionData(PfCt) {
+  def paymentReference: Reference = ReferenceMaker.makeCtReference(utr, ctPeriod, ctChargeType)
+  def searchTag: SearchTag = SearchTag(utr.canonicalizedValue)
+}
+
+final case class WcCtSessionData(
+    utr:          CtUtr,
+    ctPeriod:     CtPeriod,
+    ctChargeType: CtChargeType,
+    returnUrl:    Option[Url]  = None
+) extends CoTaxSessionData(WcCt) {
   def paymentReference: Reference = ReferenceMaker.makeCtReference(utr, ctPeriod, ctChargeType)
   def searchTag: SearchTag = SearchTag(utr.canonicalizedValue)
 }

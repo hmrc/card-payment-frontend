@@ -55,7 +55,7 @@ class ClientIdService @Inject() {
         }
       }
 
-      case PfCt | BtaCt => language match {
+      case PfCt | BtaCt | WcCt => language match {
         case Languages.English => ClientIds.COEE
         case Languages.Welsh   => ClientIds.COEC
       }

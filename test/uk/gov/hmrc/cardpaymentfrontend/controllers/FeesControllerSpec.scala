@@ -1987,6 +1987,7 @@ class FeesControllerSpec extends ItSpec {
             case Origins.PfVatC2c                 => Seq(expectedOpenBankingLink)
             case Origins.Pillar2                  => Seq.empty
             case Origins.WcSa                     => Seq(expectedOpenBankingLink)
+            case Origins.WcCt                     => Seq(expectedOpenBankingLink)
           }
 
           val journeySpecificData: JourneySpecificData = TestHelpers.deriveTestDataFromOrigin(origin).journeyBeforeBeginWebPayment.journeySpecificData
