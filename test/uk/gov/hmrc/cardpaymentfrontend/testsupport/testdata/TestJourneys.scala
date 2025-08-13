@@ -27,6 +27,7 @@ import payapi.corcommon.model.taxes.ppt.PptReference
 import payapi.corcommon.model.taxes.sa.SaUtr
 import payapi.corcommon.model.taxes.sdlt.Utrn
 import payapi.corcommon.model.taxes.vat.{CalendarPeriod, VatChargeReference, Vrn}
+import payapi.corcommon.model.taxes.vatc2c.VatC2cReference
 import payapi.corcommon.model.times.period.TaxQuarter.AprilJuly
 import payapi.corcommon.model.times.period.TaxYear
 import payapi.corcommon.model.{AmountInPence, JourneyId, PaymentStatuses}
@@ -627,6 +628,41 @@ object TestJourneys {
       createdOn            = LocalDateTime.parse("2027-11-02T16:28:55.185"),
       journeySpecificData  = JsdPfEconomicCrimeLevy(
         chargeReference = Some(EconomicCrimeLevyReturnNumber("XE123456789012"))
+      ),
+      chosenWayToPay       = None
+    )
+  }
+
+  object VatC2c extends JourneyStatuses[JsdVatC2c] {
+    val journeyBeforeBeginWebPayment: Journey[JsdVatC2c] = Journey[JsdVatC2c](
+      _id                  = JourneyId("TestJourneyId-44f9-ad7f-01e1d3d8f151"),
+      sessionId            = Some(SessionId("TestSession-4b87460d-6f43-4c4c-b810-d6f87c774854")),
+      amountInPence        = Some(AmountInPence(1234)),
+      emailTemplateOptions = None,
+      navigation           = Some(NavigationOptions(returnUrl = Url("https://www.return-url.com"), backUrl = Url("https://www.back-to-amls.com"))),
+      order                = None,
+      status               = PaymentStatuses.Created,
+      createdOn            = LocalDateTime.parse("2027-11-02T16:28:55.185"),
+      journeySpecificData  = JsdVatC2c(
+        vatC2cReference      = VatC2cReference("XVC1A2B3C4D5E6F"),
+        defaultAmountInPence = AmountInPence(1234)
+      ),
+      chosenWayToPay       = None
+    )
+  }
+
+  object PfVatC2c extends JourneyStatuses[JsdPfVatC2c] {
+    val journeyBeforeBeginWebPayment: Journey[JsdPfVatC2c] = Journey[JsdPfVatC2c](
+      _id                  = JourneyId("TestJourneyId-44f9-ad7f-01e1d3d8f151"),
+      sessionId            = Some(SessionId("TestSession-4b87460d-6f43-4c4c-b810-d6f87c774854")),
+      amountInPence        = Some(AmountInPence(1234)),
+      emailTemplateOptions = None,
+      navigation           = None,
+      order                = None,
+      status               = PaymentStatuses.Created,
+      createdOn            = LocalDateTime.parse("2027-11-02T16:28:55.185"),
+      journeySpecificData  = JsdPfVatC2c(
+        vatC2cReference = Some(VatC2cReference("XVC1A2B3C4D5E6F"))
       ),
       chosenWayToPay       = None
     )

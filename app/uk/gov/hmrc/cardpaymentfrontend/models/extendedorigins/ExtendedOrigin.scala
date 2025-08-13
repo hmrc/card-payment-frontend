@@ -219,8 +219,8 @@ object ExtendedOrigin {
       case Origins.PtaClass3Ni              => DefaultExtendedOrigin
       case Origins.PfAlcoholDuty            => ExtendedPfAlcoholDuty
       case Origins.AlcoholDuty              => ExtendedAlcoholDuty
-      case Origins.VatC2c                   => DefaultExtendedOrigin
-      case Origins.PfVatC2c                 => DefaultExtendedOrigin
+      case Origins.VatC2c                   => ExtendedVatC2c
+      case Origins.PfVatC2c                 => ExtendedPfVatC2c
       case Origins.`3psSa`                  => DefaultExtendedOrigin
       case Origins.`3psVat`                 => DefaultExtendedOrigin
       case Origins.PfPillar2                => DefaultExtendedOrigin
