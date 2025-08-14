@@ -16,6 +16,7 @@
 
 package uk.gov.hmrc.cardpaymentfrontend.controllers
 
+import payapi.corcommon.model.TraceId
 import play.api.Logging
 import play.api.i18n.Messages
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
@@ -60,12 +61,11 @@ class PaymentStatusController @Inject() (
       )
   }
 
-  def returnToHmrc(): Action[AnyContent] = actions.default { implicit request =>
-    Ok(redirectToParent())
+  def returnToHmrc(traceId: TraceId): Action[AnyContent] = actions.default { implicit request =>
+    Ok(redirectToParent(traceId))
   }
 
-  //todo append something to the return url so we can extract/work out the session/journey - are we allowed to do this or do we use session?
-  def paymentStatus(): Action[AnyContent] = actions.paymentStatusAction.async { implicit journeyRequest =>
+  def paymentStatus(traceId: TraceId): Action[AnyContent] = actions.paymentStatusAction(traceId).async { implicit journeyRequest =>
     val transactionRefFromJourney: Option[String] = journeyRequest.journey.order.map(_.transactionReference.value)
 
     val maybeCardPaymentResultF = for {

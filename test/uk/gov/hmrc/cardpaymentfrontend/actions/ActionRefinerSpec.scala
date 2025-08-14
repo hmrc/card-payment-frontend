@@ -80,6 +80,8 @@ class ActionRefinerSpec extends ItSpec {
 
     val systemUnderTest: PaymentStatusActionRefiners = app.injector.instanceOf[PaymentStatusActionRefiners]
     val errorHandler: ErrorHandler = app.injector.instanceOf[ErrorHandler]
+    val forceDeleteAnswersPage = app.injector.instanceOf[ForceDeleteAnswersPage]
+    val messagesApi = app.injector.instanceOf[MessagesApi]
 
       def fakeRequest(journey: Journey[JourneySpecificData]): JourneyRequest[AnyContent] = new JourneyRequest(journey, FakeRequest().withSessionId())
       def technicalDifficultiesPage(journey: Journey[JourneySpecificData]): HtmlFormat.Appendable = errorHandler.technicalDifficulties()(fakeRequest(journey))
@@ -94,6 +96,41 @@ class ActionRefinerSpec extends ItSpec {
         })
         resultFromRefine.futureValue shouldBe expectedResult
       }
+
+    "findJourneyByTraceIdRefiner should" - {
+
+      "return result when journey is found by session id" in {
+        val testJourney = TestJourneys.PfSa.journeyAfterBeginWebPayment
+        PayApiStub.stubForFindBySessionId2xx(testJourney)
+        test(
+          journey        = testJourney,
+          refiner        = systemUnderTest.findJourneyByTraceIdRefiner(testJourney.traceId),
+          expectedResult = Results.Ok("test ok")
+        )
+      }
+
+      "return result when journey cannot be found by session id, but instead by traceId" in {
+        val testJourney = TestJourneys.PfSa.journeyAfterBeginWebPayment
+        PayApiStub.stubForFindBySessionId404
+        PayApiStub.stubForFindByTraceId2xx(testJourney.traceId)(testJourney)
+        test(
+          journey        = testJourney,
+          refiner        = systemUnderTest.findJourneyByTraceIdRefiner(testJourney.traceId),
+          expectedResult = Results.Ok("test ok")
+        )
+      }
+
+      "return Unauthorized with force delete answers page when no journey can be found by session id or trace id" in {
+        val testJourney = TestJourneys.PfSa.journeyAfterBeginWebPayment
+        PayApiStub.stubForFindBySessionId404
+        PayApiStub.stubForFindByTraceId404(testJourney.traceId)
+        test(
+          journey        = testJourney,
+          refiner        = systemUnderTest.findJourneyByTraceIdRefiner(testJourney.traceId),
+          expectedResult = Results.Unauthorized(forceDeleteAnswersPage(false, Some(Url("http://localhost:9056/pay")))(fakeRequest(testJourney), messagesApi.preferred(fakeRequest(testJourney))))
+        )
+      }
+    }
 
     "paymentStatusActionRefiner should" - {
 

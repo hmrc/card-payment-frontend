@@ -79,11 +79,12 @@ class PaymentStatusControllerSpec extends ItSpec {
     "returnToHmrc" - {
 
       "should render the redirectToParent page which links to the /payment-status endpoint" in {
-        val result = systemUnderTest.returnToHmrc()(fakeRequest)
+        val journey = TestJourneys.PfSa.journeyAfterBeginWebPayment
+        val result = systemUnderTest.returnToHmrc(journey.traceId)(fakeRequest)
         status(result) shouldBe Status.OK
         val document = Jsoup.parse(contentAsString(result))
         val anchorElement = document.select("#returnControlLink")
-        anchorElement.attr("href") shouldBe "/pay-by-card/payment-status"
+        anchorElement.attr("href") shouldBe s"/pay-by-card/payment-status/${journey.traceId.value}"
         anchorElement.attr("target") shouldBe "_parent"
       }
 
@@ -93,7 +94,7 @@ class PaymentStatusControllerSpec extends ItSpec {
 
       "should return bad request due to action refiner when journey state is before Sent, i.e. Created" in {
         PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyBeforeBeginWebPayment)
-        val result = systemUnderTest.paymentStatus()(fakeRequest)
+        val result = systemUnderTest.paymentStatus(TestJourneys.PfSa.journeyBeforeBeginWebPayment.traceId)(fakeRequest)
         status(result) shouldBe Status.BAD_REQUEST
       }
 
@@ -103,7 +104,7 @@ class PaymentStatusControllerSpec extends ItSpec {
         PayApiStub.stubForFindBySessionId2xx(journey)
         val testCardPaymentResult = CardPaymentResult(CardPaymentFinishPaymentResponses.Successful, AdditionalPaymentInfo(Some("debit"), Some(123), Some(FrozenTime.localDateTime)))
         CardPaymentStub.AuthAndCapture.stubForAuthAndCapture2xx("Some-transaction-ref", testCardPaymentResult)
-        val result = systemUnderTest.paymentStatus()(fakeRequest)
+        val result = systemUnderTest.paymentStatus(journey.traceId)(fakeRequest)
         status(result) shouldBe 303
         redirectLocation(result) shouldBe Some("/pay-by-card/payment-complete")
       }
@@ -114,7 +115,7 @@ class PaymentStatusControllerSpec extends ItSpec {
         PayApiStub.stubForFindBySessionId2xx(journey)
         val testCardPaymentResult = CardPaymentResult(CardPaymentFinishPaymentResponses.Failed, AdditionalPaymentInfo(Some("debit"), Some(123), Some(FrozenTime.localDateTime)))
         CardPaymentStub.AuthAndCapture.stubForAuthAndCapture2xx("Some-transaction-ref", testCardPaymentResult)
-        val result = systemUnderTest.paymentStatus()(fakeRequest)
+        val result = systemUnderTest.paymentStatus(journey.traceId)(fakeRequest)
         status(result) shouldBe 303
         redirectLocation(result) shouldBe Some("/pay-by-card/payment-failed")
       }
@@ -125,7 +126,7 @@ class PaymentStatusControllerSpec extends ItSpec {
         PayApiStub.stubForFindBySessionId2xx(journey)
         val testCardPaymentResult = CardPaymentResult(CardPaymentFinishPaymentResponses.Cancelled, AdditionalPaymentInfo(Some("debit"), Some(123), Some(FrozenTime.localDateTime)))
         CardPaymentStub.AuthAndCapture.stubForAuthAndCapture2xx("Some-transaction-ref", testCardPaymentResult)
-        val result = systemUnderTest.paymentStatus()(fakeRequest)
+        val result = systemUnderTest.paymentStatus(journey.traceId)(fakeRequest)
         status(result) shouldBe 303
         redirectLocation(result) shouldBe Some("/pay-by-card/payment-cancelled")
       }
@@ -135,7 +136,7 @@ class PaymentStatusControllerSpec extends ItSpec {
         val fakeRequest = new JourneyRequest(journey, FakeRequest().withSessionId())
         PayApiStub.stubForFindBySessionId2xx(journey)
         val error = intercept[RuntimeException] {
-          systemUnderTest.paymentStatus()(fakeRequest).futureValue
+          systemUnderTest.paymentStatus(journey.traceId)(fakeRequest).futureValue
         }
         error.getMessage shouldBe "The future returned an exception of type: java.lang.RuntimeException, with message: Could not find transaction ref, therefore we can't auth and settle.."
         CardPaymentStub.AuthAndCapture.verifyNone("Some-transaction-ref")
@@ -146,7 +147,7 @@ class PaymentStatusControllerSpec extends ItSpec {
         val fakeRequest = new JourneyRequest(journey, FakeRequest().withSessionId())
         PayApiStub.stubForFindBySessionId2xx(journey)
         CardPaymentStub.AuthAndCapture.stubForAuthAndCapture5xx("Some-transaction-ref")
-        val result = systemUnderTest.paymentStatus()(fakeRequest)
+        val result = systemUnderTest.paymentStatus(journey.traceId)(fakeRequest)
         status(result) shouldBe 500
         CardPaymentStub.CancelPayment.verifyOne("Some-transaction-ref", "SAEE")
       }
@@ -156,7 +157,7 @@ class PaymentStatusControllerSpec extends ItSpec {
         val fakeRequest = new JourneyRequest(journey, FakeRequest().withSessionId())
         PayApiStub.stubForFindBySessionId2xx(journey)
         CardPaymentStub.AuthAndCapture.stubForAuthAndCaptureCustomJson2xx("Some-transaction-ref", Json.parse("""{"some":"invalidjson"}"""))
-        val result = systemUnderTest.paymentStatus()(fakeRequest)
+        val result = systemUnderTest.paymentStatus(journey.traceId)(fakeRequest)
         status(result) shouldBe 500
         CardPaymentStub.CancelPayment.verifyOne("Some-transaction-ref", "SAEE")
       }

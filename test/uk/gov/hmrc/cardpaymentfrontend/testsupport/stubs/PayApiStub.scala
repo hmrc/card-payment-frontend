@@ -19,6 +19,7 @@ package uk.gov.hmrc.cardpaymentfrontend.testsupport.stubs
 import com.github.tomakehurst.wiremock.client.WireMock._
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import payapi.cardpaymentjourney.model.journey.{Journey, JourneySpecificData}
+import payapi.corcommon.model.TraceId
 import play.api.http.Status
 import play.api.libs.json.Json
 
@@ -46,6 +47,30 @@ object PayApiStub {
 
   def stubForFindBySessionId5xx: StubMapping = stubFor(
     get(urlPathEqualTo(findLatestBySessionIdPath)).willReturn(
+      aResponse()
+        .withStatus(Status.SERVICE_UNAVAILABLE)
+    )
+  )
+
+  private def findLatestByTraceIdPath(traceId: TraceId): String = s"/pay-api/journey/trace-id/${traceId.value}"
+
+  def stubForFindByTraceId2xx(traceId: TraceId)(journey: Journey[JourneySpecificData]): StubMapping = stubFor(
+    get(urlPathEqualTo(findLatestByTraceIdPath(traceId))).willReturn(
+      aResponse()
+        .withStatus(Status.OK)
+        .withBody(Json.prettyPrint(Json.toJson(journey)))
+    )
+  )
+
+  def stubForFindByTraceId404(traceId: TraceId): StubMapping = stubFor(
+    get(urlPathEqualTo(findLatestByTraceIdPath(traceId))).willReturn(
+      aResponse()
+        .withStatus(Status.NOT_FOUND)
+    )
+  )
+
+  def stubForFindByTraceId5xx(traceId: TraceId): StubMapping = stubFor(
+    get(urlPathEqualTo(findLatestByTraceIdPath(traceId))).willReturn(
       aResponse()
         .withStatus(Status.SERVICE_UNAVAILABLE)
     )

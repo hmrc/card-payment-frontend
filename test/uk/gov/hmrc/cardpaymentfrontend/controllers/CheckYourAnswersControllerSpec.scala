@@ -223,10 +223,10 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       val tdJourney: Journey[JourneySpecificData] = TestHelpers.deriveTestDataFromOrigin(origin).journeyBeforeBeginWebPayment
 
       val shouldBeAbleToChangeAmount: Boolean = origin match {
-        case Origins.WcSa => false
-        case Origins.WcCt => false
+        case Origins.WcSa   => false
+        case Origins.WcCt   => false
         case Origins.VatC2c => false
-        case _ => true
+        case _              => true
       }
 
       s"[${origin.entryName}] should render the amount row correctly" in {
@@ -1036,7 +1036,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
 
     "should redirect to the iframe page when there is an address in session" in {
       val cardPaymentInitiatePaymentRequest = CardPaymentInitiatePaymentRequest(
-        redirectUrl         = "http://localhost:10155/pay-by-card/return-to-hmrc",
+        redirectUrl         = s"http://localhost:10155/pay-by-card/return-to-hmrc/00317724",
         clientId            = "SAEE",
         purchaseDescription = "1234567895K",
         purchaseAmount      = AmountInPence(1234),

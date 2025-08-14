@@ -17,7 +17,7 @@
 package uk.gov.hmrc.cardpaymentfrontend.services
 
 import payapi.cardpaymentjourney.model.journey.Journey
-import payapi.corcommon.model.{PaymentStatuses, TransNumberGenerator}
+import payapi.corcommon.model.{PaymentStatuses, TraceId, TransNumberGenerator}
 import play.api.Logging
 import play.api.i18n.MessagesApi
 import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
@@ -51,8 +51,8 @@ class CardPaymentService @Inject() (
   import requestSupport._
 
   // the url barclaycard make an empty post to after user completes payment
-  private def returnToHmrcUrl: String =
-    s"${appConfig.cardPaymentFrontendBaseUrl}${uk.gov.hmrc.cardpaymentfrontend.controllers.routes.PaymentStatusController.returnToHmrc().url}"
+  private def returnToHmrcUrl(traceId: TraceId): String =
+    s"${appConfig.cardPaymentFrontendBaseUrl}${uk.gov.hmrc.cardpaymentfrontend.controllers.routes.PaymentStatusController.returnToHmrc(traceId).url}"
 
   def initiatePayment(
       journey:               Journey[_],
@@ -77,7 +77,7 @@ class CardPaymentService @Inject() (
     )
 
     val cardPaymentInitiatePaymentRequest: CardPaymentInitiatePaymentRequest = CardPaymentInitiatePaymentRequest(
-      redirectUrl         = returnToHmrcUrl,
+      redirectUrl         = returnToHmrcUrl(journey.traceId),
       clientId            = clientIdStringToUse,
       purchaseDescription = journey.referenceValue,
       purchaseAmount      = journey.getAmountInPence,

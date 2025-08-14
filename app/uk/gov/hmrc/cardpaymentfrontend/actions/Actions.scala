@@ -16,6 +16,7 @@
 
 package uk.gov.hmrc.cardpaymentfrontend.actions
 
+import payapi.corcommon.model.TraceId
 import play.api.mvc.{ActionBuilder, AnyContent, DefaultActionBuilder, Request}
 
 import javax.inject.{Inject, Singleton}
@@ -34,7 +35,10 @@ class Actions @Inject() (
 
   val iframeAction: ActionBuilder[JourneyRequest, AnyContent] = journeyAction.andThen[JourneyRequest](paymentStatusActionRefiners.iframePageActionRefiner)
 
-  val paymentStatusAction: ActionBuilder[JourneyRequest, AnyContent] = journeyAction.andThen[JourneyRequest](paymentStatusActionRefiners.paymentStatusActionRefiner)
+  def paymentStatusAction(traceId: TraceId): ActionBuilder[JourneyRequest, AnyContent] =
+    default
+      .andThen[JourneyRequest](paymentStatusActionRefiners.findJourneyByTraceIdRefiner(traceId))
+      .andThen[JourneyRequest](paymentStatusActionRefiners.paymentStatusActionRefiner)
 
   val journeyFinishedAction: ActionBuilder[JourneyRequest, AnyContent] = journeyAction.andThen[JourneyRequest](journeyFinishedActionRefiner)
 
