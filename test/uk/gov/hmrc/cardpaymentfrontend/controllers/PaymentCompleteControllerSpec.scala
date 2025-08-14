@@ -287,7 +287,7 @@ class PaymentCompleteControllerSpec extends ItSpec {
               val document = Jsoup.parse(contentAsString(result))
               val wrapper = document.select("#what-happens-next-wrapper")
               wrapper.select("h2").text() shouldBe "Yr hyn sy’n digwydd nesaf"
-              wrapper.select("p").html() shouldBe "Bydd eich taliad yn cymryd 3 i 5 diwrnod i ymddangos yn eichcyfrif CThEM ar-lein."
+              wrapper.select("p").html() shouldBe "Bydd eich taliad yn cymryd 3 i 5 diwrnod i ymddangos yn eich cyfrif CThEM ar-lein."
             }
 
           }
@@ -1401,7 +1401,7 @@ object PaymentCompleteControllerSpec {
         "Cyfanswm a dalwyd" -> "£13.57"
       )),
       hasWelshTest                    = true,
-      hasAReturnUrl                   = true
+      hasAReturnUrl                   = false
     )
 
     case Origins.PfVatC2c => TestScenarioInfo(
