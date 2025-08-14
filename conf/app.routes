@@ -22,8 +22,8 @@ POST       /check-your-details                   uk.gov.hmrc.cardpaymentfrontend
 GET        /show-iframe                          uk.gov.hmrc.cardpaymentfrontend.controllers.PaymentStatusController.showIframe(iframeUrl: RedirectUrl)
 #this is the one that they come back to from iframe, for some reason it's an empty bodied post. It essentially renders some html which clicks a link that routes to /return
 +nocsrf
-POST       /return-to-hmrc                       uk.gov.hmrc.cardpaymentfrontend.controllers.PaymentStatusController.returnToHmrc()
-GET        /payment-status                       uk.gov.hmrc.cardpaymentfrontend.controllers.PaymentStatusController.paymentStatus()
+POST       /return-to-hmrc/:encryptedJourneyId     uk.gov.hmrc.cardpaymentfrontend.controllers.PaymentStatusController.returnToHmrc(encryptedJourneyId: String)
+GET        /payment-status/:encryptedJourneyId     uk.gov.hmrc.cardpaymentfrontend.controllers.PaymentStatusController.paymentStatus(encryptedJourneyId: String)
 
 GET        /payment-complete                     uk.gov.hmrc.cardpaymentfrontend.controllers.PaymentCompleteController.renderPage
 

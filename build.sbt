@@ -36,7 +36,9 @@ lazy val microservice = Project("card-payment-frontend", file("."))
   )
   .settings(Global / onChangedBuildSource := ReloadOnSourceChanges)
   .settings(
-    RoutesKeys.routesImport += "uk.gov.hmrc.play.bootstrap.binders.RedirectUrl"
+    RoutesKeys.routesImport ++= Seq(
+      "uk.gov.hmrc.play.bootstrap.binders.RedirectUrl"
+    )
   )
 
 lazy val it = project
