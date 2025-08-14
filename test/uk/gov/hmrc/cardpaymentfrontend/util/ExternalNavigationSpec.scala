@@ -50,8 +50,9 @@ class ExternalNavigationSpec extends UnitSpec with TableDrivenPropertyChecks {
       (TestJourneys.WcSa, None),
       (TestJourneys.WcCt, None),
       (TestJourneys.PfVatC2c, None),
+      (TestJourneys.VatC2c, None),
 
-      //Logged in journeys, Logged out journeys will return what ever the calling services sets
+        //Logged in journeys, Logged out journeys will return what ever the calling services sets
       (TestJourneys.BtaSa, someUrl),
       (TestJourneys.BtaCt, someUrl),
       (TestJourneys.PtaSa, someUrl),
@@ -68,8 +69,7 @@ class ExternalNavigationSpec extends UnitSpec with TableDrivenPropertyChecks {
       (TestJourneys.Ppt, someUrl),
       (TestJourneys.Amls, someUrl),
       (TestJourneys.CapitalGainsTax, someUrl),
-      (TestJourneys.EconomicCrimeLevy, someUrl),
-      (TestJourneys.VatC2c, someUrl)
+      (TestJourneys.EconomicCrimeLevy, someUrl)
     )
 
     forAll(scenarios) { (journey, expectedUrl) =>
