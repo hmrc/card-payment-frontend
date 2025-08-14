@@ -20,6 +20,8 @@
 @import uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins.ExtendedOrigin.OriginExtended
 @import uk.gov.hmrc.cardpaymentfrontend.views.html.Layout
 @import uk.gov.hmrc.govukfrontend.views.Aliases.{SummaryList, Text}
+@import payapi.corcommon.model.Origins.VatC2c
+@import payapi.corcommon.model.Origins.PfVatC2c
 @import uk.gov.hmrc.govukfrontend.views.html.components.{GovukPanel, GovukSummaryList, Panel}
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
@@ -53,15 +55,21 @@
 }
 
 @maybeWhatHappensNextContent = {
-    @maybeReturnUrl.fold(Html("")) { returnUrl =>
-        <div id="what-happens-next-wrapper">
+        @if(journeyRequest.journey.origin == VatC2c || journeyRequest.journey.origin == PfVatC2c){
             <h2 class="govuk-heading-m govuk-!-margin-top-7">@Messages("payment-complete.what-happens-next.header")</h2>
-            @if(journeyRequest.journey.origin.isAWebChatOrigin) {
-                <p class="govuk-body" id="web-chat-content">@Messages("payment-complete.what-happens-next.web-chat.info")</p>
-            }
-            <p class="govuk-body">@Messages("payment-complete.what-happens-next.p1") <a class="govuk-link" href="@{returnUrl}">@Messages("payment-complete.what-happens-next.link")</a></p>
-        </div>
-    }
+            <p class="govuk-body">@Messages("payment-complete.what-happens-next.p1") @Messages("payment-complete.what-happens-next.link")</p>
+        }
+        @maybeReturnUrl.fold(Html("")) { returnUrl =>
+            <div id="what-happens-next-wrapper">
+                <h2 class="govuk-heading-m govuk-!-margin-top-7">@Messages("payment-complete.what-happens-next.header")</h2>
+                @if(journeyRequest.journey.origin.isAWebChatOrigin) {
+                    <p class="govuk-body" id="web-chat-content">@Messages("payment-complete.what-happens-next.web-chat.info")</p>
+                }
+                <p class="govuk-body">@Messages("payment-complete.what-happens-next.p1")
+                    <a class="govuk-link" href="@{returnUrl}">@Messages("payment-complete.what-happens-next.link")</a>
+                </p>
+            </div>
+        }
 }
 
 @layout(
