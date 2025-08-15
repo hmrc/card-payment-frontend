@@ -716,7 +716,7 @@ object TestJourneys {
       status               = PaymentStatuses.Created,
       createdOn            = LocalDateTime.parse("2027-11-02T16:28:55.185"),
       journeySpecificData  = JsdWcSimpleAssessment(
-        simpleAssessmentReference = Some(XRef14Char("XE123456789012")),
+        simpleAssessmentReference = XRef14Char("XE123456789012"),
         defaultAmountInPence      = AmountInPence(1234)
       ),
       chosenWayToPay       = None

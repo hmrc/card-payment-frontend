@@ -134,7 +134,7 @@ object OriginSpecificSessionData {
       case WcSa                     => Json.format[WcSaSessionData].reads(json)
       case WcCt                     => Json.format[WcCtSessionData].reads(json)
       case WcVat                    => Json.format[WcVatSessionData].reads(json)
-      case WcSimpleAssessment       => Json.format[WcCtSessionData].reads(json)
+      case WcSimpleAssessment       => Json.format[WcSimpleAssessmentSessionData].reads(json)
 
       //Todo: Remove PfP800 when PtaP800 is fully available
       case origin @ (PfOther | PtaP800 | PfP800
