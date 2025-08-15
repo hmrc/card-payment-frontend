@@ -29,18 +29,18 @@ import payapi.corcommon.model.taxes.epaye._
 import payapi.corcommon.model.taxes.ioss.Ioss
 import payapi.corcommon.model.taxes.other._
 import payapi.corcommon.model.taxes.p302.{P302ChargeRef, P302Ref}
-import payapi.corcommon.model.taxes.trusts.TrustReference
 import payapi.corcommon.model.taxes.p800.P800Ref
 import payapi.corcommon.model.taxes.pillar2.Pillar2Reference
 import payapi.corcommon.model.taxes.ppt.PptReference
 import payapi.corcommon.model.taxes.sa.SaUtr
 import payapi.corcommon.model.taxes.sd.SpiritDrinksReference
-import payapi.corcommon.model.taxes.vat.{CalendarPeriod, VatChargeReference, Vrn}
-import payapi.corcommon.model.times.period.CalendarQuarterlyPeriod
-import payapi.corcommon.model.{Origin, Reference, SearchTag}
 import payapi.corcommon.model.taxes.sdlt.Utrn
+import payapi.corcommon.model.taxes.trusts.TrustReference
+import payapi.corcommon.model.taxes.vat.{CalendarPeriod, VatChargeReference, Vrn}
 import payapi.corcommon.model.taxes.vatc2c.VatC2cReference
 import payapi.corcommon.model.thirdpartysoftware.{ClientJourneyId, FriendlyName}
+import payapi.corcommon.model.times.period.CalendarQuarterlyPeriod
+import payapi.corcommon.model.{Origin, Reference, SearchTag}
 import play.api.libs.functional.syntax.toFunctionalBuilderOps
 import play.api.libs.json._
 
