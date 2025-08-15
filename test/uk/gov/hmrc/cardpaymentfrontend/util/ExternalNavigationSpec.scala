@@ -52,7 +52,7 @@ class ExternalNavigationSpec extends UnitSpec with TableDrivenPropertyChecks {
       (TestJourneys.PfVatC2c, None),
       (TestJourneys.VatC2c, None),
 
-        //Logged in journeys, Logged out journeys will return what ever the calling services sets
+      //Logged in journeys, Logged out journeys will return what ever the calling services sets
       (TestJourneys.BtaSa, someUrl),
       (TestJourneys.BtaCt, someUrl),
       (TestJourneys.PtaSa, someUrl),
