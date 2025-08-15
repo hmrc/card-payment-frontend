@@ -46,7 +46,7 @@ object ExtendedWcSimpleAssessment extends ExtendedOrigin {
   ))
 
   override def openBankingOriginSpecificSessionData: JourneySpecificData => Option[OriginSpecificSessionData] = {
-    case j: JsdWcSimpleAssessment => j.simpleAssessmentReference.map(WcSimpleAssessmentSessionData(_))
+    case j: JsdWcSimpleAssessment => Some(WcSimpleAssessmentSessionData(j.simpleAssessmentReference))
     case _                        => throw new RuntimeException("Incorrect origin found")
   }
 

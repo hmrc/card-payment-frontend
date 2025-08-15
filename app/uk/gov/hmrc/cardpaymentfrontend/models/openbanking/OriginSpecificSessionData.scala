@@ -17,7 +17,7 @@
 package uk.gov.hmrc.cardpaymentfrontend.models.openbanking
 
 import payapi.cardpaymentjourney.model.journey.Url
-import payapi.corcommon.model.Origins._
+import payapi.corcommon.model.Origins.{WcSimpleAssessment, _}
 import payapi.corcommon.model.cgt.CgtAccountReference
 import payapi.corcommon.model.taxes.ReferenceMaker
 import payapi.corcommon.model.taxes.ad.{AlcoholDutyChargeReference, AlcoholDutyReference}
@@ -133,7 +133,7 @@ object OriginSpecificSessionData {
       case Pillar2                  => Json.format[Pillar2SessionData].reads(json)
       case WcSa                     => Json.format[WcSaSessionData].reads(json)
       case WcCt                     => Json.format[WcCtSessionData].reads(json)
-      case WcSimpleAssessment       => Json.format[WcCtSessionData].reads(json)
+      case WcSimpleAssessment       => Json.format[WcSimpleAssessmentSessionData].reads(json)
 
       //Todo: Remove PfP800 when PtaP800 is fully available
       case origin @ (PfOther | PtaP800 | PfP800
