@@ -199,6 +199,24 @@ class PaymentCompleteControllerSpec extends ItSpec {
         contentAsString(result) shouldNot contain("If you need further help with a tax bill, return to the webchat and speak with the webchat handler.")
       }
 
+      "render the custom what happens next content for VatC2c Journeys" in {
+        PayApiStub.stubForFindBySessionId2xx(TestJourneys.VatC2c.journeyAfterSucceedDebitWebPayment)
+        val result = systemUnderTest.renderPage(fakeGetRequest)
+        val document = Jsoup.parse(contentAsString(result))
+        val wrapper = document.select("#what-happens-next-wrapper")
+        wrapper.select("h2").text() shouldBe "What happens next"
+        wrapper.select("p").html() shouldBe "Your payment will take 3 to 5 days to show in your HMRC online account."
+      }
+
+      "render the custom what happens next content in welsh for VatC2c Journeys" in {
+        PayApiStub.stubForFindBySessionId2xx(TestJourneys.VatC2c.journeyAfterSucceedDebitWebPayment)
+        val result = systemUnderTest.renderPage(fakeGetRequestInWelsh)
+        val document = Jsoup.parse(contentAsString(result))
+        val wrapper = document.select("#what-happens-next-wrapper")
+        wrapper.select("h2").text() shouldBe "Yr hyn sy’n digwydd nesaf"
+        wrapper.select("p").html() shouldBe "Bydd eich taliad yn cymryd 3 i 5 diwrnod i ymddangos yn eich cyfrif CThEM ar-lein."
+      }
+
         def testSummaryRows(testData: Journey[JourneySpecificData], fakeRequest: FakeRequest[_], expectedSummaryListRows: List[(String, String)]) = {
           PayApiStub.stubForFindBySessionId2xx(testData)
           val result = systemUnderTest.renderPage(fakeRequest)
@@ -1378,7 +1396,7 @@ object PaymentCompleteControllerSpec {
         "Cyfanswm a dalwyd" -> "£13.57"
       )),
       hasWelshTest                    = true,
-      hasAReturnUrl                   = true
+      hasAReturnUrl                   = false
     )
 
     case Origins.PfVatC2c => TestScenarioInfo(
