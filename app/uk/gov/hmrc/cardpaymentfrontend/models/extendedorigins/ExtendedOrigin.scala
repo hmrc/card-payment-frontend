@@ -227,6 +227,7 @@ object ExtendedOrigin {
       case Origins.Pillar2                  => DefaultExtendedOrigin
       case Origins.WcSa                     => ExtendedWcSa
       case Origins.WcCt                     => ExtendedWcCt
+      case Origins.WcVat                    => ExtendedWcVat
     }
 
     def isAWebChatOrigin: Boolean = origin match {
@@ -246,7 +247,7 @@ object ExtendedOrigin {
         Origins.PfAmls | Origins.PfAted | Origins.PfCdsDeferment | Origins.PfTrust | Origins.PtaClass3Ni | Origins.AlcoholDuty |
         Origins.PfAlcoholDuty | Origins.VatC2c | Origins.PfVatC2c | Origins.`3psSa` | Origins.`3psVat` | Origins.Pillar2 |
         Origins.PfPillar2 => false
-      case Origins.WcSa | Origins.WcCt => true
+      case Origins.WcSa | Origins.WcCt | Origins.WcVat => true
     }
   }
 }

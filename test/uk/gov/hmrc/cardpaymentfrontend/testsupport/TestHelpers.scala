@@ -48,6 +48,7 @@ object TestHelpers {
     PfEpayeSeta,
     PfVat,
     BtaVat,
+    WcVat,
     VcVatReturn,
     VcVatOther,
     Ppt,
@@ -203,6 +204,7 @@ object TestHelpers {
     case Origins.Pillar2                  => throw new MatchError("Not implemented yet")
     case Origins.WcSa                     => TestJourneys.WcSa
     case Origins.WcCt                     => TestJourneys.WcCt
+    case Origins.WcVat                    => TestJourneys.WcVat
   }
 
 }
