@@ -66,8 +66,8 @@ object TestHelpers {
     PfSdlt,
     VatC2c,
     PfVatC2c,
-    WcXref,
-    WcSimpleAssessment
+    WcSimpleAssessment,
+    WcXref
   )
 
   val unimplementedOrigins: Seq[Origin] = Seq[Origin](

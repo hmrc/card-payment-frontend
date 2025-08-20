@@ -330,6 +330,11 @@ class OpenBankingOriginSpecificSessionDataSpec extends UnitSpec {
       roundTripJsonTest(osd, testJson)
     }
 
+    "WcXref (which is None, since it doesn't support Open banking)" in {
+      val osd = ExtendedWcXref.openBankingOriginSpecificSessionData(TestJourneys.PfVatC2c.journeyBeforeBeginWebPayment.journeySpecificData)
+      osd shouldBe None
+    }
+
   }
 
   "sanity check for implemented origins" in {

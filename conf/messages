@@ -171,6 +171,7 @@ check-your-details.PfVatC2c.reference = Reference number
 check-your-details.WcXref.reference = Payment reference
 check-your-details.WcSimpleAssessment.reference = Payment reference
 
+
 ## Address Page
 address.heading = Card billing address
 address.line1.hint = This billing address must match the address your card is registered with.
