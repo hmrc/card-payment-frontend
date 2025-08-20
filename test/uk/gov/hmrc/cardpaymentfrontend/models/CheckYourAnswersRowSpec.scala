@@ -86,6 +86,7 @@ class CheckYourAnswersRowSpec extends ItSpec {
           actions = Some(Actions(items = Seq(ActionItem(
             "some-href",
             Text("Change"),
+            Some("Unique Taxpayer Reference (UTR)"),
             attributes = Map("id" -> "linkId")
           ))))
         )
