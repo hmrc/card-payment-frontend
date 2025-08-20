@@ -705,4 +705,22 @@ object TestJourneys {
     )
   }
 
+  object WcXref extends JourneyStatuses[JsdWcXref] {
+    val journeyBeforeBeginWebPayment: Journey[JsdWcXref] = Journey[JsdWcXref](
+      _id                  = JourneyId("TestJourneyId-44f9-ad7f-01e1d3d8f151"),
+      sessionId            = Some(SessionId("TestSession-4b87460d-6f43-4c4c-b810-d6f87c774854")),
+      amountInPence        = Some(AmountInPence(1234)),
+      emailTemplateOptions = None,
+      navigation           = None,
+      order                = None,
+      status               = PaymentStatuses.Created,
+      createdOn            = LocalDateTime.parse("2027-11-02T16:28:55.185"),
+      journeySpecificData  = JsdWcXref(
+        chargeReference      = XRef("XE123456789012"),
+        defaultAmountInPence = AmountInPence(1234)
+      ),
+      chosenWayToPay       = None
+    )
+  }
+
 }

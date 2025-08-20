@@ -24,6 +24,7 @@ service-name.PfEpayeP11d = Pay your employers’ Class 1A National Insurance (P1
 service-name.PfSdlt = Pay your Stamp Duty Land Tax
 service-name.PfCds =
 service-name.PfOther =
+service-name.WcXref = Pay your tax
 service-name.PfP800 =
 service-name.PtaP800 =
 service-name.PfClass2Ni =
@@ -166,6 +167,7 @@ check-your-details.EconomicCrimeLevy.reference = Reference number
 check-your-details.PfEconomicCrimeLevy.reference = Reference number
 check-your-details.VatC2c.reference = Reference number
 check-your-details.PfVatC2c.reference = Reference number
+check-your-details.WcXref.reference = Payment reference
 
 ## Address Page
 address.heading = Card billing address
@@ -242,6 +244,7 @@ payment-complete.tax-name.PfEpayeP11d = Employers’ Class 1A National Insurance
 payment-complete.tax-name.PfSdlt = Stamp Duty Land Tax
 payment-complete.tax-name.PfCds =
 payment-complete.tax-name.PfOther =
+payment-complete.tax-name.WcXref = Other taxes, penalties and enquiry settlements
 payment-complete.tax-name.PfP800 =
 payment-complete.tax-name.PtaP800 =
 payment-complete.tax-name.PfClass2Ni =
@@ -370,7 +373,6 @@ email.tax-name.EconomicCrimeLevy = Economic Crime Levy
 email.tax-name.PfEconomicCrimeLevy = Economic Crime Levy
 email.tax-name.VatC2c = Import VAT
 email.tax-name.PfVatC2c = Import VAT
-
 email.tax-name.BtaEpayeBill = Employers’ PAYE and National Insurance
 email.tax-name.BtaEpayePenalty = Employers’ PAYE late payment or filing penalty
 email.tax-name.BtaEpayeInterest = Employers’ PAYE interest payment
@@ -378,6 +380,7 @@ email.tax-name.BtaEpayeGeneral = Employers’ PAYE and National Insurance
 email.tax-name.BtaClass1aNi = Employers’ Class 1A National Insurance
 email.tax-name.PfSdlt = Stamp Duty Land Tax
 email.tax-name.CapitalGainsTax = Capital Gains Tax on UK property
+email.tax-name.WcXref = Other taxes, penalties and enquiry settlements
 
 ## Payments survey
 payments-survey.bta.return-message = Skip survey, return to business tax account

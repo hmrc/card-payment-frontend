@@ -25,6 +25,7 @@ service-name.PfEpayeP11d = Talu’ch Yswiriant Gwladol Dosbarth 1A y cyflogwr (b
 service-name.PfSdlt = Talu eich Treth Dir y Tollau Stamp
 service-name.PfCds =
 service-name.PfOther =
+service-name.WcXref = Talwch eich treth
 service-name.PfP800 =
 service-name.PtaP800 =
 service-name.PfClass2Ni =
@@ -73,8 +74,8 @@ service-name.PtaSimpleAssessment =
 service-name.AppSimpleAssessment =
 service-name.PfTpes =
 service-name.CapitalGainsTax = Rhoi gwybod am a thalu Treth Enillion Cyfalaf ar eiddo yn y DU
-service-name.EconomicCrimeLevy =
-service-name.PfEconomicCrimeLevy =
+service-name.EconomicCrimeLevy = Talu Ardoll Troseddau Economaidd
+service-name.PfEconomicCrimeLevy = Talu Ardoll Troseddau Economaidd
 service-name.PfJobRetentionScheme =
 service-name.JrsJobRetentionScheme =
 service-name.PfImportedVehicles =
@@ -166,6 +167,7 @@ check-your-details.EconomicCrimeLevy.reference = Cyfeirnod y taliad
 check-your-details.PfEconomicCrimeLevy.reference = Cyfeirnod y taliad
 check-your-details.VatC2c.reference = Cyfeirnod y taliad
 check-your-details.PfVatC2c.reference = Cyfeirnod y taliad
+check-your-details.WcXref.reference = Cyfeirnod y taliad
 
 ## Address Page
 address.heading = Cyfeiriad bilio’r cerdyn
@@ -247,6 +249,7 @@ payment-complete.tax-name.PfEpayeP11d = Yswiriant Gwladol Dosbarth 1A y Cyflogwr
 payment-complete.tax-name.PfSdlt = Treth Dir y Tollau Stamp
 payment-complete.tax-name.PfCds =
 payment-complete.tax-name.PfOther =
+payment-complete.tax-name.WcXref = Trethi, cosbau a setliadau ymholiadau eraill
 payment-complete.tax-name.PfP800 =
 payment-complete.tax-name.PtaP800 =
 payment-complete.tax-name.PfClass2Ni =
@@ -377,6 +380,7 @@ email.tax-name.EconomicCrimeLevy = Ardoll Troseddau Economaidd
 email.tax-name.PfEconomicCrimeLevy = Ardoll Troseddau Economaidd
 email.tax-name.VatC2c = TAW fewnforio
 email.tax-name.PfVatC2c = TAW fewnforio
+email.tax-name.WcXref = Trethi, cosbau a setliadau ymholiadau eraill
 
 ## Payments survey
 payments-survey.bta.return-message = Dim diolch, dychwelyd i cyfrif treth busnes
