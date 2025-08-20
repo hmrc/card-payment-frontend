@@ -241,7 +241,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
           element    = amountRow,
           keyText    = "Total to pay",
           valueText  = "£12.34",
-          actionText = if (shouldBeAbleToChangeAmount) Some("Change") else None,
+          actionText = if (shouldBeAbleToChangeAmount) Some("Change Total to pay") else None,
           actionHref = if (shouldBeAbleToChangeAmount) Some("http://localhost:9056/pay/change-amount?showSummary=false&stayOnPayFrontend=false") else None
         )
       }
@@ -256,7 +256,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
           element    = amountRow,
           keyText    = "Cyfanswm i’w dalu",
           valueText  = "£12.34",
-          actionText = if (shouldBeAbleToChangeAmount) Some("Newid") else None,
+          actionText = if (shouldBeAbleToChangeAmount) Some("Newid Cyfanswm i’w dalu") else None,
           actionHref = if (shouldBeAbleToChangeAmount) Some("http://localhost:9056/pay/change-amount?showSummary=false&stayOnPayFrontend=false") else None
         )
       }
@@ -270,7 +270,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
         val result = systemUnderTest.renderPage(fakeRequest())
         val document = Jsoup.parse(contentAsString(result))
         val emailRow: Element = document.select(".govuk-summary-list__row").asScala.toList(deriveEmailRowIndex(origin))
-        assertRow(emailRow, emailAddressKeyText, "blah@blah.com", Some("Change"), Some("/pay-by-card/email-address"))
+        assertRow(emailRow, emailAddressKeyText, "blah@blah.com", Some("Change Email address"), Some("/pay-by-card/email-address"))
       }
 
       s"[${origin.entryName}] render the email address row correctly when there is an email in session in Welsh" in {
@@ -278,7 +278,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
         val result = systemUnderTest.renderPage(fakeRequestWelsh())
         val document = Jsoup.parse(contentAsString(result))
         val emailRow: Element = document.select(".govuk-summary-list__row").asScala.toList(deriveEmailRowIndex(origin))
-        assertRow(emailRow, emailAddressKeyTextWelsh, "blah@blah.com", Some("Newid"), Some("/pay-by-card/email-address"))
+        assertRow(emailRow, emailAddressKeyTextWelsh, "blah@blah.com", Some("Newid Cyfeiriad e-bost"), Some("/pay-by-card/email-address"))
       }
 
       s"[${origin.entryName}] not render the email address row when there is not an email in session" in {
@@ -292,7 +292,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
         val result = systemUnderTest.renderPage(fakeRequest())
         val document = Jsoup.parse(contentAsString(result))
         val cardBillingAddressRow: Element = document.select(".govuk-summary-list__row").asScala.toList(deriveCardBillingAddressRowIndex(origin))
-        assertRow(cardBillingAddressRow, "Card billing address", "line1 AA0AA0", Some("Change"), Some("/pay-by-card/address"))
+        assertRow(cardBillingAddressRow, "Card billing address", "line1 AA0AA0", Some("Change Card billing address"), Some("/pay-by-card/address"))
       }
 
       s"[${origin.entryName}] render the card billing address row correctly in Welsh" in {
@@ -300,7 +300,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
         val result = systemUnderTest.renderPage(fakeRequestWelsh())
         val document = Jsoup.parse(contentAsString(result))
         val cardBillingAddressRow: Element = document.select(".govuk-summary-list__row").asScala.toList(deriveCardBillingAddressRowIndex(origin))
-        assertRow(cardBillingAddressRow, "Cyfeiriad bilio", "line1 AA0AA0", Some("Newid"), Some("/pay-by-card/address"))
+        assertRow(cardBillingAddressRow, "Cyfeiriad bilio", "line1 AA0AA0", Some("Newid Cyfeiriad bilio"), Some("/pay-by-card/address"))
       }
 
       s"[${origin.entryName}] should redirect to the Address page if no Address in session" in {
@@ -316,7 +316,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       val result = systemUnderTest.renderPage(fakeRequest())
       val document = Jsoup.parse(contentAsString(result))
       val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.PfSa))
-      assertRow(referenceRow, "Unique Taxpayer Reference (UTR)", "1234567895K", Some("Change"), Some("http://localhost:9056/pay/pay-by-card-change-reference-number"))
+      assertRow(referenceRow, "Unique Taxpayer Reference (UTR)", "1234567895K", Some("Change Unique Taxpayer Reference (UTR)"), Some("http://localhost:9056/pay/pay-by-card-change-reference-number"))
     }
 
     "[PfSa] should render the payment reference row correctly in Welsh" in {
@@ -324,7 +324,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       val result = systemUnderTest.renderPage(fakeRequestWelsh())
       val document = Jsoup.parse(contentAsString(result))
       val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.PfSa))
-      assertRow(referenceRow, "Cyfeirnod Unigryw y Trethdalwr (UTR)", "1234567895K", Some("Newid"), Some("http://localhost:9056/pay/pay-by-card-change-reference-number"))
+      assertRow(referenceRow, "Cyfeirnod Unigryw y Trethdalwr (UTR)", "1234567895K", Some("Newid Cyfeirnod Unigryw y Trethdalwr (UTR)"), Some("http://localhost:9056/pay/pay-by-card-change-reference-number"))
     }
 
     "[BtaSa] should render the payment reference row correctly" in {
@@ -364,7 +364,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       val result = systemUnderTest.renderPage(fakeRequest())
       val document = Jsoup.parse(contentAsString(result))
       val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.PfAlcoholDuty))
-      assertRow(referenceRow, "Payment reference", "XMADP0123456789", Some("Change"), Some("http://localhost:9056/pay/pay-by-card-change-reference-number"))
+      assertRow(referenceRow, "Payment reference", "XMADP0123456789", Some("Change Payment reference"), Some("http://localhost:9056/pay/pay-by-card-change-reference-number"))
     }
 
     "[PfAlcoholDuty] should render the payment reference row correctly in Welsh" in {
@@ -372,7 +372,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       val result = systemUnderTest.renderPage(fakeRequestWelsh())
       val document = Jsoup.parse(contentAsString(result))
       val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.PfAlcoholDuty))
-      assertRow(referenceRow, "Cyfeirnod y taliad", "XMADP0123456789", Some("Newid"), Some("http://localhost:9056/pay/pay-by-card-change-reference-number"))
+      assertRow(referenceRow, "Cyfeirnod y taliad", "XMADP0123456789", Some("Newid Cyfeirnod y taliad"), Some("http://localhost:9056/pay/pay-by-card-change-reference-number"))
     }
 
     "[AlcoholDuty] should render the payment reference row correctly" in {
@@ -620,7 +620,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       val result = systemUnderTest.renderPage(fakeRequest())
       val document = Jsoup.parse(contentAsString(result))
       val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(1)
-      assertRow(referenceRow, "Payslip reference", "1097172564A00101A", Some("Change"), Some("http://localhost:9056/pay/pay-by-card-change-reference-number"))
+      assertRow(referenceRow, "Payslip reference", "1097172564A00101A", Some("Change Payslip reference"), Some("http://localhost:9056/pay/pay-by-card-change-reference-number"))
     }
 
     "[PfCt] should render the Payslip reference row correctly in welsh" in {
@@ -628,7 +628,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       val result = systemUnderTest.renderPage(fakeRequestWelsh())
       val document = Jsoup.parse(contentAsString(result))
       val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(1)
-      assertRow(referenceRow, "Cyfeirnod slip talu", "1097172564A00101A", Some("Newid"), Some("http://localhost:9056/pay/pay-by-card-change-reference-number"))
+      assertRow(referenceRow, "Cyfeirnod slip talu", "1097172564A00101A", Some("Newid Cyfeirnod slip talu"), Some("http://localhost:9056/pay/pay-by-card-change-reference-number"))
     }
 
     "[Ppt] should render the payment reference row correctly" in {
@@ -652,7 +652,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       val result = systemUnderTest.renderPage(fakeRequest())
       val document = Jsoup.parse(contentAsString(result))
       val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.PfPpt))
-      assertRow(referenceRow, "Reference number", "XAPPT0000012345", Some("Change"), Some("http://localhost:9056/pay/pay-by-card-change-reference-number"))
+      assertRow(referenceRow, "Reference number", "XAPPT0000012345", Some("Change Reference number"), Some("http://localhost:9056/pay/pay-by-card-change-reference-number"))
     }
 
     "[PfPpt] should render the payment reference row correctly in Welsh" in {
@@ -660,7 +660,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       val result = systemUnderTest.renderPage(fakeRequestWelsh())
       val document = Jsoup.parse(contentAsString(result))
       val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.PfPpt))
-      assertRow(referenceRow, "Cyfeirnod", "XAPPT0000012345", Some("Newid"), Some("http://localhost:9056/pay/pay-by-card-change-reference-number"))
+      assertRow(referenceRow, "Cyfeirnod", "XAPPT0000012345", Some("Newid Cyfeirnod"), Some("http://localhost:9056/pay/pay-by-card-change-reference-number"))
     }
 
     "[BtaEpayeBill] should render the payment reference row correctly" in {
@@ -748,7 +748,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       val result = systemUnderTest.renderPage(fakeRequest())
       val document = Jsoup.parse(contentAsString(result))
       val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.PfAmls))
-      assertRow(referenceRow, "Payment reference", "XE123456789012", Some("Change"), Some("http://localhost:9056/pay/pay-by-card-change-reference-number"))
+      assertRow(referenceRow, "Payment reference", "XE123456789012", Some("Change Payment reference"), Some("http://localhost:9056/pay/pay-by-card-change-reference-number"))
     }
 
     "[PfAmls] should render the payment reference row correctly in Welsh" in {
@@ -756,7 +756,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       val result = systemUnderTest.renderPage(fakeRequestWelsh())
       val document = Jsoup.parse(contentAsString(result))
       val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.PfAmls))
-      assertRow(referenceRow, "Cyfeirnod y taliad", "XE123456789012", Some("Newid"), Some("http://localhost:9056/pay/pay-by-card-change-reference-number"))
+      assertRow(referenceRow, "Cyfeirnod y taliad", "XE123456789012", Some("Newid Cyfeirnod y taliad"), Some("http://localhost:9056/pay/pay-by-card-change-reference-number"))
     }
 
     "[Amls] should render the payment reference row correctly" in {
@@ -780,7 +780,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       val result = systemUnderTest.renderPage(fakeRequest())
       val document = Jsoup.parse(contentAsString(result))
       val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.PfEconomicCrimeLevy))
-      assertRow(referenceRow, "Reference number", "XE123456789012", Some("Change"), Some("http://localhost:9056/pay/pay-by-card-change-reference-number"))
+      assertRow(referenceRow, "Reference number", "XE123456789012", Some("Change Reference number"), Some("http://localhost:9056/pay/pay-by-card-change-reference-number"))
     }
 
     "[PfEconomicCrimeLevy] should render the payment reference row correctly in Welsh" in {
@@ -788,7 +788,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       val result = systemUnderTest.renderPage(fakeRequestWelsh())
       val document = Jsoup.parse(contentAsString(result))
       val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.PfEconomicCrimeLevy))
-      assertRow(referenceRow, "Cyfeirnod y taliad", "XE123456789012", Some("Newid"), Some("http://localhost:9056/pay/pay-by-card-change-reference-number"))
+      assertRow(referenceRow, "Cyfeirnod y taliad", "XE123456789012", Some("Newid Cyfeirnod y taliad"), Some("http://localhost:9056/pay/pay-by-card-change-reference-number"))
     }
 
     "[EconomicCrimeLevy] should render the payment reference row correctly" in {
@@ -812,7 +812,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       val result = systemUnderTest.renderPage(fakeRequest())
       val document = Jsoup.parse(contentAsString(result))
       val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.PfVatC2c))
-      assertRow(referenceRow, "Reference number", "XVC1A2B3C4D5E6F", Some("Change"), Some("http://localhost:9056/pay/pay-by-card-change-reference-number"))
+      assertRow(referenceRow, "Reference number", "XVC1A2B3C4D5E6F", Some("Change Reference number"), Some("http://localhost:9056/pay/pay-by-card-change-reference-number"))
     }
 
     "[PfVatC2c] should render the payment reference row correctly in Welsh" in {
@@ -820,7 +820,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       val result = systemUnderTest.renderPage(fakeRequestWelsh())
       val document = Jsoup.parse(contentAsString(result))
       val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.PfVatC2c))
-      assertRow(referenceRow, "Cyfeirnod y taliad", "XVC1A2B3C4D5E6F", Some("Newid"), Some("http://localhost:9056/pay/pay-by-card-change-reference-number"))
+      assertRow(referenceRow, "Cyfeirnod y taliad", "XVC1A2B3C4D5E6F", Some("Newid Cyfeirnod y taliad"), Some("http://localhost:9056/pay/pay-by-card-change-reference-number"))
     }
 
     "[VatC2c] should render the payment reference row correctly" in {
@@ -844,7 +844,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       val result = systemUnderTest.renderPage(fakeRequest())
       val document = Jsoup.parse(contentAsString(result))
       val paymentDateRow = document.select(".govuk-summary-list__row").asScala.toList(0)
-      assertRow(paymentDateRow, "Payment date", "Today", Some("Change"), Some("http://localhost:9056/pay/change-when-do-you-want-to-pay?toPayFrontendConfirmation=true"))
+      assertRow(paymentDateRow, "Payment date", "Today", Some("Change Payment date"), Some("http://localhost:9056/pay/change-when-do-you-want-to-pay?toPayFrontendConfirmation=true"))
     }
 
     "[BtaSa] should render the payment date row correctly in Welsh" in {
@@ -852,7 +852,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       val result = systemUnderTest.renderPage(fakeRequestWelsh())
       val document = Jsoup.parse(contentAsString(result))
       val paymentDateRow = document.select(".govuk-summary-list__row").asScala.toList(0)
-      assertRow(paymentDateRow, "Dyddiad talu", "Heddiw", Some("Newid"), Some("http://localhost:9056/pay/change-when-do-you-want-to-pay?toPayFrontendConfirmation=true"))
+      assertRow(paymentDateRow, "Dyddiad talu", "Heddiw", Some("Newid Dyddiad talu"), Some("http://localhost:9056/pay/change-when-do-you-want-to-pay?toPayFrontendConfirmation=true"))
     }
 
     "[PtaSa] should render the payment date row correctly" in {
@@ -860,7 +860,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       val result = systemUnderTest.renderPage(fakeRequest())
       val document = Jsoup.parse(contentAsString(result))
       val paymentDateRow = document.select(".govuk-summary-list__row").asScala.toList(0)
-      assertRow(paymentDateRow, "Payment date", "Today", Some("Change"), Some("http://localhost:9056/pay/change-when-do-you-want-to-pay?toPayFrontendConfirmation=true"))
+      assertRow(paymentDateRow, "Payment date", "Today", Some("Change Payment date"), Some("http://localhost:9056/pay/change-when-do-you-want-to-pay?toPayFrontendConfirmation=true"))
     }
 
     "[PtaSa] should render the payment date row correctly in Welsh" in {
@@ -868,7 +868,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       val result = systemUnderTest.renderPage(fakeRequestWelsh())
       val document = Jsoup.parse(contentAsString(result))
       val paymentDateRow = document.select(".govuk-summary-list__row").asScala.toList(0)
-      assertRow(paymentDateRow, "Dyddiad talu", "Heddiw", Some("Newid"), Some("http://localhost:9056/pay/change-when-do-you-want-to-pay?toPayFrontendConfirmation=true"))
+      assertRow(paymentDateRow, "Dyddiad talu", "Heddiw", Some("Newid Dyddiad talu"), Some("http://localhost:9056/pay/change-when-do-you-want-to-pay?toPayFrontendConfirmation=true"))
     }
 
     "[BtaCt] should render the payment date row correctly" in {
@@ -876,7 +876,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       val result = systemUnderTest.renderPage(fakeRequest())
       val document = Jsoup.parse(contentAsString(result))
       val paymentDateRow = document.select(".govuk-summary-list__row").asScala.toList(0)
-      assertRow(paymentDateRow, "Payment date", "Today", Some("Change"), Some("http://localhost:9056/pay/change-when-do-you-want-to-pay?toPayFrontendConfirmation=true"))
+      assertRow(paymentDateRow, "Payment date", "Today", Some("Change Payment date"), Some("http://localhost:9056/pay/change-when-do-you-want-to-pay?toPayFrontendConfirmation=true"))
     }
 
     "[BtaCt] should render the payment date row correctly in Welsh" in {
@@ -884,7 +884,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       val result = systemUnderTest.renderPage(fakeRequestWelsh())
       val document = Jsoup.parse(contentAsString(result))
       val paymentDateRow = document.select(".govuk-summary-list__row").asScala.toList(0)
-      assertRow(paymentDateRow, "Dyddiad talu", "Heddiw", Some("Newid"), Some("http://localhost:9056/pay/change-when-do-you-want-to-pay?toPayFrontendConfirmation=true"))
+      assertRow(paymentDateRow, "Dyddiad talu", "Heddiw", Some("Newid Dyddiad talu"), Some("http://localhost:9056/pay/change-when-do-you-want-to-pay?toPayFrontendConfirmation=true"))
     }
 
     "[Ppt] should render the payment date row correctly" in {
@@ -892,7 +892,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       val result = systemUnderTest.renderPage(fakeRequest())
       val document = Jsoup.parse(contentAsString(result))
       val paymentDateRow = document.select(".govuk-summary-list__row").asScala.toList(0)
-      assertRow(paymentDateRow, "Payment date", "Today", Some("Change"), Some("http://localhost:9056/pay/change-when-do-you-want-to-pay?toPayFrontendConfirmation=true"))
+      assertRow(paymentDateRow, "Payment date", "Today", Some("Change Payment date"), Some("http://localhost:9056/pay/change-when-do-you-want-to-pay?toPayFrontendConfirmation=true"))
     }
 
     "[Ppt] should render the payment date row correctly in Welsh" in {
@@ -900,7 +900,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       val result = systemUnderTest.renderPage(fakeRequestWelsh())
       val document = Jsoup.parse(contentAsString(result))
       val paymentDateRow = document.select(".govuk-summary-list__row").asScala.toList(0)
-      assertRow(paymentDateRow, "Dyddiad talu", "Heddiw", Some("Newid"), Some("http://localhost:9056/pay/change-when-do-you-want-to-pay?toPayFrontendConfirmation=true"))
+      assertRow(paymentDateRow, "Dyddiad talu", "Heddiw", Some("Newid Dyddiad talu"), Some("http://localhost:9056/pay/change-when-do-you-want-to-pay?toPayFrontendConfirmation=true"))
     }
 
     "[PfEpayeNi] should render the Tax period row correctly" in {
@@ -908,7 +908,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       val result = systemUnderTest.renderPage(fakeRequest())
       val document = Jsoup.parse(contentAsString(result))
       val taxPeriodRow = document.select(".govuk-summary-list__row").asScala.toList(1)
-      assertRow(taxPeriodRow, "Tax period", "6 April 2024 to 5 July 2024 (first quarter)", Some("Change"), Some("http://localhost:9056/pay/change-employers-paye-period?fromCardPayment=true"))
+      assertRow(taxPeriodRow, "Tax period", "6 April 2024 to 5 July 2024 (first quarter)", Some("Change Tax period"), Some("http://localhost:9056/pay/change-employers-paye-period?fromCardPayment=true"))
     }
 
     "[PfEpayeNi] should render the Tax period row correctly in Welsh" in {
@@ -916,7 +916,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       val result = systemUnderTest.renderPage(fakeRequestWelsh())
       val document = Jsoup.parse(contentAsString(result))
       val taxPeriodRow = document.select(".govuk-summary-list__row").asScala.toList(1)
-      assertRow(taxPeriodRow, "Cyfnod talu", "6 Ebrill 2024 i 5 Gorffennaf 2024 (chwarter cyntaf)", Some("Newid"), Some("http://localhost:9056/pay/change-employers-paye-period?fromCardPayment=true"))
+      assertRow(taxPeriodRow, "Cyfnod talu", "6 Ebrill 2024 i 5 Gorffennaf 2024 (chwarter cyntaf)", Some("Newid Cyfnod talu"), Some("http://localhost:9056/pay/change-employers-paye-period?fromCardPayment=true"))
     }
 
     "[PfEpayeP11d] should render the Tax year correctly" in {
@@ -924,7 +924,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       val result = systemUnderTest.renderPage(fakeRequest())
       val document = Jsoup.parse(contentAsString(result))
       val taxPeriodRow = document.select(".govuk-summary-list__row").asScala.toList(1)
-      assertRow(taxPeriodRow, "Tax year", "2024 to 2025", Some("Change"), Some("http://localhost:9056/pay/change-tax-year?fromCardPayment=true"))
+      assertRow(taxPeriodRow, "Tax year", "2024 to 2025", Some("Change Tax year"), Some("http://localhost:9056/pay/change-tax-year?fromCardPayment=true"))
     }
 
     "[PfEpayeP11d] should render the Tax year correctly in Welsh" in {
@@ -932,7 +932,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       val result = systemUnderTest.renderPage(fakeRequestWelsh())
       val document = Jsoup.parse(contentAsString(result))
       val taxPeriodRow = document.select(".govuk-summary-list__row").asScala.toList(1)
-      assertRow(taxPeriodRow, "Blwyddyn dreth", "2024 i 2025", Some("Newid"), Some("http://localhost:9056/pay/change-tax-year?fromCardPayment=true"))
+      assertRow(taxPeriodRow, "Blwyddyn dreth", "2024 i 2025", Some("Newid Blwyddyn dreth"), Some("http://localhost:9056/pay/change-tax-year?fromCardPayment=true"))
     }
 
     "[BtaClass1aNi] should render the Tax period correctly" in {
@@ -956,7 +956,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       val result = systemUnderTest.renderPage(fakeRequest())
       val document = Jsoup.parse(contentAsString(result))
       val paymentDateRow = document.select(".govuk-summary-list__row").asScala.toList(0)
-      assertRow(paymentDateRow, "Payment date", "Today", Some("Change"), Some("http://localhost:9056/pay/change-when-do-you-want-to-pay?toPayFrontendConfirmation=true"))
+      assertRow(paymentDateRow, "Payment date", "Today", Some("Change Payment date"), Some("http://localhost:9056/pay/change-when-do-you-want-to-pay?toPayFrontendConfirmation=true"))
     }
 
     "[BtaVat] should render the payment date row correctly in Welsh" in {
@@ -964,7 +964,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       val result = systemUnderTest.renderPage(fakeRequestWelsh())
       val document = Jsoup.parse(contentAsString(result))
       val paymentDateRow = document.select(".govuk-summary-list__row").asScala.toList(0)
-      assertRow(paymentDateRow, "Dyddiad talu", "Heddiw", Some("Newid"), Some("http://localhost:9056/pay/change-when-do-you-want-to-pay?toPayFrontendConfirmation=true"))
+      assertRow(paymentDateRow, "Dyddiad talu", "Heddiw", Some("Newid Dyddiad talu"), Some("http://localhost:9056/pay/change-when-do-you-want-to-pay?toPayFrontendConfirmation=true"))
     }
 
     "[VcVatReturn] should render the payment date row correctly" in {
@@ -972,7 +972,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       val result = systemUnderTest.renderPage(fakeRequest())
       val document = Jsoup.parse(contentAsString(result))
       val paymentDateRow = document.select(".govuk-summary-list__row").asScala.toList(0)
-      assertRow(paymentDateRow, "Payment date", "Today", Some("Change"), Some("http://localhost:9056/pay/change-when-do-you-want-to-pay?toPayFrontendConfirmation=true"))
+      assertRow(paymentDateRow, "Payment date", "Today", Some("Change Payment date"), Some("http://localhost:9056/pay/change-when-do-you-want-to-pay?toPayFrontendConfirmation=true"))
     }
 
     "[VcVatReturn] should render the payment date row correctly in Welsh" in {
@@ -980,7 +980,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       val result = systemUnderTest.renderPage(fakeRequestWelsh())
       val document = Jsoup.parse(contentAsString(result))
       val paymentDateRow = document.select(".govuk-summary-list__row").asScala.toList(0)
-      assertRow(paymentDateRow, "Dyddiad talu", "Heddiw", Some("Newid"), Some("http://localhost:9056/pay/change-when-do-you-want-to-pay?toPayFrontendConfirmation=true"))
+      assertRow(paymentDateRow, "Dyddiad talu", "Heddiw", Some("Newid Dyddiad talu"), Some("http://localhost:9056/pay/change-when-do-you-want-to-pay?toPayFrontendConfirmation=true"))
     }
 
     "[VcVatOther] should render the payment date row correctly" in {
@@ -988,7 +988,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       val result = systemUnderTest.renderPage(fakeRequest())
       val document = Jsoup.parse(contentAsString(result))
       val paymentDateRow = document.select(".govuk-summary-list__row").asScala.toList(0)
-      assertRow(paymentDateRow, "Payment date", "Today", Some("Change"), Some("http://localhost:9056/pay/change-when-do-you-want-to-pay?toPayFrontendConfirmation=true"))
+      assertRow(paymentDateRow, "Payment date", "Today", Some("Change Payment date"), Some("http://localhost:9056/pay/change-when-do-you-want-to-pay?toPayFrontendConfirmation=true"))
     }
 
     "[VcVatOther] should render the payment date row correctly in Welsh" in {
@@ -996,7 +996,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       val result = systemUnderTest.renderPage(fakeRequestWelsh())
       val document = Jsoup.parse(contentAsString(result))
       val paymentDateRow = document.select(".govuk-summary-list__row").asScala.toList(0)
-      assertRow(paymentDateRow, "Dyddiad talu", "Heddiw", Some("Newid"), Some("http://localhost:9056/pay/change-when-do-you-want-to-pay?toPayFrontendConfirmation=true"))
+      assertRow(paymentDateRow, "Dyddiad talu", "Heddiw", Some("Newid Dyddiad talu"), Some("http://localhost:9056/pay/change-when-do-you-want-to-pay?toPayFrontendConfirmation=true"))
     }
 
     "[BtaClass1aNi] should render the payment date row correctly" in {
@@ -1004,7 +1004,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       val result = systemUnderTest.renderPage(fakeRequest())
       val document = Jsoup.parse(contentAsString(result))
       val paymentDateRow = document.select(".govuk-summary-list__row").asScala.toList(0)
-      assertRow(paymentDateRow, "Payment date", "Today", Some("Change"), Some("http://localhost:9056/pay/change-when-do-you-want-to-pay?toPayFrontendConfirmation=true"))
+      assertRow(paymentDateRow, "Payment date", "Today", Some("Change Payment date"), Some("http://localhost:9056/pay/change-when-do-you-want-to-pay?toPayFrontendConfirmation=true"))
     }
 
     "[BtaClass1aNi] should render the payment date row correctly in Welsh" in {
@@ -1012,7 +1012,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       val result = systemUnderTest.renderPage(fakeRequestWelsh())
       val document = Jsoup.parse(contentAsString(result))
       val paymentDateRow = document.select(".govuk-summary-list__row").asScala.toList(0)
-      assertRow(paymentDateRow, "Dyddiad talu", "Heddiw", Some("Newid"), Some("http://localhost:9056/pay/change-when-do-you-want-to-pay?toPayFrontendConfirmation=true"))
+      assertRow(paymentDateRow, "Dyddiad talu", "Heddiw", Some("Newid Dyddiad talu"), Some("http://localhost:9056/pay/change-when-do-you-want-to-pay?toPayFrontendConfirmation=true"))
     }
 
     "[PfSdlt] should render the payment reference row correctly" in {
