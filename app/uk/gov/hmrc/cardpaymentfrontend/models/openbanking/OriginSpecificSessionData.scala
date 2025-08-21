@@ -29,18 +29,18 @@ import payapi.corcommon.model.taxes.epaye._
 import payapi.corcommon.model.taxes.ioss.Ioss
 import payapi.corcommon.model.taxes.other._
 import payapi.corcommon.model.taxes.p302.{P302ChargeRef, P302Ref}
-import payapi.corcommon.model.taxes.trusts.TrustReference
 import payapi.corcommon.model.taxes.p800.P800Ref
 import payapi.corcommon.model.taxes.pillar2.Pillar2Reference
 import payapi.corcommon.model.taxes.ppt.PptReference
 import payapi.corcommon.model.taxes.sa.SaUtr
 import payapi.corcommon.model.taxes.sd.SpiritDrinksReference
-import payapi.corcommon.model.taxes.vat.{CalendarPeriod, VatChargeReference, Vrn}
-import payapi.corcommon.model.times.period.CalendarQuarterlyPeriod
-import payapi.corcommon.model.{Origin, Reference, SearchTag}
 import payapi.corcommon.model.taxes.sdlt.Utrn
+import payapi.corcommon.model.taxes.trusts.TrustReference
+import payapi.corcommon.model.taxes.vat.{CalendarPeriod, VatChargeReference, Vrn}
 import payapi.corcommon.model.taxes.vatc2c.VatC2cReference
 import payapi.corcommon.model.thirdpartysoftware.{ClientJourneyId, FriendlyName}
+import payapi.corcommon.model.times.period.CalendarQuarterlyPeriod
+import payapi.corcommon.model.{Origin, Reference, SearchTag}
 import play.api.libs.functional.syntax.toFunctionalBuilderOps
 import play.api.libs.json._
 
@@ -134,6 +134,7 @@ object OriginSpecificSessionData {
       case WcSa                     => Json.format[WcSaSessionData].reads(json)
       case WcCt                     => Json.format[WcCtSessionData].reads(json)
       case WcVat                    => Json.format[WcVatSessionData].reads(json)
+      case WcSimpleAssessment       => Json.format[WcSimpleAssessmentSessionData].reads(json)
 
       //Todo: Remove PfP800 when PtaP800 is fully available
       case origin @ (PfOther | PtaP800 | PfP800
@@ -218,6 +219,7 @@ object OriginSpecificSessionData {
       case sessionData: WcSaSessionData                => Json.format[WcSaSessionData].writes(sessionData)
       case sessionData: WcCtSessionData                => Json.format[WcCtSessionData].writes(sessionData)
       case sessionData: WcVatSessionData               => Json.format[WcVatSessionData].writes(sessionData)
+      case sessionData: WcSimpleAssessmentSessionData  => Json.format[WcSimpleAssessmentSessionData].writes(sessionData)
     }) + ("origin" -> Json.toJson(o.origin))
 
   implicit val format: OFormat[OriginSpecificSessionData] = OFormat(reads, writes)
@@ -453,6 +455,11 @@ final case class AppSimpleAssessmentSessionData(p302Ref: P800Ref, override val r
 }
 
 final case class PfSimpleAssessmentSessionData(simpleAssessmentReference: XRef14Char, returnUrl: Option[Url] = None) extends OriginSpecificSessionData(PfSimpleAssessment) {
+  def paymentReference: Reference = ReferenceMaker.makeSimpleAssessmentRef(simpleAssessmentReference)
+  def searchTag: SearchTag = SearchTag(simpleAssessmentReference.canonicalizedValue)
+}
+
+final case class WcSimpleAssessmentSessionData(simpleAssessmentReference: XRef14Char, returnUrl: Option[Url] = None) extends OriginSpecificSessionData(WcSimpleAssessment) {
   def paymentReference: Reference = ReferenceMaker.makeSimpleAssessmentRef(simpleAssessmentReference)
   def searchTag: SearchTag = SearchTag(simpleAssessmentReference.canonicalizedValue)
 }
