@@ -228,6 +228,7 @@ object ExtendedOrigin {
       case Origins.WcSa                     => ExtendedWcSa
       case Origins.WcCt                     => ExtendedWcCt
       case Origins.WcVat                    => ExtendedWcVat
+      case Origins.WcSimpleAssessment       => ExtendedWcSimpleAssessment
       case Origins.WcXref                   => ExtendedWcXref
     }
 
@@ -248,7 +249,7 @@ object ExtendedOrigin {
         Origins.PfAmls | Origins.PfAted | Origins.PfCdsDeferment | Origins.PfTrust | Origins.PtaClass3Ni | Origins.AlcoholDuty |
         Origins.PfAlcoholDuty | Origins.VatC2c | Origins.PfVatC2c | Origins.`3psSa` | Origins.`3psVat` | Origins.Pillar2 |
         Origins.PfPillar2 => false
-      case Origins.WcSa | Origins.WcCt | Origins.WcVat | Origins.WcXref => true
+      case Origins.WcSa | Origins.WcCt | Origins.WcVat | Origins.WcSimpleAssessment | Origins.WcXref => true
     }
   }
 }
