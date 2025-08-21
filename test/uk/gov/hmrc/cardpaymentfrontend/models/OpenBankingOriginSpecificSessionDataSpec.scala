@@ -164,10 +164,31 @@ class OpenBankingOriginSpecificSessionDataSpec extends UnitSpec {
       roundTripJsonTest(osd, testJson)
     }
 
-    "PfVat" in {
+    "PfVat with vrn" in {
       val testJson = Json.parse("""{"vrn":"999964805","origin":"PfVat"}""")
       val osd = ExtendedPfVat.openBankingOriginSpecificSessionData(TestJourneys.PfVat.journeyBeforeBeginWebPayment.journeySpecificData)
       testOsd(osd, PfVatSessionData(Some(Vrn("999964805")), None, None), "999964805", "999964805")
+      roundTripJsonTest(osd, testJson)
+    }
+
+    "PfVat with charge reference" in {
+      val testJson = Json.parse("""{"chargeRef":"XE123456789012","origin":"PfVat"}""")
+      val osd = ExtendedPfVat.openBankingOriginSpecificSessionData(TestJourneys.PfVatWithChargeReference.journeyBeforeBeginWebPayment.journeySpecificData)
+      testOsd(osd, PfVatSessionData(None, Some(XRef14Char("XE123456789012")), None), "XE123456789012", "XE123456789012")
+      roundTripJsonTest(osd, testJson)
+    }
+
+    "WcVat with vrn" in {
+      val testJson = Json.parse("""{"vrn":"999964805","origin":"WcVat"}""")
+      val osd = ExtendedWcVat.openBankingOriginSpecificSessionData(TestJourneys.WcVat.journeyBeforeBeginWebPayment.journeySpecificData)
+      testOsd(osd, WcVatSessionData(Some(Vrn("999964805")), None, None), "999964805", "999964805")
+      roundTripJsonTest(osd, testJson)
+    }
+
+    "WcVat with charge reference" in {
+      val testJson = Json.parse("""{"chargeRef":"XE123456789012","origin":"WcVat"}""")
+      val osd = ExtendedWcVat.openBankingOriginSpecificSessionData(TestJourneys.WcVatWithChargeReference.journeyBeforeBeginWebPayment.journeySpecificData)
+      testOsd(osd, WcVatSessionData(None, Some(XRef14Char("XE123456789012")), None), "XE123456789012", "XE123456789012")
       roundTripJsonTest(osd, testJson)
     }
 
@@ -297,10 +318,17 @@ class OpenBankingOriginSpecificSessionDataSpec extends UnitSpec {
       roundTripJsonTest(osd, testJson)
     }
 
+    "WcSimpleAssessment" in {
+      val testJson = Json.parse("""{"simpleAssessmentReference":"XE123456789012","origin":"WcSimpleAssessment"}""")
+      val osd = ExtendedWcSimpleAssessment.openBankingOriginSpecificSessionData(TestJourneys.WcSimpleAssessment.journeyBeforeBeginWebPayment.journeySpecificData)
+      testOsd(osd, WcSimpleAssessmentSessionData(XRef14Char("XE123456789012"), None), "XE123456789012", "XE123456789012")
+      roundTripJsonTest(osd, testJson)
+    }
+
   }
 
   "sanity check for implemented origins" in {
-    TestHelpers.implementedOrigins.size shouldBe 34 withClue "** This dummy test is here to remind you to update the tests above. Bump up the expected number when an origin is added to implemented origins **"
+    TestHelpers.implementedOrigins.size shouldBe 36 withClue "** This dummy test is here to remind you to update the tests above. Bump up the expected number when an origin is added to implemented origins **"
   }
 
 }

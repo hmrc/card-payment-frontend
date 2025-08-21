@@ -17,7 +17,7 @@
 package uk.gov.hmrc.cardpaymentfrontend.services
 
 import com.google.inject.{Inject, Singleton}
-import payapi.cardpaymentjourney.model.journey.{Journey, JsdPfVat}
+import payapi.cardpaymentjourney.model.journey.{Journey, JsdPfVat, JsdWcVat}
 import payapi.corcommon.model.Origins
 import payapi.corcommon.model.Origins._
 import uk.gov.hmrc.cardpaymentfrontend.models.cardpayment.{ClientId, ClientIds}
@@ -55,6 +55,18 @@ class ClientIdService @Inject() {
         }
       }
 
+      //yes, copying said weirdness from pfvat...
+      case WcVat => journey.journeySpecificData match {
+        case JsdWcVat(_, Some(_), _) => language match {
+          case Languages.English => ClientIds.MIEE
+          case Languages.Welsh   => ClientIds.MIEC
+        }
+        case _ => language match {
+          case Languages.English => ClientIds.VAEE
+          case Languages.Welsh   => ClientIds.VAEC
+        }
+      }
+
       case PfCt | BtaCt | WcCt => language match {
         case Languages.English => ClientIds.COEE
         case Languages.Welsh   => ClientIds.COEC
@@ -68,7 +80,7 @@ class ClientIdService @Inject() {
 
       case Amls | AppSimpleAssessment | BtaEpayePenalty | BtaEpayeInterest | PfAmls | PfEpayeLpp | PfEpayeSeta | PfEpayeLateCis
         | PfJobRetentionScheme | JrsJobRetentionScheme | PfOther | PfPsAdmin | BtaSdil | PfMgd | PfGamingOrBingoDuty
-        | PfGbPbRgDuty | PfSdil | PfSimpleAssessment | PfTpes | PfPpt | PfTrust | EconomicCrimeLevy | PfEconomicCrimeLevy =>
+        | PfGbPbRgDuty | PfSdil | PfSimpleAssessment | WcSimpleAssessment | PfTpes | PfPpt | PfTrust | EconomicCrimeLevy | PfEconomicCrimeLevy =>
         language match {
           case Languages.English => ClientIds.MIEE
           case Languages.Welsh   => ClientIds.MIEC

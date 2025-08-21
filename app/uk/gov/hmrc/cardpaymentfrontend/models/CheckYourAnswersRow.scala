@@ -35,7 +35,7 @@ object CheckYourAnswersRow {
             Actions(items = Seq(ActionItem(
               href               = changeLink.href.url,
               content            = Text(Messages(changeLink.messageKey)),
-              visuallyHiddenText = changeLink.visuallyHiddenMessageKey,
+              visuallyHiddenText = Some(Messages(checkYourAnswerRow.titleMessageKey)),
               attributes         = Map(
                 "id" -> changeLink.linkId
               )
