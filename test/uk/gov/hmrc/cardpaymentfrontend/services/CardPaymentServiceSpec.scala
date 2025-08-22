@@ -17,7 +17,6 @@
 package uk.gov.hmrc.cardpaymentfrontend.services
 
 import payapi.cardpaymentjourney.model.journey.{Journey, JourneySpecificData, JsdPfSa}
-import payapi.corcommon.model.AmountInPence
 import play.api.i18n.MessagesApi
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.{AnyContent, AnyContentAsEmpty}
@@ -34,6 +33,7 @@ import uk.gov.hmrc.cardpaymentfrontend.testsupport.testdata.TestJourneys
 import uk.gov.hmrc.http.HeaderCarrier
 
 import java.time.LocalDateTime
+import java.util.Base64
 
 class CardPaymentServiceSpec extends ItSpec {
 
@@ -59,39 +59,48 @@ class CardPaymentServiceSpec extends ItSpec {
 
   "CardPaymentService" - {
 
+    "returnToHmrcUrl" - {
+
+      "should return a url that matches barclaycards regex for urlAddress, with journeyId encrypted and base64 encoded" in {
+        val testJourney = TestJourneys.PfSa.journeyBeforeBeginWebPayment
+        val returnToHmrcUrl = systemUnderTest.returnToHmrcUrl(testJourney._id)
+
+        returnToHmrcUrl matches """^[A-Za-z0-9_ "!@#$&',*+/=()^.:-]{1,1024}$""" shouldBe true
+      }
+
+      "should return the correct journey, but encrypted and then base64 encoded" in {
+        val cryptoService = app.injector.instanceOf[CryptoService]
+        val testJourney = TestJourneys.PfSa.journeyBeforeBeginWebPayment
+        val returnToHmrcUrl = systemUnderTest.returnToHmrcUrl(testJourney._id)
+        val journeyIdBase64Encoded = returnToHmrcUrl.split("/return-to-hmrc/").lastOption
+        val decodedJourneyId = journeyIdBase64Encoded.map(s => new String(Base64.getDecoder.decode(s.getBytes)))
+        val decryptedJourneyId = decodedJourneyId.map(cryptoService.decryptString)
+
+        decryptedJourneyId shouldBe Some(testJourney._id.value)
+      }
+
+    }
+
     "initiatePayment" - {
 
       implicit val journeyRequest: JourneyRequest[_] = fakeJourneyRequest(journey   = testJourneyBeforeBeginWebPayment, withEmail = true)
 
-      val cardPaymentInitiatePaymentRequest = CardPaymentInitiatePaymentRequest(
-        redirectUrl         = "http://localhost:10155/pay-by-card/return-to-hmrc",
-        clientId            = "SAEE",
-        purchaseDescription = "1234567895K",
-        purchaseAmount      = AmountInPence(1234),
-        billingAddress      = BarclaycardAddress(
-          line1       = "made up street",
-          postCode    = "AA11AA",
-          countryCode = "GBR"
-        ),
-        emailAddress        = Some(EmailAddress("some@email.com")),
-        transactionNumber   = "00001999999999"
-      )
       val expectedCardPaymentInitiatePaymentResponse = CardPaymentInitiatePaymentResponse("someiframeurl", "sometransactionref")
 
       "should return a CardPaymentInitiatePaymentResponse when card-payment backend returns one" in {
-        CardPaymentStub.InitiatePayment.stubForInitiatePayment2xx(cardPaymentInitiatePaymentRequest, expectedCardPaymentInitiatePaymentResponse)
+        CardPaymentStub.InitiatePayment.stubForInitiatePayment2xx(expectedCardPaymentInitiatePaymentResponse)
         val result = systemUnderTest.initiatePayment(testJourneyBeforeBeginWebPayment, testAddress, Some(testEmail), English).futureValue
         result shouldBe expectedCardPaymentInitiatePaymentResponse
       }
 
       "should update pay-api journey with BeginWebPaymentRequest when call to card-payment backend succeeds" in {
-        CardPaymentStub.InitiatePayment.stubForInitiatePayment2xx(cardPaymentInitiatePaymentRequest, expectedCardPaymentInitiatePaymentResponse)
+        CardPaymentStub.InitiatePayment.stubForInitiatePayment2xx(expectedCardPaymentInitiatePaymentResponse)
         systemUnderTest.initiatePayment(testJourneyBeforeBeginWebPayment, testAddress, Some(testEmail), English).futureValue
         PayApiStub.verifyUpdateBeginWebPayment(1, testJourneyBeforeBeginWebPayment._id.value)
       }
 
       "should trigger an explicit paymentAttempt audit event" in {
-        CardPaymentStub.InitiatePayment.stubForInitiatePayment2xx(cardPaymentInitiatePaymentRequest, expectedCardPaymentInitiatePaymentResponse)
+        CardPaymentStub.InitiatePayment.stubForInitiatePayment2xx(expectedCardPaymentInitiatePaymentResponse)
         systemUnderTest.initiatePayment(testJourneyBeforeBeginWebPayment, testAddress, Some(testEmail), English).futureValue
         PayApiStub.verifyUpdateBeginWebPayment(1, testJourneyBeforeBeginWebPayment._id.value)
         AuditConnectorStub.verifyEventAudited(

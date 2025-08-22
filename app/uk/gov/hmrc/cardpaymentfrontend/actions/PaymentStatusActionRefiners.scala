@@ -16,18 +16,51 @@
 
 package uk.gov.hmrc.cardpaymentfrontend.actions
 
-import payapi.corcommon.model.PaymentStatuses
+import payapi.cardpaymentjourney.model.journey.Url
+import payapi.corcommon.model.{JourneyId, PaymentStatuses}
 import play.api.Logging
-import play.api.mvc.{ActionRefiner, Result, Results}
-import uk.gov.hmrc.cardpaymentfrontend.config.ErrorHandler
+import play.api.mvc.{ActionRefiner, Request, Result, Results}
+import uk.gov.hmrc.cardpaymentfrontend.config.{AppConfig, ErrorHandler}
+import uk.gov.hmrc.cardpaymentfrontend.connectors.PayApiConnector
+import uk.gov.hmrc.cardpaymentfrontend.requests.RequestSupport
+import uk.gov.hmrc.cardpaymentfrontend.services.CryptoService
+import uk.gov.hmrc.cardpaymentfrontend.views.html.ForceDeleteAnswersPage
 
+import java.util.Base64
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class PaymentStatusActionRefiners @Inject() (
-    errorHandler: ErrorHandler
+    appConfig:              AppConfig,
+    cryptoService:          CryptoService,
+    errorHandler:           ErrorHandler,
+    forceDeleteAnswersPage: ForceDeleteAnswersPage,
+    payApiConnector:        PayApiConnector,
+    requestSupport:         RequestSupport
 )(implicit ec: ExecutionContext) extends Logging {
+
+  import requestSupport._
+
+  def findJourneyByJourneyIdRefiner(base64EncodedEncryptedJourneyId: String): ActionRefiner[Request, JourneyRequest] = new ActionRefiner[Request, JourneyRequest] {
+
+    override protected[actions] def refine[A](request: Request[A]): Future[Either[Result, JourneyRequest[A]]] = {
+
+      implicit val r: Request[A] = request
+
+      val decodedJourneyId = new String(Base64.getDecoder.decode(base64EncodedEncryptedJourneyId.getBytes))
+      val decryptedJourneyId: JourneyId = JourneyId(cryptoService.decryptString(decodedJourneyId))
+
+      payApiConnector.findJourneyByJourneyId(decryptedJourneyId).map {
+        case Some(journey) => Right(new JourneyRequest(journey, request))
+        case None =>
+          logger.warn("No journey found for journey id, sending to timed out page.")
+          Left(Results.Unauthorized(forceDeleteAnswersPage(false, Some(Url(appConfig.payFrontendBaseUrl)))))
+      }
+    }
+
+    override protected def executionContext: ExecutionContext = ec
+  }
 
   def paymentStatusActionRefiner: ActionRefiner[JourneyRequest, JourneyRequest] = new ActionRefiner[JourneyRequest, JourneyRequest] {
     //we don't want to be calling payment status again if we know that the journey is already in finished state

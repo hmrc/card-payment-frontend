@@ -18,13 +18,13 @@ package uk.gov.hmrc.cardpaymentfrontend.connectors
 
 import com.google.inject.Inject
 import payapi.cardpaymentjourney.model.journey.{Journey, JourneySpecificData}
+import payapi.corcommon.model.JourneyId
 import play.api.libs.json.Json
 import uk.gov.hmrc.cardpaymentfrontend.config.AppConfig
 import uk.gov.hmrc.cardpaymentfrontend.models.payapirequest.{BeginWebPaymentRequest, FailWebPaymentRequest, SucceedWebPaymentRequest}
-import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.http.StringContextOps
-import uk.gov.hmrc.http.client.HttpClientV2
 import uk.gov.hmrc.http.HttpReads.Implicits._
+import uk.gov.hmrc.http.{HeaderCarrier, StringContextOps}
+import uk.gov.hmrc.http.client.HttpClientV2
 
 import java.net.URL
 import javax.inject.Singleton
@@ -34,11 +34,18 @@ import scala.concurrent.{ExecutionContext, Future}
 class PayApiConnector @Inject() (appConfig: AppConfig, httpClientV2: HttpClientV2)(implicit executionContext: ExecutionContext) {
 
   private val findBySessionIdUrl: URL = url"""${appConfig.payApiBaseUrl}/pay-api/journey/find-latest-by-session-id"""
+  private def findJourneyByJourneyIdUrl(journeyId: JourneyId): URL = url"""${appConfig.payApiBaseUrl}/pay-api/journey/${journeyId.value}"""
 
   def findLatestJourneyBySessionId()(implicit headerCarrier: HeaderCarrier): Future[Option[Journey[JourneySpecificData]]] = {
     for {
       _ <- Future(require(headerCarrier.sessionId.isDefined, "Missing required 'SessionId'"))
       maybeJourneyResult <- httpClientV2.get(findBySessionIdUrl).execute[Option[Journey[JourneySpecificData]]]
+    } yield maybeJourneyResult
+  }
+
+  def findJourneyByJourneyId(journeyId: JourneyId)(implicit headerCarrier: HeaderCarrier): Future[Option[Journey[JourneySpecificData]]] = {
+    for {
+      maybeJourneyResult <- httpClientV2.get(findJourneyByJourneyIdUrl(journeyId)).execute[Option[Journey[JourneySpecificData]]]
     } yield maybeJourneyResult
   }
 

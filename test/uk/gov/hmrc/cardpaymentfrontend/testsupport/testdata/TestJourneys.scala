@@ -49,7 +49,7 @@ object TestJourneys {
 
   object PfSa extends JourneyStatuses[JsdPfSa] {
     val journeyBeforeBeginWebPayment: Journey[JsdPfSa] = Journey[JsdPfSa](
-      _id                  = JourneyId("TestJourneyId-44f9-ad7f-01e1d3d8f151"),
+      _id                  = JourneyId(TestPayApiData.decryptedJourneyId),
       sessionId            = Some(SessionId("TestSession-4b87460d-6f43-4c4c-b810-d6f87c774854")),
       amountInPence        = Some(AmountInPence(1234)),
       emailTemplateOptions = None,
@@ -64,7 +64,7 @@ object TestJourneys {
 
   object BtaSa extends JourneyStatuses[JsdBtaSa] {
     val journeyBeforeBeginWebPayment: Journey[JsdBtaSa] = Journey[JsdBtaSa](
-      _id                  = JourneyId("TestJourneyId-44f9-ad7f-01e1d3d8f151"),
+      _id                  = JourneyId(TestPayApiData.decryptedJourneyId),
       sessionId            = Some(SessionId("TestSession-4b87460d-6f43-4c4c-b810-d6f87c774854")),
       amountInPence        = Some(AmountInPence(1234)),
       emailTemplateOptions = None,
@@ -80,7 +80,7 @@ object TestJourneys {
 
   object PtaSa extends JourneyStatuses[JsdPtaSa] {
     val journeyBeforeBeginWebPayment: Journey[JsdPtaSa] = Journey[JsdPtaSa](
-      _id                  = JourneyId("TestJourneyId-44f9-ad7f-01e1d3d8f151"),
+      _id                  = JourneyId(TestPayApiData.decryptedJourneyId),
       sessionId            = Some(SessionId("TestSession-4b87460d-6f43-4c4c-b810-d6f87c774854")),
       amountInPence        = Some(AmountInPence(1234)),
       emailTemplateOptions = None,
@@ -96,7 +96,7 @@ object TestJourneys {
 
   object ItSa extends JourneyStatuses[JsdItSa] {
     val journeyBeforeBeginWebPayment: Journey[JsdItSa] = Journey[JsdItSa](
-      _id                  = JourneyId("TestJourneyId-44f9-ad7f-01e1d3d8f151"),
+      _id                  = JourneyId(TestPayApiData.decryptedJourneyId),
       sessionId            = Some(SessionId("TestSession-4b87460d-6f43-4c4c-b810-d6f87c774854")),
       amountInPence        = Some(AmountInPence(1234)),
       emailTemplateOptions = None,
@@ -111,7 +111,7 @@ object TestJourneys {
 
   object WcSa extends JourneyStatuses[JsdWcSa] {
     val journeyBeforeBeginWebPayment: Journey[JsdWcSa] = Journey[JsdWcSa](
-      _id                  = JourneyId("TestJourneyId-44f9-ad7f-01e1d3d8f151"),
+      _id                  = JourneyId(TestPayApiData.decryptedJourneyId),
       sessionId            = Some(SessionId("TestSession-4b87460d-6f43-4c4c-b810-d6f87c774854")),
       amountInPence        = Some(AmountInPence(1234)),
       emailTemplateOptions = None,
@@ -127,7 +127,7 @@ object TestJourneys {
 
   object PfAlcoholDuty extends JourneyStatuses[JsdPfAlcoholDuty] {
     val journeyBeforeBeginWebPayment: Journey[JsdPfAlcoholDuty] = Journey[JsdPfAlcoholDuty](
-      _id                  = JourneyId("TestJourneyId-44f9-ad7f-01e1d3d8f151"),
+      _id                  = JourneyId(TestPayApiData.decryptedJourneyId),
       sessionId            = Some(SessionId("TestSession-4b87460d-6f43-4c4c-b810-d6f87c774854")),
       amountInPence        = Some(AmountInPence(1234)),
       emailTemplateOptions = None,
@@ -142,7 +142,7 @@ object TestJourneys {
 
   object AlcoholDuty extends JourneyStatuses[JsdAlcoholDuty] {
     val journeyBeforeBeginWebPayment: Journey[JsdAlcoholDuty] = Journey[JsdAlcoholDuty](
-      _id                  = JourneyId("TestJourneyId-44f9-ad7f-01e1d3d8f151"),
+      _id                  = JourneyId(TestPayApiData.decryptedJourneyId),
       sessionId            = Some(SessionId("TestSession-4b87460d-6f43-4c4c-b810-d6f87c774854")),
       amountInPence        = Some(AmountInPence(1234)),
       emailTemplateOptions = None,
@@ -161,7 +161,7 @@ object TestJourneys {
 
   object BtaCt extends JourneyStatuses[JsdBtaCt] {
     val journeyBeforeBeginWebPayment: Journey[JsdBtaCt] = Journey[JsdBtaCt](
-      _id                  = JourneyId("TestJourneyId-44f9-ad7f-01e1d3d8f151"),
+      _id                  = JourneyId(TestPayApiData.decryptedJourneyId),
       sessionId            = Some(SessionId("TestSession-4b87460d-6f43-4c4c-b810-d6f87c774854")),
       amountInPence        = Some(AmountInPence(1234)),
       emailTemplateOptions = None,
@@ -183,7 +183,7 @@ object TestJourneys {
 
   object PfCt extends JourneyStatuses[JsdPfCt] {
     val journeyBeforeBeginWebPayment: Journey[JsdPfCt] = Journey[JsdPfCt](
-      _id                  = JourneyId("TestJourneyId-44f9-ad7f-01e1d3d8f151"),
+      _id                  = JourneyId(TestPayApiData.decryptedJourneyId),
       sessionId            = Some(SessionId("TestSession-4b87460d-6f43-4c4c-b810-d6f87c774854")),
       amountInPence        = Some(AmountInPence(1234)),
       emailTemplateOptions = None,
@@ -202,7 +202,7 @@ object TestJourneys {
 
   object WcCt extends JourneyStatuses[JsdWcCt] {
     val journeyBeforeBeginWebPayment: Journey[JsdWcCt] = Journey[JsdWcCt](
-      _id                  = JourneyId("TestJourneyId-44f9-ad7f-01e1d3d8f151"),
+      _id                  = JourneyId(TestPayApiData.decryptedJourneyId),
       sessionId            = Some(SessionId("TestSession-4b87460d-6f43-4c4c-b810-d6f87c774854")),
       amountInPence        = Some(AmountInPence(1234)),
       emailTemplateOptions = None,
@@ -220,7 +220,7 @@ object TestJourneys {
 
   object PfEpayeNi extends JourneyStatuses[JsdPfEpayeNi] {
     val journeyBeforeBeginWebPayment: Journey[JsdPfEpayeNi] = Journey[JsdPfEpayeNi](
-      _id                  = JourneyId("TestJourneyId-44f9-ad7f-01e1d3d8f151"),
+      _id                  = JourneyId(TestPayApiData.decryptedJourneyId),
       sessionId            = Some(SessionId("TestSession-4b87460d-6f43-4c4c-b810-d6f87c774854")),
       amountInPence        = Some(AmountInPence(1234)),
       emailTemplateOptions = None,
@@ -238,7 +238,7 @@ object TestJourneys {
 
   object PfEpayeP11d extends JourneyStatuses[JsdPfEpayeP11d] {
     val journeyBeforeBeginWebPayment: Journey[JsdPfEpayeP11d] = Journey[JsdPfEpayeP11d](
-      _id                  = JourneyId("TestJourneyId-44f9-ad7f-01e1d3d8f151"),
+      _id                  = JourneyId(TestPayApiData.decryptedJourneyId),
       sessionId            = Some(SessionId("TestSession-4b87460d-6f43-4c4c-b810-d6f87c774854")),
       amountInPence        = Some(AmountInPence(1234)),
       emailTemplateOptions = None,
@@ -256,7 +256,7 @@ object TestJourneys {
 
   object PfEpayeLpp extends JourneyStatuses[JsdPfEpayeLpp] {
     val journeyBeforeBeginWebPayment: Journey[JsdPfEpayeLpp] = Journey[JsdPfEpayeLpp](
-      _id                  = JourneyId("TestJourneyId-44f9-ad7f-01e1d3d8f151"),
+      _id                  = JourneyId(TestPayApiData.decryptedJourneyId),
       sessionId            = Some(SessionId("TestSession-4b87460d-6f43-4c4c-b810-d6f87c774854")),
       amountInPence        = Some(AmountInPence(1234)),
       emailTemplateOptions = None,
@@ -271,7 +271,7 @@ object TestJourneys {
 
   object PfEpayeLateCis extends JourneyStatuses[JsdPfEpayeLateCis] {
     val journeyBeforeBeginWebPayment: Journey[JsdPfEpayeLateCis] = Journey[JsdPfEpayeLateCis](
-      _id                  = JourneyId("TestJourneyId-44f9-ad7f-01e1d3d8f151"),
+      _id                  = JourneyId(TestPayApiData.decryptedJourneyId),
       sessionId            = Some(SessionId("TestSession-4b87460d-6f43-4c4c-b810-d6f87c774854")),
       amountInPence        = Some(AmountInPence(1234)),
       emailTemplateOptions = None,
@@ -286,7 +286,7 @@ object TestJourneys {
 
   object PfEpayeSeta extends JourneyStatuses[JsdPfEpayeSeta] {
     val journeyBeforeBeginWebPayment: Journey[JsdPfEpayeSeta] = Journey[JsdPfEpayeSeta](
-      _id                  = JourneyId("TestJourneyId-44f9-ad7f-01e1d3d8f151"),
+      _id                  = JourneyId(TestPayApiData.decryptedJourneyId),
       sessionId            = Some(SessionId("TestSession-4b87460d-6f43-4c4c-b810-d6f87c774854")),
       amountInPence        = Some(AmountInPence(1234)),
       emailTemplateOptions = None,
@@ -301,7 +301,7 @@ object TestJourneys {
 
   object PfVat extends JourneyStatuses[JsdPfVat] {
     val journeyBeforeBeginWebPayment: Journey[JsdPfVat] = Journey[JsdPfVat](
-      _id                  = JourneyId("TestJourneyId-44f9-ad7f-01e1d3d8f151"),
+      _id                  = JourneyId(TestPayApiData.decryptedJourneyId),
       sessionId            = Some(SessionId("TestSession-4b87460d-6f43-4c4c-b810-d6f87c774854")),
       amountInPence        = Some(AmountInPence(1234)),
       emailTemplateOptions = None,
@@ -319,7 +319,7 @@ object TestJourneys {
 
   object PfVatWithChargeReference extends JourneyStatuses[JsdPfVat] {
     val journeyBeforeBeginWebPayment: Journey[JsdPfVat] = Journey[JsdPfVat](
-      _id                  = JourneyId("TestJourneyId-44f9-ad7f-01e1d3d8f151"),
+      _id                  = JourneyId(TestPayApiData.decryptedJourneyId),
       sessionId            = Some(SessionId("TestSession-4b87460d-6f43-4c4c-b810-d6f87c774854")),
       amountInPence        = Some(AmountInPence(1234)),
       emailTemplateOptions = None,
@@ -375,7 +375,7 @@ object TestJourneys {
 
   object BtaVat extends JourneyStatuses[JsdBtaVat] {
     val journeyBeforeBeginWebPayment: Journey[JsdBtaVat] = Journey[JsdBtaVat](
-      _id                  = JourneyId("TestJourneyId-44f9-ad7f-01e1d3d8f151"),
+      _id                  = JourneyId(TestPayApiData.decryptedJourneyId),
       sessionId            = Some(SessionId("TestSession-4b87460d-6f43-4c4c-b810-d6f87c774854")),
       amountInPence        = Some(AmountInPence(1234)),
       emailTemplateOptions = None,
@@ -390,7 +390,7 @@ object TestJourneys {
 
   object VcVatReturn extends JourneyStatuses[JsdVcVatReturn] {
     val journeyBeforeBeginWebPayment: Journey[JsdVcVatReturn] = Journey[JsdVcVatReturn](
-      _id                  = JourneyId("TestJourneyId-44f9-ad7f-01e1d3d8f151"),
+      _id                  = JourneyId(TestPayApiData.decryptedJourneyId),
       sessionId            = Some(SessionId("TestSession-4b87460d-6f43-4c4c-b810-d6f87c774854")),
       amountInPence        = Some(AmountInPence(1234)),
       emailTemplateOptions = None,
@@ -410,7 +410,7 @@ object TestJourneys {
 
   object VcVatOther extends JourneyStatuses[JsdVcVatOther] {
     val journeyBeforeBeginWebPayment: Journey[JsdVcVatOther] = Journey[JsdVcVatOther](
-      _id                  = JourneyId("TestJourneyId-44f9-ad7f-01e1d3d8f151"),
+      _id                  = JourneyId(TestPayApiData.decryptedJourneyId),
       sessionId            = Some(SessionId("TestSession-4b87460d-6f43-4c4c-b810-d6f87c774854")),
       amountInPence        = Some(AmountInPence(1234)),
       emailTemplateOptions = None,
@@ -431,7 +431,7 @@ object TestJourneys {
 
   object Ppt extends JourneyStatuses[JsdPpt] {
     val journeyBeforeBeginWebPayment: Journey[JsdPpt] = Journey[JsdPpt](
-      _id                  = JourneyId("TestJourneyId-44f9-ad7f-01e1d3d8f151"),
+      _id                  = JourneyId(TestPayApiData.decryptedJourneyId),
       sessionId            = Some(SessionId("TestSession-4b87460d-6f43-4c4c-b810-d6f87c774854")),
       amountInPence        = Some(AmountInPence(1234)),
       emailTemplateOptions = None,
@@ -450,7 +450,7 @@ object TestJourneys {
 
   object PfPpt extends JourneyStatuses[JsdPfPpt] {
     val journeyBeforeBeginWebPayment: Journey[JsdPfPpt] = Journey[JsdPfPpt](
-      _id                  = JourneyId("TestJourneyId-44f9-ad7f-01e1d3d8f151"),
+      _id                  = JourneyId(TestPayApiData.decryptedJourneyId),
       sessionId            = Some(SessionId("TestSession-4b87460d-6f43-4c4c-b810-d6f87c774854")),
       amountInPence        = Some(AmountInPence(1234)),
       emailTemplateOptions = None,
@@ -465,7 +465,7 @@ object TestJourneys {
 
   object BtaEpayeBill extends JourneyStatuses[JsdBtaEpayeBill] {
     val journeyBeforeBeginWebPayment: Journey[JsdBtaEpayeBill] = Journey[JsdBtaEpayeBill](
-      _id                  = JourneyId("TestJourneyId-44f9-ad7f-01e1d3d8f151"),
+      _id                  = JourneyId(TestPayApiData.decryptedJourneyId),
       sessionId            = Some(SessionId("TestSession-4b87460d-6f43-4c4c-b810-d6f87c774854")),
       amountInPence        = Some(AmountInPence(1234)),
       emailTemplateOptions = None,
@@ -485,7 +485,7 @@ object TestJourneys {
 
   object BtaEpayePenalty extends JourneyStatuses[JsdBtaEpayePenalty] {
     val journeyBeforeBeginWebPayment: Journey[JsdBtaEpayePenalty] = Journey[JsdBtaEpayePenalty](
-      _id                  = JourneyId("TestJourneyId-44f9-ad7f-01e1d3d8f151"),
+      _id                  = JourneyId(TestPayApiData.decryptedJourneyId),
       sessionId            = Some(SessionId("TestSession-4b87460d-6f43-4c4c-b810-d6f87c774854")),
       amountInPence        = Some(AmountInPence(1234)),
       emailTemplateOptions = None,
@@ -506,7 +506,7 @@ object TestJourneys {
 
   object BtaEpayeInterest extends JourneyStatuses[JsdBtaEpayeInterest] {
     val journeyBeforeBeginWebPayment: Journey[JsdBtaEpayeInterest] = Journey[JsdBtaEpayeInterest](
-      _id                  = JourneyId("TestJourneyId-44f9-ad7f-01e1d3d8f151"),
+      _id                  = JourneyId(TestPayApiData.decryptedJourneyId),
       sessionId            = Some(SessionId("TestSession-4b87460d-6f43-4c4c-b810-d6f87c774854")),
       amountInPence        = Some(AmountInPence(1234)),
       emailTemplateOptions = None,
@@ -527,7 +527,7 @@ object TestJourneys {
 
   object BtaEpayeGeneral extends JourneyStatuses[JsdBtaEpayeGeneral] {
     val journeyBeforeBeginWebPayment: Journey[JsdBtaEpayeGeneral] = Journey[JsdBtaEpayeGeneral](
-      _id                  = JourneyId("TestJourneyId-44f9-ad7f-01e1d3d8f151"),
+      _id                  = JourneyId(TestPayApiData.decryptedJourneyId),
       sessionId            = Some(SessionId("TestSession-4b87460d-6f43-4c4c-b810-d6f87c774854")),
       amountInPence        = Some(AmountInPence(1234)),
       emailTemplateOptions = None,
@@ -546,7 +546,7 @@ object TestJourneys {
 
   object BtaClass1aNi extends JourneyStatuses[JsdBtaClass1aNi] {
     val journeyBeforeBeginWebPayment: Journey[JsdBtaClass1aNi] = Journey[JsdBtaClass1aNi](
-      _id                  = JourneyId("TestJourneyId-44f9-ad7f-01e1d3d8f151"),
+      _id                  = JourneyId(TestPayApiData.decryptedJourneyId),
       sessionId            = Some(SessionId("TestSession-4b87460d-6f43-4c4c-b810-d6f87c774854")),
       amountInPence        = Some(AmountInPence(1234)),
       emailTemplateOptions = None,
@@ -566,7 +566,7 @@ object TestJourneys {
 
   object Amls extends JourneyStatuses[JsdAmls] {
     val journeyBeforeBeginWebPayment: Journey[JsdAmls] = Journey[JsdAmls](
-      _id                  = JourneyId("TestJourneyId-44f9-ad7f-01e1d3d8f151"),
+      _id                  = JourneyId(TestPayApiData.decryptedJourneyId),
       sessionId            = Some(SessionId("TestSession-4b87460d-6f43-4c4c-b810-d6f87c774854")),
       amountInPence        = Some(AmountInPence(1234)),
       emailTemplateOptions = None,
@@ -584,7 +584,7 @@ object TestJourneys {
 
   object PfAmls extends JourneyStatuses[JsdPfAmls] {
     val journeyBeforeBeginWebPayment: Journey[JsdPfAmls] = Journey[JsdPfAmls](
-      _id                  = JourneyId("TestJourneyId-44f9-ad7f-01e1d3d8f151"),
+      _id                  = JourneyId(TestPayApiData.decryptedJourneyId),
       sessionId            = Some(SessionId("TestSession-4b87460d-6f43-4c4c-b810-d6f87c774854")),
       amountInPence        = Some(AmountInPence(1234)),
       emailTemplateOptions = None,
@@ -601,7 +601,7 @@ object TestJourneys {
 
   object PfSdlt extends JourneyStatuses[JsdPfSdlt] {
     val journeyBeforeBeginWebPayment: Journey[JsdPfSdlt] = Journey[JsdPfSdlt](
-      _id                  = JourneyId("TestJourneyId-44f9-ad7f-01e1d3d8f151"),
+      _id                  = JourneyId(TestPayApiData.decryptedJourneyId),
       sessionId            = Some(SessionId("TestSession-4b87460d-6f43-4c4c-b810-d6f87c774854")),
       amountInPence        = Some(AmountInPence(1234)),
       emailTemplateOptions = None,
@@ -616,7 +616,7 @@ object TestJourneys {
 
   object CapitalGainsTax extends JourneyStatuses[JsdCapitalGainsTax] {
     val journeyBeforeBeginWebPayment: Journey[JsdCapitalGainsTax] = Journey[JsdCapitalGainsTax](
-      _id                  = JourneyId("TestJourneyId-44f9-ad7f-01e1d3d8f151"),
+      _id                  = JourneyId(TestPayApiData.decryptedJourneyId),
       sessionId            = Some(SessionId("TestSession-4b87460d-6f43-4c4c-b810-d6f87c774854")),
       amountInPence        = Some(AmountInPence(1234)),
       emailTemplateOptions = None,
@@ -636,7 +636,7 @@ object TestJourneys {
 
   object EconomicCrimeLevy extends JourneyStatuses[JsdEconomicCrimeLevy] {
     val journeyBeforeBeginWebPayment: Journey[JsdEconomicCrimeLevy] = Journey[JsdEconomicCrimeLevy](
-      _id                  = JourneyId("TestJourneyId-44f9-ad7f-01e1d3d8f151"),
+      _id                  = JourneyId(TestPayApiData.decryptedJourneyId),
       sessionId            = Some(SessionId("TestSession-4b87460d-6f43-4c4c-b810-d6f87c774854")),
       amountInPence        = Some(AmountInPence(1234)),
       emailTemplateOptions = None,
@@ -655,7 +655,7 @@ object TestJourneys {
 
   object PfEconomicCrimeLevy extends JourneyStatuses[JsdPfEconomicCrimeLevy] {
     val journeyBeforeBeginWebPayment: Journey[JsdPfEconomicCrimeLevy] = Journey[JsdPfEconomicCrimeLevy](
-      _id                  = JourneyId("TestJourneyId-44f9-ad7f-01e1d3d8f151"),
+      _id                  = JourneyId(TestPayApiData.decryptedJourneyId),
       sessionId            = Some(SessionId("TestSession-4b87460d-6f43-4c4c-b810-d6f87c774854")),
       amountInPence        = Some(AmountInPence(1234)),
       emailTemplateOptions = None,
@@ -672,7 +672,7 @@ object TestJourneys {
 
   object VatC2c extends JourneyStatuses[JsdVatC2c] {
     val journeyBeforeBeginWebPayment: Journey[JsdVatC2c] = Journey[JsdVatC2c](
-      _id                  = JourneyId("TestJourneyId-44f9-ad7f-01e1d3d8f151"),
+      _id                  = JourneyId(TestPayApiData.decryptedJourneyId),
       sessionId            = Some(SessionId("TestSession-4b87460d-6f43-4c4c-b810-d6f87c774854")),
       amountInPence        = Some(AmountInPence(1234)),
       emailTemplateOptions = None,
@@ -690,7 +690,7 @@ object TestJourneys {
 
   object PfVatC2c extends JourneyStatuses[JsdPfVatC2c] {
     val journeyBeforeBeginWebPayment: Journey[JsdPfVatC2c] = Journey[JsdPfVatC2c](
-      _id                  = JourneyId("TestJourneyId-44f9-ad7f-01e1d3d8f151"),
+      _id                  = JourneyId(TestPayApiData.decryptedJourneyId),
       sessionId            = Some(SessionId("TestSession-4b87460d-6f43-4c4c-b810-d6f87c774854")),
       amountInPence        = Some(AmountInPence(1234)),
       emailTemplateOptions = None,

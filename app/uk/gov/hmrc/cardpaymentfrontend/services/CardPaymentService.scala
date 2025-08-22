@@ -17,7 +17,7 @@
 package uk.gov.hmrc.cardpaymentfrontend.services
 
 import payapi.cardpaymentjourney.model.journey.Journey
-import payapi.corcommon.model.{PaymentStatuses, TransNumberGenerator}
+import payapi.corcommon.model.{JourneyId, PaymentStatuses, TransNumberGenerator}
 import play.api.Logging
 import play.api.i18n.MessagesApi
 import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
@@ -32,6 +32,7 @@ import uk.gov.hmrc.cardpaymentfrontend.util.SafeEquals.EqualsOps
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 
 import java.time.{Clock, LocalDateTime}
+import java.util.Base64
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -42,6 +43,7 @@ class CardPaymentService @Inject() (
     cardPaymentConnector: CardPaymentConnector,
     clientIdService:      ClientIdService,
     clock:                Clock,
+    cryptoService:        CryptoService,
     emailService:         EmailService,
     payApiConnector:      PayApiConnector,
     requestSupport:       RequestSupport,
@@ -51,8 +53,13 @@ class CardPaymentService @Inject() (
   import requestSupport._
 
   // the url barclaycard make an empty post to after user completes payment
-  private def returnToHmrcUrl: String =
-    s"${appConfig.cardPaymentFrontendBaseUrl}${uk.gov.hmrc.cardpaymentfrontend.controllers.routes.PaymentStatusController.returnToHmrc().url}"
+  private[services] def returnToHmrcUrl(journeyId: JourneyId): String = {
+    // we encrypt the trace id and put it in the return url as a path parameter so we can find the journey when user comes back from barclaycard.
+    val encryptedJourneyId: String = cryptoService.encryptString(journeyId.value)
+    // we base64 encode the encrypted journeyId so it passes barclaycard regex for urls.
+    val base64EncodedEncryptedJourneyId: String = Base64.getUrlEncoder.encodeToString(encryptedJourneyId.getBytes)
+    s"${appConfig.cardPaymentFrontendBaseUrl}${uk.gov.hmrc.cardpaymentfrontend.controllers.routes.PaymentStatusController.returnToHmrc(base64EncodedEncryptedJourneyId).url}"
+  }
 
   def initiatePayment(
       journey:               Journey[_],
@@ -77,7 +84,7 @@ class CardPaymentService @Inject() (
     )
 
     val cardPaymentInitiatePaymentRequest: CardPaymentInitiatePaymentRequest = CardPaymentInitiatePaymentRequest(
-      redirectUrl         = returnToHmrcUrl,
+      redirectUrl         = returnToHmrcUrl(journey._id),
       clientId            = clientIdStringToUse,
       purchaseDescription = journey.referenceValue,
       purchaseAmount      = journey.getAmountInPence,

@@ -40,7 +40,7 @@ class CardPaymentConnectorSpec extends ItSpec {
         )
         val expectedCardPaymentInitiatePaymentResponse = CardPaymentInitiatePaymentResponse("someiframeurl", "sometransactionref")
 
-        CardPaymentStub.InitiatePayment.stubForInitiatePayment2xx(cardPaymentInitiatePaymentRequest, expectedCardPaymentInitiatePaymentResponse)
+        CardPaymentStub.InitiatePayment.stubForInitiatePayment2xx(expectedCardPaymentInitiatePaymentResponse)
 
         val result = systemUnderTest.initiatePayment(cardPaymentInitiatePaymentRequest).futureValue
         result shouldBe expectedCardPaymentInitiatePaymentResponse

@@ -14,12 +14,13 @@
  * limitations under the License.
  *@
 
+@import payapi.corcommon.model.TraceId
 @import uk.gov.hmrc.cardpaymentfrontend.views.html.Layout
 @import views.html.helper.CSPNonce
 
 @this(layout: Layout)
 
-@()(implicit requestHeader: RequestHeader, messages: Messages)
+@(encryptedJourneyId: String)(implicit requestHeader: RequestHeader, messages: Messages)
 
 @scripts = {
     <script src="@{controllers.routes.Assets.versioned("javascripts/escape-iframe.js")}" @{CSPNonce.attr}></script>
@@ -30,5 +31,5 @@
     <a rel="noreferrer"
     id="returnControlLink"
     target="_parent"
-    href="@{uk.gov.hmrc.cardpaymentfrontend.controllers.routes.PaymentStatusController.paymentStatus()}"></a>
+    href="@{uk.gov.hmrc.cardpaymentfrontend.controllers.routes.PaymentStatusController.paymentStatus(encryptedJourneyId)}"></a>
 }

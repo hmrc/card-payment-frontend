@@ -22,14 +22,13 @@ import org.scalatest.Assertion
 import payapi.cardpaymentjourney.model.barclays.BarclaysOrder
 import payapi.cardpaymentjourney.model.journey.{Journey, JourneySpecificData, Url}
 import payapi.corcommon.model.barclays.TransactionReference
-import payapi.corcommon.model.{AmountInPence, JourneyId, Origin, Origins}
+import payapi.corcommon.model.{JourneyId, Origin, Origins}
 import play.api.http.Status
 import play.api.http.Status.SEE_OTHER
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{contentAsString, defaultAwaitTimeout, redirectLocation, status}
-import uk.gov.hmrc.cardpaymentfrontend.models.EmailAddress
-import uk.gov.hmrc.cardpaymentfrontend.models.cardpayment.{BarclaycardAddress, CardPaymentInitiatePaymentRequest, CardPaymentInitiatePaymentResponse}
+import uk.gov.hmrc.cardpaymentfrontend.models.cardpayment.CardPaymentInitiatePaymentResponse
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.TestOps.FakeRequestOps
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.stubs.{CardPaymentStub, PayApiStub}
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.testdata.TestJourneys
@@ -1085,21 +1084,8 @@ class CheckYourAnswersControllerSpec extends ItSpec {
   "POST /check-your-details" - {
 
     "should redirect to the iframe page when there is an address in session" in {
-      val cardPaymentInitiatePaymentRequest = CardPaymentInitiatePaymentRequest(
-        redirectUrl         = "http://localhost:10155/pay-by-card/return-to-hmrc",
-        clientId            = "SAEE",
-        purchaseDescription = "1234567895K",
-        purchaseAmount      = AmountInPence(1234),
-        billingAddress      = BarclaycardAddress(
-          line1       = "line1",
-          postCode    = "AA0AA0",
-          countryCode = "GBR"
-        ),
-        emailAddress        = Some(EmailAddress("blah@blah.com")),
-        transactionNumber   = "00001999999999"
-      )
       val expectedCardPaymentInitiatePaymentResponse = CardPaymentInitiatePaymentResponse("http://localhost:10155/this-would-be-iframe", "sometransactionref")
-      CardPaymentStub.InitiatePayment.stubForInitiatePayment2xx(cardPaymentInitiatePaymentRequest, expectedCardPaymentInitiatePaymentResponse)
+      CardPaymentStub.InitiatePayment.stubForInitiatePayment2xx(expectedCardPaymentInitiatePaymentResponse)
       PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyBeforeBeginWebPayment)
 
       val result = systemUnderTest.submit(fakeRequest(TestJourneys.PfSa.journeyBeforeBeginWebPayment._id))
