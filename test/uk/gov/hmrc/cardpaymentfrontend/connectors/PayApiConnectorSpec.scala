@@ -57,6 +57,31 @@ class PayApiConnectorSpec extends ItSpec {
       }
     }
 
+    "findJourneyByJourneyId" - {
+        def headerCarrierForTest(maybeSessionId: Option[SessionId]) = HeaderCarrier(sessionId = maybeSessionId)
+
+      val testJourney = TestJourneys.PfSa.journeyBeforeBeginWebPayment
+
+      "return None when no journey can be found for given journey id in pay-api" in {
+        PayApiStub.stubForFindByJourneyId404(testJourney._id)
+        implicit val hc: HeaderCarrier = headerCarrierForTest(Some(SessionId("no-journey-exists-for-this-session-id")))
+        systemUnderTest.findJourneyByJourneyId(testJourney._id).futureValue shouldBe None
+      }
+
+      "return Some Journey when there is one found for a journey id in pay-api" in {
+        PayApiStub.stubForFindByJourneyId2xx(testJourney._id)(testJourney)
+        implicit val hc: HeaderCarrier = headerCarrierForTest(Some(uk.gov.hmrc.http.SessionId("some-valid-session-id")))
+        systemUnderTest.findJourneyByJourneyId(testJourney._id).futureValue shouldBe Some(testJourney)
+      }
+
+      "propagate a 5xx error when pay-api returns a 5xx" in {
+        PayApiStub.stubForFindByJourneyId5xx(testJourney._id)
+        implicit val hc: HeaderCarrier = headerCarrierForTest(Some(uk.gov.hmrc.http.SessionId("some-valid-session-id")))
+        val error: Exception = intercept[Exception](systemUnderTest.findJourneyByJourneyId(testJourney._id).futureValue)
+        error.getCause.getMessage should include(s"GET of 'http://localhost:${wireMockPort.toString}/pay-api/journey/${testJourney._id.value}' returned 503.")
+      }
+    }
+
     "JourneyUpdates" - {
       "updateBeginWebPayment" is pending
       "updateSucceedWebPayment" is pending

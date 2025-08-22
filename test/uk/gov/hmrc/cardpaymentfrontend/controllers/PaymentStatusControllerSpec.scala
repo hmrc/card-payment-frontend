@@ -24,15 +24,18 @@ import play.api.test.Helpers._
 import play.mvc.Http.Status
 import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
 import uk.gov.hmrc.cardpaymentfrontend.models.cardpayment.{AdditionalPaymentInfo, CardPaymentFinishPaymentResponses, CardPaymentResult}
+import uk.gov.hmrc.cardpaymentfrontend.services.CryptoService
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.ItSpec
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.TestOps.FakeRequestOps
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.stubs.{CardPaymentStub, PayApiStub}
-import uk.gov.hmrc.cardpaymentfrontend.testsupport.testdata.TestJourneys
+import uk.gov.hmrc.cardpaymentfrontend.testsupport.testdata.{TestJourneys, TestPayApiData}
 import uk.gov.hmrc.play.bootstrap.binders.RedirectUrl
 
 class PaymentStatusControllerSpec extends ItSpec {
 
   val systemUnderTest: PaymentStatusController = app.injector.instanceOf[PaymentStatusController]
+
+  val cryptoService: CryptoService = app.injector.instanceOf[CryptoService]
 
   val fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withSessionId()
 
@@ -78,12 +81,13 @@ class PaymentStatusControllerSpec extends ItSpec {
 
     "returnToHmrc" - {
 
-      "should render the redirectToParent page which links to the /payment-status endpoint" in {
-        val result = systemUnderTest.returnToHmrc()(fakeRequest)
+      "should render the redirectToParent page which links to the /payment-status endpoint, while keeping the base 64 encoded encrypted journeyid in the path param" in {
+        val base64EncodedEncryptedJourneyId: String = TestPayApiData.base64EncryptedJourneyId
+        val result = systemUnderTest.returnToHmrc(base64EncodedEncryptedJourneyId)(fakeRequest)
         status(result) shouldBe Status.OK
         val document = Jsoup.parse(contentAsString(result))
         val anchorElement = document.select("#returnControlLink")
-        anchorElement.attr("href") shouldBe "/pay-by-card/payment-status"
+        anchorElement.attr("href") shouldBe s"/pay-by-card/payment-status/$base64EncodedEncryptedJourneyId"
         anchorElement.attr("target") shouldBe "_parent"
       }
 
@@ -92,18 +96,19 @@ class PaymentStatusControllerSpec extends ItSpec {
     "paymentStatus" - {
 
       "should return bad request due to action refiner when journey state is before Sent, i.e. Created" in {
-        PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyBeforeBeginWebPayment)
-        val result = systemUnderTest.paymentStatus()(fakeRequest)
+        val journeyBeforeBeginWebPayment = TestJourneys.PfSa.journeyBeforeBeginWebPayment
+        PayApiStub.stubForFindByJourneyId2xx(journeyBeforeBeginWebPayment._id)(journeyBeforeBeginWebPayment)
+        val result = systemUnderTest.paymentStatus(TestPayApiData.base64EncryptedJourneyId)(fakeRequest)
         status(result) shouldBe Status.BAD_REQUEST
       }
 
       "should return a redirect to payment success page when Successful CardPaymentResult is returned from backend after AuthAndCapture" in {
         val journey = TestJourneys.PfSa.journeyAfterBeginWebPayment
         val fakeRequest = new JourneyRequest(journey, FakeRequest().withSessionId())
-        PayApiStub.stubForFindBySessionId2xx(journey)
+        PayApiStub.stubForFindByJourneyId2xx(journey._id)(journey)
         val testCardPaymentResult = CardPaymentResult(CardPaymentFinishPaymentResponses.Successful, AdditionalPaymentInfo(Some("debit"), Some(123), Some(FrozenTime.localDateTime)))
         CardPaymentStub.AuthAndCapture.stubForAuthAndCapture2xx("Some-transaction-ref", testCardPaymentResult)
-        val result = systemUnderTest.paymentStatus()(fakeRequest)
+        val result = systemUnderTest.paymentStatus(TestPayApiData.base64EncryptedJourneyId)(fakeRequest)
         status(result) shouldBe 303
         redirectLocation(result) shouldBe Some("/pay-by-card/payment-complete")
       }
@@ -111,10 +116,10 @@ class PaymentStatusControllerSpec extends ItSpec {
       "should return a redirect to payment failed page when Failed CardPaymentResult is returned from backend after AuthAndCapture" in {
         val journey = TestJourneys.PfSa.journeyAfterBeginWebPayment
         val fakeRequest = new JourneyRequest(journey, FakeRequest().withSessionId())
-        PayApiStub.stubForFindBySessionId2xx(journey)
+        PayApiStub.stubForFindByJourneyId2xx(journey._id)(journey)
         val testCardPaymentResult = CardPaymentResult(CardPaymentFinishPaymentResponses.Failed, AdditionalPaymentInfo(Some("debit"), Some(123), Some(FrozenTime.localDateTime)))
         CardPaymentStub.AuthAndCapture.stubForAuthAndCapture2xx("Some-transaction-ref", testCardPaymentResult)
-        val result = systemUnderTest.paymentStatus()(fakeRequest)
+        val result = systemUnderTest.paymentStatus(TestPayApiData.base64EncryptedJourneyId)(fakeRequest)
         status(result) shouldBe 303
         redirectLocation(result) shouldBe Some("/pay-by-card/payment-failed")
       }
@@ -122,10 +127,10 @@ class PaymentStatusControllerSpec extends ItSpec {
       "should return a redirect to payment cancelled page when Cancelled CardPaymentResult is returned from backend after AuthAndCapture" in {
         val journey = TestJourneys.PfSa.journeyAfterBeginWebPayment
         val fakeRequest = new JourneyRequest(journey, FakeRequest().withSessionId())
-        PayApiStub.stubForFindBySessionId2xx(journey)
+        PayApiStub.stubForFindByJourneyId2xx(journey._id)(journey)
         val testCardPaymentResult = CardPaymentResult(CardPaymentFinishPaymentResponses.Cancelled, AdditionalPaymentInfo(Some("debit"), Some(123), Some(FrozenTime.localDateTime)))
         CardPaymentStub.AuthAndCapture.stubForAuthAndCapture2xx("Some-transaction-ref", testCardPaymentResult)
-        val result = systemUnderTest.paymentStatus()(fakeRequest)
+        val result = systemUnderTest.paymentStatus(TestPayApiData.base64EncryptedJourneyId)(fakeRequest)
         status(result) shouldBe 303
         redirectLocation(result) shouldBe Some("/pay-by-card/payment-cancelled")
       }
@@ -133,9 +138,9 @@ class PaymentStatusControllerSpec extends ItSpec {
       "should throw an exception/error when there's no transaction reference in the order, shouldn't be possible, i.e. order is None, even though we've initiated a payment, and not call backend to auth and settle" in {
         val journey = TestJourneys.PfSa.journeyAfterBeginWebPayment.copy(order = None)
         val fakeRequest = new JourneyRequest(journey, FakeRequest().withSessionId())
-        PayApiStub.stubForFindBySessionId2xx(journey)
+        PayApiStub.stubForFindByJourneyId2xx(journey._id)(journey)
         val error = intercept[RuntimeException] {
-          systemUnderTest.paymentStatus()(fakeRequest).futureValue
+          systemUnderTest.paymentStatus(TestPayApiData.base64EncryptedJourneyId)(fakeRequest).futureValue
         }
         error.getMessage shouldBe "The future returned an exception of type: java.lang.RuntimeException, with message: Could not find transaction ref, therefore we can't auth and settle.."
         CardPaymentStub.AuthAndCapture.verifyNone("Some-transaction-ref")
@@ -144,9 +149,9 @@ class PaymentStatusControllerSpec extends ItSpec {
       "should send a cancel request if the call to auth and settle fails for whatever unexpected reason, but still propagate the error" in {
         val journey = TestJourneys.PfSa.journeyAfterBeginWebPayment
         val fakeRequest = new JourneyRequest(journey, FakeRequest().withSessionId())
-        PayApiStub.stubForFindBySessionId2xx(journey)
+        PayApiStub.stubForFindByJourneyId2xx(journey._id)(journey)
         CardPaymentStub.AuthAndCapture.stubForAuthAndCapture5xx("Some-transaction-ref")
-        val result = systemUnderTest.paymentStatus()(fakeRequest)
+        val result = systemUnderTest.paymentStatus(TestPayApiData.base64EncryptedJourneyId)(fakeRequest)
         status(result) shouldBe 500
         CardPaymentStub.CancelPayment.verifyOne("Some-transaction-ref", "SAEE")
       }
@@ -154,9 +159,9 @@ class PaymentStatusControllerSpec extends ItSpec {
       "should throw an InternalServerError when the response from backend can't be deserialised as expected" in {
         val journey = TestJourneys.PfSa.journeyAfterBeginWebPayment
         val fakeRequest = new JourneyRequest(journey, FakeRequest().withSessionId())
-        PayApiStub.stubForFindBySessionId2xx(journey)
+        PayApiStub.stubForFindByJourneyId2xx(journey._id)(journey)
         CardPaymentStub.AuthAndCapture.stubForAuthAndCaptureCustomJson2xx("Some-transaction-ref", Json.parse("""{"some":"invalidjson"}"""))
-        val result = systemUnderTest.paymentStatus()(fakeRequest)
+        val result = systemUnderTest.paymentStatus(TestPayApiData.base64EncryptedJourneyId)(fakeRequest)
         status(result) shouldBe 500
         CardPaymentStub.CancelPayment.verifyOne("Some-transaction-ref", "SAEE")
       }

@@ -20,7 +20,7 @@ import com.github.tomakehurst.wiremock.client.WireMock._
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.http.Status
 import play.api.libs.json.{JsString, JsValue, Json}
-import uk.gov.hmrc.cardpaymentfrontend.models.cardpayment.{CardPaymentInitiatePaymentRequest, CardPaymentInitiatePaymentResponse, CardPaymentResult}
+import uk.gov.hmrc.cardpaymentfrontend.models.cardpayment.{CardPaymentInitiatePaymentResponse, CardPaymentResult}
 
 object CardPaymentStub {
 
@@ -28,18 +28,16 @@ object CardPaymentStub {
 
     private val path: String = "/card-payment/initiate-payment"
 
-    def stubForInitiatePayment2xx(
-        cardPaymentInitiatePaymentRequest:  CardPaymentInitiatePaymentRequest,
-        cardPaymentInitiatePaymentResponse: CardPaymentInitiatePaymentResponse
-    ): StubMapping = stubFor(
-      post(urlPathEqualTo(path))
-        .withRequestBody(equalToJson(Json.prettyPrint(Json.toJson(cardPaymentInitiatePaymentRequest))))
-        .willReturn(
-          aResponse()
-            .withStatus(Status.OK)
-            .withBody(Json.prettyPrint(Json.toJson(cardPaymentInitiatePaymentResponse)))
-        )
-    )
+    def stubForInitiatePayment2xx(cardPaymentInitiatePaymentResponse: CardPaymentInitiatePaymentResponse): StubMapping = {
+      stubFor(
+        post(urlPathEqualTo(path))
+          .willReturn(
+            aResponse()
+              .withStatus(Status.OK)
+              .withBody(Json.prettyPrint(Json.toJson(cardPaymentInitiatePaymentResponse)))
+          )
+      )
+    }
 
     def stubForInitiatePayment5xx(): StubMapping = stubFor(
       post(urlPathEqualTo(path)).willReturn(

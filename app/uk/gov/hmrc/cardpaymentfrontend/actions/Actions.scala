@@ -34,7 +34,10 @@ class Actions @Inject() (
 
   val iframeAction: ActionBuilder[JourneyRequest, AnyContent] = journeyAction.andThen[JourneyRequest](paymentStatusActionRefiners.iframePageActionRefiner)
 
-  val paymentStatusAction: ActionBuilder[JourneyRequest, AnyContent] = journeyAction.andThen[JourneyRequest](paymentStatusActionRefiners.paymentStatusActionRefiner)
+  def paymentStatusAction(encryptedJourneyId: String): ActionBuilder[JourneyRequest, AnyContent] =
+    default
+      .andThen[JourneyRequest](paymentStatusActionRefiners.findJourneyByJourneyIdRefiner(encryptedJourneyId))
+      .andThen[JourneyRequest](paymentStatusActionRefiners.paymentStatusActionRefiner)
 
   val journeyFinishedAction: ActionBuilder[JourneyRequest, AnyContent] = journeyAction.andThen[JourneyRequest](journeyFinishedActionRefiner)
 

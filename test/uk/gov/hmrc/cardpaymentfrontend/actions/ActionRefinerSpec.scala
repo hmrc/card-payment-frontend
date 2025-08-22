@@ -27,7 +27,7 @@ import uk.gov.hmrc.cardpaymentfrontend.config.ErrorHandler
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.ItSpec
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.TestOps.FakeRequestOps
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.stubs.PayApiStub
-import uk.gov.hmrc.cardpaymentfrontend.testsupport.testdata.TestJourneys
+import uk.gov.hmrc.cardpaymentfrontend.testsupport.testdata.{TestJourneys, TestPayApiData}
 import uk.gov.hmrc.cardpaymentfrontend.views.html.ForceDeleteAnswersPage
 
 import scala.concurrent.Future
@@ -80,6 +80,8 @@ class ActionRefinerSpec extends ItSpec {
 
     val systemUnderTest: PaymentStatusActionRefiners = app.injector.instanceOf[PaymentStatusActionRefiners]
     val errorHandler: ErrorHandler = app.injector.instanceOf[ErrorHandler]
+    val forceDeleteAnswersPage = app.injector.instanceOf[ForceDeleteAnswersPage]
+    val messagesApi = app.injector.instanceOf[MessagesApi]
 
       def fakeRequest(journey: Journey[JourneySpecificData]): JourneyRequest[AnyContent] = new JourneyRequest(journey, FakeRequest().withSessionId())
       def technicalDifficultiesPage(journey: Journey[JourneySpecificData]): HtmlFormat.Appendable = errorHandler.technicalDifficulties()(fakeRequest(journey))
@@ -94,6 +96,29 @@ class ActionRefinerSpec extends ItSpec {
         })
         resultFromRefine.futureValue shouldBe expectedResult
       }
+
+    "findJourneyByJourneyIdRefiner should" - {
+
+      "return result when journey is found by journey id" in {
+        val testJourney = TestJourneys.PfSa.journeyAfterBeginWebPayment
+        PayApiStub.stubForFindByJourneyId2xx(testJourney._id)(testJourney)
+        test(
+          journey        = testJourney,
+          refiner        = systemUnderTest.findJourneyByJourneyIdRefiner(TestPayApiData.base64EncryptedJourneyId),
+          expectedResult = Results.Ok("test ok")
+        )
+      }
+
+      "return Unauthorized with force delete answers page when no journey can be found by payment correlation id" in {
+        val testJourney = TestJourneys.PfSa.journeyAfterBeginWebPayment
+        PayApiStub.stubForFindByJourneyId404(testJourney._id)
+        test(
+          journey        = testJourney,
+          refiner        = systemUnderTest.findJourneyByJourneyIdRefiner(TestPayApiData.base64EncryptedJourneyId),
+          expectedResult = Results.Unauthorized(forceDeleteAnswersPage(false, Some(Url("http://localhost:9056/pay")))(fakeRequest(testJourney), messagesApi.preferred(fakeRequest(testJourney))))
+        )
+      }
+    }
 
     "paymentStatusActionRefiner should" - {
 

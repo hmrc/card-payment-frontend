@@ -16,6 +16,7 @@
 
 package uk.gov.hmrc.cardpaymentfrontend.controllers
 
+import payapi.cardpaymentjourney.model.journey.SessionId
 import play.api.Logging
 import play.api.i18n.Messages
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
@@ -26,7 +27,7 @@ import uk.gov.hmrc.cardpaymentfrontend.requests.RequestSupport
 import uk.gov.hmrc.cardpaymentfrontend.services.CardPaymentService
 import uk.gov.hmrc.cardpaymentfrontend.views.html.errors.TechnicalDifficultiesPage
 import uk.gov.hmrc.cardpaymentfrontend.views.html.iframe.{IframeContainerPage, RedirectToParentPage}
-import uk.gov.hmrc.http.HttpResponse
+import uk.gov.hmrc.http.{HttpResponse, SessionKeys}
 import uk.gov.hmrc.play.bootstrap.binders.RedirectUrl.idFunctor
 import uk.gov.hmrc.play.bootstrap.binders.RedirectUrlPolicy.Id
 import uk.gov.hmrc.play.bootstrap.binders.{AbsoluteWithHostnameFromAllowlist, RedirectUrl, RedirectUrlPolicy}
@@ -60,13 +61,13 @@ class PaymentStatusController @Inject() (
       )
   }
 
-  def returnToHmrc(): Action[AnyContent] = actions.default { implicit request =>
-    Ok(redirectToParent())
+  def returnToHmrc(encryptedJourneyId: String): Action[AnyContent] = actions.default { implicit request =>
+    Ok(redirectToParent(encryptedJourneyId))
   }
 
-  //todo append something to the return url so we can extract/work out the session/journey - are we allowed to do this or do we use session?
-  def paymentStatus(): Action[AnyContent] = actions.paymentStatusAction.async { implicit journeyRequest =>
+  def paymentStatus(encryptedJourneyId: String): Action[AnyContent] = actions.paymentStatusAction(encryptedJourneyId).async { implicit journeyRequest =>
     val transactionRefFromJourney: Option[String] = journeyRequest.journey.order.map(_.transactionReference.value)
+    val sessionIdForJourney: SessionId = journeyRequest.journey.sessionId.getOrElse(throw new RuntimeException("SessionId is missing from journey, this should never happen!"))
 
     val maybeCardPaymentResultF = for {
       authAndCaptureResult <- cardPaymentService.finishPayment(
@@ -78,9 +79,9 @@ class PaymentStatusController @Inject() (
 
     maybeCardPaymentResultF.flatMap {
       case Some(cardPaymentResult) => cardPaymentResult.cardPaymentResult match {
-        case CardPaymentFinishPaymentResponses.Successful => Future.successful(Redirect(routes.PaymentCompleteController.renderPage))
-        case CardPaymentFinishPaymentResponses.Failed     => Future.successful(Redirect(routes.PaymentFailedController.renderPage))
-        case CardPaymentFinishPaymentResponses.Cancelled  => Future.successful(Redirect(routes.PaymentCancelledController.renderPage))
+        case CardPaymentFinishPaymentResponses.Successful => Future.successful(Redirect(routes.PaymentCompleteController.renderPage).addingToSession(SessionKeys.sessionId -> sessionIdForJourney.value))
+        case CardPaymentFinishPaymentResponses.Failed     => Future.successful(Redirect(routes.PaymentFailedController.renderPage).addingToSession(SessionKeys.sessionId -> sessionIdForJourney.value))
+        case CardPaymentFinishPaymentResponses.Cancelled  => Future.successful(Redirect(routes.PaymentCancelledController.renderPage).addingToSession(SessionKeys.sessionId -> sessionIdForJourney.value))
       }
       case None => tryAndCancelPayment(Some("No cardPaymentResult returned, maybe invalid json returned?"))
     }.recoverWith {
