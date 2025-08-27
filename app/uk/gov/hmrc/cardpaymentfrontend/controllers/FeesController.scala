@@ -42,8 +42,7 @@ class FeesController @Inject() (
 
   def renderPage: Action[AnyContent] = actions.journeyAction { implicit journeyRequest: JourneyRequest[AnyContent] =>
     val altPayments = linksAvailableOnFeesPage(journeyRequest.journey.journeySpecificData)
-    if (altPayments.isEmpty) Redirect("http://nextpage.html")
-    else Ok(feesPage(altPayments))
+    Ok(feesPage(altPayments))
   }
 
   def submit: Action[AnyContent] = actions.journeyAction { _ =>

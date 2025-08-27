@@ -43,7 +43,7 @@ object ExtendedAmls extends ExtendedOrigin {
     case _          => throw new RuntimeException("Incorrect origin found")
   }
 
-  override def surveyAuditName: String = "self-assessment"
+  override def surveyAuditName: String = "anti-money-laundering"
   override def surveyReturnHref: String = "/personal-account"
   override def surveyReturnMessageKey: String = "payments-survey.pta.return-message"
   override def surveyIsWelshSupported: Boolean = true

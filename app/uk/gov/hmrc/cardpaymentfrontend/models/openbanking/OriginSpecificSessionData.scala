@@ -138,8 +138,8 @@ object OriginSpecificSessionData {
 
       //Todo: Remove PfP800 when PtaP800 is fully available
       case origin @ (PfOther | PtaP800 | PfP800
-        | BcPngr | Parcels | DdVat | DdSdil | Mib | PfSimpleAssessment
-        | PtaSimpleAssessment | PfJobRetentionScheme | JrsJobRetentionScheme) =>
+        | BcPngr | Parcels | DdVat | DdSdil | Mib | PfSimpleAssessment | PtaSimpleAssessment | PfJobRetentionScheme
+        | JrsJobRetentionScheme | WcXref) =>
         throw new RuntimeException(s"Trying to read JSON for unimplemented Origin: ${origin.toString}")
     }
 
