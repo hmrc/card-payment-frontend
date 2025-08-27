@@ -222,13 +222,13 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       val tdJourney: Journey[JourneySpecificData] = TestHelpers.deriveTestDataFromOrigin(origin).journeyBeforeBeginWebPayment
 
       val shouldBeAbleToChangeAmount: Boolean = origin match {
-        case Origins.WcSa   => false
-        case Origins.WcCt   => false
-        case Origins.WcVat  => false
+        case Origins.WcSa               => false
+        case Origins.WcCt               => false
+        case Origins.WcVat              => false
         case Origins.WcSimpleAssessment => false
-        case Origins.WcXref => false
-        case Origins.VatC2c => false
-        case _              => true
+        case Origins.WcXref             => false
+        case Origins.VatC2c             => false
+        case _                          => true
       }
 
       s"[${origin.entryName}] should render the amount row correctly" in {

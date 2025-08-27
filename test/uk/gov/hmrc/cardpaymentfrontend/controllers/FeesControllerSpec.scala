@@ -2192,7 +2192,6 @@ class FeesControllerSpec extends ItSpec {
             case Origins.WcSa                     => Seq(expectedOpenBankingLink)
             case Origins.WcCt                     => Seq(expectedOpenBankingLink)
             case Origins.WcVat                    => Seq(expectedOpenBankingLink)
-            case Origins.WcXref                   => Seq.empty
             case Origins.WcSimpleAssessment       => Seq(expectedOpenBankingLink)
             case Origins.WcXref                   => Seq.empty
           }

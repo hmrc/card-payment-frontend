@@ -318,11 +318,6 @@ class OpenBankingOriginSpecificSessionDataSpec extends UnitSpec {
       roundTripJsonTest(osd, testJson)
     }
 
-    "WcXref (which is None, since it doesn't support Open banking)" in {
-      val osd = ExtendedWcXref.openBankingOriginSpecificSessionData(TestJourneys.PfVatC2c.journeyBeforeBeginWebPayment.journeySpecificData)
-      osd shouldBe None
-    }
-
     "WcSimpleAssessment" in {
       val testJson = Json.parse("""{"simpleAssessmentReference":"XE123456789012","origin":"WcSimpleAssessment"}""")
       val osd = ExtendedWcSimpleAssessment.openBankingOriginSpecificSessionData(TestJourneys.WcSimpleAssessment.journeyBeforeBeginWebPayment.journeySpecificData)
@@ -331,7 +326,7 @@ class OpenBankingOriginSpecificSessionDataSpec extends UnitSpec {
     }
 
     "WcXref (which is None, since it doesn't support Open banking)" in {
-      val osd = ExtendedWcXref.openBankingOriginSpecificSessionData(TestJourneys.PfVatC2c.journeyBeforeBeginWebPayment.journeySpecificData)
+      val osd = ExtendedWcXref.openBankingOriginSpecificSessionData(TestJourneys.WcXref.journeyBeforeBeginWebPayment.journeySpecificData)
       osd shouldBe None
     }
 
