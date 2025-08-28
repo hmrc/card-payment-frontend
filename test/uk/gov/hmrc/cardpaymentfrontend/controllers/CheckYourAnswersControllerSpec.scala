@@ -1107,7 +1107,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
 
       val result = systemUnderTest.submit(fakeRequest(TestJourneys.PfSa.journeyBeforeBeginWebPayment._id))
       status(result) shouldBe SEE_OTHER
-      redirectLocation(result) shouldBe Some("/pay-by-card/show-iframe?iframeUrl=http%3A%2F%2Flocalhost%3A10155%2Fthis-would-be-iframe")
+      redirectLocation(result) shouldBe Some("/pay-by-card/card-details?iframeUrl=http%3A%2F%2Flocalhost%3A10155%2Fthis-would-be-iframe")
     }
 
     "should redirect to iFrameUrl if PaymentStatus is Sent and there is an order present" in {
@@ -1123,7 +1123,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
         ))))
       val result = systemUnderTest.submit(fakeRequestWithSentPaymentStatus())
       status(result) shouldBe SEE_OTHER
-      redirectLocation(result) shouldBe Some("/pay-by-card/show-iframe?iframeUrl=http%3A%2F%2Flocalhost%3A9975%2Fbarclays%2Fpages%2Fpaypage.jsf%2F600e1342-0714-4989-ac6c-c11c745f1ce6")
+      redirectLocation(result) shouldBe Some("/pay-by-card/card-details?iframeUrl=http%3A%2F%2Flocalhost%3A9975%2Fbarclays%2Fpages%2Fpaypage.jsf%2F600e1342-0714-4989-ac6c-c11c745f1ce6")
     }
 
     "should redirect to the Address page if there is no Address in session" in {
