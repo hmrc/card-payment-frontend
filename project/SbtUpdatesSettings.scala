@@ -13,7 +13,10 @@ object SbtUpdatesSettings {
     dependencyUpdatesFilter -= moduleFilter("org.scala-lang"),
     dependencyUpdatesFilter -= moduleFilter("org.playframework"),
     // ignoring pay-api-cor while 3ps being worked on
-    dependencyUpdatesFilter -= moduleFilter("uk.gov.hmrc", "pay-api-cor-card-payment-journey")
+    dependencyUpdatesFilter -= moduleFilter("uk.gov.hmrc", "pay-api-cor-card-payment-journey"),
+    //ignoring bootstrap while we ascertain whether a there's a bug after 9.14.0
+    dependencyUpdatesFilter -= moduleFilter("uk.gov.hmrc", "bootstrap-frontend-play-30"),
+    dependencyUpdatesFilter -= moduleFilter("uk.gov.hmrc", "bootstrap-test-play-30")
   )
 
 }
