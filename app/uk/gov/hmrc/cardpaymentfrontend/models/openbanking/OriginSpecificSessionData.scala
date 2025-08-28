@@ -136,6 +136,7 @@ object OriginSpecificSessionData {
       case WcVat                    => Json.format[WcVatSessionData].reads(json)
       case WcSimpleAssessment       => Json.format[WcSimpleAssessmentSessionData].reads(json)
       case WcEpayeLpp               => Json.format[WcEpayeLppSessionData].reads(json)
+      case WcClass1aNi              => Json.format[WcClass1aNiSessionData].reads(json)
 
       //Todo: Remove PfP800 when PtaP800 is fully available
       case origin @ (PfOther | PtaP800 | PfP800
@@ -222,6 +223,7 @@ object OriginSpecificSessionData {
       case sessionData: WcVatSessionData               => Json.format[WcVatSessionData].writes(sessionData)
       case sessionData: WcSimpleAssessmentSessionData  => Json.format[WcSimpleAssessmentSessionData].writes(sessionData)
       case sessionData: WcEpayeLppSessionData          => Json.format[WcEpayeLppSessionData].writes(sessionData)
+      case sessionData: WcClass1aNiSessionData         => Json.format[WcClass1aNiSessionData].writes(sessionData)
     }) + ("origin" -> Json.toJson(o.origin))
 
   implicit val format: OFormat[OriginSpecificSessionData] = OFormat(reads, writes)
@@ -315,6 +317,15 @@ final case class BtaClass1aNiSessionData(
     period:                  YearlyEpayeTaxPeriod,
     returnUrl:               Option[Url]             = None
 ) extends PayeSessionData(BtaClass1aNi) {
+  def paymentReference: Reference = ReferenceMaker.makeEpayeNiReference(accountsOfficeReference, period)
+  def searchTag: SearchTag = SearchTag(accountsOfficeReference.canonicalizedValue)
+}
+
+final case class WcClass1aNiSessionData(
+    accountsOfficeReference: AccountsOfficeReference,
+    period:                  YearlyEpayeTaxPeriod,
+    returnUrl:               Option[Url]             = None
+) extends PayeSessionData(WcClass1aNi) {
   def paymentReference: Reference = ReferenceMaker.makeEpayeNiReference(accountsOfficeReference, period)
   def searchTag: SearchTag = SearchTag(accountsOfficeReference.canonicalizedValue)
 }
