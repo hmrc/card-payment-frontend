@@ -322,12 +322,11 @@ final case class BtaClass1aNiSessionData(
 }
 
 final case class WcClass1aNiSessionData(
-    accountsOfficeReference: AccountsOfficeReference,
-    period:                  YearlyEpayeTaxPeriod,
-    returnUrl:               Option[Url]             = None
+    wcClass1aNiReference: WcClass1aNiReference,
+    returnUrl:            Option[Url]          = None
 ) extends PayeSessionData(WcClass1aNi) {
-  def paymentReference: Reference = ReferenceMaker.makeEpayeNiReference(accountsOfficeReference, period)
-  def searchTag: SearchTag = SearchTag(accountsOfficeReference.canonicalizedValue)
+  def paymentReference: Reference = ReferenceMaker.makeWcClass1aNiReference(wcClass1aNiReference)
+  def searchTag: SearchTag = SearchTag(wcClass1aNiReference.canonicalizedValue)
 }
 
 sealed abstract class CoTaxSessionData(origin: Origin) extends OriginSpecificSessionData(origin)
