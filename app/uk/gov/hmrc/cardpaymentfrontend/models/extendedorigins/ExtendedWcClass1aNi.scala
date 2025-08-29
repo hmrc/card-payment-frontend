@@ -50,7 +50,7 @@ object ExtendedWcClass1aNi extends ExtendedOrigin {
   }
 
   override def surveyAuditName: String = "class-1a-national-insurance"
-  override def surveyReturnHref: String = "/paye"
+  override def surveyReturnHref: String = "https://www.gov.uk/government/organisations/hm-revenue-customs"
   override def surveyReturnMessageKey: String = "payments-survey.other.return-message"
   override def surveyIsWelshSupported: Boolean = true
   override def surveyBannerTitle: String = serviceNameMessageKey
