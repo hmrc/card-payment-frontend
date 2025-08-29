@@ -45,6 +45,7 @@ object TestHelpers {
     PfEpayeLpp,
     PfEpayeLateCis,
     PfEpayeP11d,
+    WcClass1aNi,
     PfEpayeSeta,
     PfVat,
     BtaVat,
@@ -208,6 +209,7 @@ object TestHelpers {
     case Origins.WcSa                     => TestJourneys.WcSa
     case Origins.WcCt                     => TestJourneys.WcCt
     case Origins.WcVat                    => TestJourneys.WcVat
+    case Origins.WcClass1aNi              => TestJourneys.WcClass1aNi
     case Origins.WcXref                   => TestJourneys.WcXref
   }
 

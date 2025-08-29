@@ -17,13 +17,11 @@
 package uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins
 
 import payapi.cardpaymentjourney.model.journey.{JourneySpecificData, JsdWcClass1aNi}
-import play.api.i18n.Lang
 import play.api.mvc.AnyContent
 import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
 import uk.gov.hmrc.cardpaymentfrontend.models.PaymentMethod._
 import uk.gov.hmrc.cardpaymentfrontend.models._
-import uk.gov.hmrc.cardpaymentfrontend.models.openbanking.{WcClass1aNiSessionData, OriginSpecificSessionData}
-import uk.gov.hmrc.cardpaymentfrontend.util.Period.humanReadablePeriod
+import uk.gov.hmrc.cardpaymentfrontend.models.openbanking.{OriginSpecificSessionData, WcClass1aNiSessionData}
 
 object ExtendedWcClass1aNi extends ExtendedOrigin {
   override val serviceNameMessageKey: String = "service-name.WcClass1aNi"
@@ -40,17 +38,17 @@ object ExtendedWcClass1aNi extends ExtendedOrigin {
     ))
   }
 
-  override def checkYourAnswersAdditionalReferenceRow(journeyRequest: JourneyRequest[AnyContent])
-    (payFrontendBaseUrl: String)(implicit lang: Lang): Option[CheckYourAnswersRow] =
-    Some(CheckYourAnswersRow(
-      titleMessageKey = "check-your-details.WcClass1aNi.tax-period",
-      value           = Seq(humanReadablePeriod(journeyRequest.journey.journeySpecificData.asInstanceOf[JsdWcClass1aNi].period)),
-      changeLink      = None
-    ))
+  override def checkYourAnswersAmountSummaryRow(journeyRequest: JourneyRequest[AnyContent])(payFrontendBaseUrl: String): Option[CheckYourAnswersRow] = Some(CheckYourAnswersRow(
+    titleMessageKey = "check-your-details.total-to-pay",
+    value           = Seq(amount(journeyRequest)),
+    changeLink      = None
+  ))
 
   override def openBankingOriginSpecificSessionData: JourneySpecificData => Option[OriginSpecificSessionData] = {
-    case j: JsdWcClass1aNi => Some(WcClass1aNiSessionData(j.accountsOfficeReference, period = j.period))
-    case _                 => throw new RuntimeException("Incorrect origin found")
+    case j: JsdWcClass1aNi => j.accountsOfficeReference.flatMap { accountsOfficeReference =>
+      j.period.map(WcClass1aNiSessionData(accountsOfficeReference, _))
+    }
+    case _ => throw new RuntimeException("Incorrect origin found")
   }
 
   override def surveyAuditName: String = "class-1a-national-insurance"
