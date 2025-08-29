@@ -42,21 +42,28 @@ class PaymentStatusActionRefiners @Inject() (
 
   import requestSupport._
 
-  def findJourneyByJourneyIdRefiner(base64EncodedEncryptedJourneyId: String): ActionRefiner[Request, JourneyRequest] = new ActionRefiner[Request, JourneyRequest] {
+  def findJourneyBySessionIdFallBackToJourneyIdRefiner(base64EncodedEncryptedJourneyId: String): ActionRefiner[Request, JourneyRequest] = new ActionRefiner[Request, JourneyRequest] {
 
     override protected[actions] def refine[A](request: Request[A]): Future[Either[Result, JourneyRequest[A]]] = {
 
       implicit val r: Request[A] = request
 
-      val decodedJourneyId = new String(Base64.getDecoder.decode(base64EncodedEncryptedJourneyId.getBytes))
-      val decryptedJourneyId: JourneyId = JourneyId(cryptoService.decryptString(decodedJourneyId))
+      payApiConnector.findLatestJourneyBySessionId()(requestSupport.hc)
+        .flatMap {
+          case Some(journey) => Future.successful(Right(new JourneyRequest(journey, request)))
+          case None =>
+            logger.warn("No journey found for session id, attempting to find by journeyId instead.")
+            val decodedJourneyId = new String(Base64.getDecoder.decode(base64EncodedEncryptedJourneyId.getBytes))
+            val decryptedJourneyId: JourneyId = JourneyId(cryptoService.decryptString(decodedJourneyId))
 
-      payApiConnector.findJourneyByJourneyId(decryptedJourneyId).map {
-        case Some(journey) => Right(new JourneyRequest(journey, request))
-        case None =>
-          logger.warn("No journey found for journey id, sending to timed out page.")
-          Left(Results.Unauthorized(forceDeleteAnswersPage(false, Some(Url(appConfig.payFrontendBaseUrl)))))
-      }
+            payApiConnector.findJourneyByJourneyId(decryptedJourneyId).map {
+              case Some(journey) => Right(new JourneyRequest(journey, request))
+              case None =>
+                logger.warn("No journey found for journey id, sending to timed out page.")
+                Left(Results.Unauthorized(forceDeleteAnswersPage(false, Some(Url(appConfig.payFrontendBaseUrl)))))
+            }
+        }
+
     }
 
     override protected def executionContext: ExecutionContext = ec

@@ -76,6 +76,11 @@ object PayApiStub {
     )
   )
 
+  def verifyFindByJourneyId(count: Int = 0, journeyId: JourneyId): Unit = verify(
+    count,
+    getRequestedFor(urlEqualTo(findLatestByJourneyIdPath(journeyId)))
+  )
+
   private def updateBeginWebPaymentPath(journeyId: String): String = s"/pay-api/journey/$journeyId/update/begin-web-payment"
 
   def verifyUpdateBeginWebPayment(count: Int = 1, journeyId: String): Unit = verify(

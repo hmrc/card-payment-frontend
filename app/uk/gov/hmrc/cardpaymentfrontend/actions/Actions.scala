@@ -36,7 +36,7 @@ class Actions @Inject() (
 
   def paymentStatusAction(encryptedJourneyId: String): ActionBuilder[JourneyRequest, AnyContent] =
     default
-      .andThen[JourneyRequest](paymentStatusActionRefiners.findJourneyByJourneyIdRefiner(encryptedJourneyId))
+      .andThen[JourneyRequest](paymentStatusActionRefiners.findJourneyBySessionIdFallBackToJourneyIdRefiner(encryptedJourneyId))
       .andThen[JourneyRequest](paymentStatusActionRefiners.paymentStatusActionRefiner)
 
   val journeyFinishedAction: ActionBuilder[JourneyRequest, AnyContent] = journeyAction.andThen[JourneyRequest](journeyFinishedActionRefiner)

@@ -97,24 +97,37 @@ class ActionRefinerSpec extends ItSpec {
         resultFromRefine.futureValue shouldBe expectedResult
       }
 
-    "findJourneyByJourneyIdRefiner should" - {
+    "findJourneyBySessionIdFallBackToJourneyIdRefiner should" - {
 
-      "return result when journey is found by journey id" in {
+      "return result when journey is found by session id, not needing to find by journey id" in {
         val testJourney = TestJourneys.PfSa.journeyAfterBeginWebPayment
+        PayApiStub.stubForFindBySessionId2xx(testJourney)
+        test(
+          journey        = testJourney,
+          refiner        = systemUnderTest.findJourneyBySessionIdFallBackToJourneyIdRefiner(TestPayApiData.base64EncryptedJourneyId),
+          expectedResult = Results.Ok("test ok")
+        )
+        PayApiStub.verifyFindByJourneyId(0, testJourney._id)
+      }
+
+      "return result when journey is not found by session id but then found by journey id" in {
+        val testJourney = TestJourneys.PfSa.journeyAfterBeginWebPayment
+        PayApiStub.stubForFindBySessionId404
         PayApiStub.stubForFindByJourneyId2xx(testJourney._id)(testJourney)
         test(
           journey        = testJourney,
-          refiner        = systemUnderTest.findJourneyByJourneyIdRefiner(TestPayApiData.base64EncryptedJourneyId),
+          refiner        = systemUnderTest.findJourneyBySessionIdFallBackToJourneyIdRefiner(TestPayApiData.base64EncryptedJourneyId),
           expectedResult = Results.Ok("test ok")
         )
       }
 
-      "return Unauthorized with force delete answers page when no journey can be found by payment correlation id" in {
+      "return Unauthorized with force delete answers page when no journey can be found by payment session id or journey id" in {
         val testJourney = TestJourneys.PfSa.journeyAfterBeginWebPayment
+        PayApiStub.stubForFindBySessionId404
         PayApiStub.stubForFindByJourneyId404(testJourney._id)
         test(
           journey        = testJourney,
-          refiner        = systemUnderTest.findJourneyByJourneyIdRefiner(TestPayApiData.base64EncryptedJourneyId),
+          refiner        = systemUnderTest.findJourneyBySessionIdFallBackToJourneyIdRefiner(TestPayApiData.base64EncryptedJourneyId),
           expectedResult = Results.Unauthorized(forceDeleteAnswersPage(false, Some(Url("http://localhost:9056/pay")))(fakeRequest(testJourney), messagesApi.preferred(fakeRequest(testJourney))))
         )
       }
