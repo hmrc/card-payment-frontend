@@ -1510,6 +1510,37 @@ object PaymentCompleteControllerSpec {
       hasAReturnUrl                   = false
     )
 
+    case Origins.WcClass1aNi => TestScenarioInfo(
+      debitCardJourney                = TestJourneys.WcClass1aNi.journeyAfterSucceedDebitWebPayment,
+      creditCardJourney               = TestJourneys.WcClass1aNi.journeyAfterSucceedCreditWebPayment,
+      englishSummaryRowsDebitCard     = List(
+        "Tax" -> "Employers’ Class 1A National Insurance",
+        "Date" -> "2 November 2027",
+        "Amount" -> "£12.34"
+      ),
+      maybeWelshSummaryRowsDebitCard  = Some(List(
+        "Treth" -> "Yswiriant Gwladol Dosbarth 1A y Cyflogwr",
+        "Dyddiad" -> "2 Tachwedd 2027",
+        "Swm" -> "£12.34"
+      )),
+      englishSummaryRowsCreditCard    = List(
+        "Tax" -> "Employers’ Class 1A National Insurance",
+        "Date" -> "2 November 2027",
+        "Amount paid to HMRC" -> "£12.34",
+        "Card fee (9.97%), non-refundable" -> "£1.23",
+        "Total paid" -> "£13.57"
+      ),
+      maybeWelshSummaryRowsCreditCard = Some(List(
+        "Treth" -> "Yswiriant Gwladol Dosbarth 1A y Cyflogwr",
+        "Dyddiad" -> "2 Tachwedd 2027",
+        "Swm a dalwyd i CThEM" -> "£12.34",
+        "Ffi cerdyn (9.97%), ni ellir ei ad-dalu" -> "£1.23",
+        "Cyfanswm a dalwyd" -> "£13.57"
+      )),
+      hasWelshTest                    = true,
+      hasAReturnUrl                   = false
+    )
+
     case Origins.WcXref => TestScenarioInfo(
       debitCardJourney                = TestJourneys.WcXref.journeyAfterSucceedDebitWebPayment,
       creditCardJourney               = TestJourneys.WcXref.journeyAfterSucceedCreditWebPayment,

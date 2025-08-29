@@ -325,6 +325,13 @@ class OpenBankingOriginSpecificSessionDataSpec extends UnitSpec {
       roundTripJsonTest(osd, testJson)
     }
 
+    "WcClass1aNi" in {
+      val testJson = Json.parse("""{"accountsOfficeReference":"123PH45678900","period":{"taxYear":2027},"origin":"WcClass1aNi"}""")
+      val osd = ExtendedWcClass1aNi.openBankingOriginSpecificSessionData(TestJourneys.WcClass1aNi.journeyBeforeBeginWebPayment.journeySpecificData)
+      testOsd(osd, WcClass1aNiSessionData(AccountsOfficeReference("123PH45678900"), YearlyEpayeTaxPeriod(TaxYear(2027)), None), "123PH456789002713", "123PH45678900")
+      roundTripJsonTest(osd, testJson)
+    }
+
     "WcXref (which is None, since it doesn't support Open banking)" in {
       val osd = ExtendedWcXref.openBankingOriginSpecificSessionData(TestJourneys.WcXref.journeyBeforeBeginWebPayment.journeySpecificData)
       osd shouldBe None

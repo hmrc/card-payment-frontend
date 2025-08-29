@@ -573,6 +573,24 @@ class PaymentsSurveyServiceSpec extends ItSpec with TableDrivenPropertyChecks {
                 )
               )
             ) -> false
+            case Origins.WcClass1aNi => PaymentSurveyJourneyRequest(
+              origin         = "WcClass1aNi",
+              returnMsg      = "Skip survey",
+              returnHref     = "/paye",
+              auditName      = "class-1a-national-insurance",
+              audit          = AuditOptions(
+                userType  = "LoggedOut",
+                journey   = Some("Successful"),
+                orderId   = Some("123PH456789002713"),
+                liability = Some("class-1a-national-insurance")
+              ),
+              contentOptions = SurveyContentOptions(
+                isWelshSupported = true,
+                title            = SurveyBannerTitle(
+                  englishValue = "Pay your employers’ Class 1A National Insurance (P11D bill)", welshValue = Some("Talu’ch Yswiriant Gwladol Dosbarth 1A y cyflogwr (bil P11D)")
+                )
+              )
+            ) -> false
             case Origins.WcXref => PaymentSurveyJourneyRequest(
               origin         = "WcXref",
               returnMsg      = "Skip survey",
