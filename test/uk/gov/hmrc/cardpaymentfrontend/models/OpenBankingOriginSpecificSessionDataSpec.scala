@@ -22,7 +22,7 @@ import payapi.corcommon.model.cgt.CgtAccountReference
 import payapi.corcommon.model.taxes.ad.{AlcoholDutyChargeReference, AlcoholDutyReference}
 import payapi.corcommon.model.taxes.amls.AmlsPaymentReference
 import payapi.corcommon.model.taxes.ct.{CtChargeTypes, CtPeriod, CtUtr}
-import payapi.corcommon.model.taxes.epaye.{AccountsOfficeReference, EpayePenaltyReference, MonthlyEpayeTaxPeriod, PsaNumber, QuarterlyEpayeTaxPeriod, YearlyEpayeTaxPeriod}
+import payapi.corcommon.model.taxes.epaye.{AccountsOfficeReference, EpayePenaltyReference, MonthlyEpayeTaxPeriod, PsaNumber, QuarterlyEpayeTaxPeriod, WcClass1aNiReference, YearlyEpayeTaxPeriod}
 import payapi.corcommon.model.taxes.other.{EconomicCrimeLevyReturnNumber, XRef, XRef14Char}
 import payapi.corcommon.model.taxes.ppt.PptReference
 import payapi.corcommon.model.taxes.sa.SaUtr
@@ -326,9 +326,9 @@ class OpenBankingOriginSpecificSessionDataSpec extends UnitSpec {
     }
 
     "WcClass1aNi" in {
-      val testJson = Json.parse("""{"accountsOfficeReference":"123PH45678900","period":{"taxYear":2027},"origin":"WcClass1aNi"}""")
+      val testJson = Json.parse("""{"wcClass1aNiReference":"123PH456789002713","origin":"WcClass1aNi"}""")
       val osd = ExtendedWcClass1aNi.openBankingOriginSpecificSessionData(TestJourneys.WcClass1aNi.journeyBeforeBeginWebPayment.journeySpecificData)
-      testOsd(osd, WcClass1aNiSessionData(AccountsOfficeReference("123PH45678900"), YearlyEpayeTaxPeriod(TaxYear(2027)), None), "123PH456789002713", "123PH45678900")
+      testOsd(osd, WcClass1aNiSessionData(WcClass1aNiReference("123PH456789002713"), None), "123PH456789002713", "123PH456789002713")
       roundTripJsonTest(osd, testJson)
     }
 

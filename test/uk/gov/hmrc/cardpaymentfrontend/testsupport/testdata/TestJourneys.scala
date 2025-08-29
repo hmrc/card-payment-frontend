@@ -734,9 +734,8 @@ object TestJourneys {
       status               = PaymentStatuses.Created,
       createdOn            = LocalDateTime.parse("2027-11-02T16:28:55.185"),
       journeySpecificData  = JsdWcClass1aNi(
-        accountsOfficeReference = Some(AccountsOfficeReference("123PH45678900")),
-        period                  = Some(testYearlyPeriod),
-        defaultAmountInPence    = AmountInPence(1234)
+        paymentReference     = WcClass1aNiReference("123PH456789002713"),
+        defaultAmountInPence = AmountInPence(1234)
       ),
       chosenWayToPay       = None
     )
