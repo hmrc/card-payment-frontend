@@ -45,10 +45,8 @@ object ExtendedWcClass1aNi extends ExtendedOrigin {
   ))
 
   override def openBankingOriginSpecificSessionData: JourneySpecificData => Option[OriginSpecificSessionData] = {
-    case j: JsdWcClass1aNi => j.accountsOfficeReference.flatMap { accountsOfficeReference =>
-      j.period.map(WcClass1aNiSessionData(accountsOfficeReference, _))
-    }
-    case _ => throw new RuntimeException("Incorrect origin found")
+    case j: JsdWcClass1aNi => Some(WcClass1aNiSessionData(j.paymentReference))
+    case _                 => throw new RuntimeException("Incorrect origin found")
   }
 
   override def surveyAuditName: String = "class-1a-national-insurance"
