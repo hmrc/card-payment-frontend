@@ -135,6 +135,7 @@ object OriginSpecificSessionData {
       case WcCt                     => Json.format[WcCtSessionData].reads(json)
       case WcVat                    => Json.format[WcVatSessionData].reads(json)
       case WcSimpleAssessment       => Json.format[WcSimpleAssessmentSessionData].reads(json)
+      case WcEpayeLpp               => Json.format[WcEpayeLppSessionData].reads(json)
 
       //Todo: Remove PfP800 when PtaP800 is fully available
       case origin @ (PfOther | PtaP800 | PfP800
@@ -220,6 +221,7 @@ object OriginSpecificSessionData {
       case sessionData: WcCtSessionData                => Json.format[WcCtSessionData].writes(sessionData)
       case sessionData: WcVatSessionData               => Json.format[WcVatSessionData].writes(sessionData)
       case sessionData: WcSimpleAssessmentSessionData  => Json.format[WcSimpleAssessmentSessionData].writes(sessionData)
+      case sessionData: WcEpayeLppSessionData          => Json.format[WcEpayeLppSessionData].writes(sessionData)
     }) + ("origin" -> Json.toJson(o.origin))
 
   implicit val format: OFormat[OriginSpecificSessionData] = OFormat(reads, writes)
@@ -399,6 +401,11 @@ final case class PfEpayeNiSessionData(accountsOfficeReference: AccountsOfficeRef
 }
 
 final case class PfEpayeLppSessionData(payeInterestXRef: XRef, returnUrl: Option[Url] = None) extends PayeSessionData(PfEpayeLpp) {
+  def paymentReference: Reference = ReferenceMaker.makeXReference(payeInterestXRef)
+  def searchTag: SearchTag = SearchTag(payeInterestXRef.canonicalizedValue)
+}
+
+final case class WcEpayeLppSessionData(payeInterestXRef: XRef, returnUrl: Option[Url] = None) extends PayeSessionData(WcEpayeLpp) {
   def paymentReference: Reference = ReferenceMaker.makeXReference(payeInterestXRef)
   def searchTag: SearchTag = SearchTag(payeInterestXRef.canonicalizedValue)
 }

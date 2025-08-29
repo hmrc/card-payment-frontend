@@ -93,6 +93,7 @@ service-name.AlcoholDuty = Pay your Alcohol Duty
 service-name.PfAlcoholDuty = Pay your Alcohol Duty
 service-name.VatC2c = Pay your import VAT
 service-name.PfVatC2c = Pay your import VAT
+service-name.WcEpayeLpp = Pay your PAYE late payment or filing penalty
 
 
 ## Email address page
@@ -170,6 +171,7 @@ check-your-details.VatC2c.reference = Reference number
 check-your-details.PfVatC2c.reference = Reference number
 check-your-details.WcXref.reference = Payment reference
 check-your-details.WcSimpleAssessment.reference = Payment reference
+check-your-details.WcEpayeLpp.reference = Payment reference
 
 
 ## Address Page
@@ -316,6 +318,7 @@ payment-complete.tax-name.AlcoholDuty = Alcohol Duty
 payment-complete.tax-name.PfAlcoholDuty = Alcohol Duty
 payment-complete.tax-name.VatC2c = Import VAT
 payment-complete.tax-name.PfVatC2c = Import VAT
+payment-complete.tax-name.WcEpayeLpp = Employers’ PAYE late payment penalty
 
 ## Payment Cancelled page
 
@@ -386,6 +389,7 @@ email.tax-name.PfSdlt = Stamp Duty Land Tax
 email.tax-name.CapitalGainsTax = Capital Gains Tax on UK property
 email.tax-name.WcXref = Other taxes, penalties and enquiry settlements
 email.tax-name.WcSimpleAssessment = Simple Assessment
+email.tax-name.WcEpayeLpp = Employers’ PAYE late payment penalty
 
 ## Payments survey
 payments-survey.bta.return-message = Skip survey, return to business tax account
