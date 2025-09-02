@@ -576,7 +576,7 @@ class PaymentsSurveyServiceSpec extends ItSpec with TableDrivenPropertyChecks {
             case Origins.WcClass1aNi => PaymentSurveyJourneyRequest(
               origin         = "WcClass1aNi",
               returnMsg      = "Skip survey",
-              returnHref     = "/paye",
+              returnHref     = "https://www.gov.uk/government/organisations/hm-revenue-customs",
               auditName      = "class-1a-national-insurance",
               audit          = AuditOptions(
                 userType  = "LoggedOut",
