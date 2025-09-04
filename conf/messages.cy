@@ -237,6 +237,7 @@ payment-complete.print-link = Argraffwch cadarnhad o’ch taliad
 payment-complete.what-happens-next.header = Yr hyn sy’n digwydd nesaf
 payment-complete.what-happens-next.p1 = Bydd eich taliad yn cymryd 3 i 5 diwrnod i ymddangos yn eich
 payment-complete.what-happens-next.link = cyfrif CThEM ar-lein.
+payment-complete.what-happens-next.web-chat.info = Os oes angen cymorth pellach arnoch gyda’ch bil treth, bydd angen dychwelyd i’r sgwrs dros y we a siarad ag ymgynghorydd.
 payment-complete.survey.title = Helpwch ni i wella ein gwasanaethau
 payment-complete.survey.p1 = Rydym yn defnyddio’ch adborth i wella ein gwasanaethau.
 payment-complete.survey.p2.part1 = Rhowch wybod i ni beth yw eich barn am y gwasanaeth hwn
