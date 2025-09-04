@@ -40,11 +40,11 @@ import payapi.corcommon.model.taxes.vat.{CalendarPeriod, VatChargeReference, Vrn
 import payapi.corcommon.model.taxes.vatc2c.VatC2cReference
 import payapi.corcommon.model.thirdpartysoftware.{ClientJourneyId, FriendlyName}
 import payapi.corcommon.model.times.period.CalendarQuarterlyPeriod
+import payapi.corcommon.model.webchat.WcEpayeNiReference
 import payapi.corcommon.model.{Origin, Reference, SearchTag}
 import play.api.libs.functional.syntax.toFunctionalBuilderOps
 import play.api.libs.json._
 
-//todo: test this file
 sealed abstract class OriginSpecificSessionData(val origin: Origin) {
   def paymentReference: Reference
   val returnUrl: Option[Url]
@@ -136,6 +136,7 @@ object OriginSpecificSessionData {
       case WcVat                    => Json.format[WcVatSessionData].reads(json)
       case WcSimpleAssessment       => Json.format[WcSimpleAssessmentSessionData].reads(json)
       case WcEpayeLpp               => Json.format[WcEpayeLppSessionData].reads(json)
+      case WcEpayeNi                => Json.format[WcEpayeNiSessionData].reads(json)
 
       //Todo: Remove PfP800 when PtaP800 is fully available
       case origin @ (PfOther | PtaP800 | PfP800
@@ -222,6 +223,7 @@ object OriginSpecificSessionData {
       case sessionData: WcVatSessionData               => Json.format[WcVatSessionData].writes(sessionData)
       case sessionData: WcSimpleAssessmentSessionData  => Json.format[WcSimpleAssessmentSessionData].writes(sessionData)
       case sessionData: WcEpayeLppSessionData          => Json.format[WcEpayeLppSessionData].writes(sessionData)
+      case sessionData: WcEpayeNiSessionData           => Json.format[WcEpayeNiSessionData].writes(sessionData)
     }) + ("origin" -> Json.toJson(o.origin))
 
   implicit val format: OFormat[OriginSpecificSessionData] = OFormat(reads, writes)
@@ -408,6 +410,11 @@ final case class PfEpayeLppSessionData(payeInterestXRef: XRef, returnUrl: Option
 final case class WcEpayeLppSessionData(payeInterestXRef: XRef, returnUrl: Option[Url] = None) extends PayeSessionData(WcEpayeLpp) {
   def paymentReference: Reference = ReferenceMaker.makeXReference(payeInterestXRef)
   def searchTag: SearchTag = SearchTag(payeInterestXRef.canonicalizedValue)
+}
+
+final case class WcEpayeNiSessionData(payePaymentReference: WcEpayeNiReference, returnUrl: Option[Url] = None) extends PayeSessionData(WcEpayeNi) {
+  def paymentReference: Reference = ReferenceMaker.makeWcEpayeNiReference(payePaymentReference)
+  def searchTag: SearchTag = payePaymentReference.asSearchTag
 }
 
 final case class PfEpayeSetaSessionData(psaNumber: PsaNumber, returnUrl: Option[Url] = None) extends PayeSessionData(PfEpayeSeta) {
