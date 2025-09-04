@@ -30,6 +30,7 @@ import payapi.corcommon.model.taxes.vat.{CalendarPeriod, VatChargeReference, Vrn
 import payapi.corcommon.model.taxes.vatc2c.VatC2cReference
 import payapi.corcommon.model.times.period.TaxQuarter.AprilJuly
 import payapi.corcommon.model.times.period.TaxYear
+import payapi.corcommon.model.webchat.WcEpayeNiReference
 import payapi.corcommon.model.{AmountInPence, JourneyId, PaymentStatuses}
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.testdata.TestDataUtils._
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.testdata.TestPayApiData.{testSubYearlyPeriod, testYearlyPeriod}
@@ -771,6 +772,24 @@ object TestJourneys {
       createdOn            = LocalDateTime.parse("2027-11-02T16:28:55.185"),
       journeySpecificData  = JsdWcEpayeLpp(
         chargeReference      = XRef("XE123456789012"),
+        defaultAmountInPence = AmountInPence(1234)
+      ),
+      chosenWayToPay       = None
+    )
+  }
+
+  object WcEpayeNi extends JourneyStatuses[JsdWcEpayeNi] {
+    val journeyBeforeBeginWebPayment: Journey[JsdWcEpayeNi] = Journey[JsdWcEpayeNi](
+      _id                  = JourneyId(TestPayApiData.decryptedJourneyId),
+      sessionId            = Some(SessionId("TestSession-4b87460d-6f43-4c4c-b810-d6f87c774854")),
+      amountInPence        = Some(AmountInPence(1234)),
+      emailTemplateOptions = None,
+      navigation           = None,
+      order                = None,
+      status               = PaymentStatuses.Created,
+      createdOn            = LocalDateTime.parse("2027-11-02T16:28:55.185"),
+      journeySpecificData  = JsdWcEpayeNi(
+        paymentReference     = WcEpayeNiReference("123PH456789002501"),
         defaultAmountInPence = AmountInPence(1234)
       ),
       chosenWayToPay       = None

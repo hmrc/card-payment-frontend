@@ -71,7 +71,7 @@ object ExtendedPfEpayeNi extends ExtendedOrigin {
 
   override def emailTaxTypeMessageKey: String = "email.tax-name.PfEpayeNi"
 
-  override def surveyAuditName: String = "paye-ni"
+  override def surveyAuditName: String = "epaye"
 
   override def surveyReturnHref: String = "https://www.gov.uk/government/organisations/hm-revenue-customs"
 

@@ -31,6 +31,7 @@ import payapi.corcommon.model.taxes.vat.{VatChargeReference, Vrn}
 import payapi.corcommon.model.taxes.vatc2c.VatC2cReference
 import payapi.corcommon.model.times.period.TaxQuarter.AprilJuly
 import payapi.corcommon.model.times.period.{TaxMonth, TaxYear}
+import payapi.corcommon.model.webchat.WcEpayeNiReference
 import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins._
 import uk.gov.hmrc.cardpaymentfrontend.models.openbanking._
@@ -341,6 +342,13 @@ class OpenBankingOriginSpecificSessionDataSpec extends UnitSpec {
       val testJson = Json.parse("""{"payeInterestXRef":"XE123456789012","origin":"WcEpayeLpp"}""")
       val osd = ExtendedWcEpayeLpp.openBankingOriginSpecificSessionData(TestJourneys.WcEpayeLpp.journeyBeforeBeginWebPayment.journeySpecificData)
       testOsd(osd, WcEpayeLppSessionData(XRef("XE123456789012"), None), "XE123456789012", "XE123456789012")
+      roundTripJsonTest(osd, testJson)
+    }
+
+    "WcEpayeNi" in {
+      val testJson = Json.parse("""{"payePaymentReference":"123PH456789002501","origin":"WcEpayeNi"}""")
+      val osd = ExtendedWcEpayeNi.openBankingOriginSpecificSessionData(TestJourneys.WcEpayeNi.journeyBeforeBeginWebPayment.journeySpecificData)
+      testOsd(osd, WcEpayeNiSessionData(WcEpayeNiReference("123PH456789002501"), None), "123PH456789002501", "123PH45678900")
       roundTripJsonTest(osd, testJson)
     }
 
