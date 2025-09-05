@@ -76,8 +76,8 @@ class ClientIdServiceSpec extends ItSpec {
         (TestJourneys.WcXref.journeyBeforeBeginWebPayment, ClientIds.MIEE),
         (TestJourneys.WcEpayeLpp.journeyBeforeBeginWebPayment, ClientIds.MIEE),
         (TestJourneys.WcClass1aNi.journeyBeforeBeginWebPayment, ClientIds.PAEE),
-        (TestJourneys.WcEpayeLateCis.journeyBeforeBeginWebPayment, ClientIds.MIEE),
-        (TestJourneys.WcEpayeNi.journeyBeforeBeginWebPayment, ClientIds.PAEE)
+        (TestJourneys.WcEpayeNi.journeyBeforeBeginWebPayment, ClientIds.PAEE),
+        (TestJourneys.WcEpayeLateCis.journeyBeforeBeginWebPayment, ClientIds.MIEE)
       )
       forAll(scenarios) {
         case (journey, clientId) =>
@@ -129,6 +129,7 @@ class ClientIdServiceSpec extends ItSpec {
         (TestJourneys.WcXref.journeyBeforeBeginWebPayment, ClientIds.MIEC),
         (TestJourneys.WcEpayeLpp.journeyBeforeBeginWebPayment, ClientIds.MIEC),
         (TestJourneys.WcClass1aNi.journeyBeforeBeginWebPayment, ClientIds.PAEC),
+        (TestJourneys.WcEpayeNi.journeyBeforeBeginWebPayment, ClientIds.PAEC),
         (TestJourneys.WcEpayeLateCis.journeyBeforeBeginWebPayment, ClientIds.MIEC)
       )
       forAll(scenarios) {
