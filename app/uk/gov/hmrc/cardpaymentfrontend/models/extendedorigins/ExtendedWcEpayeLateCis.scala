@@ -34,7 +34,7 @@ object ExtendedWcEpayeLateCis extends ExtendedOrigin {
   override def paymentMethods(): Set[PaymentMethod] = Set(OneOffDirectDebit, Card, OpenBanking)
 
   override def checkYourAnswersReferenceRow(journeyRequest: JourneyRequest[AnyContent])
-                                           (payFrontendBaseUrl: String): Option[CheckYourAnswersRow] =
+    (payFrontendBaseUrl: String): Option[CheckYourAnswersRow] =
     Some(CheckYourAnswersRow(
       titleMessageKey = "check-your-details.WcEpayeLateCis.reference",
       value           = Seq(journeyRequest.journey.referenceValue),
