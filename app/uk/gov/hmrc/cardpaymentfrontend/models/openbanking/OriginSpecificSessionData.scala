@@ -136,6 +136,7 @@ object OriginSpecificSessionData {
       case WcVat                    => Json.format[WcVatSessionData].reads(json)
       case WcSimpleAssessment       => Json.format[WcSimpleAssessmentSessionData].reads(json)
       case WcEpayeLpp               => Json.format[WcEpayeLppSessionData].reads(json)
+      case WcEpayeLateCis           => Json.format[WcEpayeLateCisSessionData].reads(json)
 
       //Todo: Remove PfP800 when PtaP800 is fully available
       case origin @ (PfOther | PtaP800 | PfP800
@@ -418,6 +419,11 @@ final case class PfEpayeSetaSessionData(psaNumber: PsaNumber, returnUrl: Option[
 final case class PfEpayeLateCisSessionData(payeInterestXRef: XRef14Char, returnUrl: Option[Url] = None) extends PayeSessionData(PfEpayeLateCis) {
   def paymentReference: Reference = ReferenceMaker.makeLateCisReference(payeInterestXRef)
   def searchTag: SearchTag = SearchTag(payeInterestXRef.canonicalizedValue)
+}
+
+final case class WcEpayeLateCisSessionData(chargeReference: XRef14Char, returnUrl: Option[Url] = None) extends PayeSessionData(WcEpayeLateCis) {
+  def paymentReference: Reference = ReferenceMaker.makeLateCisReference(chargeReference)
+  def searchTag: SearchTag = SearchTag(chargeReference.canonicalizedValue)
 }
 
 final case class PfEpayeP11dSessionData(accountsOfficeReference: AccountsOfficeReference, period: YearlyEpayeTaxPeriod, returnUrl: Option[Url] = None) extends PayeSessionData(PfEpayeP11d) {

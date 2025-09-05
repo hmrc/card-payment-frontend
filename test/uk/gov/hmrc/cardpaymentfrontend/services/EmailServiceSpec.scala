@@ -235,7 +235,12 @@ class EmailServiceSpec extends ItSpec with TableDrivenPropertyChecks {
       (WcEpayeLpp, "Employers’ PAYE late payment penalty", "ending with 89012", None, Some("12.34"), "en"),
       (WcEpayeLpp, "Employers’ PAYE late payment penalty", "ending with 89012", commission, Some("13.57"), "en"),
       (WcEpayeLpp, "Cosb y Cyflogwr am dalu TWE yn hwyr", "yn gorffen gyda 89012", None, Some("12.34"), "cy"),
-      (WcEpayeLpp, "Cosb y Cyflogwr am dalu TWE yn hwyr", "yn gorffen gyda 89012", commission, Some("13.57"), "cy")
+      (WcEpayeLpp, "Cosb y Cyflogwr am dalu TWE yn hwyr", "yn gorffen gyda 89012", commission, Some("13.57"), "cy"),
+
+      (WcEpayeLateCis, "Construction Industry Scheme (CIS) late filing penalty", "ending with 89012", None, Some("12.34"), "en"),
+      (WcEpayeLateCis, "Construction Industry Scheme (CIS) late filing penalty", "ending with 89012", commission, Some("13.57"), "en"),
+      (WcEpayeLateCis, "Cynllun y Diwydiant Adeiladu (CIS) - cosb am dalu’n hwyr", "yn gorffen gyda 89012", None, Some("12.34"), "cy"),
+      (WcEpayeLateCis, "Cynllun y Diwydiant Adeiladu (CIS) - cosb am dalu’n hwyr", "yn gorffen gyda 89012", commission, Some("13.57"), "cy")
     )
 
     forAll(scenarios) { (j, taxType, taxReference, commission, totalPaid, lang) =>
