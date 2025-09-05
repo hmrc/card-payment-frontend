@@ -70,7 +70,8 @@ object TestHelpers {
     WcSimpleAssessment,
     WcXref,
     WcEpayeLpp,
-    WcEpayeNi
+    WcEpayeNi,
+    WcEpayeLateCis
   )
 
   val unimplementedOrigins: Seq[Origin] = Seq[Origin](
@@ -215,6 +216,7 @@ object TestHelpers {
     case Origins.WcXref                   => TestJourneys.WcXref
     case Origins.WcEpayeLpp               => TestJourneys.WcEpayeLpp
     case Origins.WcEpayeNi                => TestJourneys.WcEpayeNi
+    case Origins.WcEpayeLateCis           => TestJourneys.WcEpayeLateCis
   }
 
 }
