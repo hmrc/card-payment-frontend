@@ -223,6 +223,7 @@ object OriginSpecificSessionData {
       case sessionData: WcVatSessionData               => Json.format[WcVatSessionData].writes(sessionData)
       case sessionData: WcSimpleAssessmentSessionData  => Json.format[WcSimpleAssessmentSessionData].writes(sessionData)
       case sessionData: WcEpayeLppSessionData          => Json.format[WcEpayeLppSessionData].writes(sessionData)
+      case sessionData: WcEpayeLateCisSessionData      => Json.format[WcEpayeLateCisSessionData].writes(sessionData)
     }) + ("origin" -> Json.toJson(o.origin))
 
   implicit val format: OFormat[OriginSpecificSessionData] = OFormat(reads, writes)
