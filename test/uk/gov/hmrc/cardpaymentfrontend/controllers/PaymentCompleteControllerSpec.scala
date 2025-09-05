@@ -188,7 +188,7 @@ class PaymentCompleteControllerSpec extends ItSpec {
         PayApiStub.stubForFindBySessionId2xx(TestJourneys.WcSa.journeyAfterSucceedDebitWebPayment)
         val result = systemUnderTest.renderPage(fakeGetRequestInWelsh)
         val document = Jsoup.parse(contentAsString(result))
-        document.select("#web-chat-content").text() shouldBe "If you need further help with a tax bill, return to the webchat and speak with the webchat handler."
+        document.select("#web-chat-content").text() shouldBe "Os oes angen cymorth pellach arnoch gyda’ch bil treth, bydd angen dychwelyd i’r sgwrs dros y we a siarad ag ymgynghorydd."
       }
 
       "should not render the webchat specific content for origins that are not webchat related" in {
