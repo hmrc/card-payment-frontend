@@ -753,6 +753,24 @@ class PaymentsSurveyServiceSpec extends ItSpec with TableDrivenPropertyChecks {
                 )
               )
             ) -> false
+            case Origins.WcEpayeLateCis => PaymentSurveyJourneyRequest(
+              origin         = "WcEpayeLateCis",
+              returnMsg      = "Skip survey",
+              returnHref     = "https://www.gov.uk/government/organisations/hm-revenue-customs",
+              auditName      = "paye-late-cis",
+              audit          = AuditOptions(
+                userType  = "LoggedOut",
+                journey   = Some("Successful"),
+                orderId   = Some("XE123456789012"),
+                liability = Some("paye-late-cis")
+              ),
+              contentOptions = SurveyContentOptions(
+                isWelshSupported = true,
+                title            = SurveyBannerTitle(
+                  englishValue = "Pay your Construction Industry Scheme penalty", welshValue = Some("Talwch eich cosb - Cynllun y Diwydiant Adeiladu")
+                )
+              )
+            ) -> false
             case Origins.AppSa                    => throw new MatchError("Not implemented yet")
             case Origins.BtaSdil                  => throw new MatchError("Not implemented yet")
             case Origins.BcPngr                   => throw new MatchError("Not implemented yet")
