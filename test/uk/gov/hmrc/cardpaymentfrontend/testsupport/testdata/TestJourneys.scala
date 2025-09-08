@@ -725,7 +725,7 @@ object TestJourneys {
 
   object WcClass1aNi extends JourneyStatuses[JsdWcClass1aNi] {
     val journeyBeforeBeginWebPayment: Journey[JsdWcClass1aNi] = Journey[JsdWcClass1aNi](
-      _id                  = JourneyId("TestJourneyId-44f9-ad7f-01e1d3d8f151"),
+      _id                  = JourneyId(TestPayApiData.decryptedJourneyId),
       sessionId            = Some(SessionId("TestSession-4b87460d-6f43-4c4c-b810-d6f87c774854")),
       amountInPence        = Some(AmountInPence(1234)),
       emailTemplateOptions = None,
