@@ -137,6 +137,7 @@ object OriginSpecificSessionData {
       case WcSimpleAssessment       => Json.format[WcSimpleAssessmentSessionData].reads(json)
       case WcEpayeLpp               => Json.format[WcEpayeLppSessionData].reads(json)
       case WcClass1aNi              => Json.format[WcClass1aNiSessionData].reads(json)
+      case WcEpayeLateCis           => Json.format[WcEpayeLateCisSessionData].reads(json)
 
       //Todo: Remove PfP800 when PtaP800 is fully available
       case origin @ (PfOther | PtaP800 | PfP800
@@ -224,6 +225,7 @@ object OriginSpecificSessionData {
       case sessionData: WcSimpleAssessmentSessionData  => Json.format[WcSimpleAssessmentSessionData].writes(sessionData)
       case sessionData: WcEpayeLppSessionData          => Json.format[WcEpayeLppSessionData].writes(sessionData)
       case sessionData: WcClass1aNiSessionData         => Json.format[WcClass1aNiSessionData].writes(sessionData)
+      case sessionData: WcEpayeLateCisSessionData      => Json.format[WcEpayeLateCisSessionData].writes(sessionData)
     }) + ("origin" -> Json.toJson(o.origin))
 
   implicit val format: OFormat[OriginSpecificSessionData] = OFormat(reads, writes)
@@ -428,6 +430,11 @@ final case class PfEpayeSetaSessionData(psaNumber: PsaNumber, returnUrl: Option[
 final case class PfEpayeLateCisSessionData(payeInterestXRef: XRef14Char, returnUrl: Option[Url] = None) extends PayeSessionData(PfEpayeLateCis) {
   def paymentReference: Reference = ReferenceMaker.makeLateCisReference(payeInterestXRef)
   def searchTag: SearchTag = SearchTag(payeInterestXRef.canonicalizedValue)
+}
+
+final case class WcEpayeLateCisSessionData(chargeReference: XRef14Char, returnUrl: Option[Url] = None) extends PayeSessionData(WcEpayeLateCis) {
+  def paymentReference: Reference = ReferenceMaker.makeLateCisReference(chargeReference)
+  def searchTag: SearchTag = SearchTag(chargeReference.canonicalizedValue)
 }
 
 final case class PfEpayeP11dSessionData(accountsOfficeReference: AccountsOfficeReference, period: YearlyEpayeTaxPeriod, returnUrl: Option[Url] = None) extends PayeSessionData(PfEpayeP11d) {

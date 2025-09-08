@@ -757,17 +757,35 @@ class PaymentsSurveyServiceSpec extends ItSpec with TableDrivenPropertyChecks {
               origin         = "WcEpayeLpp",
               returnMsg      = "Skip survey",
               returnHref     = "https://www.gov.uk/government/organisations/hm-revenue-customs",
-              auditName      = "epaye",
+              auditName      = "epaye-late-payment-penalty",
               audit          = AuditOptions(
                 userType  = "LoggedOut",
                 journey   = Some("Successful"),
                 orderId   = Some("XE123456789012"),
-                liability = Some("epaye")
+                liability = Some("epaye-late-payment-penalty")
               ),
               contentOptions = SurveyContentOptions(
                 isWelshSupported = true,
                 title            = SurveyBannerTitle(
                   englishValue = "Pay your PAYE late payment or filing penalty", welshValue = Some("Talu’ch cosb am dalu neu gyflwyno TWE yn hwyr")
+                )
+              )
+            ) -> false
+            case Origins.WcEpayeLateCis => PaymentSurveyJourneyRequest(
+              origin         = "WcEpayeLateCis",
+              returnMsg      = "Skip survey",
+              returnHref     = "https://www.gov.uk/government/organisations/hm-revenue-customs",
+              auditName      = "cis-late-filing-penalty",
+              audit          = AuditOptions(
+                userType  = "LoggedOut",
+                journey   = Some("Successful"),
+                orderId   = Some("XE123456789012"),
+                liability = Some("cis-late-filing-penalty")
+              ),
+              contentOptions = SurveyContentOptions(
+                isWelshSupported = true,
+                title            = SurveyBannerTitle(
+                  englishValue = "Pay your Construction Industry Scheme penalty", welshValue = Some("Talwch eich cosb - Cynllun y Diwydiant Adeiladu")
                 )
               )
             ) -> false

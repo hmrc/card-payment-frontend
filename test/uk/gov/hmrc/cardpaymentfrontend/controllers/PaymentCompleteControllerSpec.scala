@@ -1603,6 +1603,37 @@ object PaymentCompleteControllerSpec {
       hasAReturnUrl                   = false
     )
 
+    case Origins.WcEpayeLateCis => TestScenarioInfo(
+      debitCardJourney                = TestJourneys.WcEpayeLateCis.journeyAfterSucceedDebitWebPayment,
+      creditCardJourney               = TestJourneys.WcEpayeLateCis.journeyAfterSucceedCreditWebPayment,
+      englishSummaryRowsDebitCard     = List(
+        "Tax" -> "Construction Industry Scheme (CIS) late filing penalty",
+        "Date" -> "2 November 2027",
+        "Amount" -> "£12.34"
+      ),
+      maybeWelshSummaryRowsDebitCard  = Some(List(
+        "Treth" -> "Cynllun y Diwydiant Adeiladu (CIS) - cosb am dalun hwyr",
+        "Dyddiad" -> "2 Tachwedd 2027",
+        "Swm" -> "£12.34"
+      )),
+      englishSummaryRowsCreditCard    = List(
+        "Tax" -> "Construction Industry Scheme (CIS) late filing penalty",
+        "Date" -> "2 November 2027",
+        "Amount paid to HMRC" -> "£12.34",
+        "Card fee (9.97%), non-refundable" -> "£1.23",
+        "Total paid" -> "£13.57"
+      ),
+      maybeWelshSummaryRowsCreditCard = Some(List(
+        "Treth" -> "Cynllun y Diwydiant Adeiladu (CIS) - cosb am dalun hwyr",
+        "Dyddiad" -> "2 Tachwedd 2027",
+        "Swm a dalwyd i CThEM" -> "£12.34",
+        "Ffi cerdyn (9.97%), ni ellir ei ad-dalu" -> "£1.23",
+        "Cyfanswm a dalwyd" -> "£13.57"
+      )),
+      hasWelshTest                    = true,
+      hasAReturnUrl                   = false
+    )
+
     case o: Origin => throw new MatchError(s"Add testdata for new origin you've added [${o.entryName}]. Add it to implemented origins.")
   }
 
