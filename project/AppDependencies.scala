@@ -3,8 +3,8 @@ import sbt.*
 //format: OFF
 object AppDependencies {
 
-  private val payApiCorVersion = "1.268.0"
-  private val bootstrapVersion = "9.14.0"
+  private val payApiCorVersion = "1.270.0"
+  private val bootstrapVersion = "10.1.0"
 
   private val payApiExclusionRules: Seq[InclusionRule] = Seq(
     ExclusionRule(organization = "uk.gov.hmrc", name = "bootstrap-backend-play-29_2.13"),
