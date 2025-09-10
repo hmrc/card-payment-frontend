@@ -234,6 +234,7 @@ object ExtendedOrigin {
       case Origins.WcEpayeLpp               => ExtendedWcEpayeLpp
       case Origins.WcEpayeNi                => ExtendedWcEpayeNi
       case Origins.WcEpayeLateCis           => ExtendedWcEpayeLateCis
+      case Origins.WcEpayeNi                => ExtendedWcEpayeNi
     }
 
     def isAWebChatOrigin: Boolean = origin match {
