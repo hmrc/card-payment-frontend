@@ -328,7 +328,7 @@ final case class WcClass1aNiSessionData(
     returnUrl:            Option[Url]          = None
 ) extends PayeSessionData(WcClass1aNi) {
   def paymentReference: Reference = ReferenceMaker.makeWcClass1aNiReference(wcClass1aNiReference)
-  def searchTag: SearchTag = SearchTag(wcClass1aNiReference.canonicalizedValue)
+  def searchTag: SearchTag = SearchTag(wcClass1aNiReference.canonicalizedValue.take(13))
 }
 
 sealed abstract class CoTaxSessionData(origin: Origin) extends OriginSpecificSessionData(origin)

@@ -329,7 +329,7 @@ class OpenBankingOriginSpecificSessionDataSpec extends UnitSpec {
     "WcClass1aNi" in {
       val testJson = Json.parse("""{"wcClass1aNiReference":"123PH456789002713","origin":"WcClass1aNi"}""")
       val osd = ExtendedWcClass1aNi.openBankingOriginSpecificSessionData(TestJourneys.WcClass1aNi.journeyBeforeBeginWebPayment.journeySpecificData)
-      testOsd(osd, WcClass1aNiSessionData(WcClass1aNiReference("123PH456789002713"), None), "123PH456789002713", "123PH456789002713")
+      testOsd(osd, WcClass1aNiSessionData(WcClass1aNiReference("123PH456789002713"), None), "123PH456789002713", "123PH45678900")
       roundTripJsonTest(osd, testJson)
     }
 
@@ -355,7 +355,7 @@ class OpenBankingOriginSpecificSessionDataSpec extends UnitSpec {
   }
 
   "sanity check for implemented origins" in {
-    TestHelpers.implementedOrigins.size shouldBe 39 withClue "** This dummy test is here to remind you to update the tests above. Bump up the expected number when an origin is added to implemented origins **"
+    TestHelpers.implementedOrigins.size shouldBe 40 withClue "** This dummy test is here to remind you to update the tests above. Bump up the expected number when an origin is added to implemented origins **"
   }
 
 }
