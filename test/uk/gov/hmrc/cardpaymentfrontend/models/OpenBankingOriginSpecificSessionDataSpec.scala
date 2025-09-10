@@ -31,6 +31,7 @@ import payapi.corcommon.model.taxes.vat.{VatChargeReference, Vrn}
 import payapi.corcommon.model.taxes.vatc2c.VatC2cReference
 import payapi.corcommon.model.times.period.TaxQuarter.AprilJuly
 import payapi.corcommon.model.times.period.{TaxMonth, TaxYear}
+import payapi.corcommon.model.webchat.WcEpayeNiReference
 import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins._
 import uk.gov.hmrc.cardpaymentfrontend.models.openbanking._
@@ -328,7 +329,7 @@ class OpenBankingOriginSpecificSessionDataSpec extends UnitSpec {
     "WcClass1aNi" in {
       val testJson = Json.parse("""{"wcClass1aNiReference":"123PH456789002713","origin":"WcClass1aNi"}""")
       val osd = ExtendedWcClass1aNi.openBankingOriginSpecificSessionData(TestJourneys.WcClass1aNi.journeyBeforeBeginWebPayment.journeySpecificData)
-      testOsd(osd, WcClass1aNiSessionData(WcClass1aNiReference("123PH456789002713"), None), "123PH456789002713", "123PH456789002713")
+      testOsd(osd, WcClass1aNiSessionData(WcClass1aNiReference("123PH456789002713"), None), "123PH456789002713", "123PH45678900")
       roundTripJsonTest(osd, testJson)
     }
 
@@ -344,10 +345,17 @@ class OpenBankingOriginSpecificSessionDataSpec extends UnitSpec {
       roundTripJsonTest(osd, testJson)
     }
 
+    "WcEpayeNi" in {
+      val testJson = Json.parse("""{"payePaymentReference":"123PH456789002501","origin":"WcEpayeNi"}""")
+      val osd = ExtendedWcEpayeNi.openBankingOriginSpecificSessionData(TestJourneys.WcEpayeNi.journeyBeforeBeginWebPayment.journeySpecificData)
+      testOsd(osd, WcEpayeNiSessionData(WcEpayeNiReference("123PH456789002501"), None), "123PH456789002501", "123PH45678900")
+      roundTripJsonTest(osd, testJson)
+    }
+
   }
 
   "sanity check for implemented origins" in {
-    TestHelpers.implementedOrigins.size shouldBe 39 withClue "** This dummy test is here to remind you to update the tests above. Bump up the expected number when an origin is added to implemented origins **"
+    TestHelpers.implementedOrigins.size shouldBe 40 withClue "** This dummy test is here to remind you to update the tests above. Bump up the expected number when an origin is added to implemented origins **"
   }
 
 }

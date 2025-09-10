@@ -96,6 +96,7 @@ service-name.PfAlcoholDuty = Talu’ch Toll Alcohol
 service-name.VatC2c = Talu eich TAW fewnforio
 service-name.PfVatC2c = Talu eich TAW fewnforio
 service-name.WcEpayeLpp = Talu’ch cosb am dalu neu gyflwyno TWE yn hwyr
+service-name.WcEpayeNi = Talwch eich TWE a’ch Yswiriant Gwladol y cyflogwr
 
 
 ## Email address page
@@ -175,6 +176,7 @@ check-your-details.PfVatC2c.reference = Cyfeirnod y taliad
 check-your-details.WcXref.reference = Cyfeirnod y taliad
 check-your-details.WcSimpleAssessment.reference = Cyfeirnod y taliad
 check-your-details.WcEpayeLpp.reference = Cyfeirnod y taliad
+check-your-details.WcEpayeNi.reference = Cyfeirnod y taliad
 
 
 ## Address Page
@@ -329,6 +331,7 @@ payment-complete.tax-name.PfAlcoholDuty = Toll Alcohol
 payment-complete.tax-name.VatC2c = TAW fewnforio
 payment-complete.tax-name.PfVatC2c = TAW fewnforio
 payment-complete.tax-name.WcEpayeLpp = Cosb y Cyflogwr am dalu TWE yn hwyr
+payment-complete.tax-name.WcEpayeNi = TWE ac Yswiriant Gwladol y Cyflogwr
 
 ## Payment Cancelled page
 payment-cancelled.heading = Taliad wedi’i ganslo
@@ -396,6 +399,7 @@ email.tax-name.PfVatC2c = TAW fewnforio
 email.tax-name.WcXref = Trethi, cosbau a setliadau ymholiadau eraill
 email.tax-name.WcSimpleAssessment = Asesiad Syml
 email.tax-name.WcEpayeLpp = Cosb y Cyflogwr am dalu TWE yn hwyr
+email.tax-name.WcEpayeNi = TWE ac Yswiriant Gwladol y Cyflogwr
 
 ## Payments survey
 payments-survey.bta.return-message = Dim diolch, dychwelyd i cyfrif treth busnes
