@@ -127,12 +127,12 @@ class PaymentsSurveyServiceSpec extends ItSpec with TableDrivenPropertyChecks {
               origin         = "PfEpayeNi",
               returnMsg      = "Skip survey",
               returnHref     = "https://www.gov.uk/government/organisations/hm-revenue-customs",
-              auditName      = "paye-ni",
+              auditName      = "epaye",
               audit          = AuditOptions(
                 userType  = "LoggedOut",
                 journey   = Some("Successful"),
                 orderId   = Some("123PH456789002503"),
-                liability = Some("paye-ni")
+                liability = Some("epaye")
               ),
               contentOptions = SurveyContentOptions(
                 isWelshSupported = true,
@@ -768,6 +768,24 @@ class PaymentsSurveyServiceSpec extends ItSpec with TableDrivenPropertyChecks {
                 isWelshSupported = true,
                 title            = SurveyBannerTitle(
                   englishValue = "Pay your PAYE late payment or filing penalty", welshValue = Some("Talu’ch cosb am dalu neu gyflwyno TWE yn hwyr")
+                )
+              )
+            ) -> false
+            case Origins.WcEpayeNi => PaymentSurveyJourneyRequest(
+              origin         = "WcEpayeNi",
+              returnMsg      = "Skip survey",
+              returnHref     = "https://www.gov.uk/government/organisations/hm-revenue-customs",
+              auditName      = "epaye",
+              audit          = AuditOptions(
+                userType  = "LoggedOut",
+                journey   = Some("Successful"),
+                orderId   = Some("123PH456789002501"),
+                liability = Some("epaye")
+              ),
+              contentOptions = SurveyContentOptions(
+                isWelshSupported = true,
+                title            = SurveyBannerTitle(
+                  englishValue = "Pay your employers’ PAYE and National Insurance", welshValue = Some("Talwch eich TWE a’ch Yswiriant Gwladol y cyflogwr")
                 )
               )
             ) -> false

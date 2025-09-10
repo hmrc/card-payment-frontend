@@ -70,6 +70,7 @@ object TestHelpers {
     WcSimpleAssessment,
     WcXref,
     WcEpayeLpp,
+    WcEpayeNi,
     WcEpayeLateCis
   )
 
@@ -214,6 +215,7 @@ object TestHelpers {
     case Origins.WcClass1aNi              => TestJourneys.WcClass1aNi
     case Origins.WcXref                   => TestJourneys.WcXref
     case Origins.WcEpayeLpp               => TestJourneys.WcEpayeLpp
+    case Origins.WcEpayeNi                => TestJourneys.WcEpayeNi
     case Origins.WcEpayeLateCis           => TestJourneys.WcEpayeLateCis
   }
 
