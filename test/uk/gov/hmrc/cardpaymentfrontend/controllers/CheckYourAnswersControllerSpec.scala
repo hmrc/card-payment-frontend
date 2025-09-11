@@ -230,7 +230,6 @@ class CheckYourAnswersControllerSpec extends ItSpec {
         case Origins.VatC2c             => false
         case Origins.WcEpayeLpp         => false
         case Origins.WcClass1aNi        => false
-        case Origins.WcEpayeLateCis     => false
         case Origins.WcEpayeNi          => false
         case Origins.WcEpayeLateCis     => false
         case _                          => true
@@ -1114,22 +1113,6 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       val document = Jsoup.parse(contentAsString(result))
       val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.WcEpayeLpp))
       assertRow(referenceRow, "Cyfeirnod y taliad", "XE123456789012", None, None)
-    }
-
-    "[WcEpayeLateCis] should render the payment reference row correctly" in {
-      PayApiStub.stubForFindBySessionId2xx(TestJourneys.WcEpayeLateCis.journeyBeforeBeginWebPayment)
-      val result = systemUnderTest.renderPage(fakeRequest())
-      val document = Jsoup.parse(contentAsString(result))
-      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.WcEpayeLateCis))
-      assertRow(referenceRow, "Penalty reference number", "XE123456789012", None, None)
-    }
-
-    "[WcEpayeLateCis] should render the payment reference row correctly in Welsh" in {
-      PayApiStub.stubForFindBySessionId2xx(TestJourneys.WcEpayeLateCis.journeyBeforeBeginWebPayment)
-      val result = systemUnderTest.renderPage(fakeRequestWelsh())
-      val document = Jsoup.parse(contentAsString(result))
-      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.WcEpayeLateCis))
-      assertRow(referenceRow, "Cyfeirnod y gosb", "XE123456789012", None, None)
     }
 
     "[WcEpayeNi] should render the payment reference row correctly" in {
