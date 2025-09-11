@@ -254,7 +254,7 @@ object ExtendedOrigin {
         Origins.PfAlcoholDuty | Origins.VatC2c | Origins.PfVatC2c | Origins.`3psSa` | Origins.`3psVat` | Origins.Pillar2 |
         Origins.PfPillar2 => false
       case Origins.WcSa | Origins.WcCt | Origins.WcVat | Origins.WcSimpleAssessment | Origins.WcXref | Origins.WcEpayeLpp
-           | Origins.WcClass1aNi | Origins.WcEpayeNi | Origins.WcEpayeLateCis => true
+        | Origins.WcClass1aNi | Origins.WcEpayeNi | Origins.WcEpayeLateCis => true
     }
   }
 }
