@@ -81,7 +81,7 @@ service-name.PfEconomicCrimeLevy = Pay Economic Crime Levy
 service-name.PfJobRetentionScheme =
 service-name.JrsJobRetentionScheme =
 service-name.PfImportedVehicles =
-service-name.PfChildBenefitRepayments =
+service-name.PfChildBenefitRepayments = Repay Child Benefit overpayments
 service-name.NiEuVatOss =
 service-name.PfNiEuVatOss =
 service-name.NiEuVatIoss =
@@ -179,6 +179,7 @@ check-your-details.WcXref.reference = Payment reference
 check-your-details.WcSimpleAssessment.reference = Payment reference
 check-your-details.WcEpayeLpp.reference = Payment reference
 check-your-details.WcEpayeNi.reference = Payment reference
+check-your-details.PfChildBenefitRepayments.reference = Child benefit overpayment reference
 
 
 ## Address Page
@@ -313,7 +314,7 @@ payment-complete.tax-name.PfEconomicCrimeLevy = Economic Crime Levy
 payment-complete.tax-name.PfJobRetentionScheme =
 payment-complete.tax-name.JrsJobRetentionScheme =
 payment-complete.tax-name.PfImportedVehicles =
-payment-complete.tax-name.PfChildBenefitRepayments =
+payment-complete.tax-name.PfChildBenefitRepayments = Repay Child Benefit overpayments
 payment-complete.tax-name.NiEuVatOss =
 payment-complete.tax-name.PfNiEuVatOss =
 payment-complete.tax-name.NiEuVatIoss =
@@ -403,6 +404,7 @@ email.tax-name.WcXref = Other taxes, penalties and enquiry settlements
 email.tax-name.WcSimpleAssessment = Simple Assessment
 email.tax-name.WcEpayeLpp = Employers’ PAYE late payment penalty
 email.tax-name.WcEpayeNi = Employers’ PAYE and National Insurance
+email.tax-name.PfChildBenefitRepayments = Repay Child Benefit overpayments
 
 ## Payments survey
 payments-survey.bta.return-message = Skip survey, return to business tax account

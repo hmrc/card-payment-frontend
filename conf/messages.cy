@@ -82,7 +82,7 @@ service-name.PfEconomicCrimeLevy = Talu Ardoll Troseddau Economaidd
 service-name.PfJobRetentionScheme =
 service-name.JrsJobRetentionScheme =
 service-name.PfImportedVehicles =
-service-name.PfChildBenefitRepayments =
+service-name.PfChildBenefitRepayments = Ad-dalu gordaliadau Budd-dal Plant
 service-name.NiEuVatOss =
 service-name.PfNiEuVatOss =
 service-name.NiEuVatIoss =
@@ -179,6 +179,7 @@ check-your-details.WcXref.reference = Cyfeirnod y taliad
 check-your-details.WcSimpleAssessment.reference = Cyfeirnod y taliad
 check-your-details.WcEpayeLpp.reference = Cyfeirnod y taliad
 check-your-details.WcEpayeNi.reference = Cyfeirnod y taliad
+check-your-details.PfChildBenefitRepayments.reference = Cyfeirnod gordaliad Budd-dal Plant
 
 
 ## Address Page
@@ -319,7 +320,7 @@ payment-complete.tax-name.PfEconomicCrimeLevy = Ardoll Troseddau Economaidd
 payment-complete.tax-name.PfJobRetentionScheme =
 payment-complete.tax-name.JrsJobRetentionScheme =
 payment-complete.tax-name.PfImportedVehicles =
-payment-complete.tax-name.PfChildBenefitRepayments =
+payment-complete.tax-name.PfChildBenefitRepayments = Ad-dalu gordaliadau Budd-dal Plant
 payment-complete.tax-name.NiEuVatOss =
 payment-complete.tax-name.PfNiEuVatOss =
 payment-complete.tax-name.NiEuVatIoss =
@@ -404,6 +405,7 @@ email.tax-name.WcXref = Trethi, cosbau a setliadau ymholiadau eraill
 email.tax-name.WcSimpleAssessment = Asesiad Syml
 email.tax-name.WcEpayeLpp = Cosb y Cyflogwr am dalu TWE yn hwyr
 email.tax-name.WcEpayeNi = TWE ac Yswiriant Gwladol y Cyflogwr
+email.tax-name.PfChildBenefitRepayments = Ad-dalu gordaliadau Budd-dal Plant
 
 ## Payments survey
 payments-survey.bta.return-message = Dim diolch, dychwelyd i cyfrif treth busnes
