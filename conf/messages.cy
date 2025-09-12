@@ -97,7 +97,7 @@ service-name.VatC2c = Talu eich TAW fewnforio
 service-name.PfVatC2c = Talu eich TAW fewnforio
 service-name.WcEpayeLpp = Talu’ch cosb am dalu neu gyflwyno TWE yn hwyr
 service-name.WcEpayeNi = Talwch eich TWE a’ch Yswiriant Gwladol y cyflogwr
-
+service-name.WcEpayeSeta = Talwch eich Cytundeb Setliad TWE y cyflogwr
 
 ## Email address page
 email-address.heading = Beth yw’ch cyfeiriad e-bost? (dewisol)
@@ -177,7 +177,7 @@ check-your-details.WcXref.reference = Cyfeirnod y taliad
 check-your-details.WcSimpleAssessment.reference = Cyfeirnod y taliad
 check-your-details.WcEpayeLpp.reference = Cyfeirnod y taliad
 check-your-details.WcEpayeNi.reference = Cyfeirnod y taliad
-
+check-your-details.WcEpayeSeta.reference = Cyfeirnod y taliad
 
 ## Address Page
 address.heading = Cyfeiriad bilio’r cerdyn
@@ -332,6 +332,7 @@ payment-complete.tax-name.VatC2c = TAW fewnforio
 payment-complete.tax-name.PfVatC2c = TAW fewnforio
 payment-complete.tax-name.WcEpayeLpp = Cosb y Cyflogwr am dalu TWE yn hwyr
 payment-complete.tax-name.WcEpayeNi = TWE ac Yswiriant Gwladol y Cyflogwr
+payment-complete.tax-name.WcEpayeSeta = Cytundeb Setliad TWE y Cyflogwr
 
 ## Payment Cancelled page
 payment-cancelled.heading = Taliad wedi’i ganslo
@@ -400,6 +401,7 @@ email.tax-name.WcXref = Trethi, cosbau a setliadau ymholiadau eraill
 email.tax-name.WcSimpleAssessment = Asesiad Syml
 email.tax-name.WcEpayeLpp = Cosb y Cyflogwr am dalu TWE yn hwyr
 email.tax-name.WcEpayeNi = TWE ac Yswiriant Gwladol y Cyflogwr
+email.tax-name.WcEpayeSeta = Cytundeb Setliad TWE y Cyflogwr
 
 ## Payments survey
 payments-survey.bta.return-message = Dim diolch, dychwelyd i cyfrif treth busnes
