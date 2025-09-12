@@ -70,7 +70,8 @@ object TestHelpers {
     WcSimpleAssessment,
     WcXref,
     WcEpayeLpp,
-    WcEpayeNi
+    WcEpayeNi,
+    PfChildBenefitRepayments
   )
 
   val unimplementedOrigins: Seq[Origin] = Seq[Origin](
@@ -109,7 +110,6 @@ object TestHelpers {
     PfJobRetentionScheme,
     JrsJobRetentionScheme,
     PfImportedVehicles,
-    PfChildBenefitRepayments,
     NiEuVatOss,
     PfNiEuVatOss,
     NiEuVatIoss,
@@ -190,7 +190,7 @@ object TestHelpers {
     case Origins.PfJobRetentionScheme     => throw new MatchError("Not implemented yet")
     case Origins.JrsJobRetentionScheme    => throw new MatchError("Not implemented yet")
     case Origins.PfImportedVehicles       => throw new MatchError("Not implemented yet")
-    case Origins.PfChildBenefitRepayments => throw new MatchError("Not implemented yet")
+    case Origins.PfChildBenefitRepayments => TestJourneys.PfChildBenefitRepayments
     case Origins.NiEuVatOss               => throw new MatchError("Not implemented yet")
     case Origins.PfNiEuVatOss             => throw new MatchError("Not implemented yet")
     case Origins.NiEuVatIoss              => throw new MatchError("Not implemented yet")
