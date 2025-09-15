@@ -54,7 +54,7 @@ object ExtendedWcEpayeSeta extends ExtendedOrigin {
 
   override def emailTaxTypeMessageKey: String = "email.tax-name.WcEpayeSeta"
 
-  override def surveyAuditName: String = "paye-seta"
+  override def surveyAuditName: String = "epaye-settlement-agreement"
 
   override def surveyReturnHref: String = "https://www.gov.uk/government/organisations/hm-revenue-customs"
 

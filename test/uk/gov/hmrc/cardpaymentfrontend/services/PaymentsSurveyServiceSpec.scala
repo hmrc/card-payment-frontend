@@ -811,12 +811,12 @@ class PaymentsSurveyServiceSpec extends ItSpec with TableDrivenPropertyChecks {
               origin         = "WcEpayeSeta",
               returnMsg      = "Skip survey",
               returnHref     = "https://www.gov.uk/government/organisations/hm-revenue-customs",
-              auditName      = "paye-seta",
+              auditName      = "epaye-settlement-agreement",
               audit          = AuditOptions(
                 userType  = "LoggedOut",
                 journey   = Some("Successful"),
                 orderId   = Some("XE123456789012"),
-                liability = Some("paye-seta")
+                liability = Some("epaye-settlement-agreement")
               ),
               contentOptions = SurveyContentOptions(
                 isWelshSupported = true,
