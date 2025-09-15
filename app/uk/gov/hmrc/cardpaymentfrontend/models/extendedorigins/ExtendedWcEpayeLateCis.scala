@@ -24,7 +24,6 @@ import uk.gov.hmrc.cardpaymentfrontend.models._
 import uk.gov.hmrc.cardpaymentfrontend.models.openbanking.{OriginSpecificSessionData, WcEpayeLateCisSessionData}
 
 object ExtendedWcEpayeLateCis extends ExtendedOrigin {
-  //DONE
   override def serviceNameMessageKey: String = "service-name.WcEpayeLateCis"
 
   override def taxNameMessageKey: String = "payment-complete.tax-name.WcEpayeLateCis"
