@@ -16,7 +16,8 @@
 
 package uk.gov.hmrc.cardpaymentfrontend.controllers
 
-import payapi.cardpaymentjourney.model.journey.JourneySpecificData
+import payapi.cardpaymentjourney.model.journey.{JourneySpecificData, JsdBtaSdil, JsdPfSdil}
+import payapi.corcommon.model.taxes.other.SoftDrinksIndustryLevyRef
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import uk.gov.hmrc.cardpaymentfrontend.actions.{Actions, JourneyRequest}
 import uk.gov.hmrc.cardpaymentfrontend.config.AppConfig
@@ -58,6 +59,7 @@ class FeesController @Inject() (
     val showBankTransferLink: Boolean = paymentMethodToBeShown(PaymentMethod.Bacs, paymentMethodsToShow)
     val showOneOffDirectDebitLink: Boolean = paymentMethodToBeShown(PaymentMethod.OneOffDirectDebit, paymentMethodsToShow)
     val showVariableDirectDebitLink: Boolean = paymentMethodToBeShown(PaymentMethod.VariableDirectDebit, paymentMethodsToShow)
+    val showDirectDebitLink: Boolean = paymentMethodToBeShown(PaymentMethod.DirectDebit, paymentMethodsToShow) && journeyShouldShowMdtpDirectDebit(jsd)
 
       def pfVatChargeReferenceExists: Boolean = extendedOrigin match {
         case ExtendedPfVat => ExtendedPfVat.chargeReference.apply(jsd).isDefined
@@ -96,7 +98,26 @@ class FeesController @Inject() (
       ))
     } else Seq.empty[Link]
 
-    maybeOpenBankingLink ++ maybeBankTransferLink ++ maybeVariableDirectDebitLink ++ maybeOneOffDirectDebitLink
+    //the one MDTP owned by oceans 11
+    val maybeDirectDebitLink = if (showDirectDebitLink) {
+      Seq(Link(
+        href       = Call("GET", appConfig.payFrontendBaseUrl + appConfig.directDebitRelativeUrl),
+        linkId     = "direct-debit-link",
+        messageKey = "card-fees.para2.direct-debit"
+      ))
+    } else Seq.empty[Link]
+
+    maybeOpenBankingLink ++ maybeBankTransferLink ++ maybeVariableDirectDebitLink ++ maybeOneOffDirectDebitLink ++ maybeDirectDebitLink
+  }
+
+  //only required for Sdil currently, because the journey contains two sub types of ref (why?!) we need to check for the subtype of ref, as only one supports dd...
+  private[controllers] def journeyShouldShowMdtpDirectDebit: JourneySpecificData => Boolean = {
+    case j: JsdPfSdil => j.softDrinksIndustryLevyRef.exists {
+      case r if r.value matches SoftDrinksIndustryLevyRef.softDrinksIndustryLevyRefRegex => true
+      case _ => false
+    }
+    case _: JsdBtaSdil => true
+    case _             => false
   }
 
 }
