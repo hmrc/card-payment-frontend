@@ -52,7 +52,7 @@ object ExtendedWcEpayeLpp extends ExtendedOrigin {
 
   override def emailTaxTypeMessageKey: String = "email.tax-name.WcEpayeLpp"
 
-  override def surveyAuditName: String = "epaye"
+  override def surveyAuditName: String = "epaye-late-payment-penalty"
   override def surveyReturnHref: String = "https://www.gov.uk/government/organisations/hm-revenue-customs"
   override def surveyReturnMessageKey: String = "payments-survey.other.return-message"
   override def surveyIsWelshSupported: Boolean = true
