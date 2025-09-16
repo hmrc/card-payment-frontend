@@ -169,7 +169,7 @@ object ExtendedOrigin {
       case Origins.BtaEpayeGeneral          => ExtendedBtaEpayeGeneral
       case Origins.BtaClass1aNi             => ExtendedBtaClass1aNi
       case Origins.BtaCt                    => ExtendedBtaCt
-      case Origins.BtaSdil                  => DefaultExtendedOrigin
+      case Origins.BtaSdil                  => ExtendedBtaSdil
       case Origins.BcPngr                   => DefaultExtendedOrigin
       case Origins.Parcels                  => DefaultExtendedOrigin
       case Origins.DdVat                    => DefaultExtendedOrigin
@@ -194,7 +194,7 @@ object ExtendedOrigin {
       case Origins.PfGamingOrBingoDuty      => DefaultExtendedOrigin
       case Origins.PfGbPbRgDuty             => DefaultExtendedOrigin
       case Origins.PfLandfillTax            => DefaultExtendedOrigin
-      case Origins.PfSdil                   => DefaultExtendedOrigin
+      case Origins.PfSdil                   => ExtendedPfSdil
       case Origins.PfAggregatesLevy         => DefaultExtendedOrigin
       case Origins.PfClimateChangeLevy      => DefaultExtendedOrigin
       case Origins.PfSimpleAssessment       => DefaultExtendedOrigin

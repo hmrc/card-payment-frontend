@@ -73,7 +73,9 @@ object TestHelpers {
     WcEpayeNi,
     WcEpayeLateCis,
     WcEpayeSeta,
-    PfChildBenefitRepayments
+    PfChildBenefitRepayments,
+    BtaSdil,
+    PfSdil,
   )
 
   val unimplementedOrigins: Seq[Origin] = Seq[Origin](
@@ -85,7 +87,6 @@ object TestHelpers {
     PfInsurancePremium,
     PfPsAdmin,
     AppSa,
-    BtaSdil,
     BcPngr,
     Parcels,
     DdVat,
@@ -123,8 +124,7 @@ object TestHelpers {
     `3psSa`,
     `3psVat`,
     PfPillar2,
-    Pillar2,
-    PfSdil
+    Pillar2
   )
 
   def deriveTestDataFromOrigin[jsd <: JourneySpecificData](origin: Origin) = origin match {
@@ -155,7 +155,7 @@ object TestHelpers {
     case Origins.BtaEpayeGeneral          => TestJourneys.BtaEpayeGeneral
     case Origins.BtaClass1aNi             => TestJourneys.BtaClass1aNi
     case Origins.BtaCt                    => TestJourneys.BtaCt
-    case Origins.BtaSdil                  => throw new MatchError("Not implemented yet")
+    case Origins.BtaSdil                  => TestJourneys.BtaSdil
     case Origins.BcPngr                   => throw new MatchError("Not implemented yet")
     case Origins.Parcels                  => throw new MatchError("Not implemented yet")
     case Origins.DdVat                    => throw new MatchError("Not implemented yet")
@@ -178,7 +178,7 @@ object TestHelpers {
     case Origins.PfGamingOrBingoDuty      => throw new MatchError("Not implemented yet")
     case Origins.PfGbPbRgDuty             => throw new MatchError("Not implemented yet")
     case Origins.PfLandfillTax            => throw new MatchError("Not implemented yet")
-    case Origins.PfSdil                   => throw new MatchError("Not implemented yet")
+    case Origins.PfSdil                   => TestJourneys.PfSdil
     case Origins.PfAggregatesLevy         => throw new MatchError("Not implemented yet")
     case Origins.PfClimateChangeLevy      => throw new MatchError("Not implemented yet")
     case Origins.PfSimpleAssessment       => throw new MatchError("Not implemented yet")
