@@ -1147,9 +1147,25 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       assertRow(referenceRow, "Cyfeirnod y gosb", "XE123456789012", None, None)
     }
 
+    "[PfChildBenefitRepayments] should render the payment reference row correctly" in {
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfChildBenefitRepayments.journeyBeforeBeginWebPayment)
+      val result = systemUnderTest.renderPage(fakeRequest())
+      val document = Jsoup.parse(contentAsString(result))
+      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.PfChildBenefitRepayments))
+      assertRow(referenceRow, "Child benefit overpayment reference", "YA123456789123", Some("Change Child benefit overpayment reference"), Some("http://localhost:9056/pay/pay-by-card-change-reference-number"))
+    }
+
+    "[PfChildBenefitRepayments] should render the payment reference row correctly in Welsh" in {
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfChildBenefitRepayments.journeyBeforeBeginWebPayment)
+      val result = systemUnderTest.renderPage(fakeRequestWelsh())
+      val document = Jsoup.parse(contentAsString(result))
+      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.PfChildBenefitRepayments))
+      assertRow(referenceRow, "Cyfeirnod gordaliad Budd-dal Plant", "YA123456789123", Some("Newid Cyfeirnod gordaliad Budd-dal Plant"), Some("http://localhost:9056/pay/pay-by-card-change-reference-number"))
+    }
+
     "sanity check for implemented origins" in {
       // remember to add the singular tests for reference rows as well as fdp if applicable, they are not covered in the implementedOrigins forall tests
-      TestHelpers.implementedOrigins.size shouldBe 41 withClue "** This dummy test is here to remind you to update the tests above. Bump up the expected number when an origin is added to implemented origins **"
+      TestHelpers.implementedOrigins.size shouldBe 42 withClue "** This dummy test is here to remind you to update the tests above. Bump up the expected number when an origin is added to implemented origins **"
     }
 
   }
