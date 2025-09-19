@@ -72,6 +72,7 @@ object TestHelpers {
     WcEpayeLpp,
     WcEpayeNi,
     WcEpayeLateCis,
+    WcEpayeSeta,
     PfChildBenefitRepayments
   )
 
@@ -217,6 +218,7 @@ object TestHelpers {
     case Origins.WcEpayeLpp               => TestJourneys.WcEpayeLpp
     case Origins.WcEpayeNi                => TestJourneys.WcEpayeNi
     case Origins.WcEpayeLateCis           => TestJourneys.WcEpayeLateCis
+    case Origins.WcEpayeSeta              => TestJourneys.WcEpayeSeta
   }
 
 }

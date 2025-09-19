@@ -139,6 +139,7 @@ object OriginSpecificSessionData {
       case WcClass1aNi              => Json.format[WcClass1aNiSessionData].reads(json)
       case WcEpayeNi                => Json.format[WcEpayeNiSessionData].reads(json)
       case WcEpayeLateCis           => Json.format[WcEpayeLateCisSessionData].reads(json)
+      case WcEpayeSeta              => Json.format[WcEpayeSetaSessionData].reads(json)
 
       //Todo: Remove PfP800 when PtaP800 is fully available
       case origin @ (PfOther | PtaP800 | PfP800
@@ -228,6 +229,7 @@ object OriginSpecificSessionData {
       case sessionData: WcClass1aNiSessionData         => Json.format[WcClass1aNiSessionData].writes(sessionData)
       case sessionData: WcEpayeNiSessionData           => Json.format[WcEpayeNiSessionData].writes(sessionData)
       case sessionData: WcEpayeLateCisSessionData      => Json.format[WcEpayeLateCisSessionData].writes(sessionData)
+      case sessionData: WcEpayeSetaSessionData         => Json.format[WcEpayeSetaSessionData].writes(sessionData)
     }) + ("origin" -> Json.toJson(o.origin))
 
   implicit val format: OFormat[OriginSpecificSessionData] = OFormat(reads, writes)
@@ -432,6 +434,11 @@ final case class WcEpayeNiSessionData(payePaymentReference: WcEpayeNiReference, 
 final case class PfEpayeSetaSessionData(psaNumber: PsaNumber, returnUrl: Option[Url] = None) extends PayeSessionData(PfEpayeSeta) {
   def paymentReference: Reference = ReferenceMaker.makeSetaReference(psaNumber)
   def searchTag: SearchTag = SearchTag(psaNumber.canonicalizedValue)
+}
+
+final case class WcEpayeSetaSessionData(payeSettlementXRef: XRef, returnUrl: Option[Url] = None) extends PayeSessionData(WcEpayeSeta) {
+  def paymentReference: Reference = ReferenceMaker.makeXReference(payeSettlementXRef)
+  def searchTag: SearchTag = SearchTag(payeSettlementXRef.canonicalizedValue)
 }
 
 final case class PfEpayeLateCisSessionData(payeInterestXRef: XRef14Char, returnUrl: Option[Url] = None) extends PayeSessionData(PfEpayeLateCis) {

@@ -807,6 +807,24 @@ class PaymentsSurveyServiceSpec extends ItSpec with TableDrivenPropertyChecks {
                 )
               )
             ) -> false
+            case Origins.WcEpayeSeta => PaymentSurveyJourneyRequest(
+              origin         = "WcEpayeSeta",
+              returnMsg      = "Skip survey",
+              returnHref     = "https://www.gov.uk/government/organisations/hm-revenue-customs",
+              auditName      = "epaye-settlement-agreement",
+              audit          = AuditOptions(
+                userType  = "LoggedOut",
+                journey   = Some("Successful"),
+                orderId   = Some("XE123456789012"),
+                liability = Some("epaye-settlement-agreement")
+              ),
+              contentOptions = SurveyContentOptions(
+                isWelshSupported = true,
+                title            = SurveyBannerTitle(
+                  englishValue = "Pay your PAYE Settlement Agreement", welshValue = Some("Talwch eich Cytundeb Setliad TWE y cyflogwr")
+                )
+              )
+            ) -> false
             case Origins.PfChildBenefitRepayments => PaymentSurveyJourneyRequest(
               origin         = "PfChildBenefitRepayments",
               returnMsg      = "Skip survey",
