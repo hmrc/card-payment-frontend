@@ -28,8 +28,8 @@ service-name.PfSdlt = Talu eich Treth Dir y Tollau Stamp
 service-name.PfCds =
 service-name.PfOther =
 service-name.WcXref = Talwch eich treth
-service-name.PfP800 =
-service-name.PtaP800 =
+service-name.PfP800 = Gwirio faint o dreth incwm a daloch
+service-name.PtaP800 = Gwirio faint o dreth incwm a daloch
 service-name.PfClass2Ni =
 service-name.PfInsurancePremium =
 service-name.PfPsAdmin =
@@ -183,6 +183,12 @@ check-your-details.WcEpayeSeta.reference = Cyfeirnod y taliad
 check-your-details.PfChildBenefitRepayments.reference = Cyfeirnod gordaliad Budd-dal Plant
 check-your-details.BtaSdil.reference = Cyfeirnod y taliad
 check-your-details.PfSdil.reference = Cyfeirnod y taliad
+check-your-details.PfP800.reference = Cyfeirnod
+check-your-details.PfP800.charge-reference = Cyfeirnod y tâl
+check-your-details.PtaP800.reference = Cyfeirnod
+check-your-details.PtaP800.charge-reference = Cyfeirnod y tâl
+check-your-details.PfSimpleAssessment.reference = Cyfeirnod
+check-your-details.PtaSimpleAssessment.reference = Cyfeirnod
 
 
 ## Address Page
@@ -269,8 +275,8 @@ payment-complete.tax-name.PfSdlt = Treth Dir y Tollau Stamp
 payment-complete.tax-name.PfCds =
 payment-complete.tax-name.PfOther =
 payment-complete.tax-name.WcXref = Trethi, cosbau a setliadau ymholiadau eraill
-payment-complete.tax-name.PfP800 =
-payment-complete.tax-name.PtaP800 =
+payment-complete.tax-name.PfP800 = P800
+payment-complete.tax-name.PtaP800 = P800
 payment-complete.tax-name.PfClass2Ni =
 payment-complete.tax-name.PfInsurancePremium =
 payment-complete.tax-name.PfPsAdmin =
@@ -312,8 +318,8 @@ payment-complete.tax-name.PfGbPbRgDuty =
 payment-complete.tax-name.PfLandfillTax =
 payment-complete.tax-name.PfAggregatesLevy =
 payment-complete.tax-name.PfClimateChangeLevy =
-payment-complete.tax-name.PfSimpleAssessment =
-payment-complete.tax-name.PtaSimpleAssessment =
+payment-complete.tax-name.PfSimpleAssessment = Asesiad Syml
+payment-complete.tax-name.PtaSimpleAssessment = Asesiad Syml
 payment-complete.tax-name.AppSimpleAssessment =
 payment-complete.tax-name.WcSimpleAssessment = Asesiad Syml
 payment-complete.tax-name.PfTpes =
@@ -413,6 +419,10 @@ email.tax-name.WcEpayeSeta = Cytundeb Setliad TWE y Cyflogwr
 email.tax-name.PfChildBenefitRepayments = Ad-dalu gordaliadau Budd-dal Plant
 email.tax-name.BtaSdil = Ardoll y Diwydiant Diodydd Ysgafn
 email.tax-name.PfSdil = Ardoll y Diwydiant Diodydd Ysgafn
+email.tax-name.PfP800 = P800
+email.tax-name.PtaP800 = Asesiad Syml
+email.tax-name.PfSimpleAssessment = Asesiad Syml
+email.tax-name.PtaSimpleAssessment = Asesiad Syml
 
 ## Payments survey
 payments-survey.bta.return-message = Dim diolch, dychwelyd i cyfrif treth busnes

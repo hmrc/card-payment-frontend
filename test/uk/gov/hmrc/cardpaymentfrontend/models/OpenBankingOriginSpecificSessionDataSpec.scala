@@ -24,6 +24,8 @@ import payapi.corcommon.model.taxes.amls.AmlsPaymentReference
 import payapi.corcommon.model.taxes.ct.{CtChargeTypes, CtPeriod, CtUtr}
 import payapi.corcommon.model.taxes.epaye.{AccountsOfficeReference, EpayePenaltyReference, MonthlyEpayeTaxPeriod, PsaNumber, QuarterlyEpayeTaxPeriod, WcClass1aNiReference, YearlyEpayeTaxPeriod}
 import payapi.corcommon.model.taxes.other.{EconomicCrimeLevyReturnNumber, SoftDrinksIndustryLevyRef, XRef, XRef14Char, YRef}
+import payapi.corcommon.model.taxes.other.{EconomicCrimeLevyReturnNumber, XRef, XRef14Char, YRef}
+import payapi.corcommon.model.taxes.p302.{P302ChargeRef, P302Ref}
 import payapi.corcommon.model.taxes.ppt.PptReference
 import payapi.corcommon.model.taxes.sa.SaUtr
 import payapi.corcommon.model.taxes.sdlt.Utrn
@@ -387,10 +389,34 @@ class OpenBankingOriginSpecificSessionDataSpec extends UnitSpec {
       roundTripJsonTest(osd, testJson)
     }
 
+    "PfP800 (which is None, since it doesn't support Open banking)" in {
+      val osd = ExtendedPfP800.openBankingOriginSpecificSessionData(TestJourneys.PfP800.journeyBeforeBeginWebPayment.journeySpecificData)
+      osd shouldBe None
+    }
+
+    "PtaP800 (which is None, since it doesn't support Open banking)" in {
+      val osd = ExtendedPtaP800.openBankingOriginSpecificSessionData(TestJourneys.PtaP800.journeyBeforeBeginWebPayment.journeySpecificData)
+      osd shouldBe None
+    }
+
+    "PfSimpleAssessment" in {
+      val testJson = Json.parse("""{"simpleAssessmentReference":"XE123456789012","origin":"PfSimpleAssessment"}""")
+      val osd = ExtendedPfSimpleAssessment.openBankingOriginSpecificSessionData(TestJourneys.PfSimpleAssessment.journeyBeforeBeginWebPayment.journeySpecificData)
+      testOsd(osd, PfSimpleAssessmentSessionData(XRef14Char("XE123456789012"), None), "XE123456789012", "XE123456789012")
+      roundTripJsonTest(osd, testJson)
+    }
+
+    "PtaSimpleAssessment" in {
+      val testJson = Json.parse("""{"p302Ref":"MA000003AP3022027","p302ChargeRef":"BC007010065114","origin":"PtaSimpleAssessment"}""")
+      val osd = ExtendedPtaSimpleAssessment.openBankingOriginSpecificSessionData(TestJourneys.PtaSimpleAssessment.journeyBeforeBeginWebPayment.journeySpecificData)
+      testOsd(osd, PtaSimpleAssessmentSessionData(P302Ref("MA000003AP3022027"), P302ChargeRef("BC007010065114"), None), "BC007010065114", "BC007010065114")
+      roundTripJsonTest(osd, testJson)
+    }
+
   }
 
   "sanity check for implemented origins" in {
-    TestHelpers.implementedOrigins.size shouldBe 45 withClue "** This dummy test is here to remind you to update the tests above. Bump up the expected number when an origin is added to implemented origins **"
+    TestHelpers.implementedOrigins.size shouldBe 49 withClue "** This dummy test is here to remind you to update the tests above. Bump up the expected number when an origin is added to implemented origins **"
   }
 
 }

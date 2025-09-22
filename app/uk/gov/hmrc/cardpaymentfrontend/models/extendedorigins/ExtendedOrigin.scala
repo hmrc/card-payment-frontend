@@ -156,7 +156,7 @@ object ExtendedOrigin {
       case Origins.PfCds                    => DefaultExtendedOrigin
       case Origins.PfOther                  => DefaultExtendedOrigin
       case Origins.PfP800                   => ExtendedPfP800
-      case Origins.PtaP800                  => DefaultExtendedOrigin
+      case Origins.PtaP800                  => ExtendedPtaP800
       case Origins.PfClass2Ni               => DefaultExtendedOrigin
       case Origins.PfInsurancePremium       => DefaultExtendedOrigin
       case Origins.PfPsAdmin                => DefaultExtendedOrigin
@@ -197,8 +197,8 @@ object ExtendedOrigin {
       case Origins.PfSdil                   => ExtendedPfSdil
       case Origins.PfAggregatesLevy         => DefaultExtendedOrigin
       case Origins.PfClimateChangeLevy      => DefaultExtendedOrigin
-      case Origins.PfSimpleAssessment       => DefaultExtendedOrigin
-      case Origins.PtaSimpleAssessment      => DefaultExtendedOrigin
+      case Origins.PfSimpleAssessment       => ExtendedPfSimpleAssessment
+      case Origins.PtaSimpleAssessment      => ExtendedPtaSimpleAssessment
       case Origins.AppSimpleAssessment      => DefaultExtendedOrigin
       case Origins.PfTpes                   => DefaultExtendedOrigin
       case Origins.CapitalGainsTax          => ExtendedCapitalGainsTax

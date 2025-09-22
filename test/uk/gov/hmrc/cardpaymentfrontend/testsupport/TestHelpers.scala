@@ -76,13 +76,15 @@ object TestHelpers {
     PfChildBenefitRepayments,
     BtaSdil,
     PfSdil,
+    PfSimpleAssessment,
+    PtaSimpleAssessment,
+    PfP800,
+    PtaP800,
   )
 
   val unimplementedOrigins: Seq[Origin] = Seq[Origin](
     PfCds,
     PfOther,
-    PfP800,
-    PtaP800,
     PfClass2Ni,
     PfInsurancePremium,
     PfPsAdmin,
@@ -106,8 +108,6 @@ object TestHelpers {
     PfLandfillTax,
     PfAggregatesLevy,
     PfClimateChangeLevy,
-    PfSimpleAssessment,
-    PtaSimpleAssessment,
     AppSimpleAssessment,
     PfTpes,
     PfJobRetentionScheme,
@@ -142,8 +142,8 @@ object TestHelpers {
     case Origins.PfSdlt                   => TestJourneys.PfSdlt
     case Origins.PfCds                    => throw new MatchError("Not implemented yet")
     case Origins.PfOther                  => throw new MatchError("Not implemented yet")
-    case Origins.PfP800                   => throw new MatchError("Not implemented yet")
-    case Origins.PtaP800                  => throw new MatchError("Not implemented yet")
+    case Origins.PfP800                   => TestJourneys.PfP800
+    case Origins.PtaP800                  => TestJourneys.PtaP800
     case Origins.PfClass2Ni               => throw new MatchError("Not implemented yet")
     case Origins.PfInsurancePremium       => throw new MatchError("Not implemented yet")
     case Origins.PfPsAdmin                => throw new MatchError("Not implemented yet")
@@ -181,8 +181,8 @@ object TestHelpers {
     case Origins.PfSdil                   => TestJourneys.PfSdil
     case Origins.PfAggregatesLevy         => throw new MatchError("Not implemented yet")
     case Origins.PfClimateChangeLevy      => throw new MatchError("Not implemented yet")
-    case Origins.PfSimpleAssessment       => throw new MatchError("Not implemented yet")
-    case Origins.PtaSimpleAssessment      => throw new MatchError("Not implemented yet")
+    case Origins.PfSimpleAssessment       => TestJourneys.PfSimpleAssessment
+    case Origins.PtaSimpleAssessment      => TestJourneys.PtaSimpleAssessment
     case Origins.AppSimpleAssessment      => throw new MatchError("Not implemented yet")
     case Origins.WcSimpleAssessment       => TestJourneys.WcSimpleAssessment
     case Origins.PfTpes                   => throw new MatchError("Not implemented yet")

@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.cardpaymentfrontend.controllers
 
-import payapi.cardpaymentjourney.model.journey.{Journey, JourneySpecificData, JsdAlcoholDuty}
+import payapi.cardpaymentjourney.model.journey.{Journey, JourneySpecificData, JsdAlcoholDuty, JsdPfP800, JsdPtaP800, JsdPtaSimpleAssessment}
 import payapi.corcommon.model.barclays.CardCategories
 import play.api.i18n.Messages
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -86,6 +86,34 @@ object PaymentCompleteController {
             )
           )
         }
+      case JsdPfP800(p800Ref, p800ChargeRef, _) =>
+        p800ChargeRef.fold[Seq[SummaryListRow]](Seq.empty[SummaryListRow]) { chargeRef =>
+          Seq(
+            SummaryListRow(
+              key   = Key(Text(messages("check-your-details.PfP800.charge-reference"))),
+              value = Value(Text(chargeRef.canonicalizedValue))
+            )
+          )
+        } ++ Seq(SummaryListRow(
+          key   = Key(Text(messages("check-your-details.PfP800.reference"))),
+          value = Value(Text(p800Ref.canonicalizedValue))
+        ))
+
+      case JsdPtaP800(p800Ref, p800ChargeRef, _, _) =>
+        p800ChargeRef.fold[Seq[SummaryListRow]](Seq.empty[SummaryListRow]) { chargeRef =>
+          Seq(
+            SummaryListRow(
+              key   = Key(Text(messages("check-your-details.PtaP800.charge-reference"))),
+              value = Value(Text(chargeRef.canonicalizedValue))
+            )
+          )
+        } ++ Seq(SummaryListRow(
+          key   = Key(Text(messages("check-your-details.PtaP800.reference"))),
+          value = Value(Text(p800Ref.canonicalizedValue))
+        ))
+
+      case JsdPtaSimpleAssessment(_, _, _, _, _) =>
+        Seq.empty
 
       case _ => Seq.empty[SummaryListRow]
     }
