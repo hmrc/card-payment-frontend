@@ -17,7 +17,7 @@
 package uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins
 
 import payapi.cardpaymentjourney.model.journey.{JourneySpecificData, JsdPfEpayeNi}
-import play.api.i18n.Lang
+import play.api.i18n.Messages
 import play.api.mvc.{AnyContent, Call}
 import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
 import uk.gov.hmrc.cardpaymentfrontend.models.PaymentMethod.{Card, OneOffDirectDebit, OpenBanking, VariableDirectDebit}
@@ -48,17 +48,17 @@ object ExtendedPfEpayeNi extends ExtendedOrigin {
     ))
 
   override def checkYourAnswersAdditionalReferenceRow(journeyRequest: JourneyRequest[AnyContent])
-    (payFrontendBaseUrl: String)(implicit lang: Lang): Option[CheckYourAnswersRow] = {
+    (payFrontendBaseUrl: String)(implicit messages: Messages): Option[Seq[CheckYourAnswersRow]] = {
     journeyRequest.journey.journeySpecificData.asInstanceOf[JsdPfEpayeNi].period.map { period =>
-      CheckYourAnswersRow(
+      Seq(CheckYourAnswersRow(
         titleMessageKey = "check-your-details.PfEpayeNi.tax-period",
-        value           = Seq(humanReadablePeriod(period)),
+        value           = Seq(humanReadablePeriod(period)(messages.lang)),
         changeLink      = Some(Link(
           href       = Call("GET", s"$payFrontendBaseUrl/change-employers-paye-period?fromCardPayment=true"),
           linkId     = "check-your-details-period-change-link",
           messageKey = "check-your-details.change"
         ))
-      )
+      ))
     }
   }
 

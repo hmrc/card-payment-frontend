@@ -17,7 +17,7 @@
 package uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins
 
 import payapi.cardpaymentjourney.model.journey.{JourneySpecificData, JsdBtaClass1aNi}
-import play.api.i18n.Lang
+import play.api.i18n.Messages
 import play.api.mvc.AnyContent
 import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
 import uk.gov.hmrc.cardpaymentfrontend.models.PaymentMethod._
@@ -41,12 +41,12 @@ object ExtendedBtaClass1aNi extends ExtendedOrigin {
   }
 
   override def checkYourAnswersAdditionalReferenceRow(journeyRequest: JourneyRequest[AnyContent])
-    (payFrontendBaseUrl: String)(implicit lang: Lang): Option[CheckYourAnswersRow] =
-    Some(CheckYourAnswersRow(
+    (payFrontendBaseUrl: String)(implicit messages: Messages): Option[Seq[CheckYourAnswersRow]] =
+    Some(Seq(CheckYourAnswersRow(
       titleMessageKey = "check-your-details.BtaClass1aNi.tax-period",
-      value           = Seq(humanReadablePeriod(journeyRequest.journey.journeySpecificData.asInstanceOf[JsdBtaClass1aNi].period)),
+      value           = Seq(humanReadablePeriod(journeyRequest.journey.journeySpecificData.asInstanceOf[JsdBtaClass1aNi].period)(messages.lang)),
       changeLink      = None
-    ))
+    )))
 
   override def openBankingOriginSpecificSessionData: JourneySpecificData => Option[OriginSpecificSessionData] = {
     case j: JsdBtaClass1aNi => Some(BtaClass1aNiSessionData(j.accountsOfficeReference, period = j.period))

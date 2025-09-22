@@ -1908,16 +1908,22 @@ object PaymentCompleteControllerSpec {
       englishSummaryRowsDebitCard     = List(
         "Tax" -> "Simple Assessment",
         "Date" -> "2 November 2027",
+        "Charge reference" -> "BC007010065114",
+        "Tax year" -> "6 April 2027 to 5 April 2028",
         "Amount" -> "£12.34"
       ),
       maybeWelshSummaryRowsDebitCard  = Some(List(
         "Treth" -> "Asesiad Syml",
         "Dyddiad" -> "2 Tachwedd 2027",
+        "Cyfeirnod y tâl" -> "BC007010065114",
+        "Blwyddyn dreth" -> "6 Ebrill 2027 i 5 Ebrill 2028",
         "Swm" -> "£12.34"
       )),
       englishSummaryRowsCreditCard    = List(
         "Tax" -> "Simple Assessment",
         "Date" -> "2 November 2027",
+        "Charge reference" -> "BC007010065114",
+        "Tax year" -> "6 April 2027 to 5 April 2028",
         "Amount paid to HMRC" -> "£12.34",
         "Card fee (9.97%), non-refundable" -> "£1.23",
         "Total paid" -> "£13.57"
@@ -1925,6 +1931,8 @@ object PaymentCompleteControllerSpec {
       maybeWelshSummaryRowsCreditCard = Some(List(
         "Treth" -> "Asesiad Syml",
         "Dyddiad" -> "2 Tachwedd 2027",
+        "Cyfeirnod y tâl" -> "BC007010065114",
+        "Blwyddyn dreth" -> "6 Ebrill 2027 i 5 Ebrill 2028",
         "Swm a dalwyd i CThEM" -> "£12.34",
         "Ffi cerdyn (9.97%), ni ellir ei ad-dalu" -> "£1.23",
         "Cyfanswm a dalwyd" -> "£13.57"

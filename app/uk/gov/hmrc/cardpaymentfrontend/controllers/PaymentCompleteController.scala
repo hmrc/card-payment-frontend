@@ -18,6 +18,7 @@ package uk.gov.hmrc.cardpaymentfrontend.controllers
 
 import payapi.cardpaymentjourney.model.journey.{Journey, JourneySpecificData, JsdAlcoholDuty, JsdPfP800, JsdPtaP800, JsdPtaSimpleAssessment}
 import payapi.corcommon.model.barclays.CardCategories
+import payapi.corcommon.model.times.period.TaxYear
 import play.api.i18n.Messages
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import play.twirl.api.Html
@@ -112,8 +113,18 @@ object PaymentCompleteController {
           value = Value(Text(p800Ref.canonicalizedValue))
         ))
 
-      case JsdPtaSimpleAssessment(_, _, _, _, _) =>
-        Seq.empty
+      case JsdPtaSimpleAssessment(_, p302ChargeRef, taxYear, _, _) =>
+        val adjustedTaxYear: TaxYear = taxYear.nextTaxYear
+        Seq(
+          SummaryListRow(
+            key   = Key(Text(messages("check-your-details.PtaSimpleAssessment.charge-reference"))),
+            value = Value(Text(p302ChargeRef.canonicalizedValue))
+          ),
+          SummaryListRow(
+            key   = Key(Text(messages("check-your-details.PtaSimpleAssessment.tax-year"))),
+            value = Value(Text(messages("check-your-details.PtaSimpleAssessment.tax-year.value", adjustedTaxYear.startYear.toString, adjustedTaxYear.endYear.toString)))
+          )
+        )
 
       case _ => Seq.empty[SummaryListRow]
     }

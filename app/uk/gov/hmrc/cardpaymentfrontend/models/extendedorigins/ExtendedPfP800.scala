@@ -18,7 +18,7 @@ package uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins
 
 import payapi.cardpaymentjourney.model.journey.{JourneySpecificData, JsdPfP800}
 import payapi.corcommon.model.p800.P800ChargeRef
-import play.api.i18n.Lang
+import play.api.i18n.Messages
 import play.api.mvc.AnyContent
 import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
 import uk.gov.hmrc.cardpaymentfrontend.models.PaymentMethod.Card
@@ -39,13 +39,13 @@ object ExtendedPfP800 extends ExtendedOrigin {
     ))
   }
 
-  override def checkYourAnswersAdditionalReferenceRow(journeyRequest: JourneyRequest[AnyContent])(payFrontendBaseUrl: String)(implicit lang: Lang): Option[CheckYourAnswersRow] = {
+  override def checkYourAnswersAdditionalReferenceRow(journeyRequest: JourneyRequest[AnyContent])(payFrontendBaseUrl: String)(implicit messages: Messages): Option[Seq[CheckYourAnswersRow]] = {
     additionalReference(journeyRequest.journey.journeySpecificData).map { p800ChargeRef =>
-      CheckYourAnswersRow(
+      Seq(CheckYourAnswersRow(
         titleMessageKey = "check-your-details.PfP800.charge-reference",
         value           = Seq(p800ChargeRef.canonicalizedValue),
         changeLink      = None
-      )
+      ))
     }
   }
 

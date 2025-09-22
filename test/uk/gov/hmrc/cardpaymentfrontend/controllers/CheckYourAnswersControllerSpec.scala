@@ -1305,7 +1305,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       val result = systemUnderTest.renderPage(fakeRequest())
       val document = Jsoup.parse(contentAsString(result))
       val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.PtaSimpleAssessment))
-      assertRow(referenceRow, "Reference number", "MA000003AP3022027", None, None)
+      assertRow(referenceRow, "Payment reference", "MA000003AP3022027", None, None)
     }
 
     "[PtaSimpleAssessment] should render the payment reference row correctly in welsh" in {
@@ -1313,7 +1313,39 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       val result = systemUnderTest.renderPage(fakeRequestWelsh())
       val document = Jsoup.parse(contentAsString(result))
       val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.PtaSimpleAssessment))
-      assertRow(referenceRow, "Cyfeirnod", "MA000003AP3022027", None, None)
+      assertRow(referenceRow, "Cyfeirnod y taliad", "MA000003AP3022027", None, None)
+    }
+
+    "[PtaSimpleAssessment] should render the charge reference row correctly" in {
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.PtaSimpleAssessment.journeyBeforeBeginWebPayment)
+      val result = systemUnderTest.renderPage(fakeRequest())
+      val document = Jsoup.parse(contentAsString(result))
+      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(2)
+      assertRow(referenceRow, "Charge reference", "BC007010065114", None, None)
+    }
+
+    "[PtaSimpleAssessment] should render the charge reference row correctly in welsh" in {
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.PtaSimpleAssessment.journeyBeforeBeginWebPayment)
+      val result = systemUnderTest.renderPage(fakeRequestWelsh())
+      val document = Jsoup.parse(contentAsString(result))
+      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(2)
+      assertRow(referenceRow, "Cyfeirnod y tâl", "BC007010065114", None, None)
+    }
+
+    "[PtaSimpleAssessment] should render the tax year row correctly" in {
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.PtaSimpleAssessment.journeyBeforeBeginWebPayment)
+      val result = systemUnderTest.renderPage(fakeRequest())
+      val document = Jsoup.parse(contentAsString(result))
+      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(3)
+      assertRow(referenceRow, "Tax year", "6 April 2027 to 5 April 2028", None, None)
+    }
+
+    "[PtaSimpleAssessment] should render the tax year row correctly in welsh" in {
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.PtaSimpleAssessment.journeyBeforeBeginWebPayment)
+      val result = systemUnderTest.renderPage(fakeRequestWelsh())
+      val document = Jsoup.parse(contentAsString(result))
+      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(3)
+      assertRow(referenceRow, "Blwyddyn dreth", "6 Ebrill 2027 i 5 Ebrill 2028", None, None)
     }
 
     "sanity check for implemented origins" in {

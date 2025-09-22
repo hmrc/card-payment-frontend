@@ -188,7 +188,10 @@ check-your-details.PfP800.charge-reference = Charge reference
 check-your-details.PtaP800.reference = Reference number
 check-your-details.PtaP800.charge-reference = Charge reference
 check-your-details.PfSimpleAssessment.reference = Reference number
-check-your-details.PtaSimpleAssessment.reference = Reference number
+check-your-details.PtaSimpleAssessment.reference = Payment reference
+check-your-details.PtaSimpleAssessment.charge-reference = Charge reference
+check-your-details.PtaSimpleAssessment.tax-year = Tax year
+check-your-details.PtaSimpleAssessment.tax-year.value = 6 April {0} to 5 April {1}
 
 
 ## Address Page

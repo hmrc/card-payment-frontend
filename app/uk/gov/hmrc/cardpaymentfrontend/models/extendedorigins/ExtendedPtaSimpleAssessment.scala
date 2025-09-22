@@ -17,6 +17,8 @@
 package uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins
 
 import payapi.cardpaymentjourney.model.journey.{JourneySpecificData, JsdPtaSimpleAssessment}
+import payapi.corcommon.model.times.period.TaxYear
+import play.api.i18n.Messages
 import play.api.mvc.AnyContent
 import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
 import uk.gov.hmrc.cardpaymentfrontend.models.PaymentMethod._
@@ -36,6 +38,27 @@ object ExtendedPtaSimpleAssessment extends ExtendedOrigin {
       value           = Seq(journeyRequest.journey.referenceValue),
       changeLink      = None
     ))
+  }
+
+  override def checkYourAnswersAdditionalReferenceRow(journeyRequest: JourneyRequest[AnyContent])(payFrontendBaseUrl: String)(implicit messages: Messages): Option[Seq[CheckYourAnswersRow]] = {
+    journeyRequest.journey.journeySpecificData match {
+      case JsdPtaSimpleAssessment(_, p302ChargeRef, taxYear, _, _) =>
+        val adjustedTaxYear: TaxYear = taxYear.nextTaxYear
+        Some(Seq(
+          CheckYourAnswersRow(
+            titleMessageKey = "check-your-details.PtaSimpleAssessment.charge-reference",
+            value           = Seq(p302ChargeRef.canonicalizedValue),
+            changeLink      = None
+          ),
+          CheckYourAnswersRow(
+            titleMessageKey = "check-your-details.PtaSimpleAssessment.tax-year",
+            value           = Seq(messages("check-your-details.PtaSimpleAssessment.tax-year.value", adjustedTaxYear.startYear.toString, adjustedTaxYear.endYear.toString)),
+            changeLink      = None
+          ),
+        ))
+      case _ => throw new RuntimeException("Incorrect origin found")
+    }
+
   }
 
   override def openBankingOriginSpecificSessionData: JourneySpecificData => Option[OriginSpecificSessionData] = {
