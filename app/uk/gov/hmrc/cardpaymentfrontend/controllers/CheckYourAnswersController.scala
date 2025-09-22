@@ -77,7 +77,7 @@ class CheckYourAnswersController @Inject() (
     }
   }
 
-  def submit: Action[AnyContent] = actions.journeyAction.async { implicit journeyRequest: JourneyRequest[AnyContent] =>
+  def submit(isMobile: Boolean): Action[AnyContent] = actions.journeyAction.async { implicit journeyRequest: JourneyRequest[AnyContent] =>
     journeyRequest.readFromSession[Address](journeyRequest.journeyId, Keys.address) match {
       case Some(address) =>
         def initiatePayment(): Future[Result] = {
@@ -86,7 +86,8 @@ class CheckYourAnswersController @Inject() (
                 journey               = journeyRequest.journey,
                 addressFromSession    = address,
                 maybeEmailFromSession = journeyRequest.readFromSession[EmailAddress](journeyRequest.journeyId, Keys.email),
-                language              = requestSupport.usableLanguage
+                language              = requestSupport.usableLanguage,
+                isMobile              = isMobile
               )(requestSupport.hc, journeyRequest)
               .map { response =>
                 Redirect(routes.PaymentStatusController.showIframe(RedirectUrl(response.redirectUrl)))

@@ -89,19 +89,19 @@ class CardPaymentServiceSpec extends ItSpec {
 
       "should return a CardPaymentInitiatePaymentResponse when card-payment backend returns one" in {
         CardPaymentStub.InitiatePayment.stubForInitiatePayment2xx(expectedCardPaymentInitiatePaymentResponse)
-        val result = systemUnderTest.initiatePayment(testJourneyBeforeBeginWebPayment, testAddress, Some(testEmail), English).futureValue
+        val result = systemUnderTest.initiatePayment(testJourneyBeforeBeginWebPayment, testAddress, Some(testEmail), English, isMobile = false).futureValue
         result shouldBe expectedCardPaymentInitiatePaymentResponse
       }
 
       "should update pay-api journey with BeginWebPaymentRequest when call to card-payment backend succeeds" in {
         CardPaymentStub.InitiatePayment.stubForInitiatePayment2xx(expectedCardPaymentInitiatePaymentResponse)
-        systemUnderTest.initiatePayment(testJourneyBeforeBeginWebPayment, testAddress, Some(testEmail), English).futureValue
+        systemUnderTest.initiatePayment(testJourneyBeforeBeginWebPayment, testAddress, Some(testEmail), English, isMobile = false).futureValue
         PayApiStub.verifyUpdateBeginWebPayment(1, testJourneyBeforeBeginWebPayment._id.value)
       }
 
       "should trigger an explicit paymentAttempt audit event" in {
         CardPaymentStub.InitiatePayment.stubForInitiatePayment2xx(expectedCardPaymentInitiatePaymentResponse)
-        systemUnderTest.initiatePayment(testJourneyBeforeBeginWebPayment, testAddress, Some(testEmail), English).futureValue
+        systemUnderTest.initiatePayment(testJourneyBeforeBeginWebPayment, testAddress, Some(testEmail), English, isMobile = true).futureValue
         PayApiStub.verifyUpdateBeginWebPayment(1, testJourneyBeforeBeginWebPayment._id.value)
         AuditConnectorStub.verifyEventAudited(
           auditType  = "PaymentAttempt",

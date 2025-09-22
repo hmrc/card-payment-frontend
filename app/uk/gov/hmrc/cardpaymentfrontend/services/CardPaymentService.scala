@@ -65,7 +65,8 @@ class CardPaymentService @Inject() (
       journey:               Journey[_],
       addressFromSession:    Address,
       maybeEmailFromSession: Option[EmailAddress],
-      language:              Language
+      language:              Language,
+      isMobile:              Boolean
   )(implicit headerCarrier: HeaderCarrier, journeyRequest: JourneyRequest[_]): Future[CardPaymentInitiatePaymentResponse] = {
     val clientId: ClientId = clientIdService.determineClientId(journey, language)
     val clientIdStringToUse: String = if (appConfig.useProductionClientIds) clientId.prodCode else clientId.qaCode
@@ -90,7 +91,8 @@ class CardPaymentService @Inject() (
       purchaseAmount      = journey.getAmountInPence,
       billingAddress      = addressFromSessionAsBarclaycardAddress,
       emailAddress        = maybeEmailFromSession,
-      transactionNumber   = transNoGenerator.generate(journey.origin)
+      transactionNumber   = transNoGenerator.generate(journey.origin),
+      isMobile            = isMobile
     )
 
     for {

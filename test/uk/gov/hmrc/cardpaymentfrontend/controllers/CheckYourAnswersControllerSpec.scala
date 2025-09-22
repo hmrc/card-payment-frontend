@@ -60,7 +60,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       val result = systemUnderTest.renderPage(fakeRequest())
       val document = Jsoup.parse(contentAsString(result))
       val langToggleText: List[String] = document.select(".hmrc-language-select__list-item").eachText().asScala.toList
-      langToggleText should contain theSameElementsAs List("English", "Newid yr iaith ir Gymraeg Cymraeg") //checking the visually hidden text, it's simpler
+      langToggleText should contain theSameElementsAs List("English", "Newid yr iaith i’r Gymraeg Cymraeg") //checking the visually hidden text, it's simpler
     }
 
     "show the Title tab correctly in English" in {
@@ -117,6 +117,15 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       val result = systemUnderTest.renderPage(fakeRequestWelsh())
       val document = Jsoup.parse(contentAsString(result))
       document.select("#submit").text() shouldBe "Yn eich blaen"
+    }
+
+    //hard to test the script properly without selenium, this test is here to make sure we don't remove said script.
+    "should render the page with a script that can set the isMobile boolean on submission of the form" in {
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyBeforeBeginWebPayment)
+      val result = systemUnderTest.renderPage(fakeRequest())
+      val document = Jsoup.parse(contentAsString(result))
+      val script = document.getElementsByTag("script").select("#check-your-answers-screen-size-script").html()
+      script shouldBe "if ( window.innerWidth > 599 && window.innerHeight > 799 ) {\n            document.getElementById('check-your-details-form').action = \"/pay-by-card/check-your-details?isMobile=false\"\n        }"
     }
 
       // derives correct row in summary list due to Origins that may include FDP.
@@ -1206,7 +1215,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       CardPaymentStub.InitiatePayment.stubForInitiatePayment2xx(expectedCardPaymentInitiatePaymentResponse)
       PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyBeforeBeginWebPayment)
 
-      val result = systemUnderTest.submit(fakeRequest(TestJourneys.PfSa.journeyBeforeBeginWebPayment._id))
+      val result = systemUnderTest.submit(false)(fakeRequest(TestJourneys.PfSa.journeyBeforeBeginWebPayment._id))
       status(result) shouldBe SEE_OTHER
       redirectLocation(result) shouldBe Some("/pay-by-card/card-details?iframeUrl=http%3A%2F%2Flocalhost%3A10155%2Fthis-would-be-iframe")
     }
@@ -1222,7 +1231,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
           commissionInPence    = None,
           paidOn               = None
         ))))
-      val result = systemUnderTest.submit(fakeRequestWithSentPaymentStatus())
+      val result = systemUnderTest.submit(false)(fakeRequestWithSentPaymentStatus())
       status(result) shouldBe SEE_OTHER
       redirectLocation(result) shouldBe Some("/pay-by-card/card-details?iframeUrl=http%3A%2F%2Flocalhost%3A9975%2Fbarclays%2Fpages%2Fpaypage.jsf%2F600e1342-0714-4989-ac6c-c11c745f1ce6")
     }
@@ -1230,7 +1239,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
     "should redirect to the Address page if there is no Address in session" in {
         def fakeRequestWithoutAddressInSession: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withSessionId()
       PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyBeforeBeginWebPayment)
-      val result = systemUnderTest.submit(fakeRequestWithoutAddressInSession)
+      val result = systemUnderTest.submit(true)(fakeRequestWithoutAddressInSession)
       status(result) shouldBe SEE_OTHER
       redirectLocation(result) shouldBe Some("/pay-by-card/address")
     }
