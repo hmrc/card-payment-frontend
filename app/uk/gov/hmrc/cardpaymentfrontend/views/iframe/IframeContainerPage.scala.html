@@ -16,6 +16,7 @@
 
 @import uk.gov.hmrc.cardpaymentfrontend.views.html.Layout
 @import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
+@import views.html.helper.CSPNonce
 
 @this(layout: Layout)
 
@@ -23,7 +24,16 @@
 
 @heading = @{messages("iframe.heading")}
 
-@layout(pageTitle = Some(heading), origin = Some(journeyRequest.journey.origin), welshSupported = false) {
+@additionalScript = {
+    <script src="@{controllers.routes.Assets.versioned("javascripts/iframe-scroll.js")}" @{CSPNonce.attr}></script>
+}
+
+@layout(
+    pageTitle = Some(heading),
+    origin = Some(journeyRequest.journey.origin),
+    welshSupported = false,
+    additionalScripts = Some(additionalScript)
+) {
     @Html(s"""<link rel="stylesheet" media="all" type="text/css" href="${controllers.routes.Assets.versioned("stylesheets/barclaycard-iframe.css").toString}">""")
     <h1 class="govuk-heading-l">@heading</h1>
 

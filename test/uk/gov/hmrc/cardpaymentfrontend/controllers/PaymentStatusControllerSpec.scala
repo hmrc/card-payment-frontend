@@ -31,6 +31,8 @@ import uk.gov.hmrc.cardpaymentfrontend.testsupport.stubs.{CardPaymentStub, PayAp
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.testdata.{TestJourneys, TestPayApiData}
 import uk.gov.hmrc.play.bootstrap.binders.RedirectUrl
 
+import scala.jdk.CollectionConverters.CollectionHasAsScala
+
 class PaymentStatusControllerSpec extends ItSpec {
 
   val systemUnderTest: PaymentStatusController = app.injector.instanceOf[PaymentStatusController]
@@ -76,6 +78,13 @@ class PaymentStatusControllerSpec extends ItSpec {
         val result = systemUnderTest.showIframe(RedirectUrl("http://localhost:8080"))(fakeRequest)
         val document = Jsoup.parse(contentAsString(result))
         document.select(".hmrc-language-select__list-item").isEmpty shouldBe true
+      }
+
+      "should render the iframe page with the iframe scroll javascript fix" in {
+        PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyAfterBeginWebPayment)
+        val result = systemUnderTest.showIframe(RedirectUrl("http://localhost:8080"))(fakeRequest)
+        val document = Jsoup.parse(contentAsString(result))
+        document.select("script").asScala.toList.map(_.toString) should contain("<script src=\"/pay-by-card/assets/javascripts/iframe-scroll.js\"></script>")
       }
     }
 
