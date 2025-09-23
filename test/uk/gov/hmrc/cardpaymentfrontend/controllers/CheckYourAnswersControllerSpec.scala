@@ -141,6 +141,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
           case Origins.BtaEpayeGeneral   => 1
           case Origins.BtaClass1aNi      => 1
           case Origins.EconomicCrimeLevy => 1
+          case Origins.BtaSdil           => 1
           case _                         => 0
         }
       }
@@ -165,6 +166,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
           case Origins.BtaEpayeGeneral   => 2
           case Origins.BtaClass1aNi      => 3
           case Origins.EconomicCrimeLevy => 2
+          case Origins.BtaSdil           => 2
           case _                         => 1
         }
       }
@@ -189,6 +191,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
           case Origins.BtaEpayeGeneral   => 3
           case Origins.BtaClass1aNi      => 4
           case Origins.EconomicCrimeLevy => 3
+          case Origins.BtaSdil           => 3
           case _                         => 2
         }
       }
@@ -213,6 +216,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
           case Origins.BtaEpayeGeneral   => 4
           case Origins.BtaClass1aNi      => 5
           case Origins.EconomicCrimeLevy => 4
+          case Origins.BtaSdil           => 4
           case _                         => 3
         }
       }
@@ -1180,9 +1184,41 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       assertRow(referenceRow, "Cyfeirnod gordaliad Budd-dal Plant", "YA123456789123", Some("Newid Cyfeirnod gordaliad Budd-dal Plant"), Some("http://localhost:9056/pay/pay-by-card-change-reference-number"))
     }
 
+    "[BtaSdil] should render the payment reference row correctly" in {
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.BtaSdil.journeyBeforeBeginWebPayment)
+      val result = systemUnderTest.renderPage(fakeRequest())
+      val document = Jsoup.parse(contentAsString(result))
+      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.BtaSdil))
+      assertRow(referenceRow, "Payment reference", "XE1234567890123", None, None)
+    }
+
+    "[BtaSdil] should render the payment reference row correctly in Welsh" in {
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.BtaSdil.journeyBeforeBeginWebPayment)
+      val result = systemUnderTest.renderPage(fakeRequestWelsh())
+      val document = Jsoup.parse(contentAsString(result))
+      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.BtaSdil))
+      assertRow(referenceRow, "Cyfeirnod y taliad", "XE1234567890123", None, None)
+    }
+
+    "[PfSdil] should render the payment reference row correctly" in {
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSdil.journeyBeforeBeginWebPayment)
+      val result = systemUnderTest.renderPage(fakeRequest())
+      val document = Jsoup.parse(contentAsString(result))
+      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.PfSdil))
+      assertRow(referenceRow, "Payment reference", "XE1234567890123", Some("Change Payment reference"), Some("http://localhost:9056/pay/pay-by-card-change-reference-number"))
+    }
+
+    "[PfSdil] should render the payment reference row correctly in Welsh" in {
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSdil.journeyBeforeBeginWebPayment)
+      val result = systemUnderTest.renderPage(fakeRequestWelsh())
+      val document = Jsoup.parse(contentAsString(result))
+      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.PfSdil))
+      assertRow(referenceRow, "Cyfeirnod y taliad", "XE1234567890123", Some("Newid Cyfeirnod y taliad"), Some("http://localhost:9056/pay/pay-by-card-change-reference-number"))
+    }
+
     "sanity check for implemented origins" in {
       // remember to add the singular tests for reference rows as well as fdp if applicable, they are not covered in the implementedOrigins forall tests
-      TestHelpers.implementedOrigins.size shouldBe 43 withClue "** This dummy test is here to remind you to update the tests above. Bump up the expected number when an origin is added to implemented origins **"
+      TestHelpers.implementedOrigins.size shouldBe 45 withClue "** This dummy test is here to remind you to update the tests above. Bump up the expected number when an origin is added to implemented origins **"
     }
 
   }

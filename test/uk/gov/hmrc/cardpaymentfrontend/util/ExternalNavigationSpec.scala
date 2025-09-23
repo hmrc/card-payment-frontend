@@ -28,7 +28,7 @@ class ExternalNavigationSpec extends UnitSpec with TableDrivenPropertyChecks {
   "returnUrlCancelled" - {
     val someUrl = Some(Url("https://www.return-url.com"))
 
-    type JsdBounds = JsdPfEpayeNi with JsdAlcoholDuty with JsdPfPpt with JsdBtaEpayeBill with JsdPfSa with JsdPpt with JsdVcVatReturn with JsdPfEpayeP11d with JsdCapitalGainsTax with JsdBtaCt with JsdPfEpayeLateCis with JsdPfEpayeLpp with JsdPfCt with JsdBtaVat with JsdPfSdlt with JsdBtaEpayeInterest with JsdAmls with JsdBtaEpayeGeneral with JsdPfEpayeSeta with JsdPtaSa with JsdBtaClass1aNi with JsdVcVatOther with JsdPfAmls with JsdPfVat with JsdItSa with JsdBtaSa with JsdPfAlcoholDuty with JsdBtaEpayePenalty with JsdEconomicCrimeLevy with JsdPfEconomicCrimeLevy with JsdWcSa with JsdWcCt with JsdWcVat with JsdVatC2c with JsdPfVatC2c with JsdWcSimpleAssessment with JsdWcXref with JsdWcEpayeLpp with JsdWcClass1aNi with JsdWcEpayeNi with JsdWcEpayeLateCis with JsdWcEpayeSeta with JsdPfChildBenefitRepayments
+    type JsdBounds = JsdPfEpayeNi with JsdAlcoholDuty with JsdPfPpt with JsdBtaEpayeBill with JsdPfSa with JsdPpt with JsdVcVatReturn with JsdPfEpayeP11d with JsdCapitalGainsTax with JsdBtaCt with JsdPfEpayeLateCis with JsdPfEpayeLpp with JsdPfCt with JsdBtaVat with JsdPfSdlt with JsdBtaEpayeInterest with JsdAmls with JsdBtaEpayeGeneral with JsdPfEpayeSeta with JsdPtaSa with JsdBtaClass1aNi with JsdVcVatOther with JsdPfAmls with JsdPfVat with JsdItSa with JsdBtaSa with JsdPfAlcoholDuty with JsdBtaEpayePenalty with JsdEconomicCrimeLevy with JsdPfEconomicCrimeLevy with JsdWcSa with JsdWcCt with JsdWcVat with JsdVatC2c with JsdPfVatC2c with JsdWcSimpleAssessment with JsdWcXref with JsdWcEpayeLpp with JsdWcClass1aNi with JsdWcEpayeNi with JsdWcEpayeLateCis with JsdWcEpayeSeta with JsdPfChildBenefitRepayments with JsdBtaSdil with JsdPfSdil
 
     val scenarios: TableFor2[JourneyStatuses[_ >: JsdBounds <: JourneySpecificData], Option[Url]] = Table(
       ("journey", "expectedUrl"),
@@ -60,6 +60,7 @@ class ExternalNavigationSpec extends UnitSpec with TableDrivenPropertyChecks {
       (TestJourneys.WcEpayeLateCis, None),
       (TestJourneys.WcEpayeSeta, None),
       (TestJourneys.PfChildBenefitRepayments, None),
+      (TestJourneys.PfSdil, None),
 
       //Logged in journeys will return whatever the calling services sets
       (TestJourneys.BtaSa, someUrl),
@@ -78,7 +79,8 @@ class ExternalNavigationSpec extends UnitSpec with TableDrivenPropertyChecks {
       (TestJourneys.Ppt, someUrl),
       (TestJourneys.Amls, someUrl),
       (TestJourneys.CapitalGainsTax, someUrl),
-      (TestJourneys.EconomicCrimeLevy, someUrl)
+      (TestJourneys.EconomicCrimeLevy, someUrl),
+      (TestJourneys.BtaSdil, someUrl)
     )
 
     forAll(scenarios) { (journey, expectedUrl) =>

@@ -843,8 +843,43 @@ class PaymentsSurveyServiceSpec extends ItSpec with TableDrivenPropertyChecks {
                 )
               )
             ) -> false
+            case Origins.BtaSdil => PaymentSurveyJourneyRequest(
+              origin         = "BtaSdil",
+              returnMsg      = "Skip survey, return to business tax account",
+              returnHref     = "/business-account",
+              auditName      = "soft-drinks-industry-levy",
+              audit          = AuditOptions(
+                userType  = "LoggedIn",
+                journey   = Some("Successful"),
+                orderId   = Some("XE1234567890123"),
+                liability = Some("soft-drinks-industry-levy")
+              ),
+              contentOptions = SurveyContentOptions(
+                isWelshSupported = true,
+                title            = SurveyBannerTitle(
+                  englishValue = "Pay the Soft Drinks Industry Levy", welshValue = Some("Talu Ardoll y Diwydiant Diodydd Ysgafn")
+                )
+              )
+            ) -> true
+            case Origins.PfSdil => PaymentSurveyJourneyRequest(
+              origin         = "PfSdil",
+              returnMsg      = "Skip survey",
+              returnHref     = "https://www.gov.uk/government/organisations/hm-revenue-customs",
+              auditName      = "soft-drinks-industry-levy",
+              audit          = AuditOptions(
+                userType  = "LoggedOut",
+                journey   = Some("Successful"),
+                orderId   = Some("XE1234567890123"),
+                liability = Some("soft-drinks-industry-levy")
+              ),
+              contentOptions = SurveyContentOptions(
+                isWelshSupported = true,
+                title            = SurveyBannerTitle(
+                  englishValue = "Pay the Soft Drinks Industry Levy", welshValue = Some("Talu Ardoll y Diwydiant Diodydd Ysgafn")
+                )
+              )
+            ) -> false
             case Origins.AppSa                 => throw new MatchError("Not implemented yet")
-            case Origins.BtaSdil               => throw new MatchError("Not implemented yet")
             case Origins.BcPngr                => throw new MatchError("Not implemented yet")
             case Origins.Parcels               => throw new MatchError("Not implemented yet")
             case Origins.DdVat                 => throw new MatchError("Not implemented yet")
@@ -862,7 +897,6 @@ class PaymentsSurveyServiceSpec extends ItSpec with TableDrivenPropertyChecks {
             case Origins.PfGamingOrBingoDuty   => throw new MatchError("Not implemented yet")
             case Origins.PfGbPbRgDuty          => throw new MatchError("Not implemented yet")
             case Origins.PfLandfillTax         => throw new MatchError("Not implemented yet")
-            case Origins.PfSdil                => throw new MatchError("Not implemented yet")
             case Origins.PfAggregatesLevy      => throw new MatchError("Not implemented yet")
             case Origins.PfClimateChangeLevy   => throw new MatchError("Not implemented yet")
             case Origins.PfSimpleAssessment    => throw new MatchError("Not implemented yet")
