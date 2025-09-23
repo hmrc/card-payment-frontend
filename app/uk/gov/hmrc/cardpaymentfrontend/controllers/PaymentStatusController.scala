@@ -30,7 +30,7 @@ import uk.gov.hmrc.cardpaymentfrontend.views.html.iframe.{IframeContainerPage, R
 import uk.gov.hmrc.http.{HttpResponse, SessionKeys}
 import uk.gov.hmrc.play.bootstrap.binders.RedirectUrl.idFunctor
 import uk.gov.hmrc.play.bootstrap.binders.RedirectUrlPolicy.Id
-import uk.gov.hmrc.play.bootstrap.binders.{AbsoluteWithHostnameFromAllowlist, RedirectUrl, RedirectUrlPolicy}
+import uk.gov.hmrc.play.bootstrap.binders.{AbsoluteWithHostnameFromAllowlist, RedirectUrl, RedirectUrlPolicy, SafeRedirectUrl}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
 import javax.inject.{Inject, Singleton}
@@ -57,7 +57,9 @@ class PaymentStatusController @Inject() (
       .getEither[Id](redirectUrlPolicy)
       .fold[Result](
         _ => BadRequest("Bad url provided that doesn't match the redirect policy. Check allow list if this is not expected."),
-        safeRedirectUrlOnAllowList => Ok(iframeContainer(safeRedirectUrlOnAllowList.url))
+        (safeRedirectUrlOnAllowList: SafeRedirectUrl) => {
+          Ok(iframeContainer(safeRedirectUrlOnAllowList.url))
+        }
       )
   }
 

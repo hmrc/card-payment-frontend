@@ -62,7 +62,8 @@ class CheckYourDetailsJavascriptSpec extends BrowserSpec {
     currentUrl shouldBe s"http://localhost:${port.toString}/pay-by-card/check-your-details"
     pageTitle shouldBe "Check your details - Pay your Self Assessment - GOV.UK"
     clickOn("submit")
-    currentUrl shouldBe s"http://localhost:${port.toString}/pay-by-card/card-details?iframeUrl=http%3A%2F%2Flocalhost%3A${port.toString}%2Fthis-would-be-iframe"
+    val expectedChallengeWindowSizeInUrl = if (expectedIsMobile) "%3FchallengeWindowSize%3DWINDOW_SIZE_600_400" else "%3FchallengeWindowSize%3DFULL_SCREEN"
+    currentUrl shouldBe s"http://localhost:${port.toString}/pay-by-card/card-details?iframeUrl=http%3A%2F%2Flocalhost%3A${port.toString}%2Fthis-would-be-iframe$expectedChallengeWindowSizeInUrl"
 
     // -- THEN
     // The assertion on value sent to Barclaycard.

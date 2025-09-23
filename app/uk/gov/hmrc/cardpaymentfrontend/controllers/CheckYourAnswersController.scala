@@ -16,6 +16,8 @@
 
 package uk.gov.hmrc.cardpaymentfrontend.controllers
 
+import org.apache.pekko.http.scaladsl.model.Uri
+import org.apache.pekko.http.scaladsl.model.Uri.Query
 import payapi.corcommon.model.PaymentStatuses
 import play.api.Logging
 import play.api.i18n.Lang
@@ -90,7 +92,9 @@ class CheckYourAnswersController @Inject() (
                 isMobile              = isMobile
               )(requestSupport.hc, journeyRequest)
               .map { response =>
-                Redirect(routes.PaymentStatusController.showIframe(RedirectUrl(response.redirectUrl)))
+                Redirect(routes.PaymentStatusController.showIframe(
+                  RedirectUrl(barclaysPaymentCollectionUrl(response.redirectUrl, isMobile).toString())
+                ))
               }
           }
         // If PaymentStatus is Sent then Redirect to the iFrameUrl from the order.
@@ -98,7 +102,9 @@ class CheckYourAnswersController @Inject() (
           case PaymentStatuses.Sent =>
             journeyRequest.journey.order match {
               case Some(order) =>
-                Future.successful(Redirect(routes.PaymentStatusController.showIframe(RedirectUrl(order.iFrameUrl.value))))
+                Future.successful(Redirect(routes.PaymentStatusController.showIframe(RedirectUrl(
+                  barclaysPaymentCollectionUrl(order.iFrameUrl.value, isMobile).toString()
+                ))))
               case None =>
                 logger.warn(s"Payment status for journeyId ${journeyRequest.journeyId.toString} was Sent but order was None.")
                 initiatePayment()
@@ -111,6 +117,12 @@ class CheckYourAnswersController @Inject() (
         logger.warn("Missing address from session, redirecting to enter address page.")
         Future.successful(Redirect(routes.AddressController.renderPage))
     }
+  }
+
+  private[controllers] def barclaysPaymentCollectionUrl(iframeUrl: String, isMobile: Boolean): Uri = {
+    val challengeWindowSize: String = if (isMobile) "WINDOW_SIZE_600_400" else "FULL_SCREEN"
+    val uri: Uri = Uri(iframeUrl)
+    uri.withQuery(Query(uri.query() ++ Seq(("challengeWindowSize", challengeWindowSize)): _*))
   }
 
 }
