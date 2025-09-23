@@ -246,8 +246,9 @@ payment-complete.amount.total-paid = Cyfanswm a dalwyd
 payment-complete.print-link = Argraffwch cadarnhad o’ch taliad
 ##todo mods has bespoke content for print link, passengers shouldn't have one at all
 payment-complete.what-happens-next.header = Yr hyn sy’n digwydd nesaf
-payment-complete.what-happens-next.p1 = Bydd eich taliad yn cymryd 3 i 5 diwrnod i ymddangos yn eich
-payment-complete.what-happens-next.link = cyfrif CThEM ar-lein.
+payment-complete.what-happens-next.p1 = Gall eich taliad gymryd hyd at 5 diwrnod ymddangos yn eich
+payment-complete.what-happens-next.p1.signedOut = Os oes gennych gyfrif treth ar-lein, gall eich taliad gymryd hyd at 5 diwrnod i ymddangos.
+payment-complete.what-happens-next.link = cyfrif treth ar-lein.
 payment-complete.what-happens-next.web-chat.info = Os oes angen cymorth pellach arnoch gyda’ch bil treth, bydd angen dychwelyd i’r sgwrs dros y we a siarad ag ymgynghorydd.
 payment-complete.survey.title = Helpwch ni i wella ein gwasanaethau
 payment-complete.survey.p1 = Rydym yn defnyddio’ch adborth i wella ein gwasanaethau.

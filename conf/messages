@@ -240,8 +240,9 @@ payment-complete.amount.total-paid = Total paid
 payment-complete.print-link = Print your payment confirmation
 ##todo mods has bespoke content for print link, passengers shouldn't have one at all
 payment-complete.what-happens-next.header = What happens next
-payment-complete.what-happens-next.p1 = Your payment will take 3 to 5 days to show in your
-payment-complete.what-happens-next.link = HMRC online account.
+payment-complete.what-happens-next.p1 = Your payment can take up to 5 days to show in your
+payment-complete.what-happens-next.p1.signedOut = If you have an online tax account, your payment can take up to 5 days to show.
+payment-complete.what-happens-next.link = online tax account.
 payment-complete.what-happens-next.web-chat.info = If you need further help with a tax bill, return to the webchat and speak with the webchat handler.
 payment-complete.survey.title = Help us improve our services
 payment-complete.survey.p1 = We use your feedback to make our services better.
