@@ -22,7 +22,7 @@ import payapi.corcommon.model.taxes.ad.{AlcoholDutyChargeReference, AlcoholDutyR
 import payapi.corcommon.model.taxes.amls.AmlsPaymentReference
 import payapi.corcommon.model.taxes.ct._
 import payapi.corcommon.model.taxes.epaye._
-import payapi.corcommon.model.taxes.other.{EconomicCrimeLevyReturnNumber, XRef, XRef14Char, YRef}
+import payapi.corcommon.model.taxes.other.{EconomicCrimeLevyReturnNumber, SoftDrinksIndustryLevyRef, XRef, XRef14Char, YRef}
 import payapi.corcommon.model.taxes.ppt.PptReference
 import payapi.corcommon.model.taxes.sa.SaUtr
 import payapi.corcommon.model.taxes.sdlt.Utrn
@@ -826,6 +826,74 @@ object TestJourneys {
       createdOn            = LocalDateTime.parse("2027-11-02T16:28:55.185"),
       journeySpecificData  = JsdPfChildBenefitRepayments(
         yReference = Some(YRef("YA123456789123"))
+      ),
+      chosenWayToPay       = None
+    )
+  }
+
+  object BtaSdil extends JourneyStatuses[JsdBtaSdil] {
+    val journeyBeforeBeginWebPayment: Journey[JsdBtaSdil] = Journey[JsdBtaSdil](
+      _id                  = JourneyId(TestPayApiData.decryptedJourneyId),
+      sessionId            = Some(SessionId("TestSession-4b87460d-6f43-4c4c-b810-d6f87c774854")),
+      amountInPence        = Some(AmountInPence(1234)),
+      emailTemplateOptions = None,
+      navigation           = Some(NavigationOptions(returnUrl = Url("https://www.return-url.com"), backUrl = Url("https://www.back-to-bta.com"))),
+      order                = None,
+      status               = PaymentStatuses.Created,
+      createdOn            = LocalDateTime.parse("2027-11-02T16:28:55.185"),
+      journeySpecificData  = JsdBtaSdil(
+        defaultAmountInPence = AmountInPence(1234),
+        xRef                 = XRef("XE1234567890123"),
+        dueDate              = Some(LocalDate.of(2028, 12, 12))
+      ),
+      chosenWayToPay       = None
+    )
+  }
+
+  object PfSdil extends JourneyStatuses[JsdPfSdil] {
+    val journeyBeforeBeginWebPayment: Journey[JsdPfSdil] = Journey[JsdPfSdil](
+      _id                  = JourneyId(TestPayApiData.decryptedJourneyId),
+      sessionId            = Some(SessionId("TestSession-4b87460d-6f43-4c4c-b810-d6f87c774854")),
+      amountInPence        = Some(AmountInPence(1234)),
+      emailTemplateOptions = None,
+      navigation           = None,
+      order                = None,
+      status               = PaymentStatuses.Created,
+      createdOn            = LocalDateTime.parse("2027-11-02T16:28:55.185"),
+      journeySpecificData  = JsdPfSdil(
+        softDrinksIndustryLevyRef = Some(SoftDrinksIndustryLevyRef("XE1234567890123"))
+      ),
+      chosenWayToPay       = None
+    )
+    val journeyWithPenaltyReferenceBeforeBeginWebPayment: Journey[JsdPfSdil] = Journey[JsdPfSdil](
+      _id                  = JourneyId(TestPayApiData.decryptedJourneyId),
+      sessionId            = Some(SessionId("TestSession-4b87460d-6f43-4c4c-b810-d6f87c774854")),
+      amountInPence        = Some(AmountInPence(1234)),
+      emailTemplateOptions = None,
+      navigation           = None,
+      order                = None,
+      status               = PaymentStatuses.Created,
+      createdOn            = LocalDateTime.parse("2027-11-02T16:28:55.185"),
+      journeySpecificData  = JsdPfSdil(
+        softDrinksIndustryLevyRef = Some(SoftDrinksIndustryLevyRef("XE123456789012"))
+      ),
+      chosenWayToPay       = None
+    )
+  }
+
+  object WcEpayeSeta extends JourneyStatuses[JsdWcEpayeSeta] {
+    val journeyBeforeBeginWebPayment: Journey[JsdWcEpayeSeta] = Journey[JsdWcEpayeSeta](
+      _id                  = JourneyId(TestPayApiData.decryptedJourneyId),
+      sessionId            = Some(SessionId("TestSession-4b87460d-6f43-4c4c-b810-d6f87c774854")),
+      amountInPence        = Some(AmountInPence(1234)),
+      emailTemplateOptions = None,
+      navigation           = None,
+      order                = None,
+      status               = PaymentStatuses.Created,
+      createdOn            = LocalDateTime.parse("2027-11-02T16:28:55.185"),
+      journeySpecificData  = JsdWcEpayeSeta(
+        chargeReference      = XRef("XE123456789012"),
+        defaultAmountInPence = AmountInPence(1234)
       ),
       chosenWayToPay       = None
     )

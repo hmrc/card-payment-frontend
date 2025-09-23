@@ -169,7 +169,7 @@ object ExtendedOrigin {
       case Origins.BtaEpayeGeneral          => ExtendedBtaEpayeGeneral
       case Origins.BtaClass1aNi             => ExtendedBtaClass1aNi
       case Origins.BtaCt                    => ExtendedBtaCt
-      case Origins.BtaSdil                  => DefaultExtendedOrigin
+      case Origins.BtaSdil                  => ExtendedBtaSdil
       case Origins.BcPngr                   => DefaultExtendedOrigin
       case Origins.Parcels                  => DefaultExtendedOrigin
       case Origins.DdVat                    => DefaultExtendedOrigin
@@ -194,7 +194,7 @@ object ExtendedOrigin {
       case Origins.PfGamingOrBingoDuty      => DefaultExtendedOrigin
       case Origins.PfGbPbRgDuty             => DefaultExtendedOrigin
       case Origins.PfLandfillTax            => DefaultExtendedOrigin
-      case Origins.PfSdil                   => DefaultExtendedOrigin
+      case Origins.PfSdil                   => ExtendedPfSdil
       case Origins.PfAggregatesLevy         => DefaultExtendedOrigin
       case Origins.PfClimateChangeLevy      => DefaultExtendedOrigin
       case Origins.PfSimpleAssessment       => DefaultExtendedOrigin
@@ -234,6 +234,7 @@ object ExtendedOrigin {
       case Origins.WcEpayeLpp               => ExtendedWcEpayeLpp
       case Origins.WcEpayeNi                => ExtendedWcEpayeNi
       case Origins.WcEpayeLateCis           => ExtendedWcEpayeLateCis
+      case Origins.WcEpayeSeta              => ExtendedWcEpayeSeta
     }
 
     def isAWebChatOrigin: Boolean = origin match {
@@ -254,7 +255,7 @@ object ExtendedOrigin {
         Origins.PfAlcoholDuty | Origins.VatC2c | Origins.PfVatC2c | Origins.`3psSa` | Origins.`3psVat` | Origins.Pillar2 |
         Origins.PfPillar2 => false
       case Origins.WcSa | Origins.WcCt | Origins.WcVat | Origins.WcSimpleAssessment | Origins.WcXref | Origins.WcEpayeLpp
-        | Origins.WcClass1aNi | Origins.WcEpayeNi | Origins.WcEpayeLateCis => true
+        | Origins.WcClass1aNi | Origins.WcEpayeNi | Origins.WcEpayeLateCis | Origins.WcEpayeSeta => true
     }
   }
 }

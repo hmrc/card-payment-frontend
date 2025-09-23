@@ -43,11 +43,12 @@ service-name.BtaEpayeInterest = Taliad llog TWE cyflogwr
 service-name.BtaEpayeGeneral = Talwch eich TWE a’ch Yswiriant Gwladol y cyflogwr
 service-name.BtaClass1aNi = Talu’ch Yswiriant Gwladol Dosbarth 1A y cyflogwr (bil P11D)
 service-name.BtaCt = Talu eich Treth Gorfforaeth
-service-name.BtaSdil =
+service-name.BtaSdil = Talu Ardoll y Diwydiant Diodydd Ysgafn
+service-name.DdSdil = Talu Ardoll y Diwydiant Diodydd Ysgafn
+service-name.PfSdil = Talu Ardoll y Diwydiant Diodydd Ysgafn
 service-name.BcPngr =
 service-name.Parcels =
 service-name.DdVat = Cyfrif treth busnes
-service-name.DdSdil =
 service-name.VcVatReturn = Cyfrif treth busnes
 service-name.VcVatOther = Cyfrif treth busnes
 service-name.ItSa = Talu eich Hunanasesiad
@@ -68,7 +69,6 @@ service-name.PfBeerDuty =
 service-name.PfGamingOrBingoDuty =
 service-name.PfGbPbRgDuty =
 service-name.PfLandfillTax =
-service-name.PfSdil =
 service-name.PfAggregatesLevy =
 service-name.PfClimateChangeLevy =
 service-name.PfSimpleAssessment = Talu eich Asesiad Syml
@@ -98,7 +98,7 @@ service-name.VatC2c = Talu eich TAW fewnforio
 service-name.PfVatC2c = Talu eich TAW fewnforio
 service-name.WcEpayeLpp = Talu’ch cosb am dalu neu gyflwyno TWE yn hwyr
 service-name.WcEpayeNi = Talwch eich TWE a’ch Yswiriant Gwladol y cyflogwr
-
+service-name.WcEpayeSeta = Talwch eich Cytundeb Setliad TWE y cyflogwr
 
 ## Email address page
 email-address.heading = Beth yw’ch cyfeiriad e-bost? (dewisol)
@@ -179,7 +179,10 @@ check-your-details.WcXref.reference = Cyfeirnod y taliad
 check-your-details.WcSimpleAssessment.reference = Cyfeirnod y taliad
 check-your-details.WcEpayeLpp.reference = Cyfeirnod y taliad
 check-your-details.WcEpayeNi.reference = Cyfeirnod y taliad
+check-your-details.WcEpayeSeta.reference = Cyfeirnod y taliad
 check-your-details.PfChildBenefitRepayments.reference = Cyfeirnod gordaliad Budd-dal Plant
+check-your-details.BtaSdil.reference = Cyfeirnod y taliad
+check-your-details.PfSdil.reference = Cyfeirnod y taliad
 
 
 ## Address Page
@@ -282,11 +285,12 @@ payment-complete.tax-name.BtaEpayeInterest = TWE a’ch Yswiriant Gwladol y cyfl
 payment-complete.tax-name.BtaEpayeGeneral = TWE a’ch Yswiriant Gwladol y cyflogwr
 payment-complete.tax-name.BtaClass1aNi = Yswiriant Gwladol Dosbarth 1A y Cyflogwr
 payment-complete.tax-name.BtaCt = Treth Gorfforaeth
-payment-complete.tax-name.BtaSdil =
+payment-complete.tax-name.BtaSdil = Ardoll y Diwydiant Diodydd Ysgafn
+payment-complete.tax-name.DdSdil = Ardoll y Diwydiant Diodydd Ysgafn
+payment-complete.tax-name.PfSdil = Ardoll y Diwydiant Diodydd Ysgafn
 payment-complete.tax-name.BcPngr =
 payment-complete.tax-name.Parcels =
 payment-complete.tax-name.DdVat =
-payment-complete.tax-name.DdSdil =
 payment-complete.tax-name.VcVatReturn = TAW
 payment-complete.tax-name.VcVatOther = TAW
 payment-complete.tax-name.ItSa = Hunanasesiad
@@ -307,7 +311,6 @@ payment-complete.tax-name.PfBeerDuty =
 payment-complete.tax-name.PfGamingOrBingoDuty =
 payment-complete.tax-name.PfGbPbRgDuty =
 payment-complete.tax-name.PfLandfillTax =
-payment-complete.tax-name.PfSdil =
 payment-complete.tax-name.PfAggregatesLevy =
 payment-complete.tax-name.PfClimateChangeLevy =
 payment-complete.tax-name.PfSimpleAssessment =
@@ -337,6 +340,7 @@ payment-complete.tax-name.VatC2c = TAW fewnforio
 payment-complete.tax-name.PfVatC2c = TAW fewnforio
 payment-complete.tax-name.WcEpayeLpp = Cosb y Cyflogwr am dalu TWE yn hwyr
 payment-complete.tax-name.WcEpayeNi = TWE ac Yswiriant Gwladol y Cyflogwr
+payment-complete.tax-name.WcEpayeSeta = Cytundeb Setliad TWE y Cyflogwr
 
 ## Payment Cancelled page
 payment-cancelled.heading = Taliad wedi’i ganslo
@@ -406,7 +410,10 @@ email.tax-name.WcXref = Trethi, cosbau a setliadau ymholiadau eraill
 email.tax-name.WcSimpleAssessment = Asesiad Syml
 email.tax-name.WcEpayeLpp = Cosb y Cyflogwr am dalu TWE yn hwyr
 email.tax-name.WcEpayeNi = TWE ac Yswiriant Gwladol y Cyflogwr
+email.tax-name.WcEpayeSeta = Cytundeb Setliad TWE y Cyflogwr
 email.tax-name.PfChildBenefitRepayments = Ad-dalu gordaliadau Budd-dal Plant
+email.tax-name.BtaSdil = Ardoll y Diwydiant Diodydd Ysgafn
+email.tax-name.PfSdil = Ardoll y Diwydiant Diodydd Ysgafn
 
 ## Payments survey
 payments-survey.bta.return-message = Dim diolch, dychwelyd i cyfrif treth busnes

@@ -23,7 +23,7 @@ import payapi.corcommon.model.taxes.ad.{AlcoholDutyChargeReference, AlcoholDutyR
 import payapi.corcommon.model.taxes.amls.AmlsPaymentReference
 import payapi.corcommon.model.taxes.ct.{CtChargeTypes, CtPeriod, CtUtr}
 import payapi.corcommon.model.taxes.epaye.{AccountsOfficeReference, EpayePenaltyReference, MonthlyEpayeTaxPeriod, PsaNumber, QuarterlyEpayeTaxPeriod, WcClass1aNiReference, YearlyEpayeTaxPeriod}
-import payapi.corcommon.model.taxes.other.{EconomicCrimeLevyReturnNumber, XRef, XRef14Char, YRef}
+import payapi.corcommon.model.taxes.other.{EconomicCrimeLevyReturnNumber, SoftDrinksIndustryLevyRef, XRef, XRef14Char, YRef}
 import payapi.corcommon.model.taxes.ppt.PptReference
 import payapi.corcommon.model.taxes.sa.SaUtr
 import payapi.corcommon.model.taxes.sdlt.Utrn
@@ -359,6 +359,13 @@ class OpenBankingOriginSpecificSessionDataSpec extends UnitSpec {
       roundTripJsonTest(osd, testJson)
     }
 
+    "WcEpayeSeta" in {
+      val testJson = Json.parse("""{"payeSettlementXRef":"XE123456789012","origin":"WcEpayeSeta"}""")
+      val osd = ExtendedWcEpayeSeta.openBankingOriginSpecificSessionData(TestJourneys.WcEpayeSeta.journeyBeforeBeginWebPayment.journeySpecificData)
+      testOsd(osd, WcEpayeSetaSessionData(XRef("XE123456789012"), None), "XE123456789012", "XE123456789012")
+      roundTripJsonTest(osd, testJson)
+    }
+
     "PfChildBenefitRepayments" in {
       val testJson = Json.parse("""{"yRef":"YA123456789123","origin":"PfChildBenefitRepayments"}""")
       val osd = ExtendedPfChildBenefitRepayments.openBankingOriginSpecificSessionData(TestJourneys.PfChildBenefitRepayments.journeyBeforeBeginWebPayment.journeySpecificData)
@@ -366,10 +373,24 @@ class OpenBankingOriginSpecificSessionDataSpec extends UnitSpec {
       roundTripJsonTest(osd, testJson)
     }
 
+    "BtaSdil" in {
+      val testJson = Json.parse("""{"xRef":"XE1234567890123","origin":"BtaSdil"}""")
+      val osd = ExtendedBtaSdil.openBankingOriginSpecificSessionData(TestJourneys.BtaSdil.journeyBeforeBeginWebPayment.journeySpecificData)
+      testOsd(osd, BtaSdilSessionData(XRef("XE1234567890123"), None), "XE1234567890123", "XE1234567890123")
+      roundTripJsonTest(osd, testJson)
+    }
+
+    "PfSdil" in {
+      val testJson = Json.parse("""{"softDrinksIndustryLevyRef":"XE1234567890123","origin":"PfSdil"}""")
+      val osd = ExtendedPfSdil.openBankingOriginSpecificSessionData(TestJourneys.PfSdil.journeyBeforeBeginWebPayment.journeySpecificData)
+      testOsd(osd, PfSdilSessionData(SoftDrinksIndustryLevyRef("XE1234567890123"), None), "XE1234567890123", "XE1234567890123")
+      roundTripJsonTest(osd, testJson)
+    }
+
   }
 
   "sanity check for implemented origins" in {
-    TestHelpers.implementedOrigins.size shouldBe 42 withClue "** This dummy test is here to remind you to update the tests above. Bump up the expected number when an origin is added to implemented origins **"
+    TestHelpers.implementedOrigins.size shouldBe 45 withClue "** This dummy test is here to remind you to update the tests above. Bump up the expected number when an origin is added to implemented origins **"
   }
 
 }
