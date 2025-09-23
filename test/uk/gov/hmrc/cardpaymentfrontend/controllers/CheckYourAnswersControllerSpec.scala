@@ -16,6 +16,7 @@
 
 package uk.gov.hmrc.cardpaymentfrontend.controllers
 
+import org.apache.pekko.http.scaladsl.model.Uri
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Element
 import org.scalatest.Assertion
@@ -117,6 +118,15 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       val result = systemUnderTest.renderPage(fakeRequestWelsh())
       val document = Jsoup.parse(contentAsString(result))
       document.select("#submit").text() shouldBe "Yn eich blaen"
+    }
+
+    //hard to test the script properly without selenium, this test is here to make sure we don't remove said script.
+    "should render the page with a script that can set the isMobile boolean on submission of the form" in {
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyBeforeBeginWebPayment)
+      val result = systemUnderTest.renderPage(fakeRequest())
+      val document = Jsoup.parse(contentAsString(result))
+      val script = document.getElementsByTag("script").select("#check-your-answers-screen-size-script").html()
+      script shouldBe "if ( window.innerWidth > 599 && window.innerHeight > 799 ) {\n            document.getElementById('check-your-details-form').action = \"/pay-by-card/check-your-details?isMobile=false\"\n        }"
     }
 
       // derives correct row in summary list due to Origins that may include FDP.
@@ -1242,9 +1252,9 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       CardPaymentStub.InitiatePayment.stubForInitiatePayment2xx(expectedCardPaymentInitiatePaymentResponse)
       PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyBeforeBeginWebPayment)
 
-      val result = systemUnderTest.submit(fakeRequest(TestJourneys.PfSa.journeyBeforeBeginWebPayment._id))
+      val result = systemUnderTest.submit(false)(fakeRequest(TestJourneys.PfSa.journeyBeforeBeginWebPayment._id))
       status(result) shouldBe SEE_OTHER
-      redirectLocation(result) shouldBe Some("/pay-by-card/card-details?iframeUrl=http%3A%2F%2Flocalhost%3A10155%2Fthis-would-be-iframe")
+      redirectLocation(result) shouldBe Some("/pay-by-card/card-details?iframeUrl=http%3A%2F%2Flocalhost%3A10155%2Fthis-would-be-iframe%3FchallengeWindowSize%3DFULL_SCREEN")
     }
 
     "should redirect to iFrameUrl if PaymentStatus is Sent and there is an order present" in {
@@ -1258,17 +1268,29 @@ class CheckYourAnswersControllerSpec extends ItSpec {
           commissionInPence    = None,
           paidOn               = None
         ))))
-      val result = systemUnderTest.submit(fakeRequestWithSentPaymentStatus())
+      val result = systemUnderTest.submit(false)(fakeRequestWithSentPaymentStatus())
       status(result) shouldBe SEE_OTHER
-      redirectLocation(result) shouldBe Some("/pay-by-card/card-details?iframeUrl=http%3A%2F%2Flocalhost%3A9975%2Fbarclays%2Fpages%2Fpaypage.jsf%2F600e1342-0714-4989-ac6c-c11c745f1ce6")
+      redirectLocation(result) shouldBe Some("/pay-by-card/card-details?iframeUrl=http%3A%2F%2Flocalhost%3A9975%2Fbarclays%2Fpages%2Fpaypage.jsf%2F600e1342-0714-4989-ac6c-c11c745f1ce6%3FchallengeWindowSize%3DFULL_SCREEN")
     }
 
     "should redirect to the Address page if there is no Address in session" in {
         def fakeRequestWithoutAddressInSession: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withSessionId()
       PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyBeforeBeginWebPayment)
-      val result = systemUnderTest.submit(fakeRequestWithoutAddressInSession)
+      val result = systemUnderTest.submit(true)(fakeRequestWithoutAddressInSession)
       status(result) shouldBe SEE_OTHER
       redirectLocation(result) shouldBe Some("/pay-by-card/address")
+    }
+  }
+
+  "barclaysPaymentCollectionUrl" - {
+    "should add challengeWindowSize as a query param with value WINDOW_SIZE_600_400 when isMobile is true" in {
+      val result = systemUnderTest.barclaysPaymentCollectionUrl(iframeUrl = "https://some-url.com", isMobile = true)
+      result shouldBe Uri("https://some-url.com?challengeWindowSize=WINDOW_SIZE_600_400")
+    }
+
+    "should add challengeWindowSize as a query param with value FULL_SCREEN when isMobile is false" in {
+      val result = systemUnderTest.barclaysPaymentCollectionUrl(iframeUrl = "https://some-url.com", isMobile = false)
+      result shouldBe Uri("https://some-url.com?challengeWindowSize=FULL_SCREEN")
     }
   }
 

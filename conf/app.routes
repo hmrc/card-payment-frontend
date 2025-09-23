@@ -16,7 +16,7 @@ GET        /address                              uk.gov.hmrc.cardpaymentfrontend
 POST       /address                              uk.gov.hmrc.cardpaymentfrontend.controllers.AddressController.submit
 
 GET        /check-your-details                   uk.gov.hmrc.cardpaymentfrontend.controllers.CheckYourAnswersController.renderPage
-POST       /check-your-details                   uk.gov.hmrc.cardpaymentfrontend.controllers.CheckYourAnswersController.submit
+POST       /check-your-details                   uk.gov.hmrc.cardpaymentfrontend.controllers.CheckYourAnswersController.submit(isMobile: Boolean ?= true)
 
 #todo jake rename this url, maybe /begin-payment?
 GET        /card-details                         uk.gov.hmrc.cardpaymentfrontend.controllers.PaymentStatusController.showIframe(iframeUrl: RedirectUrl)

@@ -19,6 +19,7 @@
 @import uk.gov.hmrc.govukfrontend.views.Aliases.{Button, SummaryList}
 @import uk.gov.hmrc.govukfrontend.views.html.components.{FormWithCSRF, GovukButton, GovukSummaryList}
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
+@import views.html.helper.CSPNonce
 
 @this(
     govukButton: GovukButton,
@@ -29,19 +30,31 @@
 
 @(summaryList: SummaryList)(implicit journeyRequest: JourneyRequest[_], messages: Messages)
 
+@additionalScript = {
+    @** while we don't normally favour inlining scripts, doing so in this instance gives us safety if/when refactoring routes due to reverse routes usage. **@
+    <script @{CSPNonce.attr} id="check-your-answers-screen-size-script">
+        if ( window.innerWidth > 599 && window.innerHeight > 799 ) {
+            document.getElementById('check-your-details-form').action = "@uk.gov.hmrc.cardpaymentfrontend.controllers.routes.CheckYourAnswersController.submit(isMobile = false)"
+        }
+    </script>
+}
+
 @heading = @{messages("check-your-details.heading")}
 
-@layout(pageTitle = Some(heading), origin = Some(journeyRequest.journey.origin)) {
+@layout(pageTitle = Some(heading), origin = Some(journeyRequest.journey.origin), additionalScripts = Some(additionalScript)) {
 
    <h1 class="govuk-heading-l govuk-!-margin-bottom-6">@heading</h1>
 
    @summaryListComponent(summaryList)
 
-   @formWithCSRF(action = uk.gov.hmrc.cardpaymentfrontend.controllers.routes.CheckYourAnswersController.submit) {
+   @formWithCSRF(
+       action = uk.gov.hmrc.cardpaymentfrontend.controllers.routes.CheckYourAnswersController.submit(),
+       //used to set the screen size in the call to Barclaycard
+       Symbol("id") -> "check-your-details-form"
+   ) {
       @govukButton(Button(
          id = Some("submit"),
           content = Text(messages("continue"))
       ))
    }
 }
-

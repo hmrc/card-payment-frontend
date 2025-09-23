@@ -45,6 +45,18 @@ object CardPaymentStub {
           .withStatus(Status.SERVICE_UNAVAILABLE)
       )
     )
+
+    def verifyInitiatePayment(cardPaymentInitiatePaymentRequestJson: String): Unit =
+      verify(
+        1,
+        postRequestedFor(urlEqualTo(path)).withRequestBody(
+          equalToJson(
+            cardPaymentInitiatePaymentRequestJson,
+            true,
+            true
+          )
+        )
+      )
   }
 
   object AuthAndCapture {

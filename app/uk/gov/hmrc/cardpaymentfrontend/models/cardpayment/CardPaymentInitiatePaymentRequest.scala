@@ -27,7 +27,8 @@ final case class CardPaymentInitiatePaymentRequest(
     purchaseAmount:      AmountInPence, //in pennies
     billingAddress:      BarclaycardAddress,
     emailAddress:        Option[EmailAddress],
-    transactionNumber:   String
+    transactionNumber:   String,
+    isMobile:            Boolean
 )
 
 object CardPaymentInitiatePaymentRequest {
