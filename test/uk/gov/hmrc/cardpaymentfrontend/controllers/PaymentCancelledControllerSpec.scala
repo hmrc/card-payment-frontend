@@ -50,7 +50,6 @@ class PaymentCancelledControllerSpec extends ItSpec {
         PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyAfterCancelWebPayment)
         val result = systemUnderTest.renderPage(fakeGetRequest)
         val document = Jsoup.parse(contentAsString(result))
-        println(document.toString)
         val langToggleText: List[String] = document.select(".hmrc-language-select__list-item").eachText().asScala.toList
         langToggleText should contain theSameElementsAs List("English", "Newid yr iaith i’r Gymraeg Cymraeg") //checking the visually hidden text, it's simpler
       }
