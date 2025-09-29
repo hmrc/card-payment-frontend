@@ -20,7 +20,7 @@ import org.jsoup.Jsoup
 import org.jsoup.nodes.Element
 import org.jsoup.select.Elements
 import payapi.cardpaymentjourney.model.barclays.BarclaysOrder
-import payapi.cardpaymentjourney.model.journey.{Journey, JourneySpecificData, Url}
+import payapi.cardpaymentjourney.model.journey.{Journey, JourneySpecificData, JsdPfP800, JsdPtaP800, Url}
 import payapi.corcommon.model.barclays.{CardCategories, TransactionReference}
 import payapi.corcommon.model.{AmountInPence, JourneyId, Origin, Origins}
 import play.api.i18n.{Messages, MessagesApi}
@@ -31,7 +31,7 @@ import play.mvc.Http.Status
 import uk.gov.hmrc.cardpaymentfrontend.controllers.PaymentCompleteControllerSpec.{TestScenarioInfo, originToTdAndSummaryListRows}
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.TestOps._
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.stubs.{EmailStub, PayApiStub}
-import uk.gov.hmrc.cardpaymentfrontend.testsupport.testdata.TestJourneys
+import uk.gov.hmrc.cardpaymentfrontend.testsupport.testdata.{TestDataUtils, TestJourneys}
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.{ItSpec, TestHelpers}
 import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
@@ -235,6 +235,49 @@ class PaymentCompleteControllerSpec extends ItSpec {
         panel.select(".govuk-panel__body").html() shouldBe "Your payment reference\n<br>\n<strong>XE123456789012</strong>"
       }
 
+      "should render the extra row for p800ChargeReference when it's in the journey" - {
+        "for PfP800" in {
+          val testJourney: Journey[JsdPfP800] = TestDataUtils.intoSuccessWithOrder(TestJourneys.PfP800.journeyWithP800ChargeRefBeforeBeginWebPayment, TestDataUtils.debitCardOrder)
+          PayApiStub.stubForFindBySessionId2xx(testJourney)
+          val result = systemUnderTest.renderPage(fakeGetRequest)
+          val document = Jsoup.parse(contentAsString(result))
+          val panel = document.body().select(".govuk-panel--confirmation")
+          panel.select("h1").text() shouldBe "Payment received by HMRC"
+          panel.select(".govuk-panel__body").html() shouldBe "Your payment reference\n<br>\n<strong>MA000003AP8002027</strong>"
+          testSummaryRows(
+            testData                = testJourney,
+            fakeRequest             = fakeGetRequest,
+            expectedSummaryListRows = List(
+              "Tax" -> "P800",
+              "Date" -> "2 November 2027",
+              "Charge reference" -> "BC007010065114",
+              "Reference number" -> "MA000003AP8002027",
+              "Amount" -> "£12.34"
+            )
+          )
+        }
+        "for PtaP800" in {
+          val testJourney: Journey[JsdPtaP800] = TestDataUtils.intoSuccessWithOrder(TestJourneys.PtaP800.journeyWithP800ChargeRefBeforeBeginWebPayment, TestDataUtils.debitCardOrder)
+          PayApiStub.stubForFindBySessionId2xx(testJourney)
+          val result = systemUnderTest.renderPage(fakeGetRequest)
+          val document = Jsoup.parse(contentAsString(result))
+          val panel = document.body().select(".govuk-panel--confirmation")
+          panel.select("h1").text() shouldBe "Payment received by HMRC"
+          panel.select(".govuk-panel__body").html() shouldBe "Your payment reference\n<br>\n<strong>MA000003AP8002027</strong>"
+          testSummaryRows(
+            testData                = testJourney,
+            fakeRequest             = fakeGetRequest,
+            expectedSummaryListRows = List(
+              "Tax" -> "P800",
+              "Date" -> "2 November 2027",
+              "Charge reference" -> "BC007010065114",
+              "Reference number" -> "MA000003AP8002027",
+              "Amount" -> "£12.34"
+            )
+          )
+        }
+      }
+
         def testSummaryRows(testData: Journey[JourneySpecificData], fakeRequest: FakeRequest[_], expectedSummaryListRows: List[(String, String)]) = {
           PayApiStub.stubForFindBySessionId2xx(testData)
           val result = systemUnderTest.renderPage(fakeRequest)
@@ -247,7 +290,7 @@ class PaymentCompleteControllerSpec extends ItSpec {
         }
 
       "should have a test for all origins below this one" in {
-        TestHelpers.implementedOrigins.size shouldBe 45 withClue "** This dummy test is here to remind you to update the tests below. Bump up the expected number when an origin is added to implemented origins **"
+        TestHelpers.implementedOrigins.size shouldBe 49 withClue "** This dummy test is here to remind you to update the tests below. Bump up the expected number when an origin is added to implemented origins **"
       }
 
       TestHelpers.implementedOrigins.foreach { origin =>
@@ -1780,6 +1823,146 @@ object PaymentCompleteControllerSpec {
       ),
       maybeWelshSummaryRowsCreditCard = Some(List(
         "Treth" -> "Ardoll y Diwydiant Diodydd Ysgafn",
+        "Dyddiad" -> "2 Tachwedd 2027",
+        "Swm a dalwyd i CThEM" -> "£12.34",
+        "Ffi cerdyn (9.97%), ni ellir ei ad-dalu" -> "£1.23",
+        "Cyfanswm a dalwyd" -> "£13.57"
+      )),
+      hasWelshTest                    = true,
+      hasAReturnUrl                   = false
+    )
+
+    case Origins.PtaP800 => TestScenarioInfo(
+      debitCardJourney                = TestJourneys.PtaP800.journeyAfterSucceedDebitWebPayment,
+      creditCardJourney               = TestJourneys.PtaP800.journeyAfterSucceedCreditWebPayment,
+      englishSummaryRowsDebitCard     = List(
+        "Tax" -> "P800",
+        "Date" -> "2 November 2027",
+        "Reference number" -> "MA000003AP8002027",
+        "Amount" -> "£12.34"
+      ),
+      maybeWelshSummaryRowsDebitCard  = Some(List(
+        "Treth" -> "P800",
+        "Dyddiad" -> "2 Tachwedd 2027",
+        "Cyfeirnod" -> "MA000003AP8002027",
+        "Swm" -> "£12.34"
+      )),
+      englishSummaryRowsCreditCard    = List(
+        "Tax" -> "P800",
+        "Date" -> "2 November 2027",
+        "Reference number" -> "MA000003AP8002027",
+        "Amount paid to HMRC" -> "£12.34",
+        "Card fee (9.97%), non-refundable" -> "£1.23",
+        "Total paid" -> "£13.57"
+      ),
+      maybeWelshSummaryRowsCreditCard = Some(List(
+        "Treth" -> "P800",
+        "Dyddiad" -> "2 Tachwedd 2027",
+        "Cyfeirnod" -> "MA000003AP8002027",
+        "Swm a dalwyd i CThEM" -> "£12.34",
+        "Ffi cerdyn (9.97%), ni ellir ei ad-dalu" -> "£1.23",
+        "Cyfanswm a dalwyd" -> "£13.57"
+      )),
+      hasWelshTest                    = true,
+      hasAReturnUrl                   = false
+    )
+
+    case Origins.PfP800 => TestScenarioInfo(
+      debitCardJourney                = TestJourneys.PfP800.journeyAfterSucceedDebitWebPayment,
+      creditCardJourney               = TestJourneys.PfP800.journeyAfterSucceedCreditWebPayment,
+      englishSummaryRowsDebitCard     = List(
+        "Tax" -> "P800",
+        "Date" -> "2 November 2027",
+        "Reference number" -> "MA000003AP8002027",
+        "Amount" -> "£12.34"
+      ),
+      maybeWelshSummaryRowsDebitCard  = Some(List(
+        "Treth" -> "P800",
+        "Dyddiad" -> "2 Tachwedd 2027",
+        "Cyfeirnod" -> "MA000003AP8002027",
+        "Swm" -> "£12.34"
+      )),
+      englishSummaryRowsCreditCard    = List(
+        "Tax" -> "P800",
+        "Date" -> "2 November 2027",
+        "Reference number" -> "MA000003AP8002027",
+        "Amount paid to HMRC" -> "£12.34",
+        "Card fee (9.97%), non-refundable" -> "£1.23",
+        "Total paid" -> "£13.57"
+      ),
+      maybeWelshSummaryRowsCreditCard = Some(List(
+        "Treth" -> "P800",
+        "Dyddiad" -> "2 Tachwedd 2027",
+        "Cyfeirnod" -> "MA000003AP8002027",
+        "Swm a dalwyd i CThEM" -> "£12.34",
+        "Ffi cerdyn (9.97%), ni ellir ei ad-dalu" -> "£1.23",
+        "Cyfanswm a dalwyd" -> "£13.57"
+      )),
+      hasWelshTest                    = true,
+      hasAReturnUrl                   = false
+    )
+
+    case Origins.PtaSimpleAssessment => TestScenarioInfo(
+      debitCardJourney                = TestJourneys.PtaSimpleAssessment.journeyAfterSucceedDebitWebPayment,
+      creditCardJourney               = TestJourneys.PtaSimpleAssessment.journeyAfterSucceedCreditWebPayment,
+      englishSummaryRowsDebitCard     = List(
+        "Tax" -> "Simple Assessment",
+        "Date" -> "2 November 2027",
+        "Charge reference" -> "BC007010065114",
+        "Tax year" -> "6 April 2027 to 5 April 2028",
+        "Amount" -> "£12.34"
+      ),
+      maybeWelshSummaryRowsDebitCard  = Some(List(
+        "Treth" -> "Asesiad Syml",
+        "Dyddiad" -> "2 Tachwedd 2027",
+        "Cyfeirnod y tâl" -> "BC007010065114",
+        "Blwyddyn dreth" -> "6 Ebrill 2027 i 5 Ebrill 2028",
+        "Swm" -> "£12.34"
+      )),
+      englishSummaryRowsCreditCard    = List(
+        "Tax" -> "Simple Assessment",
+        "Date" -> "2 November 2027",
+        "Charge reference" -> "BC007010065114",
+        "Tax year" -> "6 April 2027 to 5 April 2028",
+        "Amount paid to HMRC" -> "£12.34",
+        "Card fee (9.97%), non-refundable" -> "£1.23",
+        "Total paid" -> "£13.57"
+      ),
+      maybeWelshSummaryRowsCreditCard = Some(List(
+        "Treth" -> "Asesiad Syml",
+        "Dyddiad" -> "2 Tachwedd 2027",
+        "Cyfeirnod y tâl" -> "BC007010065114",
+        "Blwyddyn dreth" -> "6 Ebrill 2027 i 5 Ebrill 2028",
+        "Swm a dalwyd i CThEM" -> "£12.34",
+        "Ffi cerdyn (9.97%), ni ellir ei ad-dalu" -> "£1.23",
+        "Cyfanswm a dalwyd" -> "£13.57"
+      )),
+      hasWelshTest                    = true,
+      hasAReturnUrl                   = true
+    )
+
+    case Origins.PfSimpleAssessment => TestScenarioInfo(
+      debitCardJourney                = TestJourneys.PfSimpleAssessment.journeyAfterSucceedDebitWebPayment,
+      creditCardJourney               = TestJourneys.PfSimpleAssessment.journeyAfterSucceedCreditWebPayment,
+      englishSummaryRowsDebitCard     = List(
+        "Tax" -> "Simple Assessment",
+        "Date" -> "2 November 2027",
+        "Amount" -> "£12.34"
+      ),
+      maybeWelshSummaryRowsDebitCard  = Some(List(
+        "Treth" -> "Asesiad Syml",
+        "Dyddiad" -> "2 Tachwedd 2027",
+        "Swm" -> "£12.34"
+      )),
+      englishSummaryRowsCreditCard    = List(
+        "Tax" -> "Simple Assessment",
+        "Date" -> "2 November 2027",
+        "Amount paid to HMRC" -> "£12.34",
+        "Card fee (9.97%), non-refundable" -> "£1.23",
+        "Total paid" -> "£13.57"
+      ),
+      maybeWelshSummaryRowsCreditCard = Some(List(
+        "Treth" -> "Asesiad Syml",
         "Dyddiad" -> "2 Tachwedd 2027",
         "Swm a dalwyd i CThEM" -> "£12.34",
         "Ffi cerdyn (9.97%), ni ellir ei ad-dalu" -> "£1.23",

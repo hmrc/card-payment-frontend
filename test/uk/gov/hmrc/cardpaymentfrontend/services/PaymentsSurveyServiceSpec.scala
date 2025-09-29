@@ -879,6 +879,78 @@ class PaymentsSurveyServiceSpec extends ItSpec with TableDrivenPropertyChecks {
                 )
               )
             ) -> false
+            case Origins.PfP800 => PaymentSurveyJourneyRequest(
+              origin         = "PfP800",
+              returnMsg      = "Skip survey",
+              returnHref     = "https://www.gov.uk/government/organisations/hm-revenue-customs",
+              auditName      = "p800-or-pa302",
+              audit          = AuditOptions(
+                userType  = "LoggedIn",
+                journey   = Some("Successful"),
+                orderId   = Some("MA000003AP8002027"),
+                liability = Some("p800-or-pa302")
+              ),
+              contentOptions = SurveyContentOptions(
+                isWelshSupported = true,
+                title            = SurveyBannerTitle(
+                  englishValue = "Check how much Income Tax you paid", welshValue = Some("Gwirio faint o dreth incwm a daloch")
+                )
+              )
+            ) -> true
+            case Origins.PtaP800 => PaymentSurveyJourneyRequest(
+              origin         = "PtaP800",
+              returnMsg      = "Skip survey",
+              returnHref     = "https://www.gov.uk/government/organisations/hm-revenue-customs",
+              auditName      = "p800-or-pa302",
+              audit          = AuditOptions(
+                userType  = "LoggedIn",
+                journey   = Some("Successful"),
+                orderId   = Some("MA000003AP8002027"),
+                liability = Some("p800-or-pa302")
+              ),
+              contentOptions = SurveyContentOptions(
+                isWelshSupported = true,
+                title            = SurveyBannerTitle(
+                  englishValue = "Check how much Income Tax you paid", welshValue = Some("Gwirio faint o dreth incwm a daloch")
+                )
+              )
+            ) -> true
+            case Origins.PfSimpleAssessment => PaymentSurveyJourneyRequest(
+              origin         = "PfSimpleAssessment",
+              returnMsg      = "Skip survey",
+              returnHref     = "https://www.gov.uk/government/organisations/hm-revenue-customs",
+              auditName      = "simple-assessment",
+              audit          = AuditOptions(
+                userType  = "LoggedOut",
+                journey   = Some("Successful"),
+                orderId   = Some("XE123456789012"),
+                liability = Some("simple-assessment")
+              ),
+              contentOptions = SurveyContentOptions(
+                isWelshSupported = true,
+                title            = SurveyBannerTitle(
+                  englishValue = "Pay your Simple Assessment", welshValue = Some("Talu eich Asesiad Syml")
+                )
+              )
+            ) -> false
+            case Origins.PtaSimpleAssessment => PaymentSurveyJourneyRequest(
+              origin         = "PtaSimpleAssessment",
+              returnMsg      = "Skip survey, return to personal tax account",
+              returnHref     = "/personal-account",
+              auditName      = "p800-or-pa302",
+              audit          = AuditOptions(
+                userType  = "LoggedIn",
+                journey   = Some("Successful"),
+                orderId   = Some("MA000003AP3022027"),
+                liability = Some("p800-or-pa302")
+              ),
+              contentOptions = SurveyContentOptions(
+                isWelshSupported = true,
+                title            = SurveyBannerTitle(
+                  englishValue = "Pay your Simple Assessment", welshValue = Some("Talu eich Asesiad Syml")
+                )
+              )
+            ) -> true
             case Origins.AppSa                 => throw new MatchError("Not implemented yet")
             case Origins.BcPngr                => throw new MatchError("Not implemented yet")
             case Origins.Parcels               => throw new MatchError("Not implemented yet")
@@ -899,8 +971,6 @@ class PaymentsSurveyServiceSpec extends ItSpec with TableDrivenPropertyChecks {
             case Origins.PfLandfillTax         => throw new MatchError("Not implemented yet")
             case Origins.PfAggregatesLevy      => throw new MatchError("Not implemented yet")
             case Origins.PfClimateChangeLevy   => throw new MatchError("Not implemented yet")
-            case Origins.PfSimpleAssessment    => throw new MatchError("Not implemented yet")
-            case Origins.PtaSimpleAssessment   => throw new MatchError("Not implemented yet")
             case Origins.AppSimpleAssessment   => throw new MatchError("Not implemented yet")
             case Origins.PfTpes                => throw new MatchError("Not implemented yet")
             case Origins.PfJobRetentionScheme  => throw new MatchError("Not implemented yet")
@@ -920,8 +990,6 @@ class PaymentsSurveyServiceSpec extends ItSpec with TableDrivenPropertyChecks {
             case Origins.PfPillar2             => throw new MatchError("Not implemented yet")
             case Origins.PfCds                 => throw new MatchError("Not implemented yet")
             case Origins.PfOther               => throw new MatchError("Not implemented yet")
-            case Origins.PfP800                => throw new MatchError("Not implemented yet")
-            case Origins.PtaP800               => throw new MatchError("Not implemented yet")
             case Origins.PfClass2Ni            => throw new MatchError("Not implemented yet")
             case Origins.PfInsurancePremium    => throw new MatchError("Not implemented yet")
             case Origins.PfPsAdmin             => throw new MatchError("Not implemented yet")

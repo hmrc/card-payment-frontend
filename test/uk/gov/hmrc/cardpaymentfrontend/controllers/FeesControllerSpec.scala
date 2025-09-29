@@ -2840,8 +2840,8 @@ class FeesControllerSpec extends ItSpec {
             case Origins.PfSdil                   => Seq(expectedOpenBankingLink, expectedDirectDebitLink)
             case Origins.PfAggregatesLevy         => Seq.empty
             case Origins.PfClimateChangeLevy      => Seq.empty
-            case Origins.PfSimpleAssessment       => Seq.empty
-            case Origins.PtaSimpleAssessment      => Seq.empty
+            case Origins.PfSimpleAssessment       => Seq(expectedOpenBankingLink)
+            case Origins.PtaSimpleAssessment      => Seq(expectedOpenBankingLink)
             case Origins.AppSimpleAssessment      => Seq.empty
             case Origins.PfTpes                   => Seq.empty
             case Origins.CapitalGainsTax          => Seq(expectedOpenBankingLink)

@@ -16,24 +16,24 @@
 
 package uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins
 
-import payapi.cardpaymentjourney.model.journey.{JourneySpecificData, JsdPfP800}
+import payapi.cardpaymentjourney.model.journey.{JourneySpecificData, JsdPtaP800}
 import payapi.corcommon.model.p800.P800ChargeRef
 import play.api.i18n.Messages
 import play.api.mvc.AnyContent
 import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
-import uk.gov.hmrc.cardpaymentfrontend.models.PaymentMethod.Card
 import uk.gov.hmrc.cardpaymentfrontend.models.openbanking.OriginSpecificSessionData
 import uk.gov.hmrc.cardpaymentfrontend.models.{CheckYourAnswersRow, PaymentMethod}
 
-object ExtendedPfP800 extends ExtendedOrigin {
-  override val serviceNameMessageKey: String = "service-name.PfP800"
-  override val taxNameMessageKey: String = "payment-complete.tax-name.PfP800"
-  def cardFeesPagePaymentMethods: Set[PaymentMethod] = Set.empty[PaymentMethod]
-  def paymentMethods(): Set[PaymentMethod] = Set(Card)
+object ExtendedPtaP800 extends ExtendedOrigin {
+  override val serviceNameMessageKey: String = "service-name.PtaP800"
+  override val taxNameMessageKey: String = "payment-complete.tax-name.PtaP800"
+
+  def cardFeesPagePaymentMethods: Set[PaymentMethod] = Set()
+  def paymentMethods(): Set[PaymentMethod] = Set()
 
   override def checkYourAnswersReferenceRow(journeyRequest: JourneyRequest[AnyContent])(payFrontendBaseUrl: String): Option[CheckYourAnswersRow] = {
     Some(CheckYourAnswersRow(
-      titleMessageKey = "check-your-details.PfP800.reference",
+      titleMessageKey = "check-your-details.PtaP800.reference",
       value           = Seq(journeyRequest.journey.referenceValue),
       changeLink      = None
     ))
@@ -50,18 +50,16 @@ object ExtendedPfP800 extends ExtendedOrigin {
   }
 
   private def additionalReference: JourneySpecificData => Option[P800ChargeRef] = {
-    case j: JsdPfP800 => j.p800ChargeRef
-    case _            => throw new RuntimeException("Incorrect origin found")
+    case j: JsdPtaP800 => j.p800ChargeRef
+    case _             => throw new RuntimeException("Incorrect origin found")
   }
 
   override def openBankingOriginSpecificSessionData: JourneySpecificData => Option[OriginSpecificSessionData] = _ => None
-
   override def surveyAuditName: String = "p800-or-pa302"
   override def surveyReturnHref: String = "https://www.gov.uk/government/organisations/hm-revenue-customs"
   override def surveyReturnMessageKey: String = "payments-survey.other.return-message"
   override def surveyIsWelshSupported: Boolean = true
   override def surveyBannerTitle: String = serviceNameMessageKey
-
   override def emailTaxTypeMessageKey: String = "email.tax-name.PfP800"
 
 }

@@ -18,7 +18,7 @@ package uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins
 
 import payapi.cardpaymentjourney.model.journey.{JourneySpecificData, JsdVcVatOther}
 import payapi.corcommon.model.taxes.vat.VatChargeReference
-import play.api.i18n.Lang
+import play.api.i18n.Messages
 import play.api.mvc.AnyContent
 import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
 import uk.gov.hmrc.cardpaymentfrontend.models.PaymentMethod._
@@ -44,13 +44,13 @@ object ExtendedVcVatOther extends ExtendedOrigin {
     case _                => throw new RuntimeException("Incorrect origin found")
   }
 
-  override def checkYourAnswersAdditionalReferenceRow(journeyRequest: JourneyRequest[AnyContent])(payFrontendBaseUrl: String)(implicit lang: Lang): Option[CheckYourAnswersRow] = {
+  override def checkYourAnswersAdditionalReferenceRow(journeyRequest: JourneyRequest[AnyContent])(payFrontendBaseUrl: String)(implicit messages: Messages): Option[Seq[CheckYourAnswersRow]] = {
     additionalReference(journeyRequest.journey.journeySpecificData).map { chargeReference =>
-      CheckYourAnswersRow(
+      Seq(CheckYourAnswersRow(
         titleMessageKey = "check-your-details.VcVatOther.charge-reference",
         value           = Seq(chargeReference.reference),
         changeLink      = None
-      )
+      ))
     }
   }
 

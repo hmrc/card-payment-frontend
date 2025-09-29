@@ -17,7 +17,7 @@
 package uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins
 
 import payapi.cardpaymentjourney.model.journey.{JourneySpecificData, JsdPfEpayeP11d}
-import play.api.i18n.Lang
+import play.api.i18n.Messages
 import play.api.mvc.{AnyContent, Call}
 import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
 import uk.gov.hmrc.cardpaymentfrontend.models.PaymentMethod.{Card, OneOffDirectDebit, OpenBanking}
@@ -48,17 +48,17 @@ object ExtendedPfEpayeP11d extends ExtendedOrigin {
     ))
 
   override def checkYourAnswersAdditionalReferenceRow(journeyRequest: JourneyRequest[AnyContent])
-    (payFrontendBaseUrl: String)(implicit lang: Lang): Option[CheckYourAnswersRow] =
+    (payFrontendBaseUrl: String)(implicit messages: Messages): Option[Seq[CheckYourAnswersRow]] =
     journeyRequest.journey.journeySpecificData.asInstanceOf[JsdPfEpayeP11d].period.map { taxYear =>
-      CheckYourAnswersRow(
+      Seq(CheckYourAnswersRow(
         titleMessageKey = "check-your-details.PfEpayeP11d.tax-year",
-        value           = Seq(humanReadablePeriod(taxYear)),
+        value           = Seq(humanReadablePeriod(taxYear)(messages.lang)),
         changeLink      = Some(Link(
           href       = Call("GET", s"$payFrontendBaseUrl/change-tax-year?fromCardPayment=true"),
           linkId     = "check-your-details-period-change-link",
           messageKey = "check-your-details.change"
         ))
-      )
+      ))
     }
 
   override def openBankingOriginSpecificSessionData: JourneySpecificData => Option[OriginSpecificSessionData] = {

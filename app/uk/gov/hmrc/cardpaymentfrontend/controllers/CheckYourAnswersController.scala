@@ -18,7 +18,6 @@ package uk.gov.hmrc.cardpaymentfrontend.controllers
 
 import payapi.corcommon.model.PaymentStatuses
 import play.api.Logging
-import play.api.i18n.Lang
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.cardpaymentfrontend.actions.{Actions, JourneyRequest}
 import uk.gov.hmrc.cardpaymentfrontend.config.AppConfig
@@ -50,25 +49,39 @@ class CheckYourAnswersController @Inject() (
   import requestSupport._
 
   def renderPage: Action[AnyContent] = actions.journeyAction { implicit journeyRequest: JourneyRequest[AnyContent] =>
-    implicit val lang: Lang = requestSupport.lang
     val extendedOrigin: ExtendedOrigin = journeyRequest.journey.origin.lift
 
-    val paymentDate: Option[CheckYourAnswersRow] = extendedOrigin.checkYourAnswersPaymentDateRow(journeyRequest)(appConfig.payFrontendBaseUrl)
+    val maybePaymentDate: Option[CheckYourAnswersRow] = extendedOrigin.checkYourAnswersPaymentDateRow(journeyRequest)(appConfig.payFrontendBaseUrl)
     val referenceRow: Option[CheckYourAnswersRow] = extendedOrigin.checkYourAnswersReferenceRow(journeyRequest)(appConfig.payFrontendBaseUrl)
-    val additionalReferenceRow: Option[CheckYourAnswersRow] = extendedOrigin.checkYourAnswersAdditionalReferenceRow(journeyRequest)(appConfig.payFrontendBaseUrl)
+    val additionalReferenceRows: Option[Seq[CheckYourAnswersRow]] = extendedOrigin.checkYourAnswersAdditionalReferenceRow(journeyRequest)(appConfig.payFrontendBaseUrl)
     val amountRow: Option[CheckYourAnswersRow] = extendedOrigin.checkYourAnswersAmountSummaryRow(journeyRequest)(appConfig.payFrontendBaseUrl)
     val cardBillingAddressRow: Option[CheckYourAnswersRow] = extendedOrigin.checkYourAnswersCardBillingAddressRow(journeyRequest)
     // If no email is present in the session, no Email Row is shown
     val maybeEmailRow: Option[CheckYourAnswersRow] = extendedOrigin.checkYourAnswersEmailAddressRow(journeyRequest)
 
-      def summaryListRows: Seq[SummaryListRow] = Seq(
-        paymentDate,
-        referenceRow,
-        additionalReferenceRow,
-        amountRow,
-        maybeEmailRow,
-        cardBillingAddressRow
-      ).flatten.map(summarise)
+    //the first two rows, payment date only applies to FDP supported journeys; reference row should always be there.
+    val maybePaymentDateAndReferenceRows: Seq[Option[CheckYourAnswersRow]] = Seq(maybePaymentDate, referenceRow)
+
+    //essentially converts Option[Seq[CheckYourAnswersRow]] => Seq[Option[CheckYourAnswersRow]], in most cases it's empty seq
+    val maybeAdditionalReferenceRows: Seq[Option[CheckYourAnswersRow]] =
+      additionalReferenceRows
+        .map(additionalReferenceRows => additionalReferenceRows.map(Option(_)))
+        .getOrElse(Seq.empty[Option[CheckYourAnswersRow]])
+
+    // the other rows should always be there (although email row isn't, if they didn't enter an email).
+    val mandatoryRows: Seq[Option[CheckYourAnswersRow]] = Seq(amountRow, maybeEmailRow, cardBillingAddressRow)
+
+      /*
+       * Looks weird, but it's so we can display rows in correct order i.e. usually:
+       * - payment date (for fdp supported journeys)
+       * - reference
+       * - additional references/identifiers
+       * - amount, email (if entered), card billing address)
+      */
+      def summaryListRows: Seq[SummaryListRow] =
+        (maybePaymentDateAndReferenceRows ++ maybeAdditionalReferenceRows ++ mandatoryRows)
+          .flatten
+          .map(summarise)
 
     if (cardBillingAddressRow.isDefined) Ok(checkYourAnswersPage(SummaryList(summaryListRows)))
     else {

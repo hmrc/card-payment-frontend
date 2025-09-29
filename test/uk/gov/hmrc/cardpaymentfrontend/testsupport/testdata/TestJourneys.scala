@@ -18,11 +18,14 @@ package uk.gov.hmrc.cardpaymentfrontend.testsupport.testdata
 
 import payapi.cardpaymentjourney.model.journey._
 import payapi.corcommon.model.cgt.CgtAccountReference
+import payapi.corcommon.model.p800.P800ChargeRef
 import payapi.corcommon.model.taxes.ad.{AlcoholDutyChargeReference, AlcoholDutyReference}
 import payapi.corcommon.model.taxes.amls.AmlsPaymentReference
 import payapi.corcommon.model.taxes.ct._
 import payapi.corcommon.model.taxes.epaye._
-import payapi.corcommon.model.taxes.other.{EconomicCrimeLevyReturnNumber, SoftDrinksIndustryLevyRef, XRef, XRef14Char, YRef}
+import payapi.corcommon.model.taxes.other._
+import payapi.corcommon.model.taxes.p302.{P302ChargeRef, P302Ref}
+import payapi.corcommon.model.taxes.p800.P800Ref
 import payapi.corcommon.model.taxes.ppt.PptReference
 import payapi.corcommon.model.taxes.sa.SaUtr
 import payapi.corcommon.model.taxes.sdlt.Utrn
@@ -876,6 +879,116 @@ object TestJourneys {
       createdOn            = LocalDateTime.parse("2027-11-02T16:28:55.185"),
       journeySpecificData  = JsdPfSdil(
         softDrinksIndustryLevyRef = Some(SoftDrinksIndustryLevyRef("XE123456789012"))
+      ),
+      chosenWayToPay       = None
+    )
+  }
+
+  object PfP800 extends JourneyStatuses[JsdPfP800] {
+    val journeyBeforeBeginWebPayment: Journey[JsdPfP800] = Journey[JsdPfP800](
+      _id                  = JourneyId(TestPayApiData.decryptedJourneyId),
+      sessionId            = Some(SessionId("TestSession-4b87460d-6f43-4c4c-b810-d6f87c774854")),
+      amountInPence        = Some(AmountInPence(1234)),
+      emailTemplateOptions = None,
+      navigation           = Some(NavigationOptions(returnUrl = Url("https://www.return-url.com"), backUrl = Url("https://www.back-to-pta.com"))),
+      order                = None,
+      status               = PaymentStatuses.Created,
+      createdOn            = LocalDateTime.parse("2027-11-02T16:28:55.185"),
+      journeySpecificData  = JsdPfP800(
+        p800Ref       = P800Ref("MA000003AP8002027"),
+        p800ChargeRef = None,
+        taxYear       = TaxYear(2027)
+      ),
+      chosenWayToPay       = None
+    )
+    val journeyWithP800ChargeRefBeforeBeginWebPayment: Journey[JsdPfP800] = Journey[JsdPfP800](
+      _id                  = JourneyId(TestPayApiData.decryptedJourneyId),
+      sessionId            = Some(SessionId("TestSession-4b87460d-6f43-4c4c-b810-d6f87c774854")),
+      amountInPence        = Some(AmountInPence(1234)),
+      emailTemplateOptions = None,
+      navigation           = Some(NavigationOptions(returnUrl = Url("https://www.return-url.com"), backUrl = Url("https://www.back-to-pta.com"))),
+      order                = None,
+      status               = PaymentStatuses.Created,
+      createdOn            = LocalDateTime.parse("2027-11-02T16:28:55.185"),
+      journeySpecificData  = JsdPfP800(
+        p800Ref       = P800Ref("MA000003AP8002027"),
+        p800ChargeRef = Some(P800ChargeRef("BC007010065114")),
+        taxYear       = TaxYear(2027)
+      ),
+      chosenWayToPay       = None
+    )
+  }
+
+  object PtaP800 extends JourneyStatuses[JsdPtaP800] {
+    val journeyBeforeBeginWebPayment: Journey[JsdPtaP800] = Journey[JsdPtaP800](
+      _id                  = JourneyId(TestPayApiData.decryptedJourneyId),
+      sessionId            = Some(SessionId("TestSession-4b87460d-6f43-4c4c-b810-d6f87c774854")),
+      amountInPence        = Some(AmountInPence(1234)),
+      emailTemplateOptions = None,
+      navigation           = Some(NavigationOptions(returnUrl = Url("https://www.return-url.com"), backUrl = Url("https://www.back-to-pta.com"))),
+      order                = None,
+      status               = PaymentStatuses.Created,
+      createdOn            = LocalDateTime.parse("2027-11-02T16:28:55.185"),
+      journeySpecificData  = JsdPtaP800(
+        p800Ref              = P800Ref("MA000003AP8002027"),
+        p800ChargeRef        = None,
+        taxYear              = TaxYear(2027),
+        defaultAmountInPence = AmountInPence(1234)
+      ),
+      chosenWayToPay       = None
+    )
+    val journeyWithP800ChargeRefBeforeBeginWebPayment: Journey[JsdPtaP800] = Journey[JsdPtaP800](
+      _id                  = JourneyId(TestPayApiData.decryptedJourneyId),
+      sessionId            = Some(SessionId("TestSession-4b87460d-6f43-4c4c-b810-d6f87c774854")),
+      amountInPence        = Some(AmountInPence(1234)),
+      emailTemplateOptions = None,
+      navigation           = Some(NavigationOptions(returnUrl = Url("https://www.return-url.com"), backUrl = Url("https://www.back-to-pta.com"))),
+      order                = None,
+      status               = PaymentStatuses.Created,
+      createdOn            = LocalDateTime.parse("2027-11-02T16:28:55.185"),
+      journeySpecificData  = JsdPtaP800(
+        p800Ref              = P800Ref("MA000003AP8002027"),
+        p800ChargeRef        = Some(P800ChargeRef("BC007010065114")),
+        taxYear              = TaxYear(2027),
+        defaultAmountInPence = AmountInPence(1234)
+      ),
+      chosenWayToPay       = None
+    )
+  }
+
+  object PfSimpleAssessment extends JourneyStatuses[JsdPfSimpleAssessment] {
+    val journeyBeforeBeginWebPayment: Journey[JsdPfSimpleAssessment] = Journey[JsdPfSimpleAssessment](
+      _id                  = JourneyId(TestPayApiData.decryptedJourneyId),
+      sessionId            = Some(SessionId("TestSession-4b87460d-6f43-4c4c-b810-d6f87c774854")),
+      amountInPence        = Some(AmountInPence(1234)),
+      emailTemplateOptions = None,
+      navigation           = None,
+      order                = None,
+      status               = PaymentStatuses.Created,
+      createdOn            = LocalDateTime.parse("2027-11-02T16:28:55.185"),
+      journeySpecificData  = JsdPfSimpleAssessment(
+        simpleAssessmentReference = Some(XRef14Char("XE123456789012"))
+      ),
+      chosenWayToPay       = None
+    )
+  }
+
+  object PtaSimpleAssessment extends JourneyStatuses[JsdPtaSimpleAssessment] {
+    val journeyBeforeBeginWebPayment: Journey[JsdPtaSimpleAssessment] = Journey[JsdPtaSimpleAssessment](
+      _id                  = JourneyId(TestPayApiData.decryptedJourneyId),
+      sessionId            = Some(SessionId("TestSession-4b87460d-6f43-4c4c-b810-d6f87c774854")),
+      amountInPence        = Some(AmountInPence(1234)),
+      emailTemplateOptions = None,
+      navigation           = Some(NavigationOptions(returnUrl = Url("https://www.return-url.com"), backUrl = Url("https://www.back-to-pta.com"))),
+      order                = None,
+      status               = PaymentStatuses.Created,
+      createdOn            = LocalDateTime.parse("2027-11-02T16:28:55.185"),
+      journeySpecificData  = JsdPtaSimpleAssessment(
+        p302Ref              = P302Ref("MA000003AP3022027"),
+        p302ChargeRef        = P302ChargeRef("BC007010065114"),
+        taxYear              = TaxYear(2027),
+        defaultAmountInPence = AmountInPence(1234),
+        dueDate              = Some(LocalDate.of(2028, 12, 12))
       ),
       chosenWayToPay       = None
     )
