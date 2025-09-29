@@ -82,7 +82,6 @@ class ExternalNavigationSpec extends UnitSpec with TableDrivenPropertyChecks {
       (TestJourneys.CapitalGainsTax, someUrl),
       (TestJourneys.EconomicCrimeLevy, someUrl),
       (TestJourneys.BtaSdil, someUrl),
-      (TestJourneys.EconomicCrimeLevy, someUrl),
       (TestJourneys.PfP800, someUrl),
       (TestJourneys.PtaP800, someUrl),
       (TestJourneys.PtaSimpleAssessment, someUrl)

@@ -22,9 +22,8 @@ import payapi.corcommon.model.cgt.CgtAccountReference
 import payapi.corcommon.model.taxes.ad.{AlcoholDutyChargeReference, AlcoholDutyReference}
 import payapi.corcommon.model.taxes.amls.AmlsPaymentReference
 import payapi.corcommon.model.taxes.ct.{CtChargeTypes, CtPeriod, CtUtr}
-import payapi.corcommon.model.taxes.epaye.{AccountsOfficeReference, EpayePenaltyReference, MonthlyEpayeTaxPeriod, PsaNumber, QuarterlyEpayeTaxPeriod, WcClass1aNiReference, YearlyEpayeTaxPeriod}
-import payapi.corcommon.model.taxes.other.{EconomicCrimeLevyReturnNumber, SoftDrinksIndustryLevyRef, XRef, XRef14Char, YRef}
-import payapi.corcommon.model.taxes.other.{EconomicCrimeLevyReturnNumber, XRef, XRef14Char, YRef}
+import payapi.corcommon.model.taxes.epaye._
+import payapi.corcommon.model.taxes.other._
 import payapi.corcommon.model.taxes.p302.{P302ChargeRef, P302Ref}
 import payapi.corcommon.model.taxes.ppt.PptReference
 import payapi.corcommon.model.taxes.sa.SaUtr
