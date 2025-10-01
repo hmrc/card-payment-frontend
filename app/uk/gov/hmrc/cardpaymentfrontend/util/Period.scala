@@ -18,9 +18,9 @@ package uk.gov.hmrc.cardpaymentfrontend.util
 
 import payapi.corcommon.model.taxes.epaye.{FixedLengthEpayeTaxPeriod, MonthlyEpayeTaxPeriod, QuarterlyEpayeTaxPeriod, YearlyEpayeTaxPeriod}
 import payapi.corcommon.model.taxes.vat.CalendarPeriod
-import payapi.corcommon.model.times.period.CalendarQuarter
 import payapi.corcommon.model.times.period.CalendarQuarter.{AprilToJune, JanuaryToMarch, JulyToSeptember, OctoberToDecember}
-import play.api.i18n.Lang
+import payapi.corcommon.model.times.period.CalendarQuarterlyPeriod
+import play.api.i18n.{Lang, Messages}
 
 object Period {
 
@@ -61,43 +61,29 @@ object Period {
 
   }
 
-  def displayCalendarQuarter(quarter: CalendarQuarter): String = quarter match {
-    case JanuaryToMarch =>
-
-
-      english = "January 1 to March 31",
-      welsh   = "Ionawr 1 i Mawrth 31"
-    case AprilToJune => Message(
-      english = "April 1 to June 30",
-      welsh   = "Ebrill 1 i Mehefin 30"
-    )
-    case JulyToSeptember => Message(
-      english = "July 1 to September 30",
-      welsh   = "Gorffenn 1 i Medi 30"
-    )
-    case OctoberToDecember => Message(
-      english = "October 1 to December 31",
-      welsh   = "Hydref 1 i Rhagfyr 31"
-    )
+  def displayCalendarQuarter(period: CalendarQuarterlyPeriod): String = period.quarter match {
+    case JanuaryToMarch    => "period.calendar-quarterly.january-to-march" + period.year
+    case AprilToJune       => "period.calendar-quarterly.april-to-june" + period.year
+    case JulyToSeptember   => "period.calendar-quarterly.july-to-september" + period.year
+    case OctoberToDecember => "period.calendar-quarterly.october-to-december" + period.year
   }
 
   def displayCalendarPeriodMonth(period: CalendarPeriod): String = {
-    val month = period.month - 1
-    val monthNames: Seq[String] = Seq(
-      "January",
-      "February",
-      "March",
-      "April",
-      "May",
-      "June",
-      "July",
-      "August",
-      "September",
-      "October",
-      "November",
-      "December"
-    )
-    if (period.month >= 1 && period.month <= 12) monthNames(month) else ""
+    period.month match {
+      case 1  => "period.calendar-month.january" + period.year
+      case 2  => "period.calendar-month.february" + period.year
+      case 3  => "period.calendar-month.march" + period.year
+      case 4  => "period.calendar-month.april" + period.year
+      case 5  => "period.calendar-month.may" + period.year
+      case 6  => "period.calendar-month.june" + period.year
+      case 7  => "period.calendar-month.july" + period.year
+      case 8  => "period.calendar-month.august" + period.year
+      case 9  => "period.calendar-month.september" + period.year
+      case 10 => "period.calendar-month.october" + period.year
+      case 11 => "period.calendar-month.november" + period.year
+      case 12 => "period.calendar-month.december" + period.year
+      case _  => "NO MONTH THAT MATCHES"
+    }
   }
 
 }
