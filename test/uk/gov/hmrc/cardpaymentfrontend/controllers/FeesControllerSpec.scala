@@ -2913,6 +2913,198 @@ class FeesControllerSpec extends ItSpec {
         }
       }
 
+      "for origin NiEuVatOss" - {
+
+        "render the static content correctly" in {
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.NiEuVatOss.journeyBeforeBeginWebPayment)
+          val result = systemUnderTest.renderPage(fakeRequest)
+          val document = Jsoup.parse(contentAsString(result))
+          document.select(".govuk-header__service-name").html shouldBe "Submit a One Stop Shop VAT return and pay VAT"
+          testStaticContentEnglish(document)
+        }
+
+        "render two options for other ways to pay" in {
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.NiEuVatOss.journeyBeforeBeginWebPayment)
+          val result = systemUnderTest.renderPage(fakeRequest)
+          val document = Jsoup.parse(contentAsString(result))
+          val listOfMethods = document.select("#payment-type-list").select("li")
+          listOfMethods.size() shouldBe 2
+        }
+
+        "render an option for open banking" in {
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.NiEuVatOss.journeyBeforeBeginWebPayment)
+          val result = systemUnderTest.renderPage(fakeRequest)
+          val document = Jsoup.parse(contentAsString(result))
+          val listOfMethods = document.select("#payment-type-list").select("li")
+          val openBankingBullet = listOfMethods.select("#open-banking-link")
+          openBankingBullet.text() shouldBe "bank account"
+          openBankingBullet.attr("href") shouldBe "/pay-by-card/start-open-banking"
+        }
+
+        "not render an option for one off direct debit" in {
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.NiEuVatOss.journeyBeforeBeginWebPayment)
+          val result = systemUnderTest.renderPage(fakeRequest)
+          val document = Jsoup.parse(contentAsString(result))
+          val listOfMethods = document.select("#payment-type-list").select("li")
+          val oneOffDirectDebitBullet = listOfMethods.select("#one-off-direct-debit-link")
+          oneOffDirectDebitBullet.size shouldBe 0
+        }
+
+        "render an option for personal debit card" in {
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.NiEuVatOss.journeyBeforeBeginWebPayment)
+          val result = systemUnderTest.renderPage(fakeRequest)
+          val document = Jsoup.parse(contentAsString(result))
+          val listOfMethods = document.select("#payment-type-list").select("li")
+          val cardBullet = listOfMethods.select("#personal-debit-card")
+          cardBullet.text() shouldBe "personal debit card"
+        }
+
+      }
+
+      "for origin PfNiEuVatOss" - {
+
+        "render the static content correctly" in {
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfNiEuVatOss.journeyBeforeBeginWebPayment)
+          val result = systemUnderTest.renderPage(fakeRequest)
+          val document = Jsoup.parse(contentAsString(result))
+          document.select(".govuk-header__service-name").html shouldBe "Submit a One Stop Shop VAT return and pay VAT"
+          testStaticContentEnglish(document)
+        }
+
+        "render two options for other ways to pay" in {
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfNiEuVatOss.journeyBeforeBeginWebPayment)
+          val result = systemUnderTest.renderPage(fakeRequest)
+          val document = Jsoup.parse(contentAsString(result))
+          val listOfMethods = document.select("#payment-type-list").select("li")
+          listOfMethods.size() shouldBe 2
+        }
+
+        "render an option for open banking" in {
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfNiEuVatOss.journeyBeforeBeginWebPayment)
+          val result = systemUnderTest.renderPage(fakeRequest)
+          val document = Jsoup.parse(contentAsString(result))
+          val listOfMethods = document.select("#payment-type-list").select("li")
+          val openBankingBullet = listOfMethods.select("#open-banking-link")
+          openBankingBullet.text() shouldBe "bank account"
+          openBankingBullet.attr("href") shouldBe "/pay-by-card/start-open-banking"
+        }
+
+        "not render an option for one off direct debit" in {
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfNiEuVatOss.journeyBeforeBeginWebPayment)
+          val result = systemUnderTest.renderPage(fakeRequest)
+          val document = Jsoup.parse(contentAsString(result))
+          val listOfMethods = document.select("#payment-type-list").select("li")
+          val oneOffDirectDebitBullet = listOfMethods.select("#one-off-direct-debit-link")
+          oneOffDirectDebitBullet.size shouldBe 0
+        }
+
+        "render an option for personal debit card" in {
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfNiEuVatOss.journeyBeforeBeginWebPayment)
+          val result = systemUnderTest.renderPage(fakeRequest)
+          val document = Jsoup.parse(contentAsString(result))
+          val listOfMethods = document.select("#payment-type-list").select("li")
+          val cardBullet = listOfMethods.select("#personal-debit-card")
+          cardBullet.text() shouldBe "personal debit card"
+        }
+
+      }
+
+      "for origin NiEuVatIoss" - {
+
+        "render the static content correctly" in {
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.NiEuVatIoss.journeyBeforeBeginWebPayment)
+          val result = systemUnderTest.renderPage(fakeRequest)
+          val document = Jsoup.parse(contentAsString(result))
+          document.select(".govuk-header__service-name").html shouldBe "Submit an Import One Stop Shop VAT return and pay VAT"
+          testStaticContentEnglish(document)
+        }
+
+        "render two options for other ways to pay" in {
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.NiEuVatIoss.journeyBeforeBeginWebPayment)
+          val result = systemUnderTest.renderPage(fakeRequest)
+          val document = Jsoup.parse(contentAsString(result))
+          val listOfMethods = document.select("#payment-type-list").select("li")
+          listOfMethods.size() shouldBe 2
+        }
+
+        "render an option for open banking" in {
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.NiEuVatIoss.journeyBeforeBeginWebPayment)
+          val result = systemUnderTest.renderPage(fakeRequest)
+          val document = Jsoup.parse(contentAsString(result))
+          val listOfMethods = document.select("#payment-type-list").select("li")
+          val openBankingBullet = listOfMethods.select("#open-banking-link")
+          openBankingBullet.text() shouldBe "bank account"
+          openBankingBullet.attr("href") shouldBe "/pay-by-card/start-open-banking"
+        }
+
+        "not render an option for one off direct debit" in {
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.NiEuVatIoss.journeyBeforeBeginWebPayment)
+          val result = systemUnderTest.renderPage(fakeRequest)
+          val document = Jsoup.parse(contentAsString(result))
+          val listOfMethods = document.select("#payment-type-list").select("li")
+          val oneOffDirectDebitBullet = listOfMethods.select("#one-off-direct-debit-link")
+          oneOffDirectDebitBullet.size shouldBe 0
+        }
+
+        "render an option for personal debit card" in {
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.NiEuVatIoss.journeyBeforeBeginWebPayment)
+          val result = systemUnderTest.renderPage(fakeRequest)
+          val document = Jsoup.parse(contentAsString(result))
+          val listOfMethods = document.select("#payment-type-list").select("li")
+          val cardBullet = listOfMethods.select("#personal-debit-card")
+          cardBullet.text() shouldBe "personal debit card"
+        }
+
+      }
+
+      "for origin PfNiEuVatIoss" - {
+
+        "render the static content correctly" in {
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfNiEuVatIoss.journeyBeforeBeginWebPayment)
+          val result = systemUnderTest.renderPage(fakeRequest)
+          val document = Jsoup.parse(contentAsString(result))
+          document.select(".govuk-header__service-name").html shouldBe "Submit an Import One Stop Shop VAT return and pay VAT"
+          testStaticContentEnglish(document)
+        }
+
+        "render two options for other ways to pay" in {
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfNiEuVatIoss.journeyBeforeBeginWebPayment)
+          val result = systemUnderTest.renderPage(fakeRequest)
+          val document = Jsoup.parse(contentAsString(result))
+          val listOfMethods = document.select("#payment-type-list").select("li")
+          listOfMethods.size() shouldBe 2
+        }
+
+        "render an option for open banking" in {
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfNiEuVatIoss.journeyBeforeBeginWebPayment)
+          val result = systemUnderTest.renderPage(fakeRequest)
+          val document = Jsoup.parse(contentAsString(result))
+          val listOfMethods = document.select("#payment-type-list").select("li")
+          val openBankingBullet = listOfMethods.select("#open-banking-link")
+          openBankingBullet.text() shouldBe "bank account"
+          openBankingBullet.attr("href") shouldBe "/pay-by-card/start-open-banking"
+        }
+
+        "not render an option for one off direct debit" in {
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfNiEuVatIoss.journeyBeforeBeginWebPayment)
+          val result = systemUnderTest.renderPage(fakeRequest)
+          val document = Jsoup.parse(contentAsString(result))
+          val listOfMethods = document.select("#payment-type-list").select("li")
+          val oneOffDirectDebitBullet = listOfMethods.select("#one-off-direct-debit-link")
+          oneOffDirectDebitBullet.size shouldBe 0
+        }
+
+        "render an option for personal debit card" in {
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfNiEuVatIoss.journeyBeforeBeginWebPayment)
+          val result = systemUnderTest.renderPage(fakeRequest)
+          val document = Jsoup.parse(contentAsString(result))
+          val listOfMethods = document.select("#payment-type-list").select("li")
+          val cardBullet = listOfMethods.select("#personal-debit-card")
+          cardBullet.text() shouldBe "personal debit card"
+        }
+
+      }
+
     }
 
     "POST /card-fees" - {
@@ -3071,10 +3263,10 @@ class FeesControllerSpec extends ItSpec {
             case Origins.JrsJobRetentionScheme    => Seq(expectedBankTransferLink, expectedOneOffDirectDebitLink)
             case Origins.PfImportedVehicles       => Seq.empty
             case Origins.PfChildBenefitRepayments => Seq(expectedOpenBankingLink)
-            case Origins.NiEuVatOss               => Seq.empty
-            case Origins.PfNiEuVatOss             => Seq.empty
-            case Origins.NiEuVatIoss              => Seq.empty
-            case Origins.PfNiEuVatIoss            => Seq.empty
+            case Origins.NiEuVatOss               => Seq(expectedOpenBankingLink)
+            case Origins.PfNiEuVatOss             => Seq(expectedOpenBankingLink)
+            case Origins.NiEuVatIoss              => Seq(expectedOpenBankingLink)
+            case Origins.PfNiEuVatIoss            => Seq(expectedOpenBankingLink)
             case Origins.PfAmls                   => Seq(expectedOpenBankingLink)
             case Origins.PfAted                   => Seq.empty
             case Origins.PfCdsDeferment           => Seq.empty

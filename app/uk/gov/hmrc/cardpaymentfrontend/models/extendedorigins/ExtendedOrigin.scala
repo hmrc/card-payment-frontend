@@ -209,10 +209,10 @@ object ExtendedOrigin {
       case JrsJobRetentionScheme    => ExtendedJrsJobRetentionScheme
       case PfImportedVehicles       => DefaultExtendedOrigin
       case PfChildBenefitRepayments => ExtendedPfChildBenefitRepayments
-      case NiEuVatOss               => DefaultExtendedOrigin
-      case PfNiEuVatOss             => DefaultExtendedOrigin
-      case NiEuVatIoss              => DefaultExtendedOrigin
-      case PfNiEuVatIoss            => DefaultExtendedOrigin
+      case NiEuVatOss               => ExtendedNiEuVatOss
+      case PfNiEuVatOss             => ExtendedPfNiEuVatOss
+      case NiEuVatIoss              => ExtendedNiEuVatIoss
+      case PfNiEuVatIoss            => ExtendedPfNiEuVatIoss
       case PfAmls                   => ExtendedPfAmls
       case PfAted                   => DefaultExtendedOrigin
       case PfCdsDeferment           => DefaultExtendedOrigin

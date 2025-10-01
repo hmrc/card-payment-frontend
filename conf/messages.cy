@@ -195,7 +195,6 @@ check-your-details.PtaSimpleAssessment.tax-year.value = 6 Ebrill {0} i 5 Ebrill 
 check-your-details.PfJobRetentionScheme.reference = Cyfeirnod y taliad
 check-your-details.JrsJobRetentionScheme.reference = Cyfeirnod y taliad
 
-
 ## Address Page
 address.heading = Cyfeiriad bilio’r cerdyn
 address.line1.hint = Eich cyfeiriad bilio yw’r cyfeiriad y gwnaethoch gofrestru eich cerdyn ag ef.

@@ -26,13 +26,15 @@ import payapi.corcommon.model.taxes.ct.{CtChargeTypes, CtPeriod, CtUtr}
 import payapi.corcommon.model.taxes.epaye._
 import payapi.corcommon.model.taxes.other._
 import payapi.corcommon.model.taxes.p302.{P302ChargeRef, P302Ref}
+import payapi.corcommon.model.taxes.ioss.Ioss
 import payapi.corcommon.model.taxes.ppt.PptReference
 import payapi.corcommon.model.taxes.sa.SaUtr
 import payapi.corcommon.model.taxes.sdlt.Utrn
-import payapi.corcommon.model.taxes.vat.{VatChargeReference, Vrn}
+import payapi.corcommon.model.taxes.vat.{CalendarPeriod, VatChargeReference, Vrn}
 import payapi.corcommon.model.taxes.vatc2c.VatC2cReference
+import payapi.corcommon.model.times.period.CalendarQuarter.OctoberToDecember
 import payapi.corcommon.model.times.period.TaxQuarter.AprilJuly
-import payapi.corcommon.model.times.period.{TaxMonth, TaxYear}
+import payapi.corcommon.model.times.period.{CalendarQuarterlyPeriod, TaxMonth, TaxYear}
 import payapi.corcommon.model.webchat.WcEpayeNiReference
 import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins._
@@ -434,10 +436,38 @@ class OpenBankingOriginSpecificSessionDataSpec extends UnitSpec {
       roundTripJsonTest(osd, testJson)
     }
 
+    "NiEuVatOss" in {
+      val testJson = Json.parse("""{"vrn":"101747641","period":{"quarter":"OctoberToDecember","year":2024},"origin":"NiEuVatOss"}""")
+      val osd = ExtendedNiEuVatOss.openBankingOriginSpecificSessionData(TestJourneys.NiEuVatOss.journeyBeforeBeginWebPayment.journeySpecificData)
+      testOsd(osd, NiEuVatOssSessionData(Vrn("101747641"), CalendarQuarterlyPeriod(OctoberToDecember, 2024)), "NI101747641Q424", "101747641")
+      roundTripJsonTest(osd, testJson)
+    }
+
+    "PfNiEuVatOss" in {
+      val testJson = Json.parse("""{"vrn":"101747641","period":{"quarter":"OctoberToDecember","year":2024},"origin":"PfNiEuVatOss"}""")
+      val osd = ExtendedPfNiEuVatOss.openBankingOriginSpecificSessionData(TestJourneys.PfNiEuVatOss.journeyBeforeBeginWebPayment.journeySpecificData)
+      testOsd(osd, PfNiEuVatOssSessionData(Vrn("101747641"), CalendarQuarterlyPeriod(OctoberToDecember, 2024)), "NI101747641Q424", "101747641")
+      roundTripJsonTest(osd, testJson)
+    }
+
+    "NiEuVatIoss" in {
+      val testJson = Json.parse("""{"ioss":"IM1234567890","period":{"month":6,"year":2024},"origin":"NiEuVatIoss"}""")
+      val osd = ExtendedNiEuVatIoss.openBankingOriginSpecificSessionData(TestJourneys.NiEuVatIoss.journeyBeforeBeginWebPayment.journeySpecificData)
+      testOsd(osd, NiEuVatIossSessionData(Ioss("IM1234567890"), CalendarPeriod(6, 2024)), "IM1234567890M0624", "IM1234567890")
+      roundTripJsonTest(osd, testJson)
+    }
+
+    "PfNiEuVatIoss" in {
+      val testJson = Json.parse("""{"ioss":"IM1234567890","period":{"month":6,"year":2024},"origin":"PfNiEuVatIoss"}""")
+      val osd = ExtendedPfNiEuVatIoss.openBankingOriginSpecificSessionData(TestJourneys.PfNiEuVatIoss.journeyBeforeBeginWebPayment.journeySpecificData)
+      testOsd(osd, PfNiEuVatIossSessionData(Ioss("IM1234567890"), CalendarPeriod(6, 2024)), "IM1234567890M0624", "IM1234567890")
+      roundTripJsonTest(osd, testJson)
+    }
+
   }
 
   "sanity check for implemented origins" in {
-    TestHelpers.implementedOrigins.size shouldBe 52 withClue "** This dummy test is here to remind you to update the tests above. Bump up the expected number when an origin is added to implemented origins **"
+    TestHelpers.implementedOrigins.size shouldBe 56 withClue "** This dummy test is here to remind you to update the tests above. Bump up the expected number when an origin is added to implemented origins **"
   }
 
 }
