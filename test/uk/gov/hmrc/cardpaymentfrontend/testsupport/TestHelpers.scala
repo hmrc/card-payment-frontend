@@ -24,7 +24,8 @@ import uk.gov.hmrc.cardpaymentfrontend.testsupport.testdata.TestJourneys
 
 class TestHelpers extends UnitSpec {
   "all origins should be covered in implemented and unimplemented origins" in {
-    TestHelpers.implementedOrigins ++ TestHelpers.unimplementedOrigins should contain theSameElementsAs Origins.values withClue s"\n\n *** Missing origin from one of the lists: [ ${Origins.values.diff(TestHelpers.implementedOrigins ++ TestHelpers.unimplementedOrigins).mkString(", ")} ]\n\n"
+    TestHelpers.implementedOrigins ++ TestHelpers.unimplementedOrigins should contain theSameElementsAs
+      Origins.values withClue s"\n\n *** Missing origin from one of the lists: [ ${Origins.values.diff(TestHelpers.implementedOrigins ++ TestHelpers.unimplementedOrigins).mkString(", ")} ]\n\n"
   }
 }
 
@@ -80,6 +81,8 @@ object TestHelpers {
     PtaSimpleAssessment,
     PfP800,
     PtaP800,
+    PfJobRetentionScheme,
+    JrsJobRetentionScheme,
   )
 
   val unimplementedOrigins: Seq[Origin] = Seq[Origin](
@@ -110,8 +113,6 @@ object TestHelpers {
     PfClimateChangeLevy,
     AppSimpleAssessment,
     PfTpes,
-    PfJobRetentionScheme,
-    JrsJobRetentionScheme,
     PfImportedVehicles,
     NiEuVatOss,
     PfNiEuVatOss,
@@ -189,8 +190,8 @@ object TestHelpers {
     case Origins.CapitalGainsTax          => TestJourneys.CapitalGainsTax
     case Origins.EconomicCrimeLevy        => TestJourneys.EconomicCrimeLevy
     case Origins.PfEconomicCrimeLevy      => TestJourneys.PfEconomicCrimeLevy
-    case Origins.PfJobRetentionScheme     => throw new MatchError("Not implemented yet")
-    case Origins.JrsJobRetentionScheme    => throw new MatchError("Not implemented yet")
+    case Origins.PfJobRetentionScheme     => TestJourneys.PfJobRetentionScheme
+    case Origins.JrsJobRetentionScheme    => TestJourneys.JrsJobRetentionScheme
     case Origins.PfImportedVehicles       => throw new MatchError("Not implemented yet")
     case Origins.PfChildBenefitRepayments => TestJourneys.PfChildBenefitRepayments
     case Origins.NiEuVatOss               => throw new MatchError("Not implemented yet")
