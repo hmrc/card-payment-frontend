@@ -85,7 +85,7 @@ class ClientIdServiceSpec extends ItSpec {
         (TestJourneys.NiEuVatOss.journeyBeforeBeginWebPayment, ClientIds.OSEE),
         (TestJourneys.PfNiEuVatOss.journeyBeforeBeginWebPayment, ClientIds.OSEE),
         (TestJourneys.NiEuVatIoss.journeyBeforeBeginWebPayment, ClientIds.OSEE),
-        (TestJourneys.PfNiEuVatIoss.journeyBeforeBeginWebPayment, ClientIds.OSEE)
+        (TestJourneys.PfNiEuVatIoss.journeyBeforeBeginWebPayment, ClientIds.OSEE),
         (TestJourneys.PfP800.journeyBeforeBeginWebPayment, ClientIds.ETEE),
         (TestJourneys.PtaP800.journeyBeforeBeginWebPayment, ClientIds.ETEE),
         (TestJourneys.PfSimpleAssessment.journeyBeforeBeginWebPayment, ClientIds.MIEE),
@@ -150,7 +150,7 @@ class ClientIdServiceSpec extends ItSpec {
         (TestJourneys.NiEuVatOss.journeyBeforeBeginWebPayment, ClientIds.OSEE),
         (TestJourneys.PfNiEuVatOss.journeyBeforeBeginWebPayment, ClientIds.OSEE),
         (TestJourneys.NiEuVatIoss.journeyBeforeBeginWebPayment, ClientIds.OSEE),
-        (TestJourneys.PfNiEuVatIoss.journeyBeforeBeginWebPayment, ClientIds.OSEE)
+        (TestJourneys.PfNiEuVatIoss.journeyBeforeBeginWebPayment, ClientIds.OSEE),
         (TestJourneys.PfP800.journeyBeforeBeginWebPayment, ClientIds.ETEC),
         (TestJourneys.PtaP800.journeyBeforeBeginWebPayment, ClientIds.ETEC),
         (TestJourneys.PfSimpleAssessment.journeyBeforeBeginWebPayment, ClientIds.MIEC),
@@ -165,7 +165,7 @@ class ClientIdServiceSpec extends ItSpec {
   }
 
   "sanity check for implemented origins" in {
-    TestHelpers.implementedOrigins.size shouldBe 50 withClue "** This dummy test is here to remind you to update the tests above. Bump up the expected number when an origin is added to implemented origins **"
+    TestHelpers.implementedOrigins.size shouldBe 53 withClue "** This dummy test is here to remind you to update the tests above. Bump up the expected number when an origin is added to implemented origins **"
   }
 
 }

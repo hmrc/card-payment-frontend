@@ -282,7 +282,7 @@ class EmailServiceSpec extends ItSpec with TableDrivenPropertyChecks {
       (PtaSimpleAssessment, "Simple Assessment", "ending with 22027", None, Some("12.34"), "en"),
       (PtaSimpleAssessment, "Simple Assessment", "ending with 22027", commission, Some("13.57"), "en"),
       (PtaSimpleAssessment, "Asesiad Syml", "yn gorffen gyda 22027", None, Some("12.34"), "cy"),
-      (PtaSimpleAssessment, "Asesiad Syml", "yn gorffen gyda 22027", commission, Some("13.57"), "cy")
+      (PtaSimpleAssessment, "Asesiad Syml", "yn gorffen gyda 22027", commission, Some("13.57"), "cy"),
 
       (NiEuVatOss, "VAT One Stop Shop Union scheme", "ending with 1Q424", None, Some("12.34"), "en"),
       (NiEuVatOss, "VAT One Stop Shop Union scheme", "ending with 1Q424", commission, Some("13.57"), "en"),
@@ -329,7 +329,7 @@ class EmailServiceSpec extends ItSpec with TableDrivenPropertyChecks {
         messages.isDefinedAt(msgKey)(Lang("en")) shouldBe true withClue s"email.tax-name message key missing for origin: ${origin.entryName}"
         //Check if the message is different in both languages, if they are the same the message is not in both files
         // for PfP800 and PtaP800, the english can be the same as welsh...
-        if (origin =!= Origins.PfP800 && origin =!= Origins.PtaP800) {
+        if (origin =!= Origins.PfP800 && origin =!= Origins.PtaP800 && origin =!= Origins.NiEuVatOss && origin =!= Origins.PfNiEuVatOss && origin =!= Origins.NiEuVatIoss && origin =!= Origins.PfNiEuVatIoss) {
           messages.preferred(Seq(Lang("en")))(msgKey) should not be messages.preferred(Seq(Lang("cy")))(msgKey)
         }
       }
