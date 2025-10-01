@@ -17,7 +17,7 @@
 package uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins
 
 import payapi.cardpaymentjourney.model.journey.{JourneySpecificData, JsdNiEuVatIoss}
-import play.api.i18n.Lang
+import play.api.i18n.Messages
 import play.api.mvc.AnyContent
 import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
 import uk.gov.hmrc.cardpaymentfrontend.models.PaymentMethod._
@@ -42,14 +42,13 @@ object ExtendedNiEuVatIoss extends ExtendedOrigin {
     }
   }
 
-  override def checkYourAnswersAdditionalReferenceRow(journeyRequest: JourneyRequest[AnyContent])
-    (payFrontendBaseUrl: String)(implicit lang: Lang): Option[CheckYourAnswersRow] = {
+  override def checkYourAnswersAdditionalReferenceRow(journeyRequest: JourneyRequest[AnyContent])(payFrontendBaseUrl: String)(implicit messages: Messages): Option[Seq[CheckYourAnswersRow]] = {
     val period = journeyRequest.journey.journeySpecificData.asInstanceOf[JsdNiEuVatIoss].period
-    Some(CheckYourAnswersRow(
+    Some(Seq(CheckYourAnswersRow(
       titleMessageKey = "check-your-details.NiEuVatIoss.tax-year",
       value           = Seq(displayCalendarPeriodMonth(period)),
       changeLink      = None
-    ))
+    )))
   }
 
   override def openBankingOriginSpecificSessionData: JourneySpecificData => Option[OriginSpecificSessionData] = {
@@ -57,11 +56,12 @@ object ExtendedNiEuVatIoss extends ExtendedOrigin {
     case _                 => throw new RuntimeException("Incorrect origin found")
   }
 
-  override def emailTaxTypeMessageKey: String = "email.tax-name.NiEuVatIoss"
-
   override def surveyAuditName: String = "vat"
   override def surveyReturnHref: String = "https://www.gov.uk/government/organisations/hm-revenue-customs"
   override def surveyReturnMessageKey: String = "payments-survey.other.return-message"
   override def surveyIsWelshSupported: Boolean = false
   override def surveyBannerTitle: String = serviceNameMessageKey
+
+  override def emailTaxTypeMessageKey: String = "email.tax-name.NiEuVatIoss"
+
 }

@@ -17,7 +17,7 @@
 package uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins
 
 import payapi.cardpaymentjourney.model.journey.{JourneySpecificData, JsdPfNiEuVatOss}
-import play.api.i18n.Lang
+import play.api.i18n.Messages
 import play.api.mvc.{AnyContent, Call}
 import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
 import uk.gov.hmrc.cardpaymentfrontend.models.PaymentMethod._
@@ -46,16 +46,15 @@ object ExtendedPfNiEuVatOss extends ExtendedOrigin {
     }
   }
 
-  override def checkYourAnswersAdditionalReferenceRow(journeyRequest: JourneyRequest[AnyContent])
-    (payFrontendBaseUrl: String)(implicit lang: Lang): Option[CheckYourAnswersRow] = {
+  override def checkYourAnswersAdditionalReferenceRow(journeyRequest: JourneyRequest[AnyContent])(payFrontendBaseUrl: String)(implicit messages: Messages): Option[Seq[CheckYourAnswersRow]] = {
     journeyRequest.journey.journeySpecificData match {
       case jsd: JsdPfNiEuVatOss =>
         jsd.period.map { period =>
-          CheckYourAnswersRow(
+          Seq(CheckYourAnswersRow(
             titleMessageKey = "check-your-details.PfNiEuVatOss.tax-year",
             value           = Seq(displayCalendarQuarter(period)),
             changeLink      = None
-          )
+          ))
         }
       case _ => None
     }
@@ -71,11 +70,12 @@ object ExtendedPfNiEuVatOss extends ExtendedOrigin {
       throw new RuntimeException("Incorrect origin found")
   }
 
-  override def emailTaxTypeMessageKey: String = "email.tax-name.PfNiEuVatOss"
-
   override def surveyAuditName: String = "vat"
   override def surveyReturnHref: String = "https://www.gov.uk/government/organisations/hm-revenue-customs"
   override def surveyReturnMessageKey: String = "payments-survey.other.return-message"
   override def surveyIsWelshSupported: Boolean = false
   override def surveyBannerTitle: String = serviceNameMessageKey
+
+  override def emailTaxTypeMessageKey: String = "email.tax-name.PfNiEuVatOss"
+
 }

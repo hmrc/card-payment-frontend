@@ -250,25 +250,6 @@ date.day-month-year.october = {0} October {1}
 date.day-month-year.november = {0} November {1}
 date.day-month-year.december = {0} December {1}
 
-## NiEuVatOss and NieuVatIoss period messages
-period.calendar-quarterly.january-to-march = January 1 to March 31 {0}
-period.calendar-quarterly.april-to-june = April 1 to June 31 {0}
-period.calendar-quarterly.july-to-september = July 1 to September 31 {0}
-period.calendar-quarterly.october-to-december = October 1 to December 31 {0}
-
-period.calendar-month.january = January {0}
-period.calendar-month.february = February {0}
-period.calendar-month.march = March {0}
-period.calendar-month.april = April {0}
-period.calendar-month.may = May {0}
-period.calendar-month.june = June {0}
-period.calendar-month.july = July {0}
-period.calendar-month.august = August {0}
-period.calendar-month.september = September {0}
-period.calendar-month.october = October {0}
-period.calendar-month.november = November {0}
-period.calendar-month.december = December {0}
-
 ## iframe container page
 iframe.heading = Make your payment
 

@@ -20,7 +20,7 @@ import payapi.corcommon.model.taxes.epaye.{FixedLengthEpayeTaxPeriod, MonthlyEpa
 import payapi.corcommon.model.taxes.vat.CalendarPeriod
 import payapi.corcommon.model.times.period.CalendarQuarter.{AprilToJune, JanuaryToMarch, JulyToSeptember, OctoberToDecember}
 import payapi.corcommon.model.times.period.CalendarQuarterlyPeriod
-import play.api.i18n.{Lang, Messages}
+import play.api.i18n.Lang
 
 object Period {
 
@@ -61,27 +61,30 @@ object Period {
 
   }
 
+  // Message keys not needed as no Welsh required for these particular origins - NiEuVat
   def displayCalendarQuarter(period: CalendarQuarterlyPeriod): String = period.quarter match {
-    case JanuaryToMarch    => "period.calendar-quarterly.january-to-march" + period.year
-    case AprilToJune       => "period.calendar-quarterly.april-to-june" + period.year
-    case JulyToSeptember   => "period.calendar-quarterly.july-to-september" + period.year
-    case OctoberToDecember => "period.calendar-quarterly.october-to-december" + period.year
+    case JanuaryToMarch    => "January to March " + period.year.toString
+    case AprilToJune       => "April to June " + period.year.toString
+    case JulyToSeptember   => "July to September " + period.year.toString
+    case OctoberToDecember => "October to December " + period.year.toString
   }
 
+  // Message keys not needed as no Welsh required for these particular origins - NiEuVat
   def displayCalendarPeriodMonth(period: CalendarPeriod): String = {
+    val yearStr = period.year.toString
     period.month match {
-      case 1  => "period.calendar-month.january" + period.year
-      case 2  => "period.calendar-month.february" + period.year
-      case 3  => "period.calendar-month.march" + period.year
-      case 4  => "period.calendar-month.april" + period.year
-      case 5  => "period.calendar-month.may" + period.year
-      case 6  => "period.calendar-month.june" + period.year
-      case 7  => "period.calendar-month.july" + period.year
-      case 8  => "period.calendar-month.august" + period.year
-      case 9  => "period.calendar-month.september" + period.year
-      case 10 => "period.calendar-month.october" + period.year
-      case 11 => "period.calendar-month.november" + period.year
-      case 12 => "period.calendar-month.december" + period.year
+      case 1  => "January " + yearStr
+      case 2  => "February " + yearStr
+      case 3  => "March " + yearStr
+      case 4  => "April " + yearStr
+      case 5  => "May " + yearStr
+      case 6  => "June " + yearStr
+      case 7  => "July " + yearStr
+      case 8  => "August " + yearStr
+      case 9  => "September " + yearStr
+      case 10 => "October " + yearStr
+      case 11 => "November " + yearStr
+      case 12 => "December " + yearStr
       case _  => "NO MONTH THAT MATCHES"
     }
   }
