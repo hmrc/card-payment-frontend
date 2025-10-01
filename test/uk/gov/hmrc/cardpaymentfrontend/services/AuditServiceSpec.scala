@@ -39,7 +39,7 @@ class AuditServiceSpec extends ItSpec {
     val testAddress: Address = Address(
       line1    = "made up street",
       line2    = Some("made up line 2"),
-      postcode = "AA11AA",
+      postcode = Some("AA11AA"),
       country  = "GBR",
       city     = Some("made up city"),
       county   = Some("East sussex")

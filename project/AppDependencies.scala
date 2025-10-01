@@ -4,8 +4,7 @@ import sbt.*
 object AppDependencies {
 
   private val payApiCorVersion = "1.273.0"
-  // Do not change this from 9.14.0 as later versions cause issues with the service.
-  private val bootstrapVersion = "9.14.0"
+  private val bootstrapVersion = "10.2.0"
 
   private val payApiExclusionRules: Seq[InclusionRule] = Seq(
     ExclusionRule(organization = "uk.gov.hmrc", name = "bootstrap-backend-play-29_2.13"),
@@ -15,11 +14,11 @@ object AppDependencies {
   )
 
   val compile: Seq[ModuleID] = Seq[ModuleID](
-    "uk.gov.hmrc"  %% "bootstrap-frontend-play-30"       % bootstrapVersion,
-    "uk.gov.hmrc"  %% "play-frontend-hmrc-play-30"       % "12.16.0",
-    "com.beachape" %% "enumeratum"                       % "1.9.0",
-    "com.beachape" %% "enumeratum-play"                  % "1.9.0",
-    "uk.gov.hmrc"  %% "pay-api-cor-card-payment-journey" % payApiCorVersion excludeAll(payApiExclusionRules *)
+    "uk.gov.hmrc"  %% "bootstrap-frontend-play-30"            % bootstrapVersion,
+    "uk.gov.hmrc"  %% "play-frontend-hmrc-play-30"            % "12.17.0",
+    "uk.gov.hmrc"  %% "pay-api-cor-card-payment-journey"      % payApiCorVersion excludeAll(payApiExclusionRules *),
+    "com.beachape" %% "enumeratum"                            % "1.9.0",
+    "com.beachape" %% "enumeratum-play"                       % "1.9.0"
   )
 
   val test: Seq[ModuleID] = Seq[ModuleID](

@@ -17,6 +17,7 @@
 package uk.gov.hmrc.cardpaymentfrontend.models.cardpayment
 
 import play.api.libs.json.{Format, Json}
+import uk.gov.hmrc.cardpaymentfrontend.util.SafeEquals.EqualsOps
 
 //barclaycard want field names in a specific way, so we have another case class for it to send to the backend
 final case class BarclaycardAddress(
@@ -24,9 +25,17 @@ final case class BarclaycardAddress(
     line2:       Option[String] = None,
     city:        Option[String] = None,
     county:      Option[String] = None,
-    postCode:    String,
+    postCode:    Option[String] = None,
     countryCode: String
 ) {
+
+  require(
+    requirement = {
+      if (countryCode === "GBR") postCode.isDefined
+      else true
+    },
+    message     = "If country code is GBR (United Kingdom) we expect a postcode to be defined."
+  )
 
   def hasSelect(maybeString: Option[String]): Boolean = {
     maybeString match {

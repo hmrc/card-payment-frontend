@@ -16,77 +16,106 @@
 
 package uk.gov.hmrc.cardpaymentfrontend.forms
 
-import play.api.data.Forms.{mapping, of, optional, text}
+import play.api.data.Forms.{mapping, text}
 import play.api.data.format.Formatter
-import play.api.data.validation.Constraints.maxLength
-import play.api.data.validation.{Constraint, Invalid, Valid, ValidationError}
-import play.api.data.{Form, FormError}
+import play.api.data.validation.Constraints.pattern
+import play.api.data.{Form, FormError, Forms}
 import uk.gov.hmrc.cardpaymentfrontend.models.Address
+import uk.gov.hmrc.cardpaymentfrontend.util.SafeEquals.EqualsOps
 
 import scala.util.matching.Regex
 
 object AddressForm {
 
-  val addressKey: String = "address"
-
-  private[forms] val ukPostcodeRegex: Regex = "([Gg][Ii][Rr] 0[Aa]{2})|((([A-Za-z][0-9]{1,2})|(([A-Za-z][A-Ha-hJ-Yj-y][0-9]{1,2})|(([A-Za-z][0-9][A-Za-z])|([A-Za-z][A-Ha-hJ-Yj-y][0-9]?[A-Za-z]))))\\s?[0-9][A-Za-z]{2})".r
+  private[forms] val addressLineRegex: Regex = "^[A-Za-z0-9_ \"!@#$&',*+/=()^.-]{1,100}$".r
+  private[forms] val addressCityAndCountyRegex: Regex = "^[A-Za-z0-9_ \"!@#$&',*+/=()^.-]{1,50}$".r
+  private[forms] val addressUkPostcodeRegex: Regex = "([Gg][Ii][Rr] 0[Aa]{2})|((([A-Za-z][0-9]{1,2})|(([A-Za-z][A-Ha-hJ-Yj-y][0-9]{1,2})|(([A-Za-z][0-9][A-Za-z])|([A-Za-z][A-Ha-hJ-Yj-y][0-9]?[A-Za-z]))))\\s?[0-9][A-Za-z]{2})".r
+  private[forms] val addressBarclaycardPostcodeRegex: Regex = "^[A-Za-z0-9_ \"!@#$&',*+/=()^.-]{1,16}$".r
+  private[forms] val addressCountryRegex: Regex = "^[A-Z]{3}$".r
 
   def form(): Form[Address] = Form(
     mapping(
+      "line1" -> Forms.of(line1Formatter),
+      "line2" -> Forms.of(line2Formatter),
+      "city" -> Forms.of(cityAndCountyFormatter("city")),
+      "county" -> Forms.of(cityAndCountyFormatter("county")),
+      "postcode" -> Forms.of(postcodeFormatter),
+      "country" -> text.verifying(pattern(addressCountryRegex, error = "address.field-name.error.country.invalid-character"))
 
-      "line1" -> text.transform[String](_.trim, identity).verifying("address.field-name.error.invalid.line1", s => s.nonEmpty)
-        .verifying(maxLength(50))
-        .verifying(emojiConstraint("line1", "address.field-name.error.invalid.char")),
-      "line2" -> optional(text.transform[String](_.trim, identity)
-        .verifying(maxLength(50))
-        .verifying(emojiConstraint("line2", "address.field-name.error.invalid.char"))),
-      "city" -> optional(text.transform[String](_.trim, identity)
-        .verifying(maxLength(60))
-        .verifying(emojiConstraint("city", "address.field-name.error.invalid.char"))),
-      "county" -> optional(text.transform[String](_.trim, identity)
-        .verifying(maxLength(60))
-        .verifying(emojiConstraint("county", "address.field-name.error.invalid.char"))),
-      "postcode" -> of(postcodeFormatter),
-      "country" -> text.verifying(countryConstraint)
     )(Address.apply)(Address.unapply)
   )
 
-  def emojiConstraint(name: String, error: String): Constraint[String] = Constraint[String](name) { o =>
-
-    if (containsEmoji(o)) Invalid(ValidationError(error))
-    else Valid
-
-  }
-
-  def containsEmoji(valueToCheck: String): Boolean = {
-
-    val regex: String = "[^\\p{L}\\p{N}\\p{P}\\p{Z}\\p{M}\\£$^<>|]"
-    val replaced: String = valueToCheck.replaceAll(regex, "")
-    if (replaced.matches(valueToCheck)) false else true
-
-  }
-
-  def countryConstraint: Constraint[String] = Constraint[String]("constraint.country") { o =>
-    if (o.isBlank) Invalid(ValidationError("address.field-name.error.required.country")) else if (o.trim.isEmpty) Invalid(ValidationError("address.field-name.error.required.country")) else Valid
-  }
-
-  val postcodeFormatter: Formatter[String] = new Formatter[String] {
-
+  private def line1Formatter: Formatter[String] = new Formatter[String] {
     override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], String] = {
+      val line1Key = "line1"
+      val line1: String = data(line1Key)
 
-      // for accessibility, we need to allow users to enter spaces anywhere in postcode, we strip them to assert the postcode matches the regex, then use what the user entered.
-      val postcode: String = data("postcode").filterNot(_.isWhitespace)
-      val selectedCountryIsGBR: Boolean = data("country").matches("GBR")
-      if (selectedCountryIsGBR && postcode.isEmpty)
-        Left(Seq(FormError("postcode", "address.field-name.error.empty.postcode")))
-      else if (selectedCountryIsGBR && !postcode.matches(ukPostcodeRegex.regex))
-        Left(Seq(FormError("postcode", "address.field-name.error.invalid.postcode")))
+      if (line1.isBlank)
+        Left(Seq(FormError(line1Key, "address.field-name.error.line1.empty")))
+      else if (line1.length > 100)
+        Left(Seq(FormError(line1Key, "address.field-name.error.line1.max-length")))
+      else if (!line1.matches(addressLineRegex.regex))
+        Left(Seq(FormError(line1Key, "address.field-name.error.line1.invalid-character")))
       else
-        Right(postcode)
+        Right(line1)
+    }
+    override def unbind(key: String, value: String): Map[String, String] = Map(key -> value)
+  }
+
+  private def line2Formatter: Formatter[Option[String]] = new Formatter[Option[String]] {
+    override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], Option[String]] = {
+      val line2Key: String = "line2"
+      val maybeLine2: Option[String] = data.get(line2Key)
+
+      maybeLine2.fold[Either[Seq[FormError], Option[String]]](Right(None)) { line2 =>
+        if (line2.length > 100)
+          Left(Seq(FormError(line2Key, "address.field-name.error.line2.max-length")))
+        else if (line2.forall(_.isWhitespace))
+          Right(Some(line2))
+        else if (!line2.matches(addressLineRegex.regex))
+          Left(Seq(FormError(line2Key, "address.field-name.error.line2.invalid-character")))
+        else
+          Right(Some(line2))
+      }
     }
 
-    override def unbind(key: String, value: String): Map[String, String] = Map(key -> value)
-
+    override def unbind(key: String, value: Option[String]): Map[String, String] = Map(key -> value.getOrElse(""))
   }
 
+  private def cityAndCountyFormatter(formKey: String): Formatter[Option[String]] = new Formatter[Option[String]] {
+    override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], Option[String]] = {
+      val maybeFormData: Option[String] = data.get(formKey)
+
+      maybeFormData.fold[Either[Seq[FormError], Option[String]]](Right(None)) { formData =>
+        if (formData.length > 50)
+          Left(Seq(FormError(formKey, s"address.field-name.error.$formKey.max-length")))
+        else if (formData.forall(_.isWhitespace))
+          Right(Some(formData))
+        else if (!formData.matches(addressCityAndCountyRegex.regex))
+          Left(Seq(FormError(formKey, s"address.field-name.error.$formKey.invalid-character")))
+        else
+          Right(Some(formData))
+      }
+    }
+    override def unbind(key: String, value: Option[String]): Map[String, String] = Map(key -> value.getOrElse(""))
+  }
+
+  private def postcodeFormatter: Formatter[Option[String]] = new Formatter[Option[String]] {
+    override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], Option[String]] = {
+      val postcode: String = data("postcode")
+      val selectedCountryIsGBR: Boolean = data("country") === "GBR"
+
+      if (selectedCountryIsGBR && postcode.forall(_.isWhitespace))
+        Left(Seq(FormError("postcode", "address.field-name.error.postcode.empty")))
+      else if (selectedCountryIsGBR && !postcode.matches(addressUkPostcodeRegex.regex) && !postcode.matches(addressBarclaycardPostcodeRegex.regex))
+        Left(Seq(FormError("postcode", "address.field-name.error.postcode.invalid-character")))
+      else if (!selectedCountryIsGBR && postcode.forall(_.isWhitespace))
+        Right(None)
+      else if (!selectedCountryIsGBR && !postcode.matches(addressBarclaycardPostcodeRegex.regex))
+        Left(Seq(FormError("postcode", "address.field-name.error.postcode.invalid-character")))
+      else
+        Right(Some(postcode))
+    }
+    override def unbind(key: String, value: Option[String]): Map[String, String] = Map(key -> value.getOrElse(""))
+  }
 }

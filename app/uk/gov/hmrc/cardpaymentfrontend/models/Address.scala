@@ -24,7 +24,7 @@ final case class Address(
     line2:    Option[String] = None,
     city:     Option[String] = None,
     county:   Option[String] = None,
-    postcode: String,
+    postcode: Option[String] = None,
     country:  String
 ) {
   def hasSelect(maybeString: Option[String]): Boolean = {

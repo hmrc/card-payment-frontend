@@ -210,14 +210,20 @@ address.country.select.message = Please select…
 address.optional.non.uk.address = (optional for non-UK addresses)
 address.postcode.hint = If you are a non-UK resident, this is optional
 
-address.field-name.error.invalid.line1 = Enter the first line of the billing address
-address.field-name.error.invalid.postcode = Enter your postcode in the correct format
-address.field-name.error.empty.postcode = Enter your postcode
+address.field-name.error.line1.empty = Enter the first line of the billing address
+address.field-name.error.line1.max-length = Enter the first line of your address using no more than 100 characters
+address.field-name.error.line1.invalid-character = Field contains an invalid character
+address.field-name.error.line2.max-length = Enter the second line of your address using no more than 100 characters
+address.field-name.error.line2.invalid-character = Field contains an invalid character
+address.field-name.error.city.max-length = Enter your city using no more than 50 characters
+address.field-name.error.city.invalid-character = Field contains an invalid character
+address.field-name.error.county.max-length = Enter your county using no more than 50 characters
+address.field-name.error.county.invalid-character = Field contains an invalid character
+address.field-name.error.postcode.empty = Enter your postcode
+address.field-name.error.postcode.invalid-character = Enter your postcode in the correct format
 address.field-name.error.required.postcode = Postcode is required
-address.field-name.error.required.country = Select a country
-address.field-name.error.invalid.emailaddress = Enter a valid email address or leave it blank
-address.field-name.error.constraint.emailaddress = Enter a valid email address or leave it blank
-address.field-name.error.invalid.char = Field contains an invalid character
+address.field-name.error.country.invalid-character = Select a country
+
 
 ## Date keys in format dd MMMM yyyy, i.e. 01 January 2024
 date.day-month-year.january = {0} January {1}
