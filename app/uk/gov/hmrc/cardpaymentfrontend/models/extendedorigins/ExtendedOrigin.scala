@@ -111,7 +111,7 @@ trait ExtendedOrigin {
         city <- addressFromSession.map(_.city)
         county <- addressFromSession.map(_.county)
         postcode <- addressFromSession.map(_.postcode)
-      } yield Seq(line1, line2.getOrElse(""), city.getOrElse(""), county.getOrElse(""), postcode)
+      } yield Seq(line1, line2.getOrElse(""), city.getOrElse(""), county.getOrElse(""), postcode.getOrElse(""))
     }.map(_.filter(_.nonEmpty))
 
     addressValues.map { address: Seq[String] =>

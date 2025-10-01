@@ -35,7 +35,7 @@ class CardPaymentConnectorSpec extends ItSpec {
       "should return a CardPaymentInitiatePaymentResponse when card-payment backend returns valid json" in {
         val cardPaymentInitiatePaymentRequest = CardPaymentInitiatePaymentRequest(
           "somereturnurl", "MIEE", "1234567895K", AmountInPence(1234),
-                                                  BarclaycardAddress("teststreet", postCode    = "AA11AA", countryCode = "GBR"),
+                                                  BarclaycardAddress("teststreet", postCode    = Some("AA11AA"), countryCode = "GBR"),
                                                   Some(EmailAddress("test@email.com")), "00081999999999"
         )
         val expectedCardPaymentInitiatePaymentResponse = CardPaymentInitiatePaymentResponse("someiframeurl", "sometransactionref")
@@ -49,7 +49,7 @@ class CardPaymentConnectorSpec extends ItSpec {
       "should throw an exception when card-payment backend returns a 5xx server error" in {
         val cardPaymentInitiatePaymentRequest = CardPaymentInitiatePaymentRequest(
           "somereturnurl", "MIEE", "1234567895", AmountInPence(123),
-                                                 BarclaycardAddress("teststreet", postCode    = "AA11AA", countryCode = "GBR"),
+                                                 BarclaycardAddress("teststreet", postCode    = Some("AA11AA"), countryCode = "GBR"),
                                                  Some(EmailAddress("test@email.com")), "00081999999999"
         )
         CardPaymentStub.InitiatePayment.stubForInitiatePayment5xx()
