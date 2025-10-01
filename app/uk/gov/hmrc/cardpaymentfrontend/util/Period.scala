@@ -17,6 +17,9 @@
 package uk.gov.hmrc.cardpaymentfrontend.util
 
 import payapi.corcommon.model.taxes.epaye.{FixedLengthEpayeTaxPeriod, MonthlyEpayeTaxPeriod, QuarterlyEpayeTaxPeriod, YearlyEpayeTaxPeriod}
+import payapi.corcommon.model.taxes.vat.CalendarPeriod
+import payapi.corcommon.model.times.period.CalendarQuarter
+import payapi.corcommon.model.times.period.CalendarQuarter.{AprilToJune, JanuaryToMarch, JulyToSeptember, OctoberToDecember}
 import play.api.i18n.Lang
 
 object Period {
@@ -55,6 +58,47 @@ object Period {
         }
         DateUtils.getDateRangeAsWelsh(p.taxFrom, p.taxTo) + getQuarterWelsh
     }
+
   }
+
+  def displayCalendarQuarter(quarter: CalendarQuarter): String = quarter match {
+    case JanuaryToMarch =>
+
+
+      english = "January 1 to March 31",
+      welsh   = "Ionawr 1 i Mawrth 31"
+    case AprilToJune => Message(
+      english = "April 1 to June 30",
+      welsh   = "Ebrill 1 i Mehefin 30"
+    )
+    case JulyToSeptember => Message(
+      english = "July 1 to September 30",
+      welsh   = "Gorffenn 1 i Medi 30"
+    )
+    case OctoberToDecember => Message(
+      english = "October 1 to December 31",
+      welsh   = "Hydref 1 i Rhagfyr 31"
+    )
+  }
+
+  def displayCalendarPeriodMonth(period: CalendarPeriod): String = {
+    val month = period.month - 1
+    val monthNames: Seq[String] = Seq(
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December"
+    )
+    if (period.month >= 1 && period.month <= 12) monthNames(month) else ""
+  }
+
 }
 

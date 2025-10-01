@@ -208,10 +208,10 @@ object ExtendedOrigin {
       case Origins.JrsJobRetentionScheme    => DefaultExtendedOrigin
       case Origins.PfImportedVehicles       => DefaultExtendedOrigin
       case Origins.PfChildBenefitRepayments => ExtendedPfChildBenefitRepayments
-      case Origins.NiEuVatOss               => DefaultExtendedOrigin
-      case Origins.PfNiEuVatOss             => DefaultExtendedOrigin
-      case Origins.NiEuVatIoss              => DefaultExtendedOrigin
-      case Origins.PfNiEuVatIoss            => DefaultExtendedOrigin
+      case Origins.NiEuVatOss               => ExtendedNiEuVatOss
+      case Origins.PfNiEuVatOss             => ExtendedPfNiEuVatOss
+      case Origins.NiEuVatIoss              => ExtendedNiEuVatIoss
+      case Origins.PfNiEuVatIoss            => ExtendedPfNiEuVatIoss
       case Origins.PfAmls                   => ExtendedPfAmls
       case Origins.PfAted                   => DefaultExtendedOrigin
       case Origins.PfCdsDeferment           => DefaultExtendedOrigin

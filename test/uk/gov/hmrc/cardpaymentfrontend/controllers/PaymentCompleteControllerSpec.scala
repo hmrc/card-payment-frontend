@@ -290,7 +290,7 @@ class PaymentCompleteControllerSpec extends ItSpec {
         }
 
       "should have a test for all origins below this one" in {
-        TestHelpers.implementedOrigins.size shouldBe 49 withClue "** This dummy test is here to remind you to update the tests below. Bump up the expected number when an origin is added to implemented origins **"
+        TestHelpers.implementedOrigins.size shouldBe 53 withClue "** This dummy test is here to remind you to update the tests below. Bump up the expected number when an origin is added to implemented origins **"
       }
 
       TestHelpers.implementedOrigins.foreach { origin =>
@@ -1969,6 +1969,90 @@ object PaymentCompleteControllerSpec {
         "Cyfanswm a dalwyd" -> "£13.57"
       )),
       hasWelshTest                    = true,
+      hasAReturnUrl                   = false
+    )
+
+    case Origins.NiEuVatOss => TestScenarioInfo(
+      debitCardJourney                = TestJourneys.NiEuVatOss.journeyAfterSucceedDebitWebPayment,
+      creditCardJourney               = TestJourneys.NiEuVatOss.journeyAfterSucceedCreditWebPayment,
+      englishSummaryRowsDebitCard     = List(
+        "Tax" -> "VAT One Stop Shop Union scheme",
+        "Date" -> "2 November 2027",
+        "Amount" -> "£12.34"
+      ),
+      maybeWelshSummaryRowsDebitCard  = None,
+      englishSummaryRowsCreditCard    = List(
+        "Tax" -> "VAT One Stop Shop Union scheme",
+        "Date" -> "2 November 2027",
+        "Amount paid to HMRC" -> "£12.34",
+        "Card fee (9.97%), non-refundable" -> "£1.23",
+        "Total paid" -> "£13.57"
+      ),
+      maybeWelshSummaryRowsCreditCard = None,
+      hasWelshTest                    = false,
+      hasAReturnUrl                   = false
+    )
+
+    case Origins.PfNiEuVatOss => TestScenarioInfo(
+      debitCardJourney                = TestJourneys.PfNiEuVatOss.journeyAfterSucceedDebitWebPayment,
+      creditCardJourney               = TestJourneys.PfNiEuVatOss.journeyAfterSucceedCreditWebPayment,
+      englishSummaryRowsDebitCard     = List(
+        "Tax" -> "VAT One Stop Shop Union scheme",
+        "Date" -> "2 November 2027",
+        "Amount" -> "£12.34"
+      ),
+      maybeWelshSummaryRowsDebitCard  = None,
+      englishSummaryRowsCreditCard    = List(
+        "Tax" -> "VAT One Stop Shop Union scheme",
+        "Date" -> "2 November 2027",
+        "Amount paid to HMRC" -> "£12.34",
+        "Card fee (9.97%), non-refundable" -> "£1.23",
+        "Total paid" -> "£13.57"
+      ),
+      maybeWelshSummaryRowsCreditCard = None,
+      hasWelshTest                    = false,
+      hasAReturnUrl                   = false
+    )
+
+    case Origins.NiEuVatIoss => TestScenarioInfo(
+      debitCardJourney                = TestJourneys.NiEuVatIoss.journeyAfterSucceedDebitWebPayment,
+      creditCardJourney               = TestJourneys.NiEuVatIoss.journeyAfterSucceedCreditWebPayment,
+      englishSummaryRowsDebitCard     = List(
+        "Tax" -> "VAT Import One Stop Shop",
+        "Date" -> "2 November 2027",
+        "Amount" -> "£12.34"
+      ),
+      maybeWelshSummaryRowsDebitCard  = None,
+      englishSummaryRowsCreditCard    = List(
+        "Tax" -> "VAT Import One Stop Shop",
+        "Date" -> "2 November 2027",
+        "Amount paid to HMRC" -> "£12.34",
+        "Card fee (9.97%), non-refundable" -> "£1.23",
+        "Total paid" -> "£13.57"
+      ),
+      maybeWelshSummaryRowsCreditCard = None,
+      hasWelshTest                    = false,
+      hasAReturnUrl                   = false
+    )
+
+    case Origins.PfNiEuVatIoss => TestScenarioInfo(
+      debitCardJourney                = TestJourneys.PfNiEuVatIoss.journeyAfterSucceedDebitWebPayment,
+      creditCardJourney               = TestJourneys.PfNiEuVatIoss.journeyAfterSucceedCreditWebPayment,
+      englishSummaryRowsDebitCard     = List(
+        "Tax" -> "VAT Import One Stop Shop",
+        "Date" -> "2 November 2027",
+        "Amount" -> "£12.34"
+      ),
+      maybeWelshSummaryRowsDebitCard  = None,
+      englishSummaryRowsCreditCard    = List(
+        "Tax" -> "VAT Import One Stop Shop",
+        "Date" -> "2 November 2027",
+        "Amount paid to HMRC" -> "£12.34",
+        "Card fee (9.97%), non-refundable" -> "£1.23",
+        "Total paid" -> "£13.57"
+      ),
+      maybeWelshSummaryRowsCreditCard = None,
+      hasWelshTest                    = false,
       hasAReturnUrl                   = false
     )
 

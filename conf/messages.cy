@@ -193,7 +193,6 @@ check-your-details.PtaSimpleAssessment.charge-reference = Cyfeirnod y tâl
 check-your-details.PtaSimpleAssessment.tax-year = Blwyddyn dreth
 check-your-details.PtaSimpleAssessment.tax-year.value = 6 Ebrill {0} i 5 Ebrill {1}
 
-
 ## Address Page
 address.heading = Cyfeiriad bilio’r cerdyn
 address.line1.hint = Eich cyfeiriad bilio yw’r cyfeiriad y gwnaethoch gofrestru eich cerdyn ag ef.
