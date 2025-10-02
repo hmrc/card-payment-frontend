@@ -17,6 +17,7 @@
 package uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins
 
 import payapi.cardpaymentjourney.model.journey.{JourneySpecificData, JsdPfEpayeP11d}
+import payapi.corcommon.model.taxes.epaye.{AccountsOfficeReference, YearlyEpayeTaxPeriod}
 import play.api.i18n.Messages
 import play.api.mvc.{AnyContent, Call}
 import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
@@ -35,21 +36,28 @@ object ExtendedPfEpayeP11d extends ExtendedOrigin {
 
   override def paymentMethods(): Set[PaymentMethod] = Set(OneOffDirectDebit, OpenBanking, Card)
 
-  override def checkYourAnswersReferenceRow(journeyRequest: JourneyRequest[AnyContent])
-    (payFrontendBaseUrl: String): Option[CheckYourAnswersRow] =
+  override def checkYourAnswersReferenceRow(journeyRequest: JourneyRequest[AnyContent])(payFrontendBaseUrl: String): Option[CheckYourAnswersRow] = {
+    val accountsOfficeReference: Option[AccountsOfficeReference] = journeyRequest.journey.journeySpecificData match {
+      case jsd: JsdPfEpayeP11d => jsd.accountsOfficeReference
+      case _                   => throw new RuntimeException("Incorrect origin found")
+    }
     Some(CheckYourAnswersRow(
       titleMessageKey = "check-your-details.PfEpayeP11d.reference",
-      value           = Seq(journeyRequest.journey.journeySpecificData.asInstanceOf[JsdPfEpayeP11d].accountsOfficeReference.fold("")(_.value)),
+      value           = Seq(accountsOfficeReference.fold("")(_.value)),
       changeLink      = Some(Link(
         href       = Call("GET", changeReferenceUrl(payFrontendBaseUrl)),
         linkId     = "check-your-details-reference-change-link",
         messageKey = "check-your-details.change"
       ))
     ))
+  }
 
-  override def checkYourAnswersAdditionalReferenceRow(journeyRequest: JourneyRequest[AnyContent])
-    (payFrontendBaseUrl: String)(implicit messages: Messages): Option[Seq[CheckYourAnswersRow]] =
-    journeyRequest.journey.journeySpecificData.asInstanceOf[JsdPfEpayeP11d].period.map { taxYear =>
+  override def checkYourAnswersAdditionalReferenceRow(journeyRequest: JourneyRequest[AnyContent])(payFrontendBaseUrl: String)(implicit messages: Messages): Option[Seq[CheckYourAnswersRow]] = {
+    val period: Option[YearlyEpayeTaxPeriod] = journeyRequest.journey.journeySpecificData match {
+      case jsd: JsdPfEpayeP11d => jsd.period
+      case _                   => throw new RuntimeException("Incorrect origin found")
+    }
+    period.map { taxYear =>
       Seq(CheckYourAnswersRow(
         titleMessageKey = "check-your-details.PfEpayeP11d.tax-year",
         value           = Seq(humanReadablePeriod(taxYear)(messages.lang)),
@@ -60,6 +68,7 @@ object ExtendedPfEpayeP11d extends ExtendedOrigin {
         ))
       ))
     }
+  }
 
   override def openBankingOriginSpecificSessionData: JourneySpecificData => Option[OriginSpecificSessionData] = {
     case j: JsdPfEpayeP11d => j.accountsOfficeReference.flatMap { accountsOfficeReference =>

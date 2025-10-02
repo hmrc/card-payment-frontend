@@ -17,13 +17,14 @@
 package uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins
 
 import payapi.cardpaymentjourney.model.journey.{JourneySpecificData, JsdNiEuVatOss}
+import payapi.corcommon.model.times.period.CalendarQuarterlyPeriod
 import play.api.i18n.Messages
 import play.api.mvc.AnyContent
 import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
 import uk.gov.hmrc.cardpaymentfrontend.models.PaymentMethod._
 import uk.gov.hmrc.cardpaymentfrontend.models.openbanking.{NiEuVatOssSessionData, OriginSpecificSessionData}
 import uk.gov.hmrc.cardpaymentfrontend.models.{CheckYourAnswersRow, PaymentMethod}
-import uk.gov.hmrc.cardpaymentfrontend.util.Period.displayCalendarQuarter
+import uk.gov.hmrc.cardpaymentfrontend.util.Period.displayCalendarQuarterAndYear
 
 object ExtendedNiEuVatOss extends ExtendedOrigin {
   override val serviceNameMessageKey: String = "service-name.NiEuVatOss"
@@ -43,10 +44,13 @@ object ExtendedNiEuVatOss extends ExtendedOrigin {
   }
 
   override def checkYourAnswersAdditionalReferenceRow(journeyRequest: JourneyRequest[AnyContent])(payFrontendBaseUrl: String)(implicit messages: Messages): Option[Seq[CheckYourAnswersRow]] = {
-    val period = journeyRequest.journey.journeySpecificData.asInstanceOf[JsdNiEuVatOss].period
+    val period: CalendarQuarterlyPeriod = journeyRequest.journey.journeySpecificData match {
+      case jsd: JsdNiEuVatOss => jsd.period
+      case _                  => throw new RuntimeException("Incorrect origin found")
+    }
     Some(Seq(CheckYourAnswersRow(
       titleMessageKey = "check-your-details.NiEuVatOss.tax-year",
-      value           = Seq(displayCalendarQuarter(period)),
+      value           = Seq(displayCalendarQuarterAndYear(period)),
       changeLink      = None
     )))
   }

@@ -17,6 +17,7 @@
 package uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins
 
 import payapi.cardpaymentjourney.model.journey.{JourneySpecificData, JsdBtaClass1aNi}
+import payapi.corcommon.model.taxes.epaye.YearlyEpayeTaxPeriod
 import play.api.i18n.Messages
 import play.api.mvc.AnyContent
 import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
@@ -40,13 +41,17 @@ object ExtendedBtaClass1aNi extends ExtendedOrigin {
     ))
   }
 
-  override def checkYourAnswersAdditionalReferenceRow(journeyRequest: JourneyRequest[AnyContent])
-    (payFrontendBaseUrl: String)(implicit messages: Messages): Option[Seq[CheckYourAnswersRow]] =
+  override def checkYourAnswersAdditionalReferenceRow(journeyRequest: JourneyRequest[AnyContent])(payFrontendBaseUrl: String)(implicit messages: Messages): Option[Seq[CheckYourAnswersRow]] = {
+    val period: YearlyEpayeTaxPeriod = journeyRequest.journey.journeySpecificData match {
+      case jsd: JsdBtaClass1aNi => jsd.period
+      case _                    => throw new RuntimeException("Incorrect origin found")
+    }
     Some(Seq(CheckYourAnswersRow(
       titleMessageKey = "check-your-details.BtaClass1aNi.tax-period",
-      value           = Seq(humanReadablePeriod(journeyRequest.journey.journeySpecificData.asInstanceOf[JsdBtaClass1aNi].period)(messages.lang)),
+      value           = Seq(humanReadablePeriod(period)(messages.lang)),
       changeLink      = None
     )))
+  }
 
   override def openBankingOriginSpecificSessionData: JourneySpecificData => Option[OriginSpecificSessionData] = {
     case j: JsdBtaClass1aNi => Some(BtaClass1aNiSessionData(j.accountsOfficeReference, period = j.period))
