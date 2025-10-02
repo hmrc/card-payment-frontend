@@ -26,6 +26,7 @@ import payapi.corcommon.model.taxes.epaye._
 import payapi.corcommon.model.taxes.other._
 import payapi.corcommon.model.taxes.p302.{P302ChargeRef, P302Ref}
 import payapi.corcommon.model.taxes.p800.P800Ref
+import payapi.corcommon.model.taxes.ioss.Ioss
 import payapi.corcommon.model.taxes.ppt.PptReference
 import payapi.corcommon.model.taxes.sa.SaUtr
 import payapi.corcommon.model.taxes.sdlt.Utrn
@@ -36,7 +37,7 @@ import payapi.corcommon.model.times.period.TaxYear
 import payapi.corcommon.model.webchat.WcEpayeNiReference
 import payapi.corcommon.model.{AmountInPence, JourneyId, PaymentStatuses}
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.testdata.TestDataUtils._
-import uk.gov.hmrc.cardpaymentfrontend.testsupport.testdata.TestPayApiData.{testSubYearlyPeriod, testYearlyPeriod}
+import uk.gov.hmrc.cardpaymentfrontend.testsupport.testdata.TestPayApiData.{testCalendarPeriod, testQuarterlyTaxPeriod, testSubYearlyPeriod, testYearlyPeriod}
 
 import java.time.{LocalDate, LocalDateTime}
 
@@ -1007,6 +1008,82 @@ object TestJourneys {
       journeySpecificData  = JsdWcEpayeSeta(
         chargeReference      = XRef("XE123456789012"),
         defaultAmountInPence = AmountInPence(1234)
+      ),
+      chosenWayToPay       = None
+    )
+  }
+
+  object NiEuVatOss extends JourneyStatuses[JsdNiEuVatOss] {
+    val journeyBeforeBeginWebPayment: Journey[JsdNiEuVatOss] = Journey[JsdNiEuVatOss](
+      _id                  = JourneyId(TestPayApiData.decryptedJourneyId),
+      sessionId            = Some(SessionId("TestSession-4b87460d-6f43-4c4c-b810-d6f87c774854")),
+      amountInPence        = Some(AmountInPence(1234)),
+      emailTemplateOptions = None,
+      navigation           = Some(NavigationOptions(returnUrl = Url("https://www.return-url.com"), backUrl = Url("https://www.back-to-ni-eu-vat-oss.com"))),
+      order                = None,
+      status               = PaymentStatuses.Created,
+      createdOn            = LocalDateTime.parse("2027-11-02T16:28:55.185"),
+      journeySpecificData  = JsdNiEuVatOss(
+        vrn                  = Vrn("101747641"),
+        period               = testQuarterlyTaxPeriod,
+        defaultAmountInPence = AmountInPence(1234),
+        dueDate              = Some(LocalDate.of(2028, 12, 12))
+      ),
+      chosenWayToPay       = None
+    )
+  }
+
+  object PfNiEuVatOss extends JourneyStatuses[JsdPfNiEuVatOss] {
+    val journeyBeforeBeginWebPayment: Journey[JsdPfNiEuVatOss] = Journey[JsdPfNiEuVatOss](
+      _id                  = JourneyId(TestPayApiData.decryptedJourneyId),
+      sessionId            = Some(SessionId("TestSession-4b87460d-6f43-4c4c-b810-d6f87c774854")),
+      amountInPence        = Some(AmountInPence(1234)),
+      emailTemplateOptions = None,
+      navigation           = None,
+      order                = None,
+      status               = PaymentStatuses.Created,
+      createdOn            = LocalDateTime.parse("2027-11-02T16:28:55.185"),
+      journeySpecificData  = JsdPfNiEuVatOss(
+        vrn    = Some(Vrn("101747641")),
+        period = Some(testQuarterlyTaxPeriod)
+      ),
+      chosenWayToPay       = None
+    )
+  }
+
+  object NiEuVatIoss extends JourneyStatuses[JsdNiEuVatIoss] {
+    val journeyBeforeBeginWebPayment: Journey[JsdNiEuVatIoss] = Journey[JsdNiEuVatIoss](
+      _id                  = JourneyId(TestPayApiData.decryptedJourneyId),
+      sessionId            = Some(SessionId("TestSession-4b87460d-6f43-4c4c-b810-d6f87c774854")),
+      amountInPence        = Some(AmountInPence(1234)),
+      emailTemplateOptions = None,
+      navigation           = Some(NavigationOptions(returnUrl = Url("https://www.return-url.com"), backUrl = Url("https://www.back-to-ni-eu-vat-ioss.com"))),
+      order                = None,
+      status               = PaymentStatuses.Created,
+      createdOn            = LocalDateTime.parse("2027-11-02T16:28:55.185"),
+      journeySpecificData  = JsdNiEuVatIoss(
+        ioss                 = Ioss("IM1234567890"),
+        period               = testCalendarPeriod,
+        defaultAmountInPence = AmountInPence(1234),
+        dueDate              = Some(LocalDate.of(2028, 12, 12))
+      ),
+      chosenWayToPay       = None
+    )
+  }
+
+  object PfNiEuVatIoss extends JourneyStatuses[JsdPfNiEuVatIoss] {
+    val journeyBeforeBeginWebPayment: Journey[JsdPfNiEuVatIoss] = Journey[JsdPfNiEuVatIoss](
+      _id                  = JourneyId(TestPayApiData.decryptedJourneyId),
+      sessionId            = Some(SessionId("TestSession-4b87460d-6f43-4c4c-b810-d6f87c774854")),
+      amountInPence        = Some(AmountInPence(1234)),
+      emailTemplateOptions = None,
+      navigation           = None,
+      order                = None,
+      status               = PaymentStatuses.Created,
+      createdOn            = LocalDateTime.parse("2027-11-02T16:28:55.185"),
+      journeySpecificData  = JsdPfNiEuVatIoss(
+        ioss   = Some(Ioss("IM1234567890")),
+        period = Some(testCalendarPeriod)
       ),
       chosenWayToPay       = None
     )
