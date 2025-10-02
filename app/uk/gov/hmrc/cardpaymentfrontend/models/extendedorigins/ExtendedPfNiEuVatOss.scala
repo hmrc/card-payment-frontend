@@ -23,7 +23,7 @@ import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
 import uk.gov.hmrc.cardpaymentfrontend.models.PaymentMethod._
 import uk.gov.hmrc.cardpaymentfrontend.models.openbanking.{OriginSpecificSessionData, PfNiEuVatOssSessionData}
 import uk.gov.hmrc.cardpaymentfrontend.models.{CheckYourAnswersRow, Link, PaymentMethod}
-import uk.gov.hmrc.cardpaymentfrontend.util.Period.displayCalendarQuarter
+import uk.gov.hmrc.cardpaymentfrontend.util.Period.displayCalendarQuarterAndYear
 
 object ExtendedPfNiEuVatOss extends ExtendedOrigin {
   override val serviceNameMessageKey: String = "service-name.PfNiEuVatOss"
@@ -52,7 +52,7 @@ object ExtendedPfNiEuVatOss extends ExtendedOrigin {
         jsd.period.map { period =>
           Seq(CheckYourAnswersRow(
             titleMessageKey = "check-your-details.PfNiEuVatOss.tax-year",
-            value           = Seq(displayCalendarQuarter(period)),
+            value           = Seq(displayCalendarQuarterAndYear(period)),
             changeLink      = None
           ))
         }

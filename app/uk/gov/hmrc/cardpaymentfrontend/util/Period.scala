@@ -62,7 +62,7 @@ object Period {
   }
 
   // Message keys not needed as no Welsh required for these particular origins - NiEuVat
-  def displayCalendarQuarter(period: CalendarQuarterlyPeriod): String = period.quarter match {
+  def displayCalendarQuarterAndYear(period: CalendarQuarterlyPeriod): String = period.quarter match {
     case JanuaryToMarch    => "January to March " + period.year.toString
     case AprilToJune       => "April to June " + period.year.toString
     case JulyToSeptember   => "July to September " + period.year.toString
@@ -70,7 +70,7 @@ object Period {
   }
 
   // Message keys not needed as no Welsh required for these particular origins - NiEuVat
-  def displayCalendarPeriodMonth(period: CalendarPeriod): String = {
+  def displayCalendarPeriodMonthAndYear(period: CalendarPeriod): String = {
     val yearStr = period.year.toString
     period.month match {
       case 1  => "January " + yearStr
@@ -85,7 +85,7 @@ object Period {
       case 10 => "October " + yearStr
       case 11 => "November " + yearStr
       case 12 => "December " + yearStr
-      case _  => "NO MONTH THAT MATCHES"
+      case _  => ""
     }
   }
 
