@@ -412,10 +412,24 @@ class OpenBankingOriginSpecificSessionDataSpec extends UnitSpec {
       roundTripJsonTest(osd, testJson)
     }
 
+    "PfJobRetentionScheme" in {
+      val testJson = Json.parse("""{"jrsRef":"XJRS12345678901","origin":"PfJobRetentionScheme"}""")
+      val osd = ExtendedPfJobRetentionScheme.openBankingOriginSpecificSessionData(TestJourneys.PfJobRetentionScheme.journeyBeforeBeginWebPayment.journeySpecificData)
+      testOsd(osd, PfJobRetentionSchemeSessionData(JrsRef("XJRS12345678901"), None), "XJRS12345678901", "XJRS12345678901")
+      roundTripJsonTest(osd, testJson)
+    }
+
+    "JrsJobRetentionScheme" in {
+      val testJson = Json.parse("""{"jrsRef":"XJRS12345678901","origin":"JrsJobRetentionScheme"}""")
+      val osd = ExtendedJrsJobRetentionScheme.openBankingOriginSpecificSessionData(TestJourneys.JrsJobRetentionScheme.journeyBeforeBeginWebPayment.journeySpecificData)
+      testOsd(osd, JrsJobRetentionSchemeSessionData(JrsRef("XJRS12345678901"), None), "XJRS12345678901", "XJRS12345678901")
+      roundTripJsonTest(osd, testJson)
+    }
+
   }
 
   "sanity check for implemented origins" in {
-    TestHelpers.implementedOrigins.size shouldBe 49 withClue "** This dummy test is here to remind you to update the tests above. Bump up the expected number when an origin is added to implemented origins **"
+    TestHelpers.implementedOrigins.size shouldBe 51 withClue "** This dummy test is here to remind you to update the tests above. Bump up the expected number when an origin is added to implemented origins **"
   }
 
 }

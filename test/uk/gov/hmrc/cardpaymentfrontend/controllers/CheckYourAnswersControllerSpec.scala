@@ -1348,9 +1348,41 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       assertRow(referenceRow, "Blwyddyn dreth", "6 Ebrill 2027 i 5 Ebrill 2028", None, None)
     }
 
+    "[PfJobRetentionScheme] should render the payment reference row correctly" in {
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfJobRetentionScheme.journeyBeforeBeginWebPayment)
+      val result = systemUnderTest.renderPage(fakeRequest())
+      val document = Jsoup.parse(contentAsString(result))
+      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.PfJobRetentionScheme))
+      assertRow(referenceRow, "Payment reference", "XJRS12345678901", Some("Change Payment reference"), Some("http://localhost:9056/pay/pay-by-card-change-reference-number"))
+    }
+
+    "[PfJobRetentionScheme] should render the payment reference row correctly in Welsh" in {
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfJobRetentionScheme.journeyBeforeBeginWebPayment)
+      val result = systemUnderTest.renderPage(fakeRequestWelsh())
+      val document = Jsoup.parse(contentAsString(result))
+      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.PfJobRetentionScheme))
+      assertRow(referenceRow, "Cyfeirnod y taliad", "XJRS12345678901", Some("Newid Cyfeirnod y taliad"), Some("http://localhost:9056/pay/pay-by-card-change-reference-number"))
+    }
+
+    "[JrsJobRetentionScheme] should render the payment reference row correctly" in {
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.JrsJobRetentionScheme.journeyBeforeBeginWebPayment)
+      val result = systemUnderTest.renderPage(fakeRequest())
+      val document = Jsoup.parse(contentAsString(result))
+      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.JrsJobRetentionScheme))
+      assertRow(referenceRow, "Payment reference", "XJRS12345678901", None, None)
+    }
+
+    "[JrsJobRetentionScheme] should render the payment reference row correctly in Welsh" in {
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.JrsJobRetentionScheme.journeyBeforeBeginWebPayment)
+      val result = systemUnderTest.renderPage(fakeRequestWelsh())
+      val document = Jsoup.parse(contentAsString(result))
+      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.JrsJobRetentionScheme))
+      assertRow(referenceRow, "Cyfeirnod y taliad", "XJRS12345678901", None, None)
+    }
+
     "sanity check for implemented origins" in {
       // remember to add the singular tests for reference rows as well as fdp if applicable, they are not covered in the implementedOrigins forall tests
-      TestHelpers.implementedOrigins.size shouldBe 49 withClue "** This dummy test is here to remind you to update the tests above. Bump up the expected number when an origin is added to implemented origins **"
+      TestHelpers.implementedOrigins.size shouldBe 51 withClue "** This dummy test is here to remind you to update the tests above. Bump up the expected number when an origin is added to implemented origins **"
     }
 
   }

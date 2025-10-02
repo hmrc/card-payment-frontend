@@ -26,6 +26,7 @@ import play.api.test.FakeRequest
 import uk.gov.hmrc.cardpaymentfrontend.models.EmailAddress
 import uk.gov.hmrc.cardpaymentfrontend.models.email.{EmailParameters, EmailRequest}
 import uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins.ExtendedOrigin.OriginExtended
+import uk.gov.hmrc.cardpaymentfrontend.testsupport.TestHelpers.implementedOrigins
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.TestOps.FakeRequestOps
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.stubs.EmailStub
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.testdata.{JourneyStatuses, TestJourneys}
@@ -45,7 +46,7 @@ class EmailServiceSpec extends ItSpec with TableDrivenPropertyChecks {
     val commission = Some("1.23")
 
     // needed for compiler. if you're adding a new extended origin, add the jsd to this type/list of types.
-    type JsdBounds = JsdPfEpayeNi with JsdAlcoholDuty with JsdPfPpt with JsdBtaEpayeBill with JsdPfSa with JsdPpt with JsdVcVatReturn with JsdPfEpayeP11d with JsdCapitalGainsTax with JsdBtaCt with JsdPfEpayeLateCis with JsdPfEpayeLpp with JsdPfCt with JsdBtaVat with JsdPfSdlt with JsdBtaEpayeInterest with JsdAmls with JsdBtaEpayeGeneral with JsdPfEpayeSeta with JsdPtaSa with JsdBtaClass1aNi with JsdVcVatOther with JsdPfAmls with JsdPfVat with JsdItSa with JsdBtaSa with JsdPfAlcoholDuty with JsdBtaEpayePenalty with JsdEconomicCrimeLevy with JsdPfEconomicCrimeLevy with JsdWcSa with JsdWcCt with JsdWcVat with JsdVatC2c with JsdPfVatC2c with JsdWcSimpleAssessment with JsdWcXref with JsdWcEpayeLpp with JsdWcEpayeNi with JsdWcEpayeLateCis with JsdPfChildBenefitRepayments with JsdBtaSdil with JsdPfSdil with JsdPtaP800 with JsdPfP800 with JsdPtaSimpleAssessment with JsdPfSimpleAssessment
+    type JsdBounds = JsdPfEpayeNi with JsdAlcoholDuty with JsdPfPpt with JsdBtaEpayeBill with JsdPfSa with JsdPpt with JsdVcVatReturn with JsdPfEpayeP11d with JsdCapitalGainsTax with JsdBtaCt with JsdPfEpayeLateCis with JsdPfEpayeLpp with JsdPfCt with JsdBtaVat with JsdPfSdlt with JsdBtaEpayeInterest with JsdAmls with JsdBtaEpayeGeneral with JsdPfEpayeSeta with JsdPtaSa with JsdBtaClass1aNi with JsdVcVatOther with JsdPfAmls with JsdPfVat with JsdItSa with JsdBtaSa with JsdPfAlcoholDuty with JsdBtaEpayePenalty with JsdEconomicCrimeLevy with JsdPfEconomicCrimeLevy with JsdWcSa with JsdWcCt with JsdWcVat with JsdVatC2c with JsdPfVatC2c with JsdWcSimpleAssessment with JsdWcXref with JsdWcEpayeLpp with JsdWcEpayeNi with JsdWcEpayeLateCis with JsdWcClass1aNi with JsdPfChildBenefitRepayments with JsdBtaSdil with JsdPfSdil with JsdPtaP800 with JsdPfP800 with JsdPtaSimpleAssessment with JsdPfSimpleAssessment with JsdPfJobRetentionScheme with JsdJrsJobRetentionScheme with JsdWcEpayeSeta
 
     val scenarios: TableFor6[JourneyStatuses[_ >: JsdBounds <: JourneySpecificData], String, String, Option[String], Some[String], String] = Table(
       ("Journey", "Tax Type", "Tax Reference", "Commission", "Total Paid", "lang"),
@@ -249,6 +250,16 @@ class EmailServiceSpec extends ItSpec with TableDrivenPropertyChecks {
       (WcEpayeLateCis, "Cynllun y Diwydiant Adeiladu (CIS) - cosb am dalu’n hwyr", "yn gorffen gyda 89012", None, Some("12.34"), "cy"),
       (WcEpayeLateCis, "Cynllun y Diwydiant Adeiladu (CIS) - cosb am dalu’n hwyr", "yn gorffen gyda 89012", commission, Some("13.57"), "cy"),
 
+      (WcEpayeSeta, "Employers’ PAYE Settlement Agreement", "ending with 89012", None, Some("12.34"), "en"),
+      (WcEpayeSeta, "Employers’ PAYE Settlement Agreement", "ending with 89012", commission, Some("13.57"), "en"),
+      (WcEpayeSeta, "Cytundeb Setliad TWE y Cyflogwr", "yn gorffen gyda 89012", None, Some("12.34"), "cy"),
+      (WcEpayeSeta, "Cytundeb Setliad TWE y Cyflogwr", "yn gorffen gyda 89012", commission, Some("13.57"), "cy"),
+
+      (WcClass1aNi, "Employers’ Class 1A National Insurance", "ending with 02713", None, Some("12.34"), "en"),
+      (WcClass1aNi, "Employers’ Class 1A National Insurance", "ending with 02713", commission, Some("13.57"), "en"),
+      (WcClass1aNi, "Yswiriant Gwladol Dosbarth 1A y Cyflogwr", "yn gorffen gyda 02713", None, Some("12.34"), "cy"),
+      (WcClass1aNi, "Yswiriant Gwladol Dosbarth 1A y Cyflogwr", "yn gorffen gyda 02713", commission, Some("13.57"), "cy"),
+
       (PfChildBenefitRepayments, "Repay Child Benefit overpayments", "ending with 89123", None, Some("12.34"), "en"),
       (PfChildBenefitRepayments, "Repay Child Benefit overpayments", "ending with 89123", commission, Some("13.57"), "en"),
       (PfChildBenefitRepayments, "Ad-dalu gordaliadau Budd-dal Plant", "yn gorffen gyda 89123", None, Some("12.34"), "cy"),
@@ -282,7 +293,17 @@ class EmailServiceSpec extends ItSpec with TableDrivenPropertyChecks {
       (PtaSimpleAssessment, "Simple Assessment", "ending with 22027", None, Some("12.34"), "en"),
       (PtaSimpleAssessment, "Simple Assessment", "ending with 22027", commission, Some("13.57"), "en"),
       (PtaSimpleAssessment, "Asesiad Syml", "yn gorffen gyda 22027", None, Some("12.34"), "cy"),
-      (PtaSimpleAssessment, "Asesiad Syml", "yn gorffen gyda 22027", commission, Some("13.57"), "cy")
+      (PtaSimpleAssessment, "Asesiad Syml", "yn gorffen gyda 22027", commission, Some("13.57"), "cy"),
+
+      (PfJobRetentionScheme, "Pay Coronavirus Job Retention Scheme grants back", "ending with 78901", None, Some("12.34"), "en"),
+      (PfJobRetentionScheme, "Pay Coronavirus Job Retention Scheme grants back", "ending with 78901", commission, Some("13.57"), "en"),
+      (PfJobRetentionScheme, "Talu grantiau’r Cynllun Cadw Swyddi yn sgil Coronafeirws yn ôl", "yn gorffen gyda 78901", None, Some("12.34"), "cy"),
+      (PfJobRetentionScheme, "Talu grantiau’r Cynllun Cadw Swyddi yn sgil Coronafeirws yn ôl", "yn gorffen gyda 78901", commission, Some("13.57"), "cy"),
+
+      (JrsJobRetentionScheme, "Pay Coronavirus Job Retention Scheme grants back", "ending with 78901", None, Some("12.34"), "en"),
+      (JrsJobRetentionScheme, "Pay Coronavirus Job Retention Scheme grants back", "ending with 78901", commission, Some("13.57"), "en"),
+      (JrsJobRetentionScheme, "Talu grantiau’r Cynllun Cadw Swyddi yn sgil Coronafeirws yn ôl", "yn gorffen gyda 78901", None, Some("12.34"), "cy"),
+      (JrsJobRetentionScheme, "Talu grantiau’r Cynllun Cadw Swyddi yn sgil Coronafeirws yn ôl", "yn gorffen gyda 78901", commission, Some("13.57"), "cy")
     )
 
     forAll(scenarios) { (j, taxType, taxReference, commission, totalPaid, lang) =>
@@ -302,6 +323,14 @@ class EmailServiceSpec extends ItSpec with TableDrivenPropertyChecks {
         )
 
         systemUnderTest.buildEmailParameters(journey)(request) shouldBe expectedResult
+      }
+    }
+
+    implementedOrigins.foreach { origin =>
+      s"for journey with origin ${origin.entryName}, test scenario should exist" in {
+        scenarios.exists { scenario =>
+          scenario._1.journeyBeforeBeginWebPayment.origin == origin
+        } shouldBe true withClue s"Test scenario missing for origin: ${origin.entryName}"
       }
     }
 
