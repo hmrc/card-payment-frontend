@@ -992,6 +992,25 @@ class PaymentsSurveyServiceSpec extends ItSpec with TableDrivenPropertyChecks {
               )
             ) -> true
 
+            case Origins.PfCds => PaymentSurveyJourneyRequest(
+              origin         = "PfCds",
+              returnMsg      = "Skip survey",
+              returnHref     = "https://www.gov.uk/government/organisations/hm-revenue-customs",
+              auditName      = "cds",
+              audit          = AuditOptions(
+                userType  = "LoggedOut",
+                journey   = Some("Successful"),
+                orderId   = Some("CDSI191234567890"),
+                liability = Some("cds")
+              ),
+              contentOptions = SurveyContentOptions(
+                isWelshSupported = false,
+                title            = SurveyBannerTitle(
+                  englishValue = "Customs Declaration Service", welshValue = None
+                )
+              )
+            ) -> false
+
             case Origins.AppSa               => throw new MatchError("Not implemented yet")
             case Origins.BcPngr              => throw new MatchError("Not implemented yet")
             case Origins.Parcels             => throw new MatchError("Not implemented yet")
@@ -1027,7 +1046,6 @@ class PaymentsSurveyServiceSpec extends ItSpec with TableDrivenPropertyChecks {
             case Origins.`3psVat`            => throw new MatchError("Not implemented yet")
             case Origins.Pillar2             => throw new MatchError("Not implemented yet")
             case Origins.PfPillar2           => throw new MatchError("Not implemented yet")
-            case Origins.PfCds               => throw new MatchError("Not implemented yet")
             case Origins.PfOther             => throw new MatchError("Not implemented yet")
             case Origins.PfClass2Ni          => throw new MatchError("Not implemented yet")
             case Origins.PfInsurancePremium  => throw new MatchError("Not implemented yet")

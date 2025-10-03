@@ -52,6 +52,8 @@ trait ItSpec extends AnyFreeSpecLike
     "auditing.enabled" -> false,
     "auditing.traceRequests" -> false,
     "microservice.services.card-payment.port" -> self.wireMockPort,
+    "microservice.services.cds.port" -> self.wireMockPort,
+    "microservice.services.cds.host" -> "127.0.0.1", // OPS-6346 - this is to trick http verbs into thinking it's an external call
     "microservice.services.email-service.port" -> self.wireMockPort,
     "microservice.services.open-banking.port" -> self.wireMockPort,
     "microservice.services.pay-api.port" -> self.wireMockPort,

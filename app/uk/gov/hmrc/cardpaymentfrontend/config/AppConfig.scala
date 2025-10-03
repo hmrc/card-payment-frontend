@@ -56,4 +56,7 @@ class AppConfig @Inject() (config: Configuration, servicesConfig: ServicesConfig
   val useProductionClientIds: Boolean = servicesConfig.getBoolean("use-production-client-ids")
 
   val cardPaymentInternalAuthToken: String = servicesConfig.getString("internal-auth.token")
+
+  val cdsBaseUrl: String = servicesConfig.baseUrl("cds")
+  val cdsAuthToken: String = servicesConfig.getString("microservice.services.cds.auth-token")
 }

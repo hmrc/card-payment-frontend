@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.cardpaymentfrontend.connectors
 
-import play.api.libs.json.Json
+import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.cardpaymentfrontend.models.EmailAddress
 import uk.gov.hmrc.cardpaymentfrontend.models.email.{EmailParameters, EmailRequest}
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.ItSpec
@@ -27,7 +27,7 @@ class EmailConnectorSpec extends ItSpec {
 
   val systemUnderTest: EmailConnector = app.injector.instanceOf[EmailConnector]
 
-  val jsonBody = Json.parse(
+  val jsonBody: JsValue = Json.parse(
 
     """
         {

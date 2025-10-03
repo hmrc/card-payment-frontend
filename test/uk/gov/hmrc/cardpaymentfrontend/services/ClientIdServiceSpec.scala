@@ -20,6 +20,7 @@ import org.scalatest.prop.TableDrivenPropertyChecks.forAll
 import org.scalatest.prop.TableFor2
 import org.scalatest.prop.Tables.Table
 import payapi.cardpaymentjourney.model.journey.{Journey, JourneySpecificData}
+import payapi.corcommon.model.Origins
 import uk.gov.hmrc.cardpaymentfrontend.models.Languages
 import uk.gov.hmrc.cardpaymentfrontend.models.cardpayment.{ClientId, ClientIds}
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.TestHelpers.implementedOrigins
@@ -86,7 +87,8 @@ class ClientIdServiceSpec extends ItSpec {
       (TestJourneys.PfSimpleAssessment.journeyBeforeBeginWebPayment, ClientIds.MIEE),
       (TestJourneys.PtaSimpleAssessment.journeyBeforeBeginWebPayment, ClientIds.ETEE),
       (TestJourneys.PfJobRetentionScheme.journeyBeforeBeginWebPayment, ClientIds.MIEE),
-      (TestJourneys.JrsJobRetentionScheme.journeyBeforeBeginWebPayment, ClientIds.MIEE)
+      (TestJourneys.JrsJobRetentionScheme.journeyBeforeBeginWebPayment, ClientIds.MIEE),
+      (TestJourneys.PfCds.journeyBeforeBeginWebPayment, ClientIds.CDEE)
     )
 
     forAll(scenariosEn) {
@@ -168,17 +170,19 @@ class ClientIdServiceSpec extends ItSpec {
         }
     }
 
-    implementedOrigins.foreach { origin =>
-      s"for journey with origin ${origin.entryName}, test scenario should exist in welsh" in {
-        scenariosCy.exists { scenario =>
-          scenario._1.origin == origin
-        } shouldBe true withClue s"Missing test scenario for origin ${origin.entryName}"
+    implementedOrigins
+      .filterNot(_ === Origins.PfCds) // cds doesn't have welsh
+      .foreach { origin =>
+        s"for journey with origin ${origin.entryName}, test scenario should exist in welsh" in {
+          scenariosCy.exists { scenario =>
+            scenario._1.origin == origin
+          } shouldBe true withClue s"Missing test scenario for origin ${origin.entryName}"
+        }
       }
-    }
   }
 
   "sanity check for implemented origins" in {
-    TestHelpers.implementedOrigins.size shouldBe 51 withClue "** This dummy test is here to remind you to update the tests above. Bump up the expected number when an origin is added to implemented origins **"
+    TestHelpers.implementedOrigins.size shouldBe 52 withClue "** This dummy test is here to remind you to update the tests above. Bump up the expected number when an origin is added to implemented origins **"
   }
 
 }

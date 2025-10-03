@@ -45,6 +45,7 @@ class CardPaymentService @Inject() (
     clock:                Clock,
     cryptoService:        CryptoService,
     emailService:         EmailService,
+    notificationService:  NotificationService,
     payApiConnector:      PayApiConnector,
     requestSupport:       RequestSupport,
     transNoGenerator:     TransNumberGenerator
@@ -133,8 +134,11 @@ class CardPaymentService @Inject() (
           payApiConnector.JourneyUpdates.updateFailWebPayment(journeyId, r)
         case r: SucceedWebPaymentRequest =>
           logger.info(s"Payment finished for journey $journeyId.")
-          payApiConnector.JourneyUpdates.updateSucceedWebPayment(journeyId, r)
-            .map(_ => maybeSendEmailF(r))
+          for {
+            _ <- payApiConnector.JourneyUpdates.updateSucceedWebPayment(journeyId, r)
+            _ = maybeSendEmailF(r)
+            _ = notificationService.sendNotification(journeyRequest.journey)
+          } yield ()
       }
     } yield cardPaymentResult
   }

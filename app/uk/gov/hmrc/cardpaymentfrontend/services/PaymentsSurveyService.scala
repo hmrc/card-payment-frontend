@@ -59,7 +59,7 @@ class PaymentsSurveyService @Inject() (
         isWelshSupported = extendedOrigin.surveyIsWelshSupported,
         title            = SurveyBannerTitle(
           englishValue = messages(extendedOrigin.surveyBannerTitle),
-          welshValue   = Some(messagesApi(extendedOrigin.surveyBannerTitle)(Lang("cy")))
+          welshValue   = if (extendedOrigin.surveyIsWelshSupported) Some(messagesApi(extendedOrigin.surveyBannerTitle)(Lang("cy"))) else None
         )
       )
     )

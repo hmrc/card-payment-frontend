@@ -24,7 +24,7 @@ service-name.WcEpayeLateCis = Pay your Construction Industry Scheme penalty
 service-name.PfEpayeP11d = Pay your employers’ Class 1A National Insurance (P11D bill)
 service-name.WcClass1aNi = Pay your employers’ Class 1A National Insurance (P11D bill)
 service-name.PfSdlt = Pay your Stamp Duty Land Tax
-service-name.PfCds =
+service-name.PfCds = Customs Declaration Service
 service-name.PfOther =
 service-name.WcXref = Pay your tax
 service-name.PfP800 = Check how much Income Tax you paid
@@ -194,6 +194,7 @@ check-your-details.PtaSimpleAssessment.tax-year = Tax year
 check-your-details.PtaSimpleAssessment.tax-year.value = 6 April {0} to 5 April {1}
 check-your-details.PfJobRetentionScheme.reference = Payment reference
 check-your-details.JrsJobRetentionScheme.reference = Payment reference
+check-your-details.PfCds.reference = CDS Reference Number
 
 
 ## Address Page
@@ -277,7 +278,7 @@ payment-complete.tax-name.WcEpayeLateCis = Construction Industry Scheme (CIS) la
 payment-complete.tax-name.PfEpayeP11d = Employers’ Class 1A National Insurance
 payment-complete.tax-name.WcClass1aNi = Employers’ Class 1A National Insurance
 payment-complete.tax-name.PfSdlt = Stamp Duty Land Tax
-payment-complete.tax-name.PfCds =
+payment-complete.tax-name.PfCds = CDS
 payment-complete.tax-name.PfOther =
 payment-complete.tax-name.WcXref = Other taxes, penalties and enquiry settlements
 payment-complete.tax-name.PfP800 = P800
@@ -435,6 +436,7 @@ email.tax-name.PfSimpleAssessment = Simple Assessment
 email.tax-name.PtaSimpleAssessment = Simple Assessment
 email.tax-name.PfJobRetentionScheme = Pay Coronavirus Job Retention Scheme grants back
 email.tax-name.JrsJobRetentionScheme = Pay Coronavirus Job Retention Scheme grants back
+email.tax-name.PfCds = CDS
 
 ## Payments survey
 payments-survey.bta.return-message = Skip survey, return to business tax account
