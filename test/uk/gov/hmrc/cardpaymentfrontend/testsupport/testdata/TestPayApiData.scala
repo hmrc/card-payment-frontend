@@ -17,7 +17,9 @@
 package uk.gov.hmrc.cardpaymentfrontend.testsupport.testdata
 
 import payapi.corcommon.model.AmountInPence
+import payapi.corcommon.model.barclays.TransactionReference
 import payapi.corcommon.model.taxes.ad.AlcoholDutyReference
+import payapi.corcommon.model.taxes.cds.CdsRef
 import payapi.corcommon.model.taxes.ct.{CtChargeType, CtChargeTypes, CtPeriod, CtUtr}
 import payapi.corcommon.model.taxes.epaye.{AccountsOfficeReference, MonthlyEpayeTaxPeriod, SubYearlyEpayeTaxPeriod, YearlyEpayeTaxPeriod}
 import payapi.corcommon.model.taxes.other.{EconomicCrimeLevyReturnNumber, XRef, XRef14Char}
@@ -44,6 +46,8 @@ object TestPayApiData {
   val testSubYearlyPeriod: SubYearlyEpayeTaxPeriod = MonthlyEpayeTaxPeriod(TaxMonth.MayJune, TaxYear(2027))
   val testYearlyPeriod: YearlyEpayeTaxPeriod = YearlyEpayeTaxPeriod(TaxYear(2027))
   val testXref: XRef = XRef("XE1234567890123")
+  val testCdsRef: CdsRef = CdsRef("CDSI191234567890")
   val testAmountInPence: AmountInPence = AmountInPence(12345)
   val testReturnUrl: Option[String] = Some("returnUrl")
+  val testTransactionReference: TransactionReference = TransactionReference("Some-transaction-ref")
 }

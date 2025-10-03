@@ -154,7 +154,7 @@ object ExtendedOrigin {
       case PfEpayeLateCis           => ExtendedPfEpayeLateCis
       case PfEpayeP11d              => ExtendedPfEpayeP11d
       case PfSdlt                   => ExtendedPfSdlt
-      case PfCds                    => DefaultExtendedOrigin
+      case PfCds                    => ExtendedPfCds
       case PfOther                  => DefaultExtendedOrigin
       case PfP800                   => ExtendedPfP800
       case PtaP800                  => ExtendedPtaP800
@@ -257,6 +257,27 @@ object ExtendedOrigin {
         PfPillar2 => false
       case WcSa | WcCt | WcVat | WcSimpleAssessment | WcXref | WcEpayeLpp
         | WcClass1aNi | WcEpayeNi | WcEpayeLateCis | WcEpayeSeta => true
+    }
+
+    def originSupportsWelsh: Boolean = origin match {
+      case PfSa | PfVat | PfCt | PfEpayeNi | PfEpayeLpp | PfEpayeSeta |
+        PfEpayeLateCis | PfEpayeP11d | PfSdlt | PfOther | PfP800 |
+        PtaP800 | PfClass2Ni | PfInsurancePremium | PfPsAdmin | BtaSa | AppSa |
+        BtaVat | BtaEpayeBill | BtaEpayePenalty | BtaEpayeInterest | BtaEpayeGeneral |
+        BtaClass1aNi | BtaCt | BtaSdil | BcPngr | DdVat |
+        DdSdil | VcVatReturn | VcVatOther | ItSa | Amls | Ppt |
+        PfPpt | PfSpiritDrinks | PfInheritanceTax | Mib |
+        PfClass3Ni | PtaSa | PfWineAndCider | PfBioFuels | PfAirPass | PfMgd |
+        PfBeerDuty | PfGamingOrBingoDuty | PfGbPbRgDuty | PfLandfillTax | PfSdil |
+        PfAggregatesLevy | PfClimateChangeLevy | PfSimpleAssessment | PtaSimpleAssessment |
+        AppSimpleAssessment | PfTpes | CapitalGainsTax | EconomicCrimeLevy |
+        PfEconomicCrimeLevy | PfJobRetentionScheme | JrsJobRetentionScheme | PfImportedVehicles |
+        PfChildBenefitRepayments | PfAmls | PfAted | PfTrust | PtaClass3Ni |
+        AlcoholDuty | PfAlcoholDuty | VatC2c | PfVatC2c | `3psSa` | `3psVat` |
+        WcSa | WcCt | WcVat | WcSimpleAssessment | WcXref | WcEpayeLpp |
+        WcClass1aNi | WcEpayeNi | WcEpayeLateCis | WcEpayeSeta => true
+      case PfCds | PfCdsCash | PfCdsDeferment | NiEuVatOss | NiEuVatIoss |
+        PfNiEuVatOss | PfNiEuVatIoss | Pillar2 | PfPillar2 | Parcels => false
     }
   }
 }
