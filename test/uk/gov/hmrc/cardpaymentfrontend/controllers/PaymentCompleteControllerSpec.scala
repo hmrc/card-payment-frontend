@@ -291,7 +291,7 @@ class PaymentCompleteControllerSpec extends ItSpec {
         }
 
       "should have a test for all origins below this one" in {
-        TestHelpers.implementedOrigins.size shouldBe 51 withClue "** This dummy test is here to remind you to update the tests below. Bump up the expected number when an origin is added to implemented origins **"
+        TestHelpers.implementedOrigins.size shouldBe 52 withClue "** This dummy test is here to remind you to update the tests below. Bump up the expected number when an origin is added to implemented origins **"
       }
 
       TestHelpers.implementedOrigins.foreach { origin =>
@@ -2032,6 +2032,27 @@ object PaymentCompleteControllerSpec {
         "Cyfanswm a dalwyd" -> "£13.57"
       )),
       hasWelshTest                    = true,
+      hasAReturnUrl                   = false
+    )
+
+    case Origins.PfCds => TestScenarioInfo(
+      debitCardJourney                = TestJourneys.PfCds.journeyAfterSucceedDebitWebPayment,
+      creditCardJourney               = TestJourneys.PfCds.journeyAfterSucceedCreditWebPayment,
+      englishSummaryRowsDebitCard     = List(
+        "Tax" -> "CDS",
+        "Date" -> "2 November 2027",
+        "Amount" -> "£12.34"
+      ),
+      maybeWelshSummaryRowsDebitCard  = None,
+      englishSummaryRowsCreditCard    = List(
+        "Tax" -> "CDS",
+        "Date" -> "2 November 2027",
+        "Amount paid to HMRC" -> "£12.34",
+        "Card fee (9.97%), non-refundable" -> "£1.23",
+        "Total paid" -> "£13.57"
+      ),
+      maybeWelshSummaryRowsCreditCard = None,
+      hasWelshTest                    = false,
       hasAReturnUrl                   = false
     )
 

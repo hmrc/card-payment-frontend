@@ -21,6 +21,7 @@ import org.scalatest.Assertion
 import payapi.corcommon.model.cgt.CgtAccountReference
 import payapi.corcommon.model.taxes.ad.{AlcoholDutyChargeReference, AlcoholDutyReference}
 import payapi.corcommon.model.taxes.amls.AmlsPaymentReference
+import payapi.corcommon.model.taxes.cds.CdsRef
 import payapi.corcommon.model.taxes.ct.{CtChargeTypes, CtPeriod, CtUtr}
 import payapi.corcommon.model.taxes.epaye._
 import payapi.corcommon.model.taxes.other._
@@ -426,10 +427,17 @@ class OpenBankingOriginSpecificSessionDataSpec extends UnitSpec {
       roundTripJsonTest(osd, testJson)
     }
 
+    "PfCds" in {
+      val testJson = Json.parse("""{"cdsRef":"CDSI191234567890","origin":"PfCds"}""")
+      val osd = ExtendedPfCds.openBankingOriginSpecificSessionData(TestJourneys.PfCds.journeyBeforeBeginWebPayment.journeySpecificData)
+      testOsd(osd, PfCdsSessionData(CdsRef("CDSI191234567890"), None), "CDSI191234567890", "CDSI191234567890")
+      roundTripJsonTest(osd, testJson)
+    }
+
   }
 
   "sanity check for implemented origins" in {
-    TestHelpers.implementedOrigins.size shouldBe 51 withClue "** This dummy test is here to remind you to update the tests above. Bump up the expected number when an origin is added to implemented origins **"
+    TestHelpers.implementedOrigins.size shouldBe 52 withClue "** This dummy test is here to remind you to update the tests above. Bump up the expected number when an origin is added to implemented origins **"
   }
 
 }

@@ -100,11 +100,11 @@ class AuditService @Inject() (auditConnector: AuditConnector)(implicit ec: Execu
       paymentStatus:        String
   )(implicit journeyRequest: JourneyRequest[_], headerCarrier: HeaderCarrier): Unit = {
     audit(toPaymentResult(
-      journeyRequest.readFromSession[Address](journeyRequest.journeyId, Keys.address),
-      merchantCode,
-      transactionReference,
-      paymentStatus,
-      journeyRequest
+      optionalAddress      = journeyRequest.readFromSession[Address](journeyRequest.journeyId, Keys.address),
+      merchantCode         = merchantCode,
+      transactionReference = transactionReference,
+      paymentStatus        = paymentStatus,
+      journeyRequest       = journeyRequest
     ))
   }
 
