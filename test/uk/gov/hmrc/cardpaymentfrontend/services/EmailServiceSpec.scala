@@ -250,17 +250,17 @@ class EmailServiceSpec extends ItSpec with TableDrivenPropertyChecks {
       (WcEpayeLateCis, "Cynllun y Diwydiant Adeiladu (CIS) - cosb am dalu’n hwyr", "yn gorffen gyda 89012", None, None, "cy"),
       (WcEpayeLateCis, "Cynllun y Diwydiant Adeiladu (CIS) - cosb am dalu’n hwyr", "yn gorffen gyda 89012", commission, Some("13.57"), "cy"),
 
-      (WcEpayeSeta, "Employers’ PAYE Settlement Agreement", "ending with 89012", None, Some("12.34"), "en"),
+      (WcEpayeSeta, "Employers’ PAYE Settlement Agreement", "ending with 89012", None, None, "en"),
       (WcEpayeSeta, "Employers’ PAYE Settlement Agreement", "ending with 89012", commission, Some("13.57"), "en"),
-      (WcEpayeSeta, "Cytundeb Setliad TWE y Cyflogwr", "yn gorffen gyda 89012", None, Some("12.34"), "cy"),
+      (WcEpayeSeta, "Cytundeb Setliad TWE y Cyflogwr", "yn gorffen gyda 89012", None, None, "cy"),
       (WcEpayeSeta, "Cytundeb Setliad TWE y Cyflogwr", "yn gorffen gyda 89012", commission, Some("13.57"), "cy"),
 
-      (WcClass1aNi, "Employers’ Class 1A National Insurance", "ending with 02713", None, Some("12.34"), "en"),
+      (WcClass1aNi, "Employers’ Class 1A National Insurance", "ending with 02713", None, None, "en"),
       (WcClass1aNi, "Employers’ Class 1A National Insurance", "ending with 02713", commission, Some("13.57"), "en"),
-      (WcClass1aNi, "Yswiriant Gwladol Dosbarth 1A y Cyflogwr", "yn gorffen gyda 02713", None, Some("12.34"), "cy"),
+      (WcClass1aNi, "Yswiriant Gwladol Dosbarth 1A y Cyflogwr", "yn gorffen gyda 02713", None, None, "cy"),
       (WcClass1aNi, "Yswiriant Gwladol Dosbarth 1A y Cyflogwr", "yn gorffen gyda 02713", commission, Some("13.57"), "cy"),
 
-      (PfChildBenefitRepayments, "Repay Child Benefit overpayments", "ending with 89123", None, Some("12.34"), "en"),
+      (PfChildBenefitRepayments, "Repay Child Benefit overpayments", "ending with 89123", None, None, "en"),
       (PfChildBenefitRepayments, "Repay Child Benefit overpayments", "ending with 89123", commission, Some("13.57"), "en"),
       (PfChildBenefitRepayments, "Ad-dalu gordaliadau Budd-dal Plant", "yn gorffen gyda 89123", None, None, "cy"),
       (PfChildBenefitRepayments, "Ad-dalu gordaliadau Budd-dal Plant", "yn gorffen gyda 89123", commission, Some("13.57"), "cy"),
@@ -292,17 +292,17 @@ class EmailServiceSpec extends ItSpec with TableDrivenPropertyChecks {
 
       (PtaSimpleAssessment, "Simple Assessment", "ending with 22027", None, None, "en"),
       (PtaSimpleAssessment, "Simple Assessment", "ending with 22027", commission, Some("13.57"), "en"),
-      (PtaSimpleAssessment, "Asesiad Syml", "yn gorffen gyda 22027", None, Some("12.34"), "cy"),
+      (PtaSimpleAssessment, "Asesiad Syml", "yn gorffen gyda 22027", None, None, "cy"),
       (PtaSimpleAssessment, "Asesiad Syml", "yn gorffen gyda 22027", commission, Some("13.57"), "cy"),
 
-      (PfJobRetentionScheme, "Pay Coronavirus Job Retention Scheme grants back", "ending with 78901", None, Some("12.34"), "en"),
+      (PfJobRetentionScheme, "Pay Coronavirus Job Retention Scheme grants back", "ending with 78901", None, None, "en"),
       (PfJobRetentionScheme, "Pay Coronavirus Job Retention Scheme grants back", "ending with 78901", commission, Some("13.57"), "en"),
-      (PfJobRetentionScheme, "Talu grantiau’r Cynllun Cadw Swyddi yn sgil Coronafeirws yn ôl", "yn gorffen gyda 78901", None, Some("12.34"), "cy"),
+      (PfJobRetentionScheme, "Talu grantiau’r Cynllun Cadw Swyddi yn sgil Coronafeirws yn ôl", "yn gorffen gyda 78901", None, None, "cy"),
       (PfJobRetentionScheme, "Talu grantiau’r Cynllun Cadw Swyddi yn sgil Coronafeirws yn ôl", "yn gorffen gyda 78901", commission, Some("13.57"), "cy"),
 
-      (JrsJobRetentionScheme, "Pay Coronavirus Job Retention Scheme grants back", "ending with 78901", None, Some("12.34"), "en"),
+      (JrsJobRetentionScheme, "Pay Coronavirus Job Retention Scheme grants back", "ending with 78901", None, None, "en"),
       (JrsJobRetentionScheme, "Pay Coronavirus Job Retention Scheme grants back", "ending with 78901", commission, Some("13.57"), "en"),
-      (JrsJobRetentionScheme, "Talu grantiau’r Cynllun Cadw Swyddi yn sgil Coronafeirws yn ôl", "yn gorffen gyda 78901", None, Some("12.34"), "cy"),
+      (JrsJobRetentionScheme, "Talu grantiau’r Cynllun Cadw Swyddi yn sgil Coronafeirws yn ôl", "yn gorffen gyda 78901", None, None, "cy"),
       (JrsJobRetentionScheme, "Talu grantiau’r Cynllun Cadw Swyddi yn sgil Coronafeirws yn ôl", "yn gorffen gyda 78901", commission, Some("13.57"), "cy")
     )
 
