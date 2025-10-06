@@ -194,16 +194,19 @@ check-your-details.PtaSimpleAssessment.tax-year = Tax year
 check-your-details.PtaSimpleAssessment.tax-year.value = 6 April {0} to 5 April {1}
 check-your-details.PfJobRetentionScheme.reference = Payment reference
 check-your-details.JrsJobRetentionScheme.reference = Payment reference
-check-your-details.PfCds.reference = CDS Reference Number
-check-your-details.NiEuVatOss.reference = VAT registration number
+check-your-details.NiEuVatOss.reference = Payment reference
+check-your-details.NiEuVatOss.vat-number = VAT Number
 check-your-details.NiEuVatOss.tax-year = Return period
-check-your-details.PfNiEuVatOss.reference = VAT registration number
+check-your-details.PfNiEuVatOss.reference = Payment reference
+check-your-details.PfNiEuVatOss.vat-number = VAT Number
 check-your-details.PfNiEuVatOss.tax-year = Return period
-check-your-details.NiEuVatIoss.reference = IOSS registration number
+check-your-details.NiEuVatIoss.reference = Payment reference
+check-your-details.NiEuVatIoss.ioss-number = IOSS Number
 check-your-details.NiEuVatIoss.tax-year = Return period
-check-your-details.PfNiEuVatIoss.reference = IOSS registration number
+check-your-details.PfNiEuVatIoss.reference = Payment reference
+check-your-details.PfNiEuVatIoss.ioss-number = IOSS Number
 check-your-details.PfNiEuVatIoss.tax-year = Return period
-
+check-your-details.PfCds.reference = CDS Reference Number
 
 ## Address Page
 address.heading = Card billing address

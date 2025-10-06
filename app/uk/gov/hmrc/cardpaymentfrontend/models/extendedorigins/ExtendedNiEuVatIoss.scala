@@ -23,7 +23,7 @@ import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
 import uk.gov.hmrc.cardpaymentfrontend.models.PaymentMethod._
 import uk.gov.hmrc.cardpaymentfrontend.models.openbanking.{NiEuVatIossSessionData, OriginSpecificSessionData}
 import uk.gov.hmrc.cardpaymentfrontend.models.{CheckYourAnswersRow, PaymentMethod}
-import uk.gov.hmrc.cardpaymentfrontend.util.Period.displayCalendarPeriodMonthAndYear
+import uk.gov.hmrc.cardpaymentfrontend.util.Period.displayCalendarPeriodMonth
 
 object ExtendedNiEuVatIoss extends ExtendedOrigin {
   override val serviceNameMessageKey: String = "service-name.NiEuVatIoss"
@@ -33,25 +33,34 @@ object ExtendedNiEuVatIoss extends ExtendedOrigin {
   def paymentMethods(): Set[PaymentMethod] = Set(Card, OpenBanking, Bacs)
 
   override def checkYourAnswersReferenceRow(journeyRequest: JourneyRequest[AnyContent])(payFrontendBaseUrl: String): Option[CheckYourAnswersRow] = {
-    journeyRequest.journey.journeySpecificData.reference.map { vrn =>
+    journeyRequest.journey.journeySpecificData.reference.map { reference =>
       CheckYourAnswersRow(
         titleMessageKey = "check-your-details.NiEuVatIoss.reference",
-        value           = Seq(vrn.value),
+        value           = Seq(reference.value),
         changeLink      = None
       )
     }
   }
 
   override def checkYourAnswersAdditionalReferenceRow(journeyRequest: JourneyRequest[AnyContent])(payFrontendBaseUrl: String)(implicit messages: Messages): Option[Seq[CheckYourAnswersRow]] = {
-    val period = journeyRequest.journey.journeySpecificData match {
-      case jsd: JsdNiEuVatIoss => jsd.period
-      case _                   => throw new RuntimeException("Incorrect origin found")
+    journeyRequest.journey.journeySpecificData match {
+      case jsd: JsdNiEuVatIoss =>
+        val ioss = jsd.ioss.canonicalizedValue
+        val period = jsd.period
+        Some(Seq(
+          CheckYourAnswersRow(
+            titleMessageKey = "check-your-details.NiEuVatIoss.ioss-number",
+            value           = Seq(ioss),
+            changeLink      = None
+          ),
+          CheckYourAnswersRow(
+            titleMessageKey = "check-your-details.NiEuVatIoss.tax-year",
+            value           = Seq(displayCalendarPeriodMonth(period)),
+            changeLink      = None
+          )
+        ))
+      case _ => None
     }
-    Some(Seq(CheckYourAnswersRow(
-      titleMessageKey = "check-your-details.NiEuVatIoss.tax-year",
-      value           = Seq(displayCalendarPeriodMonthAndYear(period)),
-      changeLink      = None
-    )))
   }
 
   override def openBankingOriginSpecificSessionData: JourneySpecificData => Option[OriginSpecificSessionData] = {
@@ -59,7 +68,7 @@ object ExtendedNiEuVatIoss extends ExtendedOrigin {
     case _                 => throw new RuntimeException("Incorrect origin found")
   }
 
-  override def surveyAuditName: String = "vat"
+  override def surveyAuditName: String = "ni-eu-vat-ioss"
   override def surveyReturnHref: String = "https://www.gov.uk/government/organisations/hm-revenue-customs"
   override def surveyReturnMessageKey: String = "payments-survey.other.return-message"
   override def surveyIsWelshSupported: Boolean = false

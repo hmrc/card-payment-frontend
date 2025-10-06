@@ -23,7 +23,7 @@ import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
 import uk.gov.hmrc.cardpaymentfrontend.models.PaymentMethod._
 import uk.gov.hmrc.cardpaymentfrontend.models.openbanking.{OriginSpecificSessionData, PfNiEuVatOssSessionData}
 import uk.gov.hmrc.cardpaymentfrontend.models.{CheckYourAnswersRow, Link, PaymentMethod}
-import uk.gov.hmrc.cardpaymentfrontend.util.Period.displayCalendarQuarterAndYear
+import uk.gov.hmrc.cardpaymentfrontend.util.Period.displayCalendarQuarter
 
 object ExtendedPfNiEuVatOss extends ExtendedOrigin {
   override val serviceNameMessageKey: String = "service-name.PfNiEuVatOss"
@@ -33,15 +33,11 @@ object ExtendedPfNiEuVatOss extends ExtendedOrigin {
   def paymentMethods(): Set[PaymentMethod] = Set(Card, OpenBanking, Bacs)
 
   override def checkYourAnswersReferenceRow(journeyRequest: JourneyRequest[AnyContent])(payFrontendBaseUrl: String): Option[CheckYourAnswersRow] = {
-    journeyRequest.journey.journeySpecificData.reference.map { vrn =>
+    journeyRequest.journey.journeySpecificData.reference.map { reference =>
       CheckYourAnswersRow(
         titleMessageKey = "check-your-details.PfNiEuVatOss.reference",
-        value           = Seq(vrn.value),
-        changeLink      = Some(Link(
-          href       = Call("GET", changeReferenceUrl(payFrontendBaseUrl)),
-          linkId     = "check-your-details-reference-change-link",
-          messageKey = "check-your-details.change"
-        ))
+        value           = Seq(reference.value),
+        changeLink      = None
       )
     }
   }
@@ -49,13 +45,25 @@ object ExtendedPfNiEuVatOss extends ExtendedOrigin {
   override def checkYourAnswersAdditionalReferenceRow(journeyRequest: JourneyRequest[AnyContent])(payFrontendBaseUrl: String)(implicit messages: Messages): Option[Seq[CheckYourAnswersRow]] = {
     journeyRequest.journey.journeySpecificData match {
       case jsd: JsdPfNiEuVatOss =>
-        jsd.period.map { period =>
-          Seq(CheckYourAnswersRow(
-            titleMessageKey = "check-your-details.PfNiEuVatOss.tax-year",
-            value           = Seq(displayCalendarQuarterAndYear(period)),
+        for {
+          period <- jsd.period
+          vrn <- jsd.vrn
+        } yield Seq(
+          CheckYourAnswersRow(
+            titleMessageKey = "check-your-details.PfNiEuVatOss.vat-number",
+            value           = Seq(vrn.canonicalizedValue),
             changeLink      = None
-          ))
-        }
+          ),
+          CheckYourAnswersRow(
+            titleMessageKey = "check-your-details.PfNiEuVatOss.tax-year",
+            value           = Seq(displayCalendarQuarter(period)),
+            changeLink      = Some(Link(
+              href       = Call("GET", s"$payFrontendBaseUrl/change-vat-period?fromCardPayment=true"),
+              linkId     = "check-your-details-period-change-link",
+              messageKey = "check-your-details.change"
+            ))
+          )
+        )
       case _ => None
     }
   }
@@ -70,7 +78,7 @@ object ExtendedPfNiEuVatOss extends ExtendedOrigin {
       throw new RuntimeException("Incorrect origin found")
   }
 
-  override def surveyAuditName: String = "vat"
+  override def surveyAuditName: String = "ni-eu-vat-oss"
   override def surveyReturnHref: String = "https://www.gov.uk/government/organisations/hm-revenue-customs"
   override def surveyReturnMessageKey: String = "payments-survey.other.return-message"
   override def surveyIsWelshSupported: Boolean = false
