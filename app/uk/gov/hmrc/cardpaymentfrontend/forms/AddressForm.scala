@@ -107,7 +107,7 @@ object AddressForm {
 
       if (selectedCountryIsGBR && postcode.forall(_.isWhitespace))
         Left(Seq(FormError("postcode", "address.field-name.error.postcode.empty")))
-      else if (selectedCountryIsGBR && !postcode.matches(addressUkPostcodeRegex.regex) && !postcode.matches(addressBarclaycardPostcodeRegex.regex))
+      else if (selectedCountryIsGBR && (!postcode.matches(addressUkPostcodeRegex.regex) || !postcode.matches(addressBarclaycardPostcodeRegex.regex)))
         Left(Seq(FormError("postcode", "address.field-name.error.postcode.invalid-character")))
       else if (!selectedCountryIsGBR && postcode.forall(_.isWhitespace))
         Right(None)

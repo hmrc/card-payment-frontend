@@ -283,7 +283,7 @@ class AddressFormSpec extends UnitSpec {
         "line2" -> "🐸",
         "city" -> "🍄",
         "county" -> "🦕",
-        "postcode" -> "AA11 AA",
+        "postcode" -> "😀",
         "country" -> "GBR"
       )
 
@@ -293,7 +293,8 @@ class AddressFormSpec extends UnitSpec {
         FormError("line1", List("address.field-name.error.line1.invalid-character")),
         FormError("line2", List("address.field-name.error.line2.invalid-character")),
         FormError("city", List("address.field-name.error.city.invalid-character")),
-        FormError("county", List("address.field-name.error.county.invalid-character"))
+        FormError("county", List("address.field-name.error.county.invalid-character")),
+        FormError("postcode", List("address.field-name.error.postcode.invalid-character"))
       )
     }
 
