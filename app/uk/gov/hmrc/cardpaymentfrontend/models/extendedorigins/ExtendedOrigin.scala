@@ -17,7 +17,8 @@
 package uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins
 
 import payapi.cardpaymentjourney.model.journey.JourneySpecificData
-import payapi.corcommon.model.{Origin, Origins, Reference}
+import payapi.corcommon.model.Origins._
+import payapi.corcommon.model.{Origin, Reference}
 import play.api.i18n.Messages
 import play.api.mvc.{AnyContent, Call}
 import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
@@ -144,118 +145,118 @@ trait ExtendedOrigin {
 object ExtendedOrigin {
   implicit class OriginExtended(origin: Origin) {
     def lift: ExtendedOrigin = origin match {
-      case Origins.PfSa                     => ExtendedPfSa
-      case Origins.PfVat                    => ExtendedPfVat
-      case Origins.PfCt                     => ExtendedPfCt
-      case Origins.PfEpayeNi                => ExtendedPfEpayeNi
-      case Origins.PfEpayeLpp               => ExtendedPfEpayeLpp
-      case Origins.PfEpayeSeta              => ExtendedPfEpayeSeta
-      case Origins.PfEpayeLateCis           => ExtendedPfEpayeLateCis
-      case Origins.PfEpayeP11d              => ExtendedPfEpayeP11d
-      case Origins.PfSdlt                   => ExtendedPfSdlt
-      case Origins.PfCds                    => DefaultExtendedOrigin
-      case Origins.PfOther                  => DefaultExtendedOrigin
-      case Origins.PfP800                   => ExtendedPfP800
-      case Origins.PtaP800                  => ExtendedPtaP800
-      case Origins.PfClass2Ni               => DefaultExtendedOrigin
-      case Origins.PfInsurancePremium       => DefaultExtendedOrigin
-      case Origins.PfPsAdmin                => DefaultExtendedOrigin
-      case Origins.BtaSa                    => ExtendedBtaSa
-      case Origins.AppSa                    => DefaultExtendedOrigin
-      case Origins.BtaVat                   => ExtendedBtaVat
-      case Origins.BtaEpayeBill             => ExtendedBtaEpayeBill
-      case Origins.BtaEpayePenalty          => ExtendedBtaEpayePenalty
-      case Origins.BtaEpayeInterest         => ExtendedBtaEpayeInterest
-      case Origins.BtaEpayeGeneral          => ExtendedBtaEpayeGeneral
-      case Origins.BtaClass1aNi             => ExtendedBtaClass1aNi
-      case Origins.BtaCt                    => ExtendedBtaCt
-      case Origins.BtaSdil                  => ExtendedBtaSdil
-      case Origins.BcPngr                   => DefaultExtendedOrigin
-      case Origins.Parcels                  => DefaultExtendedOrigin
-      case Origins.DdVat                    => DefaultExtendedOrigin
-      case Origins.DdSdil                   => DefaultExtendedOrigin
-      case Origins.VcVatReturn              => ExtendedVcVatReturn
-      case Origins.VcVatOther               => ExtendedVcVatOther
-      case Origins.ItSa                     => ExtendedItSa
-      case Origins.Amls                     => ExtendedAmls
-      case Origins.Ppt                      => ExtendedPpt
-      case Origins.PfCdsCash                => DefaultExtendedOrigin
-      case Origins.PfPpt                    => ExtendedPfPpt
-      case Origins.PfSpiritDrinks           => DefaultExtendedOrigin
-      case Origins.PfInheritanceTax         => DefaultExtendedOrigin
-      case Origins.Mib                      => DefaultExtendedOrigin
-      case Origins.PfClass3Ni               => DefaultExtendedOrigin
-      case Origins.PtaSa                    => ExtendedPtaSa
-      case Origins.PfWineAndCider           => DefaultExtendedOrigin
-      case Origins.PfBioFuels               => DefaultExtendedOrigin
-      case Origins.PfAirPass                => DefaultExtendedOrigin
-      case Origins.PfMgd                    => DefaultExtendedOrigin
-      case Origins.PfBeerDuty               => DefaultExtendedOrigin
-      case Origins.PfGamingOrBingoDuty      => DefaultExtendedOrigin
-      case Origins.PfGbPbRgDuty             => DefaultExtendedOrigin
-      case Origins.PfLandfillTax            => DefaultExtendedOrigin
-      case Origins.PfSdil                   => ExtendedPfSdil
-      case Origins.PfAggregatesLevy         => DefaultExtendedOrigin
-      case Origins.PfClimateChangeLevy      => DefaultExtendedOrigin
-      case Origins.PfSimpleAssessment       => ExtendedPfSimpleAssessment
-      case Origins.PtaSimpleAssessment      => ExtendedPtaSimpleAssessment
-      case Origins.AppSimpleAssessment      => DefaultExtendedOrigin
-      case Origins.PfTpes                   => DefaultExtendedOrigin
-      case Origins.CapitalGainsTax          => ExtendedCapitalGainsTax
-      case Origins.EconomicCrimeLevy        => ExtendedEconomicCrimeLevy
-      case Origins.PfEconomicCrimeLevy      => ExtendedPfEconomicCrimeLevy
-      case Origins.PfJobRetentionScheme     => DefaultExtendedOrigin
-      case Origins.JrsJobRetentionScheme    => DefaultExtendedOrigin
-      case Origins.PfImportedVehicles       => DefaultExtendedOrigin
-      case Origins.PfChildBenefitRepayments => ExtendedPfChildBenefitRepayments
-      case Origins.NiEuVatOss               => DefaultExtendedOrigin
-      case Origins.PfNiEuVatOss             => DefaultExtendedOrigin
-      case Origins.NiEuVatIoss              => DefaultExtendedOrigin
-      case Origins.PfNiEuVatIoss            => DefaultExtendedOrigin
-      case Origins.PfAmls                   => ExtendedPfAmls
-      case Origins.PfAted                   => DefaultExtendedOrigin
-      case Origins.PfCdsDeferment           => DefaultExtendedOrigin
-      case Origins.PfTrust                  => DefaultExtendedOrigin
-      case Origins.PtaClass3Ni              => DefaultExtendedOrigin
-      case Origins.PfAlcoholDuty            => ExtendedPfAlcoholDuty
-      case Origins.AlcoholDuty              => ExtendedAlcoholDuty
-      case Origins.VatC2c                   => ExtendedVatC2c
-      case Origins.PfVatC2c                 => ExtendedPfVatC2c
-      case Origins.`3psSa`                  => DefaultExtendedOrigin
-      case Origins.`3psVat`                 => DefaultExtendedOrigin
-      case Origins.PfPillar2                => DefaultExtendedOrigin
-      case Origins.Pillar2                  => DefaultExtendedOrigin
-      case Origins.WcSa                     => ExtendedWcSa
-      case Origins.WcCt                     => ExtendedWcCt
-      case Origins.WcVat                    => ExtendedWcVat
-      case Origins.WcSimpleAssessment       => ExtendedWcSimpleAssessment
-      case Origins.WcClass1aNi              => ExtendedWcClass1aNi
-      case Origins.WcXref                   => ExtendedWcXref
-      case Origins.WcEpayeLpp               => ExtendedWcEpayeLpp
-      case Origins.WcEpayeNi                => ExtendedWcEpayeNi
-      case Origins.WcEpayeLateCis           => ExtendedWcEpayeLateCis
-      case Origins.WcEpayeSeta              => ExtendedWcEpayeSeta
+      case PfSa                     => ExtendedPfSa
+      case PfVat                    => ExtendedPfVat
+      case PfCt                     => ExtendedPfCt
+      case PfEpayeNi                => ExtendedPfEpayeNi
+      case PfEpayeLpp               => ExtendedPfEpayeLpp
+      case PfEpayeSeta              => ExtendedPfEpayeSeta
+      case PfEpayeLateCis           => ExtendedPfEpayeLateCis
+      case PfEpayeP11d              => ExtendedPfEpayeP11d
+      case PfSdlt                   => ExtendedPfSdlt
+      case PfCds                    => DefaultExtendedOrigin
+      case PfOther                  => DefaultExtendedOrigin
+      case PfP800                   => ExtendedPfP800
+      case PtaP800                  => ExtendedPtaP800
+      case PfClass2Ni               => DefaultExtendedOrigin
+      case PfInsurancePremium       => DefaultExtendedOrigin
+      case PfPsAdmin                => DefaultExtendedOrigin
+      case BtaSa                    => ExtendedBtaSa
+      case AppSa                    => DefaultExtendedOrigin
+      case BtaVat                   => ExtendedBtaVat
+      case BtaEpayeBill             => ExtendedBtaEpayeBill
+      case BtaEpayePenalty          => ExtendedBtaEpayePenalty
+      case BtaEpayeInterest         => ExtendedBtaEpayeInterest
+      case BtaEpayeGeneral          => ExtendedBtaEpayeGeneral
+      case BtaClass1aNi             => ExtendedBtaClass1aNi
+      case BtaCt                    => ExtendedBtaCt
+      case BtaSdil                  => ExtendedBtaSdil
+      case BcPngr                   => DefaultExtendedOrigin
+      case Parcels                  => DefaultExtendedOrigin
+      case DdVat                    => DefaultExtendedOrigin
+      case DdSdil                   => DefaultExtendedOrigin
+      case VcVatReturn              => ExtendedVcVatReturn
+      case VcVatOther               => ExtendedVcVatOther
+      case ItSa                     => ExtendedItSa
+      case Amls                     => ExtendedAmls
+      case Ppt                      => ExtendedPpt
+      case PfCdsCash                => DefaultExtendedOrigin
+      case PfPpt                    => ExtendedPfPpt
+      case PfSpiritDrinks           => DefaultExtendedOrigin
+      case PfInheritanceTax         => DefaultExtendedOrigin
+      case Mib                      => DefaultExtendedOrigin
+      case PfClass3Ni               => DefaultExtendedOrigin
+      case PtaSa                    => ExtendedPtaSa
+      case PfWineAndCider           => DefaultExtendedOrigin
+      case PfBioFuels               => DefaultExtendedOrigin
+      case PfAirPass                => DefaultExtendedOrigin
+      case PfMgd                    => DefaultExtendedOrigin
+      case PfBeerDuty               => DefaultExtendedOrigin
+      case PfGamingOrBingoDuty      => DefaultExtendedOrigin
+      case PfGbPbRgDuty             => DefaultExtendedOrigin
+      case PfLandfillTax            => DefaultExtendedOrigin
+      case PfSdil                   => ExtendedPfSdil
+      case PfAggregatesLevy         => DefaultExtendedOrigin
+      case PfClimateChangeLevy      => DefaultExtendedOrigin
+      case PfSimpleAssessment       => ExtendedPfSimpleAssessment
+      case PtaSimpleAssessment      => ExtendedPtaSimpleAssessment
+      case AppSimpleAssessment      => DefaultExtendedOrigin
+      case PfTpes                   => DefaultExtendedOrigin
+      case CapitalGainsTax          => ExtendedCapitalGainsTax
+      case EconomicCrimeLevy        => ExtendedEconomicCrimeLevy
+      case PfEconomicCrimeLevy      => ExtendedPfEconomicCrimeLevy
+      case PfJobRetentionScheme     => ExtendedPfJobRetentionScheme
+      case JrsJobRetentionScheme    => ExtendedJrsJobRetentionScheme
+      case PfImportedVehicles       => DefaultExtendedOrigin
+      case PfChildBenefitRepayments => ExtendedPfChildBenefitRepayments
+      case NiEuVatOss               => DefaultExtendedOrigin
+      case PfNiEuVatOss             => DefaultExtendedOrigin
+      case NiEuVatIoss              => DefaultExtendedOrigin
+      case PfNiEuVatIoss            => DefaultExtendedOrigin
+      case PfAmls                   => ExtendedPfAmls
+      case PfAted                   => DefaultExtendedOrigin
+      case PfCdsDeferment           => DefaultExtendedOrigin
+      case PfTrust                  => DefaultExtendedOrigin
+      case PtaClass3Ni              => DefaultExtendedOrigin
+      case PfAlcoholDuty            => ExtendedPfAlcoholDuty
+      case AlcoholDuty              => ExtendedAlcoholDuty
+      case VatC2c                   => ExtendedVatC2c
+      case PfVatC2c                 => ExtendedPfVatC2c
+      case `3psSa`                  => DefaultExtendedOrigin
+      case `3psVat`                 => DefaultExtendedOrigin
+      case PfPillar2                => DefaultExtendedOrigin
+      case Pillar2                  => DefaultExtendedOrigin
+      case WcSa                     => ExtendedWcSa
+      case WcCt                     => ExtendedWcCt
+      case WcVat                    => ExtendedWcVat
+      case WcSimpleAssessment       => ExtendedWcSimpleAssessment
+      case WcClass1aNi              => ExtendedWcClass1aNi
+      case WcXref                   => ExtendedWcXref
+      case WcEpayeLpp               => ExtendedWcEpayeLpp
+      case WcEpayeNi                => ExtendedWcEpayeNi
+      case WcEpayeLateCis           => ExtendedWcEpayeLateCis
+      case WcEpayeSeta              => ExtendedWcEpayeSeta
     }
 
     def isAWebChatOrigin: Boolean = origin match {
-      case Origins.PfSa | Origins.PfVat | Origins.PfCt | Origins.PfEpayeNi | Origins.PfEpayeLpp | Origins.PfEpayeSeta |
-        Origins.PfEpayeLateCis | Origins.PfEpayeP11d | Origins.PfSdlt | Origins.PfCds | Origins.PfOther | Origins.PfP800 |
-        Origins.PtaP800 | Origins.PfClass2Ni | Origins.PfInsurancePremium | Origins.PfPsAdmin | Origins.BtaSa | Origins.AppSa |
-        Origins.BtaVat | Origins.BtaEpayeBill | Origins.BtaEpayePenalty | Origins.BtaEpayeInterest | Origins.BtaEpayeGeneral |
-        Origins.BtaClass1aNi | Origins.BtaCt | Origins.BtaSdil | Origins.BcPngr | Origins.Parcels | Origins.DdVat |
-        Origins.DdSdil | Origins.VcVatReturn | Origins.VcVatOther | Origins.ItSa | Origins.Amls | Origins.Ppt |
-        Origins.PfCdsCash | Origins.PfPpt | Origins.PfSpiritDrinks | Origins.PfInheritanceTax | Origins.Mib |
-        Origins.PfClass3Ni | Origins.PtaSa | Origins.PfWineAndCider | Origins.PfBioFuels | Origins.PfAirPass | Origins.PfMgd |
-        Origins.PfBeerDuty | Origins.PfGamingOrBingoDuty | Origins.PfGbPbRgDuty | Origins.PfLandfillTax | Origins.PfSdil |
-        Origins.PfAggregatesLevy | Origins.PfClimateChangeLevy | Origins.PfSimpleAssessment | Origins.PtaSimpleAssessment |
-        Origins.AppSimpleAssessment | Origins.PfTpes | Origins.CapitalGainsTax | Origins.EconomicCrimeLevy |
-        Origins.PfEconomicCrimeLevy | Origins.PfJobRetentionScheme | Origins.JrsJobRetentionScheme | Origins.PfImportedVehicles |
-        Origins.PfChildBenefitRepayments | Origins.NiEuVatOss | Origins.PfNiEuVatOss | Origins.NiEuVatIoss | Origins.PfNiEuVatIoss |
-        Origins.PfAmls | Origins.PfAted | Origins.PfCdsDeferment | Origins.PfTrust | Origins.PtaClass3Ni | Origins.AlcoholDuty |
-        Origins.PfAlcoholDuty | Origins.VatC2c | Origins.PfVatC2c | Origins.`3psSa` | Origins.`3psVat` | Origins.Pillar2 |
-        Origins.PfPillar2 => false
-      case Origins.WcSa | Origins.WcCt | Origins.WcVat | Origins.WcSimpleAssessment | Origins.WcXref | Origins.WcEpayeLpp
-        | Origins.WcClass1aNi | Origins.WcEpayeNi | Origins.WcEpayeLateCis | Origins.WcEpayeSeta => true
+      case PfSa | PfVat | PfCt | PfEpayeNi | PfEpayeLpp | PfEpayeSeta |
+        PfEpayeLateCis | PfEpayeP11d | PfSdlt | PfCds | PfOther | PfP800 |
+        PtaP800 | PfClass2Ni | PfInsurancePremium | PfPsAdmin | BtaSa | AppSa |
+        BtaVat | BtaEpayeBill | BtaEpayePenalty | BtaEpayeInterest | BtaEpayeGeneral |
+        BtaClass1aNi | BtaCt | BtaSdil | BcPngr | Parcels | DdVat |
+        DdSdil | VcVatReturn | VcVatOther | ItSa | Amls | Ppt |
+        PfCdsCash | PfPpt | PfSpiritDrinks | PfInheritanceTax | Mib |
+        PfClass3Ni | PtaSa | PfWineAndCider | PfBioFuels | PfAirPass | PfMgd |
+        PfBeerDuty | PfGamingOrBingoDuty | PfGbPbRgDuty | PfLandfillTax | PfSdil |
+        PfAggregatesLevy | PfClimateChangeLevy | PfSimpleAssessment | PtaSimpleAssessment |
+        AppSimpleAssessment | PfTpes | CapitalGainsTax | EconomicCrimeLevy |
+        PfEconomicCrimeLevy | PfJobRetentionScheme | JrsJobRetentionScheme | PfImportedVehicles |
+        PfChildBenefitRepayments | NiEuVatOss | PfNiEuVatOss | NiEuVatIoss | PfNiEuVatIoss |
+        PfAmls | PfAted | PfCdsDeferment | PfTrust | PtaClass3Ni | AlcoholDuty |
+        PfAlcoholDuty | VatC2c | PfVatC2c | `3psSa` | `3psVat` | Pillar2 |
+        PfPillar2 => false
+      case WcSa | WcCt | WcVat | WcSimpleAssessment | WcXref | WcEpayeLpp
+        | WcClass1aNi | WcEpayeNi | WcEpayeLateCis | WcEpayeSeta => true
     }
   }
 }

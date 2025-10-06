@@ -18,9 +18,8 @@ package uk.gov.hmrc.cardpaymentfrontend.testonly
 
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import uk.gov.hmrc.cardpaymentfrontend.actions.{Actions, JourneyRequest}
+import uk.gov.hmrc.cardpaymentfrontend.actions.Actions
 import uk.gov.hmrc.cardpaymentfrontend.connectors.PayApiConnector
-import uk.gov.hmrc.cardpaymentfrontend.models.EmailAddress
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
 import javax.inject.{Inject, Singleton}
@@ -37,10 +36,6 @@ class TestOnlyController @Inject() (
   val showJourney: Action[AnyContent] = Action.async { implicit request =>
     payApiConnector.findLatestJourneyBySessionId()
       .map(maybeJourney => Ok(Json.toJson(maybeJourney)))
-  }
-
-  val addAnEmailToSession: Action[AnyContent] = actions.journeyAction { implicit request: JourneyRequest[AnyContent] =>
-    Ok("email added to session").placeInSession[EmailAddress](request.journeyId, (Keys.email, EmailAddress("testemail@blah.com")))
   }
 
   val removeAddress: Action[AnyContent] = actions.journeyAction { implicit request =>

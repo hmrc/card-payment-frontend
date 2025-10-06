@@ -79,8 +79,8 @@ service-name.PfTpes =
 service-name.CapitalGainsTax = Rhoi gwybod am a thalu Treth Enillion Cyfalaf ar eiddo yn y DU
 service-name.EconomicCrimeLevy = Talu Ardoll Troseddau Economaidd
 service-name.PfEconomicCrimeLevy = Talu Ardoll Troseddau Economaidd
-service-name.PfJobRetentionScheme =
-service-name.JrsJobRetentionScheme =
+service-name.PfJobRetentionScheme = Talu grantiau’r Cynllun Cadw Swyddi yn sgil Coronafeirws yn ôl
+service-name.JrsJobRetentionScheme = Talu grantiau’r Cynllun Cadw Swyddi yn sgil Coronafeirws yn ôl
 service-name.PfImportedVehicles =
 service-name.PfChildBenefitRepayments = Ad-dalu gordaliadau Budd-dal Plant
 service-name.NiEuVatOss =
@@ -192,6 +192,8 @@ check-your-details.PtaSimpleAssessment.reference = Cyfeirnod y taliad
 check-your-details.PtaSimpleAssessment.charge-reference = Cyfeirnod y tâl
 check-your-details.PtaSimpleAssessment.tax-year = Blwyddyn dreth
 check-your-details.PtaSimpleAssessment.tax-year.value = 6 Ebrill {0} i 5 Ebrill {1}
+check-your-details.PfJobRetentionScheme.reference = Cyfeirnod y taliad
+check-your-details.JrsJobRetentionScheme.reference = Cyfeirnod y taliad
 
 
 ## Address Page
@@ -334,8 +336,8 @@ payment-complete.tax-name.PfTpes =
 payment-complete.tax-name.CapitalGainsTax = Treth Enillion Cyfalaf ar eiddo yn y DU
 payment-complete.tax-name.EconomicCrimeLevy = Ardoll Troseddau Economaidd
 payment-complete.tax-name.PfEconomicCrimeLevy = Ardoll Troseddau Economaidd
-payment-complete.tax-name.PfJobRetentionScheme =
-payment-complete.tax-name.JrsJobRetentionScheme =
+payment-complete.tax-name.PfJobRetentionScheme = Talu grantiau’r Cynllun Cadw Swyddi yn sgil Coronafeirws yn ôl
+payment-complete.tax-name.JrsJobRetentionScheme = Talu grantiau’r Cynllun Cadw Swyddi yn sgil Coronafeirws yn ôl
 payment-complete.tax-name.PfImportedVehicles =
 payment-complete.tax-name.PfChildBenefitRepayments = Ad-dalu gordaliadau Budd-dal Plant
 payment-complete.tax-name.NiEuVatOss =
@@ -431,6 +433,8 @@ email.tax-name.PfP800 = P800
 email.tax-name.PtaP800 = Asesiad Syml
 email.tax-name.PfSimpleAssessment = Asesiad Syml
 email.tax-name.PtaSimpleAssessment = Asesiad Syml
+email.tax-name.PfJobRetentionScheme = Talu grantiau’r Cynllun Cadw Swyddi yn sgil Coronafeirws yn ôl
+email.tax-name.JrsJobRetentionScheme = Talu grantiau’r Cynllun Cadw Swyddi yn sgil Coronafeirws yn ôl
 
 ## Payments survey
 payments-survey.bta.return-message = Dim diolch, dychwelyd i cyfrif treth busnes

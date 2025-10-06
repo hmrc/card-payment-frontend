@@ -78,8 +78,8 @@ service-name.PfTpes =
 service-name.CapitalGainsTax = Report and pay Capital Gains Tax on UK property
 service-name.EconomicCrimeLevy = Pay Economic Crime Levy
 service-name.PfEconomicCrimeLevy = Pay Economic Crime Levy
-service-name.PfJobRetentionScheme =
-service-name.JrsJobRetentionScheme =
+service-name.PfJobRetentionScheme = Pay Coronavirus Job Retention Scheme grants back
+service-name.JrsJobRetentionScheme = Pay Coronavirus Job Retention Scheme grants back
 service-name.PfImportedVehicles =
 service-name.PfChildBenefitRepayments = Repay Child Benefit overpayments
 service-name.NiEuVatOss =
@@ -192,6 +192,8 @@ check-your-details.PtaSimpleAssessment.reference = Payment reference
 check-your-details.PtaSimpleAssessment.charge-reference = Charge reference
 check-your-details.PtaSimpleAssessment.tax-year = Tax year
 check-your-details.PtaSimpleAssessment.tax-year.value = 6 April {0} to 5 April {1}
+check-your-details.PfJobRetentionScheme.reference = Payment reference
+check-your-details.JrsJobRetentionScheme.reference = Payment reference
 
 
 ## Address Page
@@ -329,8 +331,8 @@ payment-complete.tax-name.PfTpes =
 payment-complete.tax-name.CapitalGainsTax = Capital Gains Tax on UK property
 payment-complete.tax-name.EconomicCrimeLevy = Economic Crime Levy
 payment-complete.tax-name.PfEconomicCrimeLevy = Economic Crime Levy
-payment-complete.tax-name.PfJobRetentionScheme =
-payment-complete.tax-name.JrsJobRetentionScheme =
+payment-complete.tax-name.PfJobRetentionScheme = Pay Coronavirus Job Retention Scheme grants back
+payment-complete.tax-name.JrsJobRetentionScheme = Pay Coronavirus Job Retention Scheme grants back
 payment-complete.tax-name.PfImportedVehicles =
 payment-complete.tax-name.PfChildBenefitRepayments = Repay Child Benefit overpayments
 payment-complete.tax-name.NiEuVatOss =
@@ -431,6 +433,8 @@ email.tax-name.PfP800 = P800
 email.tax-name.PtaP800 = P800
 email.tax-name.PfSimpleAssessment = Simple Assessment
 email.tax-name.PtaSimpleAssessment = Simple Assessment
+email.tax-name.PfJobRetentionScheme = Pay Coronavirus Job Retention Scheme grants back
+email.tax-name.JrsJobRetentionScheme = Pay Coronavirus Job Retention Scheme grants back
 
 ## Payments survey
 payments-survey.bta.return-message = Skip survey, return to business tax account
