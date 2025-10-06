@@ -160,7 +160,7 @@ class AddressControllerSpec extends ItSpec {
       }
 
       "Should show the correct error Title content in English" in {
-        val firstLineMissing = List(
+        val address = List(
           ("line1", ""),
           ("line2", "Fake Street"),
           ("city", "Imaginaryshire"),
@@ -168,13 +168,13 @@ class AddressControllerSpec extends ItSpec {
           ("postcode", "IM2 4HJ"),
           ("country", "GBR")
         )
-        val result = systemUnderTest.submit(fakePostRequest(firstLineMissing: _*))
+        val result = systemUnderTest.submit(fakePostRequest(address: _*))
         val document = Jsoup.parse(contentAsString(result))
         document.title() shouldBe "Error: Card billing address - Pay your Self Assessment - GOV.UK"
       }
 
       "Should show the correct error Title content in Welsh" in {
-        val firstLineMissing = List(
+        val address = List(
           ("line1", ""),
           ("line2", "Fake Street"),
           ("city", "Imaginaryshire"),
@@ -182,61 +182,421 @@ class AddressControllerSpec extends ItSpec {
           ("postcode", "IM2 4HJ"),
           ("country", "GBR")
         )
-        val result = systemUnderTest.submit(fakePostRequestInWelsh(firstLineMissing: _*))
+        val result = systemUnderTest.submit(fakePostRequestInWelsh(address: _*))
         val document = Jsoup.parse(contentAsString(result))
         document.title() shouldBe "Gwall: Cyfeiriad bilio’r cerdyn - Talu eich Hunanasesiad - GOV.UK"
       }
 
-      "should return html containing the correct error messages when first line of address is missing" in {
-        val firstLineMissing = List(
-          ("line1", ""),
-          ("line2", "Fake Street"),
-          ("city", "Imaginaryshire"),
-          ("county", "East Imaginationland"),
-          ("postcode", "IM2 4HJ"),
-          ("country", "GBR")
-        )
-        val result = systemUnderTest.submit(fakePostRequest(firstLineMissing: _*))
-        val document = Jsoup.parse(contentAsString(result))
-        document.select(".govuk-error-summary__title").text() shouldBe "There is a problem"
-        document.select(".govuk-error-summary__list").text() shouldBe "Enter the first line of the billing address"
-        document.select(".govuk-error-summary__list").select("a").attr("href") shouldBe "#line1"
+      "for first line of address" - {
+        "should return html containing the correct error messages when first line of address is missing" in {
+          val address = List(
+            ("line1", ""),
+            ("line2", "Fake Street"),
+            ("city", "Imaginaryshire"),
+            ("county", "East Imaginationland"),
+            ("postcode", "IM2 4HJ"),
+            ("country", "GBR")
+          )
+          val result = systemUnderTest.submit(fakePostRequest(address: _*))
+          val document = Jsoup.parse(contentAsString(result))
+          document.select(".govuk-error-summary__title").text() shouldBe "There is a problem"
+          document.select(".govuk-error-summary__list").text() shouldBe "Enter the first line of the billing address"
+          document.select(".govuk-error-summary__list").select("a").attr("href") shouldBe "#line1"
+          document.select("#line1-error").text() shouldBe "Error: Enter the first line of the billing address"
+        }
+
+        "should return html containing the correct error messages when first line of address is missing in welsh" in {
+          val address = List(
+            ("line1", ""),
+            ("line2", "Fake Street"),
+            ("city", "Imaginaryshire"),
+            ("county", "East Imaginationland"),
+            ("postcode", "IM2 4HJ"),
+            ("country", "GBR")
+          )
+          val result = systemUnderTest.submit(fakePostRequestInWelsh(address: _*))
+          val document = Jsoup.parse(contentAsString(result))
+          document.select(".govuk-error-summary__title").text() shouldBe "Mae problem wedi codi"
+          document.select(".govuk-error-summary__list").text() shouldBe "Nodwch linell gyntaf y cyfeiriad bilio"
+          document.select(".govuk-error-summary__list").select("a").attr("href") shouldBe "#line1"
+          document.select("#line1-error").text() shouldBe "Gwall: Nodwch linell gyntaf y cyfeiriad bilio"
+        }
+
+        "should return html containing the correct error messages when first line of address is more than 100 characters" in {
+          val address = List(
+            ("line1", "12345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901"),
+            ("line2", "Fake Street"),
+            ("city", "Imaginaryshire"),
+            ("county", "East Imaginationland"),
+            ("postcode", "IM2 4HJ"),
+            ("country", "GBR")
+          )
+          val result = systemUnderTest.submit(fakePostRequest(address: _*))
+          val document = Jsoup.parse(contentAsString(result))
+          document.select(".govuk-error-summary__title").text() shouldBe "There is a problem"
+          document.select(".govuk-error-summary__list").text() shouldBe "Enter the first line of your address using no more than 100 characters"
+          document.select(".govuk-error-summary__list").select("a").attr("href") shouldBe "#line1"
+          document.select("#line1-error").text() shouldBe "Error: Enter the first line of your address using no more than 100 characters"
+        }
+
+        "should return html containing the correct error messages when first line of address is more than 100 characters in welsh" in {
+          val address = List(
+            ("line1", "12345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901"),
+            ("line2", "Fake Street"),
+            ("city", "Imaginaryshire"),
+            ("county", "East Imaginationland"),
+            ("postcode", "IM2 4HJ"),
+            ("country", "GBR")
+          )
+          val result = systemUnderTest.submit(fakePostRequestInWelsh(address: _*))
+          val document = Jsoup.parse(contentAsString(result))
+          document.select(".govuk-error-summary__title").text() shouldBe "Mae problem wedi codi"
+          document.select(".govuk-error-summary__list").text() shouldBe "Nodwch linell gyntaf eich cyfeiriad gan beidio â defnyddio mwy na 100 o gymeriadau"
+          document.select(".govuk-error-summary__list").select("a").attr("href") shouldBe "#line1"
+          document.select("#line1-error").text() shouldBe "Gwall: Nodwch linell gyntaf eich cyfeiriad gan beidio â defnyddio mwy na 100 o gymeriadau"
+        }
+
+        "should return html containing the correct error messages when first line of address contains invalid character" in {
+          val address = List(
+            ("line1", "🍗"),
+            ("line2", "Fake Street"),
+            ("city", "Imaginaryshire"),
+            ("county", "East Imaginationland"),
+            ("postcode", "IM2 4HJ"),
+            ("country", "GBR")
+          )
+          val result = systemUnderTest.submit(fakePostRequest(address: _*))
+          val document = Jsoup.parse(contentAsString(result))
+          document.select(".govuk-error-summary__title").text() shouldBe "There is a problem"
+          document.select(".govuk-error-summary__list").text() shouldBe "Field contains an invalid character"
+          document.select(".govuk-error-summary__list").select("a").attr("href") shouldBe "#line1"
+          document.select("#line1-error").text() shouldBe "Error: Field contains an invalid character"
+        }
+
+        "should return html containing the correct error messages when first line of address contains invalid character in welsh" in {
+          val address = List(
+            ("line1", "🍗"),
+            ("line2", "Fake Street"),
+            ("city", "Imaginaryshire"),
+            ("county", "East Imaginationland"),
+            ("postcode", "IM2 4HJ"),
+            ("country", "GBR")
+          )
+          val result = systemUnderTest.submit(fakePostRequestInWelsh(address: _*))
+          val document = Jsoup.parse(contentAsString(result))
+          document.select(".govuk-error-summary__title").text() shouldBe "Mae problem wedi codi"
+          document.select(".govuk-error-summary__list").text() shouldBe "Mae’r maes yn cynnwys cymeriad annilys"
+          document.select(".govuk-error-summary__list").select("a").attr("href") shouldBe "#line1"
+          document.select("#line1-error").text() shouldBe "Gwall: Mae’r maes yn cynnwys cymeriad annilys"
+        }
       }
 
-      "should return html containing the correct error messages when postcode is missing" in {
-        val postcodeMissing = List(
-          ("line1", "20 Fake Cottage"),
-          ("line2", "Fake Street"),
-          ("city", "Imaginaryshire"),
-          ("county", "East Imaginationland"),
-          ("postcode", ""),
-          ("country", "GBR")
-        )
-        val result = systemUnderTest.submit(fakePostRequest(postcodeMissing: _*))
-        val document = Jsoup.parse(contentAsString(result))
-        document.select(".govuk-error-summary__title").text() shouldBe "There is a problem"
-        document.select(".govuk-error-summary__list").text() shouldBe "Enter your postcode"
-        document.select(".govuk-error-summary__list").select("a").attr("href") shouldBe "#postcode"
+      "for second line of address" - {
+        "should return html containing the correct error messages when second line of address is more than 100 characters" in {
+          val address = List(
+            ("line1", "Fake Street"),
+            ("line2", "12345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901"),
+            ("city", "Imaginaryshire"),
+            ("county", "East Imaginationland"),
+            ("postcode", "IM2 4HJ"),
+            ("country", "GBR")
+          )
+          val result = systemUnderTest.submit(fakePostRequest(address: _*))
+          val document = Jsoup.parse(contentAsString(result))
+          document.select(".govuk-error-summary__title").text() shouldBe "There is a problem"
+          document.select(".govuk-error-summary__list").text() shouldBe "Enter the second line of your address using no more than 100 characters"
+          document.select(".govuk-error-summary__list").select("a").attr("href") shouldBe "#line2"
+          document.select("#line2-error").text() shouldBe "Error: Enter the second line of your address using no more than 100 characters"
+        }
+
+        "should return html containing the correct error messages when second line of address is more than 100 characters in welsh" in {
+          val address = List(
+            ("line1", "Fake Street"),
+            ("line2", "12345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901"),
+            ("city", "Imaginaryshire"),
+            ("county", "East Imaginationland"),
+            ("postcode", "IM2 4HJ"),
+            ("country", "GBR")
+          )
+          val result = systemUnderTest.submit(fakePostRequestInWelsh(address: _*))
+          val document = Jsoup.parse(contentAsString(result))
+          document.select(".govuk-error-summary__title").text() shouldBe "Mae problem wedi codi"
+          document.select(".govuk-error-summary__list").text() shouldBe "Nodwch ail linell eich cyfeiriad gan beidio â defnyddio mwy na 100 o gymeriadau"
+          document.select(".govuk-error-summary__list").select("a").attr("href") shouldBe "#line2"
+          document.select("#line2-error").text() shouldBe "Gwall: Nodwch ail linell eich cyfeiriad gan beidio â defnyddio mwy na 100 o gymeriadau"
+        }
+
+        "should return html containing the correct error messages when second line of address contains invalid character" in {
+          val address = List(
+            ("line1", "Fake Street"),
+            ("line2", "🍗"),
+            ("city", "Imaginaryshire"),
+            ("county", "East Imaginationland"),
+            ("postcode", "IM2 4HJ"),
+            ("country", "GBR")
+          )
+          val result = systemUnderTest.submit(fakePostRequest(address: _*))
+          val document = Jsoup.parse(contentAsString(result))
+          document.select(".govuk-error-summary__title").text() shouldBe "There is a problem"
+          document.select(".govuk-error-summary__list").text() shouldBe "Field contains an invalid character"
+          document.select(".govuk-error-summary__list").select("a").attr("href") shouldBe "#line2"
+          document.select("#line2-error").text() shouldBe "Error: Field contains an invalid character"
+        }
+
+        "should return html containing the correct error messages when second line of address contains invalid character in welsh" in {
+          val address = List(
+            ("line1", "Fake Street"),
+            ("line2", "🍗"),
+            ("city", "Imaginaryshire"),
+            ("county", "East Imaginationland"),
+            ("postcode", "IM2 4HJ"),
+            ("country", "GBR")
+          )
+          val result = systemUnderTest.submit(fakePostRequestInWelsh(address: _*))
+          val document = Jsoup.parse(contentAsString(result))
+          document.select(".govuk-error-summary__title").text() shouldBe "Mae problem wedi codi"
+          document.select(".govuk-error-summary__list").text() shouldBe "Mae’r maes yn cynnwys cymeriad annilys"
+          document.select(".govuk-error-summary__list").select("a").attr("href") shouldBe "#line2"
+          document.select("#line2-error").text() shouldBe "Gwall: Mae’r maes yn cynnwys cymeriad annilys"
+        }
       }
 
-      "should return html containing the correct error messages when no country selected" in {
-        val noCountrySelected = List(
-          ("line1", "20 Fake Cottage"),
-          ("line2", "Fake Street"),
-          ("city", "Imaginaryshire"),
-          ("county", "East Imaginationland"),
-          ("postcode", "IM2 4HJ"),
-          ("country", "")
-        )
-        val result = systemUnderTest.submit(fakePostRequest(noCountrySelected: _*))
-        val document = Jsoup.parse(contentAsString(result))
-        document.select(".govuk-error-summary__title").text() shouldBe "There is a problem"
-        document.select(".govuk-error-summary__list").text() shouldBe "Select a country"
-        document.select(".govuk-error-summary__list").select("a").attr("href") shouldBe "#country"
+      "for city" - {
+        "should return html containing the correct error messages when city is more than 50 characters" in {
+          val address = List(
+            ("line1", "Fake Street"),
+            ("city", "123456789012345678901234567890123456789012345678901"),
+            ("county", "East Imaginationland"),
+            ("postcode", "IM2 4HJ"),
+            ("country", "GBR")
+          )
+          val result = systemUnderTest.submit(fakePostRequest(address: _*))
+          val document = Jsoup.parse(contentAsString(result))
+          document.select(".govuk-error-summary__title").text() shouldBe "There is a problem"
+          document.select(".govuk-error-summary__list").text() shouldBe "Enter your city using no more than 50 characters"
+          document.select(".govuk-error-summary__list").select("a").attr("href") shouldBe "#city"
+          document.select("#city-error").text() shouldBe "Error: Enter your city using no more than 50 characters"
+        }
+
+        "should return html containing the correct error messages when city is more than 50 characters in welsh" in {
+          val address = List(
+            ("line1", "Fake Street"),
+            ("city", "123456789012345678901234567890123456789012345678901"),
+            ("county", "East Imaginationland"),
+            ("postcode", "IM2 4HJ"),
+            ("country", "GBR")
+          )
+          val result = systemUnderTest.submit(fakePostRequestInWelsh(address: _*))
+          val document = Jsoup.parse(contentAsString(result))
+          document.select(".govuk-error-summary__title").text() shouldBe "Mae problem wedi codi"
+          document.select(".govuk-error-summary__list").text() shouldBe "Nodwch eich dinas gan beidio â defnyddio mwy na 50 o gymeriadau"
+          document.select(".govuk-error-summary__list").select("a").attr("href") shouldBe "#city"
+          document.select("#city-error").text() shouldBe "Gwall: Nodwch eich dinas gan beidio â defnyddio mwy na 50 o gymeriadau"
+        }
+
+        "should return html containing the correct error messages when city contains invalid character" in {
+          val address = List(
+            ("line1", "Fake Street"),
+            ("city", "🍗"),
+            ("county", "East Imaginationland"),
+            ("postcode", "IM2 4HJ"),
+            ("country", "GBR")
+          )
+          val result = systemUnderTest.submit(fakePostRequest(address: _*))
+          val document = Jsoup.parse(contentAsString(result))
+          document.select(".govuk-error-summary__title").text() shouldBe "There is a problem"
+          document.select(".govuk-error-summary__list").text() shouldBe "Field contains an invalid character"
+          document.select(".govuk-error-summary__list").select("a").attr("href") shouldBe "#city"
+          document.select("#city-error").text() shouldBe "Error: Field contains an invalid character"
+        }
+
+        "should return html containing the correct error messages when city contains invalid character in welsh" in {
+          val address = List(
+            ("line1", "Fake Street"),
+            ("city", "🍗"),
+            ("county", "East Imaginationland"),
+            ("postcode", "IM2 4HJ"),
+            ("country", "GBR")
+          )
+          val result = systemUnderTest.submit(fakePostRequestInWelsh(address: _*))
+          val document = Jsoup.parse(contentAsString(result))
+          document.select(".govuk-error-summary__title").text() shouldBe "Mae problem wedi codi"
+          document.select(".govuk-error-summary__list").text() shouldBe "Mae’r maes yn cynnwys cymeriad annilys"
+          document.select(".govuk-error-summary__list").select("a").attr("href") shouldBe "#city"
+          document.select("#city-error").text() shouldBe "Gwall: Mae’r maes yn cynnwys cymeriad annilys"
+        }
+      }
+
+      "for county" - {
+        "should return html containing the correct error messages when county is more than 50 characters" in {
+          val address = List(
+            ("line1", "Fake Street"),
+            ("county", "123456789012345678901234567890123456789012345678901"),
+            ("postcode", "IM2 4HJ"),
+            ("country", "GBR")
+          )
+          val result = systemUnderTest.submit(fakePostRequest(address: _*))
+          val document = Jsoup.parse(contentAsString(result))
+          document.select(".govuk-error-summary__title").text() shouldBe "There is a problem"
+          document.select(".govuk-error-summary__list").text() shouldBe "Enter your county using no more than 50 characters"
+          document.select(".govuk-error-summary__list").select("a").attr("href") shouldBe "#county"
+          document.select("#county-error").text() shouldBe "Error: Enter your county using no more than 50 characters"
+        }
+
+        "should return html containing the correct error messages when county is more than 50 characters in welsh" in {
+          val address = List(
+            ("line1", "Fake Street"),
+            ("county", "123456789012345678901234567890123456789012345678901"),
+            ("postcode", "IM2 4HJ"),
+            ("country", "GBR")
+          )
+          val result = systemUnderTest.submit(fakePostRequestInWelsh(address: _*))
+          val document = Jsoup.parse(contentAsString(result))
+          document.select(".govuk-error-summary__title").text() shouldBe "Mae problem wedi codi"
+          document.select(".govuk-error-summary__list").text() shouldBe "Nodwch eich sir gan beidio â defnyddio mwy na 50 o gymeriadau"
+          document.select(".govuk-error-summary__list").select("a").attr("href") shouldBe "#county"
+          document.select("#county-error").text() shouldBe "Gwall: Nodwch eich sir gan beidio â defnyddio mwy na 50 o gymeriadau"
+        }
+
+        "should return html containing the correct error messages when county contains invalid character" in {
+          val address = List(
+            ("line1", "Fake Street"),
+            ("county", "🍗"),
+            ("postcode", "IM2 4HJ"),
+            ("country", "GBR")
+          )
+          val result = systemUnderTest.submit(fakePostRequest(address: _*))
+          val document = Jsoup.parse(contentAsString(result))
+          document.select(".govuk-error-summary__title").text() shouldBe "There is a problem"
+          document.select(".govuk-error-summary__list").text() shouldBe "Field contains an invalid character"
+          document.select(".govuk-error-summary__list").select("a").attr("href") shouldBe "#county"
+          document.select("#county-error").text() shouldBe "Error: Field contains an invalid character"
+        }
+
+        "should return html containing the correct error messages when county contains invalid character in welsh" in {
+          val address = List(
+            ("line1", "Fake Street"),
+            ("county", "🍗"),
+            ("postcode", "IM2 4HJ"),
+            ("country", "GBR")
+          )
+          val result = systemUnderTest.submit(fakePostRequestInWelsh(address: _*))
+          val document = Jsoup.parse(contentAsString(result))
+          document.select(".govuk-error-summary__title").text() shouldBe "Mae problem wedi codi"
+          document.select(".govuk-error-summary__list").text() shouldBe "Mae’r maes yn cynnwys cymeriad annilys"
+          document.select(".govuk-error-summary__list").select("a").attr("href") shouldBe "#county"
+          document.select("#county-error").text() shouldBe "Gwall: Mae’r maes yn cynnwys cymeriad annilys"
+        }
+      }
+
+      "for postcode" - {
+        "should return html containing the correct error messages when postcode is missing" in {
+          val address = List(
+            ("line1", "20 Fake Cottage"),
+            ("line2", "Fake Street"),
+            ("city", "Imaginaryshire"),
+            ("county", "East Imaginationland"),
+            ("postcode", ""),
+            ("country", "GBR")
+          )
+          val result = systemUnderTest.submit(fakePostRequest(address: _*))
+          val document = Jsoup.parse(contentAsString(result))
+          document.select(".govuk-error-summary__title").text() shouldBe "There is a problem"
+          document.select(".govuk-error-summary__list").text() shouldBe "Enter your postcode"
+          document.select(".govuk-error-summary__list").select("a").attr("href") shouldBe "#postcode"
+          document.select("#postcode-error").text() shouldBe "Error: Enter your postcode"
+        }
+
+        "should return html containing the correct error messages when postcode is missing in welsh" in {
+          val address = List(
+            ("line1", "20 Fake Cottage"),
+            ("line2", "Fake Street"),
+            ("city", "Imaginaryshire"),
+            ("county", "East Imaginationland"),
+            ("postcode", ""),
+            ("country", "GBR")
+          )
+          val result = systemUnderTest.submit(fakePostRequestInWelsh(address: _*))
+          val document = Jsoup.parse(contentAsString(result))
+          document.select(".govuk-error-summary__title").text() shouldBe "Mae problem wedi codi"
+          document.select(".govuk-error-summary__list").text() shouldBe "Nodwch eich cod post"
+          document.select(".govuk-error-summary__list").select("a").attr("href") shouldBe "#postcode"
+          document.select("#postcode-error").text() shouldBe "Gwall: Nodwch eich cod post"
+        }
+
+        "should return html containing the correct error messages when postcode does not match regex" in {
+          val address = List(
+            ("line1", "20 Fake Cottage"),
+            ("line2", "Fake Street"),
+            ("city", "Imaginaryshire"),
+            ("county", "East Imaginationland"),
+            ("postcode", "🍗"),
+            ("country", "GBR")
+          )
+          val result = systemUnderTest.submit(fakePostRequest(address: _*))
+          val document = Jsoup.parse(contentAsString(result))
+          document.select(".govuk-error-summary__title").text() shouldBe "There is a problem"
+          document.select(".govuk-error-summary__list").text() shouldBe "Enter your postcode in the correct format"
+          document.select(".govuk-error-summary__list").select("a").attr("href") shouldBe "#postcode"
+          document.select("#postcode-error").text() shouldBe "Error: Enter your postcode in the correct format"
+        }
+
+        "should return html containing the correct error messages when postcode does not match regex in welsh" in {
+          val address = List(
+            ("line1", "20 Fake Cottage"),
+            ("line2", "Fake Street"),
+            ("city", "Imaginaryshire"),
+            ("county", "East Imaginationland"),
+            ("postcode", "🍗"),
+            ("country", "GBR")
+          )
+          val result = systemUnderTest.submit(fakePostRequestInWelsh(address: _*))
+          val document = Jsoup.parse(contentAsString(result))
+          document.select(".govuk-error-summary__title").text() shouldBe "Mae problem wedi codi"
+          document.select(".govuk-error-summary__list").text() shouldBe "Nodwch eich cod post yn y fformat"
+          document.select(".govuk-error-summary__list").select("a").attr("href") shouldBe "#postcode"
+          document.select("#postcode-error").text() shouldBe "Gwall: Nodwch eich cod post yn y fformat"
+        }
+      }
+
+      "for country" - {
+        "should return html containing the correct error messages when no country selected" in {
+          val address = List(
+            ("line1", "20 Fake Cottage"),
+            ("line2", "Fake Street"),
+            ("city", "Imaginaryshire"),
+            ("county", "East Imaginationland"),
+            ("postcode", "IM2 4HJ"),
+            ("country", "")
+          )
+          val result = systemUnderTest.submit(fakePostRequest(address: _*))
+          val document = Jsoup.parse(contentAsString(result))
+          document.select(".govuk-error-summary__title").text() shouldBe "There is a problem"
+          document.select(".govuk-error-summary__list").text() shouldBe "Select a country"
+          document.select(".govuk-error-summary__list").select("a").attr("href") shouldBe "#country"
+          document.select("#country-error").text() shouldBe "Error: Select a country"
+        }
+
+        "should return html containing the correct error messages when no country selected in welsh" in {
+          val address = List(
+            ("line1", "20 Fake Cottage"),
+            ("line2", "Fake Street"),
+            ("city", "Imaginaryshire"),
+            ("county", "East Imaginationland"),
+            ("postcode", "IM2 4HJ"),
+            ("country", "")
+          )
+          val result = systemUnderTest.submit(fakePostRequestInWelsh(address: _*))
+          val document = Jsoup.parse(contentAsString(result))
+          document.select(".govuk-error-summary__title").text() shouldBe "Mae problem wedi codi"
+          document.select(".govuk-error-summary__list").text() shouldBe "Dewiswch eich gwlad"
+          document.select(".govuk-error-summary__list").select("a").attr("href") shouldBe "#country"
+          document.select("#country-error").text() shouldBe "Gwall: Dewiswch eich gwlad"
+        }
       }
 
       "should return a 400 BAD_REQUEST when an invalid address is submitted" in {
-        val postcodeMissing = List(
+        val address = List(
           ("line1", "20 Fake Cottage"),
           ("line2", "Fake Street"),
           ("city", "Imaginaryshire"),
@@ -244,56 +604,8 @@ class AddressControllerSpec extends ItSpec {
           ("postcode", "IM2 4HJ"),
           ("country", "")
         )
-        val result = systemUnderTest.submit(fakePostRequest(postcodeMissing: _*))
+        val result = systemUnderTest.submit(fakePostRequest(address: _*))
         status(result) shouldBe Status.BAD_REQUEST
-      }
-
-      "should return html containing the correct error messages IN WELSH when first line of address is missing" in {
-        val firstLineMissing = List(
-          ("line1", ""),
-          ("line2", "Fake Street"),
-          ("city", "Imaginaryshire"),
-          ("county", "East Imaginationland"),
-          ("postcode", "IM2 4HJ"),
-          ("country", "GBR")
-        )
-        val result = systemUnderTest.submit(fakePostRequestInWelsh(firstLineMissing: _*))
-        val document = Jsoup.parse(contentAsString(result))
-        document.select(".govuk-error-summary__title").text() shouldBe "Mae problem wedi codi"
-        document.select(".govuk-error-summary__list").text() shouldBe "Nodwch linell gyntaf y cyfeiriad bilio"
-        document.select(".govuk-error-summary__list").select("a").attr("href") shouldBe "#line1"
-      }
-
-      "should return html containing the correct error messages IN WELSH when postcode is missing" in {
-        val postcodeMissing = List(
-          ("line1", "20 Fake Cottage"),
-          ("line2", "Fake Street"),
-          ("city", "Imaginaryshire"),
-          ("county", "East Imaginationland"),
-          ("postcode", ""),
-          ("country", "GBR")
-        )
-        val result = systemUnderTest.submit(fakePostRequestInWelsh(postcodeMissing: _*))
-        val document = Jsoup.parse(contentAsString(result))
-        document.select(".govuk-error-summary__title").text() shouldBe "Mae problem wedi codi"
-        document.select(".govuk-error-summary__list").text() shouldBe "Nodwch eich cod post"
-        document.select(".govuk-error-summary__list").select("a").attr("href") shouldBe "#postcode"
-      }
-
-      "should return html containing the correct error messages IN WELSH when no country selected" in {
-        val noCountrySelected = List(
-          ("line1", "20 Fake Cottage"),
-          ("line2", "Fake Street"),
-          ("city", "Imaginaryshire"),
-          ("county", "East Imaginationland"),
-          ("postcode", "IM2 4HJ"),
-          ("country", "")
-        )
-        val result = systemUnderTest.submit(fakePostRequestInWelsh(noCountrySelected: _*))
-        val document = Jsoup.parse(contentAsString(result))
-        document.select(".govuk-error-summary__title").text() shouldBe "Mae problem wedi codi"
-        document.select(".govuk-error-summary__list").text() shouldBe "Dewiswch eich gwlad"
-        document.select(".govuk-error-summary__list").select("a").attr("href") shouldBe "#country"
       }
 
     }

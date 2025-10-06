@@ -54,7 +54,7 @@ class CardPaymentServiceSpec extends ItSpec {
 
   val testJourneyBeforeBeginWebPayment: Journey[JsdPfSa] = TestJourneys.PfSa.journeyBeforeBeginWebPayment
   val testJourneyAfterBeginWebPayment: Journey[JsdPfSa] = TestJourneys.PfSa.journeyAfterBeginWebPayment
-  val testAddress: Address = Address("made up street", postcode = "AA11AA", country = "GBR")
+  val testAddress: Address = Address("made up street", postcode = Some("AA11AA"), country = "GBR")
   val testEmail: EmailAddress = EmailAddress("some@email.com")
 
   "CardPaymentService" - {

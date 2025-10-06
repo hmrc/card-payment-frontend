@@ -213,14 +213,19 @@ address.postcode.hint = Os ydych yn berson nad yw’n breswyl yn y DU, mae hyn y
 address.optional = (dewisol)
 address.optional.non.uk.address = (dewisol ar gyfer cyfeiriadau y tu allan i’r DU)
 
-address.field-name.error.invalid.line1 = Nodwch linell gyntaf y cyfeiriad bilio
-address.field-name.error.invalid.postcode = Nodwch eich cod post yn y fformat cywir
-address.field-name.error.empty.postcode = Nodwch eich cod post
+address.field-name.error.line1.empty = Nodwch linell gyntaf y cyfeiriad bilio
+address.field-name.error.line1.max-length = Nodwch linell gyntaf eich cyfeiriad gan beidio â defnyddio mwy na 100 o gymeriadau
+address.field-name.error.line1.invalid-character = Mae’r maes yn cynnwys cymeriad annilys
+address.field-name.error.line2.max-length = Nodwch ail linell eich cyfeiriad gan beidio â defnyddio mwy na 100 o gymeriadau
+address.field-name.error.line2.invalid-character = Mae’r maes yn cynnwys cymeriad annilys
+address.field-name.error.city.max-length = Nodwch eich dinas gan beidio â defnyddio mwy na 50 o gymeriadau
+address.field-name.error.city.invalid-character = Mae’r maes yn cynnwys cymeriad annilys
+address.field-name.error.county.max-length = Nodwch eich sir gan beidio â defnyddio mwy na 50 o gymeriadau
+address.field-name.error.county.invalid-character = Mae’r maes yn cynnwys cymeriad annilys
 address.field-name.error.required.postcode = Nodwch god post dilys
-address.field-name.error.required.country = Dewiswch eich gwlad
-address.field-name.error.invalid.emailaddress = Nodwch gyfeiriad e-bost dilys neu gadewch yn wag
-address.field-name.error.constraint.emailaddress = Nodwch gyfeiriad e-bost dilys neu gadewch yn wag
-address.field-name.error.invalid.char = Mae’r maes yn cynnwys cymeriad annilys
+address.field-name.error.postcode.empty = Nodwch eich cod post
+address.field-name.error.postcode.invalid-character = Nodwch eich cod post yn y fformat
+address.field-name.error.country.invalid-character = Dewiswch eich gwlad
 
 
 ## Date keys in format dd MMMM yyyy, i.e. 01 January 2024
