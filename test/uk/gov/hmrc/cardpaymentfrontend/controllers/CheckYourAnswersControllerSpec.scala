@@ -171,10 +171,10 @@ class CheckYourAnswersControllerSpec extends ItSpec {
           case Origins.EconomicCrimeLevy   => 2
           case Origins.BtaSdil             => 2
           case Origins.PtaSimpleAssessment => 4
-          case Origins.NiEuVatOss          => 3
-          case Origins.PfNiEuVatOss        => 2
-          case Origins.NiEuVatIoss         => 3
-          case Origins.PfNiEuVatIoss       => 2
+          case Origins.NiEuVatOss          => 4
+          case Origins.PfNiEuVatOss        => 3
+          case Origins.NiEuVatIoss         => 4
+          case Origins.PfNiEuVatIoss       => 3
           case _                           => 1
         }
       }
@@ -201,10 +201,10 @@ class CheckYourAnswersControllerSpec extends ItSpec {
           case Origins.EconomicCrimeLevy   => 3
           case Origins.BtaSdil             => 3
           case Origins.PtaSimpleAssessment => 5
-          case Origins.NiEuVatOss          => 4
-          case Origins.PfNiEuVatOss        => 3
-          case Origins.NiEuVatIoss         => 4
-          case Origins.PfNiEuVatIoss       => 3
+          case Origins.NiEuVatOss          => 5
+          case Origins.PfNiEuVatOss        => 4
+          case Origins.NiEuVatIoss         => 5
+          case Origins.PfNiEuVatIoss       => 4
           case _                           => 2
         }
       }
@@ -231,10 +231,10 @@ class CheckYourAnswersControllerSpec extends ItSpec {
           case Origins.EconomicCrimeLevy   => 4
           case Origins.BtaSdil             => 4
           case Origins.PtaSimpleAssessment => 6
-          case Origins.NiEuVatOss          => 5
-          case Origins.PfNiEuVatOss        => 4
-          case Origins.NiEuVatIoss         => 5
-          case Origins.PfNiEuVatIoss       => 4
+          case Origins.NiEuVatOss          => 6
+          case Origins.PfNiEuVatOss        => 5
+          case Origins.NiEuVatIoss         => 6
+          case Origins.PfNiEuVatIoss       => 5
           case _                           => 3
         }
       }
@@ -982,7 +982,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       PayApiStub.stubForFindBySessionId2xx(TestJourneys.NiEuVatOss.journeyBeforeBeginWebPayment)
       val result = systemUnderTest.renderPage(fakeRequest())
       val document = Jsoup.parse(contentAsString(result))
-      val returnPeriodRow = document.select(".govuk-summary-list__row").asScala.toList(2)
+      val returnPeriodRow = document.select(".govuk-summary-list__row").asScala.toList(3)
       assertRow(returnPeriodRow, "Return period", "October to December 2024", None, None)
     }
 
@@ -990,15 +990,15 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfNiEuVatOss.journeyBeforeBeginWebPayment)
       val result = systemUnderTest.renderPage(fakeRequest())
       val document = Jsoup.parse(contentAsString(result))
-      val returnPeriodRow = document.select(".govuk-summary-list__row").asScala.toList(1)
-      assertRow(returnPeriodRow, "Return period", "October to December 2024", None, None)
+      val returnPeriodRow = document.select(".govuk-summary-list__row").asScala.toList(2)
+      assertRow(returnPeriodRow, "Return period", "October to December 2024", Some("Change Return period"), Some("http://localhost:9056/pay/change-vat-period?fromCardPayment=true"))
     }
 
     "[NiEuVatIoss] should render the Tax period correctly" in {
       PayApiStub.stubForFindBySessionId2xx(TestJourneys.NiEuVatIoss.journeyBeforeBeginWebPayment)
       val result = systemUnderTest.renderPage(fakeRequest())
       val document = Jsoup.parse(contentAsString(result))
-      val returnPeriodRow = document.select(".govuk-summary-list__row").asScala.toList(2)
+      val returnPeriodRow = document.select(".govuk-summary-list__row").asScala.toList(3)
       assertRow(returnPeriodRow, "Return period", "June 2024", None, None)
     }
 
@@ -1006,8 +1006,8 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfNiEuVatIoss.journeyBeforeBeginWebPayment)
       val result = systemUnderTest.renderPage(fakeRequest())
       val document = Jsoup.parse(contentAsString(result))
-      val returnPeriodRow = document.select(".govuk-summary-list__row").asScala.toList(1)
-      assertRow(returnPeriodRow, "Return period", "June 2024", None, None)
+      val returnPeriodRow = document.select(".govuk-summary-list__row").asScala.toList(2)
+      assertRow(returnPeriodRow, "Return period", "June 2024", Some("Change Return period"), Some("http://localhost:9056/pay/change-ioss-vat-period?fromCardPayment=true"))
     }
 
     "[BtaVat] should render the payment date row correctly" in {
@@ -1439,7 +1439,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       val result = systemUnderTest.renderPage(fakeRequest())
       val document = Jsoup.parse(contentAsString(result))
       val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.NiEuVatOss))
-      assertRow(referenceRow, "VAT registration number", "NI101747641Q424", None, None)
+      assertRow(referenceRow, "Payment reference", "NI101747641Q424", None, None)
     }
 
     "[PfNiEuVatOss] should render the payment reference row correctly" in {
@@ -1447,7 +1447,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       val result = systemUnderTest.renderPage(fakeRequest())
       val document = Jsoup.parse(contentAsString(result))
       val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.PfNiEuVatOss))
-      assertRow(referenceRow, "VAT registration number", "NI101747641Q424", Some("Change VAT registration number"), Some("http://localhost:9056/pay/pay-by-card-change-reference-number"))
+      assertRow(referenceRow, "Payment reference", "NI101747641Q424", None, None)
     }
 
     "[NiEuVatIoss] should render the payment reference row correctly" in {
@@ -1455,7 +1455,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       val result = systemUnderTest.renderPage(fakeRequest())
       val document = Jsoup.parse(contentAsString(result))
       val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.NiEuVatIoss))
-      assertRow(referenceRow, "IOSS registration number", "IM1234567890M0624", None, None)
+      assertRow(referenceRow, "Payment reference", "IM1234567890M0624", None, None)
     }
 
     "[PfNiEuVatIoss] should render the payment reference row correctly" in {
@@ -1463,7 +1463,39 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       val result = systemUnderTest.renderPage(fakeRequest())
       val document = Jsoup.parse(contentAsString(result))
       val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.PfNiEuVatIoss))
-      assertRow(referenceRow, "IOSS registration number", "IM1234567890M0624", Some("Change IOSS registration number"), Some("http://localhost:9056/pay/pay-by-card-change-reference-number"))
+      assertRow(referenceRow, "Payment reference", "IM1234567890M0624", None, None)
+    }
+
+    "[NiEuVatOss] should render the VAT Number correctly" in {
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.NiEuVatOss.journeyBeforeBeginWebPayment)
+      val result = systemUnderTest.renderPage(fakeRequest())
+      val document = Jsoup.parse(contentAsString(result))
+      val returnPeriodRow = document.select(".govuk-summary-list__row").asScala.toList(2)
+      assertRow(returnPeriodRow, "VAT Number", "101747641", None, None)
+    }
+
+    "[PfNiEuVatOss] should render the VAT Number correctly" in {
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfNiEuVatOss.journeyBeforeBeginWebPayment)
+      val result = systemUnderTest.renderPage(fakeRequest())
+      val document = Jsoup.parse(contentAsString(result))
+      val returnPeriodRow = document.select(".govuk-summary-list__row").asScala.toList(1)
+      assertRow(returnPeriodRow, "VAT Number", "101747641", None, None)
+    }
+
+    "[NiEuVatIoss] should render the IOSS Number correctly" in {
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.NiEuVatIoss.journeyBeforeBeginWebPayment)
+      val result = systemUnderTest.renderPage(fakeRequest())
+      val document = Jsoup.parse(contentAsString(result))
+      val returnPeriodRow = document.select(".govuk-summary-list__row").asScala.toList(2)
+      assertRow(returnPeriodRow, "IOSS Number", "IM1234567890", None, None)
+    }
+
+    "[PfNiEuVatIoss] should render the IOSS Number correctly" in {
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfNiEuVatIoss.journeyBeforeBeginWebPayment)
+      val result = systemUnderTest.renderPage(fakeRequest())
+      val document = Jsoup.parse(contentAsString(result))
+      val returnPeriodRow = document.select(".govuk-summary-list__row").asScala.toList(1)
+      assertRow(returnPeriodRow, "IOSS Number", "IM1234567890", None, None)
     }
 
     "sanity check for implemented origins" in {

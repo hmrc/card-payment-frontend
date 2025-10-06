@@ -883,12 +883,12 @@ class PaymentsSurveyServiceSpec extends ItSpec with TableDrivenPropertyChecks {
               origin         = "NiEuVatOss",
               returnMsg      = "Skip survey",
               returnHref     = "https://www.gov.uk/government/organisations/hm-revenue-customs",
-              auditName      = "vat",
+              auditName      = "ni-eu-vat-oss",
               audit          = AuditOptions(
                 userType  = "LoggedOut",
                 journey   = Some("Successful"),
                 orderId   = Some("NI101747641Q424"),
-                liability = Some("vat")
+                liability = Some("ni-eu-vat-oss")
               ),
               contentOptions = SurveyContentOptions(
                 isWelshSupported = false,
@@ -901,12 +901,12 @@ class PaymentsSurveyServiceSpec extends ItSpec with TableDrivenPropertyChecks {
               origin         = "PfNiEuVatOss",
               returnMsg      = "Skip survey",
               returnHref     = "https://www.gov.uk/government/organisations/hm-revenue-customs",
-              auditName      = "vat",
+              auditName      = "ni-eu-vat-oss",
               audit          = AuditOptions(
                 userType  = "LoggedOut",
                 journey   = Some("Successful"),
                 orderId   = Some("NI101747641Q424"),
-                liability = Some("vat")
+                liability = Some("ni-eu-vat-oss")
               ),
               contentOptions = SurveyContentOptions(
                 isWelshSupported = false,
@@ -919,12 +919,12 @@ class PaymentsSurveyServiceSpec extends ItSpec with TableDrivenPropertyChecks {
               origin         = "NiEuVatIoss",
               returnMsg      = "Skip survey",
               returnHref     = "https://www.gov.uk/government/organisations/hm-revenue-customs",
-              auditName      = "vat",
+              auditName      = "ni-eu-vat-ioss",
               audit          = AuditOptions(
                 userType  = "LoggedOut",
                 journey   = Some("Successful"),
                 orderId   = Some("IM1234567890M0624"),
-                liability = Some("vat")
+                liability = Some("ni-eu-vat-ioss")
               ),
               contentOptions = SurveyContentOptions(
                 isWelshSupported = false,
@@ -937,12 +937,12 @@ class PaymentsSurveyServiceSpec extends ItSpec with TableDrivenPropertyChecks {
               origin         = "PfNiEuVatIoss",
               returnMsg      = "Skip survey",
               returnHref     = "https://www.gov.uk/government/organisations/hm-revenue-customs",
-              auditName      = "vat",
+              auditName      = "ni-eu-vat-ioss",
               audit          = AuditOptions(
                 userType  = "LoggedOut",
                 journey   = Some("Successful"),
                 orderId   = Some("IM1234567890M0624"),
-                liability = Some("vat")
+                liability = Some("ni-eu-vat-ioss")
               ),
               contentOptions = SurveyContentOptions(
                 isWelshSupported = false,
