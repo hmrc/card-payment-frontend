@@ -49,7 +49,7 @@ class EmailServiceSpec extends ItSpec with TableDrivenPropertyChecks {
     val commission = Some("1.23")
 
     // needed for compiler. if you're adding a new extended origin, add the jsd to this type/list of types.
-    type JsdBounds = JsdPfEpayeNi with JsdAlcoholDuty with JsdPfPpt with JsdBtaEpayeBill with JsdPfSa with JsdPpt with JsdVcVatReturn with JsdPfEpayeP11d with JsdCapitalGainsTax with JsdBtaCt with JsdPfEpayeLateCis with JsdPfEpayeLpp with JsdPfCt with JsdBtaVat with JsdPfSdlt with JsdBtaEpayeInterest with JsdAmls with JsdBtaEpayeGeneral with JsdPfEpayeSeta with JsdPtaSa with JsdBtaClass1aNi with JsdVcVatOther with JsdPfAmls with JsdPfVat with JsdItSa with JsdBtaSa with JsdPfAlcoholDuty with JsdBtaEpayePenalty with JsdEconomicCrimeLevy with JsdPfEconomicCrimeLevy with JsdWcSa with JsdWcCt with JsdWcVat with JsdVatC2c with JsdPfVatC2c with JsdWcSimpleAssessment with JsdWcXref with JsdWcEpayeLpp with JsdWcEpayeNi with JsdWcEpayeLateCis with JsdWcClass1aNi with JsdPfChildBenefitRepayments with JsdBtaSdil with JsdPfSdil with JsdPtaP800 with JsdPfP800 with JsdPtaSimpleAssessment with JsdPfSimpleAssessment with JsdPfJobRetentionScheme with JsdJrsJobRetentionScheme with JsdWcEpayeSeta
+    type JsdBounds = JsdPfEpayeNi with JsdAlcoholDuty with JsdPfPpt with JsdBtaEpayeBill with JsdPfSa with JsdPpt with JsdVcVatReturn with JsdPfEpayeP11d with JsdCapitalGainsTax with JsdBtaCt with JsdPfEpayeLateCis with JsdPfEpayeLpp with JsdPfCt with JsdBtaVat with JsdPfSdlt with JsdBtaEpayeInterest with JsdAmls with JsdBtaEpayeGeneral with JsdPfEpayeSeta with JsdPtaSa with JsdBtaClass1aNi with JsdVcVatOther with JsdPfAmls with JsdPfVat with JsdItSa with JsdBtaSa with JsdPfAlcoholDuty with JsdBtaEpayePenalty with JsdEconomicCrimeLevy with JsdPfEconomicCrimeLevy with JsdWcSa with JsdWcCt with JsdWcVat with JsdVatC2c with JsdPfVatC2c with JsdWcSimpleAssessment with JsdWcXref with JsdWcEpayeLpp with JsdWcEpayeNi with JsdWcEpayeLateCis with JsdWcClass1aNi with JsdPfChildBenefitRepayments with JsdBtaSdil with JsdPfSdil with JsdPtaP800 with JsdPfP800 with JsdPtaSimpleAssessment with JsdPfSimpleAssessment with JsdPfJobRetentionScheme with JsdJrsJobRetentionScheme with JsdWcEpayeSeta with JsdPfCds
 
     val scenarios: TableFor6[JourneyStatuses[_ >: JsdBounds <: JourneySpecificData], String, String, Option[String], Option[String], String] = Table(
       ("Journey", "Tax Type", "Tax Reference", "Commission", "Total Paid", "lang"),
@@ -306,7 +306,10 @@ class EmailServiceSpec extends ItSpec with TableDrivenPropertyChecks {
       (JrsJobRetentionScheme, "Pay Coronavirus Job Retention Scheme grants back", "ending with 78901", None, None, "en"),
       (JrsJobRetentionScheme, "Pay Coronavirus Job Retention Scheme grants back", "ending with 78901", commission, Some("13.57"), "en"),
       (JrsJobRetentionScheme, "Talu grantiau’r Cynllun Cadw Swyddi yn sgil Coronafeirws yn ôl", "yn gorffen gyda 78901", None, None, "cy"),
-      (JrsJobRetentionScheme, "Talu grantiau’r Cynllun Cadw Swyddi yn sgil Coronafeirws yn ôl", "yn gorffen gyda 78901", commission, Some("13.57"), "cy")
+      (JrsJobRetentionScheme, "Talu grantiau’r Cynllun Cadw Swyddi yn sgil Coronafeirws yn ôl", "yn gorffen gyda 78901", commission, Some("13.57"), "cy"),
+
+      (PfCds, "CDS", "ending with 67890", None, None, "en"),
+      (PfCds, "CDS", "ending with 67890", commission, Some("13.57"), "en")
     )
 
     forAll(scenarios) { (j, taxType, taxReference, commission, totalPaid, lang) =>
@@ -350,7 +353,8 @@ class EmailServiceSpec extends ItSpec with TableDrivenPropertyChecks {
         messages.isDefinedAt(msgKey)(Lang("en")) shouldBe true withClue s"email.tax-name message key missing for origin: ${origin.entryName}"
         //Check if the message is different in both languages, if they are the same the message is not in both files
         // for PfP800 and PtaP800, the english can be the same as welsh...
-        if (origin =!= Origins.PfP800 && origin =!= Origins.PtaP800) {
+        // for PfCds there is no welsh as it isn't supported...
+        if (origin =!= Origins.PfP800 && origin =!= Origins.PtaP800 && origin =!= Origins.PfCds) {
           messages.preferred(Seq(Lang("en")))(msgKey) should not be messages.preferred(Seq(Lang("cy")))(msgKey)
         }
       }

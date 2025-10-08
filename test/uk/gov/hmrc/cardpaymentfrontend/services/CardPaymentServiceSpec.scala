@@ -16,6 +16,8 @@
 
 package uk.gov.hmrc.cardpaymentfrontend.services
 
+import org.scalatest.concurrent.PatienceConfiguration.Timeout
+import org.scalatest.time.{Milliseconds, Span}
 import payapi.cardpaymentjourney.model.journey.{Journey, JourneySpecificData, JsdPfSa}
 import play.api.i18n.MessagesApi
 import play.api.libs.json.{JsObject, Json}
@@ -28,8 +30,8 @@ import uk.gov.hmrc.cardpaymentfrontend.models.payapirequest.{FailWebPaymentReque
 import uk.gov.hmrc.cardpaymentfrontend.models.{Address, EmailAddress}
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.ItSpec
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.TestOps.FakeRequestOps
-import uk.gov.hmrc.cardpaymentfrontend.testsupport.stubs.{AuditConnectorStub, CardPaymentStub, EmailStub, PayApiStub}
-import uk.gov.hmrc.cardpaymentfrontend.testsupport.testdata.TestJourneys
+import uk.gov.hmrc.cardpaymentfrontend.testsupport.stubs.{AuditConnectorStub, CardPaymentStub, CdsStub, EmailStub, PayApiStub}
+import uk.gov.hmrc.cardpaymentfrontend.testsupport.testdata.{TestJourneys, TestPayApiData}
 import uk.gov.hmrc.http.HeaderCarrier
 
 import java.time.LocalDateTime
@@ -204,6 +206,23 @@ class CardPaymentServiceSpec extends ItSpec {
               |}""".stripMargin
           ).as[JsObject]
         )
+      }
+
+      "should trigger a notification to CDS when origin is PfCds and payment is successful" in {
+        val testJourney = TestJourneys.PfCds.journeyAfterSucceedDebitWebPayment
+        CardPaymentStub.AuthAndCapture.stubForAuthAndCapture2xx("sometransactionref", testCardPaymentResult)
+        CdsStub.stubGetCashDepositSubscriptionDetail2xx(TestPayApiData.testCdsRef)
+        CdsStub.stubSimpleNotification2xx()
+        systemUnderTest.finishPayment("sometransactionref", testJourney._id.value, English)(fakeJourneyRequest(testJourney, withEmail = false), messagesApi).futureValue
+        eventually(Timeout(Span(200, Milliseconds))){ CdsStub.verifySimpleNotificationSent() }
+      }
+
+      "should not trigger a notification to CDS when origins is PfCds but payment was not successful" in {
+        val testJourney = TestJourneys.PfCds.journeyAfterSucceedDebitWebPayment
+        val testCardPaymentResult = CardPaymentResult(CardPaymentFinishPaymentResponses.Failed, AdditionalPaymentInfo(Some("debit"), None, Some(testTime)))
+        CardPaymentStub.AuthAndCapture.stubForAuthAndCapture2xx("sometransactionref", testCardPaymentResult)
+        systemUnderTest.finishPayment("sometransactionref", testJourney._id.value, English)(fakeJourneyRequest(testJourney, withEmail = false), messagesApi).futureValue
+        eventually(Timeout(Span(200, Milliseconds))){ CdsStub.verifyNoNotificationSent() }
       }
     }
 

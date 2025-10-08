@@ -44,6 +44,8 @@
 
 @serviceName = @{origin.map(eo => messages(eo.lift.serviceNameMessageKey)).getOrElse(messages("service-name.generic"))}
 
+@welshSupportedForOrigin = @{ origin.exists(_.originSupportsWelsh )}
+
 @headBlock = {
     @if(showTimeoutDialogue) {
         @hmrcTimeoutDialogHelper(
@@ -97,7 +99,7 @@
       ),
       pageTitle = Some(journeyTitleMaker(h1Key = pageTitle, origin = origin, maybeForm = maybeForm)),
       serviceName = Some(serviceName),
-      isWelshTranslationAvailable = welshSupported,
+      isWelshTranslationAvailable = welshSupported && welshSupportedForOrigin,
       backLink = {
           if (showBackLink) {
               if (backLinkOverride.isDefined) backLinkOverride else Some(BackLink.mimicsBrowserBackButtonViaJavaScript)

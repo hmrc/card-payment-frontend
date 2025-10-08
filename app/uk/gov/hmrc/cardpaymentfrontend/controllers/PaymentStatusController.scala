@@ -79,9 +79,11 @@ class PaymentStatusController @Inject() (
 
     maybeCardPaymentResultF.flatMap {
       case Some(cardPaymentResult) => cardPaymentResult.cardPaymentResult match {
-        case CardPaymentFinishPaymentResponses.Successful => Future.successful(Redirect(routes.PaymentCompleteController.renderPage).addingToSession(SessionKeys.sessionId -> sessionIdForJourney.value))
-        case CardPaymentFinishPaymentResponses.Failed     => Future.successful(Redirect(routes.PaymentFailedController.renderPage).addingToSession(SessionKeys.sessionId -> sessionIdForJourney.value))
-        case CardPaymentFinishPaymentResponses.Cancelled  => Future.successful(Redirect(routes.PaymentCancelledController.renderPage).addingToSession(SessionKeys.sessionId -> sessionIdForJourney.value))
+        case CardPaymentFinishPaymentResponses.Successful =>
+
+          Future.successful(Redirect(routes.PaymentCompleteController.renderPage).addingToSession(SessionKeys.sessionId -> sessionIdForJourney.value))
+        case CardPaymentFinishPaymentResponses.Failed    => Future.successful(Redirect(routes.PaymentFailedController.renderPage).addingToSession(SessionKeys.sessionId -> sessionIdForJourney.value))
+        case CardPaymentFinishPaymentResponses.Cancelled => Future.successful(Redirect(routes.PaymentCancelledController.renderPage).addingToSession(SessionKeys.sessionId -> sessionIdForJourney.value))
       }
       case None => tryAndCancelPayment(Some("No cardPaymentResult returned, maybe invalid json returned?"))
     }.recoverWith {

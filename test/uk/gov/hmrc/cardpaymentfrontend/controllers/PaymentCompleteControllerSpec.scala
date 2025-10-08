@@ -218,6 +218,15 @@ class PaymentCompleteControllerSpec extends ItSpec {
         wrapper.select("p").html() shouldBe "Bydd eich taliad yn cymryd 3 i 5 diwrnod i ymddangos yn eich cyfrif CThEM ar-lein."
       }
 
+      "render the custom what happens next content for PfCds" in {
+        PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfCds.journeyAfterSucceedDebitWebPayment)
+        val result = systemUnderTest.renderPage(fakeGetRequest)
+        val document = Jsoup.parse(contentAsString(result))
+        val wrapper = document.select("#what-happens-next-wrapper")
+        wrapper.select("h2").text() shouldBe "What happens next"
+        wrapper.select("p").html() shouldBe "Your payment will take 3 to 5 days to show in your HMRC online account."
+      }
+
       "should render the x reference/charge reference for PfVat when that's the appropriate reference" in {
         PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfVatWithChargeReference.journeyAfterSucceedDebitWebPayment)
         val result = systemUnderTest.renderPage(fakeGetRequest)
@@ -291,7 +300,7 @@ class PaymentCompleteControllerSpec extends ItSpec {
         }
 
       "should have a test for all origins below this one" in {
-        TestHelpers.implementedOrigins.size shouldBe 51 withClue "** This dummy test is here to remind you to update the tests below. Bump up the expected number when an origin is added to implemented origins **"
+        TestHelpers.implementedOrigins.size shouldBe 52 withClue "** This dummy test is here to remind you to update the tests below. Bump up the expected number when an origin is added to implemented origins **"
       }
 
       TestHelpers.implementedOrigins.foreach { origin =>
@@ -2032,6 +2041,27 @@ object PaymentCompleteControllerSpec {
         "Cyfanswm a dalwyd" -> "£13.57"
       )),
       hasWelshTest                    = true,
+      hasAReturnUrl                   = false
+    )
+
+    case Origins.PfCds => TestScenarioInfo(
+      debitCardJourney                = TestJourneys.PfCds.journeyAfterSucceedDebitWebPayment,
+      creditCardJourney               = TestJourneys.PfCds.journeyAfterSucceedCreditWebPayment,
+      englishSummaryRowsDebitCard     = List(
+        "Tax" -> "CDS",
+        "Date" -> "2 November 2027",
+        "Amount" -> "£12.34"
+      ),
+      maybeWelshSummaryRowsDebitCard  = None,
+      englishSummaryRowsCreditCard    = List(
+        "Tax" -> "CDS",
+        "Date" -> "2 November 2027",
+        "Amount paid to HMRC" -> "£12.34",
+        "Card fee (9.97%), non-refundable" -> "£1.23",
+        "Total paid" -> "£13.57"
+      ),
+      maybeWelshSummaryRowsCreditCard = None,
+      hasWelshTest                    = false,
       hasAReturnUrl                   = false
     )
 
