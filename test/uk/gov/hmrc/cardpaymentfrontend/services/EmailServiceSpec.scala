@@ -18,7 +18,7 @@ package uk.gov.hmrc.cardpaymentfrontend.services
 
 import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor6}
 import payapi.cardpaymentjourney.model.journey._
-import payapi.corcommon.model.{AmountInPence, Origins}
+import payapi.corcommon.model.{AmountInPence, Origin, Origins}
 import play.api.i18n.{Lang, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.AnyContentAsEmpty
@@ -49,7 +49,7 @@ class EmailServiceSpec extends ItSpec with TableDrivenPropertyChecks {
     val commission = Some("1.23")
 
     // needed for compiler. if you're adding a new extended origin, add the jsd to this type/list of types.
-    type JsdBounds = JsdPfEpayeNi with JsdAlcoholDuty with JsdPfPpt with JsdBtaEpayeBill with JsdPfSa with JsdPpt with JsdVcVatReturn with JsdPfEpayeP11d with JsdCapitalGainsTax with JsdBtaCt with JsdPfEpayeLateCis with JsdPfEpayeLpp with JsdPfCt with JsdBtaVat with JsdPfSdlt with JsdBtaEpayeInterest with JsdAmls with JsdBtaEpayeGeneral with JsdPfEpayeSeta with JsdPtaSa with JsdBtaClass1aNi with JsdVcVatOther with JsdPfAmls with JsdPfVat with JsdItSa with JsdBtaSa with JsdPfAlcoholDuty with JsdBtaEpayePenalty with JsdEconomicCrimeLevy with JsdPfEconomicCrimeLevy with JsdWcSa with JsdWcCt with JsdWcVat with JsdVatC2c with JsdPfVatC2c with JsdWcSimpleAssessment with JsdWcXref with JsdWcEpayeLpp with JsdWcEpayeNi with JsdWcEpayeLateCis with JsdWcClass1aNi with JsdPfChildBenefitRepayments with JsdBtaSdil with JsdPfSdil with JsdPtaP800 with JsdPfP800 with JsdPtaSimpleAssessment with JsdPfSimpleAssessment with JsdPfJobRetentionScheme with JsdJrsJobRetentionScheme with JsdWcEpayeSeta with JsdNiEuVatOss with JsdPfNiEuVatOss with JsdNiEuVatIoss with JsdPfNiEuVatIoss with JsdPfCds with JsdAppSa with JsdAppSimpleAssessment
+    type JsdBounds = JsdPfEpayeNi with JsdAlcoholDuty with JsdPfPpt with JsdBtaEpayeBill with JsdPfSa with JsdPpt with JsdVcVatReturn with JsdPfEpayeP11d with JsdCapitalGainsTax with JsdBtaCt with JsdPfEpayeLateCis with JsdPfEpayeLpp with JsdPfCt with JsdBtaVat with JsdPfSdlt with JsdBtaEpayeInterest with JsdAmls with JsdBtaEpayeGeneral with JsdPfEpayeSeta with JsdPtaSa with JsdBtaClass1aNi with JsdVcVatOther with JsdPfAmls with JsdPfVat with JsdItSa with JsdBtaSa with JsdPfAlcoholDuty with JsdBtaEpayePenalty with JsdEconomicCrimeLevy with JsdPfEconomicCrimeLevy with JsdWcSa with JsdWcCt with JsdWcVat with JsdVatC2c with JsdPfVatC2c with JsdWcSimpleAssessment with JsdWcXref with JsdWcEpayeLpp with JsdWcEpayeNi with JsdWcEpayeLateCis with JsdWcClass1aNi with JsdPfChildBenefitRepayments with JsdBtaSdil with JsdPfSdil with JsdPtaP800 with JsdPfP800 with JsdPtaSimpleAssessment with JsdPfSimpleAssessment with JsdPfJobRetentionScheme with JsdJrsJobRetentionScheme with JsdWcEpayeSeta with JsdNiEuVatOss with JsdPfNiEuVatOss with JsdNiEuVatIoss with JsdPfNiEuVatIoss with JsdPfCds with JsdAppSa with JsdAppSimpleAssessment with JsdMib with JsdBcPngr
 
     val scenarios: TableFor6[JourneyStatuses[_ >: JsdBounds <: JourneySpecificData], String, String, Option[String], Option[String], String] = Table(
       ("Journey", "Tax Type", "Tax Reference", "Commission", "Total Paid", "lang"),
@@ -331,15 +331,17 @@ class EmailServiceSpec extends ItSpec with TableDrivenPropertyChecks {
       (AppSimpleAssessment, "Simple Assessment", "ending with 22023", None, None, "en"),
       (AppSimpleAssessment, "Simple Assessment", "ending with 22023", commission, Some("13.57"), "en"),
       (AppSimpleAssessment, "Asesiad Syml", "yn gorffen gyda 22023", None, None, "cy"),
-      (AppSimpleAssessment, "Asesiad Syml", "yn gorffen gyda 22023", commission, Some("13.57"), "cy")
+      (AppSimpleAssessment, "Asesiad Syml", "yn gorffen gyda 22023", commission, Some("13.57"), "cy"),
+
+      //Mib/BcPngr not needed to be tested, we don't send emails for them. I think the email is handled by the corresponding tenant services.
     )
 
     forAll(scenarios) { (j, taxType, taxReference, commission, totalPaid, lang) =>
       val cardType = if (commission.isDefined) "credit" else "debit"
       val origin = j.journeyBeforeBeginWebPayment.origin
       val request: FakeRequest[AnyContentAsEmpty.type] = if (lang == "en") fakeRequest else fakeRequestInWelsh
-      val journey: Journey[_ >: JsdBtaSa with JsdAlcoholDuty with JsdPfAlcoholDuty with JsdPfEpayeP11d with JsdPfEpayeSeta with JsdPfEpayeLpp with JsdPfEpayeNi with JsdPtaSa with JsdBtaCt with JsdItSa with JsdPfCt with JsdPfSa with JsdPfEpayeLateCis <: JourneySpecificData] = if (cardType == "credit") j.journeyAfterSucceedCreditWebPayment else j.journeyAfterSucceedDebitWebPayment
       val succeedWebPaymentRequest = SucceedWebPaymentRequest(cardType, commission.map(c => (c.toDouble * 100).toLong), LocalDateTime.parse("2027-11-02T16:28:55.185"))
+      val journey = if (cardType == "credit") j.journeyAfterSucceedCreditWebPayment else j.journeyAfterSucceedDebitWebPayment
 
       s"when origin is ${origin.entryName}, card type is $cardType in $lang" in {
         val expectedResult: EmailParameters = EmailParameters(
@@ -355,21 +357,27 @@ class EmailServiceSpec extends ItSpec with TableDrivenPropertyChecks {
       }
     }
 
-    implementedOrigins.foreach { origin =>
-      s"for journey with origin ${origin.entryName}, test scenario should exist" in {
-        scenarios.exists { scenario =>
-          scenario._1.journeyBeforeBeginWebPayment.origin == origin
-        } shouldBe true withClue s"Test scenario missing for origin: ${origin.entryName}"
+    implementedOrigins
+      .filterNot(_ == Origins.Mib) // no email for this Origin
+      .filterNot(_ == Origins.BcPngr) // no email for this Origin
+      .foreach { origin =>
+        s"for journey with origin ${origin.entryName}, test scenario should exist" in {
+          scenarios.exists { scenario =>
+            scenario._1.journeyBeforeBeginWebPayment.origin == origin
+          } shouldBe true withClue s"Test scenario missing for origin: ${origin.entryName}"
+        }
       }
-    }
 
     "should have a messages populated for emailTaxTypeMessageKey for all origins" in {
       val messages: MessagesApi = app.injector.instanceOf[MessagesApi]
-      val implementedOrigins = TestHelpers.implementedOrigins
-      implementedOrigins.foreach { origin =>
-        val msgKey = origin.lift.emailTaxTypeMessageKey
+      val implementedOrigins: Seq[Origin] = TestHelpers.implementedOrigins
+      implementedOrigins
+        .filterNot(_ == Origins.Mib) // no email for this Origin
+        .filterNot(_ == Origins.BcPngr) // no email for this Origin
+        .foreach { origin =>
+          val msgKey = origin.lift.emailTaxTypeMessageKey
 
-        msgKey.isEmpty shouldBe false
+        msgKey.isEmpty shouldBe false withClue s"email.tax-name message key missing for origin: ${origin.entryName}"
         //Check if the message is defined in either messages file, Doesn't matter which one
         //doesn't seem to care what the language is, if it exists in one of the language file, it'll return true
         messages.isDefinedAt(msgKey)(Lang("en")) shouldBe true withClue s"email.tax-name message key missing for origin: ${origin.entryName}"

@@ -94,7 +94,9 @@ class ClientIdServiceSpec extends ItSpec {
       (TestJourneys.JrsJobRetentionScheme.journeyBeforeBeginWebPayment, ClientIds.MIEE),
       (TestJourneys.PfCds.journeyBeforeBeginWebPayment, ClientIds.CDEE),
       (TestJourneys.AppSa.journeyBeforeBeginWebPayment, ClientIds.SAEE),
-      (TestJourneys.AppSimpleAssessment.journeyBeforeBeginWebPayment, ClientIds.MIEE)
+      (TestJourneys.AppSimpleAssessment.journeyBeforeBeginWebPayment, ClientIds.MIEE),
+      (TestJourneys.Mib.journeyBeforeBeginWebPayment, ClientIds.MBPE),
+      (TestJourneys.BcPngr.journeyBeforeBeginWebPayment, ClientIds.PSEE)
     )
 
     forAll(scenariosEn) {
@@ -172,7 +174,9 @@ class ClientIdServiceSpec extends ItSpec {
       (TestJourneys.PfJobRetentionScheme.journeyBeforeBeginWebPayment, ClientIds.MIEC),
       (TestJourneys.JrsJobRetentionScheme.journeyBeforeBeginWebPayment, ClientIds.MIEC),
       (TestJourneys.AppSa.journeyBeforeBeginWebPayment, ClientIds.SAEC),
-      (TestJourneys.AppSimpleAssessment.journeyBeforeBeginWebPayment, ClientIds.MIEC)
+      (TestJourneys.AppSimpleAssessment.journeyBeforeBeginWebPayment, ClientIds.MIEC),
+      (TestJourneys.Mib.journeyBeforeBeginWebPayment, ClientIds.MBPE), // only one client id for mib/mods, but supports welsh? We are where we are.
+      (TestJourneys.BcPngr.journeyBeforeBeginWebPayment, ClientIds.PSEC)
     )
 
     forAll(scenariosCy) {
@@ -194,7 +198,7 @@ class ClientIdServiceSpec extends ItSpec {
   }
 
   "sanity check for implemented origins" in {
-    TestHelpers.implementedOrigins.size shouldBe 58 withClue "** This dummy test is here to remind you to update the tests above. Bump up the expected number when an origin is added to implemented origins **"
+    TestHelpers.implementedOrigins.size shouldBe 60 withClue "** This dummy test is here to remind you to update the tests above. Bump up the expected number when an origin is added to implemented origins **"
   }
 
 }

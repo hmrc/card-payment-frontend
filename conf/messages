@@ -45,7 +45,7 @@ service-name.BtaCt = Pay your Corporation Tax
 service-name.BtaSdil = Pay the Soft Drinks Industry Levy
 service-name.DdSdil = Pay the Soft Drinks Industry Levy
 service-name.PfSdil = Pay the Soft Drinks Industry Levy
-service-name.BcPngr =
+service-name.BcPngr = Check tax on goods you bring into the UK
 service-name.Parcels =
 service-name.DdVat = Business tax account
 service-name.VcVatReturn = Business tax account
@@ -57,7 +57,7 @@ service-name.PfCdsCash =
 service-name.PfPpt = Pay your Plastic Packaging Tax
 service-name.PfSpiritDrinks =
 service-name.PfInheritanceTax =
-service-name.Mib =
+service-name.Mib = Declare commercial goods carried in accompanied baggage or small vehicles
 service-name.PfClass3Ni = Pay your National Insurance
 service-name.PtaSa = Pay your Self Assessment
 service-name.PfWineAndCider =
@@ -211,6 +211,8 @@ check-your-details.PfNiEuVatIoss.ioss-number = IOSS Number
 check-your-details.PfNiEuVatIoss.tax-year = Return period
 check-your-details.PfCds.reference = CDS Reference Number
 check-your-details.AppSa.reference = Unique Taxpayer Reference (UTR)
+check-your-details.Mib.reference = Declaration reference
+
 
 ## Address Page
 address.heading = Card billing address
@@ -222,6 +224,7 @@ address.field-name.line2 = Address line 2 (optional)
 address.field-name.city = Town or City (optional)
 address.field-name.county = County (optional)
 address.field-name.postcode = Postcode
+address.field-name.postcode.non-uk = Potscode (optional for non-UK addresses)
 address.field-name.country = Country
 
 address.country.select.message = Please select…
@@ -278,6 +281,15 @@ payment-complete.what-happens-next.p1.signedOut = If you have an online tax acco
 payment-complete.what-happens-next.link = online tax account.
 payment-complete.what-happens-next.web-chat.info = If you need further help with a tax bill, return to the webchat and speak with the webchat handler.
 payment-complete.what-happens-next.one-stop-shop.info = If you have an online tax account, your payment can take up to 5 days to show.
+payment-complete.mods.what-happens-next.header = What you need to do next
+payment-complete.mods.what-happens-next.make-sure-that-you = Make sure that you:
+payment-complete.mods.what-happens-next.list-item-1 = go through the <strong>green channel</strong> (nothing to declare) at customs
+payment-complete.mods.what-happens-next.list-item-2 = take the declaration sent to the email provided
+payment-complete.mods.what-happens-next.list-item-3 = take the receipts or invoices for all the declared goods
+payment-complete.mods.bringing-eu-goods.header = Bringing EU goods
+payment-complete.mods.bringing-eu-goods.info = If you bring EU-produced goods that have a total value over £1,000, you need to carry proof they were made in the EU.
+payment-complete.mods.make-a-new-declaration = Make a new declaration
+payment-complete.mods.add-goods-to-an-existing-declaration = Add goods to an existing declaration
 payment-complete.survey.title = Help us improve our services
 payment-complete.survey.p1 = We use your feedback to make our services better.
 payment-complete.survey.p2.part1 = Tell us what you think of this service
@@ -314,7 +326,6 @@ payment-complete.tax-name.BtaEpayeGeneral = PAYE and National Insurance
 payment-complete.tax-name.BtaClass1aNi = Employers’ Class 1A National Insurance
 payment-complete.tax-name.BtaCt = Corporation Tax
 payment-complete.tax-name.BtaSdil = Soft Drinks Industry Levy
-payment-complete.tax-name.BcPngr =
 payment-complete.tax-name.Parcels =
 payment-complete.tax-name.DdVat =
 payment-complete.tax-name.DdSdil = Soft Drinks Industry Levy
@@ -369,6 +380,8 @@ payment-complete.tax-name.PfVatC2c = Import VAT
 payment-complete.tax-name.WcEpayeLpp = Employers’ PAYE late payment penalty
 payment-complete.tax-name.WcEpayeNi = Employers' PAYE and National Insurance
 payment-complete.tax-name.WcEpayeSeta = Employers’ PAYE Settlement Agreement
+payment-complete.tax-name.Mib = Commercial goods carried in accompanied baggage or small vehicles
+#payment-complete.tax-name.BcPngr = Passengers has custom complete page, not needed
 
 ## Payment Cancelled page
 

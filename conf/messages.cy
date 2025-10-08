@@ -46,7 +46,7 @@ service-name.BtaCt = Talu eich Treth Gorfforaeth
 service-name.BtaSdil = Talu Ardoll y Diwydiant Diodydd Ysgafn
 service-name.DdSdil = Talu Ardoll y Diwydiant Diodydd Ysgafn
 service-name.PfSdil = Talu Ardoll y Diwydiant Diodydd Ysgafn
-service-name.BcPngr =
+service-name.BcPngr = Gwirio’r dreth ar nwyddau rydych yn dod â nhw i’r DU
 service-name.Parcels =
 service-name.DdVat = Cyfrif treth busnes
 service-name.VcVatReturn = Cyfrif treth busnes
@@ -58,7 +58,7 @@ service-name.PfCdsCash =
 service-name.PfPpt = Talu’ch Treth Deunydd Pacio Plastig
 service-name.PfSpiritDrinks =
 service-name.PfInheritanceTax =
-service-name.Mib =
+service-name.Mib = Datgan nwyddau masnachol sy’n cael eu cario mewn bagiau neu gerbydau bach
 service-name.PfClass3Ni =
 service-name.PtaSa = Talu eich Hunanasesiad
 service-name.PfWineAndCider =
@@ -198,6 +198,8 @@ check-your-details.AppSimpleAssessment.tax-year.value = 6 Ebrill {0} i 5 Ebrill 
 check-your-details.PfJobRetentionScheme.reference = Cyfeirnod y taliad
 check-your-details.JrsJobRetentionScheme.reference = Cyfeirnod y taliad
 check-your-details.AppSa.reference = Cyfeirnod Unigryw y Trethdalwr (UTR)
+check-your-details.Mib.reference = Cyfeirnod y taliad
+
 
 ## Address Page
 address.heading = Cyfeiriad bilio’r cerdyn
@@ -209,6 +211,7 @@ address.field-name.line2 = Cyfeiriad - llinell 2 (dewisol)
 address.field-name.city = Tref neu ddinas (dewisol)
 address.field-name.county = Sir (dewisol)
 address.field-name.postcode = Cod post
+address.field-name.postcode.non-uk = Cod post (dewisol ar gyfer cyfeiriadau y tu allan i’r DU)
 address.field-name.country = Gwlad
 
 address.country.select.message = Dewiswch
@@ -269,6 +272,15 @@ payment-complete.what-happens-next.p1 = Gall eich taliad gymryd hyd at 5 diwrnod
 payment-complete.what-happens-next.p1.signedOut = Os oes gennych gyfrif treth ar-lein, gall eich taliad gymryd hyd at 5 diwrnod i ymddangos.
 payment-complete.what-happens-next.link = cyfrif treth ar-lein.
 payment-complete.what-happens-next.web-chat.info = Os oes angen cymorth pellach arnoch gyda’ch bil treth, bydd angen dychwelyd i’r sgwrs dros y we a siarad ag ymgynghorydd.
+payment-complete.mods.what-happens-next.header = Yr hyn y mae angen i chi ei wneud nesaf
+payment-complete.mods.what-happens-next.make-sure-that-you = Gwnewch yn siŵr eich bod yn:
+payment-complete.mods.what-happens-next.list-item-1 = mynd drwy’r <strong>sianel wyrdd</strong> (dim byd i’w ddatgan) wrth y tollau
+payment-complete.mods.what-happens-next.list-item-2 = mynd â’r datganiad a anfonwyd at y cyfeiriad a roddwyd
+payment-complete.mods.what-happens-next.list-item-3 = mynd â’r derbynebau neu’r anfonebau ar gyfer yr holl nwyddau a ddatganwyd
+payment-complete.mods.bringing-eu-goods.header = Dod â nwyddau o’r UE gyda chi
+payment-complete.mods.bringing-eu-goods.info = Os ydych yn dod â nwyddau a gynhyrchwyd yn yr UE gyda chi y mae cyfanswm eu gwerth dros £1,000, mae’n rhaid i chi gario tystiolaeth y cawsant eu gwneud yn yr UE.
+payment-complete.mods.make-a-new-declaration = Gwneud datganiad newydd
+payment-complete.mods.add-goods-to-an-existing-declaration = Ychwanegu nwyddau i ddatganiad sy’n bodoli eisoes
 payment-complete.survey.title = Helpwch ni i wella ein gwasanaethau
 payment-complete.survey.p1 = Rydym yn defnyddio’ch adborth i wella ein gwasanaethau.
 payment-complete.survey.p2.part1 = Rhowch wybod i ni beth yw eich barn am y gwasanaeth hwn
@@ -319,7 +331,7 @@ payment-complete.tax-name.PfCdsCash =
 payment-complete.tax-name.PfPpt = Dreth Deunydd Pacio Plastig
 payment-complete.tax-name.PfSpiritDrinks =
 payment-complete.tax-name.PfInheritanceTax =
-payment-complete.tax-name.Mib =
+payment-complete.tax-name.Mib = Nwyddau masnachol sy’n cael eu cario mewn bagiau neu gerbydau bach
 payment-complete.tax-name.PfClass3Ni =
 payment-complete.tax-name.PtaSa = Hunanasesiad
 payment-complete.tax-name.PfWineAndCider =
@@ -360,6 +372,7 @@ payment-complete.tax-name.PfVatC2c = TAW fewnforio
 payment-complete.tax-name.WcEpayeLpp = Cosb y Cyflogwr am dalu TWE yn hwyr
 payment-complete.tax-name.WcEpayeNi = TWE ac Yswiriant Gwladol y Cyflogwr
 payment-complete.tax-name.WcEpayeSeta = Cytundeb Setliad TWE y Cyflogwr
+payment-complete.tax-name.Mib = Nwyddau masnachol sy’n cael eu cario mewn bagiau neu gerbydau bach
 
 ## Payment Cancelled page
 payment-cancelled.heading = Taliad wedi’i ganslo
@@ -441,6 +454,7 @@ email.tax-name.PtaSimpleAssessment = Asesiad Syml
 email.tax-name.AppSimpleAssessment = Asesiad Syml
 email.tax-name.PfJobRetentionScheme = Talu grantiau’r Cynllun Cadw Swyddi yn sgil Coronafeirws yn ôl
 email.tax-name.JrsJobRetentionScheme = Talu grantiau’r Cynllun Cadw Swyddi yn sgil Coronafeirws yn ôl
+email.tax-name.Mib = Nwyddau masnachol sy’n cael eu cario mewn bagiau neu gerbydau bach
 
 ## Payments survey
 payments-survey.bta.return-message = Dim diolch, dychwelyd i cyfrif treth busnes

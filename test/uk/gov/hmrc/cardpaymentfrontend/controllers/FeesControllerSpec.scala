@@ -2791,7 +2791,7 @@ class FeesControllerSpec extends ItSpec {
         }
 
         "render the static content correctly" in {
-          PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfJobRetentionScheme.journeyBeforeBeginWebPayment)
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.JrsJobRetentionScheme.journeyBeforeBeginWebPayment)
           val result = systemUnderTest.renderPage(fakeRequest)
           val document = Jsoup.parse(contentAsString(result))
           document.select(".govuk-header__service-name").html shouldBe "Pay Coronavirus Job Retention Scheme grants back"
@@ -2799,7 +2799,7 @@ class FeesControllerSpec extends ItSpec {
         }
 
         "the static content correctly in welsh" in {
-          PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfJobRetentionScheme.journeyBeforeBeginWebPayment)
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.JrsJobRetentionScheme.journeyBeforeBeginWebPayment)
           val result = systemUnderTest.renderPage(fakeWelshRequest)
           val document = Jsoup.parse(contentAsString(result))
           document.select(".govuk-header__service-name").html shouldBe "Talu grantiau’r Cynllun Cadw Swyddi yn sgil Coronafeirws yn ôl"
@@ -3105,6 +3105,96 @@ class FeesControllerSpec extends ItSpec {
 
       }
 
+
+      "for origin Mib" - {
+
+        "render one options for other ways to pay" in {
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.Mib.journeyBeforeBeginWebPayment)
+          val result = systemUnderTest.renderPage(fakeRequest)
+          val document = Jsoup.parse(contentAsString(result))
+          val listOfMethods = document.select("#payment-type-list").select("li")
+          listOfMethods.size() shouldBe 1
+        }
+
+        "render the static content correctly" in {
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.Mib.journeyBeforeBeginWebPayment)
+          val result = systemUnderTest.renderPage(fakeRequest)
+          val document = Jsoup.parse(contentAsString(result))
+          document.select(".govuk-header__service-name").html shouldBe "Declare commercial goods carried in accompanied baggage or small vehicles"
+          testStaticContentEnglish(document)
+        }
+
+        "the static content correctly in welsh" in {
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.Mib.journeyBeforeBeginWebPayment)
+          val result = systemUnderTest.renderPage(fakeWelshRequest)
+          val document = Jsoup.parse(contentAsString(result))
+          document.select(".govuk-header__service-name").html shouldBe "Datgan nwyddau masnachol sy’n cael eu cario mewn bagiau neu gerbydau bach"
+          testStaticContentWelsh(document)
+        }
+
+        "render an option for personal debit card" in {
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.Mib.journeyBeforeBeginWebPayment)
+          val result = systemUnderTest.renderPage(fakeRequest)
+          val document = Jsoup.parse(contentAsString(result))
+          val listOfMethods = document.select("#payment-type-list").select("li")
+          val cardBullet = listOfMethods.select("#personal-debit-card")
+          cardBullet.text() shouldBe "personal debit card"
+        }
+
+        "render an option for personal debit card in welsh" in {
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.Mib.journeyBeforeBeginWebPayment)
+          val result = systemUnderTest.renderPage(fakeWelshRequest)
+          val document = Jsoup.parse(contentAsString(result))
+          val listOfMethods = document.select("#payment-type-list").select("li")
+          val cardBullet = listOfMethods.select("#personal-debit-card")
+          cardBullet.text() shouldBe "cerdyn debyd personol"
+        }
+      }
+
+      "for origin BcPngr" - {
+
+        "render one options for other ways to pay" in {
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.Mib.journeyBeforeBeginWebPayment)
+          val result = systemUnderTest.renderPage(fakeRequest)
+          val document = Jsoup.parse(contentAsString(result))
+          val listOfMethods = document.select("#payment-type-list").select("li")
+          listOfMethods.size() shouldBe 1
+        }
+
+        "render the static content correctly" in {
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.Mib.journeyBeforeBeginWebPayment)
+          val result = systemUnderTest.renderPage(fakeRequest)
+          val document = Jsoup.parse(contentAsString(result))
+          document.select(".govuk-header__service-name").html shouldBe "Declare commercial goods carried in accompanied baggage or small vehicles"
+          testStaticContentEnglish(document)
+        }
+
+        "the static content correctly in welsh" in {
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.Mib.journeyBeforeBeginWebPayment)
+          val result = systemUnderTest.renderPage(fakeWelshRequest)
+          val document = Jsoup.parse(contentAsString(result))
+          document.select(".govuk-header__service-name").html shouldBe "Datgan nwyddau masnachol sy’n cael eu cario mewn bagiau neu gerbydau bach"
+          testStaticContentWelsh(document)
+        }
+
+        "render an option for personal debit card" in {
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.Mib.journeyBeforeBeginWebPayment)
+          val result = systemUnderTest.renderPage(fakeRequest)
+          val document = Jsoup.parse(contentAsString(result))
+          val listOfMethods = document.select("#payment-type-list").select("li")
+          val cardBullet = listOfMethods.select("#personal-debit-card")
+          cardBullet.text() shouldBe "personal debit card"
+        }
+
+        "render an option for personal debit card in welsh" in {
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.Mib.journeyBeforeBeginWebPayment)
+          val result = systemUnderTest.renderPage(fakeWelshRequest)
+          val document = Jsoup.parse(contentAsString(result))
+          val listOfMethods = document.select("#payment-type-list").select("li")
+          val cardBullet = listOfMethods.select("#personal-debit-card")
+          cardBullet.text() shouldBe "cerdyn debyd personol"
+        }
+      }
     }
 
     "POST /card-fees" - {
@@ -3198,7 +3288,7 @@ class FeesControllerSpec extends ItSpec {
       TestHelpers.implementedOrigins.foreach { origin =>
         s"should return the correct links for each origin: ${origin.entryName}" in {
 
-          val expectedLinks = origin match {
+          val expectedLinks: Seq[Link] = origin match {
             case Origins.PfSa                     => Seq(expectedOpenBankingLink, expectedOneOffDirectDebitLink)
             case Origins.BtaSa                    => Seq(expectedOpenBankingLink, expectedOneOffDirectDebitLink)
             case Origins.PtaSa                    => Seq(expectedOpenBankingLink, expectedOneOffDirectDebitLink)
@@ -3227,7 +3317,7 @@ class FeesControllerSpec extends ItSpec {
             case Origins.BtaClass1aNi             => Seq(expectedOpenBankingLink, expectedOneOffDirectDebitLink)
             case Origins.BtaCt                    => Seq(expectedOpenBankingLink, expectedOneOffDirectDebitLink)
             case Origins.BtaSdil                  => Seq(expectedOpenBankingLink, expectedDirectDebitLink)
-            case Origins.BcPngr                   => Seq.empty
+            case Origins.BcPngr                   => Seq.empty[Link]
             case Origins.Parcels                  => Seq.empty
             case Origins.DdVat                    => Seq.empty
             case Origins.DdSdil                   => Seq.empty
@@ -3239,7 +3329,7 @@ class FeesControllerSpec extends ItSpec {
             case Origins.PfPpt                    => Seq(expectedOpenBankingLink, expectedOneOffDirectDebitLink)
             case Origins.PfSpiritDrinks           => Seq.empty
             case Origins.PfInheritanceTax         => Seq.empty
-            case Origins.Mib                      => Seq.empty
+            case Origins.Mib                      => Seq.empty[Link]
             case Origins.PfClass3Ni               => Seq.empty
             case Origins.PfWineAndCider           => Seq.empty
             case Origins.PfBioFuels               => Seq.empty
