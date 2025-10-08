@@ -26,6 +26,7 @@ import play.api.test.FakeRequest
 import uk.gov.hmrc.cardpaymentfrontend.models.EmailAddress
 import uk.gov.hmrc.cardpaymentfrontend.models.email.{EmailParameters, EmailRequest}
 import uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins.ExtendedOrigin.OriginExtended
+import uk.gov.hmrc.cardpaymentfrontend.models.payapirequest.SucceedWebPaymentRequest
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.TestHelpers.implementedOrigins
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.TestOps.FakeRequestOps
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.stubs.EmailStub
@@ -34,6 +35,8 @@ import uk.gov.hmrc.cardpaymentfrontend.testsupport.testdata.TestJourneys._
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.{ItSpec, TestHelpers}
 import uk.gov.hmrc.cardpaymentfrontend.util.SafeEquals.EqualsOps
 import uk.gov.hmrc.http.HeaderCarrier
+
+import java.time.LocalDateTime
 
 class EmailServiceSpec extends ItSpec with TableDrivenPropertyChecks {
 
@@ -311,6 +314,7 @@ class EmailServiceSpec extends ItSpec with TableDrivenPropertyChecks {
       val origin = j.journeyBeforeBeginWebPayment.origin
       val request: FakeRequest[AnyContentAsEmpty.type] = if (lang == "en") fakeRequest else fakeRequestInWelsh
       val journey: Journey[_ >: JsdBtaSa with JsdAlcoholDuty with JsdPfAlcoholDuty with JsdPfEpayeP11d with JsdPfEpayeSeta with JsdPfEpayeLpp with JsdPfEpayeNi with JsdPtaSa with JsdBtaCt with JsdItSa with JsdPfCt with JsdPfSa with JsdPfEpayeLateCis <: JourneySpecificData] = if (cardType == "credit") j.journeyAfterSucceedCreditWebPayment else j.journeyAfterSucceedDebitWebPayment
+      val succeedWebPaymentRequest = SucceedWebPaymentRequest(cardType, commission.map(c => (c.toDouble * 100).toLong), LocalDateTime.parse("2027-11-02T16:28:55.185"))
 
       s"when origin is ${origin.entryName}, card type is $cardType in $lang" in {
         val expectedResult: EmailParameters = EmailParameters(
@@ -322,7 +326,7 @@ class EmailServiceSpec extends ItSpec with TableDrivenPropertyChecks {
           totalPaid        = totalPaid
         )
 
-        systemUnderTest.buildEmailParameters(journey)(request) shouldBe expectedResult
+        systemUnderTest.buildEmailParameters(journey, succeedWebPaymentRequest)(request) shouldBe expectedResult
       }
     }
 
@@ -367,18 +371,18 @@ class EmailServiceSpec extends ItSpec with TableDrivenPropertyChecks {
   }
 
   "hasCardFees" - {
-    "should return true when journey has commission in pence greater than 0" in {
-      val result = systemUnderTest.hasCardFees(TestJourneys.PfSa.journeyAfterSucceedCreditWebPayment)
+    "should return true when AmountInPence is Some and greater than 0" in {
+      val result = systemUnderTest.hasCardFees(Some(AmountInPence(1)))
       result shouldBe true
     }
 
-    "should return false when journey has no commission in pence" in {
-      val result = systemUnderTest.hasCardFees(TestJourneys.PfSa.journeyAfterSucceedDebitWebPayment)
+    "should return false when AmountInPence is None" in {
+      val result = systemUnderTest.hasCardFees(None)
       result shouldBe false
     }
 
-    "should return false when journey has commission in pence but it's 0" in {
-      val result = systemUnderTest.hasCardFees(TestJourneys.PfSa.journeyAfterSucceedCreditWebPayment.copy(order = TestJourneys.PfSa.journeyAfterSucceedCreditWebPayment.order.map(_.copy(commissionInPence = Some(AmountInPence.zero)))))
+    "should return false when AmountInPence is Some but it's 0" in {
+      val result = systemUnderTest.hasCardFees(Some(AmountInPence(0)))
       result shouldBe false
     }
   }
@@ -403,8 +407,9 @@ class EmailServiceSpec extends ItSpec with TableDrivenPropertyChecks {
 
           val result = systemUnderTest.buildEmailRequest(
             TestJourneys.PfSa.journeyAfterSucceedDebitWebPayment,
-            emailAddress = EmailAddress("joe_bloggs@gmail.com"),
-            isEnglish    = true
+            emailAddress             = EmailAddress("joe_bloggs@gmail.com"),
+            isEnglish                = true,
+            succeedWebPaymentRequest = SucceedWebPaymentRequest("debit", None, LocalDateTime.parse("2027-11-02T16:28:55.185"))
           )(fakeRequest.withEmailInSession(TestJourneys.PfSa.journeyAfterSucceedDebitWebPayment._id, EmailAddress("joe_bloggs@gmail.com")))
           result shouldBe expectedResult
         }
@@ -426,8 +431,9 @@ class EmailServiceSpec extends ItSpec with TableDrivenPropertyChecks {
 
           val result = systemUnderTest.buildEmailRequest(
             TestJourneys.PfSa.journeyAfterSucceedDebitWebPayment,
-            emailAddress = EmailAddress("joe_bloggs@gmail.com"),
-            isEnglish    = false
+            emailAddress             = EmailAddress("joe_bloggs@gmail.com"),
+            isEnglish                = false,
+            succeedWebPaymentRequest = SucceedWebPaymentRequest("debit", None, LocalDateTime.parse("2027-11-02T16:28:55.185"))
           )(fakeRequestInWelsh.withEmailInSession(TestJourneys.PfSa.journeyAfterSucceedDebitWebPayment._id, EmailAddress("joe_bloggs@gmail.com")))
           result shouldBe expectedResult
         }
@@ -449,8 +455,9 @@ class EmailServiceSpec extends ItSpec with TableDrivenPropertyChecks {
 
           val result = systemUnderTest.buildEmailRequest(
             TestJourneys.PfSa.journeyAfterSucceedCreditWebPayment,
-            emailAddress = EmailAddress("joe_bloggs@gmail.com"),
-            isEnglish    = true
+            emailAddress             = EmailAddress("joe_bloggs@gmail.com"),
+            isEnglish                = true,
+            succeedWebPaymentRequest = SucceedWebPaymentRequest("credit", Some(123), LocalDateTime.parse("2027-11-02T16:28:55.185"))
           )(fakeRequest.withEmailInSession(TestJourneys.PfSa.journeyAfterSucceedDebitWebPayment._id, EmailAddress("joe_bloggs@gmail.com")))
           result shouldBe expectedResult
         }
@@ -480,9 +487,10 @@ class EmailServiceSpec extends ItSpec with TableDrivenPropertyChecks {
 
       "should send an email successfully" in {
         val result = systemUnderTest.sendEmail(
-          journey      = TestJourneys.PfSa.journeyAfterSucceedCreditWebPayment,
-          emailAddress = EmailAddress("blah@blah.com"),
-          isEnglish    = true
+          journey                  = TestJourneys.PfSa.journeyAfterSucceedCreditWebPayment,
+          emailAddress             = EmailAddress("blah@blah.com"),
+          isEnglish                = true,
+          succeedWebPaymentRequest = SucceedWebPaymentRequest("credit", Some(123), LocalDateTime.parse("2027-11-02T16:28:55.185"))
         )(HeaderCarrier(), fakeRequest)
         whenReady(result)(_ => succeed)
         EmailStub.verifyEmailWasSent(jsonBody)
