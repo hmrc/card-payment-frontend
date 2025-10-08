@@ -134,7 +134,7 @@ class CardPaymentService @Inject() (
         case r: SucceedWebPaymentRequest =>
           logger.info(s"Payment finished for journey $journeyId.")
           payApiConnector.JourneyUpdates.updateSucceedWebPayment(journeyId, r)
-            .map(_ => maybeSendEmailF())
+            .map(_ => maybeSendEmailF(r))
       }
     } yield cardPaymentResult
   }
@@ -169,8 +169,9 @@ class CardPaymentService @Inject() (
   /**
    * If journey is not in completed state (i.e. they've been on the iframe, so sent) and they have an email in session, send an email.
    * Otherwise, return future.unit.
+   * We need the SucceedWebPaymentRequest as journey is not updated yet so there's no commission. Use SucceedWebPaymentRequest to obtain and send it faster.
    */
-  private[services] def maybeSendEmailF()(implicit headerCarrier: HeaderCarrier, journeyRequest: JourneyRequest[_], messagesApi: MessagesApi): Unit = {
+  private[services] def maybeSendEmailF(succeedWebPaymentRequest: SucceedWebPaymentRequest)(implicit headerCarrier: HeaderCarrier, journeyRequest: JourneyRequest[_], messagesApi: MessagesApi): Unit = {
     if (journeyRequest.journey.status === PaymentStatuses.Sent) {
 
       val maybeEmailFromSession: Option[EmailAddress] =
@@ -180,7 +181,12 @@ class CardPaymentService @Inject() (
 
       maybeEmailFromSession.fold(()) { emailAddress =>
         emailService
-          .sendEmail(journeyRequest.journey, emailAddress, journeyRequest.request.lang.code =!= "cy")(headerCarrier, journeyRequest)
+          .sendEmail(
+            journey                  = journeyRequest.journey,
+            emailAddress             = emailAddress,
+            isEnglish                = journeyRequest.request.lang.code =!= "cy",
+            succeedWebPaymentRequest = succeedWebPaymentRequest
+          )(headerCarrier, journeyRequest)
           .onComplete(_ => ())
       }
     }

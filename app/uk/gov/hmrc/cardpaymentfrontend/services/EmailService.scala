@@ -17,6 +17,7 @@
 package uk.gov.hmrc.cardpaymentfrontend.services
 
 import payapi.cardpaymentjourney.model.journey.{Journey, JourneySpecificData}
+import payapi.corcommon.model.AmountInPence
 import play.api.Logging
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.mvc.Request
@@ -25,6 +26,7 @@ import uk.gov.hmrc.cardpaymentfrontend.models.EmailAddress
 import uk.gov.hmrc.cardpaymentfrontend.models.email.{EmailParameters, EmailRequest}
 import uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins.ExtendedOrigin
 import uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins.ExtendedOrigin.OriginExtended
+import uk.gov.hmrc.cardpaymentfrontend.models.payapirequest.SucceedWebPaymentRequest
 import uk.gov.hmrc.cardpaymentfrontend.requests.RequestSupport
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -37,22 +39,23 @@ class EmailService @Inject() (emailConnector: EmailConnector, requestSupport: Re
 
   import requestSupport._
 
-  def sendEmail(journey: Journey[JourneySpecificData], emailAddress: EmailAddress, isEnglish: Boolean)
+  def sendEmail(journey: Journey[JourneySpecificData], emailAddress: EmailAddress, isEnglish: Boolean, succeedWebPaymentRequest: SucceedWebPaymentRequest)
     (implicit headerCarrier: HeaderCarrier, request: Request[_]): Future[Unit] = {
     logger.info("Email sent on successful payment")
     emailConnector.sendEmail(
-      buildEmailRequest(journey, emailAddress, isEnglish)
+      buildEmailRequest(journey, emailAddress, isEnglish, succeedWebPaymentRequest)
     )(headerCarrier)
   }
 
   private[services] def buildEmailRequest(
-      journey:      Journey[JourneySpecificData],
-      emailAddress: EmailAddress,
-      isEnglish:    Boolean
+      journey:                  Journey[JourneySpecificData],
+      emailAddress:             EmailAddress,
+      isEnglish:                Boolean,
+      succeedWebPaymentRequest: SucceedWebPaymentRequest
   )(implicit request: Request[_]): EmailRequest = {
 
     val templateId: String = if (isEnglish) "payment_successful" else "payment_successful_cy"
-    val parameters: EmailParameters = buildEmailParameters(journey)
+    val parameters: EmailParameters = buildEmailParameters(journey, succeedWebPaymentRequest)
 
     EmailRequest(
       to         = List(emailAddress),
@@ -62,21 +65,22 @@ class EmailService @Inject() (emailConnector: EmailConnector, requestSupport: Re
     )
   }
 
-  private[services] def buildEmailParameters(journey: Journey[JourneySpecificData])(implicit request: Request[_]): EmailParameters = {
+  private[services] def buildEmailParameters(journey: Journey[JourneySpecificData], succeedWebPaymentRequest: SucceedWebPaymentRequest)(implicit request: Request[_]): EmailParameters = {
     val messages: Messages = request.messages
     val extendedOrigin: ExtendedOrigin = journey.origin.lift
+    val maybeCommission = succeedWebPaymentRequest.commissionInPence.map(AmountInPence(_))
 
     EmailParameters(
       taxType          = messages(extendedOrigin.emailTaxTypeMessageKey),
       taxReference     = obfuscateReference(journey.referenceValue),
       paymentReference = journey.getTransactionReference.value,
       amountPaid       = journey.getAmountInPence.formatInDecimal,
-      commission       = if (hasCardFees(journey)) journey.getCommissionInPence.map(_.formatInDecimal) else None,
-      totalPaid        = if (hasCardFees(journey)) Some(journey.getTotalAmountInPence.formatInDecimal) else None
+      commission       = if (hasCardFees(maybeCommission)) maybeCommission.map(_.formatInDecimal) else None,
+      totalPaid        = if (hasCardFees(maybeCommission)) maybeCommission.map(commission => (journey.getAmountInPence + commission).formatInDecimal) else None
     )
   }
 
-  private[services] def hasCardFees: Journey[_] => Boolean = j => j.getCommissionInPence.exists(_.value > 0)
+  private[services] def hasCardFees: Option[AmountInPence] => Boolean = maybeAmount => maybeAmount.exists(_.value > 0)
 
   private[services] def obfuscateReference(taxReference: String)(implicit request: Request[_]): String = {
     request.messages.messages("email.obfuscated-tax-reference", taxReference.takeRight(5))
