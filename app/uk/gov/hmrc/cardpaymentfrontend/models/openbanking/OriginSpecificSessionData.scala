@@ -52,6 +52,7 @@ sealed abstract class OriginSpecificSessionData(val origin: Origin) {
 }
 @SuppressWarnings(Array("org.wartremover.warts.Any"))
 object OriginSpecificSessionData {
+
   implicit val reads: Reads[OriginSpecificSessionData] = (json: JsValue) =>
     (__ \ "origin").read[Origin].reads(json).flatMap {
       case PfSa                => Json.format[PfSaSessionData].reads(json)
