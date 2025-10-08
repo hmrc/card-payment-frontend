@@ -1122,13 +1122,53 @@ class PaymentsSurveyServiceSpec extends ItSpec with TableDrivenPropertyChecks {
             ) -> false
 
             case Origins.BcPngr              => throw new MatchError("Not implemented yet")
+            case Origins.Mib => PaymentSurveyJourneyRequest(
+              origin         = "Mib",
+              returnMsg      = "Skip survey",
+              returnHref     = "https://www.gov.uk/government/organisations/hm-revenue-customs",
+              auditName      = "merchandise-in-baggage",
+              audit          = AuditOptions(
+                userType  = "LoggedIn",
+                journey   = Some("Successful"),
+                orderId   = Some("MIBI1234567891"),
+                liability = Some("job-retention-scheme")
+              ),
+              contentOptions = SurveyContentOptions(
+                isWelshSupported = true,
+                title            = SurveyBannerTitle(
+                  englishValue = "Commercial goods carried in accompanied baggage or small vehicles",
+                  welshValue   = Some("Nwyddau masnachol sy’n cael eu cario mewn bagiau neu gerbydau bach")
+                )
+              )
+            ) -> true
+
+            case Origins.BcPngr => PaymentSurveyJourneyRequest(
+              origin         = "BcPngr",
+              returnMsg      = "Skip survey",
+              returnHref     = "https://www.gov.uk/government/organisations/hm-revenue-customs",
+              auditName      = "passengers",
+              audit          = AuditOptions(
+                userType  = "LoggedIn",
+                journey   = Some("Successful"),
+                orderId   = Some("XAPR9876543210"),
+                liability = Some("passengers")
+              ),
+              contentOptions = SurveyContentOptions(
+                isWelshSupported = true,
+                title            = SurveyBannerTitle(
+                  englishValue = "Check tax on goods you bring into the UK",
+                  welshValue   = Some("Gwirio’r dreth ar nwyddau rydych yn dod â nhw i’r DU")
+                )
+              )
+            ) -> true
+
+            case Origins.AppSa               => throw new MatchError("Not implemented yet")
             case Origins.Parcels             => throw new MatchError("Not implemented yet")
             case Origins.DdVat               => throw new MatchError("Not implemented yet")
             case Origins.DdSdil              => throw new MatchError("Not implemented yet")
             case Origins.PfCdsCash           => throw new MatchError("Not implemented yet")
             case Origins.PfSpiritDrinks      => throw new MatchError("Not implemented yet")
             case Origins.PfInheritanceTax    => throw new MatchError("Not implemented yet")
-            case Origins.Mib                 => throw new MatchError("Not implemented yet")
             case Origins.PfClass3Ni          => throw new MatchError("Not implemented yet")
             case Origins.PfWineAndCider      => throw new MatchError("Not implemented yet")
             case Origins.PfBioFuels          => throw new MatchError("Not implemented yet")

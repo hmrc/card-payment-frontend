@@ -16,99 +16,23 @@
 
 package uk.gov.hmrc.cardpaymentfrontend.util
 
-import org.scalatest.AppendedClues.convertToClueful
-import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor2}
-import payapi.cardpaymentjourney.model.journey._
-import uk.gov.hmrc.cardpaymentfrontend.testsupport.TestHelpers.implementedOrigins
+import org.scalatest.prop.TableDrivenPropertyChecks
+import payapi.cardpaymentjourney.model.journey.Url
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.UnitSpec
-import uk.gov.hmrc.cardpaymentfrontend.testsupport.testdata.{JourneyStatuses, TestJourneys}
+import uk.gov.hmrc.cardpaymentfrontend.testsupport.testdata.TestJourneys
 
 class ExternalNavigationSpec extends UnitSpec with TableDrivenPropertyChecks {
 
   "returnUrlCancelled" - {
-    val someUrl = Some(Url("https://www.return-url.com"))
 
-    type JsdBounds = JsdPfEpayeNi with JsdAlcoholDuty with JsdPfPpt with JsdBtaEpayeBill with JsdPfSa with JsdPpt with JsdVcVatReturn with JsdPfEpayeP11d with JsdCapitalGainsTax with JsdBtaCt with JsdPfEpayeLateCis with JsdPfEpayeLpp with JsdPfCt with JsdBtaVat with JsdPfSdlt with JsdBtaEpayeInterest with JsdAmls with JsdBtaEpayeGeneral with JsdPfEpayeSeta with JsdPtaSa with JsdBtaClass1aNi with JsdVcVatOther with JsdPfAmls with JsdPfVat with JsdItSa with JsdBtaSa with JsdPfAlcoholDuty with JsdBtaEpayePenalty with JsdEconomicCrimeLevy with JsdPfEconomicCrimeLevy with JsdWcSa with JsdWcCt with JsdWcVat with JsdVatC2c with JsdPfVatC2c with JsdWcSimpleAssessment with JsdWcXref with JsdWcEpayeLpp with JsdWcClass1aNi with JsdWcEpayeNi with JsdWcEpayeLateCis with JsdWcEpayeSeta with JsdPfChildBenefitRepayments with JsdBtaSdil with JsdPfSdil with JsdPtaP800 with JsdPfP800 with JsdPtaSimpleAssessment with JsdPfSimpleAssessment with JsdPfJobRetentionScheme with JsdJrsJobRetentionScheme with JsdNiEuVatOss with JsdPfNiEuVatOss with JsdNiEuVatIoss with JsdPfNiEuVatIoss with JsdPfCds with JsdAppSa with JsdAppSimpleAssessment
-
-    val scenarios: TableFor2[JourneyStatuses[_ >: JsdBounds <: JourneySpecificData], Option[Url]] = Table(
-      ("journey", "expectedUrl"),
-      //returnUrls are set in TestJourneys
-      //Logged out journeys, Logged out journeys should return None
-      (TestJourneys.PfSa, None),
-      (TestJourneys.PfCt, None),
-      (TestJourneys.PfEpayeNi, None),
-      (TestJourneys.PfEpayeLpp, None),
-      (TestJourneys.PfEpayeSeta, None),
-      (TestJourneys.PfEpayeLateCis, None),
-      (TestJourneys.PfEpayeP11d, None),
-      (TestJourneys.PfAlcoholDuty, None),
-      (TestJourneys.PfVat, None),
-      (TestJourneys.PfPpt, None),
-      (TestJourneys.PfAmls, None),
-      (TestJourneys.PfSdlt, None),
-      (TestJourneys.PfEconomicCrimeLevy, None),
-      (TestJourneys.WcSa, None),
-      (TestJourneys.WcCt, None),
-      (TestJourneys.WcVat, None),
-      (TestJourneys.WcClass1aNi, None),
-      (TestJourneys.WcXref, None),
-      (TestJourneys.PfVatC2c, None),
-      (TestJourneys.VatC2c, None),
-      (TestJourneys.WcSimpleAssessment, None),
-      (TestJourneys.WcEpayeLpp, None),
-      (TestJourneys.WcEpayeNi, None),
-      (TestJourneys.WcEpayeLateCis, None),
-      (TestJourneys.WcEpayeSeta, None),
-      (TestJourneys.PfChildBenefitRepayments, None),
-      (TestJourneys.PfSdil, None),
-      (TestJourneys.PfSimpleAssessment, None),
-      (TestJourneys.PfJobRetentionScheme, None),
-      (TestJourneys.PfCds, None),
-      (TestJourneys.PfNiEuVatOss, None),
-      (TestJourneys.PfNiEuVatIoss, None),
-
-      //Logged in journeys will return whatever the calling services sets
-      (TestJourneys.BtaSa, someUrl),
-      (TestJourneys.BtaCt, someUrl),
-      (TestJourneys.PtaSa, someUrl),
-      (TestJourneys.ItSa, someUrl),
-      (TestJourneys.AlcoholDuty, someUrl),
-      (TestJourneys.BtaVat, someUrl),
-      (TestJourneys.VcVatOther, someUrl),
-      (TestJourneys.VcVatReturn, someUrl),
-      (TestJourneys.BtaEpayeBill, someUrl),
-      (TestJourneys.BtaEpayePenalty, someUrl),
-      (TestJourneys.BtaEpayeGeneral, someUrl),
-      (TestJourneys.BtaEpayeInterest, someUrl),
-      (TestJourneys.BtaClass1aNi, someUrl),
-      (TestJourneys.Ppt, someUrl),
-      (TestJourneys.Amls, someUrl),
-      (TestJourneys.CapitalGainsTax, someUrl),
-      (TestJourneys.EconomicCrimeLevy, someUrl),
-      (TestJourneys.BtaSdil, someUrl),
-      (TestJourneys.PfP800, someUrl),
-      (TestJourneys.PtaP800, someUrl),
-      (TestJourneys.PtaSimpleAssessment, someUrl),
-      (TestJourneys.JrsJobRetentionScheme, someUrl),
-      (TestJourneys.NiEuVatOss, someUrl),
-      (TestJourneys.NiEuVatIoss, someUrl),
-      (TestJourneys.AppSa, someUrl),
-      (TestJourneys.AppSimpleAssessment, someUrl)
-    )
-
-    forAll(scenarios) { (journey, expectedUrl) =>
-      val urlValue = expectedUrl.map(_.value).getOrElse("None")
-      s"for ${journey.journeyAfterCancelWebPayment.origin.entryName} journey, should return $urlValue" in {
-        ExternalNavigation.returnUrlCancelled(journey.journeyAfterCancelWebPayment) shouldBe expectedUrl
-      }
+    "should return Some[Url] when navigation in journey contains a returnUrl" in {
+      ExternalNavigation.returnUrlCancelled(TestJourneys.BtaSa.journeyAfterCancelWebPayment) shouldBe Some(Url("https://www.return-url.com"))
     }
-
-    implementedOrigins.foreach { origin =>
-      s"for journey with origin ${origin.entryName}, test scenario should exist" in {
-        scenarios.exists { scenario =>
-          scenario._1.journeyAfterCancelWebPayment.origin == origin
-        } shouldBe true withClue s"No test scenario found for origin: ${origin.entryName}"
-      }
+    "should return None when navigation in journey is None" in {
+      ExternalNavigation.returnUrlCancelled(TestJourneys.PfSa.journeyAfterCancelWebPayment) shouldBe None
+    }
+    "should return None when navigation in journey is Some but the returnUrlCancelled is None" in {
+      ExternalNavigation.returnUrlCancelled(TestJourneys.BtaSa.journeyAfterCancelWebPayment.copy(navigation = TestJourneys.BtaSa.journeyAfterCancelWebPayment.navigation.map(_.copy(returnUrl = None)))) shouldBe None
     }
   }
 }

@@ -184,7 +184,7 @@ object ExtendedOrigin {
       case PfPpt                    => ExtendedPfPpt
       case PfSpiritDrinks           => DefaultExtendedOrigin
       case PfInheritanceTax         => DefaultExtendedOrigin
-      case Mib                      => DefaultExtendedOrigin
+      case Mib                      => ExtendedMib
       case PfClass3Ni               => DefaultExtendedOrigin
       case PtaSa                    => ExtendedPtaSa
       case PfWineAndCider           => DefaultExtendedOrigin
