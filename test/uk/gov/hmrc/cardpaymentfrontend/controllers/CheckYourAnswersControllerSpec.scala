@@ -1385,7 +1385,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       val result = systemUnderTest.renderPage(fakeRequest())
       val document = Jsoup.parse(contentAsString(result))
       val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.PfCds))
-      assertRow(referenceRow, "CDS Reference Number", "CDSI191234567890", None, None)
+      assertRow(referenceRow, "CDS Reference Number", "CDSI191234567890", Some("Change CDS Reference Number"), Some("http://localhost:9056/pay/pay-by-card-change-reference-number"))
     }
 
     "sanity check for implemented origins" in {

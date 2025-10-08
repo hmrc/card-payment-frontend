@@ -218,6 +218,15 @@ class PaymentCompleteControllerSpec extends ItSpec {
         wrapper.select("p").html() shouldBe "Bydd eich taliad yn cymryd 3 i 5 diwrnod i ymddangos yn eich cyfrif CThEM ar-lein."
       }
 
+      "render the custom what happens next content for PfCds" in {
+        PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfCds.journeyAfterSucceedDebitWebPayment)
+        val result = systemUnderTest.renderPage(fakeGetRequest)
+        val document = Jsoup.parse(contentAsString(result))
+        val wrapper = document.select("#what-happens-next-wrapper")
+        wrapper.select("h2").text() shouldBe "What happens next"
+        wrapper.select("p").html() shouldBe "Your payment will take 3 to 5 days to show in your HMRC online account."
+      }
+
       "should render the x reference/charge reference for PfVat when that's the appropriate reference" in {
         PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfVatWithChargeReference.journeyAfterSucceedDebitWebPayment)
         val result = systemUnderTest.renderPage(fakeGetRequest)

@@ -15,7 +15,7 @@
  *@
 
 @import payapi.corcommon.model.Reference
-@import payapi.corcommon.model.TaxTypes.vatConsumerToConsumer
+@import payapi.corcommon.model.TaxTypes.{cds, vatConsumerToConsumer}
 @import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
 @import uk.gov.hmrc.cardpaymentfrontend.models.EmailAddress
 @import uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins.ExtendedOrigin.OriginExtended
@@ -54,7 +54,7 @@
 }
 
 @maybeWhatHappensNextContent = {
-    @if(journeyRequest.journey.origin.toTaxType == vatConsumerToConsumer) {
+    @if(journeyRequest.journey.origin.toTaxType == vatConsumerToConsumer || journeyRequest.journey.origin.toTaxType == cds) {
         <div id="what-happens-next-wrapper">
             <h2 class="govuk-heading-m govuk-!-margin-top-7">@Messages("payment-complete.what-happens-next.header")</h2>
             <p class="govuk-body">@Messages("payment-complete.what-happens-next.p1") @Messages("payment-complete.what-happens-next.link")</p>
