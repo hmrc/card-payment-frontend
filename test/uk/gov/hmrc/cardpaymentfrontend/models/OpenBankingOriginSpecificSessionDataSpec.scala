@@ -27,6 +27,7 @@ import payapi.corcommon.model.taxes.epaye._
 import payapi.corcommon.model.taxes.other._
 import payapi.corcommon.model.taxes.p302.{P302ChargeRef, P302Ref}
 import payapi.corcommon.model.taxes.ioss.Ioss
+import payapi.corcommon.model.taxes.p800.P800Ref
 import payapi.corcommon.model.taxes.ppt.PptReference
 import payapi.corcommon.model.taxes.sa.SaUtr
 import payapi.corcommon.model.taxes.sdlt.Utrn
@@ -464,10 +465,24 @@ class OpenBankingOriginSpecificSessionDataSpec extends UnitSpec {
       roundTripJsonTest(osd, testJson)
     }
 
+    "AppSa" in {
+      val testJson = Json.parse("""{"saUtr":"1234567890","origin":"AppSa"}""")
+      val osd = ExtendedAppSa.openBankingOriginSpecificSessionData(TestJourneys.AppSa.journeyBeforeBeginWebPayment.journeySpecificData)
+      testOsd(osd, AppSaSessionData(SaUtr("1234567890"), None), "1234567890K", "1234567890")
+      roundTripJsonTest(osd, testJson)
+    }
+
+    "AppSimpleAssessment" in {
+      val testJson = Json.parse("""{"p302Ref":"MA000003AP3022023","origin":"AppSimpleAssessment"}""")
+      val osd = ExtendedAppSimpleAssessment.openBankingOriginSpecificSessionData(TestJourneys.AppSimpleAssessment.journeyBeforeBeginWebPayment.journeySpecificData)
+      testOsd(osd, AppSimpleAssessmentSessionData(P800Ref("MA000003AP3022023"), None), "MA000003AP3022023", "MA000003AP3022023")
+      roundTripJsonTest(osd, testJson)
+    }
+
   }
 
   "sanity check for implemented origins" in {
-    TestHelpers.implementedOrigins.size shouldBe 56 withClue "** This dummy test is here to remind you to update the tests above. Bump up the expected number when an origin is added to implemented origins **"
+    TestHelpers.implementedOrigins.size shouldBe 58 withClue "** This dummy test is here to remind you to update the tests above. Bump up the expected number when an origin is added to implemented origins **"
   }
 
 }

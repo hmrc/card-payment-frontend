@@ -23,6 +23,7 @@ import payapi.corcommon.model.taxes.ad.{AlcoholDutyChargeReference, AlcoholDutyR
 import payapi.corcommon.model.taxes.amls.AmlsPaymentReference
 import payapi.corcommon.model.taxes.ct._
 import payapi.corcommon.model.taxes.epaye._
+import payapi.corcommon.model.taxes.nino.Nino
 import payapi.corcommon.model.taxes.other._
 import payapi.corcommon.model.taxes.p302.{P302ChargeRef, P302Ref}
 import payapi.corcommon.model.taxes.p800.P800Ref
@@ -1118,6 +1119,45 @@ object TestJourneys {
       createdOn            = LocalDateTime.parse("2027-11-02T16:28:55.185"),
       journeySpecificData  = JsdJrsJobRetentionScheme(
         jrsRef               = JrsRef("XJRS12345678901"),
+        defaultAmountInPence = AmountInPence(1234)
+      ),
+      chosenWayToPay       = None
+    )
+  }
+
+  object AppSa extends JourneyStatuses[JsdAppSa] {
+    val journeyBeforeBeginWebPayment: Journey[JsdAppSa] = Journey[JsdAppSa](
+      _id                  = JourneyId(TestPayApiData.decryptedJourneyId),
+      sessionId            = Some(SessionId("TestSession-4b87460d-6f43-4c4c-b810-d6f87c774854")),
+      amountInPence        = Some(AmountInPence(1234)),
+      emailTemplateOptions = None,
+      navigation           = Some(NavigationOptions(returnUrl = Url("https://www.return-url.com"), backUrl = Url("https://www.back-to-app-sa.com"))),
+      order                = None,
+      status               = PaymentStatuses.Created,
+      createdOn            = LocalDateTime.parse("2027-11-02T16:28:55.185"),
+      journeySpecificData  = JsdAppSa(
+        utr                  = SaUtr("1234567890"),
+        defaultAmountInPence = AmountInPence(1234),
+        dueDate              = Some(LocalDate.now())
+      ),
+      chosenWayToPay       = None
+    )
+  }
+
+  object AppSimpleAssessment extends JourneyStatuses[JsdAppSimpleAssessment] {
+    val journeyBeforeBeginWebPayment: Journey[JsdAppSimpleAssessment] = Journey[JsdAppSimpleAssessment](
+      _id                  = JourneyId(TestPayApiData.decryptedJourneyId),
+      sessionId            = Some(SessionId("TestSession-4b87460d-6f43-4c4c-b810-d6f87c774854")),
+      amountInPence        = Some(AmountInPence(1234)),
+      emailTemplateOptions = None,
+      navigation           = Some(NavigationOptions(returnUrl = Url("https://www.return-url.com"), backUrl = Url("https://www.back-to-app-sa.com"))),
+      order                = None,
+      status               = PaymentStatuses.Created,
+      createdOn            = LocalDateTime.parse("2027-11-02T16:28:55.185"),
+      journeySpecificData  = JsdAppSimpleAssessment(
+        nino                 = Nino("AA123456A"),
+        p302Ref              = P800Ref("MA000003AP3022023"),
+        taxYear              = TaxYear(2023),
         defaultAmountInPence = AmountInPence(1234)
       ),
       chosenWayToPay       = None

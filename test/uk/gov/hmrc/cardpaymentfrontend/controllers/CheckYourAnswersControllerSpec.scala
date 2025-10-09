@@ -175,6 +175,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
           case Origins.PfNiEuVatOss        => 3
           case Origins.NiEuVatIoss         => 4
           case Origins.PfNiEuVatIoss       => 3
+          case Origins.AppSimpleAssessment => 2
           case _                           => 1
         }
       }
@@ -205,6 +206,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
           case Origins.PfNiEuVatOss        => 4
           case Origins.NiEuVatIoss         => 5
           case Origins.PfNiEuVatIoss       => 4
+          case Origins.AppSimpleAssessment => 3
           case _                           => 2
         }
       }
@@ -235,6 +237,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
           case Origins.PfNiEuVatOss        => 5
           case Origins.NiEuVatIoss         => 6
           case Origins.PfNiEuVatIoss       => 5
+          case Origins.AppSimpleAssessment => 4
           case _                           => 3
         }
       }
@@ -1498,9 +1501,41 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       assertRow(returnPeriodRow, "IOSS Number", "IM1234567890", None, None)
     }
 
+    "[AppSa] should render the payment reference row correctly" in {
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.AppSa.journeyBeforeBeginWebPayment)
+      val result = systemUnderTest.renderPage(fakeRequest())
+      val document = Jsoup.parse(contentAsString(result))
+      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.AppSa))
+      assertRow(referenceRow, "Unique Taxpayer Reference (UTR)", "1234567890", None, None)
+    }
+
+    "[AppSa] should render the payment reference row correctly in Welsh" in {
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.AppSa.journeyBeforeBeginWebPayment)
+      val result = systemUnderTest.renderPage(fakeRequestWelsh())
+      val document = Jsoup.parse(contentAsString(result))
+      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.AppSa))
+      assertRow(referenceRow, "Cyfeirnod Unigryw y Trethdalwr (UTR)", "1234567890", None, None)
+    }
+
+    "[AppSimpleAssessment] should render the payment reference row correctly" in {
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.AppSimpleAssessment.journeyBeforeBeginWebPayment)
+      val result = systemUnderTest.renderPage(fakeRequest())
+      val document = Jsoup.parse(contentAsString(result))
+      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.AppSimpleAssessment))
+      assertRow(referenceRow, "Payment reference", "MA000003AP3022023", None, None)
+    }
+
+    "[AppSimpleAssessment] should render the payment reference row correctly in Welsh" in {
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.AppSimpleAssessment.journeyBeforeBeginWebPayment)
+      val result = systemUnderTest.renderPage(fakeRequestWelsh())
+      val document = Jsoup.parse(contentAsString(result))
+      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.AppSimpleAssessment))
+      assertRow(referenceRow, "Cyfeirnod y taliad", "MA000003AP3022023", None, None)
+    }
+
     "sanity check for implemented origins" in {
       // remember to add the singular tests for reference rows as well as fdp if applicable, they are not covered in the implementedOrigins forall tests
-      TestHelpers.implementedOrigins.size shouldBe 56 withClue "** This dummy test is here to remind you to update the tests above. Bump up the expected number when an origin is added to implemented origins **"
+      TestHelpers.implementedOrigins.size shouldBe 58 withClue "** This dummy test is here to remind you to update the tests above. Bump up the expected number when an origin is added to implemented origins **"
     }
 
   }

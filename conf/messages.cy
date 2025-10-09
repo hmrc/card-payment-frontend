@@ -192,8 +192,12 @@ check-your-details.PtaSimpleAssessment.reference = Cyfeirnod y taliad
 check-your-details.PtaSimpleAssessment.charge-reference = Cyfeirnod y tâl
 check-your-details.PtaSimpleAssessment.tax-year = Blwyddyn dreth
 check-your-details.PtaSimpleAssessment.tax-year.value = 6 Ebrill {0} i 5 Ebrill {1}
+check-your-details.AppSimpleAssessment.reference = Cyfeirnod y taliad
+check-your-details.AppSimpleAssessment.tax-year = Blwyddyn dreth
+check-your-details.AppSimpleAssessment.tax-year.value = 6 Ebrill {0} i 5 Ebrill {1}
 check-your-details.PfJobRetentionScheme.reference = Cyfeirnod y taliad
 check-your-details.JrsJobRetentionScheme.reference = Cyfeirnod y taliad
+check-your-details.AppSa.reference = Cyfeirnod Unigryw y Trethdalwr (UTR)
 
 ## Address Page
 address.heading = Cyfeiriad bilio’r cerdyn
@@ -329,7 +333,7 @@ payment-complete.tax-name.PfAggregatesLevy =
 payment-complete.tax-name.PfClimateChangeLevy =
 payment-complete.tax-name.PfSimpleAssessment = Asesiad Syml
 payment-complete.tax-name.PtaSimpleAssessment = Asesiad Syml
-payment-complete.tax-name.AppSimpleAssessment =
+payment-complete.tax-name.AppSimpleAssessment = Asesiad Syml
 payment-complete.tax-name.WcSimpleAssessment = Asesiad Syml
 payment-complete.tax-name.PfTpes =
 payment-complete.tax-name.CapitalGainsTax = Treth Enillion Cyfalaf ar eiddo yn y DU
@@ -388,6 +392,7 @@ email.tax-name.BtaSa = Hunanasesiad
 email.tax-name.PtaSa = Hunanasesiad
 email.tax-name.ItSa = Hunanasesiad
 email.tax-name.WcSa = Hunanasesiad
+email.tax-name.AppSa = Hunanasesiad
 email.tax-name.PfAlcoholDuty = Toll Alcohol
 email.tax-name.AlcoholDuty = Toll Alcohol
 email.tax-name.BtaCt = Treth Gorfforaeth
@@ -432,6 +437,7 @@ email.tax-name.PfP800 = P800
 email.tax-name.PtaP800 = Asesiad Syml
 email.tax-name.PfSimpleAssessment = Asesiad Syml
 email.tax-name.PtaSimpleAssessment = Asesiad Syml
+email.tax-name.AppSimpleAssessment = Asesiad Syml
 email.tax-name.PfJobRetentionScheme = Talu grantiau’r Cynllun Cadw Swyddi yn sgil Coronafeirws yn ôl
 email.tax-name.JrsJobRetentionScheme = Talu grantiau’r Cynllun Cadw Swyddi yn sgil Coronafeirws yn ôl
 

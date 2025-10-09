@@ -162,7 +162,7 @@ object ExtendedOrigin {
       case PfInsurancePremium       => DefaultExtendedOrigin
       case PfPsAdmin                => DefaultExtendedOrigin
       case BtaSa                    => ExtendedBtaSa
-      case AppSa                    => DefaultExtendedOrigin
+      case AppSa                    => ExtendedAppSa
       case BtaVat                   => ExtendedBtaVat
       case BtaEpayeBill             => ExtendedBtaEpayeBill
       case BtaEpayePenalty          => ExtendedBtaEpayePenalty
@@ -200,7 +200,7 @@ object ExtendedOrigin {
       case PfClimateChangeLevy      => DefaultExtendedOrigin
       case PfSimpleAssessment       => ExtendedPfSimpleAssessment
       case PtaSimpleAssessment      => ExtendedPtaSimpleAssessment
-      case AppSimpleAssessment      => DefaultExtendedOrigin
+      case AppSimpleAssessment      => ExtendedAppSimpleAssessment
       case PfTpes                   => DefaultExtendedOrigin
       case CapitalGainsTax          => ExtendedCapitalGainsTax
       case EconomicCrimeLevy        => ExtendedEconomicCrimeLevy
