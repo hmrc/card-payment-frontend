@@ -311,16 +311,16 @@ class EmailServiceSpec extends ItSpec with TableDrivenPropertyChecks {
       (PfCds, "CDS", "ending with 67890", None, None, "en"),
       (PfCds, "CDS", "ending with 67890", commission, Some("13.57"), "en"),
 
-      (NiEuVatOss, "VAT One Stop Shop Union scheme", "ending with 1Q424", None, Some("12.34"), "en"),
+      (NiEuVatOss, "VAT One Stop Shop Union scheme", "ending with 1Q424", None, None, "en"),
       (NiEuVatOss, "VAT One Stop Shop Union scheme", "ending with 1Q424", commission, Some("13.57"), "en"),
 
-      (PfNiEuVatOss, "VAT One Stop Shop Union scheme", "ending with 1Q424", None, Some("12.34"), "en"),
+      (PfNiEuVatOss, "VAT One Stop Shop Union scheme", "ending with 1Q424", None, None, "en"),
       (PfNiEuVatOss, "VAT One Stop Shop Union scheme", "ending with 1Q424", commission, Some("13.57"), "en"),
 
-      (NiEuVatIoss, "VAT Import One Stop Shop", "ending with M0624", None, Some("12.34"), "en"),
+      (NiEuVatIoss, "VAT Import One Stop Shop", "ending with M0624", None, None, "en"),
       (NiEuVatIoss, "VAT Import One Stop Shop", "ending with M0624", commission, Some("13.57"), "en"),
 
-      (PfNiEuVatIoss, "VAT Import One Stop Shop", "ending with M0624", None, Some("12.34"), "en"),
+      (PfNiEuVatIoss, "VAT Import One Stop Shop", "ending with M0624", None, None, "en"),
       (PfNiEuVatIoss, "VAT Import One Stop Shop", "ending with M0624", commission, Some("13.57"), "en")
     )
 
@@ -366,7 +366,7 @@ class EmailServiceSpec extends ItSpec with TableDrivenPropertyChecks {
         //Check if the message is different in both languages, if they are the same the message is not in both files
         // for PfP800 and PtaP800, the english can be the same as welsh...
         // for PfCds there is no welsh as it isn't supported...
-        if (origin =!= Origins.PfP800 && origin =!= Origins.PtaP800 && origin =!= Origins.PfCds) {
+        if (origin =!= Origins.PfP800 && origin =!= Origins.PtaP800 && origin =!= Origins.PfCds && origin =!= Origins.NiEuVatOss && origin =!= Origins.PfNiEuVatOss && origin =!= Origins.NiEuVatIoss && origin =!= Origins.PfNiEuVatIoss) {
           messages.preferred(Seq(Lang("en")))(msgKey) should not be messages.preferred(Seq(Lang("cy")))(msgKey)
         }
       }

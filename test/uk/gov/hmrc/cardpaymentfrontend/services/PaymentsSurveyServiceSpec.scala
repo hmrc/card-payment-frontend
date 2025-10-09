@@ -893,7 +893,7 @@ class PaymentsSurveyServiceSpec extends ItSpec with TableDrivenPropertyChecks {
               contentOptions = SurveyContentOptions(
                 isWelshSupported = false,
                 title            = SurveyBannerTitle(
-                  englishValue = "Submit a One Stop Shop VAT return and pay VAT", welshValue = Some("")
+                  englishValue = "Submit a One Stop Shop VAT return and pay VAT", welshValue = None
                 )
               )
             ) -> false
@@ -911,7 +911,7 @@ class PaymentsSurveyServiceSpec extends ItSpec with TableDrivenPropertyChecks {
               contentOptions = SurveyContentOptions(
                 isWelshSupported = false,
                 title            = SurveyBannerTitle(
-                  englishValue = "Submit a One Stop Shop VAT return and pay VAT", welshValue = Some("")
+                  englishValue = "Submit a One Stop Shop VAT return and pay VAT", welshValue = None
                 )
               )
             ) -> false
@@ -929,7 +929,7 @@ class PaymentsSurveyServiceSpec extends ItSpec with TableDrivenPropertyChecks {
               contentOptions = SurveyContentOptions(
                 isWelshSupported = false,
                 title            = SurveyBannerTitle(
-                  englishValue = "Submit an Import One Stop Shop VAT return and pay VAT", welshValue = Some("")
+                  englishValue = "Submit an Import One Stop Shop VAT return and pay VAT", welshValue = None
                 )
               )
             ) -> false
@@ -947,7 +947,7 @@ class PaymentsSurveyServiceSpec extends ItSpec with TableDrivenPropertyChecks {
               contentOptions = SurveyContentOptions(
                 isWelshSupported = false,
                 title            = SurveyBannerTitle(
-                  englishValue = "Submit an Import One Stop Shop VAT return and pay VAT", welshValue = Some("")
+                  englishValue = "Submit an Import One Stop Shop VAT return and pay VAT", welshValue = None
                 )
               )
             ) -> false
