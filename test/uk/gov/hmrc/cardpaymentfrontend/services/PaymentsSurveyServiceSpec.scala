@@ -879,6 +879,78 @@ class PaymentsSurveyServiceSpec extends ItSpec with TableDrivenPropertyChecks {
                 )
               )
             ) -> false
+            case Origins.NiEuVatOss => PaymentSurveyJourneyRequest(
+              origin         = "NiEuVatOss",
+              returnMsg      = "Skip survey",
+              returnHref     = "https://www.gov.uk/government/organisations/hm-revenue-customs",
+              auditName      = "ni-eu-vat-oss",
+              audit          = AuditOptions(
+                userType  = "LoggedOut",
+                journey   = Some("Successful"),
+                orderId   = Some("NI101747641Q424"),
+                liability = Some("ni-eu-vat-oss")
+              ),
+              contentOptions = SurveyContentOptions(
+                isWelshSupported = false,
+                title            = SurveyBannerTitle(
+                  englishValue = "Submit a One Stop Shop VAT return and pay VAT", welshValue = None
+                )
+              )
+            ) -> false
+            case Origins.PfNiEuVatOss => PaymentSurveyJourneyRequest(
+              origin         = "PfNiEuVatOss",
+              returnMsg      = "Skip survey",
+              returnHref     = "https://www.gov.uk/government/organisations/hm-revenue-customs",
+              auditName      = "ni-eu-vat-oss",
+              audit          = AuditOptions(
+                userType  = "LoggedOut",
+                journey   = Some("Successful"),
+                orderId   = Some("NI101747641Q424"),
+                liability = Some("ni-eu-vat-oss")
+              ),
+              contentOptions = SurveyContentOptions(
+                isWelshSupported = false,
+                title            = SurveyBannerTitle(
+                  englishValue = "Submit a One Stop Shop VAT return and pay VAT", welshValue = None
+                )
+              )
+            ) -> false
+            case Origins.NiEuVatIoss => PaymentSurveyJourneyRequest(
+              origin         = "NiEuVatIoss",
+              returnMsg      = "Skip survey",
+              returnHref     = "https://www.gov.uk/government/organisations/hm-revenue-customs",
+              auditName      = "ni-eu-vat-ioss",
+              audit          = AuditOptions(
+                userType  = "LoggedOut",
+                journey   = Some("Successful"),
+                orderId   = Some("IM1234567890M0624"),
+                liability = Some("ni-eu-vat-ioss")
+              ),
+              contentOptions = SurveyContentOptions(
+                isWelshSupported = false,
+                title            = SurveyBannerTitle(
+                  englishValue = "Submit an Import One Stop Shop VAT return and pay VAT", welshValue = None
+                )
+              )
+            ) -> false
+            case Origins.PfNiEuVatIoss => PaymentSurveyJourneyRequest(
+              origin         = "PfNiEuVatIoss",
+              returnMsg      = "Skip survey",
+              returnHref     = "https://www.gov.uk/government/organisations/hm-revenue-customs",
+              auditName      = "ni-eu-vat-ioss",
+              audit          = AuditOptions(
+                userType  = "LoggedOut",
+                journey   = Some("Successful"),
+                orderId   = Some("IM1234567890M0624"),
+                liability = Some("ni-eu-vat-ioss")
+              ),
+              contentOptions = SurveyContentOptions(
+                isWelshSupported = false,
+                title            = SurveyBannerTitle(
+                  englishValue = "Submit an Import One Stop Shop VAT return and pay VAT", welshValue = None
+                )
+              )
+            ) -> false
             case Origins.PfP800 => PaymentSurveyJourneyRequest(
               origin         = "PfP800",
               returnMsg      = "Skip survey",
@@ -1034,10 +1106,6 @@ class PaymentsSurveyServiceSpec extends ItSpec with TableDrivenPropertyChecks {
             case Origins.AppSimpleAssessment => throw new MatchError("Not implemented yet")
             case Origins.PfTpes              => throw new MatchError("Not implemented yet")
             case Origins.PfImportedVehicles  => throw new MatchError("Not implemented yet")
-            case Origins.NiEuVatOss          => throw new MatchError("Not implemented yet")
-            case Origins.PfNiEuVatOss        => throw new MatchError("Not implemented yet")
-            case Origins.NiEuVatIoss         => throw new MatchError("Not implemented yet")
-            case Origins.PfNiEuVatIoss       => throw new MatchError("Not implemented yet")
             case Origins.PfAted              => throw new MatchError("Not implemented yet")
             case Origins.PfCdsDeferment      => throw new MatchError("Not implemented yet")
             case Origins.PfTrust             => throw new MatchError("Not implemented yet")

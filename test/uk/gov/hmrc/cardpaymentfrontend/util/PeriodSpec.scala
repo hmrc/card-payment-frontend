@@ -16,15 +16,18 @@
 
 package uk.gov.hmrc.cardpaymentfrontend.util
 
+import org.scalatest.AppendedClues.convertToClueful
 import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor3}
 import payapi.corcommon.model.taxes.epaye.{FixedLengthEpayeTaxPeriod, MonthlyEpayeTaxPeriod, QuarterlyEpayeTaxPeriod, YearlyEpayeTaxPeriod}
+import payapi.corcommon.model.taxes.vat.CalendarPeriod
 import payapi.corcommon.model.times.period.TaxMonth._
 import payapi.corcommon.model.times.period.TaxQuarter.{AprilJuly, JanuaryApril, JulyOctober, OctoberJanuary}
-import payapi.corcommon.model.times.period.TaxYear
+import payapi.corcommon.model.times.period.{CalendarQuarter, CalendarQuarterlyPeriod, TaxYear}
 import play.api.i18n.Lang
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.UnitSpec
 
 class PeriodSpec extends UnitSpec with TableDrivenPropertyChecks {
+
   "humanReadablePeriod" - {
     "should return correct representation" in {
       val testCases: TableFor3[FixedLengthEpayeTaxPeriod, Lang, String] = Table(
@@ -71,6 +74,34 @@ class PeriodSpec extends UnitSpec with TableDrivenPropertyChecks {
       forAll(testCases) { (period: FixedLengthEpayeTaxPeriod, lang: Lang, expectedResult: String) =>
         Period.humanReadablePeriod(period)(lang) shouldBe expectedResult
       }
+    }
+  }
+
+  "displayCalendarQuarter" - {
+    "should return a string indicating the CalendarQuarterlyPeriod" in {
+      Period.displayCalendarQuarterAndYear(CalendarQuarterlyPeriod(CalendarQuarter.JanuaryToMarch, 2027)) shouldBe "January to March 2027" withClue "JanuaryToMarch was wrong"
+      Period.displayCalendarQuarterAndYear(CalendarQuarterlyPeriod(CalendarQuarter.AprilToJune, 2027)) shouldBe "April to June 2027" withClue "AprilToJune was wrong"
+      Period.displayCalendarQuarterAndYear(CalendarQuarterlyPeriod(CalendarQuarter.JulyToSeptember, 2027)) shouldBe "July to September 2027" withClue "JulyToSeptember was wrong"
+      Period.displayCalendarQuarterAndYear(CalendarQuarterlyPeriod(CalendarQuarter.OctoberToDecember, 2027)) shouldBe "October to December 2027" withClue "OctoberToDecember was wrong"
+    }
+  }
+
+  "displayCalendarPeriodMonth" - {
+    "Period.displayCalendarPeriodMonth can handle January" in {
+      Period.displayCalendarPeriodMonthAndYear(CalendarPeriod(1, 2027)) shouldBe "January 2027"
+    }
+
+    "Period.displayCalendarPeriodMonth can handle December" in {
+      Period.displayCalendarPeriodMonthAndYear(CalendarPeriod(12, 2027)) shouldBe "December 2027"
+    }
+
+    "Period.displayCalendarPeriodMonth will not have a month for numbers equal or lower than zero" in {
+      Period.displayCalendarPeriodMonthAndYear(CalendarPeriod(0, 2027)) shouldBe ""
+      Period.displayCalendarPeriodMonthAndYear(CalendarPeriod(-98, 2027)) shouldBe ""
+    }
+
+    "Period.displayCalendarPeriodMonth will not have a month for numbers above 12" in {
+      Period.displayCalendarPeriodMonthAndYear(CalendarPeriod(13, 2027)) shouldBe ""
     }
   }
 

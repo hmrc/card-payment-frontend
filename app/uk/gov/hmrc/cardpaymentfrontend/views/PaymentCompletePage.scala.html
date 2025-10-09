@@ -25,6 +25,11 @@
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 @import views.html.helper.CSPNonce
+@import payapi.corcommon.model.Origins.NiEuVatOss
+@import payapi.corcommon.model.Origins.NiEuVatIoss
+@import payapi.corcommon.model.Origins.PfNiEuVatOss
+@import payapi.corcommon.model.Origins.PfNiEuVatIoss
+@import payapi.corcommon.model.Origins.VatC2c
 
 @this(
     govukPanel: GovukPanel,
@@ -54,6 +59,14 @@
 }
 
 @maybeWhatHappensNextContent = {
+
+    @if(Set("NiEuVatOss", "NiEuVatIoss", "PfNiEuVatOss", "PfNiEuVatIoss").contains(journeyRequest.journey.origin.entryName)) {
+        <div id="what-happens-next-wrapper">
+            <h2 class="govuk-heading-m govuk-!-margin-top-7">@Messages("payment-complete.what-happens-next.header")</h2>
+            <p class="govuk-body">@Messages("payment-complete.what-happens-next.one-stop-shop.info")</p>
+        </div>
+    }
+
     @if(journeyRequest.journey.origin.toTaxType == vatConsumerToConsumer || journeyRequest.journey.origin.toTaxType == cds) {
         <div id="what-happens-next-wrapper">
             <h2 class="govuk-heading-m govuk-!-margin-top-7">@Messages("payment-complete.what-happens-next.header")</h2>

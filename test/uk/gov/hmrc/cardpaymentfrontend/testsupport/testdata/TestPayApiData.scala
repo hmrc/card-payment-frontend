@@ -24,8 +24,9 @@ import payapi.corcommon.model.taxes.ct.{CtChargeType, CtChargeTypes, CtPeriod, C
 import payapi.corcommon.model.taxes.epaye.{AccountsOfficeReference, MonthlyEpayeTaxPeriod, SubYearlyEpayeTaxPeriod, YearlyEpayeTaxPeriod}
 import payapi.corcommon.model.taxes.other.{EconomicCrimeLevyReturnNumber, XRef, XRef14Char}
 import payapi.corcommon.model.taxes.sa.SaUtr
-import payapi.corcommon.model.taxes.vat.Vrn
-import payapi.corcommon.model.times.period.{TaxMonth, TaxYear}
+import payapi.corcommon.model.taxes.vat.{CalendarPeriod, Vrn}
+import payapi.corcommon.model.times.period.CalendarQuarter.OctoberToDecember
+import payapi.corcommon.model.times.period.{CalendarQuarterlyPeriod, TaxMonth, TaxYear}
 
 object TestPayApiData {
 
@@ -50,4 +51,6 @@ object TestPayApiData {
   val testAmountInPence: AmountInPence = AmountInPence(12345)
   val testReturnUrl: Option[String] = Some("returnUrl")
   val testTransactionReference: TransactionReference = TransactionReference("Some-transaction-ref")
+  val testQuarterlyTaxPeriod: CalendarQuarterlyPeriod = CalendarQuarterlyPeriod(OctoberToDecember, 2024)
+  val testCalendarPeriod: CalendarPeriod = CalendarPeriod(6, 2024)
 }
