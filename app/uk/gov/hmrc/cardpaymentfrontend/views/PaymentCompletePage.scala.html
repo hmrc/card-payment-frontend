@@ -28,6 +28,7 @@
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 @import views.html.helper.CSPNonce
+@import uk.gov.hmrc.cardpaymentfrontend.util.SafeEquals.EqualsOps
 
 @this(
     appConfig: AppConfig,
@@ -79,14 +80,12 @@
 
 @maybeWhatHappensNextContent = {
 
-    @** Ioss/Oss specific content **@
-    @if(Set[Origin](Origins.NiEuVatOss, Origins.NiEuVatIoss, Origins.PfNiEuVatOss, Origins.PfNiEuVatIoss).contains(journeyRequest.journey.origin)) {
+    @if(Set[Origin](Origins.NiEuVatOss, Origins.NiEuVatIoss, Origins.PfNiEuVatOss, Origins.PfNiEuVatIoss, Origins.PfGbPbRgDuty, Origins.PfTpes, Origins.PfMgd, Origins.PfOther, Origins.PfTrust, Origins.PfPsAdmin ).contains(journeyRequest.journey.origin)) {
         <div id="what-happens-next-wrapper">
             <h2 class="govuk-heading-m govuk-!-margin-top-7">@Messages("payment-complete.what-happens-next.header")</h2>
             <p class="govuk-body">@Messages("payment-complete.what-happens-next.one-stop-shop.info")</p>
         </div>
     }
-    @** end of Ioss/Ossds specific content **@
 
     @** Mods specific content **@
     @if(journeyRequest.journey.origin.toTaxType == mib) {
@@ -118,16 +117,24 @@
             <p class="govuk-body">@Messages("payment-complete.what-happens-next.p1") @Messages("payment-complete.what-happens-next.link")</p>
         </div>
     } else if(maybeReturnUrl.isDefined) {
-        <div id="what-happens-next-wrapper">
-            <h2 class="govuk-heading-m govuk-!-margin-top-7">@Messages("payment-complete.what-happens-next.header")</h2>
-            @if(journeyRequest.journey.origin.isAWebChatOrigin) {
-                <p class="govuk-body" id="web-chat-content">@Messages("payment-complete.what-happens-next.web-chat.info")</p>
-            }
-            <p class="govuk-body">
-                @Messages("payment-complete.what-happens-next.p1")
-                <a class="govuk-link" href="@maybeReturnUrl.get">@Messages("payment-complete.what-happens-next.link")</a>
-            </p>
-        </div>
+        @if(journeyRequest.journey.origin === PfMgd) {
+            <div id="what-happens-next-wrapper">
+                <h2 class="govuk-heading-m govuk-!-margin-top-7">@Messages("payment-complete.what-happens-next.mgd.header")</h2>
+                <p class="govuk-body">@Messages("payment-complete.what-happens-next.mgd.p1-1") <a id="dd-button" class="govuk-link" href="@maybeReturnUrl.get">@Messages("payment-complete.what-happens-next.mgd.link")</a> @Messages("payment-complete.what-happens-next.mgd.p1-2")</p>
+                <p class="govuk-body">@Messages("payment-complete.what-happens-next.mgd.p3")</p>
+            </div>
+        } else {
+            <div id="what-happens-next-wrapper">
+                <h2 class="govuk-heading-m govuk-!-margin-top-7">@Messages("payment-complete.what-happens-next.header")</h2>
+                @if(journeyRequest.journey.origin.isAWebChatOrigin) {
+                    <p class="govuk-body" id="web-chat-content">@Messages("payment-complete.what-happens-next.web-chat.info")</p>
+                }
+                <p class="govuk-body">
+                    @Messages("payment-complete.what-happens-next.p1")
+                    <a class="govuk-link" href="@maybeReturnUrl.get">@Messages("payment-complete.what-happens-next.link")</a>
+                </p>
+            </div>
+        }
     } else {
         <div id="what-happens-next-wrapper">
             <h2 class="govuk-heading-m govuk-!-margin-top-7">@Messages("payment-complete.what-happens-next.header")</h2>

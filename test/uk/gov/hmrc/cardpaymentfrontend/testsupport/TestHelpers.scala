@@ -91,14 +91,18 @@ object TestHelpers {
     AppSa,
     AppSimpleAssessment,
     Mib,
-    BcPngr
+    BcPngr,
+    PfTpes,
+    PfMgd,
+    PfGbPbRgDuty,
+    PfTrust,
+    PfOther,
+    PfPsAdmin,
   )
 
   val unimplementedOrigins: Seq[Origin] = Seq[Origin](
-    PfOther,
     PfClass2Ni,
     PfInsurancePremium,
-    PfPsAdmin,
     Parcels,
     DdVat,
     DdSdil,
@@ -109,18 +113,14 @@ object TestHelpers {
     PfWineAndCider,
     PfBioFuels,
     PfAirPass,
-    PfMgd,
     PfBeerDuty,
     PfGamingOrBingoDuty,
-    PfGbPbRgDuty,
     PfLandfillTax,
     PfAggregatesLevy,
     PfClimateChangeLevy,
-    PfTpes,
     PfImportedVehicles,
     PfAted,
     PfCdsDeferment,
-    PfTrust,
     PtaClass3Ni,
     `3psSa`,
     `3psVat`,
@@ -142,12 +142,12 @@ object TestHelpers {
     case PfEpayeP11d              => TestJourneys.PfEpayeP11d
     case PfSdlt                   => TestJourneys.PfSdlt
     case PfCds                    => TestJourneys.PfCds
-    case PfOther                  => throw new MatchError("Not implemented yet")
+    case PfOther                  => TestJourneys.PfOther
     case PfP800                   => TestJourneys.PfP800
     case PtaP800                  => TestJourneys.PtaP800
     case PfClass2Ni               => throw new MatchError("Not implemented yet")
     case PfInsurancePremium       => throw new MatchError("Not implemented yet")
-    case PfPsAdmin                => throw new MatchError("Not implemented yet")
+    case PfPsAdmin                => TestJourneys.PfPsAdmin
     case AppSa                    => TestJourneys.AppSa
     case BtaVat                   => TestJourneys.BtaVat
     case BtaEpayeBill             => TestJourneys.BtaEpayeBill
@@ -174,10 +174,10 @@ object TestHelpers {
     case PfWineAndCider           => throw new MatchError("Not implemented yet")
     case PfBioFuels               => throw new MatchError("Not implemented yet")
     case PfAirPass                => throw new MatchError("Not implemented yet")
-    case PfMgd                    => throw new MatchError("Not implemented yet")
+    case PfMgd                    => TestJourneys.PfMgd
     case PfBeerDuty               => throw new MatchError("Not implemented yet")
     case PfGamingOrBingoDuty      => throw new MatchError("Not implemented yet")
-    case PfGbPbRgDuty             => throw new MatchError("Not implemented yet")
+    case PfGbPbRgDuty             => TestJourneys.PfGbPbRgDuty
     case PfLandfillTax            => throw new MatchError("Not implemented yet")
     case PfSdil                   => TestJourneys.PfSdil
     case PfAggregatesLevy         => throw new MatchError("Not implemented yet")
@@ -186,7 +186,7 @@ object TestHelpers {
     case PtaSimpleAssessment      => TestJourneys.PtaSimpleAssessment
     case AppSimpleAssessment      => TestJourneys.AppSimpleAssessment
     case WcSimpleAssessment       => TestJourneys.WcSimpleAssessment
-    case PfTpes                   => throw new MatchError("Not implemented yet")
+    case PfTpes                   => TestJourneys.PfTpes
     case CapitalGainsTax          => TestJourneys.CapitalGainsTax
     case EconomicCrimeLevy        => TestJourneys.EconomicCrimeLevy
     case PfEconomicCrimeLevy      => TestJourneys.PfEconomicCrimeLevy
@@ -201,7 +201,7 @@ object TestHelpers {
     case PfAmls                   => TestJourneys.PfAmls
     case PfAted                   => throw new MatchError("Not implemented yet")
     case PfCdsDeferment           => throw new MatchError("Not implemented yet")
-    case PfTrust                  => throw new MatchError("Not implemented yet")
+    case PfTrust                  => TestJourneys.PfTrust
     case PtaClass3Ni              => throw new MatchError("Not implemented yet")
     case AlcoholDuty              => TestJourneys.AlcoholDuty
     case PfAlcoholDuty            => TestJourneys.PfAlcoholDuty

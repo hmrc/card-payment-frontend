@@ -18,6 +18,7 @@ package uk.gov.hmrc.cardpaymentfrontend.controllers
 
 import payapi.cardpaymentjourney.model.journey._
 import payapi.corcommon.model.{AmountInPence, Origins}
+import payapi.corcommon.model.Origins.PfMgd
 import payapi.corcommon.model.barclays.CardCategories
 import payapi.corcommon.model.taxes.pngr.AmountPaidPreviously
 import payapi.corcommon.model.times.period.TaxYear
@@ -35,6 +36,7 @@ import uk.gov.hmrc.cardpaymentfrontend.util.SafeEquals.EqualsOps
 import uk.gov.hmrc.cardpaymentfrontend.views.html.{PassengersPaymentCompletePage, PaymentCompletePage}
 import uk.gov.hmrc.govukfrontend.views.Aliases._
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
+import uk.gov.hmrc.cardpaymentfrontend.util.SafeEquals.EqualsOps
 
 import java.time.{Clock, LocalDateTime}
 import java.time.format.DateTimeFormatter
@@ -316,6 +318,8 @@ object PaymentCompleteController {
   private def determineTaxAccountUrl(journey: Journey[_])(appConfig: AppConfig): Option[String] = {
     if (journey.origin.isAWebChatOrigin) {
       Some(appConfig.businessTaxAccountUrl)
+    } else if (journey.origin === PfMgd) {
+      Some(appConfig.businessTaxAccLoginMGDOrigin)
     } else journey.navigation.flatMap(_.returnUrl.map(_.value))
   }
 
