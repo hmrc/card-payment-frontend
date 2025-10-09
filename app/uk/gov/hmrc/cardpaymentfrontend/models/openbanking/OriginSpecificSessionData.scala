@@ -105,7 +105,7 @@ object OriginSpecificSessionData {
       case PfAirPass                => Json.format[PfAirPassSessionData].reads(json)
       case PfClass2Ni               => Json.format[PfClass2NiSessionData].reads(json)
       case PfBeerDuty               => Json.format[PfBeerDutySessionData].reads(json)
-      case PfPsAdmin                => Json.format[PfPsAdminTaxSessionData].reads(json)
+      case PfPsAdmin                => Json.format[PfPsAdminSessionData].reads(json)
       case PfClass3Ni               => Json.format[PfClass3NiSessionData].reads(json)
       case PtaClass3Ni              => Json.format[PtaClass3NiSessionData].reads(json)
       case Ppt                      => Json.format[PptSessionData].reads(json)
@@ -143,6 +143,7 @@ object OriginSpecificSessionData {
       case WcEpayeSeta              => Json.format[WcEpayeSetaSessionData].reads(json)
       case PfJobRetentionScheme     => Json.format[PfJobRetentionSchemeSessionData].reads(json)
       case JrsJobRetentionScheme    => Json.format[JrsJobRetentionSchemeSessionData].reads(json)
+      case PfOther                  => Json.format[PfOtherSessionData].reads(json)
 
       //Todo: Remove PfP800 when PtaP800 is fully available
       case origin @ (PfOther | PtaP800 | PfP800
@@ -196,7 +197,7 @@ object OriginSpecificSessionData {
       case sessionData: PfClass2NiSessionData            => Json.format[PfClass2NiSessionData].writes(sessionData)
       case sessionData: PfAirPassSessionData             => Json.format[PfAirPassSessionData].writes(sessionData)
       case sessionData: PfBeerDutySessionData            => Json.format[PfBeerDutySessionData].writes(sessionData)
-      case sessionData: PfPsAdminTaxSessionData          => Json.format[PfPsAdminTaxSessionData].writes(sessionData)
+      case sessionData: PfPsAdminSessionData             => Json.format[PfPsAdminSessionData].writes(sessionData)
       case sessionData: PfClass3NiSessionData            => Json.format[PfClass3NiSessionData].writes(sessionData)
       case sessionData: PtaClass3NiSessionData           => Json.format[PtaClass3NiSessionData].writes(sessionData)
       case sessionData: PptSessionData                   => Json.format[PptSessionData].writes(sessionData)
@@ -234,6 +235,7 @@ object OriginSpecificSessionData {
       case sessionData: WcEpayeSetaSessionData           => Json.format[WcEpayeSetaSessionData].writes(sessionData)
       case sessionData: PfJobRetentionSchemeSessionData  => Json.format[PfJobRetentionSchemeSessionData].writes(sessionData)
       case sessionData: JrsJobRetentionSchemeSessionData => Json.format[JrsJobRetentionSchemeSessionData].writes(sessionData)
+      case sessionData: PfOtherSessionData               => Json.format[PfOtherSessionData].writes(sessionData)
     }) + ("origin" -> Json.toJson(o.origin))
 
   implicit val format: OFormat[OriginSpecificSessionData] = OFormat(reads, writes)
@@ -586,7 +588,7 @@ final case class PfBeerDutySessionData(beerDutyRef: BeerDutyRef, returnUrl: Opti
   def searchTag: SearchTag = SearchTag(beerDutyRef.canonicalisedValue)
 }
 
-final case class PfPsAdminTaxSessionData(xRef: XRef, returnUrl: Option[Url] = None) extends OriginSpecificSessionData(PfPsAdmin) {
+final case class PfPsAdminSessionData(xRef: XRef, returnUrl: Option[Url] = None) extends OriginSpecificSessionData(PfPsAdmin) {
   def paymentReference: Reference = ReferenceMaker.makeXReference(xRef)
   def searchTag: SearchTag = SearchTag(xRef.canonicalizedValue)
 }
@@ -713,4 +715,9 @@ final case class PfJobRetentionSchemeSessionData(jrsRef: JrsRef, returnUrl: Opti
 final case class JrsJobRetentionSchemeSessionData(jrsRef: JrsRef, returnUrl: Option[Url] = None) extends OriginSpecificSessionData(JrsJobRetentionScheme) {
   def paymentReference: Reference = ReferenceMaker.makeJrsReference(jrsRef)
   def searchTag: SearchTag = SearchTag(jrsRef.canonicalizedValue)
+}
+
+final case class PfOtherSessionData(xRef: XRef, returnUrl: Option[Url] = None) extends OriginSpecificSessionData(PfOther) {
+  def paymentReference: Reference = ReferenceMaker.makeXReference(xRef)
+  def searchTag: SearchTag = SearchTag(xRef.canonicalizedValue)
 }
