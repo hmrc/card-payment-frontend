@@ -1538,7 +1538,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       val result = systemUnderTest.renderPage(fakeRequest())
       val document = Jsoup.parse(contentAsString(result))
       val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.PfTpes))
-      assertRow(referenceRow, "Reference number", "XE123456789012", None, None)
+      assertRow(referenceRow, "Reference number", "XE123456789012", Some("Change Reference number"), Some("http://localhost:9056/pay/pay-by-card-change-reference-number"))
     }
 
     "[PfTpes] should render the payment reference row correctly in Welsh" in {
@@ -1546,7 +1546,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       val result = systemUnderTest.renderPage(fakeRequestWelsh())
       val document = Jsoup.parse(contentAsString(result))
       val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.PfTpes))
-      assertRow(referenceRow, "Cyfeirnod", "XE123456789012", None, None)
+      assertRow(referenceRow, "Cyfeirnod", "XE123456789012", Some("Newid Cyfeirnod"), Some("http://localhost:9056/pay/pay-by-card-change-reference-number"))
     }
 
     "[PfMgd] should render the payment reference row correctly" in {
@@ -1554,7 +1554,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       val result = systemUnderTest.renderPage(fakeRequest())
       val document = Jsoup.parse(contentAsString(result))
       val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.PfMgd))
-      assertRow(referenceRow, "Reference number", "XE123456789012", None, None)
+      assertRow(referenceRow, "Reference number", "XE123456789012", Some("Change Reference number"), Some("http://localhost:9056/pay/pay-by-card-change-reference-number"))
     }
 
     "[PfMgd] should render the payment reference row correctly in Welsh" in {
@@ -1562,7 +1562,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       val result = systemUnderTest.renderPage(fakeRequestWelsh())
       val document = Jsoup.parse(contentAsString(result))
       val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.PfMgd))
-      assertRow(referenceRow, "Cyfeirnod", "XE123456789012", None, None)
+      assertRow(referenceRow, "Cyfeirnod", "XE123456789012", Some("Newid Cyfeirnod"), Some("http://localhost:9056/pay/pay-by-card-change-reference-number"))
     }
 
     "[PfGbPbRgDuty] should render the payment reference row correctly" in {
@@ -1570,7 +1570,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       val result = systemUnderTest.renderPage(fakeRequest())
       val document = Jsoup.parse(contentAsString(result))
       val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.PfGbPbRgDuty))
-      assertRow(referenceRow, "Reference number", "XE123456789012", None, None)
+      assertRow(referenceRow, "Reference number", "XE123456789012", Some("Change Reference number"), Some("http://localhost:9056/pay/pay-by-card-change-reference-number"))
     }
 
     "[PfGbPbRgDuty] should render the payment reference row correctly in Welsh" in {
@@ -1578,7 +1578,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       val result = systemUnderTest.renderPage(fakeRequestWelsh())
       val document = Jsoup.parse(contentAsString(result))
       val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.PfGbPbRgDuty))
-      assertRow(referenceRow, "Cyfeirnod", "XE123456789012", None, None)
+      assertRow(referenceRow, "Cyfeirnod", "XE123456789012", Some("Newid Cyfeirnod"), Some("http://localhost:9056/pay/pay-by-card-change-reference-number"))
     }
 
     "[PfTrust] should render the payment reference row correctly" in {
@@ -1602,7 +1602,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       val result = systemUnderTest.renderPage(fakeRequest())
       val document = Jsoup.parse(contentAsString(result))
       val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.PfPsAdmin))
-      assertRow(referenceRow, "Reference number", "XE123456789012", None, None)
+      assertRow(referenceRow, "Reference number", "XE123456789012", Some("Change Reference number"), Some("http://localhost:9056/pay/pay-by-card-change-reference-number"))
     }
 
     "[PfPsAdmin] should render the payment reference row correctly in Welsh" in {
@@ -1610,7 +1610,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       val result = systemUnderTest.renderPage(fakeRequestWelsh())
       val document = Jsoup.parse(contentAsString(result))
       val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.PfPsAdmin))
-      assertRow(referenceRow, "Cyfeirnod", "XE123456789012", None, None)
+      assertRow(referenceRow, "Cyfeirnod", "XE123456789012", Some("Newid Cyfeirnod"), Some("http://localhost:9056/pay/pay-by-card-change-reference-number"))
     }
 
     "[PfOther] should render the payment reference row correctly" in {
@@ -1618,7 +1618,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       val result = systemUnderTest.renderPage(fakeRequest())
       val document = Jsoup.parse(contentAsString(result))
       val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.PfOther))
-      assertRow(referenceRow, "Payment reference", "XE123456789012", None, None)
+      assertRow(referenceRow, "Payment reference", "XE123456789012", Some("Change Payment reference"), Some("http://localhost:9056/pay/pay-by-card-change-reference-number"))
     }
 
     "[PfOther] should render the payment reference row correctly in Welsh" in {
@@ -1626,7 +1626,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       val result = systemUnderTest.renderPage(fakeRequestWelsh())
       val document = Jsoup.parse(contentAsString(result))
       val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.PfOther))
-      assertRow(referenceRow, "Cyfeirnod y taliad", "XE123456789012", None, None)
+      assertRow(referenceRow, "Cyfeirnod y taliad", "XE123456789012", Some("Newid Cyfeirnod y taliad"), Some("http://localhost:9056/pay/pay-by-card-change-reference-number"))
     }
 
     "sanity check for implemented origins" in {

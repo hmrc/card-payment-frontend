@@ -1144,12 +1144,12 @@ class PaymentsSurveyServiceSpec extends ItSpec with TableDrivenPropertyChecks {
               origin         = "PfMgd",
               returnMsg      = "Skip survey",
               returnHref     = "https://www.gov.uk/government/organisations/hm-revenue-customs",
-              auditName      = "mg-duty",
+              auditName      = "machine-games-duty",
               audit          = AuditOptions(
                 userType  = "LoggedOut",
                 journey   = Some("Successful"),
                 orderId   = Some("XE123456789012"),
-                liability = Some("mg-duty")
+                liability = Some("machine-games-duty")
               ),
               contentOptions = SurveyContentOptions(
                 isWelshSupported = true,
@@ -1182,12 +1182,12 @@ class PaymentsSurveyServiceSpec extends ItSpec with TableDrivenPropertyChecks {
               origin         = "PfTrust",
               returnMsg      = "Skip survey",
               returnHref     = "https://www.gov.uk/government/organisations/hm-revenue-customs",
-              auditName      = "trust",
+              auditName      = "pf-trust",
               audit          = AuditOptions(
                 userType  = "LoggedOut",
                 journey   = Some("Successful"),
                 orderId   = Some("XE123456789012"),
-                liability = Some("trust")
+                liability = Some("pf-trust")
               ),
               contentOptions = SurveyContentOptions(
                 isWelshSupported = true,
@@ -1220,12 +1220,12 @@ class PaymentsSurveyServiceSpec extends ItSpec with TableDrivenPropertyChecks {
               origin         = "PfOther",
               returnMsg      = "Skip survey",
               returnHref     = "https://www.gov.uk/government/organisations/hm-revenue-customs",
-              auditName      = "other",
+              auditName      = "other-taxes",
               audit          = AuditOptions(
                 userType  = "LoggedOut",
                 journey   = Some("Successful"),
                 orderId   = Some("XE123456789012"),
-                liability = Some("other")
+                liability = Some("other-taxes")
               ),
               contentOptions = SurveyContentOptions(
                 isWelshSupported = true,
