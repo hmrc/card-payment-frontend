@@ -50,7 +50,7 @@ object ExtendedPfTrust extends ExtendedOrigin {
   }
 
   override def emailTaxTypeMessageKey: String = "email.tax-name.PfTrust"
-  override def surveyAuditName: String = "trust"
+  override def surveyAuditName: String = "pf-trust"
   override def surveyReturnHref: String = "https://www.gov.uk/government/organisations/hm-revenue-customs"
   override def surveyReturnMessageKey: String = "payments-survey.other.return-message"
   override def surveyIsWelshSupported: Boolean = true

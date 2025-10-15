@@ -143,7 +143,6 @@ object OriginSpecificSessionData {
       case WcEpayeSeta              => Json.format[WcEpayeSetaSessionData].reads(json)
       case PfJobRetentionScheme     => Json.format[PfJobRetentionSchemeSessionData].reads(json)
       case JrsJobRetentionScheme    => Json.format[JrsJobRetentionSchemeSessionData].reads(json)
-      case PfOther                  => Json.format[PfOtherSessionData].reads(json)
 
       //Todo: Remove PfP800 when PtaP800 is fully available
       case origin @ (PfOther | PtaP800 | PfP800
@@ -235,7 +234,6 @@ object OriginSpecificSessionData {
       case sessionData: WcEpayeSetaSessionData           => Json.format[WcEpayeSetaSessionData].writes(sessionData)
       case sessionData: PfJobRetentionSchemeSessionData  => Json.format[PfJobRetentionSchemeSessionData].writes(sessionData)
       case sessionData: JrsJobRetentionSchemeSessionData => Json.format[JrsJobRetentionSchemeSessionData].writes(sessionData)
-      case sessionData: PfOtherSessionData               => Json.format[PfOtherSessionData].writes(sessionData)
     }) + ("origin" -> Json.toJson(o.origin))
 
   implicit val format: OFormat[OriginSpecificSessionData] = OFormat(reads, writes)
@@ -715,9 +713,4 @@ final case class PfJobRetentionSchemeSessionData(jrsRef: JrsRef, returnUrl: Opti
 final case class JrsJobRetentionSchemeSessionData(jrsRef: JrsRef, returnUrl: Option[Url] = None) extends OriginSpecificSessionData(JrsJobRetentionScheme) {
   def paymentReference: Reference = ReferenceMaker.makeJrsReference(jrsRef)
   def searchTag: SearchTag = SearchTag(jrsRef.canonicalizedValue)
-}
-
-final case class PfOtherSessionData(xRef: XRef, returnUrl: Option[Url] = None) extends OriginSpecificSessionData(PfOther) {
-  def paymentReference: Reference = ReferenceMaker.makeXReference(xRef)
-  def searchTag: SearchTag = SearchTag(xRef.canonicalizedValue)
 }

@@ -17,9 +17,9 @@
 package uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins
 
 import payapi.cardpaymentjourney.model.journey.{JourneySpecificData, JsdPfTpes}
-import play.api.mvc.AnyContent
+import play.api.mvc.{AnyContent, Call}
 import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
-import uk.gov.hmrc.cardpaymentfrontend.models.{CheckYourAnswersRow, PaymentMethod}
+import uk.gov.hmrc.cardpaymentfrontend.models.{CheckYourAnswersRow, Link, PaymentMethod}
 import uk.gov.hmrc.cardpaymentfrontend.models.PaymentMethod.{Bacs, Card, OneOffDirectDebit, OpenBanking}
 import uk.gov.hmrc.cardpaymentfrontend.models.openbanking.PfTpesSessionData
 
@@ -36,7 +36,11 @@ object ExtendedPfTpes extends ExtendedOrigin {
     Some(CheckYourAnswersRow(
       titleMessageKey = "check-your-details.PfTpes.reference",
       value           = Seq(journeyRequest.journey.referenceValue),
-      changeLink      = None //TODO: why no change link
+      changeLink      = Some(Link(
+        href       = Call("GET", changeReferenceUrl(payFrontendBaseUrl)),
+        linkId     = "check-your-details-reference-change-link",
+        messageKey = "check-your-details.change"
+      ))
     ))
   }
 

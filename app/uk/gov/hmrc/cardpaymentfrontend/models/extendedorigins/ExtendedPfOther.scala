@@ -16,18 +16,18 @@
 
 package uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins
 
-import payapi.cardpaymentjourney.model.journey.{JourneySpecificData, JsdPfOther}
-import play.api.mvc.AnyContent
+import payapi.cardpaymentjourney.model.journey.JourneySpecificData
+import play.api.mvc.{AnyContent, Call}
 import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
-import uk.gov.hmrc.cardpaymentfrontend.models.PaymentMethod
+import uk.gov.hmrc.cardpaymentfrontend.models.{Link, PaymentMethod}
 import uk.gov.hmrc.cardpaymentfrontend.models.PaymentMethod.Card
-import uk.gov.hmrc.cardpaymentfrontend.models.openbanking.{OriginSpecificSessionData, PfOtherSessionData}
+import uk.gov.hmrc.cardpaymentfrontend.models.openbanking.OriginSpecificSessionData
 
 object ExtendedPfOther extends ExtendedOrigin {
   override val serviceNameMessageKey: String = "service-name.PfOther"
   override val taxNameMessageKey: String = "payment-complete.tax-name.PfOther"
 
-  def cardFeesPagePaymentMethods: Set[PaymentMethod] = Set.empty //TODO: Probs cause an issue
+  def cardFeesPagePaymentMethods: Set[PaymentMethod] = Set.empty
 
   def paymentMethods(): Set[PaymentMethod] = Set(Card)
 
@@ -36,17 +36,18 @@ object ExtendedPfOther extends ExtendedOrigin {
     Some(uk.gov.hmrc.cardpaymentfrontend.models.CheckYourAnswersRow(
       titleMessageKey = "check-your-details.PfOther.reference",
       value           = Seq(journeyRequest.journey.referenceValue),
-      changeLink      = None
+      changeLink      = Some(Link(
+        href       = Call("GET", changeReferenceUrl(payFrontendBaseUrl)),
+        linkId     = "check-your-details-reference-change-link",
+        messageKey = "check-your-details.change"
+      ))
     ))
   }
 
-  override def openBankingOriginSpecificSessionData: JourneySpecificData => Option[OriginSpecificSessionData] = {
-    case j: JsdPfOther => j.otherRef.map(prn => PfOtherSessionData(prn))
-    case _             => throw new RuntimeException("Incorrect origin found")
-  }
+  override def openBankingOriginSpecificSessionData: JourneySpecificData => Option[OriginSpecificSessionData] = _ => None
 
   override def emailTaxTypeMessageKey: String = "email.tax-name.PfOther"
-  override def surveyAuditName: String = "other"
+  override def surveyAuditName: String = "other-taxes"
   override def surveyReturnHref: String = "https://www.gov.uk/government/organisations/hm-revenue-customs"
   override def surveyReturnMessageKey: String = "payments-survey.other.return-message"
   override def surveyIsWelshSupported: Boolean = true

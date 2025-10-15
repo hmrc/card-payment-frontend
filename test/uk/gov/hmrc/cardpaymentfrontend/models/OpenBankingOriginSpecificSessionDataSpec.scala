@@ -516,10 +516,7 @@ class OpenBankingOriginSpecificSessionDataSpec extends UnitSpec {
     }
 
     "PfOther" in {
-      val testJson = Json.parse("""{"xRef":"XE123456789012","origin":"PfOther"}""")
-      val osd = ExtendedPfOther.openBankingOriginSpecificSessionData(TestJourneys.PfOther.journeyBeforeBeginWebPayment.journeySpecificData)
-      testOsd(osd, PfOtherSessionData(XRef("XE123456789012"), None), "XE123456789012", "XE123456789012")
-      roundTripJsonTest(osd, testJson)
+      ExtendedPfOther.openBankingOriginSpecificSessionData(TestJourneys.PfOther.journeyBeforeBeginWebPayment.journeySpecificData) shouldBe None
     }
 
   }
