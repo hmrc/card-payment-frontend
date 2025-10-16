@@ -330,7 +330,7 @@ class EmailServiceSpec extends ItSpec with TableDrivenPropertyChecks {
       (AppSimpleAssessment, "Asesiad Syml", "yn gorffen gyda 22023", None, None, "cy"),
       (AppSimpleAssessment, "Asesiad Syml", "yn gorffen gyda 22023", commission, Some("13.57"), "cy"),
 
-      //Mib/BcPngr not needed to be tested, we don't send emails for them. I think the email is handled by the corresponding tenant services.
+    //Mib/BcPngr not needed to be tested, we don't send emails for them. I think the email is handled by the corresponding tenant services.
     )
 
     forAll(scenarios) { (j, taxType, taxReference, commission, totalPaid, lang) =>
@@ -373,17 +373,17 @@ class EmailServiceSpec extends ItSpec with TableDrivenPropertyChecks {
         .foreach { origin =>
           val msgKey = origin.lift.emailTaxTypeMessageKey
 
-        msgKey.isEmpty shouldBe false withClue s"email.tax-name message key missing for origin: ${origin.entryName}"
-        //Check if the message is defined in either messages file, Doesn't matter which one
-        //doesn't seem to care what the language is, if it exists in one of the language file, it'll return true
-        messages.isDefinedAt(msgKey)(Lang("en")) shouldBe true withClue s"email.tax-name message key missing for origin: ${origin.entryName}"
-        //Check if the message is different in both languages, if they are the same the message is not in both files
-        // for PfP800 and PtaP800, the english can be the same as welsh...
-        // for PfCds there is no welsh as it isn't supported...
-        if (origin =!= Origins.PfP800 && origin =!= Origins.PtaP800 && origin =!= Origins.PfCds && origin =!= Origins.NiEuVatOss && origin =!= Origins.PfNiEuVatOss && origin =!= Origins.NiEuVatIoss && origin =!= Origins.PfNiEuVatIoss) {
-          messages.preferred(Seq(Lang("en")))(msgKey) should not be messages.preferred(Seq(Lang("cy")))(msgKey)
+          msgKey.isEmpty shouldBe false withClue s"email.tax-name message key missing for origin: ${origin.entryName}"
+          //Check if the message is defined in either messages file, Doesn't matter which one
+          //doesn't seem to care what the language is, if it exists in one of the language file, it'll return true
+          messages.isDefinedAt(msgKey)(Lang("en")) shouldBe true withClue s"email.tax-name message key missing for origin: ${origin.entryName}"
+          //Check if the message is different in both languages, if they are the same the message is not in both files
+          // for PfP800 and PtaP800, the english can be the same as welsh...
+          // for PfCds there is no welsh as it isn't supported...
+          if (origin =!= Origins.PfP800 && origin =!= Origins.PtaP800 && origin =!= Origins.PfCds && origin =!= Origins.NiEuVatOss && origin =!= Origins.PfNiEuVatOss && origin =!= Origins.NiEuVatIoss && origin =!= Origins.PfNiEuVatIoss) {
+            messages.preferred(Seq(Lang("en")))(msgKey) should not be messages.preferred(Seq(Lang("cy")))(msgKey)
+          }
         }
-      }
     }
   }
 

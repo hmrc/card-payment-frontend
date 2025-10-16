@@ -1519,9 +1519,20 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       assertRow(referenceRow, "Cyfeirnod y taliad", "MIBI1234567891", None, None)
     }
 
-    //todo jake
-    "[BcPngr] should render its custom rows correctly..." in {
-      pending
+    "[BcPngr] should render the payment reference row correctly" in {
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.BcPngr.journeyBeforeBeginWebPayment)
+      val result = systemUnderTest.renderPage(fakeRequest())
+      val document = Jsoup.parse(contentAsString(result))
+      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.BcPngr))
+      assertRow(referenceRow, "Reference number", "XAPR9876543210", None, None)
+    }
+
+    "[BcPngr] should render the payment reference row correctly in Welsh" in {
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.BcPngr.journeyBeforeBeginWebPayment)
+      val result = systemUnderTest.renderPage(fakeRequestWelsh())
+      val document = Jsoup.parse(contentAsString(result))
+      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.BcPngr))
+      assertRow(referenceRow, "Cyfeirnod y taliad", "XAPR9876543210", None, None)
     }
 
     "sanity check for implemented origins" in {
