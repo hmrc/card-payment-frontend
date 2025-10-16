@@ -199,6 +199,7 @@ check-your-details.PfJobRetentionScheme.reference = Cyfeirnod y taliad
 check-your-details.JrsJobRetentionScheme.reference = Cyfeirnod y taliad
 check-your-details.AppSa.reference = Cyfeirnod Unigryw y Trethdalwr (UTR)
 check-your-details.Mib.reference = Cyfeirnod y taliad
+check-your-details.BcPngr.reference = Cyfeirnod y taliad
 
 
 ## Address Page
@@ -260,18 +261,22 @@ payment-complete.email.paragraph = Rydym wedi anfon e-bost cadarnhau <strong>{0}
 payment-complete.summary-list.tax = Treth
 payment-complete.summary-list.date = Dyddiad
 payment-complete.summary-list.amount = Swm
-
 payment-complete.amount.paid-to-hmrc = Swm a dalwyd i CThEM
 payment-complete.amount.card-fee = {0}Ffi cerdyn ({1}),{2}ni ellir ei ad-dalu{3}
 payment-complete.amount.total-paid = Cyfanswm a dalwyd
-
 payment-complete.print-link = Argraffwch cadarnhad o’ch taliad
-##todo mods has bespoke content for print link, passengers shouldn't have one at all
 payment-complete.what-happens-next.header = Yr hyn sy’n digwydd nesaf
 payment-complete.what-happens-next.p1 = Gall eich taliad gymryd hyd at 5 diwrnod ymddangos yn eich
 payment-complete.what-happens-next.p1.signedOut = Os oes gennych gyfrif treth ar-lein, gall eich taliad gymryd hyd at 5 diwrnod i ymddangos.
 payment-complete.what-happens-next.link = cyfrif treth ar-lein.
 payment-complete.what-happens-next.web-chat.info = Os oes angen cymorth pellach arnoch gyda’ch bil treth, bydd angen dychwelyd i’r sgwrs dros y we a siarad ag ymgynghorydd.
+##todo mods has bespoke content for print link, passengers shouldn't have one at all
+
+#custom mib/mods content
+payment-complete.mods.panel.title = Datganiad wedi’i gwblhau
+payment-complete.mods.panel.content = Eich cyfeirnod<br><strong>MIBI1234567891</strong>
+payment-complete.summary-list.payment = Taliad
+payment-complete.mods.email.paragraph = Rydym wedi anfon e-bost cadarnhau i’r cyfeiriad a roddwyd.
 payment-complete.mods.what-happens-next.header = Yr hyn y mae angen i chi ei wneud nesaf
 payment-complete.mods.what-happens-next.make-sure-that-you = Gwnewch yn siŵr eich bod yn:
 payment-complete.mods.what-happens-next.list-item-1 = mynd drwy’r <strong>sianel wyrdd</strong> (dim byd i’w ddatgan) wrth y tollau
@@ -281,6 +286,41 @@ payment-complete.mods.bringing-eu-goods.header = Dod â nwyddau o’r UE gyda ch
 payment-complete.mods.bringing-eu-goods.info = Os ydych yn dod â nwyddau a gynhyrchwyd yn yr UE gyda chi y mae cyfanswm eu gwerth dros £1,000, mae’n rhaid i chi gario tystiolaeth y cawsant eu gwneud yn yr UE.
 payment-complete.mods.make-a-new-declaration = Gwneud datganiad newydd
 payment-complete.mods.add-goods-to-an-existing-declaration = Ychwanegu nwyddau i ddatganiad sy’n bodoli eisoes
+
+#custom passengers content
+payment-complete.passengers.panel.title = Taliad wedi’i gwblhau
+payment-complete.passengers.panel.content = Cyfeirnod<br><strong>{0}</strong>
+payment-complete.passengers.p1 = Gwnewch nodyn o’ch cyfeirnod, mae’n bosibl y bydd angen i chi ei roi i Lu’r Ffiniau.
+payment-complete.passengers.p2 = Os gwnaethoch roi cyfeiriad e-bost, mae copi o’r dderbynneb hon wedi’i hanfon atoch
+payment-complete.passengers.summary-list.name = Enw
+payment-complete.passengers.summary-list.date-of-payment = Dyddiad y taliad
+payment-complete.passengers.summary-list.place-of-arrival-in-uk = Man cyrraedd y DU
+payment-complete.passengers.summary-list.date-of-arrival = Dyddiad cyrraedd
+payment-complete.passengers.summary-list.time-of-arrival = Amser cyrraedd
+payment-complete.passengers.summary-list.reference-number = Cyfeirnod
+payment-complete.passengers.summary-list.amount-paid = Swm a dalwyd
+payment-complete.passengers.items-declared.subheading = Eitemau a ddatganwyd
+payment-complete.passengers.items-declared.table.item = Eitem
+payment-complete.passengers.items-declared.table.price = Pris
+payment-complete.passengers.items-declared.table.purchased-in = Prynwyd yn
+payment-complete.passengers.items-declared.table.tax-paid = Treth a dalwyd
+payment-complete.passengers.items-declared.table.total = Cyfanswm
+payment-complete.passengers.items-declared.table.amount-paid-previously = Swm a dalwyd yn flaenorol
+payment-complete.passengers.items-declared.table.total-paid-now = Cyfanswm wedi’i dalu nawr
+payment-complete.passengers.payment-breakdown.subheading = Dadansoddiad o’r taliad
+payment-complete.passengers.payment-breakdown.table.type-of-tax = Math o dreth neu doll
+payment-complete.passengers.payment-breakdown.table.amount-paid = Swm a dalwyd
+payment-complete.passengers.payment-breakdown.table.customs = Tollau
+payment-complete.passengers.payment-breakdown.table.excise = Ecséis
+payment-complete.passengers.payment-breakdown.table.vat = TAW
+payment-complete.passengers.payment-breakdown.table.total = Cyfanswm
+payment-complete.passengers.arriving-in-uk.subheading = Yr hyn i’w wneud pan fyddwch yn cyrraedd y DU
+payment-complete.passengers.arriving-in-uk.p1 = Ewch i’r sianel werdd ar gyfer ’dim i’w ddatgan’ os mai dyma’r unig eitemau rydych chi’n eu datgan. Os gofynnir i chi, dangoswch eich derbynneb ar eich ffôn symudol neu lechen i aelod o Lu’r Ffiniau, neu rhowch eich cyfeirnod.
+payment-complete.passengers.amending-declaration.subheading = Diwygio’ch datganiad
+payment-complete.passengers.amending-declaration.p1 = Gallwch ddefnyddio’r gwasanaeth hwn i ychwanegu nwyddau at eich datganiad presennol cyn i chi gyrraedd y DU. Bydd angen i chi nodi’ch cyfeirnod.
+payment-complete.passengers.amending-declaration.p2 = Os oes angen i chi dynnu nwyddau o’ch datganiad, <a class="govuk-link" href="{0}">ewch GOV.UK i ofyn am ad-daliad</a>.
+
+#rest of payment complete content
 payment-complete.survey.title = Helpwch ni i wella ein gwasanaethau
 payment-complete.survey.p1 = Rydym yn defnyddio’ch adborth i wella ein gwasanaethau.
 payment-complete.survey.p2.part1 = Rhowch wybod i ni beth yw eich barn am y gwasanaeth hwn

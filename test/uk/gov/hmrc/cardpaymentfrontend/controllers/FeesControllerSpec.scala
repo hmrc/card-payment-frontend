@@ -3107,92 +3107,18 @@ class FeesControllerSpec extends ItSpec {
 
 
       "for origin Mib" - {
-
-        "render one options for other ways to pay" in {
+        "should redirect to /pay-by-card/address" in {
           PayApiStub.stubForFindBySessionId2xx(TestJourneys.Mib.journeyBeforeBeginWebPayment)
           val result = systemUnderTest.renderPage(fakeRequest)
-          val document = Jsoup.parse(contentAsString(result))
-          val listOfMethods = document.select("#payment-type-list").select("li")
-          listOfMethods.size() shouldBe 1
-        }
-
-        "render the static content correctly" in {
-          PayApiStub.stubForFindBySessionId2xx(TestJourneys.Mib.journeyBeforeBeginWebPayment)
-          val result = systemUnderTest.renderPage(fakeRequest)
-          val document = Jsoup.parse(contentAsString(result))
-          document.select(".govuk-header__service-name").html shouldBe "Declare commercial goods carried in accompanied baggage or small vehicles"
-          testStaticContentEnglish(document)
-        }
-
-        "the static content correctly in welsh" in {
-          PayApiStub.stubForFindBySessionId2xx(TestJourneys.Mib.journeyBeforeBeginWebPayment)
-          val result = systemUnderTest.renderPage(fakeWelshRequest)
-          val document = Jsoup.parse(contentAsString(result))
-          document.select(".govuk-header__service-name").html shouldBe "Datgan nwyddau masnachol sy’n cael eu cario mewn bagiau neu gerbydau bach"
-          testStaticContentWelsh(document)
-        }
-
-        "render an option for personal debit card" in {
-          PayApiStub.stubForFindBySessionId2xx(TestJourneys.Mib.journeyBeforeBeginWebPayment)
-          val result = systemUnderTest.renderPage(fakeRequest)
-          val document = Jsoup.parse(contentAsString(result))
-          val listOfMethods = document.select("#payment-type-list").select("li")
-          val cardBullet = listOfMethods.select("#personal-debit-card")
-          cardBullet.text() shouldBe "personal debit card"
-        }
-
-        "render an option for personal debit card in welsh" in {
-          PayApiStub.stubForFindBySessionId2xx(TestJourneys.Mib.journeyBeforeBeginWebPayment)
-          val result = systemUnderTest.renderPage(fakeWelshRequest)
-          val document = Jsoup.parse(contentAsString(result))
-          val listOfMethods = document.select("#payment-type-list").select("li")
-          val cardBullet = listOfMethods.select("#personal-debit-card")
-          cardBullet.text() shouldBe "cerdyn debyd personol"
+          redirectLocation(result) shouldBe Some("/pay-by-card/address")
         }
       }
 
       "for origin BcPngr" - {
-
-        "render one options for other ways to pay" in {
-          PayApiStub.stubForFindBySessionId2xx(TestJourneys.Mib.journeyBeforeBeginWebPayment)
+        "should redirect to /pay-by-card/address" in {
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.BcPngr.journeyBeforeBeginWebPayment)
           val result = systemUnderTest.renderPage(fakeRequest)
-          val document = Jsoup.parse(contentAsString(result))
-          val listOfMethods = document.select("#payment-type-list").select("li")
-          listOfMethods.size() shouldBe 1
-        }
-
-        "render the static content correctly" in {
-          PayApiStub.stubForFindBySessionId2xx(TestJourneys.Mib.journeyBeforeBeginWebPayment)
-          val result = systemUnderTest.renderPage(fakeRequest)
-          val document = Jsoup.parse(contentAsString(result))
-          document.select(".govuk-header__service-name").html shouldBe "Declare commercial goods carried in accompanied baggage or small vehicles"
-          testStaticContentEnglish(document)
-        }
-
-        "the static content correctly in welsh" in {
-          PayApiStub.stubForFindBySessionId2xx(TestJourneys.Mib.journeyBeforeBeginWebPayment)
-          val result = systemUnderTest.renderPage(fakeWelshRequest)
-          val document = Jsoup.parse(contentAsString(result))
-          document.select(".govuk-header__service-name").html shouldBe "Datgan nwyddau masnachol sy’n cael eu cario mewn bagiau neu gerbydau bach"
-          testStaticContentWelsh(document)
-        }
-
-        "render an option for personal debit card" in {
-          PayApiStub.stubForFindBySessionId2xx(TestJourneys.Mib.journeyBeforeBeginWebPayment)
-          val result = systemUnderTest.renderPage(fakeRequest)
-          val document = Jsoup.parse(contentAsString(result))
-          val listOfMethods = document.select("#payment-type-list").select("li")
-          val cardBullet = listOfMethods.select("#personal-debit-card")
-          cardBullet.text() shouldBe "personal debit card"
-        }
-
-        "render an option for personal debit card in welsh" in {
-          PayApiStub.stubForFindBySessionId2xx(TestJourneys.Mib.journeyBeforeBeginWebPayment)
-          val result = systemUnderTest.renderPage(fakeWelshRequest)
-          val document = Jsoup.parse(contentAsString(result))
-          val listOfMethods = document.select("#payment-type-list").select("li")
-          val cardBullet = listOfMethods.select("#personal-debit-card")
-          cardBullet.text() shouldBe "cerdyn debyd personol"
+          redirectLocation(result) shouldBe Some("/pay-by-card/address")
         }
       }
     }
@@ -3285,8 +3211,10 @@ class FeesControllerSpec extends ItSpec {
         messageKey = "card-fees.para2.direct-debit"
       )
 
-      TestHelpers.implementedOrigins.foreach { origin =>
-        s"should return the correct links for each origin: ${origin.entryName}" in {
+      TestHelpers.implementedOrigins
+        .filterNot(o => o == Origins.BcPngr || o == Origins.Mib) // mib and bcpngr do not have a card fees page.
+        .foreach { origin =>
+          s"should return the correct links for each origin: ${origin.entryName}" in {
 
           val expectedLinks: Seq[Link] = origin match {
             case Origins.PfSa                     => Seq(expectedOpenBankingLink, expectedOneOffDirectDebitLink)
@@ -3382,10 +3310,10 @@ class FeesControllerSpec extends ItSpec {
             case Origins.WcEpayeSeta              => Seq(expectedOpenBankingLink)
           }
 
-          val journeySpecificData: JourneySpecificData = TestHelpers.deriveTestDataFromOrigin(origin).journeyBeforeBeginWebPayment.journeySpecificData
-          systemUnderTest.linksAvailableOnFeesPage(journeySpecificData) shouldBe expectedLinks withClue s"links did not match expected for origin: ${origin.entryName}"
+            val journeySpecificData: JourneySpecificData = TestHelpers.deriveTestDataFromOrigin(origin).journeyBeforeBeginWebPayment.journeySpecificData
+            systemUnderTest.linksAvailableOnFeesPage(journeySpecificData) shouldBe expectedLinks withClue s"links did not match expected for origin: ${origin.entryName}"
+          }
         }
-      }
     }
   }
 }

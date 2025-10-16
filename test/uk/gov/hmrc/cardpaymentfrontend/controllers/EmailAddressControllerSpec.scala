@@ -42,11 +42,9 @@ class EmailAddressControllerSpec extends ItSpec {
 
     "GET /email-address" - {
 
-      val fakeGetRequest: FakeRequest[AnyContentAsEmpty.type] =
-        FakeRequest("GET", "/email-address").withSessionId()
+      val fakeGetRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/email-address").withSessionId()
+      val fakeGetRequestInWelsh: FakeRequest[AnyContentAsEmpty.type] = fakeGetRequest.withLangWelsh()
 
-      val fakeGetRequestInWelsh: FakeRequest[AnyContentAsEmpty.type] =
-        fakeGetRequest.withLangWelsh()
       "should return 200 OK" in {
         val result = systemUnderTest.renderPage(fakeGetRequest)
         status(result) shouldBe Status.OK
@@ -185,6 +183,17 @@ class EmailAddressControllerSpec extends ItSpec {
         val document = Jsoup.parse(contentAsString(result))
 
         document.select("input[name=email-address]").attr("value") shouldBe "blah@blah.com"
+      }
+
+      "should redirect to /pay-by-card/address when origin is Mib" in {
+        PayApiStub.stubForFindBySessionId2xx(TestJourneys.Mib.journeyBeforeBeginWebPayment)
+        val result = systemUnderTest.renderPage(fakeGetRequest)
+        redirectLocation(result) shouldBe Some("/pay-by-card/address")
+      }
+      "should redirect to /pay-by-card/address when origin is BcPngr" in {
+        PayApiStub.stubForFindBySessionId2xx(TestJourneys.BcPngr.journeyBeforeBeginWebPayment)
+        val result = systemUnderTest.renderPage(fakeGetRequestInWelsh)
+        redirectLocation(result) shouldBe Some("/pay-by-card/address")
       }
 
     }

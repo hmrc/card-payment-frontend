@@ -171,7 +171,7 @@ object ExtendedOrigin {
       case BtaClass1aNi             => ExtendedBtaClass1aNi
       case BtaCt                    => ExtendedBtaCt
       case BtaSdil                  => ExtendedBtaSdil
-      case BcPngr                   => DefaultExtendedOrigin
+      case BcPngr                   => ExtendedBcPngr
       case Parcels                  => DefaultExtendedOrigin
       case DdVat                    => DefaultExtendedOrigin
       case DdSdil                   => DefaultExtendedOrigin

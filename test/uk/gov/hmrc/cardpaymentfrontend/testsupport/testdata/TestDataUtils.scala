@@ -49,8 +49,15 @@ object TestDataUtils {
     paidOn               = None
   ))
 
-  //todo update, I think there's one extra field that needs setting
   val failedOrder: Option[BarclaysOrder] = Some(BarclaysOrder(
+    transactionReference = TransactionReference("Some-transaction-ref"),
+    iFrameUrl            = Url("some-url"),
+    cardCategory         = None,
+    commissionInPence    = None,
+    paidOn               = None
+  ))
+
+  val cancelledOrder: Option[BarclaysOrder] = Some(BarclaysOrder(
     transactionReference = TransactionReference("Some-transaction-ref"),
     iFrameUrl            = Url("some-url"),
     cardCategory         = None,

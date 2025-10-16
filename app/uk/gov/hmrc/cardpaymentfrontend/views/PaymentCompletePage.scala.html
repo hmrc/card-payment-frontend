@@ -14,6 +14,7 @@
  * limitations under the License.
  *@
 
+@import payapi.corcommon.model.Origins
 @import payapi.corcommon.model.Reference
 @import payapi.corcommon.model.TaxTypes.{cds, mib, vatConsumerToConsumer}
 @import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
@@ -48,15 +49,30 @@
 
 @additionalScript = { <script type="module" src="@{controllers.routes.Assets.versioned("javascripts/print-dialogue.js")}" @{CSPNonce.attr}></script> }
 
-@heading = @{messages("payment-complete.panel.title")}
+@origin = @{journeyRequest.journey.origin}
 
-@panelContent = @{Html(messages("payment-complete.panel.content", taxReference.value))}
+@heading = @{
+    origin match {
+        case Origins.Mib => messages("payment-complete.mods.panel.title")
+        case _           => messages("payment-complete.panel.title")
+    }
 
-@maybeEmailContent = {
-    @maybeEmailAddress.fold(Html("")) { emailAddress =>
-        <p id="email-paragraph" class="govuk-body">
-            @Html(Messages("payment-complete.email.paragraph", emailAddress.value))
-        </p>
+}
+
+@panelContent = @{
+    origin match {
+        case Origins.Mib => Html(messages("payment-complete.mods.panel.content", taxReference.value))
+        case _           => Html(messages("payment-complete.panel.content", taxReference.value))
+    }
+}
+
+@maybeEmailContent = @{
+    origin match {
+        case Origins.Mib => Html(s"""<p id="email-paragraph" class="govuk-body">${Messages("payment-complete.mods.email.paragraph")}</p>""")
+        case _           =>
+            maybeEmailAddress.fold(Html("")) { emailAddress =>
+                Html(s"""<p id="email-paragraph" class="govuk-body">${Messages("payment-complete.email.paragraph", emailAddress.value)}</p>""")
+        }
     }
 }
 
@@ -71,21 +87,25 @@
 
     @** Mods specific content **@
     @if(journeyRequest.journey.origin.toTaxType == mib) {
-        <div id="what-happens-next-wrapper">
-            <h2 class="govuk-heading-m govuk-!-margin-top-7">@Messages("payment-complete.mods.what-happens-next.header")</h2>
-            <p class="govuk-body">@Messages("payment-complete.mods.what-happens-next.make-sure-that-you")</p>
-            <ul class="govuk-list govuk-list--bullet">
-                <li>@Html(Messages("payment-complete.mods.what-happens-next.list-item-1"))</li>
-                <li>@Messages("payment-complete.mods.what-happens-next.list-item-2")</li>
-                <li>@Messages("payment-complete.mods.what-happens-next.list-item-3")</li>
-            </ul>
+        <div id="mods-specific-content">
+            <div id="what-happens-next-wrapper">
+                <h2 class="govuk-heading-m govuk-!-margin-top-7">@Messages("payment-complete.mods.what-happens-next.header")</h2>
+                <p class="govuk-body">@Messages("payment-complete.mods.what-happens-next.make-sure-that-you")</p>
+                <ul class="govuk-list govuk-list--bullet">
+                    <li>@Html(Messages("payment-complete.mods.what-happens-next.list-item-1"))</li>
+                    <li>@Messages("payment-complete.mods.what-happens-next.list-item-2")</li>
+                    <li>@Messages("payment-complete.mods.what-happens-next.list-item-3")</li>
+                </ul>
+            </div>
+            <div id="bringing-eu-goods-wrapper">
+                <h2 class="govuk-heading-m govuk-!-margin-top-7">@Messages("payment-complete.mods.bringing-eu-goods.header")</h2>
+                <p class="govuk-body">@Messages("payment-complete.mods.bringing-eu-goods.info")</p>
+            </div>
+            <div id="mods-links">
+                <p class="govuk-body"><a class="govuk-link" href="@{appConfig.merchandiseInBaggageMakeAnotherDeclarationUrl}">@Messages("payment-complete.mods.make-a-new-declaration")</a></p>
+                <p class="govuk-body"><a class="govuk-link" href="@{appConfig.merchandiseInBaggageAmendDeclarationUrl}">@Messages("payment-complete.mods.add-goods-to-an-existing-declaration")</a></p>
+            </div>
         </div>
-        <div id="bringing-eu-goods-wrapper">
-            <h2 class="govuk-heading-m govuk-!-margin-top-7">@Messages("payment-complete.mods.bringing-eu-goods.header")</h2>
-            <p class="govuk-body">@Messages("payment-complete.mods.bringing-eu-goods.info")</p>
-        </div>
-        <p class="govuk-body"><a class="govuk-link" href="@{appConfig.merchandiseInBaggageMakeAnotherDeclarationUrl}">@Messages("payment-complete.mods.make-a-new-declaration")</a></p>
-        <p class="govuk-body"><a class="govuk-link" href="@{appConfig.merchandiseInBaggageAmendDeclarationUrl}">@Messages("payment-complete.mods.add-goods-to-an-existing-declaration")</a></p>
     }
     @** end of Mods specific content **@
 

@@ -212,6 +212,7 @@ check-your-details.PfNiEuVatIoss.tax-year = Return period
 check-your-details.PfCds.reference = CDS Reference Number
 check-your-details.AppSa.reference = Unique Taxpayer Reference (UTR)
 check-your-details.Mib.reference = Declaration reference
+check-your-details.BcPngr.reference = Reference number
 
 
 ## Address Page
@@ -274,13 +275,18 @@ payment-complete.amount.paid-to-hmrc = Amount paid to HMRC
 payment-complete.amount.card-fee = {0}Card fee ({1}),{2}non-refundable{3}
 payment-complete.amount.total-paid = Total paid
 payment-complete.print-link = Print your payment confirmation
-##todo mods has bespoke content for print link, passengers shouldn't have one at all
 payment-complete.what-happens-next.header = What happens next
 payment-complete.what-happens-next.p1 = Your payment can take up to 5 days to show in your
 payment-complete.what-happens-next.p1.signedOut = If you have an online tax account, your payment can take up to 5 days to show.
 payment-complete.what-happens-next.link = online tax account.
 payment-complete.what-happens-next.web-chat.info = If you need further help with a tax bill, return to the webchat and speak with the webchat handler.
 payment-complete.what-happens-next.one-stop-shop.info = If you have an online tax account, your payment can take up to 5 days to show.
+
+#custom mib/mods content
+payment-complete.mods.panel.title = Declaration complete
+payment-complete.mods.panel.content = Your reference number<br><strong>{0}</strong>
+payment-complete.summary-list.payment = Payment
+payment-complete.mods.email.paragraph = We have sent a confirmation email to the address provided.
 payment-complete.mods.what-happens-next.header = What you need to do next
 payment-complete.mods.what-happens-next.make-sure-that-you = Make sure that you:
 payment-complete.mods.what-happens-next.list-item-1 = go through the <strong>green channel</strong> (nothing to declare) at customs
@@ -290,6 +296,41 @@ payment-complete.mods.bringing-eu-goods.header = Bringing EU goods
 payment-complete.mods.bringing-eu-goods.info = If you bring EU-produced goods that have a total value over £1,000, you need to carry proof they were made in the EU.
 payment-complete.mods.make-a-new-declaration = Make a new declaration
 payment-complete.mods.add-goods-to-an-existing-declaration = Add goods to an existing declaration
+
+#custom passengers content
+payment-complete.passengers.panel.title = Payment complete
+payment-complete.passengers.panel.content = Your reference number<br><strong>{0}</strong>
+payment-complete.passengers.p1 = Make a note of your reference number, you may need to provide it to Border Force.
+payment-complete.passengers.p2 = If you provided an email address, a copy of this receipt has been sent to you.
+payment-complete.passengers.summary-list.name = Name
+payment-complete.passengers.summary-list.date-of-payment = Date of payment
+payment-complete.passengers.summary-list.place-of-arrival-in-uk = Place of arrival in uk
+payment-complete.passengers.summary-list.date-of-arrival = Date of arrival
+payment-complete.passengers.summary-list.time-of-arrival = Time of arrival
+payment-complete.passengers.summary-list.reference-number = Reference number
+payment-complete.passengers.summary-list.amount-paid = Amount paid
+payment-complete.passengers.items-declared.subheading = Items declared
+payment-complete.passengers.items-declared.table.item = Item
+payment-complete.passengers.items-declared.table.price = Price
+payment-complete.passengers.items-declared.table.purchased-in = Purchased in
+payment-complete.passengers.items-declared.table.tax-paid = Tax paid
+payment-complete.passengers.items-declared.table.total = Total
+payment-complete.passengers.items-declared.table.amount-paid-previously = Amount paid previously
+payment-complete.passengers.items-declared.table.total-paid-now = Total paid now
+payment-complete.passengers.payment-breakdown.subheading = Payment breakdown
+payment-complete.passengers.payment-breakdown.table.type-of-tax = Type of tax or duty
+payment-complete.passengers.payment-breakdown.table.amount-paid = Amount paid
+payment-complete.passengers.payment-breakdown.table.customs = Customs
+payment-complete.passengers.payment-breakdown.table.excise = Excise
+payment-complete.passengers.payment-breakdown.table.vat = VAT
+payment-complete.passengers.payment-breakdown.table.total = Total
+payment-complete.passengers.arriving-in-uk.subheading = What to do when you arrive in the UK
+payment-complete.passengers.arriving-in-uk.p1 = Go to the green ‘nothing to declare’ channel if these are the only items you are declaring. If asked, show your receipt on your mobile phone or tablet to a member of Border Force, or provide your reference number.
+payment-complete.passengers.amending-declaration.subheading = Amending your declaration
+payment-complete.passengers.amending-declaration.p1 = You can use this service to add goods to your existing declaration before you arrive in the UK. You will need to enter your reference number.
+payment-complete.passengers.amending-declaration.p2 = If you need to remove goods from your declaration <a class="govuk-link" href="{0}">visit GOV.UK to request a refund</a>.
+
+#rest of payment complete content
 payment-complete.survey.title = Help us improve our services
 payment-complete.survey.p1 = We use your feedback to make our services better.
 payment-complete.survey.p2.part1 = Tell us what you think of this service

@@ -18,16 +18,16 @@ package uk.gov.hmrc.cardpaymentfrontend.actions
 
 import org.scalatest.Assertion
 import payapi.cardpaymentjourney.model.journey.{Journey, JourneySpecificData, Url}
-import payapi.corcommon.model.PaymentStatuses
+import payapi.corcommon.model.{Origin, Origins, PaymentStatuses}
 import play.api.i18n.MessagesApi
 import play.api.mvc.{ActionRefiner, AnyContent, Result, Results}
 import play.api.test.FakeRequest
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.cardpaymentfrontend.config.ErrorHandler
-import uk.gov.hmrc.cardpaymentfrontend.testsupport.ItSpec
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.TestOps.FakeRequestOps
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.stubs.PayApiStub
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.testdata.{TestJourneys, TestPayApiData}
+import uk.gov.hmrc.cardpaymentfrontend.testsupport.{ItSpec, TestHelpers}
 import uk.gov.hmrc.cardpaymentfrontend.views.html.ForceDeleteAnswersPage
 
 import scala.concurrent.Future
@@ -73,6 +73,33 @@ class ActionRefinerSpec extends ItSpec {
       val result: Either[Result, JourneyRequest[AnyContent]] = systemUnderTest.refine(request).futureValue
       result.isRight shouldBe true
       result.map(_.journey) shouldBe Right(TestJourneys.PfSa.journeyAfterSucceedDebitWebPayment)
+    }
+  }
+
+  "journeyRoutingActionRefiner" - {
+    val systemUnderTest: JourneyRoutingActionRefiner = app.injector.instanceOf[JourneyRoutingActionRefiner]
+
+      def fakeRequest(journey: Journey[JourneySpecificData]): JourneyRequest[AnyContent] = new JourneyRequest(journey, FakeRequest())
+
+    "should return a Left with redirect to address page" - {
+      "for Mib origin" in {
+        val request = fakeRequest(TestJourneys.Mib.journeyBeforeBeginWebPayment)
+        systemUnderTest.refine(request).futureValue shouldBe Left(Results.Redirect("/pay-by-card/address"))
+      }
+      "for BcPngr origin" in {
+        val request = fakeRequest(TestJourneys.BcPngr.journeyBeforeBeginWebPayment)
+        systemUnderTest.refine(request).futureValue shouldBe Left(Results.Redirect("/pay-by-card/address"))
+      }
+    }
+
+    "should return a Right when origin is not Mib or BcPngr" in {
+      TestHelpers.implementedOrigins
+        .diff[Origin](Seq[Origin](Origins.Mib, Origins.BcPngr))
+        .foreach { origin =>
+          val request = fakeRequest(TestHelpers.deriveTestDataFromOrigin(origin).journeyBeforeBeginWebPayment)
+          val result: Either[Result, JourneyRequest[AnyContent]] = systemUnderTest.refine(request).futureValue
+          result.isRight shouldBe true withClue s"expected a right for origin: ${origin.entryName}"
+        }
     }
   }
 

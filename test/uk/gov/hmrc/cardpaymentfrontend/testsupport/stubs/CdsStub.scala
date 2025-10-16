@@ -102,10 +102,7 @@ object CdsStub {
     )
 
   def verifySimpleNotificationSent(): Unit =
-    verify(
-      1,
-      postRequestedFor(urlEqualTo(notificationPath))
-    )
+    verify(1, postRequestedFor(urlEqualTo(notificationPath)))
 
   def verifyNoNotificationSent(): Unit =
     verify(0, postRequestedFor(urlEqualTo(notificationPath)))

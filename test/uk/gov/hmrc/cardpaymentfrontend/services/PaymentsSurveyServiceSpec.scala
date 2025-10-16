@@ -1121,7 +1121,7 @@ class PaymentsSurveyServiceSpec extends ItSpec with TableDrivenPropertyChecks {
               )
             ) -> false
 
-            case Origins.BcPngr              => throw new MatchError("Not implemented yet")
+            //todo jake, check if we even need this, do we send them to mods survey?
             case Origins.Mib => PaymentSurveyJourneyRequest(
               origin         = "Mib",
               returnMsg      = "Skip survey",
@@ -1131,17 +1131,18 @@ class PaymentsSurveyServiceSpec extends ItSpec with TableDrivenPropertyChecks {
                 userType  = "LoggedIn",
                 journey   = Some("Successful"),
                 orderId   = Some("MIBI1234567891"),
-                liability = Some("job-retention-scheme")
+                liability = Some("merchandise-in-baggage")
               ),
               contentOptions = SurveyContentOptions(
                 isWelshSupported = true,
                 title            = SurveyBannerTitle(
-                  englishValue = "Commercial goods carried in accompanied baggage or small vehicles",
-                  welshValue   = Some("Nwyddau masnachol sy’n cael eu cario mewn bagiau neu gerbydau bach")
+                  englishValue = "Declare commercial goods carried in accompanied baggage or small vehicles",
+                  welshValue   = Some("Datgan nwyddau masnachol sy’n cael eu cario mewn bagiau neu gerbydau bach")
                 )
               )
             ) -> true
 
+            //todo jake, check if we even need this, do we send them to pngr survey?
             case Origins.BcPngr => PaymentSurveyJourneyRequest(
               origin         = "BcPngr",
               returnMsg      = "Skip survey",
