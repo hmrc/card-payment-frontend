@@ -222,8 +222,8 @@ object ExtendedOrigin {
       case AlcoholDuty              => ExtendedAlcoholDuty
       case VatC2c                   => ExtendedVatC2c
       case PfVatC2c                 => ExtendedPfVatC2c
-      case `3psSa`                  => DefaultExtendedOrigin
-      case `3psVat`                 => DefaultExtendedOrigin
+      case `3psSa`                  => Extended3psSa
+      case `3psVat`                 => Extended3psVat
       case PfPillar2                => DefaultExtendedOrigin
       case Pillar2                  => DefaultExtendedOrigin
       case WcSa                     => ExtendedWcSa
