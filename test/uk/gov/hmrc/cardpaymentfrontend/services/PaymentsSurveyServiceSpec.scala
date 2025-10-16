@@ -1121,7 +1121,6 @@ class PaymentsSurveyServiceSpec extends ItSpec with TableDrivenPropertyChecks {
               )
             ) -> false
 
-            //todo jake, check if we even need this, do we send them to mods survey?
             case Origins.Mib => PaymentSurveyJourneyRequest(
               origin         = "Mib",
               returnMsg      = "Skip survey",
@@ -1142,7 +1141,6 @@ class PaymentsSurveyServiceSpec extends ItSpec with TableDrivenPropertyChecks {
               )
             ) -> true
 
-            //todo jake, check if we even need this, do we send them to pngr survey?
             case Origins.BcPngr => PaymentSurveyJourneyRequest(
               origin         = "BcPngr",
               returnMsg      = "Skip survey",
@@ -1163,7 +1161,6 @@ class PaymentsSurveyServiceSpec extends ItSpec with TableDrivenPropertyChecks {
               )
             ) -> true
 
-            case Origins.AppSa               => throw new MatchError("Not implemented yet")
             case Origins.Parcels             => throw new MatchError("Not implemented yet")
             case Origins.DdVat               => throw new MatchError("Not implemented yet")
             case Origins.DdSdil              => throw new MatchError("Not implemented yet")
