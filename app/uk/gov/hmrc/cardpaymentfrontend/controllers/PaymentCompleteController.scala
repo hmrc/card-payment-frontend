@@ -237,7 +237,7 @@ object PaymentCompleteController {
       ),
       Seq(
         TableRow(classes = "govuk-!-font-weight-bold", content = Text(messages("payment-complete.passengers.summary-list.time-of-arrival"))),
-        TableRow(content = Text(journeySpecificData.dateOfArrival.format(DateTimeFormatter.ofPattern("hh:mm a"))))
+        TableRow(content = Text(journeySpecificData.dateOfArrival.format(DateTimeFormatter.ofPattern("hh:mm a")).toUpperCase))
       ),
       Seq(
         TableRow(classes = "govuk-!-font-weight-bold", content = Text(messages("payment-complete.passengers.summary-list.reference-number"))),
