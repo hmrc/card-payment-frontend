@@ -18,9 +18,13 @@ package uk.gov.hmrc.cardpaymentfrontend.models.notifications
 
 import play.api.libs.json.{Json, OWrites}
 
+import java.time.format.DateTimeFormatter
+import java.util.Locale
+
 final case class CdsNotification(notifyImmediatePaymentRequest: NotifyImmediatePaymentRequest)
 
 object CdsNotification {
+  val cdsEventTimeFormat: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.UK)
   implicit val writes: OWrites[CdsNotification] = Json.writes[CdsNotification]
 }
 

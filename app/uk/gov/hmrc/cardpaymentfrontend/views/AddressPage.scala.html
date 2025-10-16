@@ -14,9 +14,11 @@
  * limitations under the License.
  *@
 
+@import payapi.corcommon.model.Origins
 @import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
 @import uk.gov.hmrc.cardpaymentfrontend.forms.AddressForm
 @import uk.gov.hmrc.cardpaymentfrontend.models.{Address, Country}
+@import uk.gov.hmrc.cardpaymentfrontend.util.SafeEquals.EqualsOps
 @import uk.gov.hmrc.cardpaymentfrontend.views.html.Layout
 @import uk.gov.hmrc.govukfrontend.views.Aliases.{Button, ErrorSummary, Input, Text}
 @import uk.gov.hmrc.govukfrontend.views.Implicits.{RichInput, RichSelect}
@@ -39,6 +41,12 @@
 )(implicit journeyRequest: JourneyRequest[_], messages: Messages)
 
 @heading= @{messages("address.heading")}
+
+@postcodeMessageKey = @{
+    if (journeyRequest.journey.origin === Origins.BcPngr || journeyRequest.journey.origin === Origins.Mib) {
+        "address.field-name.postcode.non-uk"
+    } else "address.field-name.postcode"
+}
 
 @theHTML = {
 @formWithCSRF(action = uk.gov.hmrc.cardpaymentfrontend.controllers.routes.AddressController.submit) {
@@ -107,7 +115,7 @@
             name = "postcode",
             classes = "govuk-input govuk-input--width-10",
             label = Label(
-                content = Text(messages("address.field-name.postcode"))),
+                content = Text(messages(postcodeMessageKey))),
             inputType = "text",
             autocomplete = Some("off"),
             spellcheck = Some(false),

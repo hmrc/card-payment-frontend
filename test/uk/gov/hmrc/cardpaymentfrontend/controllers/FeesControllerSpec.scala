@@ -2791,7 +2791,7 @@ class FeesControllerSpec extends ItSpec {
         }
 
         "render the static content correctly" in {
-          PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfJobRetentionScheme.journeyBeforeBeginWebPayment)
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.JrsJobRetentionScheme.journeyBeforeBeginWebPayment)
           val result = systemUnderTest.renderPage(fakeRequest)
           val document = Jsoup.parse(contentAsString(result))
           document.select(".govuk-header__service-name").html shouldBe "Pay Coronavirus Job Retention Scheme grants back"
@@ -2799,7 +2799,7 @@ class FeesControllerSpec extends ItSpec {
         }
 
         "the static content correctly in welsh" in {
-          PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfJobRetentionScheme.journeyBeforeBeginWebPayment)
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.JrsJobRetentionScheme.journeyBeforeBeginWebPayment)
           val result = systemUnderTest.renderPage(fakeWelshRequest)
           val document = Jsoup.parse(contentAsString(result))
           document.select(".govuk-header__service-name").html shouldBe "Talu grantiau’r Cynllun Cadw Swyddi yn sgil Coronafeirws yn ôl"
@@ -3105,6 +3105,21 @@ class FeesControllerSpec extends ItSpec {
 
       }
 
+      "for origin Mib" - {
+        "should redirect to /pay-by-card/address" in {
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.Mib.journeyBeforeBeginWebPayment)
+          val result = systemUnderTest.renderPage(fakeRequest)
+          redirectLocation(result) shouldBe Some("/pay-by-card/address")
+        }
+      }
+
+      "for origin BcPngr" - {
+        "should redirect to /pay-by-card/address" in {
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.BcPngr.journeyBeforeBeginWebPayment)
+          val result = systemUnderTest.renderPage(fakeRequest)
+          redirectLocation(result) shouldBe Some("/pay-by-card/address")
+        }
+      }
     }
 
     "POST /card-fees" - {
@@ -3195,107 +3210,109 @@ class FeesControllerSpec extends ItSpec {
         messageKey = "card-fees.para2.direct-debit"
       )
 
-      TestHelpers.implementedOrigins.foreach { origin =>
-        s"should return the correct links for each origin: ${origin.entryName}" in {
+      TestHelpers.implementedOrigins
+        .filterNot(o => o == Origins.BcPngr || o == Origins.Mib) // mib and bcpngr do not have a card fees page.
+        .foreach { origin =>
+          s"should return the correct links for each origin: ${origin.entryName}" in {
 
-          val expectedLinks = origin match {
-            case Origins.PfSa                     => Seq(expectedOpenBankingLink, expectedOneOffDirectDebitLink)
-            case Origins.BtaSa                    => Seq(expectedOpenBankingLink, expectedOneOffDirectDebitLink)
-            case Origins.PtaSa                    => Seq(expectedOpenBankingLink, expectedOneOffDirectDebitLink)
-            case Origins.ItSa                     => Seq(expectedBankTransferLink)
-            case Origins.PfVat                    => Seq(expectedOpenBankingLink, expectedVariableDirectDebitLink)
-            case Origins.PfCt                     => Seq(expectedOpenBankingLink, expectedOneOffDirectDebitLink)
-            case Origins.PfEpayeNi                => Seq(expectedOpenBankingLink, expectedVariableDirectDebitLink, expectedOneOffDirectDebitLink)
-            case Origins.PfEpayeLpp               => Seq(expectedOpenBankingLink, expectedOneOffDirectDebitLink)
-            case Origins.PfEpayeSeta              => Seq(expectedOpenBankingLink, expectedOneOffDirectDebitLink)
-            case Origins.PfEpayeLateCis           => Seq(expectedOpenBankingLink, expectedOneOffDirectDebitLink)
-            case Origins.PfEpayeP11d              => Seq(expectedOpenBankingLink, expectedOneOffDirectDebitLink)
-            case Origins.PfSdlt                   => Seq(expectedOpenBankingLink)
-            case Origins.PfCds                    => Seq(expectedOpenBankingLink)
-            case Origins.PfOther                  => Seq.empty
-            case Origins.PfP800                   => Seq.empty
-            case Origins.PtaP800                  => Seq.empty
-            case Origins.PfClass2Ni               => Seq.empty
-            case Origins.PfInsurancePremium       => Seq.empty
-            case Origins.PfPsAdmin                => Seq.empty
-            case Origins.AppSa                    => Seq(expectedOpenBankingLink, expectedOneOffDirectDebitLink)
-            case Origins.BtaVat                   => Seq(expectedOpenBankingLink, expectedVariableDirectDebitLink)
-            case Origins.BtaEpayeBill             => Seq(expectedOpenBankingLink, expectedVariableDirectDebitLink, expectedOneOffDirectDebitLink)
-            case Origins.BtaEpayePenalty          => Seq(expectedOpenBankingLink, expectedOneOffDirectDebitLink)
-            case Origins.BtaEpayeInterest         => Seq(expectedOpenBankingLink, expectedOneOffDirectDebitLink)
-            case Origins.BtaEpayeGeneral          => Seq(expectedOpenBankingLink, expectedOneOffDirectDebitLink)
-            case Origins.BtaClass1aNi             => Seq(expectedOpenBankingLink, expectedOneOffDirectDebitLink)
-            case Origins.BtaCt                    => Seq(expectedOpenBankingLink, expectedOneOffDirectDebitLink)
-            case Origins.BtaSdil                  => Seq(expectedOpenBankingLink, expectedDirectDebitLink)
-            case Origins.BcPngr                   => Seq.empty
-            case Origins.Parcels                  => Seq.empty
-            case Origins.DdVat                    => Seq.empty
-            case Origins.DdSdil                   => Seq.empty
-            case Origins.VcVatReturn              => Seq(expectedOpenBankingLink, expectedVariableDirectDebitLink)
-            case Origins.VcVatOther               => Seq(expectedOpenBankingLink)
-            case Origins.Amls                     => Seq(expectedOpenBankingLink)
-            case Origins.Ppt                      => Seq(expectedOpenBankingLink, expectedOneOffDirectDebitLink)
-            case Origins.PfCdsCash                => Seq.empty
-            case Origins.PfPpt                    => Seq(expectedOpenBankingLink, expectedOneOffDirectDebitLink)
-            case Origins.PfSpiritDrinks           => Seq.empty
-            case Origins.PfInheritanceTax         => Seq.empty
-            case Origins.Mib                      => Seq.empty
-            case Origins.PfClass3Ni               => Seq.empty
-            case Origins.PfWineAndCider           => Seq.empty
-            case Origins.PfBioFuels               => Seq.empty
-            case Origins.PfAirPass                => Seq.empty
-            case Origins.PfMgd                    => Seq.empty
-            case Origins.PfBeerDuty               => Seq.empty
-            case Origins.PfGamingOrBingoDuty      => Seq.empty
-            case Origins.PfGbPbRgDuty             => Seq.empty
-            case Origins.PfLandfillTax            => Seq.empty
-            case Origins.PfSdil                   => Seq(expectedOpenBankingLink, expectedDirectDebitLink)
-            case Origins.PfAggregatesLevy         => Seq.empty
-            case Origins.PfClimateChangeLevy      => Seq.empty
-            case Origins.PfSimpleAssessment       => Seq(expectedOpenBankingLink)
-            case Origins.PtaSimpleAssessment      => Seq(expectedOpenBankingLink)
-            case Origins.AppSimpleAssessment      => Seq(expectedBankTransferLink)
-            case Origins.PfTpes                   => Seq.empty
-            case Origins.CapitalGainsTax          => Seq(expectedOpenBankingLink)
-            case Origins.EconomicCrimeLevy        => Seq(expectedOpenBankingLink, expectedOneOffDirectDebitLink)
-            case Origins.PfEconomicCrimeLevy      => Seq(expectedOpenBankingLink, expectedOneOffDirectDebitLink)
-            case Origins.PfJobRetentionScheme     => Seq(expectedBankTransferLink, expectedOneOffDirectDebitLink)
-            case Origins.JrsJobRetentionScheme    => Seq(expectedBankTransferLink, expectedOneOffDirectDebitLink)
-            case Origins.PfImportedVehicles       => Seq.empty
-            case Origins.PfChildBenefitRepayments => Seq(expectedOpenBankingLink)
-            case Origins.NiEuVatOss               => Seq(expectedOpenBankingLink)
-            case Origins.PfNiEuVatOss             => Seq(expectedOpenBankingLink)
-            case Origins.NiEuVatIoss              => Seq(expectedOpenBankingLink)
-            case Origins.PfNiEuVatIoss            => Seq(expectedOpenBankingLink)
-            case Origins.PfAmls                   => Seq(expectedOpenBankingLink)
-            case Origins.PfAted                   => Seq.empty
-            case Origins.PfCdsDeferment           => Seq.empty
-            case Origins.PfTrust                  => Seq.empty
-            case Origins.PtaClass3Ni              => Seq.empty
-            case Origins.AlcoholDuty              => Seq(expectedOpenBankingLink)
-            case Origins.PfAlcoholDuty            => Seq(expectedOpenBankingLink)
-            case Origins.VatC2c                   => Seq(expectedOpenBankingLink)
-            case Origins.`3psSa`                  => Seq.empty
-            case Origins.`3psVat`                 => Seq.empty
-            case Origins.PfPillar2                => Seq.empty
-            case Origins.PfVatC2c                 => Seq(expectedOpenBankingLink)
-            case Origins.Pillar2                  => Seq.empty
-            case Origins.WcSa                     => Seq(expectedOpenBankingLink)
-            case Origins.WcCt                     => Seq(expectedOpenBankingLink)
-            case Origins.WcVat                    => Seq(expectedOpenBankingLink)
-            case Origins.WcSimpleAssessment       => Seq(expectedOpenBankingLink)
-            case Origins.WcClass1aNi              => Seq(expectedOpenBankingLink)
-            case Origins.WcXref                   => Seq.empty
-            case Origins.WcEpayeLpp               => Seq(expectedOpenBankingLink)
-            case Origins.WcEpayeNi                => Seq(expectedOpenBankingLink)
-            case Origins.WcEpayeLateCis           => Seq(expectedOpenBankingLink)
-            case Origins.WcEpayeSeta              => Seq(expectedOpenBankingLink)
+            val expectedLinks: Seq[Link] = origin match {
+              case Origins.PfSa                     => Seq(expectedOpenBankingLink, expectedOneOffDirectDebitLink)
+              case Origins.BtaSa                    => Seq(expectedOpenBankingLink, expectedOneOffDirectDebitLink)
+              case Origins.PtaSa                    => Seq(expectedOpenBankingLink, expectedOneOffDirectDebitLink)
+              case Origins.ItSa                     => Seq(expectedBankTransferLink)
+              case Origins.PfVat                    => Seq(expectedOpenBankingLink, expectedVariableDirectDebitLink)
+              case Origins.PfCt                     => Seq(expectedOpenBankingLink, expectedOneOffDirectDebitLink)
+              case Origins.PfEpayeNi                => Seq(expectedOpenBankingLink, expectedVariableDirectDebitLink, expectedOneOffDirectDebitLink)
+              case Origins.PfEpayeLpp               => Seq(expectedOpenBankingLink, expectedOneOffDirectDebitLink)
+              case Origins.PfEpayeSeta              => Seq(expectedOpenBankingLink, expectedOneOffDirectDebitLink)
+              case Origins.PfEpayeLateCis           => Seq(expectedOpenBankingLink, expectedOneOffDirectDebitLink)
+              case Origins.PfEpayeP11d              => Seq(expectedOpenBankingLink, expectedOneOffDirectDebitLink)
+              case Origins.PfSdlt                   => Seq(expectedOpenBankingLink)
+              case Origins.PfCds                    => Seq(expectedOpenBankingLink)
+              case Origins.PfOther                  => Seq.empty
+              case Origins.PfP800                   => Seq.empty
+              case Origins.PtaP800                  => Seq.empty
+              case Origins.PfClass2Ni               => Seq.empty
+              case Origins.PfInsurancePremium       => Seq.empty
+              case Origins.PfPsAdmin                => Seq.empty
+              case Origins.AppSa                    => Seq(expectedOpenBankingLink, expectedOneOffDirectDebitLink)
+              case Origins.BtaVat                   => Seq(expectedOpenBankingLink, expectedVariableDirectDebitLink)
+              case Origins.BtaEpayeBill             => Seq(expectedOpenBankingLink, expectedVariableDirectDebitLink, expectedOneOffDirectDebitLink)
+              case Origins.BtaEpayePenalty          => Seq(expectedOpenBankingLink, expectedOneOffDirectDebitLink)
+              case Origins.BtaEpayeInterest         => Seq(expectedOpenBankingLink, expectedOneOffDirectDebitLink)
+              case Origins.BtaEpayeGeneral          => Seq(expectedOpenBankingLink, expectedOneOffDirectDebitLink)
+              case Origins.BtaClass1aNi             => Seq(expectedOpenBankingLink, expectedOneOffDirectDebitLink)
+              case Origins.BtaCt                    => Seq(expectedOpenBankingLink, expectedOneOffDirectDebitLink)
+              case Origins.BtaSdil                  => Seq(expectedOpenBankingLink, expectedDirectDebitLink)
+              case Origins.BcPngr                   => Seq.empty[Link]
+              case Origins.Parcels                  => Seq.empty
+              case Origins.DdVat                    => Seq.empty
+              case Origins.DdSdil                   => Seq.empty
+              case Origins.VcVatReturn              => Seq(expectedOpenBankingLink, expectedVariableDirectDebitLink)
+              case Origins.VcVatOther               => Seq(expectedOpenBankingLink)
+              case Origins.Amls                     => Seq(expectedOpenBankingLink)
+              case Origins.Ppt                      => Seq(expectedOpenBankingLink, expectedOneOffDirectDebitLink)
+              case Origins.PfCdsCash                => Seq.empty
+              case Origins.PfPpt                    => Seq(expectedOpenBankingLink, expectedOneOffDirectDebitLink)
+              case Origins.PfSpiritDrinks           => Seq.empty
+              case Origins.PfInheritanceTax         => Seq.empty
+              case Origins.Mib                      => Seq.empty[Link]
+              case Origins.PfClass3Ni               => Seq.empty
+              case Origins.PfWineAndCider           => Seq.empty
+              case Origins.PfBioFuels               => Seq.empty
+              case Origins.PfAirPass                => Seq.empty
+              case Origins.PfMgd                    => Seq.empty
+              case Origins.PfBeerDuty               => Seq.empty
+              case Origins.PfGamingOrBingoDuty      => Seq.empty
+              case Origins.PfGbPbRgDuty             => Seq.empty
+              case Origins.PfLandfillTax            => Seq.empty
+              case Origins.PfSdil                   => Seq(expectedOpenBankingLink, expectedDirectDebitLink)
+              case Origins.PfAggregatesLevy         => Seq.empty
+              case Origins.PfClimateChangeLevy      => Seq.empty
+              case Origins.PfSimpleAssessment       => Seq(expectedOpenBankingLink)
+              case Origins.PtaSimpleAssessment      => Seq(expectedOpenBankingLink)
+              case Origins.AppSimpleAssessment      => Seq(expectedBankTransferLink)
+              case Origins.PfTpes                   => Seq.empty
+              case Origins.CapitalGainsTax          => Seq(expectedOpenBankingLink)
+              case Origins.EconomicCrimeLevy        => Seq(expectedOpenBankingLink, expectedOneOffDirectDebitLink)
+              case Origins.PfEconomicCrimeLevy      => Seq(expectedOpenBankingLink, expectedOneOffDirectDebitLink)
+              case Origins.PfJobRetentionScheme     => Seq(expectedBankTransferLink, expectedOneOffDirectDebitLink)
+              case Origins.JrsJobRetentionScheme    => Seq(expectedBankTransferLink, expectedOneOffDirectDebitLink)
+              case Origins.PfImportedVehicles       => Seq.empty
+              case Origins.PfChildBenefitRepayments => Seq(expectedOpenBankingLink)
+              case Origins.NiEuVatOss               => Seq(expectedOpenBankingLink)
+              case Origins.PfNiEuVatOss             => Seq(expectedOpenBankingLink)
+              case Origins.NiEuVatIoss              => Seq(expectedOpenBankingLink)
+              case Origins.PfNiEuVatIoss            => Seq(expectedOpenBankingLink)
+              case Origins.PfAmls                   => Seq(expectedOpenBankingLink)
+              case Origins.PfAted                   => Seq.empty
+              case Origins.PfCdsDeferment           => Seq.empty
+              case Origins.PfTrust                  => Seq.empty
+              case Origins.PtaClass3Ni              => Seq.empty
+              case Origins.AlcoholDuty              => Seq(expectedOpenBankingLink)
+              case Origins.PfAlcoholDuty            => Seq(expectedOpenBankingLink)
+              case Origins.VatC2c                   => Seq(expectedOpenBankingLink)
+              case Origins.`3psSa`                  => Seq.empty
+              case Origins.`3psVat`                 => Seq.empty
+              case Origins.PfPillar2                => Seq.empty
+              case Origins.PfVatC2c                 => Seq(expectedOpenBankingLink)
+              case Origins.Pillar2                  => Seq.empty
+              case Origins.WcSa                     => Seq(expectedOpenBankingLink)
+              case Origins.WcCt                     => Seq(expectedOpenBankingLink)
+              case Origins.WcVat                    => Seq(expectedOpenBankingLink)
+              case Origins.WcSimpleAssessment       => Seq(expectedOpenBankingLink)
+              case Origins.WcClass1aNi              => Seq(expectedOpenBankingLink)
+              case Origins.WcXref                   => Seq.empty
+              case Origins.WcEpayeLpp               => Seq(expectedOpenBankingLink)
+              case Origins.WcEpayeNi                => Seq(expectedOpenBankingLink)
+              case Origins.WcEpayeLateCis           => Seq(expectedOpenBankingLink)
+              case Origins.WcEpayeSeta              => Seq(expectedOpenBankingLink)
+            }
+
+            val journeySpecificData: JourneySpecificData = TestHelpers.deriveTestDataFromOrigin(origin).journeyBeforeBeginWebPayment.journeySpecificData
+            systemUnderTest.linksAvailableOnFeesPage(journeySpecificData) shouldBe expectedLinks withClue s"links did not match expected for origin: ${origin.entryName}"
           }
-
-          val journeySpecificData: JourneySpecificData = TestHelpers.deriveTestDataFromOrigin(origin).journeyBeforeBeginWebPayment.journeySpecificData
-          systemUnderTest.linksAvailableOnFeesPage(journeySpecificData) shouldBe expectedLinks withClue s"links did not match expected for origin: ${origin.entryName}"
         }
-      }
     }
   }
 }

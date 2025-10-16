@@ -1,0 +1,90 @@
+@*
+ * Copyright 2025 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import payapi.corcommon.model.Reference
+@import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
+@import uk.gov.hmrc.cardpaymentfrontend.config.AppConfig
+@import uk.gov.hmrc.cardpaymentfrontend.views.html.Layout
+@import uk.gov.hmrc.govukfrontend.views.Aliases.Text
+@import uk.gov.hmrc.govukfrontend.views.html.components.{GovukPanel, GovukTable, Panel}
+@import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
+@import uk.gov.hmrc.govukfrontend.views.viewmodels.table.{Table, TableRow}
+
+@this(
+        govukPanel: GovukPanel,
+        govukTable: GovukTable,
+        layout: Layout
+)
+
+@(
+        taxReference: Reference,
+        leadingSummaryTable: Seq[Seq[TableRow]],
+        itemsDeclaredTable: Seq[Seq[TableRow]],
+        paymentBreakdownTable: Seq[Seq[TableRow]]
+)(implicit journeyRequest: JourneyRequest[_], messages: Messages)
+
+@heading = @{messages("payment-complete.passengers.panel.title")}
+
+@layout(
+    pageTitle = Some(heading),
+    origin = Some(journeyRequest.journey.origin),
+    showBackLink = false
+) {
+    @govukPanel(Panel(
+        title = Text(heading),
+        content = HtmlContent(Html(messages("payment-complete.passengers.panel.content", taxReference.value)))
+    ))
+
+    <div id="leading-content-wrapper" class="govuk-!-margin-top-7">
+        <p id="p1" class="govuk-body">@Messages("payment-complete.passengers.p1")</p>
+        <p id="p2" class="govuk-body">@Messages("payment-complete.passengers.p2")</p>
+    </div>
+
+    <div id="leading-info-table" class="govuk-!-margin-top-7">
+        @govukTable(Table(leadingSummaryTable))
+    </div>
+
+    <div id="items-declared-wrapper" class="govuk-!-margin-top-7">
+        <h2 class="govuk-heading-m">@Messages("payment-complete.passengers.items-declared.subheading")</h2>
+        @govukTable(Table(itemsDeclaredTable))
+    </div>
+
+    <div id="payment-breakdown-wrapper" class="govuk-!-margin-top-7">
+        <h2 class="govuk-heading-m">@Messages("payment-complete.passengers.payment-breakdown.subheading")</h2>
+        @govukTable(Table(paymentBreakdownTable))
+    </div>
+
+    <div id="arriving-in-uk-wrapper" class="govuk-!-margin-top-7">
+        <h2 class="govuk-heading-m">@Messages("payment-complete.passengers.arriving-in-uk.subheading")</h2>
+        <p id="arriving-in-uk-p1" class="govuk-body">@Messages("payment-complete.passengers.arriving-in-uk.p1")</p>
+    </div>
+
+    <div id="amending-declaration-wrapper" class="govuk-!-margin-top-7">
+        <h2 class="govuk-heading-m">@Messages("payment-complete.passengers.amending-declaration.subheading")</h2>
+        <p id="amending-declaration-p1" class="govuk-body">@Messages("payment-complete.passengers.amending-declaration.p1")</p>
+        <p id="amending-declaration-p2" class="govuk-body">@Html(Messages("payment-complete.passengers.amending-declaration.p2", "https://www.gov.uk/government/publications/request-a-refund-of-overpaid-vat-or-duty-for-goods-declared-using-the-online-service-for-passengers"))</p>
+    </div>
+
+    <div id="survey-wrapper" class="govuk-!-display-none-print govuk-!-margin-top-7">
+        <h2 class="govuk-heading-m">@Messages("payment-complete.survey.title")</h2>
+        <p id="survey-content" class="govuk-body">@Messages("payment-complete.survey.p1")</p>
+        <p id="survey-link-wrapper" class="govuk-body">
+            <a class="govuk-link" href="https://www.tax.service.gov.uk/feedback/passengers">@Messages("payment-complete.survey.p2.part1")</a>
+            @Messages("payment-complete.survey.p2.part2")
+        </p>
+    </div>
+
+}
