@@ -25,11 +25,4 @@ object NotificationLoggingContext {
     unexpectedStatusMessage = "There was an unexpected problem sending notification to Mods via payments-processor, status response returned:",
     failureMessage          = "There was a critical problem sending notification to Mods via payments-processor"
   )
-
-  //  final val cdsNotificationLoggingContext = NotificationLoggingContext(
-  //    notificationName        = "CdsNotification",
-  //    successMessage          = "???",
-  //    unexpectedStatusMessage = "???",
-  //    failureMessage          = "???"
-  //  )
 }

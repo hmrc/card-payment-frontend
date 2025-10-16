@@ -210,6 +210,33 @@ class NotificationServiceSpec extends ItSpec {
           ))
         }
       }
+      "should send a notification successfully to Passengers even when journey is in a non successful, but terminal state" in {
+        PassengersStub.stubNotification2xx()
+        val testJourney: Journey[JsdBcPngr] = TestJourneys.BcPngr.journeyAfterFailWebPayment
+        systemUnderTest.sendPassengersNotification(testJourney)(HeaderCarrier())
+        eventually(timeout  = testTimeOut, interval = testInterval) {
+          PassengersStub.verifyNotificationSent(Json.parse(
+            //language=JSON
+            """
+              |{
+              |  "paymentId" : "TestJourneyId-44f9-ad7f-01e1d3d8f151",
+              |  "taxType" : "pngr",
+              |  "status" : "Failed",
+              |  "amountInPence" : 1234,
+              |  "commissionInPence" : 0,
+              |  "reference" : "XAPR9876543210",
+              |  "transactionReference" : "Some-transaction-ref",
+              |  "notificationData" : { },
+              |  "eventDateTime" : "2059-11-25T16:33:51.88"
+              |}""".stripMargin
+          ))
+        }
+      }
+      "should not send a notification if journey state is not a terminal state (i.e. not Successful, Cancelled, Failed)" in {
+        val testJourney: Journey[JsdBcPngr] = TestJourneys.BcPngr.journeyBeforeBeginWebPayment
+        systemUnderTest.sendPassengersNotification(testJourney)(HeaderCarrier())
+        eventually(timeout  = testTimeOut, interval = testInterval) { PassengersStub.verifyNoNotificationSent() }
+      }
     }
 
     "sendNotification" - {
