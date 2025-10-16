@@ -28,7 +28,7 @@ class ExternalNavigationSpec extends UnitSpec with TableDrivenPropertyChecks {
   "returnUrlCancelled" - {
     val someUrl = Some(Url("https://www.return-url.com"))
 
-    type JsdBounds = JsdPfEpayeNi with JsdAlcoholDuty with JsdPfPpt with JsdBtaEpayeBill with JsdPfSa with JsdPpt with JsdVcVatReturn with JsdPfEpayeP11d with JsdCapitalGainsTax with JsdBtaCt with JsdPfEpayeLateCis with JsdPfEpayeLpp with JsdPfCt with JsdBtaVat with JsdPfSdlt with JsdBtaEpayeInterest with JsdAmls with JsdBtaEpayeGeneral with JsdPfEpayeSeta with JsdPtaSa with JsdBtaClass1aNi with JsdVcVatOther with JsdPfAmls with JsdPfVat with JsdItSa with JsdBtaSa with JsdPfAlcoholDuty with JsdBtaEpayePenalty with JsdEconomicCrimeLevy with JsdPfEconomicCrimeLevy with JsdWcSa with JsdWcCt with JsdWcVat with JsdVatC2c with JsdPfVatC2c with JsdWcSimpleAssessment with JsdWcXref with JsdWcEpayeLpp with JsdWcClass1aNi with JsdWcEpayeNi with JsdWcEpayeLateCis with JsdWcEpayeSeta with JsdPfChildBenefitRepayments with JsdBtaSdil with JsdPfSdil with JsdPtaP800 with JsdPfP800 with JsdPtaSimpleAssessment with JsdPfSimpleAssessment with JsdPfJobRetentionScheme with JsdJrsJobRetentionScheme with JsdNiEuVatOss with JsdPfNiEuVatOss with JsdNiEuVatIoss with JsdPfNiEuVatIoss with JsdPfCds with JsdAppSa with JsdAppSimpleAssessment
+    type JsdBounds = JsdPfEpayeNi with JsdAlcoholDuty with JsdPfPpt with JsdBtaEpayeBill with JsdPfSa with JsdPpt with JsdVcVatReturn with JsdPfEpayeP11d with JsdCapitalGainsTax with JsdBtaCt with JsdPfEpayeLateCis with JsdPfEpayeLpp with JsdPfCt with JsdBtaVat with JsdPfSdlt with JsdBtaEpayeInterest with JsdAmls with JsdBtaEpayeGeneral with JsdPfEpayeSeta with JsdPtaSa with JsdBtaClass1aNi with JsdVcVatOther with JsdPfAmls with JsdPfVat with JsdItSa with JsdBtaSa with JsdPfAlcoholDuty with JsdBtaEpayePenalty with JsdEconomicCrimeLevy with JsdPfEconomicCrimeLevy with JsdWcSa with JsdWcCt with JsdWcVat with JsdVatC2c with JsdPfVatC2c with JsdWcSimpleAssessment with JsdWcXref with JsdWcEpayeLpp with JsdWcClass1aNi with JsdWcEpayeNi with JsdWcEpayeLateCis with JsdWcEpayeSeta with JsdPfChildBenefitRepayments with JsdBtaSdil with JsdPfSdil with JsdPtaP800 with JsdPfP800 with JsdPtaSimpleAssessment with JsdPfSimpleAssessment with JsdPfJobRetentionScheme with JsdJrsJobRetentionScheme with JsdNiEuVatOss with JsdPfNiEuVatOss with JsdNiEuVatIoss with JsdPfNiEuVatIoss with JsdPfCds with JsdAppSa with JsdAppSimpleAssessment with JsdPfTpes with JsdPfMgd with JsdPfGbPbRgDuty with JsdPfTrust with JsdPfOther with JsdPfPsAdmin
 
     val scenarios: TableFor2[JourneyStatuses[_ >: JsdBounds <: JourneySpecificData], Option[Url]] = Table(
       ("journey", "expectedUrl"),
@@ -66,6 +66,12 @@ class ExternalNavigationSpec extends UnitSpec with TableDrivenPropertyChecks {
       (TestJourneys.PfCds, None),
       (TestJourneys.PfNiEuVatOss, None),
       (TestJourneys.PfNiEuVatIoss, None),
+      (TestJourneys.PfTpes, None),
+      (TestJourneys.PfMgd, None),
+      (TestJourneys.PfGbPbRgDuty, None),
+      (TestJourneys.PfTrust, None),
+      (TestJourneys.PfOther, None),
+      (TestJourneys.PfPsAdmin, None),
 
       //Logged in journeys will return whatever the calling services sets
       (TestJourneys.BtaSa, someUrl),

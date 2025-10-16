@@ -154,13 +154,13 @@ object ExtendedOrigin {
       case PfEpayeLateCis           => ExtendedPfEpayeLateCis
       case PfEpayeP11d              => ExtendedPfEpayeP11d
       case PfSdlt                   => ExtendedPfSdlt
+      case PfOther                  => ExtendedPfOther
       case PfCds                    => ExtendedPfCds
-      case PfOther                  => DefaultExtendedOrigin
       case PfP800                   => ExtendedPfP800
       case PtaP800                  => ExtendedPtaP800
       case PfClass2Ni               => DefaultExtendedOrigin
       case PfInsurancePremium       => DefaultExtendedOrigin
-      case PfPsAdmin                => DefaultExtendedOrigin
+      case PfPsAdmin                => ExtendedPfPsAdmin
       case BtaSa                    => ExtendedBtaSa
       case AppSa                    => ExtendedAppSa
       case BtaVat                   => ExtendedBtaVat
@@ -190,10 +190,10 @@ object ExtendedOrigin {
       case PfWineAndCider           => DefaultExtendedOrigin
       case PfBioFuels               => DefaultExtendedOrigin
       case PfAirPass                => DefaultExtendedOrigin
-      case PfMgd                    => DefaultExtendedOrigin
+      case PfMgd                    => ExtendedPfMgd
       case PfBeerDuty               => DefaultExtendedOrigin
       case PfGamingOrBingoDuty      => DefaultExtendedOrigin
-      case PfGbPbRgDuty             => DefaultExtendedOrigin
+      case PfGbPbRgDuty             => ExtendedPfGbPbRgDuty
       case PfLandfillTax            => DefaultExtendedOrigin
       case PfSdil                   => ExtendedPfSdil
       case PfAggregatesLevy         => DefaultExtendedOrigin
@@ -201,7 +201,7 @@ object ExtendedOrigin {
       case PfSimpleAssessment       => ExtendedPfSimpleAssessment
       case PtaSimpleAssessment      => ExtendedPtaSimpleAssessment
       case AppSimpleAssessment      => ExtendedAppSimpleAssessment
-      case PfTpes                   => DefaultExtendedOrigin
+      case PfTpes                   => ExtendedPfTpes
       case CapitalGainsTax          => ExtendedCapitalGainsTax
       case EconomicCrimeLevy        => ExtendedEconomicCrimeLevy
       case PfEconomicCrimeLevy      => ExtendedPfEconomicCrimeLevy
@@ -216,7 +216,7 @@ object ExtendedOrigin {
       case PfAmls                   => ExtendedPfAmls
       case PfAted                   => DefaultExtendedOrigin
       case PfCdsDeferment           => DefaultExtendedOrigin
-      case PfTrust                  => DefaultExtendedOrigin
+      case PfTrust                  => ExtendedPfTrust
       case PtaClass3Ni              => DefaultExtendedOrigin
       case PfAlcoholDuty            => ExtendedPfAlcoholDuty
       case AlcoholDuty              => ExtendedAlcoholDuty

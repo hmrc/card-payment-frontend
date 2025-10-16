@@ -105,7 +105,7 @@ object OriginSpecificSessionData {
       case PfAirPass                => Json.format[PfAirPassSessionData].reads(json)
       case PfClass2Ni               => Json.format[PfClass2NiSessionData].reads(json)
       case PfBeerDuty               => Json.format[PfBeerDutySessionData].reads(json)
-      case PfPsAdmin                => Json.format[PfPsAdminTaxSessionData].reads(json)
+      case PfPsAdmin                => Json.format[PfPsAdminSessionData].reads(json)
       case PfClass3Ni               => Json.format[PfClass3NiSessionData].reads(json)
       case PtaClass3Ni              => Json.format[PtaClass3NiSessionData].reads(json)
       case Ppt                      => Json.format[PptSessionData].reads(json)
@@ -196,7 +196,7 @@ object OriginSpecificSessionData {
       case sessionData: PfClass2NiSessionData            => Json.format[PfClass2NiSessionData].writes(sessionData)
       case sessionData: PfAirPassSessionData             => Json.format[PfAirPassSessionData].writes(sessionData)
       case sessionData: PfBeerDutySessionData            => Json.format[PfBeerDutySessionData].writes(sessionData)
-      case sessionData: PfPsAdminTaxSessionData          => Json.format[PfPsAdminTaxSessionData].writes(sessionData)
+      case sessionData: PfPsAdminSessionData             => Json.format[PfPsAdminSessionData].writes(sessionData)
       case sessionData: PfClass3NiSessionData            => Json.format[PfClass3NiSessionData].writes(sessionData)
       case sessionData: PtaClass3NiSessionData           => Json.format[PtaClass3NiSessionData].writes(sessionData)
       case sessionData: PptSessionData                   => Json.format[PptSessionData].writes(sessionData)
@@ -586,7 +586,7 @@ final case class PfBeerDutySessionData(beerDutyRef: BeerDutyRef, returnUrl: Opti
   def searchTag: SearchTag = SearchTag(beerDutyRef.canonicalisedValue)
 }
 
-final case class PfPsAdminTaxSessionData(xRef: XRef, returnUrl: Option[Url] = None) extends OriginSpecificSessionData(PfPsAdmin) {
+final case class PfPsAdminSessionData(xRef: XRef, returnUrl: Option[Url] = None) extends OriginSpecificSessionData(PfPsAdmin) {
   def paymentReference: Reference = ReferenceMaker.makeXReference(xRef)
   def searchTag: SearchTag = SearchTag(xRef.canonicalizedValue)
 }
