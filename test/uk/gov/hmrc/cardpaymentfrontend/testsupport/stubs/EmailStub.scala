@@ -41,4 +41,7 @@ object EmailStub {
     )
   )
 
+  def stubForSimpleSendEmail(): StubMapping =
+    stubFor(post(urlPathEqualTo(path)).willReturn(aResponse().withStatus(Status.ACCEPTED)))
+
 }

@@ -16,10 +16,11 @@
 
 package uk.gov.hmrc.cardpaymentfrontend.services
 
-import payapi.cardpaymentjourney.model.journey.Journey
-import payapi.corcommon.model.{JourneyId, PaymentStatuses, TransNumberGenerator}
+import payapi.cardpaymentjourney.model.journey.{Journey, JourneySpecificData}
+import payapi.corcommon.model.{JourneyId, Origins, PaymentStatuses, TransNumberGenerator}
 import play.api.Logging
 import play.api.i18n.MessagesApi
+import play.api.mvc.Request
 import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
 import uk.gov.hmrc.cardpaymentfrontend.config.AppConfig
 import uk.gov.hmrc.cardpaymentfrontend.connectors.{CardPaymentConnector, PayApiConnector}
@@ -35,6 +36,7 @@ import java.time.{Clock, LocalDateTime}
 import java.util.Base64
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
+import scala.util.Success
 
 @Singleton
 class CardPaymentService @Inject() (
@@ -114,7 +116,7 @@ class CardPaymentService @Inject() (
 
     logger.info(s"Finishing payment for journey $journeyId.")
 
-    for {
+    val maybeCardPaymentResultF: Future[Option[CardPaymentResult]] = for {
       result <- cardPaymentConnector.authAndSettle(transactionReference)
       cardPaymentResult = result.json.asOpt[CardPaymentResult]
       _ = cardPaymentResult.map { result =>
@@ -128,19 +130,22 @@ class CardPaymentService @Inject() (
       _ <- maybeWebPaymentRequest.fold {
         logger.info(s"Payment cancelled for journey $journeyId.")
         payApiConnector.JourneyUpdates.updateCancelWebPayment(journeyId)
+          .map[Option[FinishedWebPaymentRequest]](_ => None)
       } {
         case r: FailWebPaymentRequest =>
           logger.info(s"Payment failed for journey $journeyId.")
           payApiConnector.JourneyUpdates.updateFailWebPayment(journeyId, r)
+            .map[Option[FinishedWebPaymentRequest]](_ => Some(r))
         case r: SucceedWebPaymentRequest =>
           logger.info(s"Payment finished for journey $journeyId.")
-          for {
-            _ <- payApiConnector.JourneyUpdates.updateSucceedWebPayment(journeyId, r)
-            _ = maybeSendEmailF(r)
-            _ = notificationService.sendNotification(journeyRequest.journey)
-          } yield ()
+          payApiConnector.JourneyUpdates.updateSucceedWebPayment(journeyId, r)
+            .map[Option[FinishedWebPaymentRequest]](_ => Some(r))
       }
     } yield cardPaymentResult
+
+    maybeCardPaymentResultF.andThen {
+      case Success(_) => postPaymentResultOperations(JourneyId(journeyId))
+    }
   }
 
   def cancelPayment()(implicit journeyRequest: JourneyRequest[_]): Future[HttpResponse] = {
@@ -170,28 +175,41 @@ class CardPaymentService @Inject() (
     case CardPaymentResult(CardPaymentFinishPaymentResponses.Cancelled, _) => None
   }
 
+  private[services] def postPaymentResultOperations(journeyId: JourneyId)(implicit request: Request[_], messagesApi: MessagesApi): Future[Unit] = {
+    for {
+      //fetch the latest incarnation of the journey, with up to date info
+      latestJourney <- payApiConnector.findJourneyByJourneyId(journeyId)
+      journey = latestJourney.getOrElse(throw new RuntimeException("No journey found, we cannot progress with post payment operations!"))
+      _ = maybeSendEmailF(journey)
+      _ = notificationService.sendNotification(journey)
+    } yield ()
+  }
+
   /**
-   * If journey is not in completed state (i.e. they've been on the iframe, so sent) and they have an email in session, send an email.
+   * If journey is Successful, origin is not Mib or BcPngr, and they have an email in session, send an email.
    * Otherwise, return future.unit.
-   * We need the SucceedWebPaymentRequest as journey is not updated yet so there's no commission. Use SucceedWebPaymentRequest to obtain and send it faster.
    */
-  private[services] def maybeSendEmailF(succeedWebPaymentRequest: SucceedWebPaymentRequest)(implicit headerCarrier: HeaderCarrier, journeyRequest: JourneyRequest[_], messagesApi: MessagesApi): Unit = {
-    if (journeyRequest.journey.status === PaymentStatuses.Sent) {
+  private[services] def maybeSendEmailF(journey: Journey[JourneySpecificData])(implicit headerCarrier: HeaderCarrier, request: Request[_], messagesApi: MessagesApi): Unit = {
+    if (journey.origin === Origins.Mib || journey.origin === Origins.BcPngr) {
+      logger.debug(s"Not sending email for ${journey.origin.entryName}")
+    } else {
+      if (journey.status === PaymentStatuses.Successful) {
+        val maybeEmailFromSession: Option[EmailAddress] =
+          request.readFromSession[EmailAddress](journey._id, Keys.email)
+            .filter(!_.value.isBlank)
+            .map(email => EmailAddress(email.value))
 
-      val maybeEmailFromSession: Option[EmailAddress] =
-        journeyRequest.readFromSession[EmailAddress](journeyRequest.journeyId, Keys.email)
-          .filter(!_.value.isBlank)
-          .map(email => EmailAddress(email.value))
+        logger.debug("Attempting to build email request and send email")
 
-      maybeEmailFromSession.fold(()) { emailAddress =>
-        emailService
-          .sendEmail(
-            journey                  = journeyRequest.journey,
-            emailAddress             = emailAddress,
-            isEnglish                = journeyRequest.request.lang.code =!= "cy",
-            succeedWebPaymentRequest = succeedWebPaymentRequest
-          )(headerCarrier, journeyRequest)
-          .onComplete(_ => ())
+        maybeEmailFromSession.fold(()) { emailAddress =>
+          emailService
+            .sendEmail(
+              journey      = journey,
+              emailAddress = emailAddress,
+              isEnglish    = request.lang.code =!= "cy"
+            )(headerCarrier, request)
+            .onComplete(_ => ())
+        }
       }
     }
   }

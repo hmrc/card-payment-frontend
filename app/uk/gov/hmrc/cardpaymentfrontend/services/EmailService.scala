@@ -26,7 +26,6 @@ import uk.gov.hmrc.cardpaymentfrontend.models.EmailAddress
 import uk.gov.hmrc.cardpaymentfrontend.models.email.{EmailParameters, EmailRequest}
 import uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins.ExtendedOrigin
 import uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins.ExtendedOrigin.OriginExtended
-import uk.gov.hmrc.cardpaymentfrontend.models.payapirequest.SucceedWebPaymentRequest
 import uk.gov.hmrc.cardpaymentfrontend.requests.RequestSupport
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -39,23 +38,22 @@ class EmailService @Inject() (emailConnector: EmailConnector, requestSupport: Re
 
   import requestSupport._
 
-  def sendEmail(journey: Journey[JourneySpecificData], emailAddress: EmailAddress, isEnglish: Boolean, succeedWebPaymentRequest: SucceedWebPaymentRequest)
+  def sendEmail(journey: Journey[JourneySpecificData], emailAddress: EmailAddress, isEnglish: Boolean)
     (implicit headerCarrier: HeaderCarrier, request: Request[_]): Future[Unit] = {
     logger.info("Email sent on successful payment")
     emailConnector.sendEmail(
-      buildEmailRequest(journey, emailAddress, isEnglish, succeedWebPaymentRequest)
+      buildEmailRequest(journey, emailAddress, isEnglish)
     )(headerCarrier)
   }
 
   private[services] def buildEmailRequest(
-      journey:                  Journey[JourneySpecificData],
-      emailAddress:             EmailAddress,
-      isEnglish:                Boolean,
-      succeedWebPaymentRequest: SucceedWebPaymentRequest
+      journey:      Journey[JourneySpecificData],
+      emailAddress: EmailAddress,
+      isEnglish:    Boolean
   )(implicit request: Request[_]): EmailRequest = {
 
     val templateId: String = if (isEnglish) "payment_successful" else "payment_successful_cy"
-    val parameters: EmailParameters = buildEmailParameters(journey, succeedWebPaymentRequest)
+    val parameters: EmailParameters = buildEmailParameters(journey)
 
     EmailRequest(
       to         = List(emailAddress),
@@ -65,10 +63,10 @@ class EmailService @Inject() (emailConnector: EmailConnector, requestSupport: Re
     )
   }
 
-  private[services] def buildEmailParameters(journey: Journey[JourneySpecificData], succeedWebPaymentRequest: SucceedWebPaymentRequest)(implicit request: Request[_]): EmailParameters = {
+  private[services] def buildEmailParameters(journey: Journey[JourneySpecificData])(implicit request: Request[_]): EmailParameters = {
     val messages: Messages = request.messages
     val extendedOrigin: ExtendedOrigin = journey.origin.lift
-    val maybeCommission = succeedWebPaymentRequest.commissionInPence.map(AmountInPence(_))
+    val maybeCommission = journey.getCommissionInPence
 
     EmailParameters(
       taxType          = messages(extendedOrigin.emailTaxTypeMessageKey),

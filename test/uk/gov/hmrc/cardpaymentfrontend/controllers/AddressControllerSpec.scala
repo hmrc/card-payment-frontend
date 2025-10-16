@@ -133,7 +133,34 @@ class AddressControllerSpec extends ItSpec {
         document.select("input[name=postcode]").attr("value") shouldBe "AA0AA0"
         document.select("input[name=county]").attr("value") shouldBe "county"
         document.select("select[name=country] option[selected]").attr("value") shouldBe "GBR"
+      }
 
+      "should render custom content on address page when journey is for Mib" in {
+        PayApiStub.stubForFindBySessionId2xx(TestJourneys.Mib.journeyBeforeBeginWebPayment)
+        val result = systemUnderTest.renderPage(fakeGetRequest)
+        val document = Jsoup.parse(contentAsString(result))
+        document.select("#main-content > div > div > fieldset > form > div:nth-child(6) > label").text() shouldBe "Potscode (optional for non-UK addresses)"
+      }
+
+      "should render custom content in welsh on address page when journey is for Mib" in {
+        PayApiStub.stubForFindBySessionId2xx(TestJourneys.Mib.journeyBeforeBeginWebPayment)
+        val result = systemUnderTest.renderPage(fakeGetRequestInWelsh)
+        val document = Jsoup.parse(contentAsString(result))
+        document.select("#main-content > div > div > fieldset > form > div:nth-child(6) > label").text() shouldBe "Cod post (dewisol ar gyfer cyfeiriadau y tu allan i’r DU)"
+      }
+
+      "should render custom content on address page when journey is for BcPngr" in {
+        PayApiStub.stubForFindBySessionId2xx(TestJourneys.BcPngr.journeyBeforeBeginWebPayment)
+        val result = systemUnderTest.renderPage(fakeGetRequest)
+        val document = Jsoup.parse(contentAsString(result))
+        document.select("#main-content > div > div > fieldset > form > div:nth-child(6) > label").text() shouldBe "Potscode (optional for non-UK addresses)"
+      }
+
+      "should render custom content in welsh on address page when journey is for BcPngr" in {
+        PayApiStub.stubForFindBySessionId2xx(TestJourneys.BcPngr.journeyBeforeBeginWebPayment)
+        val result = systemUnderTest.renderPage(fakeGetRequestInWelsh)
+        val document = Jsoup.parse(contentAsString(result))
+        document.select("#main-content > div > div > fieldset > form > div:nth-child(6) > label").text() shouldBe "Cod post (dewisol ar gyfer cyfeiriadau y tu allan i’r DU)"
       }
 
     }

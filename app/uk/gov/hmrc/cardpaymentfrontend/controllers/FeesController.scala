@@ -41,7 +41,7 @@ class FeesController @Inject() (
 
   import requestSupport._
 
-  def renderPage: Action[AnyContent] = actions.journeyAction { implicit journeyRequest: JourneyRequest[AnyContent] =>
+  def renderPage: Action[AnyContent] = actions.routedJourneyAction { implicit journeyRequest: JourneyRequest[AnyContent] =>
     val altPayments = linksAvailableOnFeesPage(journeyRequest.journey.journeySpecificData)
     Ok(feesPage(altPayments))
   }

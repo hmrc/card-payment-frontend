@@ -62,4 +62,7 @@ class AppConfig @Inject() (config: Configuration, servicesConfig: ServicesConfig
 
   val cdsBaseUrl: String = servicesConfig.baseUrl("cds")
   val cdsAuthToken: String = servicesConfig.getString("microservice.services.cds.auth-token")
+
+  val paymentsProcessorBaseUrl: String = servicesConfig.baseUrl("payments-processor")
+  val passengersBaseUrl: String = servicesConfig.baseUrl("bc-passengers-declarations")
 }

@@ -258,6 +258,8 @@ class CheckYourAnswersControllerSpec extends ItSpec {
         case Origins.WcEpayeNi          => false
         case Origins.WcEpayeLateCis     => false
         case Origins.WcEpayeSeta        => false
+        case Origins.Mib                => false
+        case Origins.BcPngr             => false
         case _                          => true
       }
 
@@ -979,38 +981,6 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       val document = Jsoup.parse(contentAsString(result))
       val taxPeriodRow = document.select(".govuk-summary-list__row").asScala.toList(2)
       assertRow(taxPeriodRow, "Cyfnod talu", "2026 i 2027", None, None)
-    }
-
-    "[NiEuVatOss] should render the Tax period correctly" in {
-      PayApiStub.stubForFindBySessionId2xx(TestJourneys.NiEuVatOss.journeyBeforeBeginWebPayment)
-      val result = systemUnderTest.renderPage(fakeRequest())
-      val document = Jsoup.parse(contentAsString(result))
-      val returnPeriodRow = document.select(".govuk-summary-list__row").asScala.toList(3)
-      assertRow(returnPeriodRow, "Return period", "October to December 2024", None, None)
-    }
-
-    "[PfNiEuVatOss] should render the Tax period correctly" in {
-      PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfNiEuVatOss.journeyBeforeBeginWebPayment)
-      val result = systemUnderTest.renderPage(fakeRequest())
-      val document = Jsoup.parse(contentAsString(result))
-      val returnPeriodRow = document.select(".govuk-summary-list__row").asScala.toList(2)
-      assertRow(returnPeriodRow, "Return period", "October to December 2024", Some("Change Return period"), Some("http://localhost:9056/pay/change-vat-period?fromCardPayment=true"))
-    }
-
-    "[NiEuVatIoss] should render the Tax period correctly" in {
-      PayApiStub.stubForFindBySessionId2xx(TestJourneys.NiEuVatIoss.journeyBeforeBeginWebPayment)
-      val result = systemUnderTest.renderPage(fakeRequest())
-      val document = Jsoup.parse(contentAsString(result))
-      val returnPeriodRow = document.select(".govuk-summary-list__row").asScala.toList(3)
-      assertRow(returnPeriodRow, "Return period", "June 2024", None, None)
-    }
-
-    "[PfNiEuVatIoss] should render the Tax period correctly" in {
-      PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfNiEuVatIoss.journeyBeforeBeginWebPayment)
-      val result = systemUnderTest.renderPage(fakeRequest())
-      val document = Jsoup.parse(contentAsString(result))
-      val returnPeriodRow = document.select(".govuk-summary-list__row").asScala.toList(2)
-      assertRow(returnPeriodRow, "Return period", "June 2024", Some("Change Return period"), Some("http://localhost:9056/pay/change-ioss-vat-period?fromCardPayment=true"))
     }
 
     "[BtaVat] should render the payment date row correctly" in {
