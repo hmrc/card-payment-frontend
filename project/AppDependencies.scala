@@ -3,6 +3,7 @@ import sbt.*
 //format: OFF
 object AppDependencies {
 
+
   private val payApiCorVersion = "1.273.0"
   private val bootstrapVersion = "10.3.0"
 
