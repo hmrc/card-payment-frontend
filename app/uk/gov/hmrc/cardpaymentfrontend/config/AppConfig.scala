@@ -49,6 +49,7 @@ class AppConfig @Inject() (config: Configuration, servicesConfig: ServicesConfig
   val merchandiseInBaggageFrontendBaseUrl: String = servicesConfig.baseUrl("merchandise-in-baggage-frontend") + "/declare-commercial-goods"
   val merchandiseInBaggageMakeAnotherDeclarationUrl: String = merchandiseInBaggageFrontendBaseUrl + "/make-another-declaration"
   val merchandiseInBaggageAmendDeclarationUrl: String = merchandiseInBaggageFrontendBaseUrl + "/add-goods-to-an-existing-declaration"
+  val merchandiseInBaggageSurveyUrl: String = merchandiseInBaggageFrontendBaseUrl + "/survey"
 
   val bankTransferRelativeUrl: String = config.get[String]("urls.pay-frontend.bank-transfer")
   val oneOffDirectDebitRelativeUrl: String = config.get[String]("urls.pay-frontend.one-off-direct-debit")

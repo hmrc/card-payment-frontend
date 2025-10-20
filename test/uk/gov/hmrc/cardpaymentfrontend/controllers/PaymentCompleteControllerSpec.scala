@@ -316,7 +316,7 @@ class PaymentCompleteControllerSpec extends ItSpec {
         panel.select("h1").text() shouldBe "Declaration complete"
         panel.select(".govuk-panel__body").html() shouldBe "Your reference number\n<br>\n<strong>MIBI1234567891</strong>"
         document.select("#email-paragraph").text() shouldBe "We have sent a confirmation email to the address provided."
-        document.select("#print-link-wrapper").select("a").text() shouldBe "Print your payment confirmation"
+        document.select("#print-link-wrapper").select("a").text() shouldBe "Print or save a copy of this page"
         val modsSpecificContent = document.select("#mods-specific-content")
         val whatHappensNext = modsSpecificContent.select("#what-happens-next-wrapper")
         whatHappensNext.select("h2").text() shouldBe "What you need to do next"
@@ -331,6 +331,9 @@ class PaymentCompleteControllerSpec extends ItSpec {
         val links = modsSpecificContent.select("#mods-links").select("p").asScala.toList
         links(0).html() shouldBe "<a class=\"govuk-link\" href=\"http://localhost:8281/declare-commercial-goods/make-another-declaration\">Make a new declaration</a>"
         links(1).html() shouldBe "<a class=\"govuk-link\" href=\"http://localhost:8281/declare-commercial-goods/add-goods-to-an-existing-declaration\">Add goods to an existing declaration</a>"
+        document.select("#survey-wrapper").select("h2").text() shouldBe "Help us improve our services"
+        document.select("#survey-wrapper").select("#survey-content").text() shouldBe "We use your feedback to make our services better."
+        document.select("#survey-wrapper").select("#survey-link-wrapper").html() shouldBe "<a class=\"govuk-link\" href=\"http://localhost:8281/declare-commercial-goods/survey\">Tell us what you think of this service</a> (takes 30 seconds)"
       }
 
       "should render the custom payment complete page in welsh for Mib" in {
@@ -342,7 +345,7 @@ class PaymentCompleteControllerSpec extends ItSpec {
         panel.select("h1").text() shouldBe "Datganiad wedi’i gwblhau"
         panel.select(".govuk-panel__body").html() shouldBe "Eich cyfeirnod\n<br>\n<strong>MIBI1234567891</strong>"
         document.select("#email-paragraph").text() shouldBe "Rydym wedi anfon e-bost cadarnhau i’r cyfeiriad a roddwyd."
-        document.select("#print-link-wrapper").select("a").text() shouldBe "Argraffwch cadarnhad o’ch taliad"
+        document.select("#print-link-wrapper").select("a").text() shouldBe "Argraffu neu gadw copi o’r dudalen hon"
         val modsSpecificContent = document.select("#mods-specific-content")
         val whatHappensNext = modsSpecificContent.select("#what-happens-next-wrapper")
         whatHappensNext.select("h2").text() shouldBe "Yr hyn y mae angen i chi ei wneud nesaf"
@@ -357,6 +360,9 @@ class PaymentCompleteControllerSpec extends ItSpec {
         val links = modsSpecificContent.select("#mods-links").select("p").asScala.toList
         links(0).html() shouldBe "<a class=\"govuk-link\" href=\"http://localhost:8281/declare-commercial-goods/make-another-declaration\">Gwneud datganiad newydd</a>"
         links(1).html() shouldBe "<a class=\"govuk-link\" href=\"http://localhost:8281/declare-commercial-goods/add-goods-to-an-existing-declaration\">Ychwanegu nwyddau i ddatganiad sy’n bodoli eisoes</a>"
+        document.select("#survey-wrapper").select("h2").text() shouldBe "Helpwch ni i wella ein gwasanaethau"
+        document.select("#survey-wrapper").select("#survey-content").text() shouldBe "Rydym yn defnyddio’ch adborth i wella ein gwasanaethau."
+        document.select("#survey-wrapper").select("#survey-link-wrapper").html() shouldBe "<a class=\"govuk-link\" href=\"http://localhost:8281/declare-commercial-goods/survey\">Rhowch wybod i ni beth yw eich barn am y gwasanaeth hwn</a> (mae’n cymryd 30 eiliad)"
       }
 
       "should render the custom payment complete page for BcPngr" in {

@@ -281,6 +281,7 @@ payment-complete.what-happens-next.p1.signedOut = If you have an online tax acco
 payment-complete.what-happens-next.link = online tax account.
 payment-complete.what-happens-next.web-chat.info = If you need further help with a tax bill, return to the webchat and speak with the webchat handler.
 payment-complete.what-happens-next.one-stop-shop.info = If you have an online tax account, your payment can take up to 5 days to show.
+payment-complete.passengers.what-happens-next.info = If you have an online tax account, your payment can take up to 5 days to show.
 
 #custom mib/mods content
 payment-complete.mods.panel.title = Declaration complete
@@ -296,6 +297,7 @@ payment-complete.mods.bringing-eu-goods.header = Bringing EU goods
 payment-complete.mods.bringing-eu-goods.info = If you bring EU-produced goods that have a total value over £1,000, you need to carry proof they were made in the EU.
 payment-complete.mods.make-a-new-declaration = Make a new declaration
 payment-complete.mods.add-goods-to-an-existing-declaration = Add goods to an existing declaration
+payment-complete.mods.print-link = Print or save a copy of this page
 
 #custom passengers content
 payment-complete.passengers.panel.title = Payment complete
@@ -329,6 +331,7 @@ payment-complete.passengers.arriving-in-uk.p1 = Go to the green ‘nothing to de
 payment-complete.passengers.amending-declaration.subheading = Amending your declaration
 payment-complete.passengers.amending-declaration.p1 = You can use this service to add goods to your existing declaration before you arrive in the UK. You will need to enter your reference number.
 payment-complete.passengers.amending-declaration.p2 = If you need to remove goods from your declaration <a class="govuk-link" href="{0}">visit GOV.UK to request a refund</a>.
+payment-complete.passengers.what-happens-next.info = If you have an online tax account, your payment can take up to 5 days to show.
 
 #rest of payment complete content
 payment-complete.survey.title = Help us improve our services

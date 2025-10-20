@@ -286,6 +286,7 @@ payment-complete.mods.bringing-eu-goods.header = Dod â nwyddau o’r UE gyda ch
 payment-complete.mods.bringing-eu-goods.info = Os ydych yn dod â nwyddau a gynhyrchwyd yn yr UE gyda chi y mae cyfanswm eu gwerth dros £1,000, mae’n rhaid i chi gario tystiolaeth y cawsant eu gwneud yn yr UE.
 payment-complete.mods.make-a-new-declaration = Gwneud datganiad newydd
 payment-complete.mods.add-goods-to-an-existing-declaration = Ychwanegu nwyddau i ddatganiad sy’n bodoli eisoes
+payment-complete.mods.print-link = Argraffu neu gadw copi o’r dudalen hon
 
 #custom passengers content
 payment-complete.passengers.panel.title = Taliad wedi’i gwblhau
@@ -319,6 +320,7 @@ payment-complete.passengers.arriving-in-uk.p1 = Ewch i’r sianel werdd ar gyfer
 payment-complete.passengers.amending-declaration.subheading = Diwygio’ch datganiad
 payment-complete.passengers.amending-declaration.p1 = Gallwch ddefnyddio’r gwasanaeth hwn i ychwanegu nwyddau at eich datganiad presennol cyn i chi gyrraedd y DU. Bydd angen i chi nodi’ch cyfeirnod.
 payment-complete.passengers.amending-declaration.p2 = Os oes angen i chi dynnu nwyddau o’ch datganiad, <a class="govuk-link" href="{0}">ewch GOV.UK i ofyn am ad-daliad</a>.
+payment-complete.passengers.what-happens-next.info = Os oes gennych gyfrif treth ar-lein, gall eich taliad gymryd hyd at 5 diwrnod i ymddangos.
 
 #rest of payment complete content
 payment-complete.survey.title = Helpwch ni i wella ein gwasanaethau
