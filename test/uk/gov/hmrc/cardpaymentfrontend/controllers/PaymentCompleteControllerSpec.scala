@@ -242,7 +242,7 @@ class PaymentCompleteControllerSpec extends ItSpec {
         val document = Jsoup.parse(contentAsString(result))
         val wrapper = document.select("#what-happens-next-wrapper")
         wrapper.select("h2").text() shouldBe "What happens next"
-        wrapper.select("p").html() shouldBe "Your payment will take 3 to 5 days to show in your HMRC online account."
+        wrapper.select("p").html() shouldBe "Your payment can take up to 5 days to show in your online tax account."
       }
 
       "should render the x reference/charge reference for PfVat when that's the appropriate reference" in {
