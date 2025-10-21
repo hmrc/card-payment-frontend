@@ -206,7 +206,7 @@ class PaymentCompleteControllerSpec extends ItSpec {
         val document = Jsoup.parse(contentAsString(result))
         val wrapper = document.select("#what-happens-next-wrapper")
         wrapper.select("h2").text() shouldBe "What happens next"
-        wrapper.select("p").html() shouldBe "Your payment will take 3 to 5 days to show in your HMRC online account."
+        wrapper.select("p").html() shouldBe "Your payment can take up to 5 days to show in your online tax account."
       }
 
       "render the custom what happens next content in welsh for VatC2c Journeys" in {
@@ -215,7 +215,25 @@ class PaymentCompleteControllerSpec extends ItSpec {
         val document = Jsoup.parse(contentAsString(result))
         val wrapper = document.select("#what-happens-next-wrapper")
         wrapper.select("h2").text() shouldBe "Yr hyn sy’n digwydd nesaf"
-        wrapper.select("p").html() shouldBe "Bydd eich taliad yn cymryd 3 i 5 diwrnod i ymddangos yn eich cyfrif CThEM ar-lein."
+        wrapper.select("p").html() shouldBe "Gall eich taliad gymryd hyd at 5 diwrnod ymddangos yn eich cyfrif treth ar-lein."
+      }
+
+      "render the custom what happens next content for signed out Journeys" in {
+        PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfAlcoholDuty.journeyAfterSucceedDebitWebPayment)
+        val result = systemUnderTest.renderPage(fakeGetRequest)
+        val document = Jsoup.parse(contentAsString(result))
+        val wrapper = document.select("#what-happens-next-wrapper")
+        wrapper.select("h2").text() shouldBe "What happens next"
+        wrapper.select("p").html() shouldBe "If you have an online tax account, your payment can take up to 5 days to show."
+      }
+
+      "render the custom what happens next content in Welsh for signed out Journeys" in {
+        PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfAlcoholDuty.journeyAfterSucceedDebitWebPayment)
+        val result = systemUnderTest.renderPage(fakeGetRequestInWelsh)
+        val document = Jsoup.parse(contentAsString(result))
+        val wrapper = document.select("#what-happens-next-wrapper")
+        wrapper.select("h2").text() shouldBe "Yr hyn sy’n digwydd nesaf"
+        wrapper.select("p").html() shouldBe "Os oes gennych gyfrif treth ar-lein, gall eich taliad gymryd hyd at 5 diwrnod i ymddangos."
       }
 
       "render the custom what happens next content for PfCds" in {
@@ -224,7 +242,7 @@ class PaymentCompleteControllerSpec extends ItSpec {
         val document = Jsoup.parse(contentAsString(result))
         val wrapper = document.select("#what-happens-next-wrapper")
         wrapper.select("h2").text() shouldBe "What happens next"
-        wrapper.select("p").html() shouldBe "Your payment will take 3 to 5 days to show in your HMRC online account."
+        wrapper.select("p").html() shouldBe "Your payment can take up to 5 days to show in your online tax account."
       }
 
       "should render the x reference/charge reference for PfVat when that's the appropriate reference" in {
@@ -344,7 +362,7 @@ class PaymentCompleteControllerSpec extends ItSpec {
               val document = Jsoup.parse(contentAsString(result))
               val wrapper = document.select("#what-happens-next-wrapper")
               wrapper.select("h2").text() shouldBe "What happens next"
-              wrapper.select("p").html() shouldBe "Your payment will take 3 to 5 days to show in your <a class=\"govuk-link\" href=\"https://www.return-url.com\">HMRC online account.</a>"
+              wrapper.select("p").html() shouldBe "Your payment can take up to 5 days to show in your <a class=\"govuk-link\" href=\"https://www.return-url.com\">online tax account.</a>"
             }
 
             "render the custom what happens next content in welsh" in {
@@ -353,7 +371,7 @@ class PaymentCompleteControllerSpec extends ItSpec {
               val document = Jsoup.parse(contentAsString(result))
               val wrapper = document.select("#what-happens-next-wrapper")
               wrapper.select("h2").text() shouldBe "Yr hyn sy’n digwydd nesaf"
-              wrapper.select("p").html() shouldBe "Bydd eich taliad yn cymryd 3 i 5 diwrnod i ymddangos yn eich <a class=\"govuk-link\" href=\"https://www.return-url.com\">cyfrif CThEM ar-lein.</a>"
+              wrapper.select("p").html() shouldBe "Gall eich taliad gymryd hyd at 5 diwrnod ymddangos yn eich <a class=\"govuk-link\" href=\"https://www.return-url.com\">cyfrif treth ar-lein.</a>"
             }
 
           }

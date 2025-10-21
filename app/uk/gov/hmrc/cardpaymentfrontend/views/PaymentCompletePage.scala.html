@@ -72,18 +72,21 @@
             <h2 class="govuk-heading-m govuk-!-margin-top-7">@Messages("payment-complete.what-happens-next.header")</h2>
             <p class="govuk-body">@Messages("payment-complete.what-happens-next.p1") @Messages("payment-complete.what-happens-next.link")</p>
         </div>
-    }
-    @maybeReturnUrl.fold(Html("")) { returnUrl =>
+    } else if(maybeReturnUrl.isDefined) {
         <div id="what-happens-next-wrapper">
             <h2 class="govuk-heading-m govuk-!-margin-top-7">@Messages("payment-complete.what-happens-next.header")</h2>
             @if(journeyRequest.journey.origin.isAWebChatOrigin) {
                 <p class="govuk-body" id="web-chat-content">@Messages("payment-complete.what-happens-next.web-chat.info")</p>
             }
-            <p class="govuk-body">@Messages("payment-complete.what-happens-next.p1")
-                <a class="govuk-link" href="@{
-                    returnUrl
-                }">@Messages("payment-complete.what-happens-next.link")</a>
+            <p class="govuk-body">
+                @Messages("payment-complete.what-happens-next.p1")
+                <a class="govuk-link" href="@maybeReturnUrl.get">@Messages("payment-complete.what-happens-next.link")</a>
             </p>
+        </div>
+    } else {
+        <div id="what-happens-next-wrapper">
+            <h2 class="govuk-heading-m govuk-!-margin-top-7">@Messages("payment-complete.what-happens-next.header")</h2>
+            <p class="govuk-body">@Messages("payment-complete.what-happens-next.p1.signedOut")</p>
         </div>
     }
 }
