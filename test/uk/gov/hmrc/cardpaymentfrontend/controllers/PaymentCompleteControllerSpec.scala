@@ -533,23 +533,23 @@ class PaymentCompleteControllerSpec extends ItSpec {
             //i.e. a logged in journey, so it has a returnUrl which is to bta or similar
             if (testScenario.hasAReturnUrl) {
 
-            "render the custom what happens next content" in {
-              PayApiStub.stubForFindBySessionId2xx(testScenario.debitCardJourney)
-              val result = systemUnderTest.renderPage(fakeGetRequest)
-              val document = Jsoup.parse(contentAsString(result))
-              val wrapper = document.select("#what-happens-next-wrapper")
-              wrapper.select("h2").text() shouldBe "What happens next"
-              wrapper.select("p").html() shouldBe "Your payment can take up to 5 days to show in your <a class=\"govuk-link\" href=\"https://www.return-url.com\">online tax account.</a>"
-            }
+              "render the custom what happens next content" in {
+                PayApiStub.stubForFindBySessionId2xx(testScenario.debitCardJourney)
+                val result = systemUnderTest.renderPage(fakeGetRequest)
+                val document = Jsoup.parse(contentAsString(result))
+                val wrapper = document.select("#what-happens-next-wrapper")
+                wrapper.select("h2").text() shouldBe "What happens next"
+                wrapper.select("p").html() shouldBe "Your payment can take up to 5 days to show in your <a class=\"govuk-link\" href=\"https://www.return-url.com\">online tax account.</a>"
+              }
 
-            "render the custom what happens next content in welsh" in {
-              PayApiStub.stubForFindBySessionId2xx(testScenario.debitCardJourney)
-              val result = systemUnderTest.renderPage(fakeGetRequestInWelsh)
-              val document = Jsoup.parse(contentAsString(result))
-              val wrapper = document.select("#what-happens-next-wrapper")
-              wrapper.select("h2").text() shouldBe "Yr hyn sy’n digwydd nesaf"
-              wrapper.select("p").html() shouldBe "Gall eich taliad gymryd hyd at 5 diwrnod ymddangos yn eich <a class=\"govuk-link\" href=\"https://www.return-url.com\">cyfrif treth ar-lein.</a>"
-            }
+              "render the custom what happens next content in welsh" in {
+                PayApiStub.stubForFindBySessionId2xx(testScenario.debitCardJourney)
+                val result = systemUnderTest.renderPage(fakeGetRequestInWelsh)
+                val document = Jsoup.parse(contentAsString(result))
+                val wrapper = document.select("#what-happens-next-wrapper")
+                wrapper.select("h2").text() shouldBe "Yr hyn sy’n digwydd nesaf"
+                wrapper.select("p").html() shouldBe "Gall eich taliad gymryd hyd at 5 diwrnod ymddangos yn eich <a class=\"govuk-link\" href=\"https://www.return-url.com\">cyfrif treth ar-lein.</a>"
+              }
 
             }
           }
