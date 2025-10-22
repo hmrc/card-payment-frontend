@@ -14,24 +14,23 @@
  * limitations under the License.
  *@
 
+@import payapi.corcommon.model.{Origin, Origins}
 @import payapi.corcommon.model.Reference
-@import payapi.corcommon.model.TaxTypes.{cds, vatConsumerToConsumer}
+@import payapi.corcommon.model.TaxTypes.{cds, mib, vatConsumerToConsumer}
 @import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
+@import uk.gov.hmrc.cardpaymentfrontend.config.AppConfig
 @import uk.gov.hmrc.cardpaymentfrontend.models.EmailAddress
 @import uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins.ExtendedOrigin.OriginExtended
 @import uk.gov.hmrc.cardpaymentfrontend.views.html.Layout
+@import uk.gov.hmrc.cardpaymentfrontend.util.SafeEquals.EqualsOps
 @import uk.gov.hmrc.govukfrontend.views.Aliases.{SummaryList, Text}
 @import uk.gov.hmrc.govukfrontend.views.html.components.{GovukPanel, GovukSummaryList, Panel}
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 @import views.html.helper.CSPNonce
-@import payapi.corcommon.model.Origins.NiEuVatOss
-@import payapi.corcommon.model.Origins.NiEuVatIoss
-@import payapi.corcommon.model.Origins.PfNiEuVatOss
-@import payapi.corcommon.model.Origins.PfNiEuVatIoss
-@import payapi.corcommon.model.Origins.VatC2c
 
 @this(
+    appConfig: AppConfig,
     govukPanel: GovukPanel,
     govukSummaryList: GovukSummaryList,
     layout: Layout
@@ -46,26 +45,72 @@
 
 @additionalScript = { <script type="module" src="@{controllers.routes.Assets.versioned("javascripts/print-dialogue.js")}" @{CSPNonce.attr}></script> }
 
-@heading = @{messages("payment-complete.panel.title")}
+@origin = @{journeyRequest.journey.origin}
 
-@panelContent = @{Html(messages("payment-complete.panel.content", taxReference.value))}
+@heading = @{
+    origin match {
+        case Origins.Mib => messages("payment-complete.mods.panel.title")
+        case _           => messages("payment-complete.panel.title")
+    }
 
-@maybeEmailContent = {
-    @maybeEmailAddress.fold(Html("")) { emailAddress =>
-        <p id="email-paragraph" class="govuk-body">
-            @Html(Messages("payment-complete.email.paragraph", emailAddress.value))
-        </p>
+}
+
+@panelContent = @{
+    origin match {
+        case Origins.Mib => Html(messages("payment-complete.mods.panel.content", taxReference.value))
+        case _           => Html(messages("payment-complete.panel.content", taxReference.value))
+    }
+}
+
+@printLinkContent = @{
+    if(origin === Origins.Mib) Messages("payment-complete.mods.print-link")
+    else Messages("payment-complete.print-link")
+}
+
+@maybeEmailContent = @{
+    origin match {
+        case Origins.Mib => Html(s"""<p id="email-paragraph" class="govuk-body">${Messages("payment-complete.mods.email.paragraph")}</p>""")
+        case _           =>
+            maybeEmailAddress.fold(Html("")) { emailAddress =>
+                Html(s"""<p id="email-paragraph" class="govuk-body">${Messages("payment-complete.email.paragraph", emailAddress.value)}</p>""")
+        }
     }
 }
 
 @maybeWhatHappensNextContent = {
 
-    @if(Set("NiEuVatOss", "NiEuVatIoss", "PfNiEuVatOss", "PfNiEuVatIoss").contains(journeyRequest.journey.origin.entryName)) {
+    @** Ioss/Oss specific content **@
+    @if(Set[Origin](Origins.NiEuVatOss, Origins.NiEuVatIoss, Origins.PfNiEuVatOss, Origins.PfNiEuVatIoss).contains(journeyRequest.journey.origin)) {
         <div id="what-happens-next-wrapper">
             <h2 class="govuk-heading-m govuk-!-margin-top-7">@Messages("payment-complete.what-happens-next.header")</h2>
             <p class="govuk-body">@Messages("payment-complete.what-happens-next.one-stop-shop.info")</p>
         </div>
     }
+    @** end of Ioss/Ossds specific content **@
+
+    @** Mods specific content **@
+    @if(journeyRequest.journey.origin.toTaxType == mib) {
+        <div id="mods-specific-content">
+            <div id="what-happens-next-wrapper">
+                <h2 class="govuk-heading-m govuk-!-margin-top-7">@Messages("payment-complete.mods.what-happens-next.header")</h2>
+                <p class="govuk-body">@Messages("payment-complete.mods.what-happens-next.make-sure-that-you")</p>
+                <ul class="govuk-list govuk-list--bullet">
+                    <li>@Html(Messages("payment-complete.mods.what-happens-next.list-item-1"))</li>
+                    <li>@Messages("payment-complete.mods.what-happens-next.list-item-2")</li>
+                    <li>@Messages("payment-complete.mods.what-happens-next.list-item-3")</li>
+                </ul>
+            </div>
+            <div id="bringing-eu-goods-wrapper">
+                <h2 class="govuk-heading-m govuk-!-margin-top-7">@Messages("payment-complete.mods.bringing-eu-goods.header")</h2>
+                <p class="govuk-body">@Messages("payment-complete.mods.bringing-eu-goods.info")</p>
+            </div>
+            <div id="mods-links">
+                <p class="govuk-body"><a class="govuk-link" href="@{appConfig.merchandiseInBaggageMakeAnotherDeclarationUrl}">@Messages("payment-complete.mods.make-a-new-declaration")</a></p>
+                <p class="govuk-body"><a class="govuk-link" href="@{appConfig.merchandiseInBaggageAmendDeclarationUrl}">@Messages("payment-complete.mods.add-goods-to-an-existing-declaration")</a></p>
+            </div>
+        </div>
+    }
+    @** end of Mods specific content **@
 
     @if(journeyRequest.journey.origin.toTaxType == vatConsumerToConsumer || journeyRequest.journey.origin.toTaxType == cds) {
         <div id="what-happens-next-wrapper">
@@ -91,6 +136,11 @@
     }
 }
 
+@surveyLink = @{
+    if(origin === Origins.Mib) appConfig.merchandiseInBaggageSurveyUrl
+    else uk.gov.hmrc.cardpaymentfrontend.controllers.routes.PaymentsSurveyController.startSurvey.url
+}
+
 @layout(
     pageTitle = Some(heading),
     origin = Some(journeyRequest.journey.origin),
@@ -109,18 +159,17 @@
 
     <p id="print-link-wrapper" class="govuk-body js-visible govuk-!-display-none-print">
         <a id="print-page" class="govuk-link" href="#print-dialogue">
-            @Messages("payment-complete.print-link")
+            @printLinkContent
         </a>
     </p>
 
     @maybeWhatHappensNextContent
 
-    <div id="survey-wrapper" class="govuk-!-display-none-print">
+    <div id="survey-wrapper" class="govuk-!-display-none-print govuk-!-margin-top-7">
         <h2 class="govuk-heading-m">@Messages("payment-complete.survey.title")</h2>
         <p id="survey-content" class="govuk-body">@Messages("payment-complete.survey.p1")</p>
         <p id="survey-link-wrapper" class="govuk-body">
-            @* TODO update the href to link out to payments-survey as it is done in pay-frontend, needs origins etc. OPS-12861 *@
-            <a class="govuk-link" href="@{uk.gov.hmrc.cardpaymentfrontend.controllers.routes.PaymentsSurveyController.startSurvey.url}">@Messages("payment-complete.survey.p2.part1")</a>
+            <a class="govuk-link" href="@surveyLink">@Messages("payment-complete.survey.p2.part1")</a>
             @Messages("payment-complete.survey.p2.part2")
         </p>
     </div>

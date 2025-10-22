@@ -18,11 +18,14 @@ package uk.gov.hmrc.cardpaymentfrontend.services
 
 import org.scalatest.concurrent.PatienceConfiguration.{Interval, Timeout}
 import org.scalatest.time.{Milliseconds, Span}
-import payapi.cardpaymentjourney.model.journey.{Journey, JsdPfCds}
+import payapi.cardpaymentjourney.model.journey.{Journey, JsdBcPngr, JsdMib, JsdPfCds}
+import payapi.corcommon.model.PaymentStatuses
+import payapi.corcommon.model.mods.AmendmentReference
+import payapi.corcommon.model.taxes.mib.MibReference
 import play.api.libs.json.Json
-import uk.gov.hmrc.cardpaymentfrontend.models.notifications.{CdsNotification, NotifyImmediatePaymentRequest, RequestCommon, RequestDetail}
+import uk.gov.hmrc.cardpaymentfrontend.models.notifications._
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.ItSpec
-import uk.gov.hmrc.cardpaymentfrontend.testsupport.stubs.CdsStub
+import uk.gov.hmrc.cardpaymentfrontend.testsupport.stubs.{CdsStub, ModsStub, PassengersStub}
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.testdata.TestJourneys
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -32,7 +35,7 @@ class NotificationServiceSpec extends ItSpec {
 
   private val systemUnderTest: NotificationService = app.injector.instanceOf[NotificationService]
   //sufficient amount of time for notifications to be fired.
-  private val testTimeOut = Timeout(Span(200, Milliseconds))
+  private val testTimeOut = Timeout(Span(400, Milliseconds))
   private val testInterval = Interval(Span(50, Milliseconds))
 
   "NotificationService" - {
@@ -126,9 +129,119 @@ class NotificationServiceSpec extends ItSpec {
       }
     }
 
+    "buildModsNotification" - {
+      "successfully build a ModsNotification" in {
+        val testJourney = TestJourneys.Mib.journeyAfterSucceedDebitWebPayment
+        val result = systemUnderTest.buildModsNotification(testJourney)
+        result shouldBe ModsNotification(MibReference("MIBI1234567891"), Some(AmendmentReference(123456789)))
+      }
+    }
+
+    "sendModsNotification" - {
+      "should send a notification successfully to Mods" in {
+        ModsStub.stubNotification2xx()
+        val testJourney: Journey[JsdMib] = TestJourneys.Mib.journeyAfterSucceedDebitWebPayment
+        systemUnderTest.sendModsNotification(testJourney)(HeaderCarrier())
+        eventually(timeout  = testTimeOut, interval = testInterval) {
+          ModsStub.verifyNotificationSent(Json.parse(
+            //language=JSON
+            """
+              |{
+              |   "chargeReference": "MIBI1234567891",
+              |   "amendmentReference": 123456789
+              |}
+              |""".stripMargin
+          ))
+        }
+      }
+    }
+
+    "buildPassengersNotification" - {
+
+      "successfully build a PassengersNotification" in {
+        val testJourney = TestJourneys.BcPngr.journeyAfterSucceedDebitWebPayment
+        val result = systemUnderTest.buildPassengersNotification(testJourney, testEventTime)
+        result shouldBe PassengersNotification(
+          paymentId            = "TestJourneyId-44f9-ad7f-01e1d3d8f151",
+          taxType              = "pngr",
+          status               = PaymentStatuses.Successful,
+          amountInPence        = 1234,
+          commissionInPence    = 0,
+          reference            = "XAPR9876543210",
+          transactionReference = "Some-transaction-ref",
+          notificationData     = Json.obj(),
+          eventDateTime        = "2059-11-25T16:33:51"
+        )
+      }
+
+      "error when order in journey is missing" in {
+        val testJourney = TestJourneys.BcPngr.journeyAfterSucceedDebitWebPayment.copy(order = None)
+        val error = intercept[Exception](systemUnderTest.buildPassengersNotification(testJourney, testEventTime))
+        error.getMessage shouldBe s"Expected defined order [${testJourney.toString}]"
+      }
+
+      "error when amountInPence in journey is missing" in {
+        val testJourney = TestJourneys.BcPngr.journeyAfterSucceedDebitWebPayment.copy(amountInPence = None)
+        val error = intercept[Exception](systemUnderTest.buildPassengersNotification(testJourney, testEventTime))
+        error.getMessage shouldBe s"Expected defined amountInPence [${testJourney.toString}]"
+      }
+    }
+
+    "sendPassengersNotification" - {
+      "should send a notification successfully to Passengers" in {
+        PassengersStub.stubNotification2xx()
+        val testJourney: Journey[JsdBcPngr] = TestJourneys.BcPngr.journeyAfterSucceedDebitWebPayment
+        systemUnderTest.sendPassengersNotification(testJourney)(HeaderCarrier())
+        eventually(timeout  = testTimeOut, interval = testInterval) {
+          PassengersStub.verifyNotificationSent(Json.parse(
+            //language=JSON
+            """
+              |{
+              |  "paymentId" : "TestJourneyId-44f9-ad7f-01e1d3d8f151",
+              |  "taxType" : "pngr",
+              |  "status" : "Successful",
+              |  "amountInPence" : 1234,
+              |  "commissionInPence" : 0,
+              |  "reference" : "XAPR9876543210",
+              |  "transactionReference" : "Some-transaction-ref",
+              |  "notificationData" : { },
+              |  "eventDateTime" : "2059-11-25T16:33:51.88"
+              |}""".stripMargin
+          ))
+        }
+      }
+      "should send a notification successfully to Passengers even when journey is in a non successful, but terminal state" in {
+        PassengersStub.stubNotification2xx()
+        val testJourney: Journey[JsdBcPngr] = TestJourneys.BcPngr.journeyAfterFailWebPayment
+        systemUnderTest.sendPassengersNotification(testJourney)(HeaderCarrier())
+        eventually(timeout  = testTimeOut, interval = testInterval) {
+          PassengersStub.verifyNotificationSent(Json.parse(
+            //language=JSON
+            """
+              |{
+              |  "paymentId" : "TestJourneyId-44f9-ad7f-01e1d3d8f151",
+              |  "taxType" : "pngr",
+              |  "status" : "Failed",
+              |  "amountInPence" : 1234,
+              |  "commissionInPence" : 0,
+              |  "reference" : "XAPR9876543210",
+              |  "transactionReference" : "Some-transaction-ref",
+              |  "notificationData" : { },
+              |  "eventDateTime" : "2059-11-25T16:33:51.88"
+              |}""".stripMargin
+          ))
+        }
+      }
+      "should not send a notification if journey state is not a terminal state (i.e. not Successful, Cancelled, Failed)" in {
+        val testJourney: Journey[JsdBcPngr] = TestJourneys.BcPngr.journeyBeforeBeginWebPayment
+        systemUnderTest.sendPassengersNotification(testJourney)(HeaderCarrier())
+        eventually(timeout  = testTimeOut, interval = testInterval) { PassengersStub.verifyNoNotificationSent() }
+      }
+    }
+
     "sendNotification" - {
 
-      "should send a notification to CDS for PfCds journey" in {
+      "should send a notification to CDS service for PfCds journey" in {
         val testJourney: Journey[JsdPfCds] = TestJourneys.PfCds.journeyAfterSucceedDebitWebPayment
         CdsStub.stubGetCashDepositSubscriptionDetail2xx(testJourney.journeySpecificData.cdsRef.getOrElse(throw new RuntimeException("test data is wrong, should have cds ref")))
         CdsStub.stubNotification2xx(Json.toJson(
@@ -161,10 +274,57 @@ class NotificationServiceSpec extends ItSpec {
         }
       }
 
-      "should not send a notification for an origin that isn't PfCds" in {
+      "should send a notification to passengers service for BcPngr journey" in {
+        PassengersStub.stubNotification2xx()
+        val testJourney: Journey[JsdBcPngr] = TestJourneys.BcPngr.journeyAfterSucceedDebitWebPayment
+        val expectedNotificationJson = Json.parse(
+          //language=JSON
+          """
+            |{
+            |   "paymentId": "TestJourneyId-44f9-ad7f-01e1d3d8f151",
+            |   "taxType": "pngr",
+            |   "status": "Successful",
+            |   "amountInPence": 1234,
+            |   "commissionInPence": 0,
+            |   "reference": "XAPR9876543210",
+            |   "transactionReference": "Some-transaction-ref",
+            |   "notificationData": {},
+            |   "eventDateTime": "2059-11-25T16:33:51.88"
+            |}
+            |""".stripMargin
+        )
+
+        systemUnderTest.sendNotification(testJourney)(HeaderCarrier())
+
+        eventually(timeout  = testTimeOut, interval = testInterval) {
+          PassengersStub.verifyNotificationSent(expectedNotificationJson)
+        }
+      }
+
+      "should send a notification to mods service for Mib journey" in {
+        ModsStub.stubNotification2xx()
+        val testJourney: Journey[JsdMib] = TestJourneys.Mib.journeyAfterSucceedDebitWebPayment
+        val expectedNotificationJson = Json.parse(
+          //language=JSON
+          """
+            |{
+            |   "chargeReference": "MIBI1234567891",
+            |   "amendmentReference": 123456789
+            |}
+            |""".stripMargin
+        )
+
+        systemUnderTest.sendNotification(testJourney)(HeaderCarrier())
+
+        eventually(timeout  = testTimeOut, interval = testInterval) { ModsStub.verifyNotificationSent(expectedNotificationJson) }
+      }
+
+      "should not send a notification for an origin that isn't one of PfCds, Mib, BcPngr" in {
         systemUnderTest.sendNotification(TestJourneys.PfSa.journeyAfterSucceedDebitWebPayment)(HeaderCarrier())
         eventually(testTimeOut, testInterval) {
           CdsStub.verifyNoNotificationSent()
+          ModsStub.verifyNoNotificationSent()
+          PassengersStub.verifyNoNotificationSent()
         }
       }
     }

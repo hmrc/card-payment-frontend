@@ -31,7 +31,7 @@ class AddressFormSpec extends UnitSpec {
   private def testForm(data: Map[String, String], expectedErrorList: List[FormError]): Assertion = {
     val result: Form[Address] = form.bind(data)
     result.errors.map(_.key) shouldBe expectedErrorList.map(_.key) withClue s"!! error key wrong, expectedErrors: [ ${expectedErrorList.toString()} ], but was [ ${result.errors.toString()} ]"
-    result.errors.map(_.message) shouldBe expectedErrorList.map(_.message) withClue "!! error message wrong, expectedErrors: [ ${expectedErrorList.toString()} ], but was [ ${result.errors.toString()} ]"
+    result.errors.map(_.message) shouldBe expectedErrorList.map(_.message) withClue s"!! error message wrong, expectedErrors: [ ${expectedErrorList.toString()} ], but was [ ${result.errors.toString()} ]"
   }
 
   private def createLongString(limit: Int): String = (1 to limit).map(_ => "a").mkString

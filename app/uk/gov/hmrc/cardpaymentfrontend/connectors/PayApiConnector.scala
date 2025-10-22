@@ -19,6 +19,7 @@ package uk.gov.hmrc.cardpaymentfrontend.connectors
 import com.google.inject.Inject
 import payapi.cardpaymentjourney.model.journey.{Journey, JourneySpecificData}
 import payapi.corcommon.model.JourneyId
+import play.api.Logging
 import play.api.libs.json.Json
 import uk.gov.hmrc.cardpaymentfrontend.config.AppConfig
 import uk.gov.hmrc.cardpaymentfrontend.models.payapirequest.{BeginWebPaymentRequest, FailWebPaymentRequest, SucceedWebPaymentRequest}
@@ -29,9 +30,10 @@ import uk.gov.hmrc.http.client.HttpClientV2
 import java.net.URL
 import javax.inject.Singleton
 import scala.concurrent.{ExecutionContext, Future}
+import scala.util.{Failure, Success}
 
 @Singleton
-class PayApiConnector @Inject() (appConfig: AppConfig, httpClientV2: HttpClientV2)(implicit executionContext: ExecutionContext) {
+class PayApiConnector @Inject() (appConfig: AppConfig, httpClientV2: HttpClientV2)(implicit executionContext: ExecutionContext) extends Logging {
 
   private val findBySessionIdUrl: URL = url"""${appConfig.payApiBaseUrl}/pay-api/journey/find-latest-by-session-id"""
   private def findJourneyByJourneyIdUrl(journeyId: JourneyId): URL = url"""${appConfig.payApiBaseUrl}/pay-api/journey/${journeyId.value}"""
@@ -56,23 +58,39 @@ class PayApiConnector @Inject() (appConfig: AppConfig, httpClientV2: HttpClientV
         .put(url"""${appConfig.payApiBaseUrl}/pay-api/journey/$journeyId/update/begin-web-payment""")
         .withBody(Json.toJson(beginWebPaymentRequest))
         .execute[Unit]
+        .andThen {
+          case Failure(exception) => logger.error(s"Failed to update pay-api with BeginWebPaymentRequest: ${exception.getCause.toString}")
+          case Success(_)         => logger.debug("Successfully updated pay-api with BeginWebPaymentRequest")
+        }
 
     def updateSucceedWebPayment(journeyId: String, succeedWebPaymentRequest: SucceedWebPaymentRequest)(implicit headerCarrier: HeaderCarrier): Future[Unit] =
       httpClientV2
         .put(url"""${appConfig.payApiBaseUrl}/pay-api/journey/$journeyId/update/succeed-web-payment""")
         .withBody(Json.toJson(succeedWebPaymentRequest))
         .execute[Unit]
+        .andThen {
+          case Failure(exception) => logger.error(s"Failed to update pay-api with SucceedWebPaymentRequest: ${exception.getCause.toString}")
+          case Success(_)         => logger.debug("Successfully updated pay-api with SucceedWebPaymentRequest")
+        }
 
     def updateCancelWebPayment(journeyId: String)(implicit headerCarrier: HeaderCarrier): Future[Unit] =
       httpClientV2
         .put(url"""${appConfig.payApiBaseUrl}/pay-api/journey/$journeyId/update/cancel-web-payment""")
         .execute[Unit]
+        .andThen {
+          case Failure(exception) => logger.error(s"Failed to update pay-api for updateCancelWebPayment: ${exception.getCause.toString}")
+          case Success(_)         => logger.debug("Successfully updated pay-api with updateCancelWebPayment")
+        }
 
     def updateFailWebPayment(journeyId: String, failWebPaymentRequest: FailWebPaymentRequest)(implicit headerCarrier: HeaderCarrier): Future[Unit] =
       httpClientV2
         .put(url"""${appConfig.payApiBaseUrl}/pay-api/journey/$journeyId/update/fail-web-payment""")
         .withBody(Json.toJson(failWebPaymentRequest))
         .execute[Unit]
+        .andThen {
+          case Failure(exception) => logger.error(s"Failed to update pay-api with FailWebPaymentRequest: ${exception.getCause.toString}")
+          case Success(_)         => logger.debug("Successfully updated pay-api with FailWebPaymentRequest")
+        }
   }
 
 }

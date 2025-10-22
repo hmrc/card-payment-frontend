@@ -83,6 +83,9 @@ object PayApiStub {
 
   private def updateBeginWebPaymentPath(journeyId: String): String = s"/pay-api/journey/$journeyId/update/begin-web-payment"
 
+  def stubForUpdateBeginWebPayment2xx(journeyId: JourneyId): StubMapping =
+    stubFor(put(urlPathEqualTo(updateBeginWebPaymentPath(journeyId.value))).willReturn(aResponse().withStatus(Status.OK)))
+
   def verifyUpdateBeginWebPayment(count: Int = 1, journeyId: String): Unit = verify(
     count,
     putRequestedFor(urlEqualTo(updateBeginWebPaymentPath(journeyId)))
@@ -99,6 +102,12 @@ object PayApiStub {
   )
 
   private def updateSucceedWebPaymentPath(journeyId: String): String = s"/pay-api/journey/$journeyId/update/succeed-web-payment"
+
+  def stubForUpdateSucceedWebPayment2xx(journeyId: JourneyId): StubMapping =
+    stubFor(put(urlPathEqualTo(updateSucceedWebPaymentPath(journeyId.value))).willReturn(aResponse().withStatus(Status.OK)))
+
+  def stubForUpdateSucceedWebPayment5xx(journeyId: JourneyId): StubMapping =
+    stubFor(put(urlPathEqualTo(updateSucceedWebPaymentPath(journeyId.value))).willReturn(aResponse().withStatus(Status.INTERNAL_SERVER_ERROR)))
 
   def verifyUpdateSucceedWebPayment(count: Int = 1, journeyId: String, expectedTransactionTime: LocalDateTime): Unit = verify(
     count,
@@ -118,6 +127,12 @@ object PayApiStub {
 
   private def updateFailWebPaymentPath(journeyId: String): String = s"/pay-api/journey/$journeyId/update/fail-web-payment"
 
+  def stubForUpdateFailWebPayment2xx(journeyId: JourneyId): StubMapping =
+    stubFor(put(urlPathEqualTo(updateFailWebPaymentPath(journeyId.value))).willReturn(aResponse().withStatus(Status.OK)))
+
+  def stubForUpdateFailWebPayment5xx(journeyId: JourneyId): StubMapping =
+    stubFor(put(urlPathEqualTo(updateFailWebPaymentPath(journeyId.value))).willReturn(aResponse().withStatus(Status.INTERNAL_SERVER_ERROR)))
+
   def verifyUpdateFailWebPayment(count: Int = 1, journeyId: String, expectedTransactionTime: LocalDateTime): Unit = verify(
     count,
     putRequestedFor(urlEqualTo(updateFailWebPaymentPath(journeyId)))
@@ -134,6 +149,12 @@ object PayApiStub {
   )
 
   private def updateCancelWebPaymentPath(journeyId: String): String = s"/pay-api/journey/$journeyId/update/cancel-web-payment"
+
+  def stubForUpdateCancelWebPayment2xx(journeyId: JourneyId): StubMapping =
+    stubFor(put(urlPathEqualTo(updateCancelWebPaymentPath(journeyId.value))).willReturn(aResponse().withStatus(Status.OK)))
+
+  def stubForUpdateCancelWebPayment5xx(journeyId: JourneyId): StubMapping =
+    stubFor(put(urlPathEqualTo(updateCancelWebPaymentPath(journeyId.value))).willReturn(aResponse().withStatus(Status.INTERNAL_SERVER_ERROR)))
 
   def verifyUpdateCancelWebPayment(count: Int = 1, journeyId: String): Unit = verify(
     count,

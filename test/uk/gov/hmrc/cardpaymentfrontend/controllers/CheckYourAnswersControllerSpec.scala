@@ -258,6 +258,8 @@ class CheckYourAnswersControllerSpec extends ItSpec {
         case Origins.WcEpayeNi          => false
         case Origins.WcEpayeLateCis     => false
         case Origins.WcEpayeSeta        => false
+        case Origins.Mib                => false
+        case Origins.BcPngr             => false
         case _                          => true
       }
 
@@ -981,38 +983,6 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       assertRow(taxPeriodRow, "Cyfnod talu", "2026 i 2027", None, None)
     }
 
-    "[NiEuVatOss] should render the Tax period correctly" in {
-      PayApiStub.stubForFindBySessionId2xx(TestJourneys.NiEuVatOss.journeyBeforeBeginWebPayment)
-      val result = systemUnderTest.renderPage(fakeRequest())
-      val document = Jsoup.parse(contentAsString(result))
-      val returnPeriodRow = document.select(".govuk-summary-list__row").asScala.toList(3)
-      assertRow(returnPeriodRow, "Return period", "October to December 2024", None, None)
-    }
-
-    "[PfNiEuVatOss] should render the Tax period correctly" in {
-      PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfNiEuVatOss.journeyBeforeBeginWebPayment)
-      val result = systemUnderTest.renderPage(fakeRequest())
-      val document = Jsoup.parse(contentAsString(result))
-      val returnPeriodRow = document.select(".govuk-summary-list__row").asScala.toList(2)
-      assertRow(returnPeriodRow, "Return period", "October to December 2024", Some("Change Return period"), Some("http://localhost:9056/pay/change-vat-period?fromCardPayment=true"))
-    }
-
-    "[NiEuVatIoss] should render the Tax period correctly" in {
-      PayApiStub.stubForFindBySessionId2xx(TestJourneys.NiEuVatIoss.journeyBeforeBeginWebPayment)
-      val result = systemUnderTest.renderPage(fakeRequest())
-      val document = Jsoup.parse(contentAsString(result))
-      val returnPeriodRow = document.select(".govuk-summary-list__row").asScala.toList(3)
-      assertRow(returnPeriodRow, "Return period", "June 2024", None, None)
-    }
-
-    "[PfNiEuVatIoss] should render the Tax period correctly" in {
-      PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfNiEuVatIoss.journeyBeforeBeginWebPayment)
-      val result = systemUnderTest.renderPage(fakeRequest())
-      val document = Jsoup.parse(contentAsString(result))
-      val returnPeriodRow = document.select(".govuk-summary-list__row").asScala.toList(2)
-      assertRow(returnPeriodRow, "Return period", "June 2024", Some("Change Return period"), Some("http://localhost:9056/pay/change-ioss-vat-period?fromCardPayment=true"))
-    }
-
     "[BtaVat] should render the payment date row correctly" in {
       PayApiStub.stubForFindBySessionId2xx(TestJourneys.BtaVat.journeyBeforeBeginWebPayment)
       val result = systemUnderTest.renderPage(fakeRequest())
@@ -1533,9 +1503,41 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       assertRow(referenceRow, "Cyfeirnod y taliad", "MA000003AP3022023", None, None)
     }
 
+    "[Mib] should render the payment reference row correctly" in {
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.Mib.journeyBeforeBeginWebPayment)
+      val result = systemUnderTest.renderPage(fakeRequest())
+      val document = Jsoup.parse(contentAsString(result))
+      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.Mib))
+      assertRow(referenceRow, "Declaration reference", "MIBI1234567891", None, None)
+    }
+
+    "[Mib] should render the payment reference row correctly in Welsh" in {
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.Mib.journeyBeforeBeginWebPayment)
+      val result = systemUnderTest.renderPage(fakeRequestWelsh())
+      val document = Jsoup.parse(contentAsString(result))
+      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.Mib))
+      assertRow(referenceRow, "Cyfeirnod y taliad", "MIBI1234567891", None, None)
+    }
+
+    "[BcPngr] should render the payment reference row correctly" in {
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.BcPngr.journeyBeforeBeginWebPayment)
+      val result = systemUnderTest.renderPage(fakeRequest())
+      val document = Jsoup.parse(contentAsString(result))
+      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.BcPngr))
+      assertRow(referenceRow, "Reference number", "XAPR9876543210", None, None)
+    }
+
+    "[BcPngr] should render the payment reference row correctly in Welsh" in {
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.BcPngr.journeyBeforeBeginWebPayment)
+      val result = systemUnderTest.renderPage(fakeRequestWelsh())
+      val document = Jsoup.parse(contentAsString(result))
+      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.BcPngr))
+      assertRow(referenceRow, "Cyfeirnod y taliad", "XAPR9876543210", None, None)
+    }
+
     "sanity check for implemented origins" in {
       // remember to add the singular tests for reference rows as well as fdp if applicable, they are not covered in the implementedOrigins forall tests
-      TestHelpers.implementedOrigins.size shouldBe 58 withClue "** This dummy test is here to remind you to update the tests above. Bump up the expected number when an origin is added to implemented origins **"
+      TestHelpers.implementedOrigins.size shouldBe 60 withClue "** This dummy test is here to remind you to update the tests above. Bump up the expected number when an origin is added to implemented origins **"
     }
 
   }

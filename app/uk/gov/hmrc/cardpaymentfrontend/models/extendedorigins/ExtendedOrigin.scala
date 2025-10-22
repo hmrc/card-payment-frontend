@@ -171,7 +171,7 @@ object ExtendedOrigin {
       case BtaClass1aNi             => ExtendedBtaClass1aNi
       case BtaCt                    => ExtendedBtaCt
       case BtaSdil                  => ExtendedBtaSdil
-      case BcPngr                   => DefaultExtendedOrigin
+      case BcPngr                   => ExtendedBcPngr
       case Parcels                  => DefaultExtendedOrigin
       case DdVat                    => DefaultExtendedOrigin
       case DdSdil                   => DefaultExtendedOrigin
@@ -184,7 +184,7 @@ object ExtendedOrigin {
       case PfPpt                    => ExtendedPfPpt
       case PfSpiritDrinks           => DefaultExtendedOrigin
       case PfInheritanceTax         => DefaultExtendedOrigin
-      case Mib                      => DefaultExtendedOrigin
+      case Mib                      => ExtendedMib
       case PfClass3Ni               => DefaultExtendedOrigin
       case PtaSa                    => ExtendedPtaSa
       case PfWineAndCider           => DefaultExtendedOrigin

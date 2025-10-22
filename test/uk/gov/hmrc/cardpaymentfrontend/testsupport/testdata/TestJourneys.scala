@@ -18,15 +18,19 @@ package uk.gov.hmrc.cardpaymentfrontend.testsupport.testdata
 
 import payapi.cardpaymentjourney.model.journey._
 import payapi.corcommon.model.cgt.CgtAccountReference
+import payapi.corcommon.model.mods.{AmendmentReference, CustomsDutyAmount, VatAmount}
 import payapi.corcommon.model.p800.P800ChargeRef
+import payapi.corcommon.model.pngr.PngrChargeReference
 import payapi.corcommon.model.taxes.ad.{AlcoholDutyChargeReference, AlcoholDutyReference}
 import payapi.corcommon.model.taxes.amls.AmlsPaymentReference
 import payapi.corcommon.model.taxes.ct._
 import payapi.corcommon.model.taxes.epaye._
+import payapi.corcommon.model.taxes.mib.MibReference
 import payapi.corcommon.model.taxes.nino.Nino
 import payapi.corcommon.model.taxes.other._
 import payapi.corcommon.model.taxes.p302.{P302ChargeRef, P302Ref}
 import payapi.corcommon.model.taxes.p800.P800Ref
+import payapi.corcommon.model.taxes.pngr.{AmountPaidPreviously, PngrItem, PngrTaxBreakdown, TotalPaidNow}
 import payapi.corcommon.model.taxes.ioss.Ioss
 import payapi.corcommon.model.taxes.ppt.PptReference
 import payapi.corcommon.model.taxes.sa.SaUtr
@@ -47,8 +51,8 @@ sealed trait JourneyStatuses[jsd <: JourneySpecificData] {
   def journeyAfterBeginWebPayment: Journey[jsd] = intoSentWithOrder[jsd](journeyBeforeBeginWebPayment, sentOrder)
   def journeyAfterSucceedDebitWebPayment: Journey[jsd] = intoSuccessWithOrder[jsd](journeyAfterBeginWebPayment, debitCardOrder)
   def journeyAfterSucceedCreditWebPayment: Journey[jsd] = intoSuccessWithOrder[jsd](journeyAfterBeginWebPayment, creditCardOrder)
-  def journeyAfterFailWebPayment: Journey[jsd] = intoFailed[jsd](journeyAfterBeginWebPayment, None) //todo failed order, it was never done properly.
-  def journeyAfterCancelWebPayment: Journey[jsd] = intoCancelled[jsd](journeyAfterBeginWebPayment, None) //likewise with cancelled
+  def journeyAfterFailWebPayment: Journey[jsd] = intoFailed[jsd](journeyAfterBeginWebPayment, failedOrder)
+  def journeyAfterCancelWebPayment: Journey[jsd] = intoCancelled[jsd](journeyAfterBeginWebPayment, cancelledOrder)
 }
 
 object TestJourneys {
@@ -1159,6 +1163,72 @@ object TestJourneys {
         p302Ref              = P800Ref("MA000003AP3022023"),
         taxYear              = TaxYear(2023),
         defaultAmountInPence = AmountInPence(1234)
+      ),
+      chosenWayToPay       = None
+    )
+  }
+
+  object Mib extends JourneyStatuses[JsdMib] {
+    val journeyBeforeBeginWebPayment: Journey[JsdMib] = Journey[JsdMib](
+      _id                  = JourneyId(TestPayApiData.decryptedJourneyId),
+      sessionId            = Some(SessionId("TestSession-4b87460d-6f43-4c4c-b810-d6f87c774854")),
+      amountInPence        = Some(AmountInPence(1234)),
+      emailTemplateOptions = None,
+      navigation           = Some(NavigationOptions(returnUrl = Url("https://www.return-url.com"), backUrl = Url("https://www.back-to-bta.com"))),
+      order                = None,
+      status               = PaymentStatuses.Created,
+      createdOn            = LocalDateTime.parse("2027-11-02T16:28:55.185"),
+      journeySpecificData  = JsdMib(
+        mibReference       = MibReference("MIBI1234567891"),
+        vatAmountInPence   = VatAmount(123),
+        dutyAmountInPence  = CustomsDutyAmount(123),
+        amendmentReference = Some(AmendmentReference(123456789))
+      ),
+      chosenWayToPay       = None
+    )
+  }
+
+  object BcPngr extends JourneyStatuses[JsdBcPngr] {
+    val journeyBeforeBeginWebPayment: Journey[JsdBcPngr] = Journey[JsdBcPngr](
+      _id                  = JourneyId(TestPayApiData.decryptedJourneyId),
+      sessionId            = Some(SessionId("TestSession-4b87460d-6f43-4c4c-b810-d6f87c774854")),
+      amountInPence        = Some(AmountInPence(1234)),
+      emailTemplateOptions = None,
+      navigation           = Some(NavigationOptions(returnUrl = Url("https://www.return-url.com"), backUrl = Url("https://www.back-to-pngr.com"))),
+      order                = None,
+      status               = PaymentStatuses.Created,
+      createdOn            = LocalDateTime.parse("2027-11-02T16:28:55.185"),
+      journeySpecificData  = JsdBcPngr(
+        chargeReference      = PngrChargeReference("XAPR9876543210"),
+        taxToPayInPence      = AmountInPence(1234),
+        dateOfArrival        = LocalDateTime.parse("2027-11-02T16:28:55.185"),
+        passengerName        = "Bob Ross",
+        placeOfArrival       = "Heathrow",
+        items                = List(
+          PngrItem(
+            name             = "Booze",
+            price            = "124",
+            purchaseLocation = "Vire Normandie",
+            costInGbp        = "113",
+            producedIn       = Some("France"),
+            evidenceOfOrigin = Some("receipt")
+          ),
+          PngrItem(
+            name             = "Even more booze",
+            price            = "125",
+            purchaseLocation = "Vire Normandie",
+            costInGbp        = "116",
+            producedIn       = Some("France"),
+            evidenceOfOrigin = Some("receipt")
+          )
+        ),
+        taxBreakdown         = PngrTaxBreakdown(
+          "123",
+          "66",
+          "5"
+        ),
+        amountPaidPreviously = Some(AmountPaidPreviously("55")),
+        totalPaidNow         = Some(TotalPaidNow("1234"))
       ),
       chosenWayToPay       = None
     )

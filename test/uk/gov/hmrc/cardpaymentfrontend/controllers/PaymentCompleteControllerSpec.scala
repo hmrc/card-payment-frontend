@@ -19,8 +19,9 @@ package uk.gov.hmrc.cardpaymentfrontend.controllers
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Element
 import org.jsoup.select.Elements
+import org.scalatest.Assertion
 import payapi.cardpaymentjourney.model.barclays.BarclaysOrder
-import payapi.cardpaymentjourney.model.journey.{Journey, JourneySpecificData, JsdPfP800, JsdPtaP800, Url}
+import payapi.cardpaymentjourney.model.journey.{Journey, JourneySpecificData, JsdBcPngr, JsdMib, JsdPfP800, JsdPtaP800, Url}
 import payapi.corcommon.model.Origins._
 import payapi.corcommon.model.barclays.{CardCategories, TransactionReference}
 import payapi.corcommon.model.{AmountInPence, JourneyId, Origin, Origins}
@@ -306,7 +307,181 @@ class PaymentCompleteControllerSpec extends ItSpec {
         }
       }
 
-        def testSummaryRows(testData: Journey[JourneySpecificData], fakeRequest: FakeRequest[_], expectedSummaryListRows: List[(String, String)]) = {
+      "should render the custom payment complete page for Mib" in {
+        val testJourney: Journey[JsdMib] = TestJourneys.Mib.journeyAfterSucceedCreditWebPayment
+        PayApiStub.stubForFindBySessionId2xx(testJourney)
+        val result = systemUnderTest.renderPage(fakeGetRequest)
+        val document = Jsoup.parse(contentAsString(result))
+        val panel = document.body().select(".govuk-panel--confirmation")
+        panel.select("h1").text() shouldBe "Declaration complete"
+        panel.select(".govuk-panel__body").html() shouldBe "Your reference number\n<br>\n<strong>MIBI1234567891</strong>"
+        document.select("#email-paragraph").text() shouldBe "We have sent a confirmation email to the address provided."
+        document.select("#print-link-wrapper").select("a").text() shouldBe "Print or save a copy of this page"
+        val modsSpecificContent = document.select("#mods-specific-content")
+        val whatHappensNext = modsSpecificContent.select("#what-happens-next-wrapper")
+        whatHappensNext.select("h2").text() shouldBe "What you need to do next"
+        whatHappensNext.select("p").text() shouldBe "Make sure that you:"
+        val unorderedList = whatHappensNext.select("ul").select("li").asScala.toList
+        unorderedList(0).html() shouldBe "go through the <strong>green channel</strong> (nothing to declare) at customs"
+        unorderedList(1).text() shouldBe "take the declaration sent to the email provided"
+        unorderedList(2).text() shouldBe "take the receipts or invoices for all the declared goods"
+        val bringGoodsContent = modsSpecificContent.select("#bringing-eu-goods-wrapper")
+        bringGoodsContent.select("h2").text() shouldBe "Bringing EU goods"
+        bringGoodsContent.select("p").text() shouldBe "If you bring EU-produced goods that have a total value over £1,000, you need to carry proof they were made in the EU."
+        val links = modsSpecificContent.select("#mods-links").select("p").asScala.toList
+        links(0).html() shouldBe "<a class=\"govuk-link\" href=\"http://localhost:8281/declare-commercial-goods/make-another-declaration\">Make a new declaration</a>"
+        links(1).html() shouldBe "<a class=\"govuk-link\" href=\"http://localhost:8281/declare-commercial-goods/add-goods-to-an-existing-declaration\">Add goods to an existing declaration</a>"
+        document.select("#survey-wrapper").select("h2").text() shouldBe "Help us improve our services"
+        document.select("#survey-wrapper").select("#survey-content").text() shouldBe "We use your feedback to make our services better."
+        document.select("#survey-wrapper").select("#survey-link-wrapper").html() shouldBe "<a class=\"govuk-link\" href=\"http://localhost:8281/declare-commercial-goods/survey\">Tell us what you think of this service</a> (takes 30 seconds)"
+      }
+
+      "should render the custom payment complete page in welsh for Mib" in {
+        val testJourney: Journey[JsdMib] = TestJourneys.Mib.journeyAfterSucceedCreditWebPayment
+        PayApiStub.stubForFindBySessionId2xx(testJourney)
+        val result = systemUnderTest.renderPage(fakeGetRequestInWelsh)
+        val document = Jsoup.parse(contentAsString(result))
+        val panel = document.body().select(".govuk-panel--confirmation")
+        panel.select("h1").text() shouldBe "Datganiad wedi’i gwblhau"
+        panel.select(".govuk-panel__body").html() shouldBe "Eich cyfeirnod\n<br>\n<strong>MIBI1234567891</strong>"
+        document.select("#email-paragraph").text() shouldBe "Rydym wedi anfon e-bost cadarnhau i’r cyfeiriad a roddwyd."
+        document.select("#print-link-wrapper").select("a").text() shouldBe "Argraffu neu gadw copi o’r dudalen hon"
+        val modsSpecificContent = document.select("#mods-specific-content")
+        val whatHappensNext = modsSpecificContent.select("#what-happens-next-wrapper")
+        whatHappensNext.select("h2").text() shouldBe "Yr hyn y mae angen i chi ei wneud nesaf"
+        whatHappensNext.select("p").text() shouldBe "Gwnewch yn siŵr eich bod yn:"
+        val unorderedList = whatHappensNext.select("ul").select("li").asScala.toList
+        unorderedList(0).html() shouldBe "mynd drwy’r <strong>sianel wyrdd</strong> (dim byd i’w ddatgan) wrth y tollau"
+        unorderedList(1).text() shouldBe "mynd â’r datganiad a anfonwyd at y cyfeiriad a roddwyd"
+        unorderedList(2).text() shouldBe "mynd â’r derbynebau neu’r anfonebau ar gyfer yr holl nwyddau a ddatganwyd"
+        val bringGoodsContent = modsSpecificContent.select("#bringing-eu-goods-wrapper")
+        bringGoodsContent.select("h2").text() shouldBe "Dod â nwyddau o’r UE gyda chi"
+        bringGoodsContent.select("p").text() shouldBe "Os ydych yn dod â nwyddau a gynhyrchwyd yn yr UE gyda chi y mae cyfanswm eu gwerth dros £1,000, mae’n rhaid i chi gario tystiolaeth y cawsant eu gwneud yn yr UE."
+        val links = modsSpecificContent.select("#mods-links").select("p").asScala.toList
+        links(0).html() shouldBe "<a class=\"govuk-link\" href=\"http://localhost:8281/declare-commercial-goods/make-another-declaration\">Gwneud datganiad newydd</a>"
+        links(1).html() shouldBe "<a class=\"govuk-link\" href=\"http://localhost:8281/declare-commercial-goods/add-goods-to-an-existing-declaration\">Ychwanegu nwyddau i ddatganiad sy’n bodoli eisoes</a>"
+        document.select("#survey-wrapper").select("h2").text() shouldBe "Helpwch ni i wella ein gwasanaethau"
+        document.select("#survey-wrapper").select("#survey-content").text() shouldBe "Rydym yn defnyddio’ch adborth i wella ein gwasanaethau."
+        document.select("#survey-wrapper").select("#survey-link-wrapper").html() shouldBe "<a class=\"govuk-link\" href=\"http://localhost:8281/declare-commercial-goods/survey\">Rhowch wybod i ni beth yw eich barn am y gwasanaeth hwn</a> (mae’n cymryd 30 eiliad)"
+      }
+
+      "should render the custom payment complete page for BcPngr" in {
+        val testJourney: Journey[JsdBcPngr] = TestJourneys.BcPngr.journeyAfterSucceedCreditWebPayment
+        PayApiStub.stubForFindBySessionId2xx(testJourney)
+        val result = systemUnderTest.renderPage(fakeGetRequest)
+        val document = Jsoup.parse(contentAsString(result))
+        val panel = document.body().select(".govuk-panel--confirmation")
+        panel.select("h1").text() shouldBe "Payment complete"
+        panel.select(".govuk-panel__body").html() shouldBe "Your reference number\n<br>\n<strong>XAPR9876543210</strong>"
+        document.select("#leading-content-wrapper").select("#p1").text() shouldBe "Make a note of your reference number, you may need to provide it to Border Force."
+        document.select("#leading-content-wrapper").select("#p2").text() shouldBe "If you provided an email address, a copy of this receipt has been sent to you."
+
+        val leadingInfoTableRows: List[Element] = document.select("#leading-info-table").select("tr").asScala.toList
+        testTableRows(leadingInfoTableRows, List(
+          "Name", "Bob Ross",
+          "Date of payment", "25 November 2059",
+          "Place of arrival in uk", "Heathrow",
+          "Date of arrival", "2 November 2027",
+          "Time of arrival", "04:28 PM",
+          "Reference number", "XAPR9876543210",
+          "Amount paid to HMRC", "£12.34",
+          "Card fee (9.97%), non-refundable", "£1.23",
+          "Total paid", "£13.57"
+        )) withClue "leadingInfoTableRows"
+
+        val itemsDeclaredTableRows = document.select("#items-declared-wrapper").select("tr").asScala.toList
+        testTableRows(itemsDeclaredTableRows, List(
+          "Item", "Price", "Purchased in", "Tax paid",
+          "Booze", "124", "Vire Normandie", "£113",
+          "Even more booze", "125", "Vire Normandie", "£116",
+          "Total", "", "", "£229.00",
+          "Amount paid previously", "", "£55",
+          "Total paid now", "", "£1,234"
+        )) withClue "itemsDeclaredTableRows"
+
+        val paymentBreakdownTableRows = document.select("#payment-breakdown-wrapper").select("tr").asScala.toList
+        testTableRows(paymentBreakdownTableRows, List(
+          "Type of tax or duty", "Amount paid",
+          "Customs", "£123.00",
+          "Excise", "£66.00",
+          "VAT", "£5.00",
+          "Total", "£194.00"
+        )) withClue "paymentBreakdownTableRows"
+
+        document.select("#arriving-in-uk-wrapper").select("h2").text() shouldBe "What to do when you arrive in the UK"
+        document.select("#arriving-in-uk-wrapper").select("#arriving-in-uk-p1").text() shouldBe "Go to the green ‘nothing to declare’ channel if these are the only items you are declaring. If asked, show your receipt on your mobile phone or tablet to a member of Border Force, or provide your reference number."
+
+        document.select("#amending-declaration-wrapper").select("h2").text() shouldBe "Amending your declaration"
+        document.select("#amending-declaration-wrapper").select("#amending-declaration-p1").text() shouldBe "You can use this service to add goods to your existing declaration before you arrive in the UK. You will need to enter your reference number."
+        document.select("#amending-declaration-wrapper").select("#amending-declaration-p2").html() shouldBe "If you need to remove goods from your declaration <a class=\"govuk-link\" href=\"https://www.gov.uk/government/publications/request-a-refund-of-overpaid-vat-or-duty-for-goods-declared-using-the-online-service-for-passengers\">visit GOV.UK to request a refund</a>."
+
+        document.select("#survey-wrapper").select("h2").text() shouldBe "Help us improve our services"
+        document.select("#survey-wrapper").select("#survey-content").text() shouldBe "We use your feedback to make our services better."
+        document.select("#survey-wrapper").select("#survey-link-wrapper").html() shouldBe "<a class=\"govuk-link\" href=\"https://www.tax.service.gov.uk/feedback/passengers\">Tell us what you think of this service</a> (takes 30 seconds)"
+      }
+
+      "should render the custom payment complete page in welsh for BcPngr" in {
+        val testJourney: Journey[JsdBcPngr] = TestJourneys.BcPngr.journeyAfterSucceedCreditWebPayment
+        PayApiStub.stubForFindBySessionId2xx(testJourney)
+        val result = systemUnderTest.renderPage(fakeGetRequestInWelsh)
+        val document = Jsoup.parse(contentAsString(result))
+        val panel = document.body().select(".govuk-panel--confirmation")
+        println(document.toString)
+        panel.select("h1").text() shouldBe "Taliad wedi’i gwblhau"
+        panel.select(".govuk-panel__body").html() shouldBe "Cyfeirnod\n<br>\n<strong>XAPR9876543210</strong>"
+        document.select("#leading-content-wrapper").select("#p1").text() shouldBe "Gwnewch nodyn o’ch cyfeirnod, mae’n bosibl y bydd angen i chi ei roi i Lu’r Ffiniau."
+        document.select("#leading-content-wrapper").select("#p2").text() shouldBe "Os gwnaethoch roi cyfeiriad e-bost, mae copi o’r dderbynneb hon wedi’i hanfon atoch"
+
+        val leadingInfoTableRows: List[Element] = document.select("#leading-info-table").select("tr").asScala.toList
+        testTableRows(leadingInfoTableRows, List(
+          "Enw", "Bob Ross",
+          "Dyddiad y taliad", "25 Tachwedd 2059",
+          "Man cyrraedd y DU", "Heathrow",
+          "Dyddiad cyrraedd", "2 Tachwedd 2027",
+          "Amser cyrraedd", "04:28 PM",
+          "Cyfeirnod", "XAPR9876543210",
+          "Swm a dalwyd i CThEM", "£12.34",
+          "Ffi cerdyn (9.97%), ni ellir ei ad-dalu", "£1.23",
+          "Cyfanswm a dalwyd", "£13.57"
+        ))
+
+        val itemsDeclaredTableRows = document.select("#items-declared-wrapper").select("tr").asScala.toList
+        testTableRows(itemsDeclaredTableRows, List(
+          "Eitem", "Pris", "Prynwyd yn", "Treth a dalwyd",
+          "Booze", "124", "Vire Normandie", "£113",
+          "Even more booze", "125", "Vire Normandie", "£116",
+          "Cyfanswm", "", "", "£229.00",
+          "Swm a dalwyd yn flaenorol", "", "£55",
+          "Cyfanswm wedi’i dalu nawr", "", "£1,234"
+        ))
+
+        val paymentBreakdownTableRows = document.select("#payment-breakdown-wrapper").select("tr").asScala.toList
+        testTableRows(paymentBreakdownTableRows, List(
+          "Math o dreth neu doll", "Swm a dalwyd",
+          "Tollau", "£123.00",
+          "Ecséis", "£66.00",
+          "TAW", "£5.00",
+          "Cyfanswm", "£194.00"
+        ))
+
+        document.select("#arriving-in-uk-wrapper").select("h2").text() shouldBe "Yr hyn i’w wneud pan fyddwch yn cyrraedd y DU"
+        document.select("#arriving-in-uk-wrapper").select("#arriving-in-uk-p1").text() shouldBe "Ewch i’r sianel werdd ar gyfer ’dim i’w ddatgan’ os mai dyma’r unig eitemau rydych chi’n eu datgan. Os gofynnir i chi, dangoswch eich derbynneb ar eich ffôn symudol neu lechen i aelod o Lu’r Ffiniau, neu rhowch eich cyfeirnod."
+
+        document.select("#amending-declaration-wrapper").select("h2").text() shouldBe "Diwygio’ch datganiad"
+        document.select("#amending-declaration-wrapper").select("#amending-declaration-p1").text() shouldBe "Gallwch ddefnyddio’r gwasanaeth hwn i ychwanegu nwyddau at eich datganiad presennol cyn i chi gyrraedd y DU. Bydd angen i chi nodi’ch cyfeirnod."
+        document.select("#amending-declaration-wrapper").select("#amending-declaration-p2").html() shouldBe "Os oes angen i chi dynnu nwyddau o’ch datganiad, <a class=\"govuk-link\" href=\"https://www.gov.uk/government/publications/request-a-refund-of-overpaid-vat-or-duty-for-goods-declared-using-the-online-service-for-passengers\">ewch GOV.UK i ofyn am ad-daliad</a>."
+
+        document.select("#survey-wrapper").select("h2").text() shouldBe "Helpwch ni i wella ein gwasanaethau"
+        document.select("#survey-wrapper").select("#survey-content").text() shouldBe "Rydym yn defnyddio’ch adborth i wella ein gwasanaethau."
+        document.select("#survey-wrapper").select("#survey-link-wrapper").html() shouldBe "<a class=\"govuk-link\" href=\"https://www.tax.service.gov.uk/feedback/passengers\">Rhowch wybod i ni beth yw eich barn am y gwasanaeth hwn</a> (mae’n cymryd 30 eiliad)"
+      }
+
+        def testTableRows(tableRows: List[Element], expectedTableData: List[String]): Assertion = {
+          val tableData = tableRows.flatMap(_.select("td").asScala.toList.map(_.text()))
+          tableData should contain theSameElementsInOrderAs expectedTableData
+        }
+
+        def testSummaryRows(testData: Journey[JourneySpecificData], fakeRequest: FakeRequest[_], expectedSummaryListRows: List[(String, String)]): Assertion = {
           PayApiStub.stubForFindBySessionId2xx(testData)
           val result = systemUnderTest.renderPage(fakeRequest)
           val document = Jsoup.parse(contentAsString(result))
@@ -318,65 +493,67 @@ class PaymentCompleteControllerSpec extends ItSpec {
         }
 
       "should have a test for all origins below this one" in {
-        TestHelpers.implementedOrigins.size shouldBe 58 withClue "** This dummy test is here to remind you to update the tests below. Bump up the expected number when an origin is added to implemented origins **"
+        TestHelpers.implementedOrigins.size shouldBe 60 withClue "** This dummy test is here to remind you to update the tests below. Bump up the expected number when an origin is added to implemented origins **"
       }
 
-      TestHelpers.implementedOrigins.foreach { origin =>
+      TestHelpers.implementedOrigins
+        .filterNot(_ == Origins.BcPngr) // BcPngr has it's own customised page, so we ignore it for these tests.
+        .foreach { origin =>
 
-        val testScenario: TestScenarioInfo = originToTdAndSummaryListRows(origin)
+          val testScenario: TestScenarioInfo = originToTdAndSummaryListRows(origin)
 
-        s"for origin ${origin.entryName}" - {
-          //generic table content tests all origins should have.
-          "when paying by debit card" - {
+          s"for origin ${origin.entryName}" - {
+            //generic table content tests all origins should have.
+            "when paying by debit card" - {
 
-            "render the summary list correctly" in {
-              testSummaryRows(testScenario.debitCardJourney, fakeGetRequest, testScenario.englishSummaryRowsDebitCard)
-            }
+              "render the summary list correctly" in {
+                testSummaryRows(testScenario.debitCardJourney, fakeGetRequest, testScenario.englishSummaryRowsDebitCard)
+              }
 
-            if (testScenario.hasWelshTest) {
-              "render the summary list correctly in welsh" in {
-                testSummaryRows(testScenario.debitCardJourney, fakeGetRequestInWelsh, testScenario.maybeWelshSummaryRowsDebitCard.getOrElse(throw new RuntimeException("test failed, missing welsh when it's expected")))
+              if (testScenario.hasWelshTest) {
+                "render the summary list correctly in welsh" in {
+                  testSummaryRows(testScenario.debitCardJourney, fakeGetRequestInWelsh, testScenario.maybeWelshSummaryRowsDebitCard.getOrElse(throw new RuntimeException("test failed, missing welsh when it's expected")))
+                }
               }
             }
-          }
 
-          "when paying by a card that incurs a surcharge" - {
+            "when paying by a card that incurs a surcharge" - {
 
-            "render the summary list correctly when payment has a surcharge" in {
-              testSummaryRows(testScenario.creditCardJourney, fakeGetRequest, testScenario.englishSummaryRowsCreditCard)
-            }
+              "render the summary list correctly when payment has a surcharge" in {
+                testSummaryRows(testScenario.creditCardJourney, fakeGetRequest, testScenario.englishSummaryRowsCreditCard)
+              }
 
-            if (testScenario.hasWelshTest) {
-              "render the summary list correctly in welsh when payment has a surcharge" in {
-                testSummaryRows(testScenario.creditCardJourney, fakeGetRequestInWelsh, testScenario.maybeWelshSummaryRowsCreditCard.getOrElse(throw new RuntimeException("test failed, missing welsh when it's expected")))
+              if (testScenario.hasWelshTest) {
+                "render the summary list correctly in welsh when payment has a surcharge" in {
+                  testSummaryRows(testScenario.creditCardJourney, fakeGetRequestInWelsh, testScenario.maybeWelshSummaryRowsCreditCard.getOrElse(throw new RuntimeException("test failed, missing welsh when it's expected")))
+                }
               }
             }
-          }
 
-          //i.e. a logged in journey, so it has a returnUrl which is to bta or similar
-          if (testScenario.hasAReturnUrl) {
+            //i.e. a logged in journey, so it has a returnUrl which is to bta or similar
+            if (testScenario.hasAReturnUrl) {
 
-            "render the custom what happens next content" in {
-              PayApiStub.stubForFindBySessionId2xx(testScenario.debitCardJourney)
-              val result = systemUnderTest.renderPage(fakeGetRequest)
-              val document = Jsoup.parse(contentAsString(result))
-              val wrapper = document.select("#what-happens-next-wrapper")
-              wrapper.select("h2").text() shouldBe "What happens next"
-              wrapper.select("p").html() shouldBe "Your payment can take up to 5 days to show in your <a class=\"govuk-link\" href=\"https://www.return-url.com\">online tax account.</a>"
+              "render the custom what happens next content" in {
+                PayApiStub.stubForFindBySessionId2xx(testScenario.debitCardJourney)
+                val result = systemUnderTest.renderPage(fakeGetRequest)
+                val document = Jsoup.parse(contentAsString(result))
+                val wrapper = document.select("#what-happens-next-wrapper")
+                wrapper.select("h2").text() shouldBe "What happens next"
+                wrapper.select("p").html() shouldBe "Your payment can take up to 5 days to show in your <a class=\"govuk-link\" href=\"https://www.return-url.com\">online tax account.</a>"
+              }
+
+              "render the custom what happens next content in welsh" in {
+                PayApiStub.stubForFindBySessionId2xx(testScenario.debitCardJourney)
+                val result = systemUnderTest.renderPage(fakeGetRequestInWelsh)
+                val document = Jsoup.parse(contentAsString(result))
+                val wrapper = document.select("#what-happens-next-wrapper")
+                wrapper.select("h2").text() shouldBe "Yr hyn sy’n digwydd nesaf"
+                wrapper.select("p").html() shouldBe "Gall eich taliad gymryd hyd at 5 diwrnod ymddangos yn eich <a class=\"govuk-link\" href=\"https://www.return-url.com\">cyfrif treth ar-lein.</a>"
+              }
+
             }
-
-            "render the custom what happens next content in welsh" in {
-              PayApiStub.stubForFindBySessionId2xx(testScenario.debitCardJourney)
-              val result = systemUnderTest.renderPage(fakeGetRequestInWelsh)
-              val document = Jsoup.parse(contentAsString(result))
-              val wrapper = document.select("#what-happens-next-wrapper")
-              wrapper.select("h2").text() shouldBe "Yr hyn sy’n digwydd nesaf"
-              wrapper.select("p").html() shouldBe "Gall eich taliad gymryd hyd at 5 diwrnod ymddangos yn eich <a class=\"govuk-link\" href=\"https://www.return-url.com\">cyfrif treth ar-lein.</a>"
-            }
-
           }
         }
-      }
     }
 
     "buildAmountsSummaryListRow" - {
@@ -2220,6 +2397,37 @@ object PaymentCompleteControllerSpec {
       ),
       maybeWelshSummaryRowsCreditCard = Some(List(
         "Treth" -> "Asesiad Syml",
+        "Dyddiad" -> "2 Tachwedd 2027",
+        "Swm a dalwyd i CThEM" -> "£12.34",
+        "Ffi cerdyn (9.97%), ni ellir ei ad-dalu" -> "£1.23",
+        "Cyfanswm a dalwyd" -> "£13.57"
+      )),
+      hasWelshTest                    = true,
+      hasAReturnUrl                   = false
+    )
+
+    case Origins.Mib => TestScenarioInfo(
+      debitCardJourney                = TestJourneys.Mib.journeyAfterSucceedDebitWebPayment,
+      creditCardJourney               = TestJourneys.Mib.journeyAfterSucceedCreditWebPayment,
+      englishSummaryRowsDebitCard     = List(
+        "Payment" -> "Commercial goods carried in accompanied baggage or small vehicles",
+        "Date" -> "2 November 2027",
+        "Amount" -> "£12.34"
+      ),
+      maybeWelshSummaryRowsDebitCard  = Some(List(
+        "Taliad" -> "Nwyddau masnachol sy’n cael eu cario mewn bagiau neu gerbydau bach",
+        "Dyddiad" -> "2 Tachwedd 2027",
+        "Swm" -> "£12.34"
+      )),
+      englishSummaryRowsCreditCard    = List(
+        "Payment" -> "Commercial goods carried in accompanied baggage or small vehicles",
+        "Date" -> "2 November 2027",
+        "Amount paid to HMRC" -> "£12.34",
+        "Card fee (9.97%), non-refundable" -> "£1.23",
+        "Total paid" -> "£13.57"
+      ),
+      maybeWelshSummaryRowsCreditCard = Some(List(
+        "Taliad" -> "Nwyddau masnachol sy’n cael eu cario mewn bagiau neu gerbydau bach",
         "Dyddiad" -> "2 Tachwedd 2027",
         "Swm a dalwyd i CThEM" -> "£12.34",
         "Ffi cerdyn (9.97%), ni ellir ei ad-dalu" -> "£1.23",

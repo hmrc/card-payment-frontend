@@ -38,7 +38,7 @@ class EmailAddressController @Inject() (
 
   import requestSupport._
 
-  val renderPage: Action[AnyContent] = actions.journeyAction { implicit request: JourneyRequest[AnyContent] =>
+  val renderPage: Action[AnyContent] = actions.routedJourneyAction { implicit request: JourneyRequest[AnyContent] =>
     val form = request.readFromSession[EmailAddress](request.journeyId, Keys.email)
       .fold(EmailAddressForm.form()) { email => EmailAddressForm.form().fill(email) }
     Ok(emailAddressPage(form))
