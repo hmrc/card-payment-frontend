@@ -1274,7 +1274,6 @@ class PaymentsSurveyServiceSpec extends ItSpec with TableDrivenPropertyChecks {
                 )
               )
             ) -> false
-            case Origins.BcPngr              => throw new MatchError("Not implemented yet")
             case Origins.Parcels             => throw new MatchError("Not implemented yet")
             case Origins.DdVat               => throw new MatchError("Not implemented yet")
             case Origins.DdSdil              => throw new MatchError("Not implemented yet")

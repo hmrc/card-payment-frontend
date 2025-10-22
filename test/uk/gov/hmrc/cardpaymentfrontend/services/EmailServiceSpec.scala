@@ -330,7 +330,7 @@ class EmailServiceSpec extends ItSpec with TableDrivenPropertyChecks {
       (AppSimpleAssessment, "Asesiad Syml", "yn gorffen gyda 22023", None, None, "cy"),
       (AppSimpleAssessment, "Asesiad Syml", "yn gorffen gyda 22023", commission, Some("13.57"), "cy"),
 
-    //Mib/BcPngr not needed to be tested, we don't send emails for them. I think the email is handled by the corresponding tenant services.
+      //Mib/BcPngr not needed to be tested, we don't send emails for them. I think the email is handled by the corresponding tenant services.
 
       (PfTpes, "Other taxes, penalties and enquiry settlements", "ending with 89012", None, None, "en"),
       (PfTpes, "Other taxes, penalties and enquiry settlements", "ending with 89012", commission, Some("13.57"), "en"),

@@ -347,14 +347,14 @@ class PaymentCompleteControllerSpec extends ItSpec {
         whatHappensNext.select("h2").text() shouldBe "What you need to do next"
         whatHappensNext.select("p").text() shouldBe "Make sure that you:"
         val unorderedList = whatHappensNext.select("ul").select("li").asScala.toList
-        unorderedList.head.html() shouldBe "go through the <strong>green channel</strong> (nothing to declare) at customs"
+        unorderedList(0).html() shouldBe "go through the <strong>green channel</strong> (nothing to declare) at customs"
         unorderedList(1).text() shouldBe "take the declaration sent to the email provided"
         unorderedList(2).text() shouldBe "take the receipts or invoices for all the declared goods"
         val bringGoodsContent = modsSpecificContent.select("#bringing-eu-goods-wrapper")
         bringGoodsContent.select("h2").text() shouldBe "Bringing EU goods"
         bringGoodsContent.select("p").text() shouldBe "If you bring EU-produced goods that have a total value over £1,000, you need to carry proof they were made in the EU."
         val links = modsSpecificContent.select("#mods-links").select("p").asScala.toList
-        links.head.html() shouldBe "<a class=\"govuk-link\" href=\"http://localhost:8281/declare-commercial-goods/make-another-declaration\">Make a new declaration</a>"
+        links(0).html() shouldBe "<a class=\"govuk-link\" href=\"http://localhost:8281/declare-commercial-goods/make-another-declaration\">Make a new declaration</a>"
         links(1).html() shouldBe "<a class=\"govuk-link\" href=\"http://localhost:8281/declare-commercial-goods/add-goods-to-an-existing-declaration\">Add goods to an existing declaration</a>"
         document.select("#survey-wrapper").select("h2").text() shouldBe "Help us improve our services"
         document.select("#survey-wrapper").select("#survey-content").text() shouldBe "We use your feedback to make our services better."
@@ -376,14 +376,14 @@ class PaymentCompleteControllerSpec extends ItSpec {
         whatHappensNext.select("h2").text() shouldBe "Yr hyn y mae angen i chi ei wneud nesaf"
         whatHappensNext.select("p").text() shouldBe "Gwnewch yn siŵr eich bod yn:"
         val unorderedList = whatHappensNext.select("ul").select("li").asScala.toList
-        unorderedList.head.html() shouldBe "mynd drwy’r <strong>sianel wyrdd</strong> (dim byd i’w ddatgan) wrth y tollau"
+        unorderedList(0).html() shouldBe "mynd drwy’r <strong>sianel wyrdd</strong> (dim byd i’w ddatgan) wrth y tollau"
         unorderedList(1).text() shouldBe "mynd â’r datganiad a anfonwyd at y cyfeiriad a roddwyd"
         unorderedList(2).text() shouldBe "mynd â’r derbynebau neu’r anfonebau ar gyfer yr holl nwyddau a ddatganwyd"
         val bringGoodsContent = modsSpecificContent.select("#bringing-eu-goods-wrapper")
         bringGoodsContent.select("h2").text() shouldBe "Dod â nwyddau o’r UE gyda chi"
         bringGoodsContent.select("p").text() shouldBe "Os ydych yn dod â nwyddau a gynhyrchwyd yn yr UE gyda chi y mae cyfanswm eu gwerth dros £1,000, mae’n rhaid i chi gario tystiolaeth y cawsant eu gwneud yn yr UE."
         val links = modsSpecificContent.select("#mods-links").select("p").asScala.toList
-        links.head.html() shouldBe "<a class=\"govuk-link\" href=\"http://localhost:8281/declare-commercial-goods/make-another-declaration\">Gwneud datganiad newydd</a>"
+        links(0).html() shouldBe "<a class=\"govuk-link\" href=\"http://localhost:8281/declare-commercial-goods/make-another-declaration\">Gwneud datganiad newydd</a>"
         links(1).html() shouldBe "<a class=\"govuk-link\" href=\"http://localhost:8281/declare-commercial-goods/add-goods-to-an-existing-declaration\">Ychwanegu nwyddau i ddatganiad sy’n bodoli eisoes</a>"
         document.select("#survey-wrapper").select("h2").text() shouldBe "Helpwch ni i wella ein gwasanaethau"
         document.select("#survey-wrapper").select("#survey-content").text() shouldBe "Rydym yn defnyddio’ch adborth i wella ein gwasanaethau."

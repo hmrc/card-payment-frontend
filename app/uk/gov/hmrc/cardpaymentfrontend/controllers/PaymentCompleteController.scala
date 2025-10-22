@@ -36,7 +36,6 @@ import uk.gov.hmrc.cardpaymentfrontend.util.SafeEquals.EqualsOps
 import uk.gov.hmrc.cardpaymentfrontend.views.html.{PassengersPaymentCompletePage, PaymentCompletePage}
 import uk.gov.hmrc.govukfrontend.views.Aliases._
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-import uk.gov.hmrc.cardpaymentfrontend.util.SafeEquals.EqualsOps
 
 import java.time.{Clock, LocalDateTime}
 import java.time.format.DateTimeFormatter
@@ -62,7 +61,6 @@ class PaymentCompleteController @Inject() (
     journeyRequest.journey.journeySpecificData match {
       //passengers has a bespoke set of content, so they have their own page for simplicity
       case jsd: JsdBcPngr         => Ok(passengersPaymentCompletePage(jsd))
-
       // all other origins utilise the generic page.
       case _: JourneySpecificData => Ok(genericPaymentCompletePage(maybeEmailFromSession))
     }
