@@ -273,10 +273,9 @@ payment-complete.amount.total-paid = Cyfanswm a dalwyd
 payment-complete.print-link = Argraffwch cadarnhad o’ch taliad
 payment-complete.what-happens-next.header = Yr hyn sy’n digwydd nesaf
 payment-complete.what-happens-next.p1 = Gall eich taliad gymryd hyd at 5 diwrnod ymddangos yn eich
-payment-complete.what-happens-next.p1.signedOut = Os oes gennych gyfrif treth ar-lein, gall eich taliad gymryd hyd at 5 diwrnod i ymddangos.
+payment-complete.what-happens-next.p1.defaultText = Os oes gennych gyfrif treth ar-lein, gall eich taliad gymryd hyd at 5 diwrnod i ymddangos.
 payment-complete.what-happens-next.link = cyfrif treth ar-lein.
 payment-complete.what-happens-next.web-chat.info = Os oes angen cymorth pellach arnoch gyda’ch bil treth, bydd angen dychwelyd i’r sgwrs dros y we a siarad ag ymgynghorydd.
-payment-complete.what-happens-next.one-stop-shop.info = Os oes gennych gyfrif treth ar-lein, gall eich taliad gymryd hyd at 5 diwrnod i ymddangos.
 payment-complete.what-happens-next.mgd.header = Gallwch dalu’ch biliau Toll Peiriannau Hapchwarae (MGD) yn y dyfodol drwy Ddebyd Uniongyrchol
 payment-complete.what-happens-next.mgd.p1-1 = Gallwch
 payment-complete.what-happens-next.mgd.link = sefydlu Debyd Uniongyrchol newidiol
@@ -332,7 +331,6 @@ payment-complete.passengers.arriving-in-uk.p1 = Ewch i’r sianel werdd ar gyfer
 payment-complete.passengers.amending-declaration.subheading = Diwygio’ch datganiad
 payment-complete.passengers.amending-declaration.p1 = Gallwch ddefnyddio’r gwasanaeth hwn i ychwanegu nwyddau at eich datganiad presennol cyn i chi gyrraedd y DU. Bydd angen i chi nodi’ch cyfeirnod.
 payment-complete.passengers.amending-declaration.p2 = Os oes angen i chi dynnu nwyddau o’ch datganiad, <a class="govuk-link" href="{0}">ewch GOV.UK i ofyn am ad-daliad</a>.
-payment-complete.passengers.what-happens-next.info = Os oes gennych gyfrif treth ar-lein, gall eich taliad gymryd hyd at 5 diwrnod i ymddangos.
 
 #rest of payment complete content
 payment-complete.survey.title = Helpwch ni i wella ein gwasanaethau

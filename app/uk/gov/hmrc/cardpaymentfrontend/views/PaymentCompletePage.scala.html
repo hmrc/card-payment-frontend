@@ -77,15 +77,14 @@
     }
 }
 
+@defaultWhatHappensNextContent = {
+    <div id="what-happens-next-wrapper">
+        <h2 class="govuk-heading-m govuk-!-margin-top-7">@Messages("payment-complete.what-happens-next.header")</h2>
+        <p class="govuk-body">@Messages("payment-complete.what-happens-next.p1.defaultText")</p>
+    </div>
+}
+
 @maybeWhatHappensNextContent = {
-
-    @if(Set[Origin](Origins.NiEuVatOss, Origins.NiEuVatIoss, Origins.PfNiEuVatOss, Origins.PfNiEuVatIoss, Origins.PfGbPbRgDuty, Origins.PfTpes, Origins.PfMgd, Origins.PfOther, Origins.PfTrust, Origins.PfPsAdmin).contains(origin)) {
-        <div id="what-happens-next-wrapper">
-            <h2 class="govuk-heading-m govuk-!-margin-top-7">@Messages("payment-complete.what-happens-next.header")</h2>
-            <p class="govuk-body">@Messages("payment-complete.what-happens-next.one-stop-shop.info")</p>
-        </div>
-    }
-
     @** Mods specific content **@
     @if(origin.toTaxType == mib) {
         <div id="mods-specific-content">
@@ -117,6 +116,7 @@
         </div>
     } else if(maybeReturnUrl.isDefined) {
         @if(origin === Origins.PfMgd) {
+            @defaultWhatHappensNextContent
             <div id="what-happens-next-wrapper">
                 <h2 class="govuk-heading-m govuk-!-margin-top-7">@Messages("payment-complete.what-happens-next.mgd.header")</h2>
                 <p class="govuk-body">@Messages("payment-complete.what-happens-next.mgd.p1-1") <a id="dd-button" class="govuk-link" href="@maybeReturnUrl.get">@Messages("payment-complete.what-happens-next.mgd.link")</a> @Messages("payment-complete.what-happens-next.mgd.p1-2")</p>
@@ -135,10 +135,7 @@
             </div>
         }
     } else {
-        <div id="what-happens-next-wrapper">
-            <h2 class="govuk-heading-m govuk-!-margin-top-7">@Messages("payment-complete.what-happens-next.header")</h2>
-            <p class="govuk-body">@Messages("payment-complete.what-happens-next.p1.signedOut")</p>
-        </div>
+        @defaultWhatHappensNextContent
     }
 }
 
