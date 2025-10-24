@@ -46,7 +46,7 @@ class EmailServiceSpec extends ItSpec with TableDrivenPropertyChecks {
     val commission = Some("1.23")
 
     // needed for compiler. if you're adding a new extended origin, add the jsd to this type/list of types.
-    type JsdBounds = JsdPfEpayeNi with JsdAlcoholDuty with JsdPfPpt with JsdBtaEpayeBill with JsdPfSa with JsdPpt with JsdVcVatReturn with JsdPfEpayeP11d with JsdCapitalGainsTax with JsdBtaCt with JsdPfEpayeLateCis with JsdPfEpayeLpp with JsdPfCt with JsdBtaVat with JsdPfSdlt with JsdBtaEpayeInterest with JsdAmls with JsdBtaEpayeGeneral with JsdPfEpayeSeta with JsdPtaSa with JsdBtaClass1aNi with JsdVcVatOther with JsdPfAmls with JsdPfVat with JsdItSa with JsdBtaSa with JsdPfAlcoholDuty with JsdBtaEpayePenalty with JsdEconomicCrimeLevy with JsdPfEconomicCrimeLevy with JsdWcSa with JsdWcCt with JsdWcVat with JsdVatC2c with JsdPfVatC2c with JsdWcSimpleAssessment with JsdWcXref with JsdWcEpayeLpp with JsdWcEpayeNi with JsdWcEpayeLateCis with JsdWcClass1aNi with JsdPfChildBenefitRepayments with JsdBtaSdil with JsdPfSdil with JsdPtaP800 with JsdPfP800 with JsdPtaSimpleAssessment with JsdPfSimpleAssessment with JsdPfJobRetentionScheme with JsdJrsJobRetentionScheme with JsdWcEpayeSeta with JsdNiEuVatOss with JsdPfNiEuVatOss with JsdNiEuVatIoss with JsdPfNiEuVatIoss with JsdPfCds with JsdAppSa with JsdAppSimpleAssessment with JsdMib with JsdBcPngr
+    type JsdBounds = JsdPfEpayeNi with JsdAlcoholDuty with JsdPfPpt with JsdBtaEpayeBill with JsdPfSa with JsdPpt with JsdVcVatReturn with JsdPfEpayeP11d with JsdCapitalGainsTax with JsdBtaCt with JsdPfEpayeLateCis with JsdPfEpayeLpp with JsdPfCt with JsdBtaVat with JsdPfSdlt with JsdBtaEpayeInterest with JsdAmls with JsdBtaEpayeGeneral with JsdPfEpayeSeta with JsdPtaSa with JsdBtaClass1aNi with JsdVcVatOther with JsdPfAmls with JsdPfVat with JsdItSa with JsdBtaSa with JsdPfAlcoholDuty with JsdBtaEpayePenalty with JsdEconomicCrimeLevy with JsdPfEconomicCrimeLevy with JsdWcSa with JsdWcCt with JsdWcVat with JsdVatC2c with JsdPfVatC2c with JsdWcSimpleAssessment with JsdWcXref with JsdWcEpayeLpp with JsdWcEpayeNi with JsdWcEpayeLateCis with JsdWcClass1aNi with JsdPfChildBenefitRepayments with JsdBtaSdil with JsdPfSdil with JsdPtaP800 with JsdPfP800 with JsdPtaSimpleAssessment with JsdPfSimpleAssessment with JsdPfJobRetentionScheme with JsdJrsJobRetentionScheme with JsdWcEpayeSeta with JsdNiEuVatOss with JsdPfNiEuVatOss with JsdNiEuVatIoss with JsdPfNiEuVatIoss with JsdPfCds with JsdAppSa with JsdAppSimpleAssessment with JsdMib with JsdBcPngr with JsdPfTpes with JsdPfMgd with JsdPfGbPbRgDuty with JsdPfTrust with JsdPfOther with JsdPfPsAdmin
 
     val scenarios: TableFor6[JourneyStatuses[_ >: JsdBounds <: JourneySpecificData], String, String, Option[String], Option[String], String] = Table(
       ("Journey", "Tax Type", "Tax Reference", "Commission", "Total Paid", "lang"),
@@ -330,14 +330,44 @@ class EmailServiceSpec extends ItSpec with TableDrivenPropertyChecks {
       (AppSimpleAssessment, "Asesiad Syml", "yn gorffen gyda 22023", None, None, "cy"),
       (AppSimpleAssessment, "Asesiad Syml", "yn gorffen gyda 22023", commission, Some("13.57"), "cy"),
 
-    //Mib/BcPngr not needed to be tested, we don't send emails for them. I think the email is handled by the corresponding tenant services.
+      //Mib/BcPngr not needed to be tested, we don't send emails for them. I think the email is handled by the corresponding tenant services.
+
+      (PfTpes, "Other taxes, penalties and enquiry settlements", "ending with 89012", None, None, "en"),
+      (PfTpes, "Other taxes, penalties and enquiry settlements", "ending with 89012", commission, Some("13.57"), "en"),
+      (PfTpes, "Trethi, cosbau a setliadau ymholiadau eraill", "yn gorffen gyda 89012", None, None, "cy"),
+      (PfTpes, "Trethi, cosbau a setliadau ymholiadau eraill", "yn gorffen gyda 89012", commission, Some("13.57"), "cy"),
+
+      (PfOther, "Other taxes, penalties and enquiry settlements", "ending with 89012", None, None, "en"),
+      (PfOther, "Other taxes, penalties and enquiry settlements", "ending with 89012", commission, Some("13.57"), "en"),
+      (PfOther, "Trethi, cosbau a setliadau ymholiadau eraill", "yn gorffen gyda 89012", None, None, "cy"),
+      (PfOther, "Trethi, cosbau a setliadau ymholiadau eraill", "yn gorffen gyda 89012", commission, Some("13.57"), "cy"),
+
+      (PfMgd, "Machine Games Duty", "ending with 89012", None, None, "en"),
+      (PfMgd, "Machine Games Duty", "ending with 89012", commission, Some("13.57"), "en"),
+      (PfMgd, "Toll Peiriannau Hapchwarae", "yn gorffen gyda 89012", None, None, "cy"),
+      (PfMgd, "Toll Peiriannau Hapchwarae", "yn gorffen gyda 89012", commission, Some("13.57"), "cy"),
+
+      (PfGbPbRgDuty, "General Betting, Pool Betting or Remote Gaming Duty", "ending with 89012", None, None, "en"),
+      (PfGbPbRgDuty, "General Betting, Pool Betting or Remote Gaming Duty", "ending with 89012", commission, Some("13.57"), "en"),
+      (PfGbPbRgDuty, "Toll Betio Cyffredinol, Toll Cronfa Fetio neu Doll Hapchwarae o Bell", "yn gorffen gyda 89012", None, None, "cy"),
+      (PfGbPbRgDuty, "Toll Betio Cyffredinol, Toll Cronfa Fetio neu Doll Hapchwarae o Bell", "yn gorffen gyda 89012", commission, Some("13.57"), "cy"),
+
+      (PfTrust, "Trust Registration Service penalty charge", "ending with 89012", None, None, "en"),
+      (PfTrust, "Trust Registration Service penalty charge", "ending with 89012", commission, Some("13.57"), "en"),
+      (PfTrust, "Tâl cosb y Gwasanaeth Cofrestru Ymddiriedolaethau", "yn gorffen gyda 89012", None, None, "cy"),
+      (PfTrust, "Tâl cosb y Gwasanaeth Cofrestru Ymddiriedolaethau", "yn gorffen gyda 89012", commission, Some("13.57"), "cy"),
+
+      (PfPsAdmin, "Pension scheme tax charges", "ending with 89012", None, None, "en"),
+      (PfPsAdmin, "Pension scheme tax charges", "ending with 89012", commission, Some("13.57"), "en"),
+      (PfPsAdmin, "Taliadau treth gynllun pensiwn", "yn gorffen gyda 89012", None, None, "cy"),
+      (PfPsAdmin, "Taliadau treth gynllun pensiwn", "yn gorffen gyda 89012", commission, Some("13.57"), "cy")
     )
 
     forAll(scenarios) { (j, taxType, taxReference, commission, totalPaid, lang) =>
       val cardType = if (commission.isDefined) "credit" else "debit"
       val origin = j.journeyBeforeBeginWebPayment.origin
       val request: FakeRequest[AnyContentAsEmpty.type] = if (lang == "en") fakeRequest else fakeRequestInWelsh
-      val journey = if (cardType == "credit") j.journeyAfterSucceedCreditWebPayment else j.journeyAfterSucceedDebitWebPayment
+      val journey: Journey[_ >: JsdBounds <: JourneySpecificData] = if (cardType == "credit") j.journeyAfterSucceedCreditWebPayment else j.journeyAfterSucceedDebitWebPayment
 
       s"when origin is ${origin.entryName}, card type is $cardType in $lang" in {
         val expectedResult: EmailParameters = EmailParameters(

@@ -35,6 +35,7 @@ import payapi.corcommon.model.taxes.ioss.Ioss
 import payapi.corcommon.model.taxes.ppt.PptReference
 import payapi.corcommon.model.taxes.sa.SaUtr
 import payapi.corcommon.model.taxes.sdlt.Utrn
+import payapi.corcommon.model.taxes.trusts.TrustReference
 import payapi.corcommon.model.taxes.vat.{CalendarPeriod, VatChargeReference, Vrn}
 import payapi.corcommon.model.taxes.vatc2c.VatC2cReference
 import payapi.corcommon.model.times.period.TaxQuarter.AprilJuly
@@ -1247,6 +1248,108 @@ object TestJourneys {
       journeySpecificData  = JsdPfCds(
         cdsRef      = Some(TestPayApiData.testCdsRef),
         year4Digits = 2027
+      ),
+      chosenWayToPay       = None
+    )
+  }
+
+  object PfTpes extends JourneyStatuses[JsdPfTpes] {
+    val journeyBeforeBeginWebPayment: Journey[JsdPfTpes] = Journey[JsdPfTpes](
+      _id                  = JourneyId(TestPayApiData.decryptedJourneyId),
+      sessionId            = Some(SessionId("TestSession-4b87460d-6f43-4c4c-b810-d6f87c774854")),
+      amountInPence        = Some(AmountInPence(1234)),
+      emailTemplateOptions = None,
+      navigation           = None,
+      order                = None,
+      status               = PaymentStatuses.Created,
+      createdOn            = LocalDateTime.parse("2027-11-02T16:28:55.185"),
+      journeySpecificData  = JsdPfTpes(
+        xRef = Some(XRef("XE123456789012"))
+      ),
+      chosenWayToPay       = None
+    )
+  }
+
+  object PfMgd extends JourneyStatuses[JsdPfMgd] {
+    val journeyBeforeBeginWebPayment: Journey[JsdPfMgd] = Journey[JsdPfMgd](
+      _id                  = JourneyId(TestPayApiData.decryptedJourneyId),
+      sessionId            = Some(SessionId("TestSession-4b87460d-6f43-4c4c-b810-d6f87c774854")),
+      amountInPence        = Some(AmountInPence(1234)),
+      emailTemplateOptions = None,
+      navigation           = None,
+      order                = None,
+      status               = PaymentStatuses.Created,
+      createdOn            = LocalDateTime.parse("2027-11-02T16:28:55.185"),
+      journeySpecificData  = JsdPfMgd(
+        prn = Some(XRef14Char("XE123456789012"))
+      ),
+      chosenWayToPay       = None
+    )
+  }
+
+  object PfGbPbRgDuty extends JourneyStatuses[JsdPfGbPbRgDuty] {
+    val journeyBeforeBeginWebPayment: Journey[JsdPfGbPbRgDuty] = Journey[JsdPfGbPbRgDuty](
+      _id                  = JourneyId(TestPayApiData.decryptedJourneyId),
+      sessionId            = Some(SessionId("TestSession-4b87460d-6f43-4c4c-b810-d6f87c774854")),
+      amountInPence        = Some(AmountInPence(1234)),
+      emailTemplateOptions = None,
+      navigation           = None,
+      order                = None,
+      status               = PaymentStatuses.Created,
+      createdOn            = LocalDateTime.parse("2027-11-02T16:28:55.185"),
+      journeySpecificData  = JsdPfGbPbRgDuty(
+        prn = Some(XRef14Char("XE123456789012"))
+      ),
+      chosenWayToPay       = None
+    )
+  }
+
+  object PfTrust extends JourneyStatuses[JsdPfTrust] {
+    val journeyBeforeBeginWebPayment: Journey[JsdPfTrust] = Journey[JsdPfTrust](
+      _id                  = JourneyId(TestPayApiData.decryptedJourneyId),
+      sessionId            = Some(SessionId("TestSession-4b87460d-6f43-4c4c-b810-d6f87c774854")),
+      amountInPence        = Some(AmountInPence(1234)),
+      emailTemplateOptions = None,
+      navigation           = None,
+      order                = None,
+      status               = PaymentStatuses.Created,
+      createdOn            = LocalDateTime.parse("2027-11-02T16:28:55.185"),
+      journeySpecificData  = JsdPfTrust(
+        trustsReference = Some(TrustReference("XE123456789012"))
+      ),
+      chosenWayToPay       = None
+    )
+  }
+
+  object PfOther extends JourneyStatuses[JsdPfOther] {
+    val journeyBeforeBeginWebPayment: Journey[JsdPfOther] = Journey[JsdPfOther](
+      _id                  = JourneyId(TestPayApiData.decryptedJourneyId),
+      sessionId            = Some(SessionId("TestSession-4b87460d-6f43-4c4c-b810-d6f87c774854")),
+      amountInPence        = Some(AmountInPence(1234)),
+      emailTemplateOptions = None,
+      navigation           = None,
+      order                = None,
+      status               = PaymentStatuses.Created,
+      createdOn            = LocalDateTime.parse("2027-11-02T16:28:55.185"),
+      journeySpecificData  = JsdPfOther(
+        otherRef = Some(XRef("XE123456789012"))
+      ),
+      chosenWayToPay       = None
+    )
+  }
+
+  object PfPsAdmin extends JourneyStatuses[JsdPfPsAdmin] {
+    val journeyBeforeBeginWebPayment: Journey[JsdPfPsAdmin] = Journey[JsdPfPsAdmin](
+      _id                  = JourneyId(TestPayApiData.decryptedJourneyId),
+      sessionId            = Some(SessionId("TestSession-4b87460d-6f43-4c4c-b810-d6f87c774854")),
+      amountInPence        = Some(AmountInPence(1234)),
+      emailTemplateOptions = None,
+      navigation           = None,
+      order                = None,
+      status               = PaymentStatuses.Created,
+      createdOn            = LocalDateTime.parse("2027-11-02T16:28:55.185"),
+      journeySpecificData  = JsdPfPsAdmin(
+        xRef = Some(XRef("XE123456789012"))
       ),
       chosenWayToPay       = None
     )

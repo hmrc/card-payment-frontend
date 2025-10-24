@@ -32,6 +32,7 @@ import payapi.corcommon.model.taxes.ppt.PptReference
 import payapi.corcommon.model.taxes.sa.SaUtr
 import payapi.corcommon.model.taxes.sdlt.Utrn
 import payapi.corcommon.model.taxes.vat.{CalendarPeriod, VatChargeReference, Vrn}
+import payapi.corcommon.model.taxes.trusts.TrustReference
 import payapi.corcommon.model.taxes.vatc2c.VatC2cReference
 import payapi.corcommon.model.times.period.CalendarQuarter.OctoberToDecember
 import payapi.corcommon.model.times.period.TaxQuarter.AprilJuly
@@ -489,10 +490,49 @@ class OpenBankingOriginSpecificSessionDataSpec extends UnitSpec {
       osd shouldBe None
     }
 
+    "PfTpes" in {
+      val testJson = Json.parse("""{"xRef":"XE123456789012","origin":"PfTpes"}""")
+      val osd = ExtendedPfTpes.openBankingOriginSpecificSessionData(TestJourneys.PfTpes.journeyBeforeBeginWebPayment.journeySpecificData)
+      testOsd(osd, PfTpesSessionData(XRef("XE123456789012"), None), "XE123456789012", "XE123456789012")
+      roundTripJsonTest(osd, testJson)
+    }
+
+    "PfMgd" in {
+      val testJson = Json.parse("""{"xRef14Char":"XE123456789012","origin":"PfMgd"}""")
+      val osd = ExtendedPfMgd.openBankingOriginSpecificSessionData(TestJourneys.PfMgd.journeyBeforeBeginWebPayment.journeySpecificData)
+      testOsd(osd, PfMgdSessionData(XRef14Char("XE123456789012"), None), "XE123456789012", "XE123456789012")
+      roundTripJsonTest(osd, testJson)
+    }
+
+    "PfGbPbRgDuty" in {
+      val testJson = Json.parse("""{"generalBettingXRef":"XE123456789012","origin":"PfGbPbRgDuty"}""")
+      val osd = ExtendedPfGbPbRgDuty.openBankingOriginSpecificSessionData(TestJourneys.PfGbPbRgDuty.journeyBeforeBeginWebPayment.journeySpecificData)
+      testOsd(osd, PfGbPbRgDutySessionData(XRef14Char("XE123456789012"), None), "XE123456789012", "XE123456789012")
+      roundTripJsonTest(osd, testJson)
+    }
+
+    "PfTrust" in {
+      val testJson = Json.parse("""{"trustReference":"XE123456789012","origin":"PfTrust"}""")
+      val osd = ExtendedPfTrust.openBankingOriginSpecificSessionData(TestJourneys.PfTrust.journeyBeforeBeginWebPayment.journeySpecificData)
+      testOsd(osd, PfTrustSessionData(TrustReference("XE123456789012"), None), "XE123456789012", "XE123456789012")
+      roundTripJsonTest(osd, testJson)
+    }
+
+    "PfPsAdmin" in {
+      val testJson = Json.parse("""{"xRef":"XE123456789012","origin":"PfPsAdmin"}""")
+      val osd = ExtendedPfPsAdmin.openBankingOriginSpecificSessionData(TestJourneys.PfPsAdmin.journeyBeforeBeginWebPayment.journeySpecificData)
+      testOsd(osd, PfPsAdminSessionData(XRef("XE123456789012"), None), "XE123456789012", "XE123456789012")
+      roundTripJsonTest(osd, testJson)
+    }
+
+    "PfOther" in {
+      ExtendedPfOther.openBankingOriginSpecificSessionData(TestJourneys.PfOther.journeyBeforeBeginWebPayment.journeySpecificData) shouldBe None
+    }
+
   }
 
   "sanity check for implemented origins" in {
-    TestHelpers.implementedOrigins.size shouldBe 60 withClue "** This dummy test is here to remind you to update the tests above. Bump up the expected number when an origin is added to implemented origins **"
+    TestHelpers.implementedOrigins.size shouldBe 66 withClue "** This dummy test is here to remind you to update the tests above. Bump up the expected number when an origin is added to implemented origins **"
   }
 
 }

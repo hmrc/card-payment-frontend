@@ -139,7 +139,7 @@ class AddressControllerSpec extends ItSpec {
         PayApiStub.stubForFindBySessionId2xx(TestJourneys.Mib.journeyBeforeBeginWebPayment)
         val result = systemUnderTest.renderPage(fakeGetRequest)
         val document = Jsoup.parse(contentAsString(result))
-        document.select("#main-content > div > div > fieldset > form > div:nth-child(6) > label").text() shouldBe "Potscode (optional for non-UK addresses)"
+        document.select("#main-content > div > div > fieldset > form > div:nth-child(6) > label").text() shouldBe "Postcode (optional for non-UK addresses)"
       }
 
       "should render custom content in welsh on address page when journey is for Mib" in {
@@ -153,7 +153,7 @@ class AddressControllerSpec extends ItSpec {
         PayApiStub.stubForFindBySessionId2xx(TestJourneys.BcPngr.journeyBeforeBeginWebPayment)
         val result = systemUnderTest.renderPage(fakeGetRequest)
         val document = Jsoup.parse(contentAsString(result))
-        document.select("#main-content > div > div > fieldset > form > div:nth-child(6) > label").text() shouldBe "Potscode (optional for non-UK addresses)"
+        document.select("#main-content > div > div > fieldset > form > div:nth-child(6) > label").text() shouldBe "Postcode (optional for non-UK addresses)"
       }
 
       "should render custom content in welsh on address page when journey is for BcPngr" in {

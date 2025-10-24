@@ -18,6 +18,7 @@ package uk.gov.hmrc.cardpaymentfrontend.controllers
 
 import payapi.cardpaymentjourney.model.journey._
 import payapi.corcommon.model.{AmountInPence, Origins}
+import payapi.corcommon.model.Origins.PfMgd
 import payapi.corcommon.model.barclays.CardCategories
 import payapi.corcommon.model.taxes.pngr.AmountPaidPreviously
 import payapi.corcommon.model.times.period.TaxYear
@@ -60,7 +61,6 @@ class PaymentCompleteController @Inject() (
     journeyRequest.journey.journeySpecificData match {
       //passengers has a bespoke set of content, so they have their own page for simplicity
       case jsd: JsdBcPngr         => Ok(passengersPaymentCompletePage(jsd))
-
       // all other origins utilise the generic page.
       case _: JourneySpecificData => Ok(genericPaymentCompletePage(maybeEmailFromSession))
     }
@@ -316,6 +316,8 @@ object PaymentCompleteController {
   private def determineTaxAccountUrl(journey: Journey[_])(appConfig: AppConfig): Option[String] = {
     if (journey.origin.isAWebChatOrigin) {
       Some(appConfig.businessTaxAccountUrl)
+    } else if (journey.origin === PfMgd) {
+      Some(appConfig.businessTaxAccLoginMGDOrigin)
     } else journey.navigation.flatMap(_.returnUrl.map(_.value))
   }
 

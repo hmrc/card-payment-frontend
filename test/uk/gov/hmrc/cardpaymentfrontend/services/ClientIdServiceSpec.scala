@@ -96,7 +96,13 @@ class ClientIdServiceSpec extends ItSpec {
       (TestJourneys.AppSa.journeyBeforeBeginWebPayment, ClientIds.SAEE),
       (TestJourneys.AppSimpleAssessment.journeyBeforeBeginWebPayment, ClientIds.MIEE),
       (TestJourneys.Mib.journeyBeforeBeginWebPayment, ClientIds.MBPE),
-      (TestJourneys.BcPngr.journeyBeforeBeginWebPayment, ClientIds.PSEE)
+      (TestJourneys.BcPngr.journeyBeforeBeginWebPayment, ClientIds.PSEE),
+      (TestJourneys.PfTpes.journeyBeforeBeginWebPayment, ClientIds.MIEE),
+      (TestJourneys.PfMgd.journeyBeforeBeginWebPayment, ClientIds.MIEE),
+      (TestJourneys.PfGbPbRgDuty.journeyBeforeBeginWebPayment, ClientIds.MIEE),
+      (TestJourneys.PfTrust.journeyBeforeBeginWebPayment, ClientIds.MIEE),
+      (TestJourneys.PfPsAdmin.journeyBeforeBeginWebPayment, ClientIds.MIEE),
+      (TestJourneys.PfOther.journeyBeforeBeginWebPayment, ClientIds.MIEE)
     )
 
     forAll(scenariosEn) {
@@ -176,7 +182,13 @@ class ClientIdServiceSpec extends ItSpec {
       (TestJourneys.AppSa.journeyBeforeBeginWebPayment, ClientIds.SAEC),
       (TestJourneys.AppSimpleAssessment.journeyBeforeBeginWebPayment, ClientIds.MIEC),
       (TestJourneys.Mib.journeyBeforeBeginWebPayment, ClientIds.MBPE), // only one client id for mib/mods, but supports welsh? We are where we are.
-      (TestJourneys.BcPngr.journeyBeforeBeginWebPayment, ClientIds.PSEC)
+      (TestJourneys.BcPngr.journeyBeforeBeginWebPayment, ClientIds.PSEC),
+      (TestJourneys.PfTpes.journeyBeforeBeginWebPayment, ClientIds.MIEC),
+      (TestJourneys.PfMgd.journeyBeforeBeginWebPayment, ClientIds.MIEC),
+      (TestJourneys.PfGbPbRgDuty.journeyBeforeBeginWebPayment, ClientIds.MIEC),
+      (TestJourneys.PfTrust.journeyBeforeBeginWebPayment, ClientIds.MIEC),
+      (TestJourneys.PfPsAdmin.journeyBeforeBeginWebPayment, ClientIds.MIEC),
+      (TestJourneys.PfOther.journeyBeforeBeginWebPayment, ClientIds.MIEC)
     )
 
     forAll(scenariosCy) {
@@ -198,7 +210,7 @@ class ClientIdServiceSpec extends ItSpec {
   }
 
   "sanity check for implemented origins" in {
-    TestHelpers.implementedOrigins.size shouldBe 60 withClue "** This dummy test is here to remind you to update the tests above. Bump up the expected number when an origin is added to implemented origins **"
+    TestHelpers.implementedOrigins.size shouldBe 66 withClue "** This dummy test is here to remind you to update the tests above. Bump up the expected number when an origin is added to implemented origins **"
   }
 
 }

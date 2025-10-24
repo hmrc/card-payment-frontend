@@ -33,10 +33,11 @@ class AppConfig @Inject() (config: Configuration, servicesConfig: ServicesConfig
   val emailBaseUrl: String = servicesConfig.baseUrl("email-service")
 
   private val platformHost: Option[String] = config.getOptional[String]("platform.frontend.host")
-  val signOutUrl: String = {
-    val basGatewayBaseUrl = platformHost.getOrElse(config.get[String]("urls.bas-gateway.base-url"))
-    s"$basGatewayBaseUrl/bas-gateway/sign-out-without-state"
-  }
+  private val basGatewayBaseUrl: String = platformHost.getOrElse(config.get[String]("urls.bas-gateway.base-url"))
+
+  val signOutUrl: String = s"$basGatewayBaseUrl/bas-gateway/sign-out-without-state"
+
+  val businessTaxAccLoginMGDOrigin: String = s"$basGatewayBaseUrl/gg/sign-in?continue=/business-account/&origin=MGD-frontend"
 
   val signInUrl: String = config.get[String]("urls.sign-in.base-url")
 

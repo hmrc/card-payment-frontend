@@ -3234,7 +3234,7 @@ class FeesControllerSpec extends ItSpec {
               case Origins.PtaP800                  => Seq.empty
               case Origins.PfClass2Ni               => Seq.empty
               case Origins.PfInsurancePremium       => Seq.empty
-              case Origins.PfPsAdmin                => Seq.empty
+              case Origins.PfPsAdmin                => Seq(expectedOpenBankingLink)
               case Origins.AppSa                    => Seq(expectedOpenBankingLink, expectedOneOffDirectDebitLink)
               case Origins.BtaVat                   => Seq(expectedOpenBankingLink, expectedVariableDirectDebitLink)
               case Origins.BtaEpayeBill             => Seq(expectedOpenBankingLink, expectedVariableDirectDebitLink, expectedOneOffDirectDebitLink)
@@ -3261,10 +3261,10 @@ class FeesControllerSpec extends ItSpec {
               case Origins.PfWineAndCider           => Seq.empty
               case Origins.PfBioFuels               => Seq.empty
               case Origins.PfAirPass                => Seq.empty
-              case Origins.PfMgd                    => Seq.empty
+              case Origins.PfMgd                    => Seq(expectedOpenBankingLink, expectedVariableDirectDebitLink, expectedOneOffDirectDebitLink)
               case Origins.PfBeerDuty               => Seq.empty
               case Origins.PfGamingOrBingoDuty      => Seq.empty
-              case Origins.PfGbPbRgDuty             => Seq.empty
+              case Origins.PfGbPbRgDuty             => Seq(expectedOpenBankingLink)
               case Origins.PfLandfillTax            => Seq.empty
               case Origins.PfSdil                   => Seq(expectedOpenBankingLink, expectedDirectDebitLink)
               case Origins.PfAggregatesLevy         => Seq.empty
@@ -3272,7 +3272,7 @@ class FeesControllerSpec extends ItSpec {
               case Origins.PfSimpleAssessment       => Seq(expectedOpenBankingLink)
               case Origins.PtaSimpleAssessment      => Seq(expectedOpenBankingLink)
               case Origins.AppSimpleAssessment      => Seq(expectedBankTransferLink)
-              case Origins.PfTpes                   => Seq.empty
+              case Origins.PfTpes                   => Seq(expectedOpenBankingLink, expectedOneOffDirectDebitLink)
               case Origins.CapitalGainsTax          => Seq(expectedOpenBankingLink)
               case Origins.EconomicCrimeLevy        => Seq(expectedOpenBankingLink, expectedOneOffDirectDebitLink)
               case Origins.PfEconomicCrimeLevy      => Seq(expectedOpenBankingLink, expectedOneOffDirectDebitLink)
@@ -3287,7 +3287,7 @@ class FeesControllerSpec extends ItSpec {
               case Origins.PfAmls                   => Seq(expectedOpenBankingLink)
               case Origins.PfAted                   => Seq.empty
               case Origins.PfCdsDeferment           => Seq.empty
-              case Origins.PfTrust                  => Seq.empty
+              case Origins.PfTrust                  => Seq(expectedOpenBankingLink, expectedOneOffDirectDebitLink)
               case Origins.PtaClass3Ni              => Seq.empty
               case Origins.AlcoholDuty              => Seq(expectedOpenBankingLink)
               case Origins.PfAlcoholDuty            => Seq(expectedOpenBankingLink)

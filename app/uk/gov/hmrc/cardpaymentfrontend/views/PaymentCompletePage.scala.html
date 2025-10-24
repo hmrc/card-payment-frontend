@@ -77,19 +77,16 @@
     }
 }
 
+@defaultWhatHappensNextContent = {
+    <div id="what-happens-next-wrapper">
+        <h2 class="govuk-heading-m govuk-!-margin-top-7">@Messages("payment-complete.what-happens-next.header")</h2>
+        <p class="govuk-body">@Messages("payment-complete.what-happens-next.p1.defaultText")</p>
+    </div>
+}
+
 @maybeWhatHappensNextContent = {
-
-    @** Ioss/Oss specific content **@
-    @if(Set[Origin](Origins.NiEuVatOss, Origins.NiEuVatIoss, Origins.PfNiEuVatOss, Origins.PfNiEuVatIoss).contains(journeyRequest.journey.origin)) {
-        <div id="what-happens-next-wrapper">
-            <h2 class="govuk-heading-m govuk-!-margin-top-7">@Messages("payment-complete.what-happens-next.header")</h2>
-            <p class="govuk-body">@Messages("payment-complete.what-happens-next.one-stop-shop.info")</p>
-        </div>
-    }
-    @** end of Ioss/Ossds specific content **@
-
     @** Mods specific content **@
-    @if(journeyRequest.journey.origin.toTaxType == mib) {
+    @if(origin.toTaxType == mib) {
         <div id="mods-specific-content">
             <div id="what-happens-next-wrapper">
                 <h2 class="govuk-heading-m govuk-!-margin-top-7">@Messages("payment-complete.mods.what-happens-next.header")</h2>
@@ -112,27 +109,33 @@
     }
     @** end of Mods specific content **@
 
-    @if(journeyRequest.journey.origin.toTaxType == vatConsumerToConsumer || journeyRequest.journey.origin.toTaxType == cds) {
+    @if(origin.toTaxType == vatConsumerToConsumer || origin.toTaxType == cds) {
         <div id="what-happens-next-wrapper">
             <h2 class="govuk-heading-m govuk-!-margin-top-7">@Messages("payment-complete.what-happens-next.header")</h2>
             <p class="govuk-body">@Messages("payment-complete.what-happens-next.p1") @Messages("payment-complete.what-happens-next.link")</p>
         </div>
     } else if(maybeReturnUrl.isDefined) {
-        <div id="what-happens-next-wrapper">
-            <h2 class="govuk-heading-m govuk-!-margin-top-7">@Messages("payment-complete.what-happens-next.header")</h2>
-            @if(journeyRequest.journey.origin.isAWebChatOrigin) {
-                <p class="govuk-body" id="web-chat-content">@Messages("payment-complete.what-happens-next.web-chat.info")</p>
-            }
-            <p class="govuk-body">
-                @Messages("payment-complete.what-happens-next.p1")
-                <a class="govuk-link" href="@maybeReturnUrl.get">@Messages("payment-complete.what-happens-next.link")</a>
-            </p>
-        </div>
+        @if(origin === Origins.PfMgd) {
+            @defaultWhatHappensNextContent
+            <div id="what-happens-next-wrapper">
+                <h2 class="govuk-heading-m govuk-!-margin-top-7">@Messages("payment-complete.what-happens-next.mgd.header")</h2>
+                <p class="govuk-body">@Messages("payment-complete.what-happens-next.mgd.p1-1") <a id="dd-button" class="govuk-link" href="@maybeReturnUrl.get">@Messages("payment-complete.what-happens-next.mgd.link")</a> @Messages("payment-complete.what-happens-next.mgd.p1-2")</p>
+                <p class="govuk-body">@Messages("payment-complete.what-happens-next.mgd.p3")</p>
+            </div>
+        } else {
+            <div id="what-happens-next-wrapper">
+                <h2 class="govuk-heading-m govuk-!-margin-top-7">@Messages("payment-complete.what-happens-next.header")</h2>
+                @if(origin.isAWebChatOrigin) {
+                    <p class="govuk-body" id="web-chat-content">@Messages("payment-complete.what-happens-next.web-chat.info")</p>
+                }
+                <p class="govuk-body">
+                    @Messages("payment-complete.what-happens-next.p1")
+                    <a class="govuk-link" href="@maybeReturnUrl.get">@Messages("payment-complete.what-happens-next.link")</a>
+                </p>
+            </div>
+        }
     } else {
-        <div id="what-happens-next-wrapper">
-            <h2 class="govuk-heading-m govuk-!-margin-top-7">@Messages("payment-complete.what-happens-next.header")</h2>
-            <p class="govuk-body">@Messages("payment-complete.what-happens-next.p1.signedOut")</p>
-        </div>
+        @defaultWhatHappensNextContent
     }
 }
 

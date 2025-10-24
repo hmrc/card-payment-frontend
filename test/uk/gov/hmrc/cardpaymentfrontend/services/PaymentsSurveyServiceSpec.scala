@@ -1161,6 +1161,119 @@ class PaymentsSurveyServiceSpec extends ItSpec with TableDrivenPropertyChecks {
               )
             ) -> true
 
+            case Origins.PfTpes => PaymentSurveyJourneyRequest(
+              origin         = "PfTpes",
+              returnMsg      = "Skip survey",
+              returnHref     = "https://www.gov.uk/government/organisations/hm-revenue-customs",
+              auditName      = "tax-penalties-and-enquiry-settlements",
+              audit          = AuditOptions(
+                userType  = "LoggedOut",
+                journey   = Some("Successful"),
+                orderId   = Some("XE123456789012"),
+                liability = Some("tax-penalties-and-enquiry-settlements")
+              ),
+              contentOptions = SurveyContentOptions(
+                isWelshSupported = true,
+                title            = SurveyBannerTitle(
+                  englishValue = "Pay taxes, penalties or enquiry settlements", welshValue = Some("Talu trethi, cosbau neu setliadau ymholiadauhmmm")
+                )
+              )
+            ) -> false
+
+            case Origins.PfMgd => PaymentSurveyJourneyRequest(
+              origin         = "PfMgd",
+              returnMsg      = "Skip survey",
+              returnHref     = "https://www.gov.uk/government/organisations/hm-revenue-customs",
+              auditName      = "machine-games-duty",
+              audit          = AuditOptions(
+                userType  = "LoggedOut",
+                journey   = Some("Successful"),
+                orderId   = Some("XE123456789012"),
+                liability = Some("machine-games-duty")
+              ),
+              contentOptions = SurveyContentOptions(
+                isWelshSupported = true,
+                title            = SurveyBannerTitle(
+                  englishValue = "Pay Machine Games Duty", welshValue = Some("Talu’r Doll Peiriannau Hapchwarae")
+                )
+              )
+            ) -> false
+
+            case Origins.PfGbPbRgDuty => PaymentSurveyJourneyRequest(
+              origin         = "PfGbPbRgDuty",
+              returnMsg      = "Skip survey",
+              returnHref     = "https://www.gov.uk/government/organisations/hm-revenue-customs",
+              auditName      = "general-betting-pool-betting-remote-gaming-duty",
+              audit          = AuditOptions(
+                userType  = "LoggedOut",
+                journey   = Some("Successful"),
+                orderId   = Some("XE123456789012"),
+                liability = Some("general-betting-pool-betting-remote-gaming-duty")
+              ),
+              contentOptions = SurveyContentOptions(
+                isWelshSupported = true,
+                title            = SurveyBannerTitle(
+                  englishValue = "Pay General Betting, Pool Betting or Remote Gaming Duty", welshValue = Some("Talu Toll Betio Cyffredinol, Toll Cronfa Fetio neu Doll Hapchwarae o Bell")
+                )
+              )
+            ) -> false
+
+            case Origins.PfTrust => PaymentSurveyJourneyRequest(
+              origin         = "PfTrust",
+              returnMsg      = "Skip survey",
+              returnHref     = "https://www.gov.uk/government/organisations/hm-revenue-customs",
+              auditName      = "pf-trust",
+              audit          = AuditOptions(
+                userType  = "LoggedOut",
+                journey   = Some("Successful"),
+                orderId   = Some("XE123456789012"),
+                liability = Some("pf-trust")
+              ),
+              contentOptions = SurveyContentOptions(
+                isWelshSupported = true,
+                title            = SurveyBannerTitle(
+                  englishValue = "Pay a Trust Registration Service penalty charge", welshValue = Some("Talu tâl cosb y Gwasanaeth Cofrestru Ymddiriedolaethau")
+                )
+              )
+            ) -> false
+
+            case Origins.PfPsAdmin => PaymentSurveyJourneyRequest(
+              origin         = "PfPsAdmin",
+              returnMsg      = "Skip survey",
+              returnHref     = "https://www.gov.uk/government/organisations/hm-revenue-customs",
+              auditName      = "pension-scheme-administrators",
+              audit          = AuditOptions(
+                userType  = "LoggedOut",
+                journey   = Some("Successful"),
+                orderId   = Some("XE123456789012"),
+                liability = Some("pension-scheme-administrators")
+              ),
+              contentOptions = SurveyContentOptions(
+                isWelshSupported = true,
+                title            = SurveyBannerTitle(
+                  englishValue = "Pay your pension scheme tax charges", welshValue = Some("Talu’ch taliadau treth ar gynllun pensiwn")
+                )
+              )
+            ) -> false
+
+            case Origins.PfOther => PaymentSurveyJourneyRequest(
+              origin         = "PfOther",
+              returnMsg      = "Skip survey",
+              returnHref     = "https://www.gov.uk/government/organisations/hm-revenue-customs",
+              auditName      = "other-taxes",
+              audit          = AuditOptions(
+                userType  = "LoggedOut",
+                journey   = Some("Successful"),
+                orderId   = Some("XE123456789012"),
+                liability = Some("other-taxes")
+              ),
+              contentOptions = SurveyContentOptions(
+                isWelshSupported = true,
+                title            = SurveyBannerTitle(
+                  englishValue = "Pay your tax", welshValue = Some("Talwch eich treth")
+                )
+              )
+            ) -> false
             case Origins.Parcels             => throw new MatchError("Not implemented yet")
             case Origins.DdVat               => throw new MatchError("Not implemented yet")
             case Origins.DdSdil              => throw new MatchError("Not implemented yet")
@@ -1171,27 +1284,21 @@ class PaymentsSurveyServiceSpec extends ItSpec with TableDrivenPropertyChecks {
             case Origins.PfWineAndCider      => throw new MatchError("Not implemented yet")
             case Origins.PfBioFuels          => throw new MatchError("Not implemented yet")
             case Origins.PfAirPass           => throw new MatchError("Not implemented yet")
-            case Origins.PfMgd               => throw new MatchError("Not implemented yet")
             case Origins.PfBeerDuty          => throw new MatchError("Not implemented yet")
             case Origins.PfGamingOrBingoDuty => throw new MatchError("Not implemented yet")
-            case Origins.PfGbPbRgDuty        => throw new MatchError("Not implemented yet")
             case Origins.PfLandfillTax       => throw new MatchError("Not implemented yet")
             case Origins.PfAggregatesLevy    => throw new MatchError("Not implemented yet")
             case Origins.PfClimateChangeLevy => throw new MatchError("Not implemented yet")
-            case Origins.PfTpes              => throw new MatchError("Not implemented yet")
             case Origins.PfImportedVehicles  => throw new MatchError("Not implemented yet")
             case Origins.PfAted              => throw new MatchError("Not implemented yet")
             case Origins.PfCdsDeferment      => throw new MatchError("Not implemented yet")
-            case Origins.PfTrust             => throw new MatchError("Not implemented yet")
             case Origins.PtaClass3Ni         => throw new MatchError("Not implemented yet")
             case Origins.`3psSa`             => throw new MatchError("Not implemented yet")
             case Origins.`3psVat`            => throw new MatchError("Not implemented yet")
             case Origins.Pillar2             => throw new MatchError("Not implemented yet")
             case Origins.PfPillar2           => throw new MatchError("Not implemented yet")
-            case Origins.PfOther             => throw new MatchError("Not implemented yet")
             case Origins.PfClass2Ni          => throw new MatchError("Not implemented yet")
             case Origins.PfInsurancePremium  => throw new MatchError("Not implemented yet")
-            case Origins.PfPsAdmin           => throw new MatchError("Not implemented yet")
           }
       }
     }
