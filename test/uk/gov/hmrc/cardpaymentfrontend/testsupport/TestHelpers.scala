@@ -98,6 +98,8 @@ object TestHelpers {
     PfTrust,
     PfOther,
     PfPsAdmin,
+    `3psSa`,
+    `3psVat`
   )
 
   val unimplementedOrigins: Seq[Origin] = Seq[Origin](
@@ -122,8 +124,6 @@ object TestHelpers {
     PfAted,
     PfCdsDeferment,
     PtaClass3Ni,
-    `3psSa`,
-    `3psVat`,
     PfPillar2,
     Pillar2
   )
@@ -206,8 +206,8 @@ object TestHelpers {
     case AlcoholDuty              => TestJourneys.AlcoholDuty
     case PfAlcoholDuty            => TestJourneys.PfAlcoholDuty
     case VatC2c                   => TestJourneys.VatC2c
-    case `3psSa`                  => throw new MatchError("Not implemented yet")
-    case `3psVat`                 => throw new MatchError("Not implemented yet")
+    case `3psSa`                  => TestJourneys.`3psSa`
+    case `3psVat`                 => TestJourneys.`3psVat`
     case PfPillar2                => throw new MatchError("Not implemented yet")
     case PfVatC2c                 => TestJourneys.PfVatC2c
     case Pillar2                  => throw new MatchError("Not implemented yet")

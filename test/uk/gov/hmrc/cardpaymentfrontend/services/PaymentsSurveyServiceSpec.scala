@@ -51,12 +51,15 @@ class PaymentsSurveyServiceSpec extends ItSpec with TableDrivenPropertyChecks {
       val loggedOutFakeRequest = FakeRequest()
 
       "correctly build a PaymentSurveyJourneyRequest" - {
-        TestHelpers.implementedOrigins.foreach { origin =>
-          s"for origin: ${origin.entryName}" in {
-            val (paymentSurveyJourneyRequest, loggedIn) = originToPaymentSurveyJourneyRequestAndLoggedInBool(origin)
-            test(origin, paymentSurveyJourneyRequest, TestHelpers.deriveTestDataFromOrigin(origin).journeyAfterSucceedDebitWebPayment, loggedIn)
+        TestHelpers.implementedOrigins
+          .filterNot(_ == Origins.`3psVat`)
+          .filterNot(_ == Origins.`3psSa`) // 3ps origins don't have card yet
+          .foreach { origin =>
+            s"for origin: ${origin.entryName}" in {
+              val (paymentSurveyJourneyRequest, loggedIn) = originToPaymentSurveyJourneyRequestAndLoggedInBool(origin)
+              test(origin, paymentSurveyJourneyRequest, TestHelpers.deriveTestDataFromOrigin(origin).journeyAfterSucceedDebitWebPayment, loggedIn)
+            }
           }
-        }
 
           def test(
               origin:                              Origin,

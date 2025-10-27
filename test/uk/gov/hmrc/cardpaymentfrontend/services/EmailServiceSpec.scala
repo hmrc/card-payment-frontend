@@ -386,6 +386,8 @@ class EmailServiceSpec extends ItSpec with TableDrivenPropertyChecks {
     implementedOrigins
       .filterNot(_ == Origins.Mib) // no email for this Origin
       .filterNot(_ == Origins.BcPngr) // no email for this Origin
+      .filterNot(_ == Origins.`3psVat`)
+      .filterNot(_ == Origins.`3psSa`) // 3ps origins don't have card yet
       .foreach { origin =>
         s"for journey with origin ${origin.entryName}, test scenario should exist" in {
           scenarios.exists { scenario =>
@@ -400,6 +402,8 @@ class EmailServiceSpec extends ItSpec with TableDrivenPropertyChecks {
       implementedOrigins
         .filterNot(_ == Origins.Mib) // no email for this Origin
         .filterNot(_ == Origins.BcPngr) // no email for this Origin
+        .filterNot(_ == Origins.`3psVat`)
+        .filterNot(_ == Origins.`3psSa`) // 3ps origins don't have card yet
         .foreach { origin =>
           val msgKey = origin.lift.emailTaxTypeMessageKey
 
