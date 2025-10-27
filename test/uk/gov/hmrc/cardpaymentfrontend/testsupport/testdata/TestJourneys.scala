@@ -38,14 +38,16 @@ import payapi.corcommon.model.taxes.sdlt.Utrn
 import payapi.corcommon.model.taxes.trusts.TrustReference
 import payapi.corcommon.model.taxes.vat.{CalendarPeriod, VatChargeReference, Vrn}
 import payapi.corcommon.model.taxes.vatc2c.VatC2cReference
+import payapi.corcommon.model.thirdpartysoftware.ClientJourneyId
 import payapi.corcommon.model.times.period.TaxQuarter.AprilJuly
 import payapi.corcommon.model.times.period.TaxYear
 import payapi.corcommon.model.webchat.WcEpayeNiReference
 import payapi.corcommon.model.{AmountInPence, JourneyId, PaymentStatuses}
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.testdata.TestDataUtils._
-import uk.gov.hmrc.cardpaymentfrontend.testsupport.testdata.TestPayApiData.{testCalendarPeriod, testQuarterlyTaxPeriod, testSubYearlyPeriod, testYearlyPeriod}
+import uk.gov.hmrc.cardpaymentfrontend.testsupport.testdata.TestPayApiData.{testCalendarPeriod, testQuarterlyTaxPeriod, testSaUtr, testSubYearlyPeriod, testVrn, testYearlyPeriod}
 
 import java.time.{LocalDate, LocalDateTime}
+import java.util.UUID.randomUUID
 
 sealed trait JourneyStatuses[jsd <: JourneySpecificData] {
   def journeyBeforeBeginWebPayment: Journey[jsd]
@@ -1355,4 +1357,45 @@ object TestJourneys {
     )
   }
 
+  object `3psSa` extends JourneyStatuses[Jsd3psSa] {
+    val journeyBeforeBeginWebPayment: Journey[Jsd3psSa] = Journey[Jsd3psSa](
+      _id                  = JourneyId(TestPayApiData.decryptedJourneyId),
+      sessionId            = Some(SessionId("TestSession-4b87460d-6f43-4c4c-b810-d6f87c774854")),
+      amountInPence        = Some(AmountInPence(1234)),
+      emailTemplateOptions = None,
+      navigation           = None,
+      order                = None,
+      status               = PaymentStatuses.Created,
+      createdOn            = LocalDateTime.parse("2027-11-02T16:28:55.185"),
+      journeySpecificData  = Jsd3psSa(
+        utr                  = testSaUtr,
+        defaultAmountInPence = AmountInPence(1234),
+        clientJourneyId      = ClientJourneyId(randomUUID),
+        None,
+        None
+      ),
+      chosenWayToPay       = None
+    )
+  }
+
+  object `3psVat` extends JourneyStatuses[Jsd3psVat] {
+    val journeyBeforeBeginWebPayment: Journey[Jsd3psVat] = Journey[Jsd3psVat](
+      _id                  = JourneyId(TestPayApiData.decryptedJourneyId),
+      sessionId            = Some(SessionId("TestSession-4b87460d-6f43-4c4c-b810-d6f87c774854")),
+      amountInPence        = Some(AmountInPence(1234)),
+      emailTemplateOptions = None,
+      navigation           = None,
+      order                = None,
+      status               = PaymentStatuses.Created,
+      createdOn            = LocalDateTime.parse("2027-11-02T16:28:55.185"),
+      journeySpecificData  = Jsd3psVat(
+        vrn                  = testVrn,
+        defaultAmountInPence = AmountInPence(1234),
+        clientJourneyId      = ClientJourneyId(randomUUID),
+        None,
+        None
+      ),
+      chosenWayToPay       = None
+    )
+  }
 }

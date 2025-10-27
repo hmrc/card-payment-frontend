@@ -99,6 +99,8 @@ service-name.PfVatC2c = Talu eich TAW fewnforio
 service-name.WcEpayeLpp = Talu’ch cosb am dalu neu gyflwyno TWE yn hwyr
 service-name.WcEpayeNi = Talwch eich TWE a’ch Yswiriant Gwladol y cyflogwr
 service-name.WcEpayeSeta = Talwch eich Cytundeb Setliad TWE y cyflogwr
+service-name.3psSa = Talu eich Hunanasesiad
+service-name.3psVat = Talu eich TAW
 
 ## Email address page
 email-address.heading = Beth yw’ch cyfeiriad e-bost? (dewisol)
@@ -207,6 +209,8 @@ check-your-details.PfTpes.reference = Cyfeirnod
 check-your-details.PfTrust.reference = Cyfeirnod
 check-your-details.PfOther.reference = Cyfeirnod y taliad
 check-your-details.PfPsAdmin.reference = Cyfeirnod
+check-your-details.3psSa.reference = Cyfeirnod Unigryw y Trethdalwr (UTR)
+check-your-details.3psVat.reference = Rhif cofrestru TAW
 
 ## Address Page
 address.heading = Cyfeiriad bilio’r cerdyn
@@ -425,6 +429,8 @@ payment-complete.tax-name.WcEpayeLpp = Cosb y Cyflogwr am dalu TWE yn hwyr
 payment-complete.tax-name.WcEpayeNi = TWE ac Yswiriant Gwladol y Cyflogwr
 payment-complete.tax-name.WcEpayeSeta = Cytundeb Setliad TWE y Cyflogwr
 payment-complete.tax-name.Mib = Nwyddau masnachol sy’n cael eu cario mewn bagiau neu gerbydau bach
+payment-complete.tax-name.3psSa = Self Assessment
+payment-complete.tax-name.3psVat = VAT
 
 ## Payment Cancelled page
 payment-cancelled.heading = Taliad wedi’i ganslo
@@ -513,6 +519,8 @@ email.tax-name.PfMgd = Toll Peiriannau Hapchwarae
 email.tax-name.PfTrust = Tâl cosb y Gwasanaeth Cofrestru Ymddiriedolaethau
 email.tax-name.PfOther = Trethi, cosbau a setliadau ymholiadau eraill
 email.tax-name.PfPsAdmin = Taliadau treth gynllun pensiwn
+email.tax-name.3psSa = Hunanasesiad
+email.tax-name.3psVat = TAW
 
 ## Payments survey
 payments-survey.bta.return-message = Dim diolch, dychwelyd i cyfrif treth busnes

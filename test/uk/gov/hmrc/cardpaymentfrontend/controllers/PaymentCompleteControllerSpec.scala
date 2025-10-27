@@ -518,11 +518,11 @@ class PaymentCompleteControllerSpec extends ItSpec {
         }
 
       "should have a test for all origins below this one" in {
-        TestHelpers.implementedOrigins.size shouldBe 66 withClue "** This dummy test is here to remind you to update the tests below. Bump up the expected number when an origin is added to implemented origins **"
+        TestHelpers.implementedOrigins.size shouldBe 68 withClue "** This dummy test is here to remind you to update the tests below. Bump up the expected number when an origin is added to implemented origins **"
       }
 
       TestHelpers.implementedOrigins
-        .filterNot(_ == Origins.BcPngr) // BcPngr has it's own customised page, so we ignore it for these tests.
+        .filterNot(o => o == Origins.BcPngr || o == Origins.`3psSa` || o == Origins.`3psVat`) // BcPngr has it's own customised page, so we ignore it for these tests. 3ps don't support card payments yet
         .foreach { origin =>
 
           val testScenario: TestScenarioInfo = originToTdAndSummaryListRows(origin)
