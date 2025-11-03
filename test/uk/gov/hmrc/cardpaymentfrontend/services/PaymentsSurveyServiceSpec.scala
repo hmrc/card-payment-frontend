@@ -825,6 +825,24 @@ class PaymentsSurveyServiceSpec extends ItSpec with TableDrivenPropertyChecks {
                 )
               )
             ) -> false
+            case Origins.WcClass2Ni => PaymentSurveyJourneyRequest(
+              origin         = "WcClass2Ni",
+              returnMsg      = "Skip survey",
+              returnHref     = "https://www.gov.uk/government/organisations/hm-revenue-customs",
+              auditName      = "class-2-national-insurance",
+              audit          = AuditOptions(
+                userType  = "LoggedOut",
+                journey   = Some("Successful"),
+                orderId   = Some("123456789012345678"),
+                liability = Some("class-2-national-insurance")
+              ),
+              contentOptions = SurveyContentOptions(
+                isWelshSupported = true,
+                title            = SurveyBannerTitle(
+                  englishValue = "Pay Class 2 National Insurance", welshValue = Some("Talu Yswiriant Gwladol Dosbarth 2")
+                )
+              )
+            ) -> false
             case Origins.PfChildBenefitRepayments => PaymentSurveyJourneyRequest(
               origin         = "PfChildBenefitRepayments",
               returnMsg      = "Skip survey",
@@ -1274,6 +1292,7 @@ class PaymentsSurveyServiceSpec extends ItSpec with TableDrivenPropertyChecks {
                 )
               )
             ) -> false
+
             case Origins.Parcels             => throw new MatchError("Not implemented yet")
             case Origins.DdVat               => throw new MatchError("Not implemented yet")
             case Origins.DdSdil              => throw new MatchError("Not implemented yet")

@@ -74,6 +74,7 @@ object TestHelpers {
     WcEpayeNi,
     WcEpayeLateCis,
     WcEpayeSeta,
+    WcClass2Ni,
     PfChildBenefitRepayments,
     BtaSdil,
     PfSdil,
@@ -220,6 +221,7 @@ object TestHelpers {
     case WcEpayeNi                => TestJourneys.WcEpayeNi
     case WcEpayeLateCis           => TestJourneys.WcEpayeLateCis
     case WcEpayeSeta              => TestJourneys.WcEpayeSeta
+    case WcClass2Ni               => TestJourneys.WcClass2Ni
   }
 
 }

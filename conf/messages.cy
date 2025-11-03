@@ -99,6 +99,7 @@ service-name.PfVatC2c = Talu eich TAW fewnforio
 service-name.WcEpayeLpp = Talu’ch cosb am dalu neu gyflwyno TWE yn hwyr
 service-name.WcEpayeNi = Talwch eich TWE a’ch Yswiriant Gwladol y cyflogwr
 service-name.WcEpayeSeta = Talwch eich Cytundeb Setliad TWE y cyflogwr
+service-name.WcClass2Ni = Talu Yswiriant Gwladol Dosbarth 2
 
 ## Email address page
 email-address.heading = Beth yw’ch cyfeiriad e-bost? (dewisol)
@@ -200,6 +201,7 @@ check-your-details.JrsJobRetentionScheme.reference = Cyfeirnod y taliad
 check-your-details.AppSa.reference = Cyfeirnod Unigryw y Trethdalwr (UTR)
 check-your-details.Mib.reference = Cyfeirnod y taliad
 check-your-details.BcPngr.reference = Cyfeirnod y taliad
+check-your-details.WcClass2Ni.reference = Cyfeirnod y taliad
 
 check-your-details.PfGbPbRgDuty.reference = Cyfeirnod
 check-your-details.PfMgd.reference = Cyfeirnod
@@ -425,6 +427,8 @@ payment-complete.tax-name.WcEpayeLpp = Cosb y Cyflogwr am dalu TWE yn hwyr
 payment-complete.tax-name.WcEpayeNi = TWE ac Yswiriant Gwladol y Cyflogwr
 payment-complete.tax-name.WcEpayeSeta = Cytundeb Setliad TWE y Cyflogwr
 payment-complete.tax-name.Mib = Nwyddau masnachol sy’n cael eu cario mewn bagiau neu gerbydau bach
+payment-complete.tax-name.WcClass2Ni = Yswiriant Gwladol Dosbarth 2
+
 
 ## Payment Cancelled page
 payment-cancelled.heading = Taliad wedi’i ganslo
@@ -513,6 +517,7 @@ email.tax-name.PfMgd = Toll Peiriannau Hapchwarae
 email.tax-name.PfTrust = Tâl cosb y Gwasanaeth Cofrestru Ymddiriedolaethau
 email.tax-name.PfOther = Trethi, cosbau a setliadau ymholiadau eraill
 email.tax-name.PfPsAdmin = Taliadau treth gynllun pensiwn
+email.tax-name.WcClass2Ni = Yswiriant Gwladol Dosbarth 2
 
 ## Payments survey
 payments-survey.bta.return-message = Dim diolch, dychwelyd i cyfrif treth busnes

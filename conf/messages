@@ -98,6 +98,7 @@ service-name.PfVatC2c = Pay your import VAT
 service-name.WcEpayeLpp = Pay your PAYE late payment or filing penalty
 service-name.WcEpayeNi = Pay your employers’ PAYE and National Insurance
 service-name.WcEpayeSeta = Pay your PAYE Settlement Agreement
+service-name.WcClass2Ni = Pay Class 2 National Insurance
 
 ## Email address page
 email-address.heading = What is your email address? (optional)
@@ -219,6 +220,7 @@ check-your-details.PfTpes.reference = Reference number
 check-your-details.PfTrust.reference = Reference number
 check-your-details.PfOther.reference = Payment reference
 check-your-details.PfPsAdmin.reference = Reference number
+check-your-details.WcClass2Ni.reference = Payment reference
 
 ## Address Page
 address.heading = Card billing address
@@ -434,6 +436,8 @@ payment-complete.tax-name.WcEpayeNi = Employers' PAYE and National Insurance
 payment-complete.tax-name.WcEpayeSeta = Employers’ PAYE Settlement Agreement
 payment-complete.tax-name.Mib = Commercial goods carried in accompanied baggage or small vehicles
 #payment-complete.tax-name.BcPngr = Passengers has custom complete page, not needed
+payment-complete.tax-name.WcEpayeSeta = Employers’ PAYE Settlement Agreement
+payment-complete.tax-name.WcClass2Ni = Class 2 National Insurance
 
 ## Payment Cancelled page
 
@@ -531,6 +535,7 @@ email.tax-name.PfMgd = Machine Games Duty
 email.tax-name.PfTrust = Trust Registration Service penalty charge
 email.tax-name.PfOther = Other taxes, penalties and enquiry settlements
 email.tax-name.PfPsAdmin = Pension scheme tax charges
+email.tax-name.WcClass2Ni = Class 2 National Insurance
 
 ## Payments survey
 payments-survey.bta.return-message = Skip survey, return to business tax account

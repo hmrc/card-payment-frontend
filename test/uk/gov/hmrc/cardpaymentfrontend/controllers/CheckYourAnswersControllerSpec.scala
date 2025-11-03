@@ -258,6 +258,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
         case Origins.WcEpayeNi          => false
         case Origins.WcEpayeLateCis     => false
         case Origins.WcEpayeSeta        => false
+        case Origins.WcClass2Ni         => false
         case Origins.Mib                => false
         case Origins.BcPngr             => false
         case _                          => true
@@ -1663,9 +1664,17 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       assertRow(referenceRow, "Cyfeirnod y taliad", "XE123456789012", Some("Newid Cyfeirnod y taliad"), Some("http://localhost:9056/pay/pay-by-card-change-reference-number"))
     }
 
+    "[WcClass2Ni] should render the payment reference row correctly" in {
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.WcClass2Ni.journeyBeforeBeginWebPayment)
+      val result = systemUnderTest.renderPage(fakeRequest())
+      val document = Jsoup.parse(contentAsString(result))
+      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.WcClass2Ni))
+      assertRow(referenceRow, "Payment reference", "123456789012345678", None, None)
+    }
+
     "sanity check for implemented origins" in {
       // remember to add the singular tests for reference rows as well as fdp if applicable, they are not covered in the implementedOrigins forall tests
-      TestHelpers.implementedOrigins.size shouldBe 66 withClue "** This dummy test is here to remind you to update the tests above. Bump up the expected number when an origin is added to implemented origins **"
+      TestHelpers.implementedOrigins.size shouldBe 67 withClue "** This dummy test is here to remind you to update the tests above. Bump up the expected number when an origin is added to implemented origins **"
     }
 
   }

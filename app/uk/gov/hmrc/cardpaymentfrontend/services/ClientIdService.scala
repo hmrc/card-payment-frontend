@@ -81,7 +81,7 @@ class ClientIdService @Inject() {
       case Amls | AppSimpleAssessment | BtaEpayePenalty | BtaEpayeInterest | PfAmls | PfEpayeLpp | PfEpayeSeta
         | PfEpayeLateCis | WcEpayeLateCis | PfJobRetentionScheme | JrsJobRetentionScheme | PfOther | PfPsAdmin
         | BtaSdil | PfMgd | PfGamingOrBingoDuty | PfGbPbRgDuty | PfSdil | PfSimpleAssessment | WcSimpleAssessment
-        | PfTpes | PfPpt | PfTrust | EconomicCrimeLevy | PfEconomicCrimeLevy | WcXref | WcEpayeLpp | WcEpayeSeta =>
+        | PfTpes | PfPpt | PfTrust | EconomicCrimeLevy | PfEconomicCrimeLevy | WcXref | WcEpayeLpp | WcEpayeSeta | WcClass2Ni =>
         language match {
           case Languages.English => ClientIds.MIEE
           case Languages.Welsh   => ClientIds.MIEC
