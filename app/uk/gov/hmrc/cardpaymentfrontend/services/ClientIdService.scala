@@ -87,7 +87,7 @@ class ClientIdService @Inject() {
           case Languages.Welsh   => ClientIds.MIEC
         }
 
-      case PfSdlt => language match {
+      case PfSdlt | WcSdlt => language match {
         case Languages.English => ClientIds.SDEE
         case Languages.Welsh   => ClientIds.SDEC
       }

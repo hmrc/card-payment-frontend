@@ -143,6 +143,7 @@ object OriginSpecificSessionData {
       case WcEpayeSeta              => Json.format[WcEpayeSetaSessionData].reads(json)
       case PfJobRetentionScheme     => Json.format[PfJobRetentionSchemeSessionData].reads(json)
       case JrsJobRetentionScheme    => Json.format[JrsJobRetentionSchemeSessionData].reads(json)
+      case WcSdlt                   => Json.format[WcSdltSessionData].reads(json)
 
       //Todo: Remove PfP800 when PtaP800 is fully available
       case origin @ (PfOther | PtaP800 | PfP800
@@ -234,6 +235,7 @@ object OriginSpecificSessionData {
       case sessionData: WcEpayeSetaSessionData           => Json.format[WcEpayeSetaSessionData].writes(sessionData)
       case sessionData: PfJobRetentionSchemeSessionData  => Json.format[PfJobRetentionSchemeSessionData].writes(sessionData)
       case sessionData: JrsJobRetentionSchemeSessionData => Json.format[JrsJobRetentionSchemeSessionData].writes(sessionData)
+      case sessionData: WcSdltSessionData                => Json.format[WcSdltSessionData].writes(sessionData)
     }) + ("origin" -> Json.toJson(o.origin))
 
   implicit val format: OFormat[OriginSpecificSessionData] = OFormat(reads, writes)
@@ -512,6 +514,11 @@ final case class PfBioFuelsSessionData(bioFuelsRegistrationNumber: BioFuelsRegis
 }
 
 final case class PfSdltSessionData(utrn: Utrn, returnUrl: Option[Url] = None) extends OriginSpecificSessionData(PfSdlt) {
+  def paymentReference: Reference = ReferenceMaker.makeSdltReference(utrn)
+  def searchTag: SearchTag = SearchTag(utrn.canonicalizedValue)
+}
+
+final case class WcSdltSessionData(utrn: Utrn, returnUrl: Option[Url] = None) extends OriginSpecificSessionData(WcSdlt) {
   def paymentReference: Reference = ReferenceMaker.makeSdltReference(utrn)
   def searchTag: SearchTag = SearchTag(utrn.canonicalizedValue)
 }

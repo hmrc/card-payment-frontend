@@ -36,6 +36,7 @@ class OriginExtendedSpec extends UnitSpec {
         WcEpayeNi -> true,
         WcEpayeLateCis -> true,
         WcEpayeSeta -> true,
+        WcSdlt -> true,
         PfSa -> false,
         BtaSa -> false,
         PtaSa -> false,
@@ -221,7 +222,8 @@ class OriginExtendedSpec extends UnitSpec {
         PfTrust -> true,
         PtaClass3Ni -> true,
         `3psSa` -> true,
-        `3psVat` -> true
+        `3psVat` -> true,
+        WcSdlt -> true
       )
       originsSeq.foreach {
         case (origin, welshIsSupported) =>

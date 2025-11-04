@@ -260,6 +260,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
         case Origins.WcEpayeSeta        => false
         case Origins.Mib                => false
         case Origins.BcPngr             => false
+        case Origins.WcSdlt             => false
         case _                          => true
       }
 
@@ -1665,7 +1666,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
 
     "sanity check for implemented origins" in {
       // remember to add the singular tests for reference rows as well as fdp if applicable, they are not covered in the implementedOrigins forall tests
-      TestHelpers.implementedOrigins.size shouldBe 66 withClue "** This dummy test is here to remind you to update the tests above. Bump up the expected number when an origin is added to implemented origins **"
+      TestHelpers.implementedOrigins.size shouldBe 67 withClue "** This dummy test is here to remind you to update the tests above. Bump up the expected number when an origin is added to implemented origins **"
     }
 
   }
