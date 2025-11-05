@@ -2647,7 +2647,7 @@ object PaymentCompleteControllerSpec {
       hasWelshTest                    = true,
       hasAReturnUrl                   = false
     )
-
+    // WcClass2Ni does not have card payments.
     case Origins.WcClass2Ni => TestScenarioInfo(
       debitCardJourney                = TestJourneys.WcClass2Ni.journeyAfterSucceedDebitWebPayment,
       creditCardJourney               = TestJourneys.WcClass2Ni.journeyAfterSucceedCreditWebPayment,

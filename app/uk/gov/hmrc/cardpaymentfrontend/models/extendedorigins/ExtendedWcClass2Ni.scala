@@ -19,7 +19,7 @@ package uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins
 import payapi.cardpaymentjourney.model.journey.{JourneySpecificData, JsdWcClass2Ni}
 import play.api.mvc.AnyContent
 import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
-import uk.gov.hmrc.cardpaymentfrontend.models.PaymentMethod.{Bacs, Card, OpenBanking}
+import uk.gov.hmrc.cardpaymentfrontend.models.PaymentMethod.{Bacs, OpenBanking}
 import uk.gov.hmrc.cardpaymentfrontend.models.openbanking.{OriginSpecificSessionData, WcClass2NiSessionData}
 import uk.gov.hmrc.cardpaymentfrontend.models.{CheckYourAnswersRow, PaymentMethod}
 
@@ -29,7 +29,7 @@ object ExtendedWcClass2Ni extends ExtendedOrigin {
 
   def cardFeesPagePaymentMethods: Set[PaymentMethod] = Set[PaymentMethod](OpenBanking)
 
-  def paymentMethods(): Set[PaymentMethod] = Set(Card, OpenBanking, Bacs)
+  def paymentMethods(): Set[PaymentMethod] = Set(OpenBanking, Bacs)
 
   override def checkYourAnswersReferenceRow(journeyRequest: JourneyRequest[AnyContent])(payFrontendBaseUrl: String): Option[CheckYourAnswersRow] = {
     Some(CheckYourAnswersRow(
