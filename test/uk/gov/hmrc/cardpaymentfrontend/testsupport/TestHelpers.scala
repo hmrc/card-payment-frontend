@@ -101,6 +101,7 @@ object TestHelpers {
     WcSdlt,
     DdVat,
     DdSdil,
+    WcChildBenefitRepayments
   )
 
   val unimplementedOrigins: Seq[Origin] = Seq[Origin](
@@ -224,6 +225,7 @@ object TestHelpers {
     case WcEpayeSeta              => TestJourneys.WcEpayeSeta
     case WcSdlt                   => TestJourneys.WcSdlt
     case WcClass2Ni               => throw new MatchError("Not implemented yet")
+    case WcChildBenefitRepayments => TestJourneys.WcChildBenefitRepayments
   }
 
 }
