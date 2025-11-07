@@ -1355,4 +1355,22 @@ object TestJourneys {
     )
   }
 
+  object WcSdlt extends JourneyStatuses[JsdWcSdlt] {
+    val journeyBeforeBeginWebPayment: Journey[JsdWcSdlt] = Journey[JsdWcSdlt](
+      _id                  = JourneyId(TestPayApiData.decryptedJourneyId),
+      sessionId            = Some(SessionId("TestSession-4b87460d-6f43-4c4c-b810-d6f87c774854")),
+      amountInPence        = Some(AmountInPence(1234)),
+      emailTemplateOptions = None,
+      navigation           = None,
+      order                = None,
+      status               = PaymentStatuses.Created,
+      createdOn            = LocalDateTime.parse("2027-11-02T16:28:55.185"),
+      journeySpecificData  = JsdWcSdlt(
+        utrn                 = Utrn("123456789MA"),
+        defaultAmountInPence = AmountInPence(1234)
+      ),
+      chosenWayToPay       = None
+    )
+  }
+
 }

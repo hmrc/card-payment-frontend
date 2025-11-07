@@ -699,6 +699,24 @@ class PaymentsSurveyServiceSpec extends ItSpec with TableDrivenPropertyChecks {
                 )
               )
             ) -> false
+            case Origins.WcSdlt => PaymentSurveyJourneyRequest(
+              origin         = "WcSdlt",
+              returnMsg      = "Skip survey",
+              returnHref     = "https://www.gov.uk/government/organisations/hm-revenue-customs",
+              auditName      = "stamp-duty",
+              audit          = AuditOptions(
+                userType  = "LoggedOut",
+                journey   = Some("Successful"),
+                orderId   = Some("123456789MA"),
+                liability = Some("stamp-duty")
+              ),
+              contentOptions = SurveyContentOptions(
+                isWelshSupported = true,
+                title            = SurveyBannerTitle(
+                  englishValue = "Pay your Stamp Duty Land Tax", welshValue = Some("Talu eich Treth Dir y Tollau Stamp")
+                )
+              )
+            ) -> false
             case Origins.VatC2c => PaymentSurveyJourneyRequest(
               origin         = "VatC2c",
               returnMsg      = "Skip survey",

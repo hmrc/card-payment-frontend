@@ -98,6 +98,7 @@ object TestHelpers {
     PfTrust,
     PfOther,
     PfPsAdmin,
+    WcSdlt,
   )
 
   val unimplementedOrigins: Seq[Origin] = Seq[Origin](
@@ -220,6 +221,7 @@ object TestHelpers {
     case WcEpayeNi                => TestJourneys.WcEpayeNi
     case WcEpayeLateCis           => TestJourneys.WcEpayeLateCis
     case WcEpayeSeta              => TestJourneys.WcEpayeSeta
+    case WcSdlt                   => TestJourneys.WcSdlt
   }
 
 }
