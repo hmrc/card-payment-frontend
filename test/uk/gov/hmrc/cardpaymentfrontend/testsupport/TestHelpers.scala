@@ -99,14 +99,14 @@ object TestHelpers {
     PfOther,
     PfPsAdmin,
     WcSdlt,
+    DdVat,
+    DdSdil,
   )
 
   val unimplementedOrigins: Seq[Origin] = Seq[Origin](
     PfClass2Ni,
     PfInsurancePremium,
     Parcels,
-    DdVat,
-    DdSdil,
     PfCdsCash,
     PfSpiritDrinks,
     PfInheritanceTax,
@@ -161,8 +161,8 @@ object TestHelpers {
     case BtaSdil                  => TestJourneys.BtaSdil
     case BcPngr                   => TestJourneys.BcPngr
     case Parcels                  => throw new MatchError("Not implemented yet")
-    case DdVat                    => throw new MatchError("Not implemented yet")
-    case DdSdil                   => throw new MatchError("Not implemented yet")
+    case DdVat                    => TestJourneys.DdVat
+    case DdSdil                   => TestJourneys.DdSdil
     case VcVatReturn              => TestJourneys.VcVatReturn
     case VcVatOther               => TestJourneys.VcVatOther
     case Amls                     => TestJourneys.Amls

@@ -173,8 +173,8 @@ object ExtendedOrigin {
       case BtaSdil                  => ExtendedBtaSdil
       case BcPngr                   => ExtendedBcPngr
       case Parcels                  => DefaultExtendedOrigin
-      case DdVat                    => DefaultExtendedOrigin
-      case DdSdil                   => DefaultExtendedOrigin
+      case DdVat                    => ExtendedDdVat
+      case DdSdil                   => ExtendedDdSdil
       case VcVatReturn              => ExtendedVcVatReturn
       case VcVatOther               => ExtendedVcVatOther
       case ItSa                     => ExtendedItSa

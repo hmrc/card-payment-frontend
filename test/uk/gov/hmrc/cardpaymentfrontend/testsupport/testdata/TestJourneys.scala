@@ -25,15 +25,16 @@ import payapi.corcommon.model.taxes.ad.{AlcoholDutyChargeReference, AlcoholDutyR
 import payapi.corcommon.model.taxes.amls.AmlsPaymentReference
 import payapi.corcommon.model.taxes.ct._
 import payapi.corcommon.model.taxes.epaye._
+import payapi.corcommon.model.taxes.ioss.Ioss
 import payapi.corcommon.model.taxes.mib.MibReference
 import payapi.corcommon.model.taxes.nino.Nino
 import payapi.corcommon.model.taxes.other._
 import payapi.corcommon.model.taxes.p302.{P302ChargeRef, P302Ref}
 import payapi.corcommon.model.taxes.p800.P800Ref
 import payapi.corcommon.model.taxes.pngr.{AmountPaidPreviously, PngrItem, PngrTaxBreakdown, TotalPaidNow}
-import payapi.corcommon.model.taxes.ioss.Ioss
 import payapi.corcommon.model.taxes.ppt.PptReference
 import payapi.corcommon.model.taxes.sa.SaUtr
+import payapi.corcommon.model.taxes.sdil.Zsdl
 import payapi.corcommon.model.taxes.sdlt.Utrn
 import payapi.corcommon.model.taxes.trusts.TrustReference
 import payapi.corcommon.model.taxes.vat.{CalendarPeriod, VatChargeReference, Vrn}
@@ -395,6 +396,21 @@ object TestJourneys {
       status               = PaymentStatuses.Created,
       createdOn            = LocalDateTime.parse("2027-11-02T16:28:55.185"),
       journeySpecificData  = JsdBtaVat(vrn                  = Vrn("999964805"), defaultAmountInPence = AmountInPence(1234), dueDate = Some(LocalDate.of(2028, 12, 12))),
+      chosenWayToPay       = None
+    )
+  }
+
+  object DdVat extends JourneyStatuses[JsdDdVat] {
+    val journeyBeforeBeginWebPayment: Journey[JsdDdVat] = Journey[JsdDdVat](
+      _id                  = JourneyId(TestPayApiData.decryptedJourneyId),
+      sessionId            = Some(SessionId("TestSession-4b87460d-6f43-4c4c-b810-d6f87c774854")),
+      amountInPence        = Some(AmountInPence(1234)),
+      emailTemplateOptions = None,
+      navigation           = Some(NavigationOptions(returnUrl = Url("https://www.return-url.com"), backUrl = Url("https://www.back-to-btavat.com"))),
+      order                = None,
+      status               = PaymentStatuses.Created,
+      createdOn            = LocalDateTime.parse("2027-11-02T16:28:55.185"),
+      journeySpecificData  = JsdDdVat(vrn                  = Vrn("999964805"), defaultAmountInPence = AmountInPence(1234), accountingPeriod = testCalendarPeriod),
       chosenWayToPay       = None
     )
   }
@@ -855,6 +871,24 @@ object TestJourneys {
         defaultAmountInPence = AmountInPence(1234),
         xRef                 = XRef("XE1234567890123"),
         dueDate              = Some(LocalDate.of(2028, 12, 12))
+      ),
+      chosenWayToPay       = None
+    )
+  }
+
+  object DdSdil extends JourneyStatuses[JsdDdSdil] {
+    val journeyBeforeBeginWebPayment: Journey[JsdDdSdil] = Journey[JsdDdSdil](
+      _id                  = JourneyId(TestPayApiData.decryptedJourneyId),
+      sessionId            = Some(SessionId("TestSession-4b87460d-6f43-4c4c-b810-d6f87c774854")),
+      amountInPence        = Some(AmountInPence(1234)),
+      emailTemplateOptions = None,
+      navigation           = Some(NavigationOptions(returnUrl = Url("https://www.return-url.com"), backUrl = Url("https://www.back-to-bta.com"))),
+      order                = None,
+      status               = PaymentStatuses.Created,
+      createdOn            = LocalDateTime.parse("2027-11-02T16:28:55.185"),
+      journeySpecificData  = JsdDdSdil(
+        defaultAmountInPence = AmountInPence(1234),
+        zsdl                 = Zsdl("XE1234567890123")
       ),
       chosenWayToPay       = None
     )

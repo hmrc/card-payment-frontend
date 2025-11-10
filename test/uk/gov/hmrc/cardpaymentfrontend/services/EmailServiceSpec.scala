@@ -46,7 +46,7 @@ class EmailServiceSpec extends ItSpec with TableDrivenPropertyChecks {
     val commission = Some("1.23")
 
     // needed for compiler. if you're adding a new extended origin, add the jsd to this type/list of types.
-    type JsdBounds = JsdPfEpayeNi with JsdAlcoholDuty with JsdPfPpt with JsdBtaEpayeBill with JsdPfSa with JsdPpt with JsdVcVatReturn with JsdPfEpayeP11d with JsdCapitalGainsTax with JsdBtaCt with JsdPfEpayeLateCis with JsdPfEpayeLpp with JsdPfCt with JsdBtaVat with JsdPfSdlt with JsdBtaEpayeInterest with JsdAmls with JsdBtaEpayeGeneral with JsdPfEpayeSeta with JsdPtaSa with JsdBtaClass1aNi with JsdVcVatOther with JsdPfAmls with JsdPfVat with JsdItSa with JsdBtaSa with JsdPfAlcoholDuty with JsdBtaEpayePenalty with JsdEconomicCrimeLevy with JsdPfEconomicCrimeLevy with JsdWcSa with JsdWcCt with JsdWcVat with JsdVatC2c with JsdPfVatC2c with JsdWcSimpleAssessment with JsdWcXref with JsdWcEpayeLpp with JsdWcEpayeNi with JsdWcEpayeLateCis with JsdWcClass1aNi with JsdPfChildBenefitRepayments with JsdBtaSdil with JsdPfSdil with JsdPtaP800 with JsdPfP800 with JsdPtaSimpleAssessment with JsdPfSimpleAssessment with JsdPfJobRetentionScheme with JsdJrsJobRetentionScheme with JsdWcEpayeSeta with JsdNiEuVatOss with JsdPfNiEuVatOss with JsdNiEuVatIoss with JsdPfNiEuVatIoss with JsdPfCds with JsdAppSa with JsdAppSimpleAssessment with JsdMib with JsdBcPngr with JsdPfTpes with JsdPfMgd with JsdPfGbPbRgDuty with JsdPfTrust with JsdPfOther with JsdPfPsAdmin with JsdWcSdlt
+    type JsdBounds = JsdPfEpayeNi with JsdAlcoholDuty with JsdPfPpt with JsdBtaEpayeBill with JsdPfSa with JsdPpt with JsdVcVatReturn with JsdPfEpayeP11d with JsdCapitalGainsTax with JsdBtaCt with JsdPfEpayeLateCis with JsdPfEpayeLpp with JsdPfCt with JsdBtaVat with JsdPfSdlt with JsdBtaEpayeInterest with JsdAmls with JsdBtaEpayeGeneral with JsdPfEpayeSeta with JsdPtaSa with JsdBtaClass1aNi with JsdVcVatOther with JsdPfAmls with JsdPfVat with JsdItSa with JsdBtaSa with JsdPfAlcoholDuty with JsdBtaEpayePenalty with JsdEconomicCrimeLevy with JsdPfEconomicCrimeLevy with JsdWcSa with JsdWcCt with JsdWcVat with JsdVatC2c with JsdPfVatC2c with JsdWcSimpleAssessment with JsdWcXref with JsdWcEpayeLpp with JsdWcEpayeNi with JsdWcEpayeLateCis with JsdWcClass1aNi with JsdPfChildBenefitRepayments with JsdBtaSdil with JsdPfSdil with JsdPtaP800 with JsdPfP800 with JsdPtaSimpleAssessment with JsdPfSimpleAssessment with JsdPfJobRetentionScheme with JsdJrsJobRetentionScheme with JsdWcEpayeSeta with JsdNiEuVatOss with JsdPfNiEuVatOss with JsdNiEuVatIoss with JsdPfNiEuVatIoss with JsdPfCds with JsdAppSa with JsdAppSimpleAssessment with JsdMib with JsdBcPngr with JsdPfTpes with JsdPfMgd with JsdPfGbPbRgDuty with JsdPfTrust with JsdPfOther with JsdPfPsAdmin with JsdWcSdlt with JsdDdVat with JsdDdSdil
 
     val scenarios: TableFor6[JourneyStatuses[_ >: JsdBounds <: JourneySpecificData], String, String, Option[String], Option[String], String] = Table(
       ("Journey", "Tax Type", "Tax Reference", "Commission", "Total Paid", "lang"),
@@ -139,6 +139,11 @@ class EmailServiceSpec extends ItSpec with TableDrivenPropertyChecks {
       (WcVat, "Vat", "ending with 64805", commission, Some("13.57"), "en"),
       (WcVat, "TAW", "yn gorffen gyda 64805", None, None, "cy"),
       (WcVat, "TAW", "yn gorffen gyda 64805", commission, Some("13.57"), "cy"),
+
+      (DdVat, "Vat", "ending with 64805", None, None, "en"),
+      (DdVat, "Vat", "ending with 64805", commission, Some("13.57"), "en"),
+      (DdVat, "TAW", "yn gorffen gyda 64805", None, None, "cy"),
+      (DdVat, "TAW", "yn gorffen gyda 64805", commission, Some("13.57"), "cy"),
 
       (VcVatOther, "Vat", "ending with 64805", None, None, "en"),
       (VcVatOther, "Vat", "ending with 64805", commission, Some("13.57"), "en"),
@@ -269,6 +274,11 @@ class EmailServiceSpec extends ItSpec with TableDrivenPropertyChecks {
       (BtaSdil, "Soft Drinks Industry Levy", "ending with 90123", commission, Some("13.57"), "en"),
       (BtaSdil, "Ardoll y Diwydiant Diodydd Ysgafn", "yn gorffen gyda 90123", None, None, "cy"),
       (BtaSdil, "Ardoll y Diwydiant Diodydd Ysgafn", "yn gorffen gyda 90123", commission, Some("13.57"), "cy"),
+
+      (DdSdil, "Soft Drinks Industry Levy", "ending with 90123", None, None, "en"),
+      (DdSdil, "Soft Drinks Industry Levy", "ending with 90123", commission, Some("13.57"), "en"),
+      (DdSdil, "Ardoll y Diwydiant Diodydd Ysgafn", "yn gorffen gyda 90123", None, None, "cy"),
+      (DdSdil, "Ardoll y Diwydiant Diodydd Ysgafn", "yn gorffen gyda 90123", commission, Some("13.57"), "cy"),
 
       (PfSdil, "Soft Drinks Industry Levy", "ending with 90123", None, None, "en"),
       (PfSdil, "Soft Drinks Industry Levy", "ending with 90123", commission, Some("13.57"), "en"),

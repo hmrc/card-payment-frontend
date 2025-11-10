@@ -38,7 +38,7 @@ class ClientIdService @Inject() {
         case Languages.Welsh   => ClientIds.SAEC
       }
 
-      case BtaVat | VcVatReturn | VcVatOther | `3psVat` => language match {
+      case BtaVat | VcVatReturn | VcVatOther | `3psVat` | DdVat => language match {
         case Languages.English => ClientIds.VAEE
         case Languages.Welsh   => ClientIds.VAEC
       }
@@ -81,7 +81,8 @@ class ClientIdService @Inject() {
       case Amls | AppSimpleAssessment | BtaEpayePenalty | BtaEpayeInterest | PfAmls | PfEpayeLpp | PfEpayeSeta
         | PfEpayeLateCis | WcEpayeLateCis | PfJobRetentionScheme | JrsJobRetentionScheme | PfOther | PfPsAdmin
         | BtaSdil | PfMgd | PfGamingOrBingoDuty | PfGbPbRgDuty | PfSdil | PfSimpleAssessment | WcSimpleAssessment
-        | PfTpes | PfPpt | PfTrust | EconomicCrimeLevy | PfEconomicCrimeLevy | WcXref | WcEpayeLpp | WcEpayeSeta =>
+        | PfTpes | PfPpt | PfTrust | EconomicCrimeLevy | PfEconomicCrimeLevy | WcXref | WcEpayeLpp | WcEpayeSeta
+        | DdSdil =>
         language match {
           case Languages.English => ClientIds.MIEE
           case Languages.Welsh   => ClientIds.MIEC
@@ -123,7 +124,7 @@ class ClientIdService @Inject() {
 
       case NiEuVatOss | PfNiEuVatOss | NiEuVatIoss | PfNiEuVatIoss => ClientIds.OSEE
 
-      case o @ (PfClass2Ni | PfInsurancePremium | Parcels | DdVat | DdSdil | PfSpiritDrinks | PfInheritanceTax | PfWineAndCider
+      case o @ (PfClass2Ni | PfInsurancePremium | Parcels | PfSpiritDrinks | PfInheritanceTax | PfWineAndCider
         | PfBioFuels | PfAirPass | PfBeerDuty | PfLandfillTax | PfAggregatesLevy | PfClimateChangeLevy | PfImportedVehicles
         | PfAted | PfPillar2 | Pillar2 | WcClass2Ni) => throw new MatchError(s"Trying to find a client id for an unsupported origin: ${o.entryName}")
 
