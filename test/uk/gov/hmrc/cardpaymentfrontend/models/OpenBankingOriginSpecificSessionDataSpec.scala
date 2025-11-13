@@ -525,7 +525,7 @@ class OpenBankingOriginSpecificSessionDataSpec extends UnitSpec {
       roundTripJsonTest(osd, testJson)
     }
 
-    "PfOther" in {
+    "PfOther (which is None, since it doesn't support Open banking)" in {
       ExtendedPfOther.openBankingOriginSpecificSessionData(TestJourneys.PfOther.journeyBeforeBeginWebPayment.journeySpecificData) shouldBe None
     }
 
@@ -536,10 +536,18 @@ class OpenBankingOriginSpecificSessionDataSpec extends UnitSpec {
       roundTripJsonTest(osd, testJson)
     }
 
+    "DdVat (which is None, since it doesn't support Open banking)" in {
+      ExtendedDdVat.openBankingOriginSpecificSessionData(TestJourneys.DdVat.journeyBeforeBeginWebPayment.journeySpecificData) shouldBe None
+    }
+
+    "DdSdil (which is None, since it doesn't support Open banking)" in {
+      ExtendedDdSdil.openBankingOriginSpecificSessionData(TestJourneys.DdSdil.journeyBeforeBeginWebPayment.journeySpecificData) shouldBe None
+    }
+
   }
 
   "sanity check for implemented origins" in {
-    TestHelpers.implementedOrigins.size shouldBe 67 withClue "** This dummy test is here to remind you to update the tests above. Bump up the expected number when an origin is added to implemented origins **"
+    TestHelpers.implementedOrigins.size shouldBe 69 withClue "** This dummy test is here to remind you to update the tests above. Bump up the expected number when an origin is added to implemented origins **"
   }
 
 }

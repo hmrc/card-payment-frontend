@@ -249,6 +249,24 @@ class PaymentsSurveyServiceSpec extends ItSpec with TableDrivenPropertyChecks {
                 )
               )
             ) -> true
+            case Origins.DdVat => PaymentSurveyJourneyRequest(
+              origin         = "DdVat",
+              returnMsg      = "Skip survey, return to business tax account",
+              returnHref     = "/business-account",
+              auditName      = "vat",
+              audit          = AuditOptions(
+                userType  = "LoggedIn",
+                journey   = Some("Successful"),
+                orderId   = Some("999964805"),
+                liability = Some("vat")
+              ),
+              contentOptions = SurveyContentOptions(
+                isWelshSupported = true,
+                title            = SurveyBannerTitle(
+                  englishValue = "Business tax account", welshValue = Some("Cyfrif treth busnes")
+                )
+              )
+            ) -> true
             case Origins.BtaEpayeBill => PaymentSurveyJourneyRequest(
               origin         = "BtaEpayeBill",
               returnMsg      = "Skip survey, return to business tax account",
@@ -879,6 +897,24 @@ class PaymentsSurveyServiceSpec extends ItSpec with TableDrivenPropertyChecks {
                 )
               )
             ) -> true
+            case Origins.DdSdil => PaymentSurveyJourneyRequest(
+              origin         = "DdSdil",
+              returnMsg      = "Skip survey, return to business tax account",
+              returnHref     = "/business-account",
+              auditName      = "soft-drinks-industry-levy",
+              audit          = AuditOptions(
+                userType  = "LoggedIn",
+                journey   = Some("Successful"),
+                orderId   = Some("XE1234567890123"),
+                liability = Some("soft-drinks-industry-levy")
+              ),
+              contentOptions = SurveyContentOptions(
+                isWelshSupported = true,
+                title            = SurveyBannerTitle(
+                  englishValue = "Pay the Soft Drinks Industry Levy", welshValue = Some("Talu Ardoll y Diwydiant Diodydd Ysgafn")
+                )
+              )
+            ) -> true
             case Origins.PfSdil => PaymentSurveyJourneyRequest(
               origin         = "PfSdil",
               returnMsg      = "Skip survey",
@@ -1293,8 +1329,6 @@ class PaymentsSurveyServiceSpec extends ItSpec with TableDrivenPropertyChecks {
               )
             ) -> false
             case Origins.Parcels             => throw new MatchError("Not implemented yet")
-            case Origins.DdVat               => throw new MatchError("Not implemented yet")
-            case Origins.DdSdil              => throw new MatchError("Not implemented yet")
             case Origins.PfCdsCash           => throw new MatchError("Not implemented yet")
             case Origins.PfSpiritDrinks      => throw new MatchError("Not implemented yet")
             case Origins.PfInheritanceTax    => throw new MatchError("Not implemented yet")

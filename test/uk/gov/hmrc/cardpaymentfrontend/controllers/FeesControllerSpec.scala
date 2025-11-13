@@ -3102,6 +3102,183 @@ class FeesControllerSpec extends ItSpec {
           val cardBullet = listOfMethods.select("#personal-debit-card")
           cardBullet.text() shouldBe "personal debit card"
         }
+      }
+
+      "for origin DdSdil" - {
+        "render the static content correctly" in {
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.DdSdil.journeyBeforeBeginWebPayment)
+          val result = systemUnderTest.renderPage(fakeRequest)
+          val document = Jsoup.parse(contentAsString(result))
+          document.select(".govuk-header__service-name").html shouldBe "Pay the Soft Drinks Industry Levy"
+          testStaticContentEnglish(document)
+        }
+
+        "the static content correctly in welsh" in {
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.DdSdil.journeyBeforeBeginWebPayment)
+          val result = systemUnderTest.renderPage(fakeWelshRequest)
+          val document = Jsoup.parse(contentAsString(result))
+          document.select(".govuk-header__service-name").html shouldBe "Talu Ardoll y Diwydiant Diodydd Ysgafn"
+          testStaticContentWelsh(document)
+        }
+
+        "render two options for other ways to pay" in {
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.DdSdil.journeyBeforeBeginWebPayment)
+          val result = systemUnderTest.renderPage(fakeRequest)
+          val document = Jsoup.parse(contentAsString(result))
+          val listOfMethods = document.select("#payment-type-list").select("li")
+          listOfMethods.size() shouldBe 2
+        }
+
+        // remove when we do OPS-14287, replacing with the ignored OB test
+        "render an option for bank transfer" in {
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.DdSdil.journeyBeforeBeginWebPayment)
+          val result = systemUnderTest.renderPage(fakeRequest)
+          val document = Jsoup.parse(contentAsString(result))
+          val listOfMethods = document.select("#payment-type-list").select("li")
+          val openBankingBullet = listOfMethods.select("#bank-transfer-link")
+          openBankingBullet.text() shouldBe "bank transfer"
+          openBankingBullet.attr("href") shouldBe "http://localhost:9056/pay/bac"
+        }
+
+        // remove when we do OPS-14287, replacing with the ignored OB test
+        "render an option for bank transfer in welsh" in {
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.DdSdil.journeyBeforeBeginWebPayment)
+          val result = systemUnderTest.renderPage(fakeWelshRequest)
+          val document = Jsoup.parse(contentAsString(result))
+          val listOfMethods = document.select("#payment-type-list").select("li")
+          val openBankingBullet = listOfMethods.select("#bank-transfer-link")
+          openBankingBullet.text() shouldBe "drosglwyddiad banc"
+          openBankingBullet.attr("href") shouldBe "http://localhost:9056/pay/bac"
+        }
+
+        // unignore when we do OPS-14287
+        "render an option for open banking" ignore {
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.DdSdil.journeyBeforeBeginWebPayment)
+          val result = systemUnderTest.renderPage(fakeRequest)
+          val document = Jsoup.parse(contentAsString(result))
+          val listOfMethods = document.select("#payment-type-list").select("li")
+          val openBankingBullet = listOfMethods.select("#open-banking-link")
+          openBankingBullet.text() shouldBe "bank account"
+          openBankingBullet.attr("href") shouldBe "/pay-by-card/start-open-banking"
+        }
+
+        // unignore when we do OPS-14287
+        "render an option for open banking in welsh" ignore {
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.DdSdil.journeyBeforeBeginWebPayment)
+          val result = systemUnderTest.renderPage(fakeWelshRequest)
+          val document = Jsoup.parse(contentAsString(result))
+          val listOfMethods = document.select("#payment-type-list").select("li")
+          val openBankingBullet = listOfMethods.select("#open-banking-link")
+          openBankingBullet.text() shouldBe "cyfrif banc"
+          openBankingBullet.attr("href") shouldBe "/pay-by-card/start-open-banking"
+        }
+
+        "render an option for personal debit card" in {
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.DdSdil.journeyBeforeBeginWebPayment)
+          val result = systemUnderTest.renderPage(fakeRequest)
+          val document = Jsoup.parse(contentAsString(result))
+          val listOfMethods = document.select("#payment-type-list").select("li")
+          val cardBullet = listOfMethods.select("#personal-debit-card")
+          cardBullet.text() shouldBe "personal debit card"
+        }
+
+        "render an option for personal debit card in welsh" in {
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.DdSdil.journeyBeforeBeginWebPayment)
+          val result = systemUnderTest.renderPage(fakeWelshRequest)
+          val document = Jsoup.parse(contentAsString(result))
+          val listOfMethods = document.select("#payment-type-list").select("li")
+          val cardBullet = listOfMethods.select("#personal-debit-card")
+          cardBullet.text() shouldBe "cerdyn debyd personol"
+        }
+
+      }
+
+      "for origin DdVat" - {
+        "render the static content correctly" in {
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.DdVat.journeyBeforeBeginWebPayment)
+          val result = systemUnderTest.renderPage(fakeRequest)
+          val document = Jsoup.parse(contentAsString(result))
+          document.select(".govuk-header__service-name").html shouldBe "Business tax account"
+          testStaticContentEnglish(document)
+        }
+
+        "the static content correctly in welsh" in {
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.DdVat.journeyBeforeBeginWebPayment)
+          val result = systemUnderTest.renderPage(fakeWelshRequest)
+          val document = Jsoup.parse(contentAsString(result))
+          document.select(".govuk-header__service-name").html shouldBe "Cyfrif treth busnes"
+          testStaticContentWelsh(document)
+        }
+
+        "render two options for other ways to pay" in {
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.DdVat.journeyBeforeBeginWebPayment)
+          val result = systemUnderTest.renderPage(fakeRequest)
+          val document = Jsoup.parse(contentAsString(result))
+          val listOfMethods = document.select("#payment-type-list").select("li")
+          listOfMethods.size() shouldBe 2
+        }
+
+        // remove when we do OPS-14287, replacing with the ignored OB test
+        "render an option for bank transfer" in {
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.DdVat.journeyBeforeBeginWebPayment)
+          val result = systemUnderTest.renderPage(fakeRequest)
+          val document = Jsoup.parse(contentAsString(result))
+          val listOfMethods = document.select("#payment-type-list").select("li")
+          val openBankingBullet = listOfMethods.select("#bank-transfer-link")
+          openBankingBullet.text() shouldBe "bank transfer"
+          openBankingBullet.attr("href") shouldBe "http://localhost:9056/pay/bac"
+        }
+
+        // remove when we do OPS-14287, replacing with the ignored OB test
+        "render an option for bank transfer in welsh" in {
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.DdVat.journeyBeforeBeginWebPayment)
+          val result = systemUnderTest.renderPage(fakeWelshRequest)
+          val document = Jsoup.parse(contentAsString(result))
+          val listOfMethods = document.select("#payment-type-list").select("li")
+          val openBankingBullet = listOfMethods.select("#bank-transfer-link")
+          openBankingBullet.text() shouldBe "drosglwyddiad banc"
+          openBankingBullet.attr("href") shouldBe "http://localhost:9056/pay/bac"
+        }
+
+        // unignore when we do OPS-14287
+        "render an option for open banking" ignore {
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.DdVat.journeyBeforeBeginWebPayment)
+          val result = systemUnderTest.renderPage(fakeRequest)
+          val document = Jsoup.parse(contentAsString(result))
+          val listOfMethods = document.select("#payment-type-list").select("li")
+          val openBankingBullet = listOfMethods.select("#open-banking-link")
+          openBankingBullet.text() shouldBe "bank account"
+          openBankingBullet.attr("href") shouldBe "/pay-by-card/start-open-banking"
+        }
+
+        // unignore when we do OPS-14287
+        "render an option for open banking in welsh" ignore {
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.DdVat.journeyBeforeBeginWebPayment)
+          val result = systemUnderTest.renderPage(fakeWelshRequest)
+          val document = Jsoup.parse(contentAsString(result))
+          val listOfMethods = document.select("#payment-type-list").select("li")
+          val openBankingBullet = listOfMethods.select("#open-banking-link")
+          openBankingBullet.text() shouldBe "cyfrif banc"
+          openBankingBullet.attr("href") shouldBe "/pay-by-card/start-open-banking"
+        }
+
+        "render an option for personal debit card" in {
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.DdVat.journeyBeforeBeginWebPayment)
+          val result = systemUnderTest.renderPage(fakeRequest)
+          val document = Jsoup.parse(contentAsString(result))
+          val listOfMethods = document.select("#payment-type-list").select("li")
+          val cardBullet = listOfMethods.select("#personal-debit-card")
+          cardBullet.text() shouldBe "personal debit card"
+        }
+
+        "render an option for personal debit card in welsh" in {
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.DdVat.journeyBeforeBeginWebPayment)
+          val result = systemUnderTest.renderPage(fakeWelshRequest)
+          val document = Jsoup.parse(contentAsString(result))
+          val listOfMethods = document.select("#payment-type-list").select("li")
+          val cardBullet = listOfMethods.select("#personal-debit-card")
+          cardBullet.text() shouldBe "cerdyn debyd personol"
+        }
 
       }
 
@@ -3246,8 +3423,8 @@ class FeesControllerSpec extends ItSpec {
               case Origins.BtaSdil                  => Seq(expectedOpenBankingLink, expectedDirectDebitLink)
               case Origins.BcPngr                   => Seq.empty[Link]
               case Origins.Parcels                  => Seq.empty
-              case Origins.DdVat                    => Seq.empty
-              case Origins.DdSdil                   => Seq.empty
+              case Origins.DdVat                    => Seq(expectedBankTransferLink)
+              case Origins.DdSdil                   => Seq(expectedBankTransferLink)
               case Origins.VcVatReturn              => Seq(expectedOpenBankingLink, expectedVariableDirectDebitLink)
               case Origins.VcVatOther               => Seq(expectedOpenBankingLink)
               case Origins.Amls                     => Seq(expectedOpenBankingLink)
