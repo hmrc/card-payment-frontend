@@ -110,22 +110,6 @@ class EmailAddressControllerSpec extends ItSpec {
         langToggleText should contain theSameElementsAs List("English", "Newid yr iaith i’r Gymraeg Cymraeg") //checking the visually hidden text, it's simpler
       }
 
-      "render the page with a back link" in {
-        val result = systemUnderTest.renderPage(fakeGetRequest)
-        val document = Jsoup.parse(contentAsString(result))
-        val backLink = document.select(".govuk-back-link")
-        backLink.text() shouldBe "Back"
-        backLink.attr("href") shouldBe "#"
-      }
-
-      "render the page with a back link in welsh" in {
-        val result = systemUnderTest.renderPage(fakeGetRequestInWelsh)
-        val document = Jsoup.parse(contentAsString(result))
-        val backLink = document.select(".govuk-back-link")
-        backLink.text() shouldBe "Yn ôl"
-        backLink.attr("href") shouldBe "#"
-      }
-
       "render the page with a text field" in {
         val result = systemUnderTest.renderPage(fakeGetRequest)
         val document = Jsoup.parse(contentAsString(result))

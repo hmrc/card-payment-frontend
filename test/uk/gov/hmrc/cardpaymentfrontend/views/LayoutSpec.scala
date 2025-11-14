@@ -72,7 +72,7 @@ class LayoutSpec extends ItSpec {
     accessibilityItem.flatMap(item => Option(item.attr("href"))) shouldBe Some("http://localhost:12346/accessibility-statement/pay?referrerUrl=%2Fcard-fees")
   }
 
-  "Back link renders default when showBackLink is true" in {
+  "render page with a back link" in {
     val fakeRequest = FakeRequest("GET", "/card-fees").withSessionId()
 
     val result = feesController.renderPage(fakeRequest)
@@ -81,6 +81,17 @@ class LayoutSpec extends ItSpec {
     val backLinkElement = document.select(".govuk-back-link").first()
     backLinkElement.text().trim shouldBe "Back"
     backLinkElement.attr("href") shouldBe "#"
+  }
+
+  "render page with a back link in welsh" in {
+    val fakeRequestInWelsh = FakeRequest("GET", "/card-fees").withSessionId().withLangWelsh()
+
+    val result = feesController.renderPage(fakeRequestInWelsh)
+    val document = Jsoup.parse(contentAsString(result))
+
+    val backLink = document.select(".govuk-back-link")
+    backLink.text() shouldBe "Yn ôl"
+    backLink.attr("href") shouldBe "#"
   }
 
   "HMRC Technical Issue Helper is present" in {
