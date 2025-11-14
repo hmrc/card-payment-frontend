@@ -56,4 +56,29 @@ class LayoutSpec extends ItSpec {
     accessibilityItem.flatMap(item => Option(item.attr("href"))) shouldBe Some("http://localhost:12346/accessibility-statement/pay?referrerUrl=%2Fcard-fees")
   }
 
+  "Back link renders default when showBackLink is true" in {
+    val fakeRequest = FakeRequest("GET", "/card-fees").withSessionId()
+
+    val result = feesController.renderPage(fakeRequest)
+    val document = Jsoup.parse(contentAsString(result))
+
+    val backLinkElement = document.select(".govuk-back-link").first()
+    backLinkElement should not be null
+    backLinkElement.text().trim shouldBe "Back"
+    backLinkElement.attr("href") shouldBe "#"
+  }
+
+  "HMRC Technical Issue Helper is present" in {
+    val fakeRequest = FakeRequest("GET", "/card-fees").withSessionId()
+
+    PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyBeforeBeginWebPayment)
+    val result = feesController.renderPage(fakeRequest)
+    val document = Jsoup.parse(contentAsString(result))
+
+    val techIssueLink = document.select("a.hmrc-report-technical-issue").first()
+    techIssueLink should not be null
+    techIssueLink.text().trim shouldBe "Is this page not working properly? (opens in new tab)"
+    techIssueLink.attr("href") should include("/contact/report-technical-problem")
+  }
+
 }
