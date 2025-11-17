@@ -16,11 +16,11 @@
 
 package uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins
 
-import payapi.cardpaymentjourney.model.journey.JourneySpecificData
+import payapi.cardpaymentjourney.model.journey.{JourneySpecificData, JsdDdVat}
 import play.api.mvc.AnyContent
 import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
 import uk.gov.hmrc.cardpaymentfrontend.models.PaymentMethod._
-import uk.gov.hmrc.cardpaymentfrontend.models.openbanking.OriginSpecificSessionData
+import uk.gov.hmrc.cardpaymentfrontend.models.openbanking.{DdVatSessionData, OriginSpecificSessionData}
 import uk.gov.hmrc.cardpaymentfrontend.models.{CheckYourAnswersRow, PaymentMethod}
 
 object ExtendedDdVat extends ExtendedOrigin {
@@ -37,8 +37,10 @@ object ExtendedDdVat extends ExtendedOrigin {
     ))
   }
 
-  // ticket raised to support OB - OPS-14287
-  override def openBankingOriginSpecificSessionData: JourneySpecificData => Option[OriginSpecificSessionData] = _ => None
+  override def openBankingOriginSpecificSessionData: JourneySpecificData => Option[OriginSpecificSessionData] = {
+    case j: JsdDdVat => Some(DdVatSessionData(j.vrn))
+    case _            => throw new RuntimeException("Incorrect origin found")
+  }
 
   override def emailTaxTypeMessageKey: String = "email.tax-name.DdVat"
 
