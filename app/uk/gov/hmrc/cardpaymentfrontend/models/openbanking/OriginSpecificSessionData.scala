@@ -66,6 +66,7 @@ object OriginSpecificSessionData {
       case BtaClass1aNi        => Json.format[BtaClass1aNiSessionData].reads(json)
       case BtaCt               => Json.format[BtaCtSessionData].reads(json)
       case BtaVat              => Json.format[BtaVatSessionData].reads(json)
+      case DdVat               => Json.format[DdVatSessionData].reads(json)
       case VcVatReturn         => Json.format[VcVatReturnSessionData].reads(json)
       case VcVatOther          => Json.format[VcVatOtherSessionData].reads(json)
       case PfVat               => Json.format[PfVatSessionData].reads(json)
@@ -112,6 +113,7 @@ object OriginSpecificSessionData {
       case PfPpt                    => Json.format[PfPptSessionData].reads(json)
       case PfSdil                   => Json.format[PfSdilSessionData].reads(json)
       case BtaSdil                  => Json.format[BtaSdilSessionData].reads(json)
+      case DdSdil                   => Json.format[DdSdilSessionData].reads(json)
       case PfInheritanceTax         => Json.format[PfInheritanceTaxSessionData].reads(json)
       case PfWineAndCider           => Json.format[PfWineAndCiderTaxSessionData].reads(json)
       case PfSpiritDrinks           => Json.format[PfSpiritDrinksSessionData].reads(json)
@@ -149,7 +151,7 @@ object OriginSpecificSessionData {
 
       //Todo: Remove PfP800 when PtaP800 is fully available
       case origin @ (PfOther | PtaP800 | PfP800
-        | BcPngr | Parcels | DdVat | DdSdil | Mib | PfSimpleAssessment | PtaSimpleAssessment | WcXref) =>
+        | BcPngr | Parcels | DdSdil | Mib | PfSimpleAssessment | PtaSimpleAssessment | WcXref) =>
         throw new RuntimeException(s"Trying to read JSON for unimplemented Origin: ${origin.toString}")
     }
 
@@ -166,6 +168,7 @@ object OriginSpecificSessionData {
       case sessionData: BtaClass1aNiSessionData             => Json.format[BtaClass1aNiSessionData].writes(sessionData)
       case sessionData: BtaCtSessionData                    => Json.format[BtaCtSessionData].writes(sessionData)
       case sessionData: BtaVatSessionData                   => Json.format[BtaVatSessionData].writes(sessionData)
+      case sessionData: DdVatSessionData                    => Json.format[DdVatSessionData].writes(sessionData)
       case sessionData: VcVatReturnSessionData              => Json.format[VcVatReturnSessionData].writes(sessionData)
       case sessionData: VcVatOtherSessionData               => Json.format[VcVatOtherSessionData].writes(sessionData)
       case sessionData: PfVatSessionData                    => Json.format[PfVatSessionData].writes(sessionData)
@@ -206,6 +209,7 @@ object OriginSpecificSessionData {
       case sessionData: PfPptSessionData                    => Json.format[PfPptSessionData].writes(sessionData)
       case sessionData: PfSdilSessionData                   => Json.format[PfSdilSessionData].writes(sessionData)
       case sessionData: BtaSdilSessionData                  => Json.format[BtaSdilSessionData].writes(sessionData)
+      case sessionData: DdSdilSessionData                   => Json.format[DdSdilSessionData].writes(sessionData)
       case sessionData: PfInheritanceTaxSessionData         => Json.format[PfInheritanceTaxSessionData].writes(sessionData)
       case sessionData: PfWineAndCiderTaxSessionData        => Json.format[PfWineAndCiderTaxSessionData].writes(sessionData)
       case sessionData: PfSpiritDrinksSessionData           => Json.format[PfSpiritDrinksSessionData].writes(sessionData)
@@ -380,6 +384,11 @@ final case class WcCtSessionData(
 sealed abstract class VatSessionData(origin: Origin) extends OriginSpecificSessionData(origin)
 
 final case class BtaVatSessionData(vrn: Vrn, returnUrl: Option[Url] = None) extends VatSessionData(BtaVat) {
+  def paymentReference: Reference = ReferenceMaker.makeVatReference(vrn)
+  def searchTag: SearchTag = SearchTag(vrn.value)
+}
+
+final case class DdVatSessionData(vrn: Vrn, returnUrl: Option[Url] = None) extends VatSessionData(DdVat) {
   def paymentReference: Reference = ReferenceMaker.makeVatReference(vrn)
   def searchTag: SearchTag = SearchTag(vrn.value)
 }
@@ -636,18 +645,27 @@ final case class BtaSdilSessionData(xRef: XRef, returnUrl: Option[Url] = None) e
   def paymentReference: Reference = ReferenceMaker.makeXReference(xRef)
   def searchTag: SearchTag = SearchTag(xRef.canonicalizedValue)
 }
+
+final case class DdSdilSessionData(xRef: XRef, returnUrl: Option[Url] = None) extends OriginSpecificSessionData(DdSdil) {
+  def paymentReference: Reference = ReferenceMaker.makeXReference(xRef)
+  def searchTag: SearchTag = SearchTag(xRef.canonicalizedValue)
+}
+
 final case class PfInheritanceTaxSessionData(inheritanceTaxRef: InheritanceTaxRef, returnUrl: Option[Url] = None) extends OriginSpecificSessionData(PfInheritanceTax) {
   def paymentReference: Reference = ReferenceMaker.makeInheritanceTaxRef(inheritanceTaxRef)
   def searchTag: SearchTag = SearchTag(inheritanceTaxRef.canonicalizedValue)
 }
+
 final case class PfWineAndCiderTaxSessionData(wineAndTaxRef: WineAndCiderTaxRef, returnUrl: Option[Url] = None) extends OriginSpecificSessionData(PfWineAndCider) {
   def paymentReference: Reference = ReferenceMaker.makeWineAndBeerTaxRef(wineAndTaxRef)
   def searchTag: SearchTag = SearchTag(wineAndTaxRef.canonicalizedValue)
 }
+
 final case class PfSpiritDrinksSessionData(spiritDrinksReference: SpiritDrinksReference, returnUrl: Option[Url] = None) extends OriginSpecificSessionData(PfSpiritDrinks) {
   def paymentReference: Reference = ReferenceMaker.makeSpiritDrinksReference(spiritDrinksReference)
   def searchTag: SearchTag = SearchTag(spiritDrinksReference.canonicalizedValue)
 }
+
 final case class PfImportedVehiclesSessionData(importedVehiclesRef: ImportedVehiclesRef, returnUrl: Option[Url] = None) extends OriginSpecificSessionData(PfImportedVehicles) {
   def paymentReference: Reference = ReferenceMaker.makeImportedVehiclesRef(importedVehiclesRef)
   def searchTag: SearchTag = SearchTag(importedVehiclesRef.canonicalizedValue)
@@ -657,6 +675,7 @@ final case class PfAtedSessionData(xRef: XRef, returnUrl: Option[Url] = None) ex
   def paymentReference: Reference = ReferenceMaker.makeXReference(xRef)
   def searchTag: SearchTag = SearchTag(xRef.canonicalizedValue)
 }
+
 final case class PfCdsCashSessionData(cdsRef: CdsCashRef, returnUrl: Option[Url] = None) extends OriginSpecificSessionData(PfCdsCash) {
   def paymentReference: Reference = ReferenceMaker.makeCdsCashReference(cdsRef)
   def searchTag: SearchTag = SearchTag(cdsRef.canonicalizedValue)

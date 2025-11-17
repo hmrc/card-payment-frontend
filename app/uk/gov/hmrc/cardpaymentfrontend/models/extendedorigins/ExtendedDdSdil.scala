@@ -16,12 +16,12 @@
 
 package uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins
 
-import payapi.cardpaymentjourney.model.journey.JourneySpecificData
+import payapi.cardpaymentjourney.model.journey.{JourneySpecificData, JsdBtaSdil}
 import play.api.mvc.AnyContent
 import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
 import uk.gov.hmrc.cardpaymentfrontend.models.PaymentMethod._
 import uk.gov.hmrc.cardpaymentfrontend.models._
-import uk.gov.hmrc.cardpaymentfrontend.models.openbanking.OriginSpecificSessionData
+import uk.gov.hmrc.cardpaymentfrontend.models.openbanking.{BtaSdilSessionData, OriginSpecificSessionData}
 
 object ExtendedDdSdil extends ExtendedOrigin {
   override val serviceNameMessageKey: String = "service-name.DdSdil"
@@ -38,8 +38,10 @@ object ExtendedDdSdil extends ExtendedOrigin {
     ))
   }
 
-  // ticket raised to support OB - OPS-14287
-  override def openBankingOriginSpecificSessionData: JourneySpecificData => Option[OriginSpecificSessionData] = _ => None
+  override def openBankingOriginSpecificSessionData: JourneySpecificData => Option[OriginSpecificSessionData] = {
+    case j: JsdBtaSdil => Some(BtaSdilSessionData(j.xRef))
+    case _             => throw new RuntimeException("Incorrect origin found")
+  }
 
   override def surveyAuditName: String = "soft-drinks-industry-levy"
   override def surveyReturnHref: String = "/business-account"
