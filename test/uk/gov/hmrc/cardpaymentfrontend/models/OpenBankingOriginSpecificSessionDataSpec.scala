@@ -30,6 +30,7 @@ import payapi.corcommon.model.taxes.ioss.Ioss
 import payapi.corcommon.model.taxes.p800.P800Ref
 import payapi.corcommon.model.taxes.ppt.PptReference
 import payapi.corcommon.model.taxes.sa.SaUtr
+import payapi.corcommon.model.taxes.sdil.Zsdl
 import payapi.corcommon.model.taxes.sdlt.Utrn
 import payapi.corcommon.model.taxes.vat.{CalendarPeriod, VatChargeReference, Vrn}
 import payapi.corcommon.model.taxes.trusts.TrustReference
@@ -551,9 +552,9 @@ class OpenBankingOriginSpecificSessionDataSpec extends UnitSpec {
     }
 
     "DdSdil" in {
-      val testJson = Json.parse("""{"xRef":"XE1234567890123","origin":"DdSdil"}""")
+      val testJson = Json.parse("""{"zsdl":"XE1234567890123","origin":"DdSdil"}""")
       val osd = ExtendedDdSdil.openBankingOriginSpecificSessionData(TestJourneys.DdSdil.journeyBeforeBeginWebPayment.journeySpecificData)
-      testOsd(osd, DdSdilSessionData(XRef("XE1234567890123"), None), "XE1234567890123", "XE1234567890123")
+      testOsd(osd, DdSdilSessionData(Zsdl("XE1234567890123"), None), "XE1234567890123", "XE1234567890123")
       roundTripJsonTest(osd, testJson)
     }
 
