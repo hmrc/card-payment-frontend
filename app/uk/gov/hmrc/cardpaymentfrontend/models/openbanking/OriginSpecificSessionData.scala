@@ -34,6 +34,7 @@ import payapi.corcommon.model.taxes.pillar2.Pillar2Reference
 import payapi.corcommon.model.taxes.ppt.PptReference
 import payapi.corcommon.model.taxes.sa.SaUtr
 import payapi.corcommon.model.taxes.sd.SpiritDrinksReference
+import payapi.corcommon.model.taxes.sdil.Zsdl
 import payapi.corcommon.model.taxes.sdlt.Utrn
 import payapi.corcommon.model.taxes.trusts.TrustReference
 import payapi.corcommon.model.taxes.vat.{CalendarPeriod, VatChargeReference, Vrn}
@@ -646,9 +647,9 @@ final case class BtaSdilSessionData(xRef: XRef, returnUrl: Option[Url] = None) e
   def searchTag: SearchTag = SearchTag(xRef.canonicalizedValue)
 }
 
-final case class DdSdilSessionData(xRef: XRef, returnUrl: Option[Url] = None) extends OriginSpecificSessionData(DdSdil) {
-  def paymentReference: Reference = ReferenceMaker.makeXReference(xRef)
-  def searchTag: SearchTag = SearchTag(xRef.canonicalizedValue)
+final case class DdSdilSessionData(zsdl: Zsdl, returnUrl: Option[Url] = None) extends OriginSpecificSessionData(DdSdil) {
+  def paymentReference: Reference = ReferenceMaker.makeZsdlReference(zsdl)
+  def searchTag: SearchTag = SearchTag(zsdl.canonicalizedValue)
 }
 
 final case class PfInheritanceTaxSessionData(inheritanceTaxRef: InheritanceTaxRef, returnUrl: Option[Url] = None) extends OriginSpecificSessionData(PfInheritanceTax) {
