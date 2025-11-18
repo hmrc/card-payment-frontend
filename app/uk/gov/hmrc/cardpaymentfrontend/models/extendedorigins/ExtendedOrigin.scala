@@ -238,6 +238,7 @@ object ExtendedOrigin {
       case WcEpayeSeta              => ExtendedWcEpayeSeta
       case WcSdlt                   => ExtendedWcSdlt
       case WcClass2Ni               => DefaultExtendedOrigin
+      case WcChildBenefitRepayments => ExtendedWcChildBenefitRepayments
     }
 
     def isAWebChatOrigin: Boolean = origin match {
@@ -258,7 +259,7 @@ object ExtendedOrigin {
         PfAlcoholDuty | VatC2c | PfVatC2c | `3psSa` | `3psVat` | Pillar2 |
         PfPillar2 => false
       case WcSa | WcCt | WcVat | WcSimpleAssessment | WcXref | WcEpayeLpp
-        | WcClass1aNi | WcEpayeNi | WcEpayeLateCis | WcEpayeSeta | WcSdlt | WcClass2Ni => true
+        | WcClass1aNi | WcEpayeNi | WcEpayeLateCis | WcEpayeSeta | WcSdlt | WcClass2Ni | WcChildBenefitRepayments => true
     }
 
     def originSupportsWelsh: Boolean = origin match {
@@ -277,7 +278,7 @@ object ExtendedOrigin {
         PfChildBenefitRepayments | PfAmls | PfAted | PfTrust | PtaClass3Ni |
         AlcoholDuty | PfAlcoholDuty | VatC2c | PfVatC2c | `3psSa` | `3psVat` |
         WcSa | WcCt | WcVat | WcSimpleAssessment | WcXref | WcEpayeLpp |
-        WcClass1aNi | WcEpayeNi | WcEpayeLateCis | WcEpayeSeta | WcSdlt | WcClass2Ni => true
+        WcClass1aNi | WcEpayeNi | WcEpayeLateCis | WcEpayeSeta | WcSdlt | WcClass2Ni | WcChildBenefitRepayments => true
       case PfCds | PfCdsCash | PfCdsDeferment | NiEuVatOss | NiEuVatIoss |
         PfNiEuVatOss | PfNiEuVatIoss | Pillar2 | PfPillar2 | Parcels => false
     }
