@@ -71,6 +71,46 @@ class AddressFormSpec extends UnitSpec {
       testForm(data              = validAddress, expectedErrorList = List.empty)
     }
 
+    "should trim whitespace from postcode field and return valid address" in {
+      val validAddress: Map[String, String] = Map(
+        "line1" -> "20 Street Road",
+        "line2" -> "",
+        "city" -> "",
+        "county" -> "",
+        "postcode" -> " AA1 1AA ",
+        "country" -> "GBR"
+      )
+      val expectedAddress = Address(
+        line1    = "20 Street Road",
+        line2    = None,
+        city     = None,
+        county   = None,
+        postcode = Some("AA1 1AA"),
+        country  = "GBR"
+      )
+      form.bind(validAddress).value shouldBe Some(expectedAddress)
+    }
+
+    "should trim whitespace from line1, line2, city and county fields and return valid address" in {
+      val validAddress: Map[String, String] = Map(
+        "line1" -> " 20 Street Road ",
+        "line2" -> " ",
+        "city" -> " ",
+        "county" -> " ",
+        "postcode" -> " AA1 1AA ",
+        "country" -> "GBR"
+      )
+      val expectedAddress = Address(
+        line1    = "20 Street Road",
+        line2    = None,
+        city     = None,
+        county   = None,
+        postcode = Some("AA1 1AA"),
+        country  = "GBR"
+      )
+      form.bind(validAddress).value shouldBe Some(expectedAddress)
+    }
+
     "should error" - {
 
       "for line 1 field" - {

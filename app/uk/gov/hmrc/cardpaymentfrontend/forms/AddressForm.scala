@@ -48,7 +48,7 @@ object AddressForm {
   private def line1Formatter: Formatter[String] = new Formatter[String] {
     override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], String] = {
       val line1Key = "line1"
-      val line1: String = data(line1Key)
+      val line1: String = data(line1Key).trim
 
       if (line1.isBlank)
         Left(Seq(FormError(line1Key, "address.field-name.error.line1.empty")))
@@ -65,13 +65,13 @@ object AddressForm {
   private def line2Formatter: Formatter[Option[String]] = new Formatter[Option[String]] {
     override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], Option[String]] = {
       val line2Key: String = "line2"
-      val maybeLine2: Option[String] = data.get(line2Key)
+      val maybeLine2: Option[String] = data.get(line2Key).map(_.trim)
 
       maybeLine2.fold[Either[Seq[FormError], Option[String]]](Right(None)) { line2 =>
         if (line2.length > 100)
           Left(Seq(FormError(line2Key, "address.field-name.error.line2.max-length")))
         else if (line2.forall(_.isWhitespace))
-          Right(Some(line2))
+          Right(None)
         else if (!line2.matches(addressLineRegex.regex))
           Left(Seq(FormError(line2Key, "address.field-name.error.line2.invalid-character")))
         else
@@ -84,13 +84,13 @@ object AddressForm {
 
   private def cityAndCountyFormatter(formKey: String): Formatter[Option[String]] = new Formatter[Option[String]] {
     override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], Option[String]] = {
-      val maybeFormData: Option[String] = data.get(formKey)
+      val maybeFormData: Option[String] = data.get(formKey).map(_.trim)
 
       maybeFormData.fold[Either[Seq[FormError], Option[String]]](Right(None)) { formData =>
         if (formData.length > 50)
           Left(Seq(FormError(formKey, s"address.field-name.error.$formKey.max-length")))
         else if (formData.forall(_.isWhitespace))
-          Right(Some(formData))
+          Right(None)
         else if (!formData.matches(addressCityAndCountyRegex.regex))
           Left(Seq(FormError(formKey, s"address.field-name.error.$formKey.invalid-character")))
         else
@@ -102,19 +102,19 @@ object AddressForm {
 
   private def postcodeFormatter: Formatter[Option[String]] = new Formatter[Option[String]] {
     override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], Option[String]] = {
-      val postcode: String = data("postcode")
+      val maybePostcode: Option[String] = data.get("postcode").map(_.trim)
       val selectedCountryIsGBR: Boolean = data("country") === "GBR"
 
-      if (selectedCountryIsGBR && postcode.forall(_.isWhitespace))
+      if (selectedCountryIsGBR && maybePostcode.exists(_.forall(_.isWhitespace)))
         Left(Seq(FormError("postcode", "address.field-name.error.postcode.empty")))
-      else if (selectedCountryIsGBR && (!postcode.matches(addressUkPostcodeRegex.regex) || !postcode.matches(addressBarclaycardPostcodeRegex.regex)))
+      else if (selectedCountryIsGBR && (!maybePostcode.exists(_.matches(addressUkPostcodeRegex.regex)) || !maybePostcode.exists(_.matches(addressBarclaycardPostcodeRegex.regex))))
         Left(Seq(FormError("postcode", "address.field-name.error.postcode.invalid-character")))
-      else if (!selectedCountryIsGBR && postcode.forall(_.isWhitespace))
+      else if (!selectedCountryIsGBR && maybePostcode.exists(_.forall(_.isWhitespace)))
         Right(None)
-      else if (!selectedCountryIsGBR && !postcode.matches(addressBarclaycardPostcodeRegex.regex))
+      else if (!selectedCountryIsGBR && !maybePostcode.exists(_.matches(addressBarclaycardPostcodeRegex.regex)))
         Left(Seq(FormError("postcode", "address.field-name.error.postcode.invalid-character")))
       else
-        Right(Some(postcode))
+        Right(maybePostcode)
     }
     override def unbind(key: String, value: Option[String]): Map[String, String] = Map(key -> value.getOrElse(""))
   }
