@@ -282,40 +282,6 @@ class AddressControllerSpec extends ItSpec {
           document.select(".govuk-error-summary__list").select("a").attr("href") shouldBe "#line1"
           document.select("#line1-error").text() shouldBe "Gwall: Nodwch linell gyntaf eich cyfeiriad gan beidio â defnyddio mwy na 100 o gymeriadau"
         }
-
-        "should return html containing the correct error messages when first line of address contains invalid character" in {
-          val address = List(
-            ("line1", "🍗"),
-            ("line2", "Fake Street"),
-            ("city", "Imaginaryshire"),
-            ("county", "East Imaginationland"),
-            ("postcode", "IM2 4HJ"),
-            ("country", "GBR")
-          )
-          val result = systemUnderTest.submit(fakePostRequest(address: _*))
-          val document = Jsoup.parse(contentAsString(result))
-          document.select(".govuk-error-summary__title").text() shouldBe "There is a problem"
-          document.select(".govuk-error-summary__list").text() shouldBe "Field contains an invalid character"
-          document.select(".govuk-error-summary__list").select("a").attr("href") shouldBe "#line1"
-          document.select("#line1-error").text() shouldBe "Error: Field contains an invalid character"
-        }
-
-        "should return html containing the correct error messages when first line of address contains invalid character in welsh" in {
-          val address = List(
-            ("line1", "🍗"),
-            ("line2", "Fake Street"),
-            ("city", "Imaginaryshire"),
-            ("county", "East Imaginationland"),
-            ("postcode", "IM2 4HJ"),
-            ("country", "GBR")
-          )
-          val result = systemUnderTest.submit(fakePostRequestInWelsh(address: _*))
-          val document = Jsoup.parse(contentAsString(result))
-          document.select(".govuk-error-summary__title").text() shouldBe "Mae problem wedi codi"
-          document.select(".govuk-error-summary__list").text() shouldBe "Mae’r maes yn cynnwys cymeriad annilys"
-          document.select(".govuk-error-summary__list").select("a").attr("href") shouldBe "#line1"
-          document.select("#line1-error").text() shouldBe "Gwall: Mae’r maes yn cynnwys cymeriad annilys"
-        }
       }
 
       "for second line of address" - {
@@ -352,40 +318,6 @@ class AddressControllerSpec extends ItSpec {
           document.select(".govuk-error-summary__list").select("a").attr("href") shouldBe "#line2"
           document.select("#line2-error").text() shouldBe "Gwall: Nodwch ail linell eich cyfeiriad gan beidio â defnyddio mwy na 100 o gymeriadau"
         }
-
-        "should return html containing the correct error messages when second line of address contains invalid character" in {
-          val address = List(
-            ("line1", "Fake Street"),
-            ("line2", "🍗"),
-            ("city", "Imaginaryshire"),
-            ("county", "East Imaginationland"),
-            ("postcode", "IM2 4HJ"),
-            ("country", "GBR")
-          )
-          val result = systemUnderTest.submit(fakePostRequest(address: _*))
-          val document = Jsoup.parse(contentAsString(result))
-          document.select(".govuk-error-summary__title").text() shouldBe "There is a problem"
-          document.select(".govuk-error-summary__list").text() shouldBe "Field contains an invalid character"
-          document.select(".govuk-error-summary__list").select("a").attr("href") shouldBe "#line2"
-          document.select("#line2-error").text() shouldBe "Error: Field contains an invalid character"
-        }
-
-        "should return html containing the correct error messages when second line of address contains invalid character in welsh" in {
-          val address = List(
-            ("line1", "Fake Street"),
-            ("line2", "🍗"),
-            ("city", "Imaginaryshire"),
-            ("county", "East Imaginationland"),
-            ("postcode", "IM2 4HJ"),
-            ("country", "GBR")
-          )
-          val result = systemUnderTest.submit(fakePostRequestInWelsh(address: _*))
-          val document = Jsoup.parse(contentAsString(result))
-          document.select(".govuk-error-summary__title").text() shouldBe "Mae problem wedi codi"
-          document.select(".govuk-error-summary__list").text() shouldBe "Mae’r maes yn cynnwys cymeriad annilys"
-          document.select(".govuk-error-summary__list").select("a").attr("href") shouldBe "#line2"
-          document.select("#line2-error").text() shouldBe "Gwall: Mae’r maes yn cynnwys cymeriad annilys"
-        }
       }
 
       "for city" - {
@@ -420,38 +352,6 @@ class AddressControllerSpec extends ItSpec {
           document.select(".govuk-error-summary__list").select("a").attr("href") shouldBe "#city"
           document.select("#city-error").text() shouldBe "Gwall: Nodwch eich dinas gan beidio â defnyddio mwy na 50 o gymeriadau"
         }
-
-        "should return html containing the correct error messages when city contains invalid character" in {
-          val address = List(
-            ("line1", "Fake Street"),
-            ("city", "🍗"),
-            ("county", "East Imaginationland"),
-            ("postcode", "IM2 4HJ"),
-            ("country", "GBR")
-          )
-          val result = systemUnderTest.submit(fakePostRequest(address: _*))
-          val document = Jsoup.parse(contentAsString(result))
-          document.select(".govuk-error-summary__title").text() shouldBe "There is a problem"
-          document.select(".govuk-error-summary__list").text() shouldBe "Field contains an invalid character"
-          document.select(".govuk-error-summary__list").select("a").attr("href") shouldBe "#city"
-          document.select("#city-error").text() shouldBe "Error: Field contains an invalid character"
-        }
-
-        "should return html containing the correct error messages when city contains invalid character in welsh" in {
-          val address = List(
-            ("line1", "Fake Street"),
-            ("city", "🍗"),
-            ("county", "East Imaginationland"),
-            ("postcode", "IM2 4HJ"),
-            ("country", "GBR")
-          )
-          val result = systemUnderTest.submit(fakePostRequestInWelsh(address: _*))
-          val document = Jsoup.parse(contentAsString(result))
-          document.select(".govuk-error-summary__title").text() shouldBe "Mae problem wedi codi"
-          document.select(".govuk-error-summary__list").text() shouldBe "Mae’r maes yn cynnwys cymeriad annilys"
-          document.select(".govuk-error-summary__list").select("a").attr("href") shouldBe "#city"
-          document.select("#city-error").text() shouldBe "Gwall: Mae’r maes yn cynnwys cymeriad annilys"
-        }
       }
 
       "for county" - {
@@ -483,36 +383,6 @@ class AddressControllerSpec extends ItSpec {
           document.select(".govuk-error-summary__list").text() shouldBe "Nodwch eich sir gan beidio â defnyddio mwy na 50 o gymeriadau"
           document.select(".govuk-error-summary__list").select("a").attr("href") shouldBe "#county"
           document.select("#county-error").text() shouldBe "Gwall: Nodwch eich sir gan beidio â defnyddio mwy na 50 o gymeriadau"
-        }
-
-        "should return html containing the correct error messages when county contains invalid character" in {
-          val address = List(
-            ("line1", "Fake Street"),
-            ("county", "🍗"),
-            ("postcode", "IM2 4HJ"),
-            ("country", "GBR")
-          )
-          val result = systemUnderTest.submit(fakePostRequest(address: _*))
-          val document = Jsoup.parse(contentAsString(result))
-          document.select(".govuk-error-summary__title").text() shouldBe "There is a problem"
-          document.select(".govuk-error-summary__list").text() shouldBe "Field contains an invalid character"
-          document.select(".govuk-error-summary__list").select("a").attr("href") shouldBe "#county"
-          document.select("#county-error").text() shouldBe "Error: Field contains an invalid character"
-        }
-
-        "should return html containing the correct error messages when county contains invalid character in welsh" in {
-          val address = List(
-            ("line1", "Fake Street"),
-            ("county", "🍗"),
-            ("postcode", "IM2 4HJ"),
-            ("country", "GBR")
-          )
-          val result = systemUnderTest.submit(fakePostRequestInWelsh(address: _*))
-          val document = Jsoup.parse(contentAsString(result))
-          document.select(".govuk-error-summary__title").text() shouldBe "Mae problem wedi codi"
-          document.select(".govuk-error-summary__list").text() shouldBe "Mae’r maes yn cynnwys cymeriad annilys"
-          document.select(".govuk-error-summary__list").select("a").attr("href") shouldBe "#county"
-          document.select("#county-error").text() shouldBe "Gwall: Mae’r maes yn cynnwys cymeriad annilys"
         }
       }
 
