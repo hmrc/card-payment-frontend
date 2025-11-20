@@ -27,10 +27,10 @@ import scala.util.matching.Regex
 
 object AddressForm {
 
-  private[forms] val addressLineRegex: Regex = "^[A-Za-z0-9_ \"!@#$&',*+/=()^.-]{1,100}$".r
-  private[forms] val addressCityAndCountyRegex: Regex = "^[A-Za-z0-9_ \"!@#$&',*+/=()^.-]{1,50}$".r
+  private[forms] val addressLineRegex: Regex = "^[\\s\\S]{1,100}$".r
+  private[forms] val addressCityAndCountyRegex: Regex = "^[\\s\\S]{1,50}$".r
   private[forms] val addressUkPostcodeRegex: Regex = "([Gg][Ii][Rr] 0[Aa]{2})|((([A-Za-z][0-9]{1,2})|(([A-Za-z][A-Ha-hJ-Yj-y][0-9]{1,2})|(([A-Za-z][0-9][A-Za-z])|([A-Za-z][A-Ha-hJ-Yj-y][0-9]?[A-Za-z]))))\\s?[0-9][A-Za-z]{2})".r
-  private[forms] val addressBarclaycardPostcodeRegex: Regex = "^[A-Za-z0-9_ \"!@#$&',*+/=()^.-]{1,16}$".r
+  private[forms] val addressBarclaycardPostcodeRegex: Regex = "^[\\s\\S]{1,16}$".r
   private[forms] val addressCountryRegex: Regex = "^[A-Z]{3}$".r
 
   def form(): Form[Address] = Form(
@@ -45,35 +45,33 @@ object AddressForm {
     )(Address.apply)(Address.unapply)
   )
 
-  private def line1Formatter: Formatter[String] = new Formatter[String] {
+  private[forms] def line1Formatter: Formatter[String] = new Formatter[String] {
     override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], String] = {
       val line1Key = "line1"
       val line1: String = data(line1Key).trim
 
-      if (line1.isBlank)
+      if (line1.isBlank) {
         Left(Seq(FormError(line1Key, "address.field-name.error.line1.empty")))
-      else if (line1.length > 100)
+      } else if (!line1.matches(addressLineRegex.regex))
+        // regex maps to max length error, as barclaycard spec regex allows anything but spaces, as long as it's within 1-100 characters
         Left(Seq(FormError(line1Key, "address.field-name.error.line1.max-length")))
-      else if (!line1.matches(addressLineRegex.regex))
-        Left(Seq(FormError(line1Key, "address.field-name.error.line1.invalid-character")))
       else
         Right(line1)
     }
     override def unbind(key: String, value: String): Map[String, String] = Map(key -> value)
   }
 
-  private def line2Formatter: Formatter[Option[String]] = new Formatter[Option[String]] {
+  private[forms] def line2Formatter: Formatter[Option[String]] = new Formatter[Option[String]] {
     override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], Option[String]] = {
       val line2Key: String = "line2"
       val maybeLine2: Option[String] = data.get(line2Key).map(_.trim)
 
       maybeLine2.fold[Either[Seq[FormError], Option[String]]](Right(None)) { line2 =>
-        if (line2.length > 100)
-          Left(Seq(FormError(line2Key, "address.field-name.error.line2.max-length")))
-        else if (line2.forall(_.isWhitespace))
+        if (line2.forall(_.isWhitespace))
           Right(None)
         else if (!line2.matches(addressLineRegex.regex))
-          Left(Seq(FormError(line2Key, "address.field-name.error.line2.invalid-character")))
+          // regex maps to max length error, as barclaycard spec regex allows anything but spaces, as long as it's within 1-100 characters
+          Left(Seq(FormError(line2Key, "address.field-name.error.line2.max-length")))
         else
           Right(Some(line2))
       }
@@ -82,28 +80,26 @@ object AddressForm {
     override def unbind(key: String, value: Option[String]): Map[String, String] = Map(key -> value.getOrElse(""))
   }
 
-  private def cityAndCountyFormatter(formKey: String): Formatter[Option[String]] = new Formatter[Option[String]] {
+  private[forms] def cityAndCountyFormatter(formKey: String): Formatter[Option[String]] = new Formatter[Option[String]] {
     override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], Option[String]] = {
       val maybeFormData: Option[String] = data.get(formKey).map(_.trim)
 
       maybeFormData.fold[Either[Seq[FormError], Option[String]]](Right(None)) { formData =>
-        if (formData.length > 50)
-          Left(Seq(FormError(formKey, s"address.field-name.error.$formKey.max-length")))
-        else if (formData.forall(_.isWhitespace))
+        if (formData.forall(_.isWhitespace))
           Right(None)
-        else if (!formData.matches(addressCityAndCountyRegex.regex))
-          Left(Seq(FormError(formKey, s"address.field-name.error.$formKey.invalid-character")))
-        else
-          Right(Some(formData))
+        else if (!formData.matches(addressCityAndCountyRegex.regex)) {
+          // regex maps to max length error, as barclaycard spec regex allows anything but spaces, as long as it's within 1-100 characters
+          Left(Seq(FormError(formKey, s"address.field-name.error.$formKey.max-length")))
+        } else Right(Some(formData))
       }
     }
     override def unbind(key: String, value: Option[String]): Map[String, String] = Map(key -> value.getOrElse(""))
   }
 
-  private def postcodeFormatter: Formatter[Option[String]] = new Formatter[Option[String]] {
+  private[forms] def postcodeFormatter: Formatter[Option[String]] = new Formatter[Option[String]] {
     override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], Option[String]] = {
       val maybePostcode: Option[String] = data.get("postcode").map(_.trim)
-      val selectedCountryIsGBR: Boolean = data("country") === "GBR"
+      val selectedCountryIsGBR: Boolean = data.get("country") === Some("GBR")
 
       if (selectedCountryIsGBR && maybePostcode.exists(_.forall(_.isWhitespace)))
         Left(Seq(FormError("postcode", "address.field-name.error.postcode.empty")))

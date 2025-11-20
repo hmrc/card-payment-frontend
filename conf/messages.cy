@@ -235,13 +235,9 @@ address.optional.non.uk.address = (dewisol ar gyfer cyfeiriadau y tu allan i’r
 
 address.field-name.error.line1.empty = Nodwch linell gyntaf y cyfeiriad bilio
 address.field-name.error.line1.max-length = Nodwch linell gyntaf eich cyfeiriad gan beidio â defnyddio mwy na 100 o gymeriadau
-address.field-name.error.line1.invalid-character = Mae’r maes yn cynnwys cymeriad annilys
 address.field-name.error.line2.max-length = Nodwch ail linell eich cyfeiriad gan beidio â defnyddio mwy na 100 o gymeriadau
-address.field-name.error.line2.invalid-character = Mae’r maes yn cynnwys cymeriad annilys
 address.field-name.error.city.max-length = Nodwch eich dinas gan beidio â defnyddio mwy na 50 o gymeriadau
-address.field-name.error.city.invalid-character = Mae’r maes yn cynnwys cymeriad annilys
 address.field-name.error.county.max-length = Nodwch eich sir gan beidio â defnyddio mwy na 50 o gymeriadau
-address.field-name.error.county.invalid-character = Mae’r maes yn cynnwys cymeriad annilys
 address.field-name.error.required.postcode = Nodwch god post dilys
 address.field-name.error.postcode.empty = Nodwch eich cod post
 address.field-name.error.postcode.invalid-character = Nodwch eich cod post yn y fformat
