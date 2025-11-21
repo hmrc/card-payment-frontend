@@ -101,14 +101,14 @@ class CardPaymentServiceSpec extends ItSpec {
         PayApiStub.stubForUpdateBeginWebPayment2xx(testJourneyBeforeBeginWebPayment._id)
         CardPaymentStub.InitiatePayment.stubForInitiatePayment2xx(expectedCardPaymentInitiatePaymentResponse)
         systemUnderTest.initiatePayment(testJourneyBeforeBeginWebPayment, testAddress, Some(testEmail), English).futureValue
-        PayApiStub.verifyUpdateBeginWebPayment(1, testJourneyBeforeBeginWebPayment._id.value)
+        PayApiStub.verifyUpdateBeginWebPayment(1, testJourneyBeforeBeginWebPayment._id)
       }
 
       "should trigger an explicit paymentAttempt audit event" in {
         PayApiStub.stubForUpdateBeginWebPayment2xx(testJourneyBeforeBeginWebPayment._id)
         CardPaymentStub.InitiatePayment.stubForInitiatePayment2xx(expectedCardPaymentInitiatePaymentResponse)
         systemUnderTest.initiatePayment(testJourneyBeforeBeginWebPayment, testAddress, Some(testEmail), English).futureValue
-        PayApiStub.verifyUpdateBeginWebPayment(1, testJourneyBeforeBeginWebPayment._id.value)
+        PayApiStub.verifyUpdateBeginWebPayment(1, testJourneyBeforeBeginWebPayment._id)
         AuditConnectorStub.verifyEventAudited(
           auditType  = "PaymentAttempt",
           auditEvent = Json.parse(
@@ -148,21 +148,21 @@ class CardPaymentServiceSpec extends ItSpec {
         PayApiStub.stubForUpdateSucceedWebPayment2xx(testJourneyBeforeBeginWebPayment._id)
         CardPaymentStub.AuthAndCapture.stubForAuthAndCapture2xx("sometransactionref", testCardPaymentResult)
         systemUnderTest.finishPayment("sometransactionref", testJourneyAfterBeginWebPayment._id.value, English)(fakeJourneyRequest(testJourneyAfterBeginWebPayment, withEmail = false), messagesApi).futureValue
-        PayApiStub.verifyUpdateSucceedWebPayment(1, testJourneyAfterBeginWebPayment._id.value, testTime)
+        PayApiStub.verifyUpdateSucceedWebPayment(1, testJourneyAfterBeginWebPayment._id, testTime)
       }
 
       "should update pay-api with FailWebPaymentRequest when call to card-payment backend indicates failure" in {
         val testCardPaymentResult = CardPaymentResult(CardPaymentFinishPaymentResponses.Failed, AdditionalPaymentInfo(Some("debit"), None, Some(testTime)))
         CardPaymentStub.AuthAndCapture.stubForAuthAndCapture2xx("sometransactionref", testCardPaymentResult)
         systemUnderTest.finishPayment("sometransactionref", testJourneyAfterBeginWebPayment._id.value, English)(fakeJourneyRequest(testJourneyAfterBeginWebPayment, withEmail = false), messagesApi).futureValue
-        PayApiStub.verifyUpdateFailWebPayment(1, testJourneyAfterBeginWebPayment._id.value, testTime)
+        PayApiStub.verifyUpdateFailWebPayment(1, testJourneyAfterBeginWebPayment._id, testTime)
       }
 
       "should update pay-api with CancelWebPaymentRequest when call to card-payment backend indicates Cancelled" in {
         val testCardPaymentResult = CardPaymentResult(CardPaymentFinishPaymentResponses.Cancelled, AdditionalPaymentInfo(None, None, None))
         CardPaymentStub.AuthAndCapture.stubForAuthAndCapture2xx("sometransactionref", testCardPaymentResult)
         systemUnderTest.finishPayment("sometransactionref", testJourneyAfterBeginWebPayment._id.value, English)(fakeJourneyRequest(testJourneyAfterBeginWebPayment, withEmail = false), messagesApi).futureValue
-        PayApiStub.verifyUpdateCancelWebPayment(1, testJourneyAfterBeginWebPayment._id.value)
+        PayApiStub.verifyUpdateCancelWebPayment(1, testJourneyAfterBeginWebPayment._id)
       }
 
       "should send an email when there is one in session, aswell as update pay-api when journey is in sent state" in {
@@ -171,7 +171,7 @@ class CardPaymentServiceSpec extends ItSpec {
         EmailStub.stubForSimpleSendEmail()
         CardPaymentStub.AuthAndCapture.stubForAuthAndCapture2xx("sometransactionref", testCardPaymentResult)
         systemUnderTest.finishPayment("sometransactionref", testJourneyAfterBeginWebPayment._id.value, English)(fakeJourneyRequest(testJourneyAfterBeginWebPayment, withEmail = true), messagesApi).futureValue
-        PayApiStub.verifyUpdateSucceedWebPayment(1, testJourneyAfterBeginWebPayment._id.value, testTime)
+        PayApiStub.verifyUpdateSucceedWebPayment(1, testJourneyAfterBeginWebPayment._id, testTime)
         eventually(Timeout(Span(500, Milliseconds))) { EmailStub.verifySomeEmailWasSent() }
       }
 
@@ -179,7 +179,7 @@ class CardPaymentServiceSpec extends ItSpec {
         PayApiStub.stubForUpdateSucceedWebPayment2xx(testJourneyAfterBeginWebPayment._id)
         CardPaymentStub.AuthAndCapture.stubForAuthAndCapture2xx("sometransactionref", testCardPaymentResult)
         systemUnderTest.finishPayment("sometransactionref", testJourneyAfterBeginWebPayment._id.value, English)(fakeJourneyRequest(testJourneyAfterBeginWebPayment, withEmail = false), messagesApi).futureValue
-        PayApiStub.verifyUpdateSucceedWebPayment(1, testJourneyAfterBeginWebPayment._id.value, testTime)
+        PayApiStub.verifyUpdateSucceedWebPayment(1, testJourneyAfterBeginWebPayment._id, testTime)
         EmailStub.verifyEmailWasNotSent()
       }
 
@@ -193,7 +193,7 @@ class CardPaymentServiceSpec extends ItSpec {
           )
           .futureValue
 
-        PayApiStub.verifyUpdateSucceedWebPayment(1, testJourneyAfterBeginWebPayment._id.value, testTime)
+        PayApiStub.verifyUpdateSucceedWebPayment(1, testJourneyAfterBeginWebPayment._id, testTime)
         AuditConnectorStub.verifyEventAudited(
           auditType  = "PaymentResult",
           auditEvent = Json.parse(
@@ -318,7 +318,7 @@ class CardPaymentServiceSpec extends ItSpec {
       "should update pay api state with cancelled" in {
         systemUnderTest.cancelPayment()(fakeJourneyRequest(testJourneyAfterBeginWebPayment, false)).futureValue
         CardPaymentStub.CancelPayment.verifyOne("Some-transaction-ref", "SAEE")
-        PayApiStub.verifyUpdateCancelWebPayment(1, testJourneyAfterBeginWebPayment._id.value)
+        PayApiStub.verifyUpdateCancelWebPayment(1, testJourneyAfterBeginWebPayment._id)
       }
     }
 

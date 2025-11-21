@@ -91,6 +91,15 @@ class PayApiConnector @Inject() (appConfig: AppConfig, httpClientV2: HttpClientV
           case Failure(exception) => logger.error(s"Failed to update pay-api with FailWebPaymentRequest: ${exception.getCause.toString}")
           case Success(_)         => logger.debug("Successfully updated pay-api with FailWebPaymentRequest")
         }
+
+    def resetWebPayment(journeyId: String)(implicit headerCarrier: HeaderCarrier): Future[Unit] =
+      httpClientV2
+        .delete(url"${appConfig.payApiBaseUrl}/pay-api/journey/$journeyId/update/reset-web-payment")
+        .execute[Unit]
+        .andThen {
+          case Failure(exception) => logger.error(s"Failed to reset web payment in pay-api: ${exception.getCause.toString}")
+          case Success(_)         => logger.debug("Successfully reset web payment in pay-api")
+        }
   }
 
 }

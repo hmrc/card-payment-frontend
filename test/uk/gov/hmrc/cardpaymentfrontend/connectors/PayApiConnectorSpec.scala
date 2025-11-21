@@ -16,6 +16,7 @@
 
 package uk.gov.hmrc.cardpaymentfrontend.connectors
 
+import uk.gov.hmrc.cardpaymentfrontend.models.payapirequest.{BeginWebPaymentRequest, FailWebPaymentRequest, SucceedWebPaymentRequest}
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.ItSpec
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.stubs.PayApiStub
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.testdata.TestJourneys
@@ -83,10 +84,41 @@ class PayApiConnectorSpec extends ItSpec {
     }
 
     "JourneyUpdates" - {
-      "updateBeginWebPayment" is pending
-      "updateSucceedWebPayment" is pending
-      "updateCancelWebPayment" is pending
-      "updateFailWebPayment" is pending
+
+      implicit val headerCarrierForTest: HeaderCarrier = HeaderCarrier(sessionId = Some(uk.gov.hmrc.http.SessionId("some-valid-session-id")))
+
+      "updateBeginWebPayment" - {
+        "should send a BeginWebPaymentRequest to pay-api" in {
+          val testJourney = TestJourneys.PfSa.journeyBeforeBeginWebPayment
+          PayApiStub.stubForUpdateBeginWebPayment2xx(testJourney._id)
+          systemUnderTest.JourneyUpdates.updateBeginWebPayment(testJourney._id.value, BeginWebPaymentRequest("sometransactionref", "someiframeurl")).futureValue
+          PayApiStub.verifyUpdateBeginWebPayment(1, testJourney._id)
+        }
+      }
+      "updateSucceedWebPayment" - {
+        "should send a SucceedWebPaymentRequest to pay-api" in {
+          val testJourney = TestJourneys.PfSa.journeyAfterBeginWebPayment
+          PayApiStub.stubForUpdateSucceedWebPayment2xx(testJourney._id)
+          systemUnderTest.JourneyUpdates.updateSucceedWebPayment(testJourney._id.value, SucceedWebPaymentRequest("debit", Some(123), FrozenTime.localDateTime)).futureValue
+          PayApiStub.verifyUpdateSucceedWebPayment(1, testJourney._id, FrozenTime.localDateTime)
+        }
+      }
+      "updateCancelWebPayment" - {
+        "should call pay-api to set payment status to Cancelled" in {
+          val testJourney = TestJourneys.PfSa.journeyAfterBeginWebPayment
+          PayApiStub.stubForUpdateCancelWebPayment2xx(testJourney._id)
+          systemUnderTest.JourneyUpdates.updateCancelWebPayment(testJourney._id.value).futureValue
+          PayApiStub.verifyUpdateCancelWebPayment(1, testJourney._id)
+        }
+      }
+      "updateFailWebPayment" - {
+        "should send a FailWebPaymentRequest to pay-api" in {
+          val testJourney = TestJourneys.PfSa.journeyAfterBeginWebPayment
+          PayApiStub.stubForUpdateFailWebPayment2xx(testJourney._id)
+          systemUnderTest.JourneyUpdates.updateFailWebPayment(testJourney._id.value, FailWebPaymentRequest(FrozenTime.localDateTime, "debit")).futureValue
+          PayApiStub.verifyUpdateFailWebPayment(1, testJourney._id, FrozenTime.localDateTime)
+        }
+      }
     }
   }
 }
