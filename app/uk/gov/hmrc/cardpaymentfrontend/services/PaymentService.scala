@@ -43,7 +43,7 @@ class PaymentService @Inject() (payApiConnector: PayApiConnector)(implicit execu
         logger.warn(s"User trying to create deep copy of journey that is in state [${ps.entryName}], when it should only be used by Failed or Cancelled.")
         Future.successful(())
 
-      case ps @ PaymentStatuses.Cancelled | PaymentStatuses.Failed =>
+      case ps @ (PaymentStatuses.Cancelled | PaymentStatuses.Failed) =>
         logger.info(s"Cloning journey as user wants to try again since status is ${ps.entryName} for journeyId ${journeyRequest.journeyId.value}")
         payApiConnector.restartJourneyAsNew(journeyRequest.journeyId).map(_ => ())
     }
