@@ -16,7 +16,6 @@
 
 package uk.gov.hmrc.cardpaymentfrontend.controllers
 
-import play.api.Logging
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.cardpaymentfrontend.actions.{Actions, JourneyRequest}
