@@ -102,4 +102,13 @@ class PayApiConnector @Inject() (appConfig: AppConfig, httpClientV2: HttpClientV
         }
   }
 
+  def restartJourneyAsNew(journeyId: JourneyId)(implicit headerCarrier: HeaderCarrier): Future[JourneyId] =
+    httpClientV2
+      .post(url"${appConfig.payApiBaseUrl}/pay-api/journey/${journeyId.value}/restart-journey-as-new")
+      .execute[JourneyId]
+      .andThen {
+        case Failure(exception) => logger.error(s"Failed to clone journey in pay-api: ${exception.getMessage}")
+        case Success(id)        => logger.debug(s"Successfully cloned journey in pay-api, new journeyId: [ ${id.value} ]")
+      }
+
 }

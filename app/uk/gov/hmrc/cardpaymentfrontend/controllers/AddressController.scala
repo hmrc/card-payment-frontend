@@ -46,7 +46,6 @@ class AddressController @Inject() (
 
   val renderPage: Action[AnyContent] = actions.journeyAction { implicit journeyRequest: JourneyRequest[AnyContent] =>
     val form: Form[Address] = addressInSession.fold(AddressForm.form())(address => AddressForm.form().fill(address))
-    logger.info(s"address in session: ${addressInSession.toString}")
     Ok(addressPage(form, countriesService.getCountries))
   }
 

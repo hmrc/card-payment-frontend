@@ -8,6 +8,7 @@ GET        /start-payment-survey                 uk.gov.hmrc.cardpaymentfrontend
 
 GET        /email-address                        uk.gov.hmrc.cardpaymentfrontend.controllers.EmailAddressController.renderPage
 POST       /email-address                        uk.gov.hmrc.cardpaymentfrontend.controllers.EmailAddressController.submit
+GET        /email-address-journey-retry          uk.gov.hmrc.cardpaymentfrontend.controllers.EmailAddressController.renderPageAfterReset
 
 GET        /card-fees                            uk.gov.hmrc.cardpaymentfrontend.controllers.FeesController.renderPage
 POST       /card-fees                            uk.gov.hmrc.cardpaymentfrontend.controllers.FeesController.submit

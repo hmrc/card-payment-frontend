@@ -134,12 +134,12 @@ class PaymentCancelledControllerSpec extends ItSpec {
         button.text() shouldBe "Nodwch eich manylion eto"
       }
 
-      "the 'Enter details again' button should link to the /email-address page" in {
+      "the 'Enter details again' button should link to the /email-address-journey-retry page" in {
         PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyAfterCancelWebPayment)
         val result = systemUnderTest.renderPage(fakeGetRequest)
         val document = Jsoup.parse(contentAsString(result))
         val button = document.select("#enter-details-again-button")
-        button.attr("href") shouldBe "/pay-by-card/email-address"
+        button.attr("href") shouldBe "/pay-by-card/email-address-journey-retry"
       }
 
       "should render the page with a link to pay another way" in {

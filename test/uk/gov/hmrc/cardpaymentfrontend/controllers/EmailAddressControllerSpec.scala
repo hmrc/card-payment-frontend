@@ -202,6 +202,55 @@ class EmailAddressControllerSpec extends ItSpec {
 
     }
 
+    "GET /email-address-journey-retry" - {
+      val fakeGetRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/email-address").withSessionId()
+      "should reset a Sent journey and then send user to /email-address" in {
+        val testJourney = TestJourneys.PfSa.journeyAfterBeginWebPayment
+        PayApiStub.stubForFindBySessionId2xx(testJourney)
+        PayApiStub.stubForResetWebPayment2xx(testJourney._id)
+        val result = systemUnderTest.renderPageAfterReset(fakeGetRequest)
+        status(result) shouldBe Status.SEE_OTHER
+        redirectLocation(result) shouldBe Some("/pay-by-card/email-address")
+        PayApiStub.verifyResetWebPayment(1, testJourney._id)
+      }
+      "should create a cloned journey when original journey is Failed and then send user to /email-address" in {
+        val testJourney = TestJourneys.PfSa.journeyAfterFailWebPayment
+        PayApiStub.stubForFindBySessionId2xx(testJourney)
+        PayApiStub.stubForCloneJourney2xx(testJourney._id)
+        val result = systemUnderTest.renderPageAfterReset(fakeGetRequest)
+        status(result) shouldBe Status.SEE_OTHER
+        redirectLocation(result) shouldBe Some("/pay-by-card/email-address")
+        PayApiStub.verifyCloneJourney(1, testJourney._id)
+      }
+      "should create a cloned journey when original journey is Cancelled then send user to /email-address" in {
+        val testJourney = TestJourneys.PfSa.journeyAfterCancelWebPayment
+        PayApiStub.stubForFindBySessionId2xx(testJourney)
+        PayApiStub.stubForCloneJourney2xx(testJourney._id)
+        val result = systemUnderTest.renderPageAfterReset(fakeGetRequest)
+        status(result) shouldBe Status.SEE_OTHER
+        redirectLocation(result) shouldBe Some("/pay-by-card/email-address")
+        PayApiStub.verifyCloneJourney(1, testJourney._id)
+      }
+      "should not do anything for Created journey and send user to /email-address" in {
+        val testJourney = TestJourneys.PfSa.journeyBeforeBeginWebPayment
+        PayApiStub.stubForFindBySessionId2xx(testJourney)
+        val result = systemUnderTest.renderPageAfterReset(fakeGetRequest)
+        status(result) shouldBe Status.SEE_OTHER
+        redirectLocation(result) shouldBe Some("/pay-by-card/email-address")
+        PayApiStub.verifyCloneJourney(0, testJourney._id)
+        PayApiStub.verifyResetWebPayment(0, testJourney._id)
+      }
+      "should not do anything for a Successful journey and send user to /email-address" in {
+        val testJourney = TestJourneys.PfSa.journeyAfterSucceedDebitWebPayment
+        PayApiStub.stubForFindBySessionId2xx(testJourney)
+        val result = systemUnderTest.renderPageAfterReset(fakeGetRequest)
+        status(result) shouldBe Status.SEE_OTHER
+        redirectLocation(result) shouldBe Some("/pay-by-card/email-address")
+        PayApiStub.verifyCloneJourney(0, testJourney._id)
+        PayApiStub.verifyResetWebPayment(0, testJourney._id)
+      }
+    }
+
     "POST /email-address" - {
 
         def fakePostRequest(formData: (String, String)*): FakeRequest[AnyContentAsFormUrlEncoded] =

@@ -16,6 +16,7 @@
 
 package uk.gov.hmrc.cardpaymentfrontend.controllers
 
+import play.api.Logging
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.cardpaymentfrontend.actions.{Actions, JourneyRequest}
@@ -57,7 +58,7 @@ class PaymentFailedController @Inject() (
         )),
         {
           case ChooseAPaymentMethodFormValues.OpenBanking => Redirect(uk.gov.hmrc.cardpaymentfrontend.controllers.routes.OpenBankingController.startOpenBankingJourney)
-          case ChooseAPaymentMethodFormValues.TryAgain    => Redirect(uk.gov.hmrc.cardpaymentfrontend.controllers.routes.EmailAddressController.renderPage)
+          case ChooseAPaymentMethodFormValues.TryAgain    => Redirect(uk.gov.hmrc.cardpaymentfrontend.controllers.routes.EmailAddressController.renderPageAfterReset)
         }
       )
   }

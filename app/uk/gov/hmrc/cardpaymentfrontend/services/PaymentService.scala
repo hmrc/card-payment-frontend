@@ -17,6 +17,9 @@
 package uk.gov.hmrc.cardpaymentfrontend.services
 
 import com.google.inject.{Inject, Singleton}
+import payapi.corcommon.model.PaymentStatuses
+import play.api.Logging
+import play.api.mvc.Result
 import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
 import uk.gov.hmrc.cardpaymentfrontend.connectors.PayApiConnector
 import uk.gov.hmrc.cardpaymentfrontend.requests.RequestSupport._
@@ -24,10 +27,28 @@ import uk.gov.hmrc.cardpaymentfrontend.requests.RequestSupport._
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class PaymentService @Inject() (payApiConnector: PayApiConnector)(implicit executionContext: ExecutionContext) {
+class PaymentService @Inject() (payApiConnector: PayApiConnector)(implicit executionContext: ExecutionContext) extends Logging {
 
-  def resetSentJourney()(implicit request: JourneyRequest[_]): Future[Unit] =
-    request.journey.order.fold[Future[Unit]](Future.successful(()))(_ => resetWebPayment())
+  def resetSentJourney()(implicit journeyRequest: JourneyRequest[_]): Future[Unit] =
+    journeyRequest.journey.order.fold[Future[Unit]](Future.successful(()))(_ => resetWebPayment())
+
+  def resetSentJourneyThenResult(r: => Result)(implicit journeyRequest: JourneyRequest[_]): Future[Result] =
+    journeyRequest.journey.order.fold[Future[Result]](Future.successful(r)) (_ => resetWebPayment().map(_ => r))
+
+  // Creates a new journey but copies over stuff like session id and journey specific data.
+  // To be used when journeys are cancelled/failed.
+  def createCopyOfCancelledOrFailedJourney()(implicit journeyRequest: JourneyRequest[_]): Future[Unit] = {
+    journeyRequest.journey.status match {
+      case ps @ (PaymentStatuses.Created | PaymentStatuses.Successful | PaymentStatuses.Sent | PaymentStatuses.Validated | PaymentStatuses.SoftDecline) =>
+        logger.warn(s"User trying to create deep copy of journey that is in state [${ps.entryName}], when it should only be used by Failed or Cancelled.")
+        Future.successful(())
+
+      case ps @ PaymentStatuses.Cancelled | PaymentStatuses.Failed =>
+        logger.info(s"Cloning journey as user wants to try again since status is ${ps.entryName} for journeyId ${journeyRequest.journeyId.value}")
+        payApiConnector.restartJourneyAsNew(journeyRequest.journeyId).map(_ => ())
+    }
+
+  }
 
   private def resetWebPayment()(implicit journeyRequest: JourneyRequest[_]): Future[Unit] = {
     for {

@@ -16,6 +16,7 @@
 
 package uk.gov.hmrc.cardpaymentfrontend.controllers
 
+import payapi.corcommon.model.PaymentStatuses
 import play.api.Logging
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -46,6 +47,18 @@ class EmailAddressController @Inject() (
   val renderPage: Action[AnyContent] = actions.routedJourneyAction { implicit request: JourneyRequest[AnyContent] =>
     val form = emailInSession.fold(EmailAddressForm.form()) { email => EmailAddressForm.form().fill(email) }
     Ok(emailAddressPage(form))
+  }
+
+  val renderPageAfterReset: Action[AnyContent] = actions.routedJourneyAction.async { implicit request: JourneyRequest[AnyContent] =>
+    request.journey.status match {
+      case PaymentStatuses.Created | PaymentStatuses.Successful | PaymentStatuses.SoftDecline | PaymentStatuses.Validated =>
+        Future.successful(Redirect(routes.EmailAddressController.renderPage))
+      case PaymentStatuses.Sent =>
+        logger.info("User journey in Sent state, attempting to reset order and status.")
+        paymentService.resetSentJourneyThenResult(Redirect(routes.EmailAddressController.renderPage))
+      case PaymentStatuses.Failed | PaymentStatuses.Cancelled =>
+        paymentService.createCopyOfCancelledOrFailedJourney().map(_ => Redirect(routes.EmailAddressController.renderPage))
+    }
   }
 
   val submit: Action[AnyContent] = actions.journeyAction.async { implicit journeyRequest: JourneyRequest[AnyContent] =>

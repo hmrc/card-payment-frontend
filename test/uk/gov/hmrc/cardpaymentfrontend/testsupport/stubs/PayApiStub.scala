@@ -177,4 +177,22 @@ object PayApiStub {
     deleteRequestedFor(urlEqualTo(resetWebPaymentPath(journeyId)))
   )
 
+  private def cloneJourneyPath(journeyId: JourneyId): String = s"/pay-api/journey/${journeyId.value}/restart-journey-as-new"
+
+  def stubForCloneJourney2xx(journeyId: JourneyId): StubMapping = stubFor(
+    post(urlPathEqualTo(cloneJourneyPath(journeyId))).willReturn(
+      aResponse()
+        .withStatus(Status.CREATED)
+        .withBody(Json.prettyPrint(Json.toJson(journeyId)))
+    )
+  )
+
+  def stubForCloneJourney5xx(journeyId: JourneyId): StubMapping =
+    stubFor(post(urlPathEqualTo(cloneJourneyPath(journeyId))).willReturn(aResponse().withStatus(Status.INTERNAL_SERVER_ERROR)))
+
+  def verifyCloneJourney(count: Int = 1, journeyId: JourneyId): Unit = verify(
+    count,
+    postRequestedFor(urlEqualTo(cloneJourneyPath(journeyId)))
+  )
+
 }
