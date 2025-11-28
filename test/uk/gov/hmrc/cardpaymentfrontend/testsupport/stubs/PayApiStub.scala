@@ -81,12 +81,15 @@ object PayApiStub {
     getRequestedFor(urlEqualTo(findLatestByJourneyIdPath(journeyId)))
   )
 
-  private def updateBeginWebPaymentPath(journeyId: String): String = s"/pay-api/journey/$journeyId/update/begin-web-payment"
+  private def updateBeginWebPaymentPath(journeyId: JourneyId): String = s"/pay-api/journey/${journeyId.value}/update/begin-web-payment"
 
   def stubForUpdateBeginWebPayment2xx(journeyId: JourneyId): StubMapping =
-    stubFor(put(urlPathEqualTo(updateBeginWebPaymentPath(journeyId.value))).willReturn(aResponse().withStatus(Status.OK)))
+    stubFor(put(urlPathEqualTo(updateBeginWebPaymentPath(journeyId))).willReturn(aResponse().withStatus(Status.OK)))
 
-  def verifyUpdateBeginWebPayment(count: Int = 1, journeyId: String): Unit = verify(
+  def stubForUpdateBeginWebPayment5xx(journeyId: JourneyId): StubMapping =
+    stubFor(put(urlPathEqualTo(updateBeginWebPaymentPath(journeyId))).willReturn(aResponse().withStatus(Status.SERVICE_UNAVAILABLE)))
+
+  def verifyUpdateBeginWebPayment(count: Int = 1, journeyId: JourneyId): Unit = verify(
     count,
     putRequestedFor(urlEqualTo(updateBeginWebPaymentPath(journeyId)))
       .withRequestBody(equalToJson(
@@ -101,15 +104,15 @@ object PayApiStub {
       ))
   )
 
-  private def updateSucceedWebPaymentPath(journeyId: String): String = s"/pay-api/journey/$journeyId/update/succeed-web-payment"
+  private def updateSucceedWebPaymentPath(journeyId: JourneyId): String = s"/pay-api/journey/${journeyId.value}/update/succeed-web-payment"
 
   def stubForUpdateSucceedWebPayment2xx(journeyId: JourneyId): StubMapping =
-    stubFor(put(urlPathEqualTo(updateSucceedWebPaymentPath(journeyId.value))).willReturn(aResponse().withStatus(Status.OK)))
+    stubFor(put(urlPathEqualTo(updateSucceedWebPaymentPath(journeyId))).willReturn(aResponse().withStatus(Status.OK)))
 
   def stubForUpdateSucceedWebPayment5xx(journeyId: JourneyId): StubMapping =
-    stubFor(put(urlPathEqualTo(updateSucceedWebPaymentPath(journeyId.value))).willReturn(aResponse().withStatus(Status.INTERNAL_SERVER_ERROR)))
+    stubFor(put(urlPathEqualTo(updateSucceedWebPaymentPath(journeyId))).willReturn(aResponse().withStatus(Status.INTERNAL_SERVER_ERROR)))
 
-  def verifyUpdateSucceedWebPayment(count: Int = 1, journeyId: String, expectedTransactionTime: LocalDateTime): Unit = verify(
+  def verifyUpdateSucceedWebPayment(count: Int = 1, journeyId: JourneyId, expectedTransactionTime: LocalDateTime): Unit = verify(
     count,
     putRequestedFor(urlEqualTo(updateSucceedWebPaymentPath(journeyId)))
       .withRequestBody(equalToJson(
@@ -125,15 +128,15 @@ object PayApiStub {
       ))
   )
 
-  private def updateFailWebPaymentPath(journeyId: String): String = s"/pay-api/journey/$journeyId/update/fail-web-payment"
+  private def updateFailWebPaymentPath(journeyId: JourneyId): String = s"/pay-api/journey/${journeyId.value}/update/fail-web-payment"
 
   def stubForUpdateFailWebPayment2xx(journeyId: JourneyId): StubMapping =
-    stubFor(put(urlPathEqualTo(updateFailWebPaymentPath(journeyId.value))).willReturn(aResponse().withStatus(Status.OK)))
+    stubFor(put(urlPathEqualTo(updateFailWebPaymentPath(journeyId))).willReturn(aResponse().withStatus(Status.OK)))
 
   def stubForUpdateFailWebPayment5xx(journeyId: JourneyId): StubMapping =
-    stubFor(put(urlPathEqualTo(updateFailWebPaymentPath(journeyId.value))).willReturn(aResponse().withStatus(Status.INTERNAL_SERVER_ERROR)))
+    stubFor(put(urlPathEqualTo(updateFailWebPaymentPath(journeyId))).willReturn(aResponse().withStatus(Status.INTERNAL_SERVER_ERROR)))
 
-  def verifyUpdateFailWebPayment(count: Int = 1, journeyId: String, expectedTransactionTime: LocalDateTime): Unit = verify(
+  def verifyUpdateFailWebPayment(count: Int = 1, journeyId: JourneyId, expectedTransactionTime: LocalDateTime): Unit = verify(
     count,
     putRequestedFor(urlEqualTo(updateFailWebPaymentPath(journeyId)))
       .withRequestBody(equalToJson(
@@ -148,17 +151,48 @@ object PayApiStub {
       ))
   )
 
-  private def updateCancelWebPaymentPath(journeyId: String): String = s"/pay-api/journey/$journeyId/update/cancel-web-payment"
+  private def updateCancelWebPaymentPath(journeyId: JourneyId): String = s"/pay-api/journey/${journeyId.value}/update/cancel-web-payment"
 
   def stubForUpdateCancelWebPayment2xx(journeyId: JourneyId): StubMapping =
-    stubFor(put(urlPathEqualTo(updateCancelWebPaymentPath(journeyId.value))).willReturn(aResponse().withStatus(Status.OK)))
+    stubFor(put(urlPathEqualTo(updateCancelWebPaymentPath(journeyId))).willReturn(aResponse().withStatus(Status.OK)))
 
   def stubForUpdateCancelWebPayment5xx(journeyId: JourneyId): StubMapping =
-    stubFor(put(urlPathEqualTo(updateCancelWebPaymentPath(journeyId.value))).willReturn(aResponse().withStatus(Status.INTERNAL_SERVER_ERROR)))
+    stubFor(put(urlPathEqualTo(updateCancelWebPaymentPath(journeyId))).willReturn(aResponse().withStatus(Status.INTERNAL_SERVER_ERROR)))
 
-  def verifyUpdateCancelWebPayment(count: Int = 1, journeyId: String): Unit = verify(
+  def verifyUpdateCancelWebPayment(count: Int = 1, journeyId: JourneyId): Unit = verify(
     count,
     putRequestedFor(urlEqualTo(updateCancelWebPaymentPath(journeyId)))
+  )
+
+  private def resetWebPaymentPath(journeyId: JourneyId): String = s"/pay-api/journey/${journeyId.value}/update/reset-web-payment"
+
+  def stubForResetWebPayment2xx(journeyId: JourneyId): StubMapping =
+    stubFor(delete(urlPathEqualTo(resetWebPaymentPath(journeyId))).willReturn(aResponse().withStatus(Status.OK)))
+
+  def stubForResetWebPayment5xx(journeyId: JourneyId): StubMapping =
+    stubFor(delete(urlPathEqualTo(resetWebPaymentPath(journeyId))).willReturn(aResponse().withStatus(Status.INTERNAL_SERVER_ERROR)))
+
+  def verifyResetWebPayment(count: Int = 1, journeyId: JourneyId): Unit = verify(
+    count,
+    deleteRequestedFor(urlEqualTo(resetWebPaymentPath(journeyId)))
+  )
+
+  private def cloneJourneyPath(journeyId: JourneyId): String = s"/pay-api/journey/${journeyId.value}/restart-journey-as-new"
+
+  def stubForCloneJourney2xx(journeyId: JourneyId): StubMapping = stubFor(
+    post(urlPathEqualTo(cloneJourneyPath(journeyId))).willReturn(
+      aResponse()
+        .withStatus(Status.CREATED)
+        .withBody(Json.prettyPrint(Json.toJson(journeyId)))
+    )
+  )
+
+  def stubForCloneJourney5xx(journeyId: JourneyId): StubMapping =
+    stubFor(post(urlPathEqualTo(cloneJourneyPath(journeyId))).willReturn(aResponse().withStatus(Status.INTERNAL_SERVER_ERROR)))
+
+  def verifyCloneJourney(count: Int = 1, journeyId: JourneyId): Unit = verify(
+    count,
+    postRequestedFor(urlEqualTo(cloneJourneyPath(journeyId)))
   )
 
 }

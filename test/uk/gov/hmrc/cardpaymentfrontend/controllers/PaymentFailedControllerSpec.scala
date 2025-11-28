@@ -91,8 +91,7 @@ class PaymentFailedControllerSpec extends ItSpec {
       }
 
       "render the correct content in English for origins with no OpenBanking" in {
-        // TODO: May need changing if/when ItSa payment methods are changed
-        PayApiStub.stubForFindBySessionId2xx(TestJourneys.ItSa.journeyAfterFailWebPayment)
+        PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfOther.journeyAfterFailWebPayment)
         val result = systemUnderTest.renderPage(fakeGetRequest)
         val document = Jsoup.parse(contentAsString(result))
         val title = document.body().select(".govuk-heading-l")
@@ -105,8 +104,7 @@ class PaymentFailedControllerSpec extends ItSpec {
       }
 
       "render the correct content in Welsh for origins with no OpenBanking" in {
-        // TODO: May need changing if/when ItSa payment methods are changed
-        PayApiStub.stubForFindBySessionId2xx(TestJourneys.ItSa.journeyAfterFailWebPayment)
+        PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfOther.journeyAfterFailWebPayment)
         val result = systemUnderTest.renderPage(fakeGetRequestInWelsh)
         val document = Jsoup.parse(contentAsString(result))
         val title = document.body().select(".govuk-heading-l")
@@ -191,69 +189,54 @@ class PaymentFailedControllerSpec extends ItSpec {
       val fakeGetRequestInWelsh: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/payment-failed").withSessionId().withLangWelsh()
 
       "should return 200 OK" in {
-        PayApiStub.stubForFindBySessionId2xx(TestJourneys.ItSa.journeyAfterFailWebPayment)
+        PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfOther.journeyAfterFailWebPayment)
         val result = systemUnderTest.renderPage()(fakeGetRequest)
         status(result) shouldBe Status.OK
       }
 
       "render the page with the correct sub heading in English" in {
-        PayApiStub.stubForFindBySessionId2xx(TestJourneys.ItSa.journeyAfterFailWebPayment)
+        PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfOther.journeyAfterFailWebPayment)
         val result = systemUnderTest.renderPage(fakeGetRequest)
         val document = Jsoup.parse(contentAsString(result))
         document.selectXpath("//*[@id=\"main-content\"]/div/div/p[1]").text() shouldBe "No payment has been taken from your card."
       }
 
       "render the page with the correct sub heading in Welsh" in {
-        PayApiStub.stubForFindBySessionId2xx(TestJourneys.ItSa.journeyAfterFailWebPayment)
+        PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfOther.journeyAfterFailWebPayment)
         val result = systemUnderTest.renderPage()(fakeGetRequestInWelsh)
         val document = Jsoup.parse(contentAsString(result))
         document.selectXpath("//*[@id=\"main-content\"]/div/div/p[1]").text() shouldBe "Nid oes taliad wedi’i dynnu o’ch cerdyn."
       }
 
       "render the page with the correct button content in English" in {
-        PayApiStub.stubForFindBySessionId2xx(TestJourneys.ItSa.journeyAfterFailWebPayment)
+        PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfOther.journeyAfterFailWebPayment)
         val result = systemUnderTest.renderPage(fakeGetRequest)
         val document = Jsoup.parse(contentAsString(result))
         document.select(".govuk-button").first().text() shouldBe "Check details and try again"
       }
 
       "render the page with the correct button content in Welsh" in {
-        PayApiStub.stubForFindBySessionId2xx(TestJourneys.ItSa.journeyAfterFailWebPayment)
+        PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfOther.journeyAfterFailWebPayment)
         val result = systemUnderTest.renderPage(fakeGetRequestInWelsh)
         val document = Jsoup.parse(contentAsString(result))
         document.select(".govuk-button").first().text() shouldBe "Gwiriwch y manylion a rhowch gynnig arall arni"
       }
-
-      "Button should redirect to TryAgain - Enter Email Address page" in {
-        PayApiStub.stubForFindBySessionId2xx(TestJourneys.ItSa.journeyAfterFailWebPayment)
-        val result = systemUnderTest.submit(fakeGetRequest)
-        redirectLocation(result) shouldBe Some("/pay-by-card/email-address")
-      }
-
     }
 
-    "When Open Banking is selected" - {
-      val fakeGetRequest: FakeRequest[AnyContentAsFormUrlEncoded] = FakeRequest("POST", "/payment-failed").withSessionId().withFormUrlEncodedBody(("payment_method", ChooseAPaymentMethodFormValues.OpenBanking.entryName))
+    "POST /payment-failed" - {
+      "should redirect to /email-address-journey-retry when try again option is submitted" in {
+        val fakeGetRequest: FakeRequest[AnyContentAsFormUrlEncoded] = FakeRequest("POST", "/payment-failed").withSessionId().withFormUrlEncodedBody(("payment_method", ChooseAPaymentMethodFormValues.TryAgain.entryName))
+        PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfOther.journeyAfterFailWebPayment)
+        val result = systemUnderTest.submit(fakeGetRequest)
+        redirectLocation(result) shouldBe Some("/pay-by-card/email-address-journey-retry")
+      }
 
-      "Should redirect to start Open Banking Journey" in {
+      "should redirect to /start-open-banking when open banking option is submitted" in {
+        val fakeGetRequest: FakeRequest[AnyContentAsFormUrlEncoded] = FakeRequest("POST", "/payment-failed").withSessionId().withFormUrlEncodedBody(("payment_method", ChooseAPaymentMethodFormValues.OpenBanking.entryName))
         PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyAfterFailWebPayment)
         val result = systemUnderTest.submit(fakeGetRequest)
         redirectLocation(result) shouldBe Some("/pay-by-card/start-open-banking")
       }
-
-    }
-
-    "When Try Again is selected" - {
-      val fakeGetRequest: FakeRequest[AnyContentAsFormUrlEncoded] = FakeRequest("POST", "/payment-failed").withSessionId().withFormUrlEncodedBody(("payment_method", ChooseAPaymentMethodFormValues.TryAgain.entryName))
-
-      "Should redirect to the Enter Email Address page" in {
-        PayApiStub.stubForFindBySessionId2xx(TestJourneys.ItSa.journeyAfterFailWebPayment)
-        val result = systemUnderTest.submit(fakeGetRequest)
-        redirectLocation(result) shouldBe Some("/pay-by-card/email-address")
-      }
-    }
-
-    "When No radio option is selected" - {
 
       "Should show the correct error Title content in English" in {
         val fakeGetRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("POST", "/payment-failed").withSessionId()
@@ -304,9 +287,6 @@ class PaymentFailedControllerSpec extends ItSpec {
         val result = systemUnderTest.submit(FakeRequest("POST", "/payment-failed").withSessionId().withFormUrlEncodedBody("payment-method" -> "IAmInValid"))
         status(result) shouldBe 400
       }
-
     }
-
   }
-
 }

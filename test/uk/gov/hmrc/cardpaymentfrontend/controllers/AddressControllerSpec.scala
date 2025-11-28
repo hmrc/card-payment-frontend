@@ -19,9 +19,12 @@ package uk.gov.hmrc.cardpaymentfrontend.controllers
 import org.jsoup.Jsoup
 import payapi.corcommon.model.JourneyId
 import play.api.http.Status
+import play.api.libs.json.Json
 import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
+import uk.gov.hmrc.cardpaymentfrontend.models.Address
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.ItSpec
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.TestOps.FakeRequestOps
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.stubs.PayApiStub
@@ -35,10 +38,11 @@ class AddressControllerSpec extends ItSpec {
 
   override def beforeEach(): Unit = {
     PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyBeforeBeginWebPayment)
+    wireMockServer.resetRequests()
     ()
   }
 
-  "Address Controller" - {
+  "AddressController" - {
 
     "GET /address" - {
       val fakeGetRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/address").withSessionId()
@@ -186,7 +190,70 @@ class AddressControllerSpec extends ItSpec {
         redirectLocation(result) shouldBe Some("/pay-by-card/check-your-details")
       }
 
-      "Should show the correct error Title content in English" in {
+      "should call pay-api and reset order when journey is in Sent state and address submitted is different to what is already in session" in {
+        val testJourney = TestJourneys.PfSa.journeyAfterBeginWebPayment
+        val address = List(
+          ("line1", "20 Fake Cottage"),
+          ("line2", "Fake Street"),
+          ("city", "Imaginaryshire"),
+          ("county", "East Imaginationland"),
+          ("postcode", "IM2 4HJ"),
+          ("country", "GBR")
+        )
+        PayApiStub.stubForFindBySessionId2xx(testJourney)
+        PayApiStub.stubForResetWebPayment2xx(testJourney._id)
+        val result = systemUnderTest.submit(fakePostRequest(address: _*).withAddressInSession(testJourney._id))
+        status(result) shouldBe Status.SEE_OTHER
+        redirectLocation(result) shouldBe Some("/pay-by-card/check-your-details")
+        val addressInSession = session(result).get(testJourney._id.value)
+        val expectedAddressJson = Json.parse(
+          """{
+            |"address" : {
+            |    "line1" : "20 Fake Cottage",
+            |    "line2" : "Fake Street",
+            |    "city" : "Imaginaryshire",
+            |    "county" : "East Imaginationland",
+            |    "postcode" : "IM2 4HJ",
+            |    "country" : "GBR"
+            |  }
+            |}
+            |""".stripMargin
+        )
+        addressInSession.map(Json.parse) shouldBe Some(expectedAddressJson)
+        PayApiStub.verifyResetWebPayment(1, testJourney._id)
+      }
+
+      "should not have to call pay-api to reset webpayment when re submitted address is not different to the one used before" in {
+        val testJourney = TestJourneys.PfSa.journeyAfterBeginWebPayment
+        val testAddress = Address(line1    = "line1", postcode = Some("AA11AA"), country = "GBR")
+        val testAddressList = List(
+          ("line1", testAddress.line1),
+          ("postcode", testAddress.postcode.getOrElse(throw new RuntimeException("expecting postcode in test data for this test"))),
+          ("country", testAddress.country)
+        )
+        PayApiStub.stubForFindBySessionId2xx(testJourney)
+        val result = systemUnderTest.submit(fakePostRequest(testAddressList: _*).withAddressInSession(testJourney._id, testAddress))
+        status(result) shouldBe Status.SEE_OTHER
+        redirectLocation(result) shouldBe Some("/pay-by-card/check-your-details")
+        PayApiStub.verifyResetWebPayment(0, testJourney._id)
+      }
+
+      "should not have to call pay-api to reset webpayment when order is null in journey" in {
+        val testJourney = TestJourneys.PfSa.journeyBeforeBeginWebPayment
+        val testAddress = Address(line1    = "line1", postcode = Some("AA11AA"), country = "GBR")
+        val address = List(
+          ("line1", "line1updated"),
+          ("postcode", "AA11AA"),
+          ("country", "GBR")
+        )
+        PayApiStub.stubForFindBySessionId2xx(testJourney)
+        val result = systemUnderTest.submit(fakePostRequest(address: _*).withAddressInSession(testJourney._id, testAddress))
+        status(result) shouldBe Status.SEE_OTHER
+        redirectLocation(result) shouldBe Some("/pay-by-card/check-your-details")
+        PayApiStub.verifyResetWebPayment(0, testJourney._id)
+      }
+
+      "Should show the correct error title content in English" in {
         val address = List(
           ("line1", ""),
           ("line2", "Fake Street"),
@@ -200,7 +267,7 @@ class AddressControllerSpec extends ItSpec {
         document.title() shouldBe "Error: Card billing address - Pay your Self Assessment - GOV.UK"
       }
 
-      "Should show the correct error Title content in Welsh" in {
+      "Should show the correct error title content in Welsh" in {
         val address = List(
           ("line1", ""),
           ("line2", "Fake Street"),
@@ -505,6 +572,36 @@ class AddressControllerSpec extends ItSpec {
         status(result) shouldBe Status.BAD_REQUEST
       }
 
+    }
+
+    "addressInSession" - {
+      "should return Some[Address] when there is one in session and it's associated with the 'address' key" in {
+        val fakeRequest = FakeRequest("GET", "/blah").withAddressInSession(TestJourneys.PfSa.journeyBeforeBeginWebPayment._id)
+        val journeyRequest = new JourneyRequest(TestJourneys.PfSa.journeyBeforeBeginWebPayment, fakeRequest)
+        val result = systemUnderTest.addressInSession(journeyRequest)
+        result shouldBe Some(Address("line1", Some("line2"), Some("city"), Some("county"), Some("AA0AA0"), "GBR"))
+      }
+      "should return None when there is not one in session associated with the 'address' key" in {
+        val fakeRequest = FakeRequest("GET", "/blah")
+        val journeyRequest = new JourneyRequest(TestJourneys.PfSa.journeyBeforeBeginWebPayment, fakeRequest)
+        val result = systemUnderTest.addressInSession(journeyRequest)
+        result shouldBe None
+      }
+    }
+
+    "addressIsDifferent" - {
+      "should return true when two different addresses are provided" in {
+        systemUnderTest.addressIsDifferent(
+          Address(line1    = "line1", line2 = Some("line2"), city = Some("city"), county = Some("county"), postcode = Some("postcode"), country = "country"),
+          Address(line1    = "line1butdifferent", line2 = Some("line2"), city = Some("city"), county = Some("county"), postcode = Some("postcode"), country = "country"),
+        ) shouldBe true
+      }
+      "should return false when two identical addresses are provided" in {
+        systemUnderTest.addressIsDifferent(
+          Address(line1    = "line1", line2 = Some("line2"), city = Some("city"), county = Some("county"), postcode = Some("postcode"), country = "country"),
+          Address(line1    = "line1", line2 = Some("line2"), city = Some("city"), county = Some("county"), postcode = Some("postcode"), country = "country"),
+        ) shouldBe false
+      }
     }
 
   }

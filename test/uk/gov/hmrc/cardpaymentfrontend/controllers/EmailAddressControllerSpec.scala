@@ -19,9 +19,12 @@ package uk.gov.hmrc.cardpaymentfrontend.controllers
 import org.jsoup.Jsoup
 import payapi.corcommon.model.JourneyId
 import play.api.http.Status
+import play.api.libs.json.Json
 import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
+import uk.gov.hmrc.cardpaymentfrontend.models.EmailAddress
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.ItSpec
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.TestOps._
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.stubs.PayApiStub
@@ -33,6 +36,7 @@ class EmailAddressControllerSpec extends ItSpec {
 
   override def beforeEach(): Unit = {
     PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyBeforeBeginWebPayment)
+    wireMockServer.resetRequests()
     ()
   }
 
@@ -198,6 +202,55 @@ class EmailAddressControllerSpec extends ItSpec {
 
     }
 
+    "GET /email-address-journey-retry" - {
+      val fakeGetRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/email-address").withSessionId()
+      "should reset a Sent journey and then send user to /email-address" in {
+        val testJourney = TestJourneys.PfSa.journeyAfterBeginWebPayment
+        PayApiStub.stubForFindBySessionId2xx(testJourney)
+        PayApiStub.stubForResetWebPayment2xx(testJourney._id)
+        val result = systemUnderTest.renderPageAfterReset(fakeGetRequest)
+        status(result) shouldBe Status.SEE_OTHER
+        redirectLocation(result) shouldBe Some("/pay-by-card/email-address")
+        PayApiStub.verifyResetWebPayment(1, testJourney._id)
+      }
+      "should create a cloned journey when original journey is Failed and then send user to /email-address" in {
+        val testJourney = TestJourneys.PfSa.journeyAfterFailWebPayment
+        PayApiStub.stubForFindBySessionId2xx(testJourney)
+        PayApiStub.stubForCloneJourney2xx(testJourney._id)
+        val result = systemUnderTest.renderPageAfterReset(fakeGetRequest)
+        status(result) shouldBe Status.SEE_OTHER
+        redirectLocation(result) shouldBe Some("/pay-by-card/email-address")
+        PayApiStub.verifyCloneJourney(1, testJourney._id)
+      }
+      "should create a cloned journey when original journey is Cancelled then send user to /email-address" in {
+        val testJourney = TestJourneys.PfSa.journeyAfterCancelWebPayment
+        PayApiStub.stubForFindBySessionId2xx(testJourney)
+        PayApiStub.stubForCloneJourney2xx(testJourney._id)
+        val result = systemUnderTest.renderPageAfterReset(fakeGetRequest)
+        status(result) shouldBe Status.SEE_OTHER
+        redirectLocation(result) shouldBe Some("/pay-by-card/email-address")
+        PayApiStub.verifyCloneJourney(1, testJourney._id)
+      }
+      "should not do anything for Created journey and send user to /email-address" in {
+        val testJourney = TestJourneys.PfSa.journeyBeforeBeginWebPayment
+        PayApiStub.stubForFindBySessionId2xx(testJourney)
+        val result = systemUnderTest.renderPageAfterReset(fakeGetRequest)
+        status(result) shouldBe Status.SEE_OTHER
+        redirectLocation(result) shouldBe Some("/pay-by-card/email-address")
+        PayApiStub.verifyCloneJourney(0, testJourney._id)
+        PayApiStub.verifyResetWebPayment(0, testJourney._id)
+      }
+      "should not do anything for a Successful journey and send user to /email-address" in {
+        val testJourney = TestJourneys.PfSa.journeyAfterSucceedDebitWebPayment
+        PayApiStub.stubForFindBySessionId2xx(testJourney)
+        val result = systemUnderTest.renderPageAfterReset(fakeGetRequest)
+        status(result) shouldBe Status.SEE_OTHER
+        redirectLocation(result) shouldBe Some("/pay-by-card/email-address")
+        PayApiStub.verifyCloneJourney(0, testJourney._id)
+        PayApiStub.verifyResetWebPayment(0, testJourney._id)
+      }
+    }
+
     "POST /email-address" - {
 
         def fakePostRequest(formData: (String, String)*): FakeRequest[AnyContentAsFormUrlEncoded] =
@@ -222,6 +275,41 @@ class EmailAddressControllerSpec extends ItSpec {
         val result = systemUnderTest.submit(fakePostRequest(validFormData))
         status(result) shouldBe Status.SEE_OTHER
         redirectLocation(result) shouldBe Some("/pay-by-card/address")
+      }
+
+      "should call pay-api and reset order when journey is in Sent state and email submitted is different to what is already in session" in {
+        val testJourney = TestJourneys.PfSa.journeyAfterBeginWebPayment
+        val validFormData = ("email-address", "someemail@email.com")
+        PayApiStub.stubForFindBySessionId2xx(testJourney)
+        PayApiStub.stubForResetWebPayment2xx(testJourney._id)
+        val result = systemUnderTest.submit(fakePostRequest(validFormData).withEmailInSession(testJourney._id))
+        status(result) shouldBe Status.SEE_OTHER
+        redirectLocation(result) shouldBe Some("/pay-by-card/address")
+        val emailInSession = session(result).get(testJourney._id.value)
+        val expectedAddressJson = Json.parse("""{"email":"someemail@email.com"}""")
+        emailInSession.map(Json.parse) shouldBe Some(expectedAddressJson)
+        PayApiStub.verifyResetWebPayment(1, testJourney._id)
+      }
+
+      "should not call pay-api to reset order if resubmitted email is the same as the one already in session" in {
+        val testJourney = TestJourneys.PfSa.journeyAfterBeginWebPayment
+        val validFormData = ("email-address", "someemail@email.com")
+        PayApiStub.stubForFindBySessionId2xx(testJourney)
+        PayApiStub.stubForResetWebPayment2xx(testJourney._id)
+        val result = systemUnderTest.submit(fakePostRequest(validFormData).withEmailInSession(testJourney._id, EmailAddress("someemail@email.com")))
+        status(result) shouldBe Status.SEE_OTHER
+        redirectLocation(result) shouldBe Some("/pay-by-card/address")
+        PayApiStub.verifyResetWebPayment(0, testJourney._id)
+      }
+
+      "should not call pay-api to reset order when order is null in journey" in {
+        val testJourney = TestJourneys.PfSa.journeyBeforeBeginWebPayment
+        val validFormData = ("email-address", "someemail@email.com")
+        PayApiStub.stubForFindBySessionId2xx(testJourney)
+        val result = systemUnderTest.submit(fakePostRequest(validFormData).withEmailInSession(testJourney._id, EmailAddress("someemail@email.com")))
+        status(result) shouldBe Status.SEE_OTHER
+        redirectLocation(result) shouldBe Some("/pay-by-card/address")
+        PayApiStub.verifyResetWebPayment(0, testJourney._id)
       }
 
       "should return a 400 BAD_REQUEST when an invalid email address is submitted" in {
@@ -262,6 +350,37 @@ class EmailAddressControllerSpec extends ItSpec {
         document.select(".govuk-error-summary__list").select("a").attr("href") shouldBe "#email-address"
       }
     }
+
+    "addressInSession" - {
+      "should return Some[Address] when there is one in session and it's associated with the 'address' key" in {
+        val fakeRequest = FakeRequest("GET", "/blah").withEmailInSession(TestJourneys.PfSa.journeyBeforeBeginWebPayment._id)
+        val journeyRequest = new JourneyRequest(TestJourneys.PfSa.journeyBeforeBeginWebPayment, fakeRequest)
+        val result = systemUnderTest.emailInSession(journeyRequest)
+        result shouldBe Some(EmailAddress("blah@blah.com"))
+      }
+      "should return None when there is not one in session associated with the 'address' key" in {
+        val fakeRequest = FakeRequest("GET", "/blah")
+        val journeyRequest = new JourneyRequest(TestJourneys.PfSa.journeyBeforeBeginWebPayment, fakeRequest)
+        val result = systemUnderTest.emailInSession(journeyRequest)
+        result shouldBe None
+      }
+    }
+
+    "emailIsDifferent" - {
+      "should return true when two different addresses are provided" in {
+        systemUnderTest.emailIsDifferent(
+          EmailAddress("blah@blah.com"),
+          EmailAddress("blah1@blah.com")
+        ) shouldBe true
+      }
+      "should return false when two identical addresses are provided" in {
+        systemUnderTest.emailIsDifferent(
+          EmailAddress("blah@blah.com"),
+          EmailAddress("blah@blah.com")
+        ) shouldBe false
+      }
+    }
+
   }
 
 }

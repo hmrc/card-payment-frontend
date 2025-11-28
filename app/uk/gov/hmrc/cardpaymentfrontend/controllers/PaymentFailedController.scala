@@ -57,7 +57,7 @@ class PaymentFailedController @Inject() (
         )),
         {
           case ChooseAPaymentMethodFormValues.OpenBanking => Redirect(uk.gov.hmrc.cardpaymentfrontend.controllers.routes.OpenBankingController.startOpenBankingJourney)
-          case ChooseAPaymentMethodFormValues.TryAgain    => Redirect(uk.gov.hmrc.cardpaymentfrontend.controllers.routes.EmailAddressController.renderPage)
+          case ChooseAPaymentMethodFormValues.TryAgain    => Redirect(uk.gov.hmrc.cardpaymentfrontend.controllers.routes.EmailAddressController.renderPageAfterReset)
         }
       )
   }

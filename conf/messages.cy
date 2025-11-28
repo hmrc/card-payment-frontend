@@ -284,7 +284,6 @@ payment-complete.what-happens-next.mgd.p1-1 = Gallwch
 payment-complete.what-happens-next.mgd.link = sefydlu Debyd Uniongyrchol newidiol
 payment-complete.what-happens-next.mgd.p1-2 = i wneud eich holl daliadau Toll Peiriannau Hapchwarae yn awtomatig yn y dyfodol. Mae cael Debyd Uniongyrchol yn golygu na fyddwch yn methu dyddiadau cau nac yn wynebu costau am dalu’n hwyr.
 payment-complete.what-happens-next.mgd.p3 = Sefydlwch eich Debyd Uniongyrchol o leiaf 5 diwrnod cyn dyddiad dyledus eich taliad nesaf er mwyn gwneud yn siŵr eich bod yn talu erbyn y dyddiad cau.
-##todo mods has bespoke content for print link, passengers shouldn't have one at all
 
 #custom mib/mods content
 payment-complete.mods.panel.title = Datganiad wedi’i gwblhau

@@ -24,7 +24,7 @@ import uk.gov.hmrc.cardpaymentfrontend.models.{Address, EmailAddress}
 import uk.gov.hmrc.http.SessionKeys
 
 object TestOps {
-  implicit class FakeRequestOps[T](r: FakeRequest[T]) {
+  implicit class FakeRequestOps[T](private val r: FakeRequest[T]) extends AnyVal {
     def withLang(language: String = "en"): FakeRequest[T] = r.withCookies(Cookie("PLAY_LANG", language))
 
     def withLangWelsh(): FakeRequest[T] = r.withLang("cy")
