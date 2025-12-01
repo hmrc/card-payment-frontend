@@ -21,15 +21,16 @@ import payapi.corcommon.model.p800.P800ChargeRef
 import play.api.i18n.Messages
 import play.api.mvc.AnyContent
 import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
-import uk.gov.hmrc.cardpaymentfrontend.models.openbanking.OriginSpecificSessionData
+import uk.gov.hmrc.cardpaymentfrontend.models.PaymentMethod.{Bacs, Card, OpenBanking}
+import uk.gov.hmrc.cardpaymentfrontend.models.openbanking.{OriginSpecificSessionData, PtaP800SessionData}
 import uk.gov.hmrc.cardpaymentfrontend.models.{CheckYourAnswersRow, PaymentMethod}
 
 object ExtendedPtaP800 extends ExtendedOrigin {
   override val serviceNameMessageKey: String = "service-name.PtaP800"
   override val taxNameMessageKey: String = "payment-complete.tax-name.PtaP800"
 
-  def cardFeesPagePaymentMethods: Set[PaymentMethod] = Set()
-  def paymentMethods(): Set[PaymentMethod] = Set()
+  def cardFeesPagePaymentMethods: Set[PaymentMethod] = Set(OpenBanking)
+  def paymentMethods(): Set[PaymentMethod] = Set(Card, OpenBanking, Bacs)
 
   override def checkYourAnswersReferenceRow(journeyRequest: JourneyRequest[AnyContent])(payFrontendBaseUrl: String): Option[CheckYourAnswersRow] = {
     Some(CheckYourAnswersRow(
@@ -54,7 +55,10 @@ object ExtendedPtaP800 extends ExtendedOrigin {
     case _             => throw new RuntimeException("Incorrect origin found")
   }
 
-  override def openBankingOriginSpecificSessionData: JourneySpecificData => Option[OriginSpecificSessionData] = _ => None
+  override def openBankingOriginSpecificSessionData: JourneySpecificData => Option[OriginSpecificSessionData] = {
+    case j: JsdPtaP800 => Some(PtaP800SessionData(j.p800Ref, j.p800ChargeRef))
+    case _             => throw new RuntimeException("Incorrect origin found")
+  }
   override def surveyAuditName: String = "p800-or-pa302"
   override def surveyReturnHref: String = "https://www.gov.uk/government/organisations/hm-revenue-customs"
   override def surveyReturnMessageKey: String = "payments-survey.other.return-message"
