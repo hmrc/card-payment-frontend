@@ -26,8 +26,8 @@ import uk.gov.hmrc.cardpaymentfrontend.models.{CheckYourAnswersRow, PaymentMetho
 object ExtendedDdVat extends ExtendedOrigin {
   override val serviceNameMessageKey: String = "service-name.DdVat"
   override val taxNameMessageKey: String = "payment-complete.tax-name.DdVat"
-  def cardFeesPagePaymentMethods: Set[PaymentMethod] = Set(Bacs)
-  def paymentMethods(): Set[PaymentMethod] = Set(Card, Bacs)
+  def cardFeesPagePaymentMethods: Set[PaymentMethod] = Set(Bacs, OpenBanking)
+  def paymentMethods(): Set[PaymentMethod] = Set(Card, Bacs, OpenBanking)
 
   override def checkYourAnswersReferenceRow(journeyRequest: JourneyRequest[AnyContent])(payFrontendBaseUrl: String): Option[CheckYourAnswersRow] = {
     Some(CheckYourAnswersRow(
