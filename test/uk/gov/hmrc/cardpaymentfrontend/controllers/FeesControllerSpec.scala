@@ -3126,7 +3126,7 @@ class FeesControllerSpec extends ItSpec {
           val result = systemUnderTest.renderPage(fakeRequest)
           val document = Jsoup.parse(contentAsString(result))
           val listOfMethods = document.select("#payment-type-list").select("li")
-          listOfMethods.size() shouldBe 2
+          listOfMethods.size() shouldBe 3
         }
 
         // remove when we do OPS-14287, replacing with the ignored OB test
@@ -3215,7 +3215,7 @@ class FeesControllerSpec extends ItSpec {
           val result = systemUnderTest.renderPage(fakeRequest)
           val document = Jsoup.parse(contentAsString(result))
           val listOfMethods = document.select("#payment-type-list").select("li")
-          listOfMethods.size() shouldBe 2
+          listOfMethods.size() shouldBe 3
         }
 
         // remove when we do OPS-14287, replacing with the ignored OB test
@@ -3423,8 +3423,8 @@ class FeesControllerSpec extends ItSpec {
               case Origins.BtaSdil                  => Seq(expectedOpenBankingLink, expectedDirectDebitLink)
               case Origins.BcPngr                   => Seq.empty[Link]
               case Origins.Parcels                  => Seq.empty
-              case Origins.DdVat                    => Seq(expectedBankTransferLink)
-              case Origins.DdSdil                   => Seq(expectedBankTransferLink)
+              case Origins.DdVat                    => Seq(expectedOpenBankingLink, expectedBankTransferLink)
+              case Origins.DdSdil                   => Seq(expectedOpenBankingLink, expectedBankTransferLink)
               case Origins.VcVatReturn              => Seq(expectedOpenBankingLink, expectedVariableDirectDebitLink)
               case Origins.VcVatOther               => Seq(expectedOpenBankingLink)
               case Origins.Amls                     => Seq(expectedOpenBankingLink)
