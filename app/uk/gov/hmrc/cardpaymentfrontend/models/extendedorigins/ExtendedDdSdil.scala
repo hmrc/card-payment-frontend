@@ -27,7 +27,7 @@ object ExtendedDdSdil extends ExtendedOrigin {
   override val serviceNameMessageKey: String = "service-name.DdSdil"
   override val taxNameMessageKey: String = "payment-complete.tax-name.DdSdil"
 
-  def cardFeesPagePaymentMethods: Set[PaymentMethod] = Set(Bacs, OpenBanking)
+  def cardFeesPagePaymentMethods: Set[PaymentMethod] = Set(OpenBanking)
   def paymentMethods(): Set[PaymentMethod] = Set(Card, Bacs, OpenBanking)
 
   override def checkYourAnswersReferenceRow(journeyRequest: JourneyRequest[AnyContent])(payFrontendBaseUrl: String): Option[CheckYourAnswersRow] = {
