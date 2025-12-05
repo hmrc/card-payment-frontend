@@ -441,7 +441,7 @@ payment-cancelled.exit-without-paying.link = Gadewch heb dalu
 
 ## Payment Failed page
 payment-failed.heading = Taliad wedi methu
-payment-failed.sub-heading = Nid oes taliad wedi’i dynnu o’ch cerdyn.
+payment-failed.p1 = Nid oes taliad wedi’i dynnu o’ch cerdyn.
 payment-failed.failed1 = Mae’n bosibl bod y taliad wedi methi oherwydd:
 payment-failed.failed2 = nid oes yna ddigon o arian yn eich cyfrif
 payment-failed.failed3 = rydych wedi nodi manylion cerdyn sy’n annilys neu sydd wedi dod i ben

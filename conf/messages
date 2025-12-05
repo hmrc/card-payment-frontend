@@ -453,7 +453,7 @@ payment-cancelled.exit-without-paying.link = Exit without paying
 ## Payment Failed page
 
 payment-failed.heading = Payment failed
-payment-failed.sub-heading = No payment has been taken from your card.
+payment-failed.p1 = No payment has been taken from your card.
 payment-failed.failed1 = The payment may have failed if:
 payment-failed.failed2 = there are not enough funds in your account
 payment-failed.failed3 = you entered invalid or expired card details

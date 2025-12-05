@@ -221,6 +221,8 @@ class PaymentFailedControllerSpec extends ItSpec {
         val document = Jsoup.parse(contentAsString(result))
         document.select(".govuk-button").first().text() shouldBe "Gwiriwch y manylion a rhowch gynnig arall arni"
       }
+
+      "should render the correct "
     }
 
     "POST /payment-failed" - {
