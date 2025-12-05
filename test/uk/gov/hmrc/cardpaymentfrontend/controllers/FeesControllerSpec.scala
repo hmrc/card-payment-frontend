@@ -3408,7 +3408,7 @@ class FeesControllerSpec extends ItSpec {
               case Origins.PfCds                    => Seq(expectedOpenBankingLink)
               case Origins.PfOther                  => Seq.empty
               case Origins.PfP800                   => Seq.empty
-              case Origins.PtaP800                  => Seq.empty
+              case Origins.PtaP800                  => Seq(expectedOpenBankingLink)
               case Origins.PfClass2Ni               => Seq.empty
               case Origins.PfInsurancePremium       => Seq.empty
               case Origins.PfPsAdmin                => Seq(expectedOpenBankingLink)
