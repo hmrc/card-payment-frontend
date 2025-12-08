@@ -19,6 +19,7 @@ package uk.gov.hmrc.cardpaymentfrontend.models.openbanking
 import payapi.cardpaymentjourney.model.journey.Url
 import payapi.corcommon.model.Origins._
 import payapi.corcommon.model.cgt.CgtAccountReference
+import payapi.corcommon.model.p800.P800ChargeRef
 import payapi.corcommon.model.taxes.ReferenceMaker
 import payapi.corcommon.model.taxes.ad.{AlcoholDutyChargeReference, AlcoholDutyReference}
 import payapi.corcommon.model.taxes.amls.AmlsPaymentReference
@@ -149,10 +150,10 @@ object OriginSpecificSessionData {
       case JrsJobRetentionScheme    => Json.format[JrsJobRetentionSchemeSessionData].reads(json)
       case WcSdlt                   => Json.format[WcSdltSessionData].reads(json)
       case WcChildBenefitRepayments => Json.format[WcChildBenefitRepaymentsSessionData].reads(json)
+      case PtaP800                  => Json.format[PtaP800SessionData].reads(json)
 
       //Todo: Remove PfP800 when PtaP800 is fully available
-      case origin @ (PfOther | PtaP800 | PfP800
-        | BcPngr | Parcels | Mib | PfSimpleAssessment | PtaSimpleAssessment | WcXref) =>
+      case origin @ (PfOther | PfP800 | BcPngr | Parcels | Mib | PfSimpleAssessment | PtaSimpleAssessment | WcXref) =>
         throw new RuntimeException(s"Trying to read JSON for unimplemented Origin: ${origin.toString}")
     }
 
@@ -245,6 +246,7 @@ object OriginSpecificSessionData {
       case sessionData: JrsJobRetentionSchemeSessionData    => Json.format[JrsJobRetentionSchemeSessionData].writes(sessionData)
       case sessionData: WcSdltSessionData                   => Json.format[WcSdltSessionData].writes(sessionData)
       case sessionData: WcChildBenefitRepaymentsSessionData => Json.format[WcChildBenefitRepaymentsSessionData].writes(sessionData)
+      case sessionData: PtaP800SessionData                  => Json.format[PtaP800SessionData].writes(sessionData)
     }) + ("origin" -> Json.toJson(o.origin))
 
   implicit val format: OFormat[OriginSpecificSessionData] = OFormat(reads, writes)
@@ -520,6 +522,11 @@ final case class PfSimpleAssessmentSessionData(simpleAssessmentReference: XRef14
 final case class WcSimpleAssessmentSessionData(simpleAssessmentReference: XRef14Char, returnUrl: Option[Url] = None) extends OriginSpecificSessionData(WcSimpleAssessment) {
   def paymentReference: Reference = ReferenceMaker.makeSimpleAssessmentRef(simpleAssessmentReference)
   def searchTag: SearchTag = SearchTag(simpleAssessmentReference.canonicalizedValue)
+}
+
+final case class PtaP800SessionData(p800Ref: P800Ref, p800ChargeRef: Option[P800ChargeRef], returnUrl: Option[Url] = None) extends OriginSpecificSessionData(PtaP800) {
+  def paymentReference: Reference = ReferenceMaker.makeP800OpenBankingReference(p800Ref, p800ChargeRef)
+  def searchTag: SearchTag = SearchTag(p800Ref.canonicalizedValue)
 }
 
 final case class PfBioFuelsSessionData(bioFuelsRegistrationNumber: BioFuelsRegistrationNumber, returnUrl: Option[Url] = None) extends OriginSpecificSessionData(PfBioFuels) {

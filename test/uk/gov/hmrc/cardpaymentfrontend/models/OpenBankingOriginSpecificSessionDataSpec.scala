@@ -19,6 +19,7 @@ package uk.gov.hmrc.cardpaymentfrontend.models
 import org.scalatest.AppendedClues.convertToClueful
 import org.scalatest.Assertion
 import payapi.corcommon.model.cgt.CgtAccountReference
+import payapi.corcommon.model.p800.P800ChargeRef
 import payapi.corcommon.model.taxes.ad.{AlcoholDutyChargeReference, AlcoholDutyReference}
 import payapi.corcommon.model.taxes.amls.AmlsPaymentReference
 import payapi.corcommon.model.taxes.cds.CdsRef
@@ -406,9 +407,19 @@ class OpenBankingOriginSpecificSessionDataSpec extends UnitSpec {
       osd shouldBe None
     }
 
-    "PtaP800 (which is None, since it doesn't support Open banking)" in {
-      val osd = ExtendedPtaP800.openBankingOriginSpecificSessionData(TestJourneys.PtaP800.journeyBeforeBeginWebPayment.journeySpecificData)
-      osd shouldBe None
+    "PtaP800" - {
+      "without charge ref" in {
+        val testJson = Json.parse("""{"p800Ref":"MA000003AP8002027","origin":"PtaP800"}""")
+        val osd = ExtendedPtaP800.openBankingOriginSpecificSessionData(TestJourneys.PtaP800.journeyBeforeBeginWebPayment.journeySpecificData)
+        testOsd(osd, PtaP800SessionData(P800Ref("MA000003AP8002027"), None, None), "MA000003AP8002027", "MA000003AP8002027")
+        roundTripJsonTest(osd, testJson)
+      }
+      "with charge ref" in {
+        val testJson = Json.parse("""{"p800Ref":"MA000003AP8002027","p800ChargeRef":"BC007010065114","origin":"PtaP800"}""")
+        val osd = ExtendedPtaP800.openBankingOriginSpecificSessionData(TestJourneys.PtaP800.journeyWithP800ChargeRefBeforeBeginWebPayment.journeySpecificData)
+        testOsd(osd, PtaP800SessionData(P800Ref("MA000003AP8002027"), Some(P800ChargeRef("BC007010065114")), None), "BC007010065114", "MA000003AP8002027")
+        roundTripJsonTest(osd, testJson)
+      }
     }
 
     "PfSimpleAssessment" in {
