@@ -40,7 +40,7 @@ import payapi.corcommon.model.taxes.trusts.TrustReference
 import payapi.corcommon.model.taxes.vat.{CalendarPeriod, VatChargeReference, Vrn}
 import payapi.corcommon.model.taxes.vatc2c.VatC2cReference
 import payapi.corcommon.model.thirdpartysoftware.{ClientJourneyId, FriendlyName}
-import payapi.corcommon.model.times.period.CalendarQuarterlyPeriod
+import payapi.corcommon.model.times.period.{CalendarQuarterlyPeriod, TaxYear}
 import payapi.corcommon.model.webchat.WcEpayeNiReference
 import payapi.corcommon.model.{Origin, Reference, SearchTag}
 import play.api.libs.functional.syntax.toFunctionalBuilderOps
@@ -514,7 +514,7 @@ final case class WcSimpleAssessmentSessionData(simpleAssessmentReference: XRef14
   def searchTag: SearchTag = SearchTag(simpleAssessmentReference.canonicalizedValue)
 }
 
-final case class PtaP800SessionData(p800Ref: P800Ref, p800ChargeRef: Option[P800ChargeRef], returnUrl: Option[Url] = None) extends OriginSpecificSessionData(PtaP800) {
+final case class PtaP800SessionData(p800Ref: P800Ref, p800ChargeRef: Option[P800ChargeRef], taxYear: TaxYear, returnUrl: Option[Url] = None) extends OriginSpecificSessionData(PtaP800) {
   def paymentReference: Reference = ReferenceMaker.makeP800OpenBankingReference(p800Ref, p800ChargeRef)
   def searchTag: SearchTag = SearchTag(p800Ref.canonicalizedValue)
 }
