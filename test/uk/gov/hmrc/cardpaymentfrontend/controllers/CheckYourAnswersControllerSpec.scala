@@ -176,6 +176,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
           case Origins.NiEuVatIoss         => 4
           case Origins.PfNiEuVatIoss       => 3
           case Origins.AppSimpleAssessment => 2
+          case Origins.PtaP800             => 2
           case _                           => 1
         }
       }
@@ -207,6 +208,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
           case Origins.NiEuVatIoss         => 5
           case Origins.PfNiEuVatIoss       => 4
           case Origins.AppSimpleAssessment => 3
+          case Origins.PtaP800             => 3
           case _                           => 2
         }
       }
@@ -238,6 +240,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
           case Origins.NiEuVatIoss         => 6
           case Origins.PfNiEuVatIoss       => 5
           case Origins.AppSimpleAssessment => 4
+          case Origins.PtaP800             => 4
           case _                           => 3
         }
       }
@@ -1398,6 +1401,22 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       val document = Jsoup.parse(contentAsString(result))
       val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(1)
       assertRow(referenceRow, "Cyfeirnod y tâl", "BC007010065114", None, None)
+    }
+
+    "[PtaP800] should render the tax year row correctly" in {
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.PtaP800.journeyBeforeBeginWebPayment)
+      val result = systemUnderTest.renderPage(fakeRequest())
+      val document = Jsoup.parse(contentAsString(result))
+      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(1)
+      assertRow(referenceRow, "Tax year", "6 April 2027 to 5 April 2028", None, None)
+    }
+
+    "[PtaP800] should render the tax year row correctly in welsh" in {
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.PtaP800.journeyBeforeBeginWebPayment)
+      val result = systemUnderTest.renderPage(fakeRequestWelsh())
+      val document = Jsoup.parse(contentAsString(result))
+      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(1)
+      assertRow(referenceRow, "Blwyddyn dreth", "6 Ebrill 2027 i 5 Ebrill 2028", None, None)
     }
 
     "[PfSimpleAssessment] should render the payment reference row correctly" in {

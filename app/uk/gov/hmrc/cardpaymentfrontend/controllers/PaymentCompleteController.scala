@@ -125,7 +125,10 @@ object PaymentCompleteController {
           value = Value(Text(p800Ref.canonicalizedValue))
         ))
 
-      case JsdPtaP800(p800Ref, p800ChargeRef, _, _) =>
+      case JsdPtaP800(p800Ref, p800ChargeRef, taxYear, _) =>
+        // Pta send us tax year value as start of tax year. TaxYear class in pay-api uses endYear as apply argument. Then startYear: Int = endYear - 1.
+        // Therefore for correct displaying, we need to adjust the tax year.
+        val adjustedTaxYear: TaxYear = taxYear.nextTaxYear
         p800ChargeRef.fold[Seq[SummaryListRow]](Seq.empty[SummaryListRow]) { chargeRef =>
           Seq(
             SummaryListRow(
@@ -133,12 +136,20 @@ object PaymentCompleteController {
               value = Value(Text(chargeRef.canonicalizedValue))
             )
           )
-        } ++ Seq(SummaryListRow(
-          key   = Key(Text(messages("check-your-details.PtaP800.reference"))),
-          value = Value(Text(p800Ref.canonicalizedValue))
-        ))
+        } ++ Seq(
+          SummaryListRow(
+            key   = Key(Text(messages("check-your-details.PtaP800.reference"))),
+            value = Value(Text(p800Ref.canonicalizedValue))
+          ),
+          SummaryListRow(
+            key   = Key(Text(messages("check-your-details.PtaP800.tax-year"))),
+            value = Value(Text(messages("check-your-details.PtaP800.tax-year.value", adjustedTaxYear.startYear.toString, adjustedTaxYear.endYear.toString)))
+          )
+        )
 
       case JsdPtaSimpleAssessment(_, p302ChargeRef, taxYear, _, _) =>
+        // Pta send us tax year value as start of tax year. TaxYear class in pay-api uses endYear as apply argument. Then startYear: Int = endYear - 1.
+        // Therefore for correct displaying, we need to adjust the tax year.
         val adjustedTaxYear: TaxYear = taxYear.nextTaxYear
         Seq(
           SummaryListRow(

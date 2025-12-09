@@ -326,6 +326,7 @@ class PaymentCompleteControllerSpec extends ItSpec {
               "Date" -> "2 November 2027",
               "Charge reference" -> "BC007010065114",
               "Reference number" -> "MA000003AP8002027",
+              "Tax year" -> "6 April 2027 to 5 April 2028",
               "Amount" -> "£12.34"
             )
           )
@@ -2161,18 +2162,21 @@ object PaymentCompleteControllerSpec {
         "Tax" -> "P800",
         "Date" -> "2 November 2027",
         "Reference number" -> "MA000003AP8002027",
+        "Tax year" -> "6 April 2027 to 5 April 2028",
         "Amount" -> "£12.34"
       ),
       maybeWelshSummaryRowsDebitCard  = Some(List(
         "Treth" -> "P800",
         "Dyddiad" -> "2 Tachwedd 2027",
         "Cyfeirnod" -> "MA000003AP8002027",
+        "Blwyddyn dreth" -> "6 Ebrill 2027 i 5 Ebrill 2028",
         "Swm" -> "£12.34"
       )),
       englishSummaryRowsCreditCard    = List(
         "Tax" -> "P800",
         "Date" -> "2 November 2027",
         "Reference number" -> "MA000003AP8002027",
+        "Tax year" -> "6 April 2027 to 5 April 2028",
         "Amount paid to HMRC" -> "£12.34",
         "Card fee (9.97%), non-refundable" -> "£1.23",
         "Total paid" -> "£13.57"
@@ -2181,6 +2185,7 @@ object PaymentCompleteControllerSpec {
         "Treth" -> "P800",
         "Dyddiad" -> "2 Tachwedd 2027",
         "Cyfeirnod" -> "MA000003AP8002027",
+        "Blwyddyn dreth" -> "6 Ebrill 2027 i 5 Ebrill 2028",
         "Swm a dalwyd i CThEM" -> "£12.34",
         "Ffi cerdyn (9.97%), ni ellir ei ad-dalu" -> "£1.23",
         "Cyfanswm a dalwyd" -> "£13.57"
