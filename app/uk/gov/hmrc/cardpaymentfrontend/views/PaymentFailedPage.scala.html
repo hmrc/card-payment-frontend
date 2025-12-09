@@ -69,11 +69,11 @@
 }
 
 @nonOpenBankingHtml = {
-    <p class="govuk-body" id="p2">@{messages("payment-failed.failed1")}</p>
+    <p class="govuk-body" id="p2">@{messages("payment-failed.ul-info")}</p>
     <ul class="govuk-list--bullet govuk-!-static-padding-left-7" id="bullet-list">
-        <li class="govuk-body" id="bullet1">@{messages("payment-failed.failed2")}</li>
-        <li class="govuk-body" id="bullet2">@{messages("payment-failed.failed3")}</li>
-        @if(origin != BcPngr){ <li class="govuk-body" id="bullet3">@{messages("payment-failed.failed4")}</li> }
+        <li class="govuk-body" id="bullet1">@{messages("payment-failed.li1")}</li>
+        <li class="govuk-body" id="bullet2">@{messages("payment-failed.li2")}</li>
+        @if(origin != BcPngr){ <li class="govuk-body" id="bullet3">@{messages("payment-failed.li3")}</li> }
     </ul>
     <p class="govuk-body" id="check-again">@{messages("payment-failed.failed-check-again")}</p>
 

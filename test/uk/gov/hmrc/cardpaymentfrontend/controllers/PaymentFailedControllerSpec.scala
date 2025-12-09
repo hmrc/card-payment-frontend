@@ -19,17 +19,18 @@ package uk.gov.hmrc.cardpaymentfrontend.controllers
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.scalatest.Assertion
+import payapi.cardpaymentjourney.model.journey.{Journey, JourneySpecificData}
 import payapi.corcommon.model.Origin
-import payapi.corcommon.model.Origins.{AlcoholDuty, Amls, AppSa, AppSimpleAssessment, BcPngr, BtaClass1aNi, BtaCt, BtaEpayeBill, BtaEpayeGeneral, BtaEpayeInterest, BtaEpayePenalty, BtaSa, BtaSdil, BtaVat, CapitalGainsTax, DdSdil, DdVat, EconomicCrimeLevy, ItSa, JrsJobRetentionScheme, Mib, NiEuVatIoss, NiEuVatOss, Parcels, PfAggregatesLevy, PfAirPass, PfAlcoholDuty, PfAmls, PfAted, PfBeerDuty, PfBioFuels, PfCds, PfCdsCash, PfCdsDeferment, PfChildBenefitRepayments, PfClass2Ni, PfClass3Ni, PfClimateChangeLevy, PfCt, PfEconomicCrimeLevy, PfEpayeLateCis, PfEpayeLpp, PfEpayeNi, PfEpayeP11d, PfEpayeSeta, PfGamingOrBingoDuty, PfGbPbRgDuty, PfImportedVehicles, PfInheritanceTax, PfInsurancePremium, PfJobRetentionScheme, PfLandfillTax, PfMgd, PfNiEuVatIoss, PfNiEuVatOss, PfOther, PfP800, PfPillar2, PfPpt, PfPsAdmin, PfSa, PfSdil, PfSdlt, PfSimpleAssessment, PfSpiritDrinks, PfTpes, PfTrust, PfVat, PfVatC2c, PfWineAndCider, Pillar2, Ppt, PtaClass3Ni, PtaP800, PtaSa, PtaSimpleAssessment, VatC2c, VcVatOther, VcVatReturn, WcChildBenefitRepayments, WcClass1aNi, WcClass2Ni, WcCt, WcEpayeLateCis, WcEpayeLpp, WcEpayeNi, WcEpayeSeta, WcSa, WcSdlt, WcSimpleAssessment, WcVat, WcXref, `3psSa`, `3psVat`}
+import payapi.corcommon.model.Origins._
 import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.mvc.Http.Status
 import uk.gov.hmrc.cardpaymentfrontend.forms.ChooseAPaymentMethodFormValues
-import uk.gov.hmrc.cardpaymentfrontend.testsupport.{ItSpec, TestHelpers}
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.TestOps.FakeRequestOps
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.stubs.PayApiStub
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.testdata.TestJourneys
+import uk.gov.hmrc.cardpaymentfrontend.testsupport.{ItSpec, TestHelpers}
 
 import scala.jdk.CollectionConverters.ListHasAsScala
 
@@ -42,189 +43,32 @@ class PaymentFailedControllerSpec extends ItSpec {
     "GET /payment-failed" - {
 
       val fakeGetRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/payment-failed").withSessionId()
-      val fakeGetRequestInWelsh: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/payment-failed").withSessionId().withLangWelsh()
-      //todo we can rewrite all of these into a more cohesive test.
-      "should return 200 OK" in {
-        PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyAfterFailWebPayment)
-        val result = systemUnderTest.renderPage()(fakeGetRequest)
-        status(result) shouldBe Status.OK
+      val fakeGetRequestInWelsh: FakeRequest[AnyContentAsEmpty.type] = fakeGetRequest.withLangWelsh()
+
+      "should render the correct page and content" - {
+
+        TestHelpers.implementedOrigins.foreach { origin =>
+
+          val testJourney: Journey[JourneySpecificData] = TestHelpers.deriveTestDataFromOrigin(origin).journeyAfterFailWebPayment
+
+          s"in english for origin: ${origin.entryName}" in {
+            PayApiStub.stubForFindBySessionId2xx(testJourney)
+            val result = systemUnderTest.renderPage(fakeGetRequest)
+            status(result) shouldBe Status.OK
+            val document = Jsoup.parse(contentAsString(result))
+            assertionsForOrigin(origin    = testJourney.origin, document = document, welshTest = false)
+          }
+
+          s"in welsh for origin ${origin.entryName}" in {
+            PayApiStub.stubForFindBySessionId2xx(testJourney)
+            val result = systemUnderTest.renderPage(fakeGetRequestInWelsh)
+            status(result) shouldBe Status.OK
+            val document = Jsoup.parse(contentAsString(result))
+            assertionsForOrigin(origin    = testJourney.origin, document = document, welshTest = true)
+          }
+        }
       }
 
-      "include the hmrc layout" in {
-        PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyAfterFailWebPayment)
-        val result = systemUnderTest.renderPage(fakeGetRequest)
-        val document = Jsoup.parse(contentAsString(result))
-        document.select("html").hasClass("govuk-template") shouldBe true withClue "no govuk template"
-      }
-
-      "render the page with the language toggle" in {
-        PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyAfterFailWebPayment)
-        val result = systemUnderTest.renderPage(fakeGetRequest)
-        status(result) shouldBe Status.OK
-        val document = Jsoup.parse(contentAsString(result))
-        val langToggleText: List[String] = document.select(".hmrc-language-select__list-item").eachText().asScala.toList
-        langToggleText should contain theSameElementsAs List("English", "Newid yr iaith i’r Gymraeg Cymraeg")
-      }
-
-      "show the Title tab correctly in English" in {
-        PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyAfterFailWebPayment)
-        val result = systemUnderTest.renderPage(fakeGetRequest)
-        val document = Jsoup.parse(contentAsString(result))
-        document.title shouldBe "Payment failed - Pay your Self Assessment - GOV.UK"
-      }
-
-      "show the Title tab correctly in Welsh" in {
-        PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyAfterFailWebPayment)
-        val result = systemUnderTest.renderPage(fakeGetRequestInWelsh)
-        val document = Jsoup.parse(contentAsString(result))
-        document.title shouldBe "Taliad wedi methu - Talu eich Hunanasesiad - GOV.UK"
-      }
-
-      "show the Service Name banner title correctly in English" in {
-        PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyBeforeBeginWebPayment)
-        val result = systemUnderTest.renderPage(fakeGetRequest)
-        val document = Jsoup.parse(contentAsString(result))
-        document.select(".govuk-header__service-name").html shouldBe "Pay your Self Assessment"
-      }
-
-      "show the Service Name banner title correctly in Welsh" in {
-        PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyBeforeBeginWebPayment)
-        val result = systemUnderTest.renderPage(fakeGetRequestInWelsh)
-        val document = Jsoup.parse(contentAsString(result))
-        document.select(".govuk-header__service-name").html shouldBe "Talu eich Hunanasesiad"
-      }
-
-      "render the correct content in English for origins with no OpenBanking" in {
-        PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfOther.journeyAfterFailWebPayment)
-        val result = systemUnderTest.renderPage(fakeGetRequest)
-        val document = Jsoup.parse(contentAsString(result))
-        val title = document.body().select(".govuk-heading-l")
-        title.select("h1").text() shouldBe "Payment failed"
-        document.getElementById("sub-heading").text() shouldBe "No payment has been taken from your card."
-        document.getElementById("line1").text() shouldBe "The payment may have failed if:"
-        document.getElementById("line2").text() shouldBe "there are not enough funds in your account"
-        document.getElementById("line3").text() shouldBe "you entered invalid or expired card details"
-        document.getElementById("line4").text() shouldBe "the address you gave does not match the one your card issuer has"
-      }
-
-      "render the correct content in Welsh for origins with no OpenBanking" in {
-        PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfOther.journeyAfterFailWebPayment)
-        val result = systemUnderTest.renderPage(fakeGetRequestInWelsh)
-        val document = Jsoup.parse(contentAsString(result))
-        val title = document.body().select(".govuk-heading-l")
-        title.select("h1").text() shouldBe "Taliad wedi methu"
-        document.getElementById("sub-heading").text() shouldBe "Nid oes taliad wedi’i dynnu o’ch cerdyn."
-        document.getElementById("line1").text() shouldBe "Mae’n bosibl bod y taliad wedi methi oherwydd:"
-        document.getElementById("line2").text() shouldBe "nid oes yna ddigon o arian yn eich cyfrif"
-        document.getElementById("line3").text() shouldBe "rydych wedi nodi manylion cerdyn sy’n annilys neu sydd wedi dod i ben"
-        document.getElementById("line4").text() shouldBe "nid yw’r cyfeiriad a roesoch i ni’n cyd-fynd â’r un sydd gan ddosbarthwr eich cerdyn"
-      }
-
-    }
-
-    "GET /payment-failed with Open Banking available as a Payment Method" - {
-
-      val fakeGetRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/payment-failed").withSessionId()
-      val fakeGetRequestInWelsh: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/payment-failed").withSessionId().withLangWelsh()
-
-      "should return 200 OK" in {
-        PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyAfterFailWebPayment)
-        val result = systemUnderTest.renderPage()(fakeGetRequest)
-        status(result) shouldBe Status.OK
-      }
-
-      "render the page with the correct sub heading in English" in {
-        PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyAfterFailWebPayment)
-        val result = systemUnderTest.renderPage(fakeGetRequest)
-        val document = Jsoup.parse(contentAsString(result))
-        document.selectXpath("//*[@id=\"main-content\"]/div/div/p[1]").text() shouldBe "No payment has been taken from your card."
-      }
-
-      "render the page with the correct Radio Heading content in English" in {
-        PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyAfterFailWebPayment)
-        val result = systemUnderTest.renderPage()(fakeGetRequest)
-        val document = Jsoup.parse(contentAsString(result))
-        document.select(".govuk-fieldset__legend").text() shouldBe "What do you want to do?"
-      }
-
-      "render the page with the correct Radio contents in the correct order in English" in {
-        PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyAfterFailWebPayment)
-        val expectedContent = List("Approve a payment to come straight from my bank account", "Try card payment again")
-
-        val result = systemUnderTest.renderPage()(fakeGetRequest)
-        val document = Jsoup.parse(contentAsString(result))
-        val radios = document.select(".govuk-radios__item").asScala.toList
-
-        radios.map(_.text()) should contain theSameElementsInOrderAs expectedContent
-
-      }
-
-      "render the page with the correct sub heading in Welsh" in {
-        PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyAfterFailWebPayment)
-        val result = systemUnderTest.renderPage()(fakeGetRequestInWelsh)
-        val document = Jsoup.parse(contentAsString(result))
-        document.selectXpath("//*[@id=\"main-content\"]/div/div/p[1]").text() shouldBe "Nid oes taliad wedi’i dynnu o’ch cerdyn."
-      }
-
-      "render the page with the correct Radio Heading content in Welsh" in {
-        PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyAfterFailWebPayment)
-        val result = systemUnderTest.renderPage()(fakeGetRequestInWelsh)
-        val document = Jsoup.parse(contentAsString(result))
-        document.select(".govuk-fieldset__legend").text() shouldBe "Beth hoffech chi ei wneud?"
-      }
-
-      "render the page with the correct Radio contents in the correct order in Welsh" in {
-        PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyAfterFailWebPayment)
-        val expectedContent = List("Cymeradwyo taliad i fynd yn syth o’m cyfrif banc", "Rhowch gynnig arall ar dalu drwy gerdyn")
-
-        val result = systemUnderTest.renderPage()(fakeGetRequestInWelsh)
-        val document = Jsoup.parse(contentAsString(result))
-        val radios = document.select(".govuk-radios__item").asScala.toList
-
-        radios.map(_.text()) should contain theSameElementsInOrderAs expectedContent
-
-      }
-
-    }
-
-    "GET /payment-failed with No Open Banking as a Payment Method" - {
-
-      val fakeGetRequest: FakeRequest[AnyContentAsFormUrlEncoded] = FakeRequest("POST", "/payment-failed").withSessionId().withFormUrlEncodedBody(("payment_method", ChooseAPaymentMethodFormValues.TryAgain.entryName))
-      val fakeGetRequestInWelsh: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/payment-failed").withSessionId().withLangWelsh()
-
-      "should return 200 OK" in {
-        PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfOther.journeyAfterFailWebPayment)
-        val result = systemUnderTest.renderPage()(fakeGetRequest)
-        status(result) shouldBe Status.OK
-      }
-
-      "render the page with the correct sub heading in English" in {
-        PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfOther.journeyAfterFailWebPayment)
-        val result = systemUnderTest.renderPage(fakeGetRequest)
-        val document = Jsoup.parse(contentAsString(result))
-        document.selectXpath("//*[@id=\"main-content\"]/div/div/p[1]").text() shouldBe "No payment has been taken from your card."
-      }
-
-      "render the page with the correct sub heading in Welsh" in {
-        PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfOther.journeyAfterFailWebPayment)
-        val result = systemUnderTest.renderPage()(fakeGetRequestInWelsh)
-        val document = Jsoup.parse(contentAsString(result))
-        document.selectXpath("//*[@id=\"main-content\"]/div/div/p[1]").text() shouldBe "Nid oes taliad wedi’i dynnu o’ch cerdyn."
-      }
-
-      "render the page with the correct button content in English" in {
-        PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfOther.journeyAfterFailWebPayment)
-        val result = systemUnderTest.renderPage(fakeGetRequest)
-        val document = Jsoup.parse(contentAsString(result))
-        document.select(".govuk-button").first().text() shouldBe "Check details and try again"
-      }
-
-      "render the page with the correct button content in Welsh" in {
-        PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfOther.journeyAfterFailWebPayment)
-        val result = systemUnderTest.renderPage(fakeGetRequestInWelsh)
-        val document = Jsoup.parse(contentAsString(result))
-        document.select(".govuk-button").first().text() shouldBe "Gwiriwch y manylion a rhowch gynnig arall arni"
-      }
     }
 
     "POST /payment-failed" - {
@@ -292,129 +136,71 @@ class PaymentFailedControllerSpec extends ItSpec {
         status(result) shouldBe 400
       }
     }
-
-    "should render the correct page and content" - {
-      TestHelpers.implementedOrigins.foreach { o =>
-        val testData = TestHelpers.deriveTestDataFromOrigin(o)
-        s"for origin: ${o.entryName}" - {
-
-        }
-      }
-    }
   }
 
-  def noOpenBankingAssertion(document: Document): Assertion = {
-    document.select("#p2").html() shouldBe "p2huh"
-    document.select("#bullet-list").attr("class") shouldBe "doesthiswork?"
-    document.select("#bullet1").html() shouldBe "huhbullet1"
-    document.select("#bullet2").html() shouldBe "huhbullet2"
-    document.select("#bullet3").html() shouldBe "huhbullet3"
-    //todo passengers doesn't have bullet three
+  private def commonAssertions(document: Document, welshTest: Boolean): Assertion = {
+    document.select("h1").html() shouldBe (if (!welshTest) "Payment failed" else "Taliad wedi methu")
+    document.select("#p1").html() shouldBe (if (!welshTest) "No payment has been taken from your card." else "Nid oes taliad wedi’i dynnu o’ch cerdyn.")
   }
 
-  private def commonAssertions(document: Document) = {
-    val h1 = document.select("h1")
-    h1.html() shouldBe "huh"
-    val p1 = document.select("#p1")
-    p1.html() shouldBe "huhwuh"
-  }
+  private def noOpenBankingSupportedAssertion(document: Document, welshTest: Boolean): Assertion = {
+    commonAssertions(document, welshTest)
+    document.select("#p2").html() shouldBe (if (!welshTest) "The payment may have failed if:" else "Mae’n bosibl bod y taliad wedi methi oherwydd:")
+    document.select("#bullet-list").attr("class") shouldBe "govuk-list--bullet govuk-!-static-padding-left-7"
+    document.select("#bullet1").html() shouldBe (if (!welshTest) "there are not enough funds in your account" else "nid oes yna ddigon o arian yn eich cyfrif")
+    document.select("#bullet2").html() shouldBe (if (!welshTest) "you entered invalid or expired card details" else "rydych wedi nodi manylion cerdyn sy’n annilys neu sydd wedi dod i ben")
+    document.select("#bullet3").html() shouldBe (if (!welshTest) "the address you gave does not match the one your card issuer has" else "nid yw’r cyfeiriad a roesoch i ni’n cyd-fynd â’r un sydd gan ddosbarthwr eich cerdyn")
+    document.select("#check-again").html() shouldBe (if (!welshTest) "Check the details you entered are correct or try a different card." else "Gwiriwch fod y manylion a nodwyd gennych yn gywir neu rhowch gynnig ar gerdyn gwahanol.")
+    val button = document.select("#next")
+    button.`val`() shouldBe "TryAgain"
+    button.html() shouldBe (if (!welshTest) "Check details and try again" else "Gwiriwch y manylion a rhowch gynnig arall arni")
+  } withClue "expected no open banking form"
 
-  private def determineExpectedPageForOrigin(origin: Origin) = {
+  private def openBankingSupportedAssertion(document: Document, welshTest: Boolean): Assertion = {
+    commonAssertions(document, welshTest)
+    val form = document.select("form")
+    form.select("legend").html() shouldBe (if (!welshTest) "What do you want to do?" else "Beth hoffech chi ei wneud?")
+    form.select(".govuk-radios__item").size() shouldBe 2
+    val radioItems = form.select(".govuk-radios__item").asScala.toList
+    val openBankingRadio = radioItems.headOption
+    openBankingRadio.map(_.text()) shouldBe (if (!welshTest) Some("Approve a payment to come straight from my bank account") else Some("Cymeradwyo taliad i fynd yn syth o’m cyfrif banc"))
+    openBankingRadio.map(_.select("input").`val`()) shouldBe Some("OpenBanking")
+    val tryAgainRadio = radioItems.lastOption
+    tryAgainRadio.map(_.text()) shouldBe (if (!welshTest) Some("Try card payment again") else Some("Rhowch gynnig arall ar dalu drwy gerdyn"))
+    tryAgainRadio.map(_.select("input").`val`()) shouldBe Some("TryAgain")
+    document.select("#next").text() shouldBe (if (!welshTest) "Continue" else "Yn eich blaen")
+  } withClue "expected open banking form"
+
+  private def passengersAssertion(document: Document, welshTest: Boolean): Assertion = {
+    commonAssertions(document, welshTest)
+    document.select("#p2").html() shouldBe (if (!welshTest) "The payment may have failed if:" else "Mae’n bosibl bod y taliad wedi methi oherwydd:")
+    document.select("#bullet-list").attr("class") shouldBe "govuk-list--bullet govuk-!-static-padding-left-7"
+    document.select("#bullet1").html() shouldBe (if (!welshTest) "there are not enough funds in your account" else "nid oes yna ddigon o arian yn eich cyfrif")
+    document.select("#bullet2").html() shouldBe (if (!welshTest) "you entered invalid or expired card details" else "rydych wedi nodi manylion cerdyn sy’n annilys neu sydd wedi dod i ben")
+    document.select("#check-again").html() shouldBe (if (!welshTest) "Check the details you entered are correct or try a different card." else "Gwiriwch fod y manylion a nodwyd gennych yn gywir neu rhowch gynnig ar gerdyn gwahanol.")
+  } withClue "expected no open banking form"
+
+  private def assertionsForOrigin(origin: Origin, document: Document, welshTest: Boolean): Assertion = {
     origin match {
-      case PfSa                     => TestJourneys.PfSa
-      case BtaSa                    => TestJourneys.BtaSa
-      case PtaSa                    => TestJourneys.PtaSa
-      case ItSa                     => TestJourneys.ItSa
-      case PfVat                    => TestJourneys.PfVat
-      case PfCt                     => TestJourneys.PfCt
-      case PfEpayeNi                => TestJourneys.PfEpayeNi
-      case PfEpayeLpp               => TestJourneys.PfEpayeLpp
-      case PfEpayeSeta              => TestJourneys.PfEpayeSeta
-      case PfEpayeLateCis           => TestJourneys.PfEpayeLateCis
-      case PfEpayeP11d              => TestJourneys.PfEpayeP11d
-      case PfSdlt                   => TestJourneys.PfSdlt
-      case PfCds                    => TestJourneys.PfCds
-      case PfOther                  => TestJourneys.PfOther
-      case PfP800                   => TestJourneys.PfP800
-      case PtaP800                  => TestJourneys.PtaP800
-      case PfPsAdmin                => TestJourneys.PfPsAdmin
-      case AppSa                    => TestJourneys.AppSa
-      case BtaVat                   => TestJourneys.BtaVat
-      case BtaEpayeBill             => TestJourneys.BtaEpayeBill
-      case BtaEpayePenalty          => TestJourneys.BtaEpayePenalty
-      case BtaEpayeInterest         => TestJourneys.BtaEpayeInterest
-      case BtaEpayeGeneral          => TestJourneys.BtaEpayeGeneral
-      case BtaClass1aNi             => TestJourneys.BtaClass1aNi
-      case BtaCt                    => TestJourneys.BtaCt
-      case BtaSdil                  => TestJourneys.BtaSdil
-      case BcPngr                   => TestJourneys.BcPngr
-      case DdVat                    => TestJourneys.DdVat
-      case DdSdil                   => TestJourneys.DdSdil
-      case VcVatReturn              => TestJourneys.VcVatReturn
-      case VcVatOther               => TestJourneys.VcVatOther
-      case Amls                     => TestJourneys.Amls
-      case Ppt                      => TestJourneys.Ppt
-      case PfPpt                    => TestJourneys.PfPpt
-      case Mib                      => TestJourneys.Mib
-      case PfMgd                    => TestJourneys.PfMgd
-      case PfGbPbRgDuty             => TestJourneys.PfGbPbRgDuty
-      case PfSdil                   => TestJourneys.PfSdil
-      case PfSimpleAssessment       => TestJourneys.PfSimpleAssessment
-      case PtaSimpleAssessment      => TestJourneys.PtaSimpleAssessment
-      case AppSimpleAssessment      => TestJourneys.AppSimpleAssessment
-      case WcSimpleAssessment       => TestJourneys.WcSimpleAssessment
-      case PfTpes                   => TestJourneys.PfTpes
-      case CapitalGainsTax          => TestJourneys.CapitalGainsTax
-      case EconomicCrimeLevy        => TestJourneys.EconomicCrimeLevy
-      case PfEconomicCrimeLevy      => TestJourneys.PfEconomicCrimeLevy
-      case PfJobRetentionScheme     => TestJourneys.PfJobRetentionScheme
-      case JrsJobRetentionScheme    => TestJourneys.JrsJobRetentionScheme
-      case PfChildBenefitRepayments => TestJourneys.PfChildBenefitRepayments
-      case NiEuVatOss               => TestJourneys.NiEuVatOss
-      case PfNiEuVatOss             => TestJourneys.PfNiEuVatOss
-      case NiEuVatIoss              => TestJourneys.NiEuVatIoss
-      case PfNiEuVatIoss            => TestJourneys.PfNiEuVatIoss
-      case PfAmls                   => TestJourneys.PfAmls
-      case PfTrust                  => TestJourneys.PfTrust
-      case AlcoholDuty              => TestJourneys.AlcoholDuty
-      case PfAlcoholDuty            => TestJourneys.PfAlcoholDuty
-      case VatC2c                   => TestJourneys.VatC2c
-      case PfVatC2c                 => TestJourneys.PfVatC2c
-      case WcSa                     => TestJourneys.WcSa
-      case WcCt                     => TestJourneys.WcCt
-      case WcVat                    => TestJourneys.WcVat
-      case WcClass1aNi              => TestJourneys.WcClass1aNi
-      case WcXref                   => TestJourneys.WcXref
-      case WcEpayeLpp               => TestJourneys.WcEpayeLpp
-      case WcEpayeNi                => TestJourneys.WcEpayeNi
-      case WcEpayeLateCis           => TestJourneys.WcEpayeLateCis
-      case WcEpayeSeta              => TestJourneys.WcEpayeSeta
-      case WcSdlt                   => TestJourneys.WcSdlt
-      case WcChildBenefitRepayments => TestJourneys.WcChildBenefitRepayments
-      case PfImportedVehicles       => throw new MatchError("Not implemented yet")
-      case PfAted                   => throw new MatchError("Not implemented yet")
-      case PfCdsDeferment           => throw new MatchError("Not implemented yet")
-      case PfClass2Ni               => throw new MatchError("Not implemented yet")
-      case PfInsurancePremium       => throw new MatchError("Not implemented yet")
-      case Parcels                  => throw new MatchError("Not implemented yet")
-      case PfCdsCash                => throw new MatchError("Not implemented yet")
-      case PfSpiritDrinks           => throw new MatchError("Not implemented yet")
-      case PfInheritanceTax         => throw new MatchError("Not implemented yet")
-      case PfClass3Ni               => throw new MatchError("Not implemented yet")
-      case PfWineAndCider           => throw new MatchError("Not implemented yet")
-      case PfBioFuels               => throw new MatchError("Not implemented yet")
-      case PfAirPass                => throw new MatchError("Not implemented yet")
-      case PfBeerDuty               => throw new MatchError("Not implemented yet")
-      case PfGamingOrBingoDuty      => throw new MatchError("Not implemented yet")
-      case PfLandfillTax            => throw new MatchError("Not implemented yet")
-      case PfAggregatesLevy         => throw new MatchError("Not implemented yet")
-      case PfClimateChangeLevy      => throw new MatchError("Not implemented yet")
-      case PtaClass3Ni              => throw new MatchError("Not implemented yet")
-      case `3psSa`                  => throw new MatchError("Not implemented yet")
-      case `3psVat`                 => throw new MatchError("Not implemented yet")
-      case PfPillar2                => throw new MatchError("Not implemented yet")
-      case Pillar2                  => throw new MatchError("Not implemented yet")
-      case WcClass2Ni               => throw new MatchError("Not implemented yet")
+      case PfSa | BtaSa | PtaSa | PfVat | PfCt | PfEpayeNi | PfEpayeLpp | PfEpayeSeta | PfEpayeLateCis | PfEpayeP11d |
+        PfSdlt | PfCds | PtaP800 | PfPsAdmin | AppSa | BtaVat | BtaEpayeBill | BtaEpayePenalty | BtaEpayeInterest |
+        BtaEpayeGeneral | BtaClass1aNi | BtaCt | BtaSdil | DdVat | DdSdil | VcVatReturn | VcVatOther | Amls | Ppt |
+        PfPpt | PfMgd | PfGbPbRgDuty | PfSdil | PfSimpleAssessment | PtaSimpleAssessment | WcSimpleAssessment | PfTpes |
+        CapitalGainsTax | EconomicCrimeLevy | PfEconomicCrimeLevy | PfChildBenefitRepayments | NiEuVatOss | PfNiEuVatOss |
+        NiEuVatIoss | PfNiEuVatIoss | PfAmls | PfTrust | AlcoholDuty | PfAlcoholDuty | VatC2c | PfVatC2c | WcSa | WcCt |
+        WcVat | WcClass1aNi | WcEpayeLpp | WcEpayeNi | WcEpayeLateCis | WcEpayeSeta | WcSdlt | WcChildBenefitRepayments =>
+        openBankingSupportedAssertion(document, welshTest)
+
+      case ItSa => noOpenBankingSupportedAssertion(document, welshTest) // will be changed to openBankingSupportedAssertion as part of OPS-6528
+      case WcXref | PfOther | PfP800 | PfJobRetentionScheme | JrsJobRetentionScheme | AppSimpleAssessment | Mib =>
+        noOpenBankingSupportedAssertion(document, welshTest)
+
+      case BcPngr => passengersAssertion(document, welshTest)
+
+      case PfImportedVehicles | PfAted | PfCdsDeferment | PfClass2Ni | PfInsurancePremium | Parcels | PfCdsCash |
+        PfSpiritDrinks | PfInheritanceTax | PfClass3Ni | PfWineAndCider | PfBioFuels | PfAirPass | PfBeerDuty |
+        PfGamingOrBingoDuty | PfLandfillTax | PfAggregatesLevy | PfClimateChangeLevy | PtaClass3Ni | `3psSa` |
+        `3psVat` | PfPillar2 | Pillar2 | WcClass2Ni => throw new MatchError("No card journey expected to be supported for this origin, why is it being tested?")
     }
   }
 }
