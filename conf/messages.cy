@@ -441,11 +441,11 @@ payment-cancelled.exit-without-paying.link = Gadewch heb dalu
 
 ## Payment Failed page
 payment-failed.heading = Taliad wedi methu
-payment-failed.sub-heading = Nid oes taliad wedi’i dynnu o’ch cerdyn.
-payment-failed.failed1 = Mae’n bosibl bod y taliad wedi methi oherwydd:
-payment-failed.failed2 = nid oes yna ddigon o arian yn eich cyfrif
-payment-failed.failed3 = rydych wedi nodi manylion cerdyn sy’n annilys neu sydd wedi dod i ben
-payment-failed.failed4 = nid yw’r cyfeiriad a roesoch i ni’n cyd-fynd â’r un sydd gan ddosbarthwr eich cerdyn
+payment-failed.p1 = Nid oes taliad wedi’i dynnu o’ch cerdyn.
+payment-failed.ul-info = Mae’n bosibl bod y taliad wedi methi oherwydd:
+payment-failed.li1 = nid oes yna ddigon o arian yn eich cyfrif
+payment-failed.li2 = rydych wedi nodi manylion cerdyn sy’n annilys neu sydd wedi dod i ben
+payment-failed.li3 = nid yw’r cyfeiriad a roesoch i ni’n cyd-fynd â’r un sydd gan ddosbarthwr eich cerdyn
 
 payment-failed-ob-available.header = Beth hoffech chi ei wneud?
 payment-failed.failed-go-to-open-banking = Cymeradwyo taliad i fynd yn syth o’m cyfrif banc
