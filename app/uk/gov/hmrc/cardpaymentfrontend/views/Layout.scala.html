@@ -25,10 +25,10 @@
 @import views.html.helper.CSPNonce
 
 @this(
-        hmrcStandardPage: HmrcStandardPage,
+        appConfig: AppConfig,
         hmrcReportTechnicalIssueHelper: HmrcReportTechnicalIssueHelper,
-        hmrcTimeoutDialogHelper: HmrcTimeoutDialogHelper,
-        appConfig: AppConfig
+        hmrcStandardPage: HmrcStandardPage,
+        hmrcTimeoutDialogHelper: HmrcTimeoutDialogHelper
 )
 @(
         pageTitle: Option[String] = None,
@@ -42,7 +42,7 @@
         hideStyling: Boolean = false
 )(contentBlock: Html)(implicit request: RequestHeader, messages: Messages)
 
-@serviceName = @{origin.map(eo => messages(eo.lift.serviceNameMessageKey)).getOrElse(messages("service-name.generic"))}
+@serviceName = @{origin.map(eo => messages(eo.lift(appConfig).serviceNameMessageKey)).getOrElse(messages("service-name.generic"))}
 
 @welshSupportedForOrigin = @{ origin.exists(_.originSupportsWelsh )}
 

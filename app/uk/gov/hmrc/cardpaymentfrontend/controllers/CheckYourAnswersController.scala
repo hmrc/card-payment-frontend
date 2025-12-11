@@ -49,7 +49,7 @@ class CheckYourAnswersController @Inject() (
   import requestSupport._
 
   def renderPage: Action[AnyContent] = actions.journeyAction { implicit journeyRequest: JourneyRequest[AnyContent] =>
-    val extendedOrigin: ExtendedOrigin = journeyRequest.journey.origin.lift
+    val extendedOrigin: ExtendedOrigin = journeyRequest.journey.origin.lift(appConfig)
 
     val maybePaymentDate: Option[CheckYourAnswersRow] = extendedOrigin.checkYourAnswersPaymentDateRow(journeyRequest)(appConfig.payFrontendBaseUrl)
     val referenceRow: Option[CheckYourAnswersRow] = extendedOrigin.checkYourAnswersReferenceRow(journeyRequest)(appConfig.payFrontendBaseUrl)

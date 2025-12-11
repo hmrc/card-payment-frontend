@@ -21,6 +21,7 @@ import payapi.corcommon.model.AmountInPence
 import play.api.Logging
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.mvc.Request
+import uk.gov.hmrc.cardpaymentfrontend.config.AppConfig
 import uk.gov.hmrc.cardpaymentfrontend.connectors.EmailConnector
 import uk.gov.hmrc.cardpaymentfrontend.models.EmailAddress
 import uk.gov.hmrc.cardpaymentfrontend.models.email.{EmailParameters, EmailRequest}
@@ -33,7 +34,11 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.Future
 
 @Singleton
-class EmailService @Inject() (emailConnector: EmailConnector, requestSupport: RequestSupport)(implicit messagesApi: MessagesApi)
+class EmailService @Inject() (
+    appConfig:      AppConfig,
+    emailConnector: EmailConnector,
+    requestSupport: RequestSupport
+)(implicit messagesApi: MessagesApi)
   extends Logging {
 
   import requestSupport._
@@ -65,7 +70,7 @@ class EmailService @Inject() (emailConnector: EmailConnector, requestSupport: Re
 
   private[services] def buildEmailParameters(journey: Journey[JourneySpecificData])(implicit request: Request[_]): EmailParameters = {
     val messages: Messages = request.messages
-    val extendedOrigin: ExtendedOrigin = journey.origin.lift
+    val extendedOrigin: ExtendedOrigin = journey.origin.lift(appConfig)
     val maybeCommission = journey.getCommissionInPence
 
     EmailParameters(

@@ -19,6 +19,7 @@ package uk.gov.hmrc.cardpaymentfrontend.services
 import payapi.cardpaymentjourney.model.journey.{Journey, JourneySpecificData, Url}
 import play.api.i18n.{Lang, Messages, MessagesApi}
 import play.api.mvc.Request
+import uk.gov.hmrc.cardpaymentfrontend.config.AppConfig
 import uk.gov.hmrc.cardpaymentfrontend.connectors.PaymentsSurveyConnector
 import uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins.ExtendedOrigin
 import uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins.ExtendedOrigin.OriginExtended
@@ -30,6 +31,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class PaymentsSurveyService @Inject() (
+    appConfig:               AppConfig,
     requestSupport:          RequestSupport,
     paymentsSurveyConnector: PaymentsSurveyConnector
 )(
@@ -47,7 +49,7 @@ class PaymentsSurveyService @Inject() (
 
   private[services] def makeSsjJourneyRequest(journey: Journey[JourneySpecificData])(implicit request: Request[_]): PaymentSurveyJourneyRequest = {
     implicit val messages: Messages = request.messages
-    val extendedOrigin: ExtendedOrigin = journey.origin.lift
+    val extendedOrigin: ExtendedOrigin = journey.origin.lift(appConfig)
 
     PaymentSurveyJourneyRequest(
       origin         = journey.origin.entryName,
