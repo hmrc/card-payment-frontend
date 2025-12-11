@@ -16,6 +16,7 @@
 
 package uk.gov.hmrc.cardpaymentfrontend.models
 
+import com.typesafe.config.{Config, ConfigFactory}
 import org.scalatest.AppendedClues.convertToClueful
 import org.scalatest.Assertion
 import payapi.corcommon.model.cgt.CgtAccountReference
@@ -25,26 +26,29 @@ import payapi.corcommon.model.taxes.amls.AmlsPaymentReference
 import payapi.corcommon.model.taxes.cds.CdsRef
 import payapi.corcommon.model.taxes.ct.{CtChargeTypes, CtPeriod, CtUtr}
 import payapi.corcommon.model.taxes.epaye._
+import payapi.corcommon.model.taxes.ioss.Ioss
 import payapi.corcommon.model.taxes.other._
 import payapi.corcommon.model.taxes.p302.{P302ChargeRef, P302Ref}
-import payapi.corcommon.model.taxes.ioss.Ioss
 import payapi.corcommon.model.taxes.p800.P800Ref
 import payapi.corcommon.model.taxes.ppt.PptReference
 import payapi.corcommon.model.taxes.sa.SaUtr
 import payapi.corcommon.model.taxes.sdil.Zsdl
 import payapi.corcommon.model.taxes.sdlt.Utrn
-import payapi.corcommon.model.taxes.vat.{CalendarPeriod, VatChargeReference, Vrn}
 import payapi.corcommon.model.taxes.trusts.TrustReference
+import payapi.corcommon.model.taxes.vat.{CalendarPeriod, VatChargeReference, Vrn}
 import payapi.corcommon.model.taxes.vatc2c.VatC2cReference
 import payapi.corcommon.model.times.period.CalendarQuarter.OctoberToDecember
 import payapi.corcommon.model.times.period.TaxQuarter.AprilJuly
 import payapi.corcommon.model.times.period.{CalendarQuarterlyPeriod, TaxMonth, TaxYear}
 import payapi.corcommon.model.webchat.WcEpayeNiReference
+import play.api.Configuration
 import play.api.libs.json.{JsValue, Json}
+import uk.gov.hmrc.cardpaymentfrontend.config.AppConfig
 import uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins._
 import uk.gov.hmrc.cardpaymentfrontend.models.openbanking._
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.testdata.TestJourneys
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.{TestHelpers, UnitSpec}
+import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
 class OpenBankingOriginSpecificSessionDataSpec extends UnitSpec {
 
@@ -408,17 +412,37 @@ class OpenBankingOriginSpecificSessionDataSpec extends UnitSpec {
     }
 
     "PtaP800" - {
-      "without charge ref" in {
-        val testJson = Json.parse("""{"p800Ref":"MA000003AP8002027","taxYear":2027,"origin":"PtaP800"}""")
-        val osd = ExtendedPtaP800.openBankingOriginSpecificSessionData(TestJourneys.PtaP800.journeyBeforeBeginWebPayment.journeySpecificData)
-        testOsd(osd, PtaP800SessionData(P800Ref("MA000003AP8002027"), None, Some(TaxYear(2027)), None), "MA000003AP8002027", "MA000003AP8002027")
-        roundTripJsonTest(osd, testJson)
+      "when feature flag for enabling open banking is true" - {
+        val config: Config = ConfigFactory.load()
+        val configuration = new Configuration(config)
+        val appConfig = new AppConfig(configuration, new ServicesConfig(configuration))
+        "without charge ref" in {
+          val testJson = Json.parse("""{"p800Ref":"MA000003AP8002027","taxYear":2027,"origin":"PtaP800"}""")
+          val osd = new ExtendedPtaP800(appConfig).openBankingOriginSpecificSessionData(TestJourneys.PtaP800.journeyBeforeBeginWebPayment.journeySpecificData)
+          testOsd(osd, PtaP800SessionData(P800Ref("MA000003AP8002027"), None, Some(TaxYear(2027)), None), "MA000003AP8002027", "MA000003AP8002027")
+          roundTripJsonTest(osd, testJson)
+        }
+        "with charge ref" in {
+          val testJson = Json.parse("""{"p800Ref":"MA000003AP8002027","p800ChargeRef":"BC007010065114","taxYear":2027,"origin":"PtaP800"}""")
+          val osd = new ExtendedPtaP800(appConfig).openBankingOriginSpecificSessionData(TestJourneys.PtaP800.journeyWithP800ChargeRefBeforeBeginWebPayment.journeySpecificData)
+          testOsd(osd, PtaP800SessionData(P800Ref("MA000003AP8002027"), Some(P800ChargeRef("BC007010065114")), Some(TaxYear(2027)), None), "BC007010065114", "MA000003AP8002027")
+          roundTripJsonTest(osd, testJson)
+        }
       }
-      "with charge ref" in {
-        val testJson = Json.parse("""{"p800Ref":"MA000003AP8002027","taxYear":2027,"p800ChargeRef":"BC007010065114","origin":"PtaP800"}""")
-        val osd = ExtendedPtaP800.openBankingOriginSpecificSessionData(TestJourneys.PtaP800.journeyWithP800ChargeRefBeforeBeginWebPayment.journeySpecificData)
-        testOsd(osd, PtaP800SessionData(P800Ref("MA000003AP8002027"), Some(P800ChargeRef("BC007010065114")), Some(TaxYear(2027)), None), "BC007010065114", "MA000003AP8002027")
-        roundTripJsonTest(osd, testJson)
+      "when feature flag for enabling open banking is false" - {
+        "return None" in {
+          val configOverride = """
+                                 |feature-flags {
+                                 |  pta-p800 {
+                                 |    open-banking-enabled = false
+                                 |  }
+                                 |}""".stripMargin
+          val config: Config = ConfigFactory.parseString(configOverride).withFallback(ConfigFactory.load())
+          val configuration = new Configuration(config)
+          val appConfig = new AppConfig(configuration, new ServicesConfig(configuration))
+          val osd = new ExtendedPtaP800(appConfig).openBankingOriginSpecificSessionData(TestJourneys.PtaP800.journeyBeforeBeginWebPayment.journeySpecificData)
+          osd shouldBe None
+        }
       }
     }
 

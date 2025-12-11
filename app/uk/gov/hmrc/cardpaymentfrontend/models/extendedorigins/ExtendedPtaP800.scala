@@ -20,16 +20,22 @@ import payapi.cardpaymentjourney.model.journey.{JourneySpecificData, JsdPtaP800}
 import play.api.i18n.Messages
 import play.api.mvc.AnyContent
 import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
+import uk.gov.hmrc.cardpaymentfrontend.config.AppConfig
 import uk.gov.hmrc.cardpaymentfrontend.models.PaymentMethod.{Bacs, Card, OpenBanking}
 import uk.gov.hmrc.cardpaymentfrontend.models.openbanking.{OriginSpecificSessionData, PtaP800SessionData}
 import uk.gov.hmrc.cardpaymentfrontend.models.{CheckYourAnswersRow, PaymentMethod}
 
-object ExtendedPtaP800 extends ExtendedOrigin {
+class ExtendedPtaP800(appConfig: AppConfig) extends ExtendedOrigin {
   override val serviceNameMessageKey: String = "service-name.PtaP800"
   override val taxNameMessageKey: String = "payment-complete.tax-name.PtaP800"
 
-  def cardFeesPagePaymentMethods: Set[PaymentMethod] = Set(OpenBanking)
-  def paymentMethods(): Set[PaymentMethod] = Set(Card, OpenBanking, Bacs)
+  def cardFeesPagePaymentMethods: Set[PaymentMethod] =
+    if (appConfig.FeatureFlags.ptaP800OpenBankingEnabled) Set[PaymentMethod](OpenBanking)
+    else Set.empty[PaymentMethod]
+
+  def paymentMethods(): Set[PaymentMethod] =
+    if (appConfig.FeatureFlags.ptaP800OpenBankingEnabled) Set(Card, OpenBanking, Bacs)
+    else Set(Card)
 
   override def checkYourAnswersReferenceRow(journeyRequest: JourneyRequest[AnyContent])(payFrontendBaseUrl: String): Option[CheckYourAnswersRow] = {
     Some(CheckYourAnswersRow(
@@ -64,8 +70,11 @@ object ExtendedPtaP800 extends ExtendedOrigin {
   }
 
   override def openBankingOriginSpecificSessionData: JourneySpecificData => Option[OriginSpecificSessionData] = {
-    case j: JsdPtaP800 => Some(PtaP800SessionData(j.p800Ref, j.p800ChargeRef, Some(j.taxYear)))
-    case _             => throw new RuntimeException("Incorrect origin found")
+    case j: JsdPtaP800 =>
+      if (appConfig.FeatureFlags.ptaP800OpenBankingEnabled) {
+        Some(PtaP800SessionData(j.p800Ref, j.p800ChargeRef, Some(j.taxYear)))
+      } else None
+    case _ => throw new RuntimeException("Incorrect origin found")
   }
   override def surveyAuditName: String = "p800-or-pa302"
   override def surveyReturnHref: String = "https://www.gov.uk/government/organisations/hm-revenue-customs"

@@ -19,6 +19,7 @@ package uk.gov.hmrc.cardpaymentfrontend.controllers
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.cardpaymentfrontend.actions.{Actions, JourneyRequest}
+import uk.gov.hmrc.cardpaymentfrontend.config.AppConfig
 import uk.gov.hmrc.cardpaymentfrontend.forms.{ChooseAPaymentMethodForm, ChooseAPaymentMethodFormValues}
 import uk.gov.hmrc.cardpaymentfrontend.models.PaymentMethod.OpenBanking
 import uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins.ExtendedOrigin.OriginExtended
@@ -31,6 +32,7 @@ import javax.inject.{Inject, Singleton}
 @Singleton
 class PaymentFailedController @Inject() (
     actions:           Actions,
+    appConfig:         AppConfig,
     mcc:               MessagesControllerComponents,
     requestSupport:    RequestSupport,
     paymentFailedPage: PaymentFailedPage
@@ -41,7 +43,7 @@ class PaymentFailedController @Inject() (
   val renderPage: Action[AnyContent] = actions.journeyAction { implicit journeyRequest: JourneyRequest[AnyContent] =>
     Ok(paymentFailedPage(
       origin         = journeyRequest.journey.origin,
-      hasOpenBanking = journeyRequest.journey.origin.lift.paymentMethods().contains(OpenBanking),
+      hasOpenBanking = journeyRequest.journey.origin.lift(appConfig).paymentMethods().contains(OpenBanking),
       form           = ChooseAPaymentMethodForm.form
     ))
   }
@@ -52,7 +54,7 @@ class PaymentFailedController @Inject() (
       .fold(
         (formWithErrors: Form[ChooseAPaymentMethodFormValues]) => BadRequest(paymentFailedPage(
           origin         = journeyRequest.journey.origin,
-          hasOpenBanking = journeyRequest.journey.origin.lift.paymentMethods().contains(OpenBanking),
+          hasOpenBanking = journeyRequest.journey.origin.lift(appConfig).paymentMethods().contains(OpenBanking),
           form           = formWithErrors
         )),
         {

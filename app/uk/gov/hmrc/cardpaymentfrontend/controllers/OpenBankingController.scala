@@ -20,6 +20,7 @@ import payapi.cardpaymentjourney.model.journey.{Journey, JourneySpecificData}
 import play.api.mvc.Results.Redirect
 import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.cardpaymentfrontend.actions.{Actions, JourneyRequest}
+import uk.gov.hmrc.cardpaymentfrontend.config.AppConfig
 import uk.gov.hmrc.cardpaymentfrontend.connectors.OpenBankingConnector
 import uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins.ExtendedOrigin.OriginExtended
 import uk.gov.hmrc.cardpaymentfrontend.models.openbanking.CreateSessionDataRequest
@@ -31,6 +32,7 @@ import scala.concurrent.ExecutionContext
 @Singleton
 class OpenBankingController @Inject() (
     actions:              Actions,
+    appConfig:            AppConfig,
     openBankingConnector: OpenBankingConnector,
     requestSupport:       RequestSupport
 )(implicit executionContext: ExecutionContext) {
@@ -42,7 +44,7 @@ class OpenBankingController @Inject() (
     val createSessionDataRequest: CreateSessionDataRequest = {
       journey
         .origin
-        .lift
+        .lift(appConfig)
         .openBankingOriginSpecificSessionData(journey.journeySpecificData)
         .map(originSpecificSessionData => CreateSessionDataRequest(journey.getAmountInPence, originSpecificSessionData, journey.futureDatedPayment))
         .getOrElse(throw new RuntimeException(s"Unable to build createSessionDataRequest, so cannot start an OB journey for origin ${journey.origin.toString}"))
