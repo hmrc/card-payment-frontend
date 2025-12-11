@@ -1,0 +1,294 @@
+{
+  "id": "65cb6a37-ca15-4fa6-b922-5f0700ff8708",
+  "version": "2.0",
+  "name": "PaymentTests",
+  "url": "https://www.tax.service.gov.uk/pay/enter-payment-reference",
+  "tests": [{
+    "id": "6c478efd-4869-4059-a565-d4ef0476f0ea",
+    "name": "PayMentTest",
+    "commands": [{
+      "id": "bb55a6be-617a-451d-a36b-059c0c2af3d0",
+      "comment": "",
+      "command": "open",
+      "target": "https://www.tax.service.gov.uk/pay/enter-payment-reference?attempt=1",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "22a6a45c-eed5-481c-b3f9-cc9672250a81",
+      "comment": "",
+      "command": "setWindowSize",
+      "target": "1220x580",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "3ea10e3b-575f-4afa-a437-e99c94f60bb9",
+      "comment": "",
+      "command": "click",
+      "target": "linkText=Continue",
+      "targets": [
+        ["linkText=Continue", "linkText"],
+        ["css=.govuk-button", "css:finder"],
+        ["xpath=//a[contains(text(),'Continue')]", "xpath:link"],
+        ["xpath=//main[@id='main-content']/div/div/a", "xpath:idRelative"],
+        ["xpath=(//a[contains(@href, '/pay')])[3]", "xpath:href"],
+        ["xpath=//main/div/div/a", "xpath:position"],
+        ["xpath=//a[contains(.,'Continue')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "16a7c331-2aec-4b13-804b-c99478372ae3",
+      "comment": "",
+      "command": "click",
+      "target": "id=tax_to_pay-10",
+      "targets": [
+        ["id=tax_to_pay-10", "id"],
+        ["css=#tax_to_pay-10", "css:finder"],
+        ["xpath=//input[@id='tax_to_pay-10']", "xpath:attributes"],
+        ["xpath=//main[@id='main-content']/div/div/form/div/fieldset/div/div[10]/input", "xpath:idRelative"],
+        ["xpath=//div[10]/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "f2383541-68fb-49b5-b4c1-292d65df065a",
+      "comment": "",
+      "command": "click",
+      "target": "id=next",
+      "targets": [
+        ["id=next", "id"],
+        ["css=#next", "css:finder"],
+        ["xpath=//button[@id='next']", "xpath:attributes"],
+        ["xpath=//main[@id='main-content']/div/div/form/button", "xpath:idRelative"],
+        ["xpath=//form/button", "xpath:position"],
+        ["xpath=//button[contains(.,'Continue')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "7b45dc6f-9602-4deb-916c-348ecfb88fd0",
+      "comment": "",
+      "command": "click",
+      "target": "id=xReference",
+      "targets": [
+        ["id=xReference", "id"],
+        ["name=xReference", "name"],
+        ["css=#xReference", "css:finder"],
+        ["xpath=//input[@id='xReference']", "xpath:attributes"],
+        ["xpath=//main[@id='main-content']/div/div/div/form/div/div/input", "xpath:idRelative"],
+        ["xpath=//div/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "7c0a3064-6d07-473a-9aa2-f69785aca1e8",
+      "comment": "",
+      "command": "type",
+      "target": "id=xReference",
+      "targets": [
+        ["id=xReference", "id"],
+        ["name=xReference", "name"],
+        ["css=#xReference", "css:finder"],
+        ["xpath=//input[@id='xReference']", "xpath:attributes"],
+        ["xpath=//main[@id='main-content']/div/div/div/form/div/div/input", "xpath:idRelative"],
+        ["xpath=//div/input", "xpath:position"]
+      ],
+      "value": "XE123456789012"
+    }, {
+      "id": "d46f1ef9-d348-4526-becb-111391837f66",
+      "comment": "",
+      "command": "click",
+      "target": "id=next",
+      "targets": [
+        ["id=next", "id"],
+        ["css=#next", "css:finder"],
+        ["xpath=//button[@id='next']", "xpath:attributes"],
+        ["xpath=//main[@id='main-content']/div/div/div/form/button", "xpath:idRelative"],
+        ["xpath=//form/button", "xpath:position"],
+        ["xpath=//button[contains(.,'Continue')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "5a53d46d-32b5-4f16-ac92-102908beb01c",
+      "comment": "",
+      "command": "click",
+      "target": "id=amountToPay",
+      "targets": [
+        ["id=amountToPay", "id"],
+        ["name=amountToPay", "name"],
+        ["css=#amountToPay", "css:finder"],
+        ["xpath=//input[@id='amountToPay']", "xpath:attributes"],
+        ["xpath=//div[@id='amount-to-pay-input']/div/div[2]/input", "xpath:idRelative"],
+        ["xpath=//div[2]/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "0db28edc-a655-42fc-b7f2-e06005ed2cbe",
+      "comment": "",
+      "command": "type",
+      "target": "id=amountToPay",
+      "targets": [
+        ["id=amountToPay", "id"],
+        ["name=amountToPay", "name"],
+        ["css=#amountToPay", "css:finder"],
+        ["xpath=//input[@id='amountToPay']", "xpath:attributes"],
+        ["xpath=//div[@id='amount-to-pay-input']/div/div[2]/input", "xpath:idRelative"],
+        ["xpath=//div[2]/input", "xpath:position"]
+      ],
+      "value": "1"
+    }, {
+      "id": "df08a8d0-7085-4818-a52f-5ea1764780be",
+      "comment": "",
+      "command": "click",
+      "target": "id=next",
+      "targets": [
+        ["id=next", "id"],
+        ["css=#next", "css:finder"],
+        ["xpath=//button[@id='next']", "xpath:attributes"],
+        ["xpath=//main[@id='main-content']/div/div/div/form/button", "xpath:idRelative"],
+        ["xpath=//form/button", "xpath:position"],
+        ["xpath=//button[contains(.,'Continue')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "bf6c6fd0-a17e-4f55-8ea1-484f4726120d",
+      "comment": "",
+      "command": "click",
+      "target": "id=submit",
+      "targets": [
+        ["id=submit", "id"],
+        ["css=#submit", "css:finder"],
+        ["xpath=//button[@id='submit']", "xpath:attributes"],
+        ["xpath=//main[@id='main-content']/div/div/form/button", "xpath:idRelative"],
+        ["xpath=//form/button", "xpath:position"],
+        ["xpath=//button[contains(.,'Continue')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "507c2998-045b-4ef9-a4fa-937133be3e9f",
+      "comment": "",
+      "command": "click",
+      "target": "id=submit",
+      "targets": [
+        ["id=submit", "id"],
+        ["css=#submit", "css:finder"],
+        ["xpath=//button[@id='submit']", "xpath:attributes"],
+        ["xpath=//main[@id='main-content']/div/div/form/button", "xpath:idRelative"],
+        ["xpath=//p/button", "xpath:position"],
+        ["xpath=//button[contains(.,'Continue')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "96ac8b83-9b5e-48ab-b986-2d61b796660f",
+      "comment": "",
+      "command": "click",
+      "target": "id=line1",
+      "targets": [
+        ["id=line1", "id"],
+        ["name=line1", "name"],
+        ["css=#line1", "css:finder"],
+        ["xpath=//input[@id='line1']", "xpath:attributes"],
+        ["xpath=//input[@id='line1']", "xpath:idRelative"],
+        ["xpath=//div/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "956d4d17-9a1b-4a6e-bad5-fedbbc1fa47f",
+      "comment": "",
+      "command": "type",
+      "target": "id=line1",
+      "targets": [
+        ["id=line1", "id"],
+        ["name=line1", "name"],
+        ["css=#line1", "css:finder"],
+        ["xpath=//input[@id='line1']", "xpath:attributes"],
+        ["xpath=//input[@id='line1']", "xpath:idRelative"],
+        ["xpath=//div/input", "xpath:position"]
+      ],
+      "value": "1 high street"
+    }, {
+      "id": "d5701aad-91a6-4036-a795-4fc46135e368",
+      "comment": "",
+      "command": "click",
+      "target": "id=postcode",
+      "targets": [
+        ["id=postcode", "id"],
+        ["name=postcode", "name"],
+        ["css=#postcode", "css:finder"],
+        ["xpath=//input[@id='postcode']", "xpath:attributes"],
+        ["xpath=//input[@id='postcode']", "xpath:idRelative"],
+        ["xpath=//div[5]/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "3e033240-4484-4472-8c7c-61b2a4617e18",
+      "comment": "",
+      "command": "type",
+      "target": "id=postcode",
+      "targets": [
+        ["id=postcode", "id"],
+        ["name=postcode", "name"],
+        ["css=#postcode", "css:finder"],
+        ["xpath=//input[@id='postcode']", "xpath:attributes"],
+        ["xpath=//input[@id='postcode']", "xpath:idRelative"],
+        ["xpath=//div[5]/input", "xpath:position"]
+      ],
+      "value": "tw12 1jp"
+    }, {
+      "id": "a05c649c-2898-4be8-b0c9-91d34ebb0c76",
+      "comment": "",
+      "command": "click",
+      "target": "id=country",
+      "targets": [
+        ["id=country", "id"],
+        ["name=country", "name"],
+        ["css=#country", "css:finder"],
+        ["xpath=//select[@id='country']", "xpath:attributes"],
+        ["xpath=//select[@id='country']", "xpath:idRelative"],
+        ["xpath=//select", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "1edccd86-9ec1-49c4-83ba-08cda34470e7",
+      "comment": "",
+      "command": "select",
+      "target": "id=country",
+      "targets": [],
+      "value": "label=United Kingdom"
+    }, {
+      "id": "983c8c3e-49b5-4e49-879c-ff07fe457c1a",
+      "comment": "",
+      "command": "click",
+      "target": "id=submit",
+      "targets": [
+        ["id=submit", "id"],
+        ["css=#submit", "css:finder"],
+        ["xpath=//button[@id='submit']", "xpath:attributes"],
+        ["xpath=//main[@id='main-content']/button", "xpath:idRelative"],
+        ["xpath=//main/div/div/fieldset/form/button", "xpath:position"],
+        ["xpath=//button[contains(.,'Continue')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "516b0233-8770-4b56-b8d5-53a8a9dfdb0f",
+      "comment": "",
+      "command": "click",
+      "target": "id=submit",
+      "targets": [
+        ["id=submit", "id"],
+        ["css=#submit", "css:finder"],
+        ["xpath=//button[@id='submit']", "xpath:attributes"],
+        ["xpath=//*[@id='submit']", "xpath:idRelative"],
+        ["xpath=//form/button", "xpath:position"],
+        ["xpath=//button[contains(.,'Continue')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }]
+  }],
+  "suites": [{
+    "id": "558bbd16-02ea-4166-9460-8dea09078232",
+    "name": "Default Suite",
+    "persistSession": false,
+    "parallel": false,
+    "timeout": 300,
+    "tests": []
+  }],
+  "urls": ["https://www.tax.service.gov.uk/", "https://www.tax.service.gov.uk/pay/enter-payment-reference"],
+  "plugins": []
+}
