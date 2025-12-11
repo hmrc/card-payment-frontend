@@ -17,7 +17,6 @@
 package uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins
 
 import payapi.cardpaymentjourney.model.journey.{JourneySpecificData, JsdPtaP800}
-import payapi.corcommon.model.p800.P800ChargeRef
 import play.api.i18n.Messages
 import play.api.mvc.AnyContent
 import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
@@ -41,22 +40,31 @@ object ExtendedPtaP800 extends ExtendedOrigin {
   }
 
   override def checkYourAnswersAdditionalReferenceRow(journeyRequest: JourneyRequest[AnyContent])(payFrontendBaseUrl: String)(implicit messages: Messages): Option[Seq[CheckYourAnswersRow]] = {
-    additionalReference(journeyRequest.journey.journeySpecificData).map { p800ChargeRef =>
-      Seq(CheckYourAnswersRow(
-        titleMessageKey = "check-your-details.PfP800.charge-reference",
-        value           = Seq(p800ChargeRef.canonicalizedValue),
-        changeLink      = None
-      ))
+    journeyRequest.journey.journeySpecificData match {
+      case JsdPtaP800(_, maybeP800ChargeRef, taxYear, _) =>
+        val chargeRefRow: Seq[CheckYourAnswersRow] = maybeP800ChargeRef.fold(Seq.empty[CheckYourAnswersRow]) { p800ChargeRef =>
+          Seq(CheckYourAnswersRow(
+            titleMessageKey = "check-your-details.PtaP800.charge-reference",
+            value           = Seq(p800ChargeRef.canonicalizedValue),
+            changeLink      = None
+          ))
+        }
+        // Pta send us tax year value as start of tax year. TaxYear class in pay-api uses endYear as apply argument. Then startYear: Int = endYear - 1.
+        // Therefore for correct displaying, we need to adjust the tax year.
+        val adjustedTaxYear = taxYear.nextTaxYear
+        val taxYearRow = Seq(CheckYourAnswersRow(
+          titleMessageKey = "check-your-details.PtaP800.tax-year",
+          value           = Seq(messages("check-your-details.PtaP800.tax-year.value", adjustedTaxYear.startYear.toString, adjustedTaxYear.endYear.toString)),
+          changeLink      = None
+        ))
+        Some(chargeRefRow ++ taxYearRow)
+
+      case _ => throw new RuntimeException("Incorrect origin found")
     }
   }
 
-  private def additionalReference: JourneySpecificData => Option[P800ChargeRef] = {
-    case j: JsdPtaP800 => j.p800ChargeRef
-    case _             => throw new RuntimeException("Incorrect origin found")
-  }
-
   override def openBankingOriginSpecificSessionData: JourneySpecificData => Option[OriginSpecificSessionData] = {
-    case j: JsdPtaP800 => Some(PtaP800SessionData(j.p800Ref, j.p800ChargeRef))
+    case j: JsdPtaP800 => Some(PtaP800SessionData(j.p800Ref, j.p800ChargeRef, Some(j.taxYear)))
     case _             => throw new RuntimeException("Incorrect origin found")
   }
   override def surveyAuditName: String = "p800-or-pa302"

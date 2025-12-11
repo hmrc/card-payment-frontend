@@ -409,15 +409,15 @@ class OpenBankingOriginSpecificSessionDataSpec extends UnitSpec {
 
     "PtaP800" - {
       "without charge ref" in {
-        val testJson = Json.parse("""{"p800Ref":"MA000003AP8002027","origin":"PtaP800"}""")
+        val testJson = Json.parse("""{"p800Ref":"MA000003AP8002027","taxYear":2027,"origin":"PtaP800"}""")
         val osd = ExtendedPtaP800.openBankingOriginSpecificSessionData(TestJourneys.PtaP800.journeyBeforeBeginWebPayment.journeySpecificData)
-        testOsd(osd, PtaP800SessionData(P800Ref("MA000003AP8002027"), None, None), "MA000003AP8002027", "MA000003AP8002027")
+        testOsd(osd, PtaP800SessionData(P800Ref("MA000003AP8002027"), None, Some(TaxYear(2027)), None), "MA000003AP8002027", "MA000003AP8002027")
         roundTripJsonTest(osd, testJson)
       }
       "with charge ref" in {
-        val testJson = Json.parse("""{"p800Ref":"MA000003AP8002027","p800ChargeRef":"BC007010065114","origin":"PtaP800"}""")
+        val testJson = Json.parse("""{"p800Ref":"MA000003AP8002027","taxYear":2027,"p800ChargeRef":"BC007010065114","origin":"PtaP800"}""")
         val osd = ExtendedPtaP800.openBankingOriginSpecificSessionData(TestJourneys.PtaP800.journeyWithP800ChargeRefBeforeBeginWebPayment.journeySpecificData)
-        testOsd(osd, PtaP800SessionData(P800Ref("MA000003AP8002027"), Some(P800ChargeRef("BC007010065114")), None), "BC007010065114", "MA000003AP8002027")
+        testOsd(osd, PtaP800SessionData(P800Ref("MA000003AP8002027"), Some(P800ChargeRef("BC007010065114")), Some(TaxYear(2027)), None), "BC007010065114", "MA000003AP8002027")
         roundTripJsonTest(osd, testJson)
       }
     }

@@ -43,6 +43,8 @@ object ExtendedPtaSimpleAssessment extends ExtendedOrigin {
   override def checkYourAnswersAdditionalReferenceRow(journeyRequest: JourneyRequest[AnyContent])(payFrontendBaseUrl: String)(implicit messages: Messages): Option[Seq[CheckYourAnswersRow]] = {
     journeyRequest.journey.journeySpecificData match {
       case JsdPtaSimpleAssessment(_, p302ChargeRef, taxYear, _, _) =>
+        // Pta send us tax year value as start of tax year. TaxYear class in pay-api uses endYear as apply argument. Then startYear: Int = endYear - 1.
+        // Therefore for correct displaying, we need to adjust the tax year.
         val adjustedTaxYear: TaxYear = taxYear.nextTaxYear
         Some(Seq(
           CheckYourAnswersRow(
