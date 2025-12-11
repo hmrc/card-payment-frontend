@@ -514,7 +514,7 @@ final case class WcSimpleAssessmentSessionData(simpleAssessmentReference: XRef14
   def searchTag: SearchTag = SearchTag(simpleAssessmentReference.canonicalizedValue)
 }
 
-final case class PtaP800SessionData(p800Ref: P800Ref, p800ChargeRef: Option[P800ChargeRef], taxYear: TaxYear, returnUrl: Option[Url] = None) extends OriginSpecificSessionData(PtaP800) {
+final case class PtaP800SessionData(p800Ref: P800Ref, p800ChargeRef: Option[P800ChargeRef], taxYear: Option[TaxYear], returnUrl: Option[Url] = None) extends OriginSpecificSessionData(PtaP800) {
   def paymentReference: Reference = ReferenceMaker.makeP800OpenBankingReference(p800Ref, p800ChargeRef)
   def searchTag: SearchTag = SearchTag(p800Ref.canonicalizedValue)
 }

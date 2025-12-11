@@ -64,7 +64,7 @@ object ExtendedPtaP800 extends ExtendedOrigin {
   }
 
   override def openBankingOriginSpecificSessionData: JourneySpecificData => Option[OriginSpecificSessionData] = {
-    case j: JsdPtaP800 => Some(PtaP800SessionData(j.p800Ref, j.p800ChargeRef, j.taxYear))
+    case j: JsdPtaP800 => Some(PtaP800SessionData(j.p800Ref, j.p800ChargeRef, Some(j.taxYear)))
     case _             => throw new RuntimeException("Incorrect origin found")
   }
   override def surveyAuditName: String = "p800-or-pa302"
