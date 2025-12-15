@@ -71,7 +71,7 @@ class PaymentCompleteController @Inject() (
       taxReference      = journeyRequest.journey.getReference,
       summaryListRows   = PaymentCompleteController.buildSummaryListRows(
         journey = journeyRequest.journey,
-        taxType = journeyRequest.journey.origin.lift.taxNameMessageKey
+        taxType = journeyRequest.journey.origin.lift(appConfig).taxNameMessageKey
       )(journeyRequest.messages),
       maybeEmailAddress = maybeEmail,
       maybeReturnUrl    = PaymentCompleteController.determineTaxAccountUrl(journeyRequest.journey)(appConfig)

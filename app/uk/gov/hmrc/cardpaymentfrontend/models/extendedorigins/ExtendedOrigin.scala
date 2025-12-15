@@ -22,6 +22,7 @@ import payapi.corcommon.model.{Origin, Reference}
 import play.api.i18n.Messages
 import play.api.mvc.{AnyContent, Call}
 import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
+import uk.gov.hmrc.cardpaymentfrontend.config.AppConfig
 import uk.gov.hmrc.cardpaymentfrontend.models.openbanking.OriginSpecificSessionData
 import uk.gov.hmrc.cardpaymentfrontend.models._
 import uk.gov.hmrc.cardpaymentfrontend.session.JourneySessionSupport._
@@ -144,7 +145,7 @@ trait ExtendedOrigin {
 
 object ExtendedOrigin {
   implicit class OriginExtended(origin: Origin) {
-    def lift: ExtendedOrigin = origin match {
+    def lift(appConfig: AppConfig): ExtendedOrigin = origin match {
       case PfSa                     => ExtendedPfSa
       case PfVat                    => ExtendedPfVat
       case PfCt                     => ExtendedPfCt
@@ -157,7 +158,7 @@ object ExtendedOrigin {
       case PfOther                  => ExtendedPfOther
       case PfCds                    => ExtendedPfCds
       case PfP800                   => ExtendedPfP800
-      case PtaP800                  => ExtendedPtaP800
+      case PtaP800                  => new ExtendedPtaP800(appConfig)
       case PfClass2Ni               => DefaultExtendedOrigin
       case PfInsurancePremium       => DefaultExtendedOrigin
       case PfPsAdmin                => ExtendedPfPsAdmin

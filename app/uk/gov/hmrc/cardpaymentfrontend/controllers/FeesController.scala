@@ -53,7 +53,7 @@ class FeesController @Inject() (
   private[controllers] def paymentMethodToBeShown(paymentMethod: PaymentMethod, paymentMethods: Set[PaymentMethod]): Boolean = paymentMethods.contains(paymentMethod)
 
   private[controllers] def linksAvailableOnFeesPage(jsd: JourneySpecificData): Seq[Link] = {
-    val extendedOrigin = jsd.origin.lift
+    val extendedOrigin = jsd.origin.lift(appConfig)
     val paymentMethodsToShow: Set[PaymentMethod] = extendedOrigin.cardFeesPagePaymentMethods
     val showOpenBankingLink: Boolean = paymentMethodToBeShown(PaymentMethod.OpenBanking, paymentMethodsToShow)
     val showBankTransferLink: Boolean = paymentMethodToBeShown(PaymentMethod.Bacs, paymentMethodsToShow)

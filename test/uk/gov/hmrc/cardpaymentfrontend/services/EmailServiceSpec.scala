@@ -23,6 +23,7 @@ import play.api.i18n.{Lang, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
+import uk.gov.hmrc.cardpaymentfrontend.config.AppConfig
 import uk.gov.hmrc.cardpaymentfrontend.models.EmailAddress
 import uk.gov.hmrc.cardpaymentfrontend.models.email.{EmailParameters, EmailRequest}
 import uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins.ExtendedOrigin.OriginExtended
@@ -416,12 +417,13 @@ class EmailServiceSpec extends ItSpec with TableDrivenPropertyChecks {
 
     "should have a messages populated for emailTaxTypeMessageKey for all origins" in {
       val messages: MessagesApi = app.injector.instanceOf[MessagesApi]
+      val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
       val implementedOrigins: Seq[Origin] = TestHelpers.implementedOrigins
       implementedOrigins
         .filterNot(_ == Origins.Mib) // no email for this Origin
         .filterNot(_ == Origins.BcPngr) // no email for this Origin
         .foreach { origin =>
-          val msgKey = origin.lift.emailTaxTypeMessageKey
+          val msgKey = origin.lift(appConfig).emailTaxTypeMessageKey
 
           msgKey.isEmpty shouldBe false withClue s"email.tax-name message key missing for origin: ${origin.entryName}"
           //Check if the message is defined in either messages file, Doesn't matter which one
