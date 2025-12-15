@@ -45,6 +45,7 @@ class AppConfig @Inject() (config: Configuration, servicesConfig: ServicesConfig
   val countdownInSeconds: Int = config.get[Int]("countdownInSeconds")
 
   val payFrontendBaseUrl: String = config.get[String]("urls.pay-frontend.base-url") + "/pay"
+  val payFrontendCAWTPUrl: String = payFrontendBaseUrl + "/choose-a-way-to-pay"
   val cardPaymentFrontendBaseUrl: String = config.get[String]("urls.card-payment-frontend.base-url")
   val businessTaxAccountUrl: String = config.get[String]("urls.business-tax-account.base-url") + "/business-account"
   val merchandiseInBaggageFrontendBaseUrl: String = servicesConfig.baseUrl("merchandise-in-baggage-frontend") + "/declare-commercial-goods"
