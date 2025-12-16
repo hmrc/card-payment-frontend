@@ -44,6 +44,14 @@
 
 @serviceName = @{origin.map(eo => messages(eo.lift(appConfig).serviceNameMessageKey)).getOrElse(messages("service-name.generic"))}
 
+@serviceUrl = @{
+    origin match {
+        case Some(value) if value.isAWebChatOrigin => Some(appConfig.payFrontendWebchatLandingUrl)
+        case Some(value)                           => Some(appConfig.payFrontendBaseUrl)
+        case None                                  => Some(appConfig.payFrontendBaseUrl)
+    }
+}
+
 @welshSupportedForOrigin = @{ origin.exists(_.originSupportsWelsh )}
 
 @headBlock = {
@@ -95,7 +103,7 @@
       ),
       serviceURLs = ServiceURLs(
           signOutUrl = if (isLoggedIn) Some(uk.gov.hmrc.cardpaymentfrontend.controllers.routes.SignOutController.signOut.url) else None,
-          serviceUrl = Some(appConfig.payFrontendBaseUrl)
+          serviceUrl = serviceUrl
       ),
       pageTitle = Some(journeyTitleMaker(h1Key = pageTitle, origin = origin, maybeForm = maybeForm)),
       serviceName = Some(serviceName),
