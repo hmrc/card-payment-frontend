@@ -107,13 +107,13 @@ class LayoutSpec extends ItSpec {
     techIssueLink.attr("href") should include("/contact/report-technical-problem")
   }
 
-  "render layout with /pay/choose-a-way-to-pay as the service url href when origin is a webchat origin" in {
+  "render layout with /pay/make-a-payment-now as the service url href when origin is a webchat origin" in {
     val fakeRequest = FakeRequest("GET", "/card-fees").withSessionId()
     TestHelpers.webChatOrigins.diff(TestHelpers.unimplementedOrigins).foreach { o =>
       PayApiStub.stubForFindBySessionId2xx(TestHelpers.deriveTestDataFromOrigin(o).journeyBeforeBeginWebPayment)
       val result = addressController.renderPage(fakeRequest)
       val document = Jsoup.parse(contentAsString(result))
-      document.select(".govuk-header__content").select("a").attr("href") shouldBe "http://localhost:9056/pay/choose-a-way-to-pay" withClue s"expected href to be cawtp for implemented webchat origin: ${o.entryName}"
+      document.select(".govuk-header__content").select("a").attr("href") shouldBe "http://localhost:9056/pay/make-a-payment-now" withClue s"expected href to be webchat landing page for implemented webchat origin: ${o.entryName}"
     }
   }
 
