@@ -38,7 +38,7 @@ class PaymentFailedController @Inject() (
   paymentFailedPage: PaymentFailedPage
 ) extends FrontendController(mcc) {
 
-  import requestSupport._
+  import requestSupport.*
 
   val renderPage: Action[AnyContent] = actions.journeyAction { implicit journeyRequest: JourneyRequest[AnyContent] =>
     Ok(

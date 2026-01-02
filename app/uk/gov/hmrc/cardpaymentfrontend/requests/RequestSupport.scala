@@ -30,7 +30,7 @@ import javax.inject.Inject
   */
 class RequestSupport @Inject() (override val messagesApi: MessagesApi) extends I18nSupport {
 
-  implicit def hc(implicit request: Request[_]): HeaderCarrier = RequestSupport.hc
+  implicit def hc(implicit request: Request[?]): HeaderCarrier = RequestSupport.header_carrier
   def lang(implicit messages:       Messages): Lang            = messages.lang
 
   def usableLanguage(implicit messages: Messages): Language = lang.code match {
@@ -41,7 +41,7 @@ class RequestSupport @Inject() (override val messagesApi: MessagesApi) extends I
 
 object RequestSupport {
 
-  implicit def hc(implicit request: Request[_]): HeaderCarrier = HcProvider.headerCarrier
+  implicit def header_carrier(implicit request: Request[?]): HeaderCarrier = HcProvider.headerCarrier
 
   def isLoggedIn(implicit requestHeader: RequestHeader): Boolean = requestHeader.session.get(SessionKeys.authToken).isDefined
 
@@ -53,6 +53,6 @@ object RequestSupport {
     * up automatically.
     */
   private object HcProvider extends FrontendHeaderCarrierProvider {
-    def headerCarrier(implicit request: Request[_]): HeaderCarrier = hc(request)
+    def headerCarrier(implicit request: Request[?]): HeaderCarrier = hc(using request)
   }
 }

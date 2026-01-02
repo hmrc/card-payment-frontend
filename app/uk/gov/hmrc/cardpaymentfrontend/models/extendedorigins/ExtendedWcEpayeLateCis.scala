@@ -20,7 +20,7 @@ import payapi.cardpaymentjourney.model.journey.{JourneySpecificData, JsdWcEpayeL
 import play.api.mvc.AnyContent
 import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
 import uk.gov.hmrc.cardpaymentfrontend.models.PaymentMethod.{Bacs, Card, OpenBanking}
-import uk.gov.hmrc.cardpaymentfrontend.models._
+import uk.gov.hmrc.cardpaymentfrontend.models.*
 import uk.gov.hmrc.cardpaymentfrontend.models.openbanking.{OriginSpecificSessionData, WcEpayeLateCisSessionData}
 
 object ExtendedWcEpayeLateCis extends ExtendedOrigin {

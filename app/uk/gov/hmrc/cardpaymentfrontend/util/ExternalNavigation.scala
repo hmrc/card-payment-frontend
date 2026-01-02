@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.cardpaymentfrontend.util
 
-import payapi.cardpaymentjourney.model.journey._
+import payapi.cardpaymentjourney.model.journey.*
 
 object ExternalNavigation {
 

@@ -27,7 +27,7 @@ import uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins.ExtendedOrigin.Ori
 import uk.gov.hmrc.cardpaymentfrontend.models.{Address, CheckYourAnswersRow, EmailAddress}
 import uk.gov.hmrc.cardpaymentfrontend.requests.RequestSupport
 import uk.gov.hmrc.cardpaymentfrontend.services.CardPaymentService
-import uk.gov.hmrc.cardpaymentfrontend.session.JourneySessionSupport._
+import uk.gov.hmrc.cardpaymentfrontend.session.JourneySessionSupport.*
 import uk.gov.hmrc.cardpaymentfrontend.views.html.CheckYourAnswersPage
 import uk.gov.hmrc.govukfrontend.views.Aliases.SummaryList
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
@@ -48,7 +48,7 @@ class CheckYourAnswersController @Inject() (
 )(implicit executionContext: ExecutionContext)
     extends FrontendController(mcc)
     with Logging {
-  import requestSupport._
+  import requestSupport.*
 
   def renderPage: Action[AnyContent] = actions.journeyAction { implicit journeyRequest: JourneyRequest[AnyContent] =>
     val extendedOrigin: ExtendedOrigin = journeyRequest.journey.origin.lift(appConfig)

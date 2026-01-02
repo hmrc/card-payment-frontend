@@ -50,7 +50,7 @@ class PaymentStatusController @Inject() (
     extends FrontendController(mcc)
     with Logging {
 
-  import requestSupport._
+  import requestSupport.*
 
   private val redirectUrlPolicy: RedirectUrlPolicy[Id] = AbsoluteWithHostnameFromAllowlist(appConfig.iframeHostNameAllowList)
 
@@ -100,9 +100,9 @@ class PaymentStatusController @Inject() (
       }
   }
 
-  private def tryAndCancelPayment(cancelReason: Option[String])(implicit journeyRequest: JourneyRequest[_], messages: Messages): Future[Result] = {
+  private def tryAndCancelPayment(cancelReason: Option[String])(implicit journeyRequest: JourneyRequest[?], messages: Messages): Future[Result] = {
     cardPaymentService.cancelPayment().map {
-      httpResponse: HttpResponse =>
+      (httpResponse: HttpResponse) =>
         httpResponse.status match {
           case 200 =>
             logger.warn(s"Successfully cancelled the transaction, but now erroring gracefully because of: [ ${cancelReason.toString} ]")

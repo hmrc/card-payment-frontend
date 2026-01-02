@@ -17,15 +17,15 @@
 package uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins
 
 import payapi.cardpaymentjourney.model.journey.JourneySpecificData
-import payapi.corcommon.model.Origins._
+import payapi.corcommon.model.Origins.*
 import payapi.corcommon.model.{Origin, Reference}
 import play.api.i18n.Messages
 import play.api.mvc.{AnyContent, Call}
 import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
 import uk.gov.hmrc.cardpaymentfrontend.config.AppConfig
 import uk.gov.hmrc.cardpaymentfrontend.models.openbanking.OriginSpecificSessionData
-import uk.gov.hmrc.cardpaymentfrontend.models._
-import uk.gov.hmrc.cardpaymentfrontend.session.JourneySessionSupport._
+import uk.gov.hmrc.cardpaymentfrontend.models.*
+import uk.gov.hmrc.cardpaymentfrontend.session.JourneySessionSupport.*
 
 import java.time.LocalDate
 
@@ -129,7 +129,7 @@ trait ExtendedOrigin {
       } yield Seq(line1, line2.getOrElse(""), city.getOrElse(""), county.getOrElse(""), postcode.getOrElse(""))
     }.map(_.filter(_.nonEmpty))
 
-    addressValues.map { address: Seq[String] =>
+    addressValues.map { (address: Seq[String]) =>
       CheckYourAnswersRow(
         titleMessageKey = "check-your-details.card-billing-address",
         value = address,

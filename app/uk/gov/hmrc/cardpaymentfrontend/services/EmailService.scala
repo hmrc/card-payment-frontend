@@ -41,11 +41,11 @@ class EmailService @Inject() (
 )(implicit messagesApi: MessagesApi)
     extends Logging {
 
-  import requestSupport._
+  import requestSupport.*
 
   def sendEmail(journey: Journey[JourneySpecificData], emailAddress: EmailAddress, isEnglish: Boolean)(implicit
     headerCarrier: HeaderCarrier,
-    request:       Request[_]
+    request:       Request[?]
   ): Future[Unit] = {
     logger.info("Email sent on successful payment")
     emailConnector.sendEmail(
@@ -57,7 +57,7 @@ class EmailService @Inject() (
     journey:      Journey[JourneySpecificData],
     emailAddress: EmailAddress,
     isEnglish:    Boolean
-  )(implicit request: Request[_]): EmailRequest = {
+  )(implicit request: Request[?]): EmailRequest = {
 
     val templateId: String          = if (isEnglish) "payment_successful" else "payment_successful_cy"
     val parameters: EmailParameters = buildEmailParameters(journey)
@@ -70,7 +70,7 @@ class EmailService @Inject() (
     )
   }
 
-  private[services] def buildEmailParameters(journey: Journey[JourneySpecificData])(implicit request: Request[_]): EmailParameters = {
+  private[services] def buildEmailParameters(journey: Journey[JourneySpecificData])(implicit request: Request[?]): EmailParameters = {
     val messages: Messages             = request.messages
     val extendedOrigin: ExtendedOrigin = journey.origin.lift(appConfig)
     val maybeCommission                = journey.getCommissionInPence
@@ -87,7 +87,7 @@ class EmailService @Inject() (
 
   private[services] def hasCardFees: Option[AmountInPence] => Boolean = maybeAmount => maybeAmount.exists(_.value > 0)
 
-  private[services] def obfuscateReference(taxReference: String)(implicit request: Request[_]): String = {
+  private[services] def obfuscateReference(taxReference: String)(implicit request: Request[?]): String = {
     request.messages.messages("email.obfuscated-tax-reference", taxReference.takeRight(5))
   }
 

@@ -1,8 +1,8 @@
-import sbt.Keys._
+import sbt.Keys.*
 import play.sbt.routes.RoutesKeys.routes
-import sbt._
+import sbt.*
 import wartremover.Wart
-import wartremover.WartRemover.autoImport._
+import wartremover.WartRemover.autoImport.*
 
 object WartRemoverSettings {
 
@@ -22,6 +22,7 @@ object WartRemoverSettings {
       },
       Test / compile / wartremoverErrors --= Seq(
         Wart.Any,
+        Wart.AsInstanceOf,
         Wart.Equals,
         Wart.GlobalExecutionContext,
         Wart.NonUnitStatements,

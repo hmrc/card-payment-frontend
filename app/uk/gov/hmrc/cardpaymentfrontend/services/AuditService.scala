@@ -52,7 +52,7 @@ class AuditService @Inject() (auditConnector: AuditConnector)(implicit ec: Execu
     address:              Address,
     merchantCode:         String,
     transactionReference: String
-  )(implicit journeyRequest: JourneyRequest[_]): PaymentAttemptAuditDetail = {
+  )(implicit journeyRequest: JourneyRequest[?]): PaymentAttemptAuditDetail = {
     PaymentAttemptAuditDetail(
       address = address,
       emailAddress = journeyRequest.readFromSession[EmailAddress](journeyRequest.journeyId, Keys.email),
@@ -70,7 +70,7 @@ class AuditService @Inject() (auditConnector: AuditConnector)(implicit ec: Execu
     address:              Address,
     merchantCode:         String,
     transactionReference: String
-  )(implicit journeyRequest: JourneyRequest[_], headerCarrier: HeaderCarrier): Unit =
+  )(implicit journeyRequest: JourneyRequest[?], headerCarrier: HeaderCarrier): Unit =
     audit(toPaymentAttempt(address, merchantCode, transactionReference))
 
   private def toPaymentResult(
@@ -78,7 +78,7 @@ class AuditService @Inject() (auditConnector: AuditConnector)(implicit ec: Execu
     merchantCode:         String,
     transactionReference: String,
     paymentStatus:        String,
-    journeyRequest:       JourneyRequest[_]
+    journeyRequest:       JourneyRequest[?]
   ): PaymentResultAuditDetail = {
     PaymentResultAuditDetail(
       optionalAddress,
@@ -98,7 +98,7 @@ class AuditService @Inject() (auditConnector: AuditConnector)(implicit ec: Execu
     merchantCode:         String,
     transactionReference: String,
     paymentStatus:        String
-  )(implicit journeyRequest: JourneyRequest[_], headerCarrier: HeaderCarrier): Unit = {
+  )(implicit journeyRequest: JourneyRequest[?], headerCarrier: HeaderCarrier): Unit = {
     audit(
       toPaymentResult(
         optionalAddress = journeyRequest.readFromSession[Address](journeyRequest.journeyId, Keys.address),

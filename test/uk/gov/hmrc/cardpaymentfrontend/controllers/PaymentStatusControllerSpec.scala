@@ -20,7 +20,7 @@ import org.jsoup.Jsoup
 import play.api.libs.json.Json
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import play.mvc.Http.Status
 import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
 import uk.gov.hmrc.cardpaymentfrontend.models.cardpayment.{AdditionalPaymentInfo, CardPaymentFinishPaymentResponses, CardPaymentResult}

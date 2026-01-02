@@ -22,16 +22,16 @@ import org.jsoup.select.Elements
 import org.scalatest.Assertion
 import payapi.cardpaymentjourney.model.barclays.BarclaysOrder
 import payapi.cardpaymentjourney.model.journey.{Journey, JourneySpecificData, JsdBcPngr, JsdMib, JsdPfP800, JsdPtaP800, Url}
-import payapi.corcommon.model.Origins._
+import payapi.corcommon.model.Origins.*
 import payapi.corcommon.model.barclays.{CardCategories, TransactionReference}
 import payapi.corcommon.model.{AmountInPence, JourneyId, Origin, Origins}
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import play.mvc.Http.Status
 import uk.gov.hmrc.cardpaymentfrontend.controllers.PaymentCompleteControllerSpec.{TestScenarioInfo, originToTdAndSummaryListRows}
-import uk.gov.hmrc.cardpaymentfrontend.testsupport.TestOps._
+import uk.gov.hmrc.cardpaymentfrontend.testsupport.TestOps.*
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.stubs.{EmailStub, PayApiStub}
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.testdata.{TestDataUtils, TestJourneys}
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.{ItSpec, TestHelpers}
@@ -658,7 +658,7 @@ class PaymentCompleteControllerSpec extends ItSpec {
         tableData should contain theSameElementsInOrderAs expectedTableData
       }
 
-      def testSummaryRows(testData: Journey[JourneySpecificData], fakeRequest: FakeRequest[_], expectedSummaryListRows: List[(String, String)]): Assertion = {
+      def testSummaryRows(testData: Journey[JourneySpecificData], fakeRequest: FakeRequest[?], expectedSummaryListRows: List[(String, String)]): Assertion = {
         PayApiStub.stubForFindBySessionId2xx(testData)
         val result                                             = systemUnderTest.renderPage(fakeRequest)
         val document                                           = Jsoup.parse(contentAsString(result))

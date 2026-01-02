@@ -18,7 +18,7 @@ package uk.gov.hmrc.cardpaymentfrontend.services
 
 import uk.gov.hmrc.cardpaymentfrontend.models.Country
 import play.Environment
-import play.api.i18n._
+import play.api.i18n.*
 import play.api.mvc.Request
 import uk.gov.hmrc.cardpaymentfrontend.requests.RequestSupport
 import uk.gov.hmrc.cardpaymentfrontend.util.SafeEquals.EqualsOps
@@ -29,15 +29,14 @@ import scala.io.Source
 @Singleton
 class CountriesService @Inject() (requestSupport: RequestSupport, env: Environment)(implicit messagesApi: MessagesApi) {
 
-  import requestSupport._
-
+  import requestSupport.*
   private val pattern = "([A-Z]{3})=(.*)".r
 
   private val countriesList: Seq[Country] = countrySeqFromFile("conf/country-codes-en.properties")
 
   private val countriesListWelsh: Seq[Country] = countrySeqFromFile("conf/country-codes-cy.properties")
 
-  def getCountries(implicit request: Request[_]): Seq[Country] = {
+  def getCountries(implicit request: Request[?]): Seq[Country] = {
 
     val UK: (Country) => Boolean = c => c.code === "GBR"
 

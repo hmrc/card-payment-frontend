@@ -17,7 +17,7 @@
 package uk.gov.hmrc.cardpaymentfrontend.connectors
 
 import payapi.cardpaymentjourney.model.journey.Url
-import uk.gov.hmrc.cardpaymentfrontend.models.paymentssurvey._
+import uk.gov.hmrc.cardpaymentfrontend.models.paymentssurvey.*
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.ItSpec
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.stubs.PaymentsSurveyStub
 import uk.gov.hmrc.http.HeaderCarrier

@@ -22,10 +22,11 @@ import payapi.corcommon.model.taxes.cds.CdsRef
 import play.api.Logging
 import play.api.http.Status
 import play.api.libs.json.Json
+import play.api.libs.ws.writeableOf_JsValue
 import uk.gov.hmrc.cardpaymentfrontend.config.AppConfig
 import uk.gov.hmrc.cardpaymentfrontend.models.cds.CdsResponse
 import uk.gov.hmrc.cardpaymentfrontend.models.notifications.CdsNotification
-import uk.gov.hmrc.http.HttpReadsInstances._
+import uk.gov.hmrc.http.HttpReadsInstances.*
 import uk.gov.hmrc.http.client.HttpClientV2
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, StringContextOps}
 

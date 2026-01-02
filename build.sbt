@@ -21,7 +21,7 @@ lazy val microservice = Project("card-payment-frontend", file("."))
     // https://www.scala-lang.org/2021/01/12/configuring-and-suppressing-warnings.html
     // suppress warnings in generated routes files
     scalacOptions += "-Wconf:src=routes/.*:s",
-    scalacOptions += "-Wconf:cat=unused-imports&src=html/.*:s",
+    scalacOptions += "-Wconf:msg=unused import&src=html/.*:s",
     pipelineStages := Seq(gzip),
   )
   .settings(PlayKeys.playDefaultPort := 10155)
@@ -29,6 +29,7 @@ lazy val microservice = Project("card-payment-frontend", file("."))
   .settings(CodeCoverageSettings.settings *)
   .settings(SbtUpdatesSettings.sbtUpdatesSettings *)
   .settings(WartRemoverSettings.wartRemoverSettings *)
+  .settings(scalafmtOnCompile := true)
   .settings(
     Compile / unmanagedResourceDirectories += baseDirectory.value / "resources",
     Compile / scalacOptions -= "utf8",

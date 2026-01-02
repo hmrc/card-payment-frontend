@@ -23,7 +23,7 @@ import payapi.corcommon.model.PaymentStatuses
 import payapi.corcommon.model.mods.AmendmentReference
 import payapi.corcommon.model.taxes.mib.MibReference
 import play.api.libs.json.Json
-import uk.gov.hmrc.cardpaymentfrontend.models.notifications._
+import uk.gov.hmrc.cardpaymentfrontend.models.notifications.*
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.ItSpec
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.stubs.{CdsStub, ModsStub, PassengersStub}
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.testdata.TestJourneys

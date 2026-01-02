@@ -17,12 +17,12 @@
 package uk.gov.hmrc.cardpaymentfrontend.services
 
 import com.google.inject.{Inject, Singleton}
-import payapi.cardpaymentjourney.model.journey._
+import payapi.cardpaymentjourney.model.journey.*
 import payapi.corcommon.model.PaymentStatuses
 import play.api.Logging
 import play.api.libs.json.Json
 import uk.gov.hmrc.cardpaymentfrontend.connectors.{CdsConnector, PassengersConnector, PaymentsProcessorConnector}
-import uk.gov.hmrc.cardpaymentfrontend.models.notifications._
+import uk.gov.hmrc.cardpaymentfrontend.models.notifications.*
 import uk.gov.hmrc.cardpaymentfrontend.util.SafeEquals.EqualsOps
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -143,10 +143,10 @@ class NotificationService @Inject() (
     logger.info(s"Not sending any card-payment-notification $extraInfo [${journey.origin.toString}] [${journey.status.toString}] [${journey._id.toString}]")
   }
 
-  private def logErrorSendingNotification(journey: Journey[_])(notificationType: String, throwable: => Throwable): Unit =
+  private def logErrorSendingNotification(journey: Journey[?])(notificationType: String, throwable: => Throwable): Unit =
     logger.error(s"[$notificationType] [Problem sending card-payment-notification] [journeyId: ${journey._id.value}][\n${journey.toString}\n]", throwable)
 
-  private def logSuccessfulNotification(journey: Journey[_])(notificationType: String): Unit =
+  private def logSuccessfulNotification(journey: Journey[?])(notificationType: String): Unit =
     logger.info(s"[$notificationType] [DONE] [journeyId: ${journey._id.value}] successfully sent card-payment-notification")
 
 }

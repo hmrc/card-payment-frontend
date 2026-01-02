@@ -19,8 +19,8 @@ package uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins
 import payapi.cardpaymentjourney.model.journey.{JourneySpecificData, JsdBtaEpayeBill}
 import play.api.mvc.AnyContent
 import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
-import uk.gov.hmrc.cardpaymentfrontend.models.PaymentMethod._
-import uk.gov.hmrc.cardpaymentfrontend.models._
+import uk.gov.hmrc.cardpaymentfrontend.models.PaymentMethod.*
+import uk.gov.hmrc.cardpaymentfrontend.models.*
 import uk.gov.hmrc.cardpaymentfrontend.models.openbanking.{BtaEpayeBillSessionData, OriginSpecificSessionData}
 
 object ExtendedBtaEpayeBill extends ExtendedOrigin {

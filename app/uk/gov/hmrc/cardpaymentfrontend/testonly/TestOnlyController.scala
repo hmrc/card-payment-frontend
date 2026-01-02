@@ -24,8 +24,7 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
-import uk.gov.hmrc.cardpaymentfrontend.session.JourneySessionSupport._
-
+import uk.gov.hmrc.cardpaymentfrontend.session.JourneySessionSupport.*
 @Singleton
 class TestOnlyController @Inject() (
   actions:         Actions,

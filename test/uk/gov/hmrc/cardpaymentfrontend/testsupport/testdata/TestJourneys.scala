@@ -16,19 +16,19 @@
 
 package uk.gov.hmrc.cardpaymentfrontend.testsupport.testdata
 
-import payapi.cardpaymentjourney.model.journey._
+import payapi.cardpaymentjourney.model.journey.*
 import payapi.corcommon.model.cgt.CgtAccountReference
 import payapi.corcommon.model.mods.{AmendmentReference, CustomsDutyAmount, VatAmount}
 import payapi.corcommon.model.p800.P800ChargeRef
 import payapi.corcommon.model.pngr.PngrChargeReference
 import payapi.corcommon.model.taxes.ad.{AlcoholDutyChargeReference, AlcoholDutyReference}
 import payapi.corcommon.model.taxes.amls.AmlsPaymentReference
-import payapi.corcommon.model.taxes.ct._
-import payapi.corcommon.model.taxes.epaye._
+import payapi.corcommon.model.taxes.ct.*
+import payapi.corcommon.model.taxes.epaye.*
 import payapi.corcommon.model.taxes.ioss.Ioss
 import payapi.corcommon.model.taxes.mib.MibReference
 import payapi.corcommon.model.taxes.nino.Nino
-import payapi.corcommon.model.taxes.other._
+import payapi.corcommon.model.taxes.other.*
 import payapi.corcommon.model.taxes.p302.{P302ChargeRef, P302Ref}
 import payapi.corcommon.model.taxes.p800.P800Ref
 import payapi.corcommon.model.taxes.pngr.{AmountPaidPreviously, PngrItem, PngrTaxBreakdown, TotalPaidNow}
@@ -43,7 +43,7 @@ import payapi.corcommon.model.times.period.TaxQuarter.AprilJuly
 import payapi.corcommon.model.times.period.TaxYear
 import payapi.corcommon.model.webchat.WcEpayeNiReference
 import payapi.corcommon.model.{AmountInPence, JourneyId, PaymentStatuses}
-import uk.gov.hmrc.cardpaymentfrontend.testsupport.testdata.TestDataUtils._
+import uk.gov.hmrc.cardpaymentfrontend.testsupport.testdata.TestDataUtils.*
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.testdata.TestPayApiData.{testCalendarPeriod, testQuarterlyTaxPeriod, testSubYearlyPeriod, testYearlyPeriod}
 
 import java.time.{LocalDate, LocalDateTime}

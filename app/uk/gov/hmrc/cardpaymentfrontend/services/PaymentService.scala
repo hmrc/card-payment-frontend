@@ -22,22 +22,21 @@ import play.api.Logging
 import play.api.mvc.Result
 import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
 import uk.gov.hmrc.cardpaymentfrontend.connectors.PayApiConnector
-import uk.gov.hmrc.cardpaymentfrontend.requests.RequestSupport._
-
+import uk.gov.hmrc.cardpaymentfrontend.requests.RequestSupport.*
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class PaymentService @Inject() (payApiConnector: PayApiConnector)(implicit executionContext: ExecutionContext) extends Logging {
 
-  def resetSentJourney()(implicit journeyRequest: JourneyRequest[_]): Future[Unit] =
+  def resetSentJourney()(implicit journeyRequest: JourneyRequest[?]): Future[Unit] =
     journeyRequest.journey.order.fold[Future[Unit]](Future.successful(()))(_ => resetWebPayment())
 
-  def resetSentJourneyThenResult(r: => Result)(implicit journeyRequest: JourneyRequest[_]): Future[Result] =
+  def resetSentJourneyThenResult(r: => Result)(implicit journeyRequest: JourneyRequest[?]): Future[Result] =
     journeyRequest.journey.order.fold[Future[Result]](Future.successful(r))(_ => resetWebPayment().map(_ => r))
 
   // Creates a new journey but copies over stuff like session id and journey specific data.
   // To be used when journeys are cancelled/failed.
-  def createCopyOfCancelledOrFailedJourney()(implicit journeyRequest: JourneyRequest[_]): Future[Unit] = {
+  def createCopyOfCancelledOrFailedJourney()(implicit journeyRequest: JourneyRequest[?]): Future[Unit] = {
     journeyRequest.journey.status match {
       case ps @ (PaymentStatuses.Created | PaymentStatuses.Successful | PaymentStatuses.Sent | PaymentStatuses.Validated | PaymentStatuses.SoftDecline) =>
         logger.warn(s"User trying to create deep copy of journey that is in state [${ps.entryName}], when it should only be used by Failed or Cancelled.")
@@ -50,7 +49,7 @@ class PaymentService @Inject() (payApiConnector: PayApiConnector)(implicit execu
 
   }
 
-  private def resetWebPayment()(implicit journeyRequest: JourneyRequest[_]): Future[Unit] = {
+  private def resetWebPayment()(implicit journeyRequest: JourneyRequest[?]): Future[Unit] = {
     for {
       _ <- payApiConnector.JourneyUpdates.resetWebPayment(journeyRequest.journey._id.value)
     } yield ()

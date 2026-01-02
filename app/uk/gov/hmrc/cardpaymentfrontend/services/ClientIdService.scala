@@ -19,7 +19,7 @@ package uk.gov.hmrc.cardpaymentfrontend.services
 import com.google.inject.{Inject, Singleton}
 import payapi.cardpaymentjourney.model.journey.{Journey, JsdPfVat, JsdWcVat}
 import payapi.corcommon.model.Origins
-import payapi.corcommon.model.Origins._
+import payapi.corcommon.model.Origins.*
 import uk.gov.hmrc.cardpaymentfrontend.models.cardpayment.{ClientId, ClientIds}
 import uk.gov.hmrc.cardpaymentfrontend.models.{Language, Languages}
 
@@ -28,7 +28,7 @@ class ClientIdService @Inject() {
 
   /** Note these have been tested prior to other onboardings. Do not change these unless you are 100% sure, it WILL cause a live incident.
     */
-  def determineClientId(journey: Journey[_], language: Language): ClientId = {
+  def determineClientId(journey: Journey[?], language: Language): ClientId = {
     journey.origin match {
 
       case PfSa | BtaSa | PtaSa | AppSa | ItSa | `3psSa` | WcSa =>

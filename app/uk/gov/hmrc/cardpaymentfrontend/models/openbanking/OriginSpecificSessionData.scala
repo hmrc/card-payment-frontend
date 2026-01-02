@@ -17,7 +17,7 @@
 package uk.gov.hmrc.cardpaymentfrontend.models.openbanking
 
 import payapi.cardpaymentjourney.model.journey.Url
-import payapi.corcommon.model.Origins._
+import payapi.corcommon.model.Origins.*
 import payapi.corcommon.model.cgt.CgtAccountReference
 import payapi.corcommon.model.p800.P800ChargeRef
 import payapi.corcommon.model.taxes.ReferenceMaker
@@ -26,9 +26,9 @@ import payapi.corcommon.model.taxes.amls.AmlsPaymentReference
 import payapi.corcommon.model.taxes.cds.{CdsCashRef, CdsRef}
 import payapi.corcommon.model.taxes.cdsd.CdsDefermentReference
 import payapi.corcommon.model.taxes.ct.{CtChargeType, CtPeriod, CtUtr}
-import payapi.corcommon.model.taxes.epaye._
+import payapi.corcommon.model.taxes.epaye.*
 import payapi.corcommon.model.taxes.ioss.Ioss
-import payapi.corcommon.model.taxes.other._
+import payapi.corcommon.model.taxes.other.*
 import payapi.corcommon.model.taxes.p302.{P302ChargeRef, P302Ref}
 import payapi.corcommon.model.taxes.p800.P800Ref
 import payapi.corcommon.model.taxes.pillar2.Pillar2Reference
@@ -45,7 +45,7 @@ import payapi.corcommon.model.times.period.{CalendarQuarterlyPeriod, TaxYear}
 import payapi.corcommon.model.webchat.WcEpayeNiReference
 import payapi.corcommon.model.{Origin, Reference, SearchTag}
 import play.api.libs.functional.syntax.toFunctionalBuilderOps
-import play.api.libs.json._
+import play.api.libs.json.*
 
 sealed abstract class OriginSpecificSessionData(val origin: Origin) {
   def paymentReference: Reference
