@@ -18,7 +18,7 @@ package uk.gov.hmrc.cardpaymentfrontend.session
 
 import payapi.corcommon.model.JourneyId
 import play.api.libs.json.{Format, JsObject, Json}
-import play.api.mvc._
+import play.api.mvc.*
 
 object JourneySessionSupport extends JourneySessionSupport
 
@@ -62,7 +62,7 @@ trait JourneySessionSupport {
         .map(_.as[T])
   }
 
-  implicit class RequestOps(r: Request[_]) {
+  implicit class RequestOps(r: Request[?]) {
 
     def readFromSession[T: Format](journeyId: JourneyId, key: String): Option[T] = r.session
       .get(journeyId.value)

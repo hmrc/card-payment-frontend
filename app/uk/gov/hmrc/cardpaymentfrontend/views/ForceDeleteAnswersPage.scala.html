@@ -27,7 +27,7 @@
 @(
         loggedIn: Boolean,
         redirectLink: Option[Url]
-)(implicit request: Request[_], messages: Messages)
+)(implicit request: Request[?], messages: Messages)
 
 @statusMessageHeading = @{
     if (loggedIn) messages("force-delete-answers.heading.logged-in")

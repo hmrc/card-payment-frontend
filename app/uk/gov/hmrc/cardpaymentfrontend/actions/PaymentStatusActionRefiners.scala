@@ -41,7 +41,7 @@ class PaymentStatusActionRefiners @Inject() (
 )(implicit ec: ExecutionContext)
     extends Logging {
 
-  import requestSupport._
+  import requestSupport.*
 
   def findJourneyBySessionIdFallBackToJourneyIdRefiner(base64EncodedEncryptedJourneyId: String): ActionRefiner[Request, JourneyRequest] =
     new ActionRefiner[Request, JourneyRequest] {

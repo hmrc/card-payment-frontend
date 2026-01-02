@@ -19,7 +19,7 @@ package uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins
 import payapi.cardpaymentjourney.model.journey.{JourneySpecificData, JsdPfAmls}
 import play.api.mvc.{AnyContent, Call}
 import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
-import uk.gov.hmrc.cardpaymentfrontend.models.PaymentMethod._
+import uk.gov.hmrc.cardpaymentfrontend.models.PaymentMethod.*
 import uk.gov.hmrc.cardpaymentfrontend.models.openbanking.{OriginSpecificSessionData, PfAmlsSessionData}
 import uk.gov.hmrc.cardpaymentfrontend.models.{CheckYourAnswersRow, Link, PaymentMethod}
 

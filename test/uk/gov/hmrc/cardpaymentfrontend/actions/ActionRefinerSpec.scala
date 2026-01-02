@@ -122,7 +122,7 @@ class ActionRefinerSpec extends ItSpec {
       val request          = fakeRequest(journey)
       val resultFromRefine = refiner.invokeBlock(
         request,
-        { _: JourneyRequest[_] =>
+        { (_: JourneyRequest[?]) =>
           Future.successful(Results.Ok("test ok"))
         }
       )

@@ -25,7 +25,7 @@ import play.api.mvc.{AnyContent, AnyContentAsEmpty}
 import play.api.test.FakeRequest
 import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
 import uk.gov.hmrc.cardpaymentfrontend.models.Languages.English
-import uk.gov.hmrc.cardpaymentfrontend.models.cardpayment._
+import uk.gov.hmrc.cardpaymentfrontend.models.cardpayment.*
 import uk.gov.hmrc.cardpaymentfrontend.models.payapirequest.{FailWebPaymentRequest, SucceedWebPaymentRequest}
 import uk.gov.hmrc.cardpaymentfrontend.models.{Address, EmailAddress}
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.ItSpec
@@ -86,7 +86,7 @@ class CardPaymentServiceSpec extends ItSpec {
 
     "initiatePayment" - {
 
-      implicit val journeyRequest: JourneyRequest[_] = fakeJourneyRequest(journey = testJourneyBeforeBeginWebPayment, withEmail = true)
+      implicit val journeyRequest: JourneyRequest[?] = fakeJourneyRequest(journey = testJourneyBeforeBeginWebPayment, withEmail = true)
 
       val expectedCardPaymentInitiatePaymentResponse = CardPaymentInitiatePaymentResponse("someiframeurl", "sometransactionref")
 

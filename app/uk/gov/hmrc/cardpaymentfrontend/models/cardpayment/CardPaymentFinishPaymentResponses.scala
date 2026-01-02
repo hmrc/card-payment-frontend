@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.cardpaymentfrontend.models.cardpayment
 
-import play.api.libs.json._
+import play.api.libs.json.*
 import uk.gov.hmrc.cardpaymentfrontend.models.cardpayment.CardPaymentFinishPaymentResponses.CardPaymentFinishPaymentResponse
 import uk.gov.hmrc.cardpaymentfrontend.util.SafeEquals.EqualsOps
 

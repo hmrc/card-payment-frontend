@@ -39,15 +39,15 @@ class PaymentsSurveyService @Inject() (
   messagesApi:             MessagesApi
 ) {
 
-  import requestSupport._
+  import requestSupport.*
 
-  def startPaySurvey(journey: Journey[JourneySpecificData])(implicit request: Request[_]): Future[Url] = {
+  def startPaySurvey(journey: Journey[JourneySpecificData])(implicit request: Request[?]): Future[Url] = {
     paymentsSurveyConnector
       .startSurvey(makeSsjJourneyRequest(journey))
       .map(_.nextUrl)
   }
 
-  private[services] def makeSsjJourneyRequest(journey: Journey[JourneySpecificData])(implicit request: Request[_]): PaymentSurveyJourneyRequest = {
+  private[services] def makeSsjJourneyRequest(journey: Journey[JourneySpecificData])(implicit request: Request[?]): PaymentSurveyJourneyRequest = {
     implicit val messages: Messages    = request.messages
     val extendedOrigin: ExtendedOrigin = journey.origin.lift(appConfig)
 

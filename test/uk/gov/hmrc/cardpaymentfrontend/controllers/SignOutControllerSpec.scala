@@ -17,7 +17,7 @@
 package uk.gov.hmrc.cardpaymentfrontend.controllers
 
 import org.jsoup.Jsoup
-import play.api.http.Status._
+import play.api.http.Status.*
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{contentAsString, defaultAwaitTimeout, redirectLocation, session, status}

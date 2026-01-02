@@ -17,7 +17,7 @@
 package uk.gov.hmrc.cardpaymentfrontend.services
 
 import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor6}
-import payapi.cardpaymentjourney.model.journey._
+import payapi.cardpaymentjourney.model.journey.*
 import payapi.corcommon.model.{AmountInPence, Origin, Origins}
 import play.api.i18n.{Lang, MessagesApi}
 import play.api.libs.json.Json
@@ -31,7 +31,7 @@ import uk.gov.hmrc.cardpaymentfrontend.testsupport.TestHelpers.implementedOrigin
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.TestOps.FakeRequestOps
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.stubs.EmailStub
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.testdata.{JourneyStatuses, TestJourneys}
-import uk.gov.hmrc.cardpaymentfrontend.testsupport.testdata.TestJourneys._
+import uk.gov.hmrc.cardpaymentfrontend.testsupport.testdata.TestJourneys.*
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.{ItSpec, TestHelpers}
 import uk.gov.hmrc.cardpaymentfrontend.util.SafeEquals.EqualsOps
 import uk.gov.hmrc.http.HeaderCarrier

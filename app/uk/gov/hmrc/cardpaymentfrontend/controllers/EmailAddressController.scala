@@ -27,7 +27,7 @@ import uk.gov.hmrc.cardpaymentfrontend.requests.RequestSupport
 import uk.gov.hmrc.cardpaymentfrontend.services.PaymentService
 import uk.gov.hmrc.cardpaymentfrontend.views.html.EmailAddressPage
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-import uk.gov.hmrc.cardpaymentfrontend.session.JourneySessionSupport._
+import uk.gov.hmrc.cardpaymentfrontend.session.JourneySessionSupport.*
 import uk.gov.hmrc.cardpaymentfrontend.util.SafeEquals.EqualsOps
 
 import javax.inject.{Inject, Singleton}
@@ -44,8 +44,7 @@ class EmailAddressController @Inject() (
     extends FrontendController(mcc)
     with Logging {
 
-  import requestSupport._
-
+  import requestSupport.*
   val renderPage: Action[AnyContent] = actions.routedJourneyAction { implicit request: JourneyRequest[AnyContent] =>
     val form = emailInSession.fold(EmailAddressForm.form()) { email => EmailAddressForm.form().fill(email) }
     Ok(emailAddressPage(form))
@@ -86,7 +85,7 @@ class EmailAddressController @Inject() (
       )
   }
 
-  private[controllers] def emailInSession(implicit journeyRequest: JourneyRequest[_]): Option[EmailAddress] =
+  private[controllers] def emailInSession(implicit journeyRequest: JourneyRequest[?]): Option[EmailAddress] =
     journeyRequest.readFromSession[EmailAddress](journeyRequest.journeyId, Keys.email)
 
   private[controllers] def emailIsDifferent(emailA: EmailAddress, emailB: EmailAddress): Boolean = emailA =!= emailB

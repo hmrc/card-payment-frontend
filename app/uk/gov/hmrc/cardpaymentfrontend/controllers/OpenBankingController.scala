@@ -37,8 +37,7 @@ class OpenBankingController @Inject() (
   requestSupport:       RequestSupport
 )(implicit executionContext: ExecutionContext) {
 
-  import requestSupport._
-
+  import requestSupport.*
   def startOpenBankingJourney: Action[AnyContent] = actions.journeyAction.async { implicit journeyRequest: JourneyRequest[AnyContent] =>
     val journey: Journey[JourneySpecificData]              = journeyRequest.journey
     val createSessionDataRequest: CreateSessionDataRequest = {

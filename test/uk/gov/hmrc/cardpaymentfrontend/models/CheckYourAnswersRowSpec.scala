@@ -19,7 +19,7 @@ package uk.gov.hmrc.cardpaymentfrontend.models
 import play.api.mvc.{AnyContentAsEmpty, Call, Cookie}
 import play.api.test.FakeRequest
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.ItSpec
-import play.api.i18n._
+import play.api.i18n.*
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.{Empty, HtmlContent, Text}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{ActionItem, Actions, Key, SummaryListRow, Value}
 

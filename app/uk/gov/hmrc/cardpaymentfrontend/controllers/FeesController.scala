@@ -39,7 +39,7 @@ class FeesController @Inject() (
   requestSupport: RequestSupport
 ) extends FrontendController(mcc) {
 
-  import requestSupport._
+  import requestSupport.*
 
   def renderPage: Action[AnyContent] = actions.routedJourneyAction { implicit journeyRequest: JourneyRequest[AnyContent] =>
     val altPayments = linksAvailableOnFeesPage(journeyRequest.journey.journeySpecificData)

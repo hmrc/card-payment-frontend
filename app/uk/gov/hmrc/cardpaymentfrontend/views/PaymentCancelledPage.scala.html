@@ -25,7 +25,7 @@
         govukButton: GovukButton,
         layout: Layout
 )
-@(exitUrl: String)(implicit journeyRequest: JourneyRequest[_], messages: Messages)
+@(exitUrl: String)(implicit journeyRequest: JourneyRequest[?], messages: Messages)
 
 @heading = @{messages("payment-cancelled.heading")}
 

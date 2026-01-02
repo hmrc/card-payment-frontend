@@ -24,7 +24,7 @@ import play.api.mvc.Request
 import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
 import uk.gov.hmrc.cardpaymentfrontend.config.AppConfig
 import uk.gov.hmrc.cardpaymentfrontend.connectors.{CardPaymentConnector, PayApiConnector}
-import uk.gov.hmrc.cardpaymentfrontend.models.cardpayment._
+import uk.gov.hmrc.cardpaymentfrontend.models.cardpayment.*
 import uk.gov.hmrc.cardpaymentfrontend.models.payapirequest.{BeginWebPaymentRequest, FailWebPaymentRequest, FinishedWebPaymentRequest, SucceedWebPaymentRequest}
 import uk.gov.hmrc.cardpaymentfrontend.models.{Address, EmailAddress, Language}
 import uk.gov.hmrc.cardpaymentfrontend.requests.RequestSupport
@@ -54,7 +54,7 @@ class CardPaymentService @Inject() (
 )(implicit executionContext: ExecutionContext)
     extends Logging {
 
-  import requestSupport._
+  import requestSupport.*
 
   // the url barclaycard make an empty post to after user completes payment
   private[services] def returnToHmrcUrl(journeyId: JourneyId): String = {
@@ -66,11 +66,11 @@ class CardPaymentService @Inject() (
   }
 
   def initiatePayment(
-    journey:               Journey[_],
+    journey:               Journey[?],
     addressFromSession:    Address,
     maybeEmailFromSession: Option[EmailAddress],
     language:              Language
-  )(implicit headerCarrier: HeaderCarrier, journeyRequest: JourneyRequest[_]): Future[CardPaymentInitiatePaymentResponse] = {
+  )(implicit headerCarrier: HeaderCarrier, journeyRequest: JourneyRequest[?]): Future[CardPaymentInitiatePaymentResponse] = {
     val clientId: ClientId          = clientIdService.determineClientId(journey, language)
     val clientIdStringToUse: String = if (appConfig.useProductionClientIds) clientId.prodCode else clientId.qaCode
 
@@ -114,7 +114,7 @@ class CardPaymentService @Inject() (
     transactionReference: String,
     journeyId:            String,
     language:             Language
-  )(implicit journeyRequest: JourneyRequest[_], messagesApi: MessagesApi): Future[Option[CardPaymentResult]] = {
+  )(implicit journeyRequest: JourneyRequest[?], messagesApi: MessagesApi): Future[Option[CardPaymentResult]] = {
     val clientId: ClientId = clientIdService.determineClientId(journeyRequest.journey, language)
 
     logger.info(s"Finishing payment for journey $journeyId.")
@@ -154,7 +154,7 @@ class CardPaymentService @Inject() (
     }
   }
 
-  def cancelPayment()(implicit journeyRequest: JourneyRequest[_]): Future[HttpResponse] = {
+  def cancelPayment()(implicit journeyRequest: JourneyRequest[?]): Future[HttpResponse] = {
     val transactionReference = journeyRequest.journey.getTransactionReference
     val clientId             = clientIdService.determineClientId(journeyRequest.journey, requestSupport.usableLanguage)
     val clientIdStringToUse  = if (appConfig.useProductionClientIds) clientId.prodCode else clientId.qaCode
@@ -185,7 +185,7 @@ class CardPaymentService @Inject() (
     case CardPaymentResult(CardPaymentFinishPaymentResponses.Cancelled, _)                      => None
   }
 
-  private[services] def postPaymentResultOperations(journeyId: JourneyId)(implicit request: Request[_], messagesApi: MessagesApi): Future[Unit] = {
+  private[services] def postPaymentResultOperations(journeyId: JourneyId)(implicit request: Request[?], messagesApi: MessagesApi): Future[Unit] = {
     for {
       // fetch the latest incarnation of the journey, with up to date info
       latestJourney <- payApiConnector.findJourneyByJourneyId(journeyId)
@@ -199,7 +199,7 @@ class CardPaymentService @Inject() (
     */
   private[services] def maybeSendEmailF(
     journey: Journey[JourneySpecificData]
-  )(implicit headerCarrier: HeaderCarrier, request: Request[_], messagesApi: MessagesApi): Unit = {
+  )(implicit headerCarrier: HeaderCarrier, request: Request[?], messagesApi: MessagesApi): Unit = {
     if (journey.origin === Origins.Mib || journey.origin === Origins.BcPngr) {
       logger.debug(s"Not sending email for ${journey.origin.entryName}")
     } else {

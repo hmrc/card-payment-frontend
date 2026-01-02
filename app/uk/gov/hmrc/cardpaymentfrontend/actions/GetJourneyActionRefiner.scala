@@ -39,7 +39,7 @@ class GetJourneyActionRefiner @Inject() (
     extends ActionRefiner[Request, JourneyRequest]
     with Logging {
 
-  import requestSupport._
+  import requestSupport.*
 
   override protected[actions] def refine[A](request: Request[A]): Future[Either[Result, JourneyRequest[A]]] = {
 

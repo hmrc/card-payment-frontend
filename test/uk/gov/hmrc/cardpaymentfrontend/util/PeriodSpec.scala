@@ -20,7 +20,7 @@ import org.scalatest.AppendedClues.convertToClueful
 import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor3}
 import payapi.corcommon.model.taxes.epaye.{FixedLengthEpayeTaxPeriod, MonthlyEpayeTaxPeriod, QuarterlyEpayeTaxPeriod, YearlyEpayeTaxPeriod}
 import payapi.corcommon.model.taxes.vat.CalendarPeriod
-import payapi.corcommon.model.times.period.TaxMonth._
+import payapi.corcommon.model.times.period.TaxMonth.*
 import payapi.corcommon.model.times.period.TaxQuarter.{AprilJuly, JanuaryApril, JulyOctober, OctoberJanuary}
 import payapi.corcommon.model.times.period.{CalendarQuarter, CalendarQuarterlyPeriod, TaxYear}
 import play.api.i18n.Lang

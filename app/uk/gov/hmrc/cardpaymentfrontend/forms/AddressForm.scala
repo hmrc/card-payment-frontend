@@ -42,7 +42,7 @@ object AddressForm {
       "county"   -> Forms.of(cityAndCountyFormatter("county")),
       "postcode" -> Forms.of(postcodeFormatter),
       "country"  -> text.verifying(pattern(addressCountryRegex, error = "address.field-name.error.country.invalid-character"))
-    )(Address.apply)(Address.unapply)
+    )(Address.apply)(o => Some(Tuple.fromProductTyped(o)))
   )
 
   private[forms] def line1Formatter: Formatter[String] = new Formatter[String] {

@@ -19,8 +19,7 @@ package uk.gov.hmrc.cardpaymentfrontend.util
 import play.api.i18n.MessagesApi
 import play.api.test.FakeRequest
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.ItSpec
-import uk.gov.hmrc.cardpaymentfrontend.testsupport.TestOps._
-
+import uk.gov.hmrc.cardpaymentfrontend.testsupport.TestOps.*
 import java.time.{LocalDateTime, Month}
 
 class DateStringBuilderSpec extends ItSpec {

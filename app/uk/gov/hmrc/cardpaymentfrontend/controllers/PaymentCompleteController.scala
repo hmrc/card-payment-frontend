@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.cardpaymentfrontend.controllers
 
-import payapi.cardpaymentjourney.model.journey._
+import payapi.cardpaymentjourney.model.journey.*
 import payapi.corcommon.model.{AmountInPence, Origins}
 import payapi.corcommon.model.Origins.PfMgd
 import payapi.corcommon.model.barclays.CardCategories
@@ -30,11 +30,11 @@ import uk.gov.hmrc.cardpaymentfrontend.config.AppConfig
 import uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins.ExtendedOrigin.OriginExtended
 import uk.gov.hmrc.cardpaymentfrontend.models.{EmailAddress, creditCardCommissionRate}
 import uk.gov.hmrc.cardpaymentfrontend.requests.RequestSupport
-import uk.gov.hmrc.cardpaymentfrontend.session.JourneySessionSupport._
+import uk.gov.hmrc.cardpaymentfrontend.session.JourneySessionSupport.*
 import uk.gov.hmrc.cardpaymentfrontend.util.DateStringBuilder
 import uk.gov.hmrc.cardpaymentfrontend.util.SafeEquals.EqualsOps
 import uk.gov.hmrc.cardpaymentfrontend.views.html.{PassengersPaymentCompletePage, PaymentCompletePage}
-import uk.gov.hmrc.govukfrontend.views.Aliases._
+import uk.gov.hmrc.govukfrontend.views.Aliases.*
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
 import java.time.{Clock, LocalDateTime}
@@ -51,7 +51,7 @@ class PaymentCompleteController @Inject() (
   requestSupport:                RequestSupport
 ) extends FrontendController(mcc) {
 
-  import requestSupport._
+  import requestSupport.*
 
   val renderPage: Action[AnyContent] = actions.journeyAction { implicit journeyRequest: JourneyRequest[AnyContent] =>
 
@@ -66,7 +66,7 @@ class PaymentCompleteController @Inject() (
     }
   }
 
-  private def genericPaymentCompletePage(maybeEmail: Option[EmailAddress])(implicit journeyRequest: JourneyRequest[_]): HtmlFormat.Appendable = {
+  private def genericPaymentCompletePage(maybeEmail: Option[EmailAddress])(implicit journeyRequest: JourneyRequest[?]): HtmlFormat.Appendable = {
     paymentCompletePage(
       taxReference = journeyRequest.journey.getReference,
       summaryListRows = PaymentCompleteController.buildSummaryListRows(
@@ -78,7 +78,7 @@ class PaymentCompleteController @Inject() (
     )(journeyRequest, journeyRequest.messages)
   }
 
-  private def passengersPaymentCompletePage(jsd: JsdBcPngr)(implicit journeyRequest: JourneyRequest[_]): HtmlFormat.Appendable = {
+  private def passengersPaymentCompletePage(jsd: JsdBcPngr)(implicit journeyRequest: JourneyRequest[?]): HtmlFormat.Appendable = {
     passengersPaymentCompletePage(
       taxReference = journeyRequest.journey.getReference,
       leadingSummaryTable = PaymentCompleteController.buildPassengersSummaryTable(
@@ -388,7 +388,7 @@ object PaymentCompleteController {
     )
   )
 
-  private def determineTaxAccountUrl(journey: Journey[_])(appConfig: AppConfig): Option[String] = {
+  private def determineTaxAccountUrl(journey: Journey[?])(appConfig: AppConfig): Option[String] = {
     if (journey.origin.isAWebChatOrigin) {
       Some(appConfig.businessTaxAccountUrl)
     } else if (journey.origin === PfMgd) {

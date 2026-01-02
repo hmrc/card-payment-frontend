@@ -27,7 +27,7 @@
     summaryListComponent: GovukSummaryList
 )
 
-@(summaryList: SummaryList)(implicit journeyRequest: JourneyRequest[_], messages: Messages)
+@(summaryList: SummaryList)(implicit journeyRequest: JourneyRequest[?], messages: Messages)
 
 @heading = @{messages("check-your-details.heading")}
 

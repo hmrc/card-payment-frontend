@@ -15,12 +15,12 @@
  *@
 
 @import payapi.corcommon.model.Origin
-@import payapi.corcommon.model.Origins._
+@import payapi.corcommon.model.Origins.*
 @import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
 @import uk.gov.hmrc.cardpaymentfrontend.forms.ChooseAPaymentMethodFormValues
 @import uk.gov.hmrc.cardpaymentfrontend.views.html.Layout
 @import uk.gov.hmrc.govukfrontend.views.Implicits.RichRadios
-@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import uk.gov.hmrc.govukfrontend.views.html.components.*
 @import uk.gov.hmrc.govukfrontend.views.html.components.implicits.RichFormErrors
 
 @this(
@@ -31,7 +31,7 @@
     layout: Layout
 )
 
-@(origin: Origin, hasOpenBanking: Boolean, form: Form[ChooseAPaymentMethodFormValues])(implicit journeyRequest: JourneyRequest[_], messages: Messages)
+@(origin: Origin, hasOpenBanking: Boolean, form: Form[ChooseAPaymentMethodFormValues])(implicit journeyRequest: JourneyRequest[?], messages: Messages)
 
 @heading= @{messages("payment-failed.heading")}
 

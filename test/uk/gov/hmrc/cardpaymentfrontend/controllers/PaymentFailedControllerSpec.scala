@@ -21,10 +21,10 @@ import org.jsoup.nodes.Document
 import org.scalatest.Assertion
 import payapi.cardpaymentjourney.model.journey.{Journey, JourneySpecificData}
 import payapi.corcommon.model.Origin
-import payapi.corcommon.model.Origins._
+import payapi.corcommon.model.Origins.*
 import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded}
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import play.mvc.Http.Status
 import uk.gov.hmrc.cardpaymentfrontend.forms.ChooseAPaymentMethodFormValues
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.TestOps.FakeRequestOps

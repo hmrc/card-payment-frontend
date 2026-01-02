@@ -20,7 +20,7 @@ import payapi.cardpaymentjourney.model.journey.{JourneySpecificData, JsdPfNiEuVa
 import play.api.i18n.Messages
 import play.api.mvc.{AnyContent, Call}
 import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
-import uk.gov.hmrc.cardpaymentfrontend.models.PaymentMethod._
+import uk.gov.hmrc.cardpaymentfrontend.models.PaymentMethod.*
 import uk.gov.hmrc.cardpaymentfrontend.models.openbanking.{OriginSpecificSessionData, PfNiEuVatIossSessionData}
 import uk.gov.hmrc.cardpaymentfrontend.models.{CheckYourAnswersRow, Link, PaymentMethod}
 import uk.gov.hmrc.cardpaymentfrontend.util.Period.displayCalendarPeriodMonthAndYear

@@ -23,7 +23,7 @@ import payapi.cardpaymentjourney.model.journey.JourneySpecificData
 import payapi.corcommon.model.{Origin, Origins}
 import play.api.mvc.{AnyContentAsEmpty, Call}
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import uk.gov.hmrc.cardpaymentfrontend.models.{Link, PaymentMethod}
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.{ItSpec, TestHelpers}
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.TestOps.FakeRequestOps

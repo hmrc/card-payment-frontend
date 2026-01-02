@@ -247,7 +247,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
     }
 
     TestHelpers.implementedOrigins.foreach {
-      origin: Origin =>
+      (origin: Origin) =>
 
         val tdJourney: Journey[JourneySpecificData] = TestHelpers.deriveTestDataFromOrigin(origin).journeyBeforeBeginWebPayment
 

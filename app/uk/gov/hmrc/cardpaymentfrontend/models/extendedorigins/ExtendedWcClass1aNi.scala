@@ -19,8 +19,8 @@ package uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins
 import payapi.cardpaymentjourney.model.journey.{JourneySpecificData, JsdWcClass1aNi}
 import play.api.mvc.AnyContent
 import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
-import uk.gov.hmrc.cardpaymentfrontend.models.PaymentMethod._
-import uk.gov.hmrc.cardpaymentfrontend.models._
+import uk.gov.hmrc.cardpaymentfrontend.models.PaymentMethod.*
+import uk.gov.hmrc.cardpaymentfrontend.models.*
 import uk.gov.hmrc.cardpaymentfrontend.models.openbanking.{OriginSpecificSessionData, WcClass1aNiSessionData}
 
 object ExtendedWcClass1aNi extends ExtendedOrigin {

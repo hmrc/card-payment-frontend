@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.cardpaymentfrontend.util
 
-import cats.syntax.either._
+import cats.syntax.either.*
 import enumeratum.{Enum, EnumEntry}
 import play.api.data.FormError
 import play.api.data.format.Formatter

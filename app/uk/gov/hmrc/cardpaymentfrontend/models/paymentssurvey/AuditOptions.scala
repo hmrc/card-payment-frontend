@@ -34,11 +34,11 @@ object AuditOptions {
   @SuppressWarnings(Array("org.wartremover.warts.Any"))
   implicit val format: OFormat[AuditOptions] = Json.format[AuditOptions]
 
-  def default(implicit r: Request[_]): AuditOptions = AuditOptions(
+  def default(implicit r: Request[?]): AuditOptions = AuditOptions(
     userType = if (RequestSupport.isLoggedIn) "LoggedIn" else "LoggedOut"
   )
 
-  def getAuditOptions(journey: Journey[JourneySpecificData], extendedOrigin: ExtendedOrigin)(implicit r: Request[_]): AuditOptions = {
+  def getAuditOptions(journey: Journey[JourneySpecificData], extendedOrigin: ExtendedOrigin)(implicit r: Request[?]): AuditOptions = {
     AuditOptions(
       userType = if (RequestSupport.isLoggedIn) "LoggedIn" else "LoggedOut",
       journey = Option(journey.status.entryName),

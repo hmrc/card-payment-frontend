@@ -31,7 +31,7 @@
     formWithCSRF: FormWithCSRF
 )
 
-@(form: Form[EmailAddress])(implicit journeyRequest: JourneyRequest[_], messages: Messages)
+@(form: Form[EmailAddress])(implicit journeyRequest: JourneyRequest[?], messages: Messages)
 
 @heading = @{messages("email-address.heading")}
 

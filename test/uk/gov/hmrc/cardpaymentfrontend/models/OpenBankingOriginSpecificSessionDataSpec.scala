@@ -25,9 +25,9 @@ import payapi.corcommon.model.taxes.ad.{AlcoholDutyChargeReference, AlcoholDutyR
 import payapi.corcommon.model.taxes.amls.AmlsPaymentReference
 import payapi.corcommon.model.taxes.cds.CdsRef
 import payapi.corcommon.model.taxes.ct.{CtChargeTypes, CtPeriod, CtUtr}
-import payapi.corcommon.model.taxes.epaye._
+import payapi.corcommon.model.taxes.epaye.*
 import payapi.corcommon.model.taxes.ioss.Ioss
-import payapi.corcommon.model.taxes.other._
+import payapi.corcommon.model.taxes.other.*
 import payapi.corcommon.model.taxes.p302.{P302ChargeRef, P302Ref}
 import payapi.corcommon.model.taxes.p800.P800Ref
 import payapi.corcommon.model.taxes.ppt.PptReference
@@ -44,8 +44,8 @@ import payapi.corcommon.model.webchat.WcEpayeNiReference
 import play.api.Configuration
 import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.cardpaymentfrontend.config.AppConfig
-import uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins._
-import uk.gov.hmrc.cardpaymentfrontend.models.openbanking._
+import uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins.*
+import uk.gov.hmrc.cardpaymentfrontend.models.openbanking.*
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.testdata.TestJourneys
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.{TestHelpers, UnitSpec}
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
