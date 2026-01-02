@@ -25,7 +25,7 @@ sealed trait ChooseAPaymentMethodFormValues extends EnumEntry with Product with 
 object ChooseAPaymentMethodFormValues extends Enum[ChooseAPaymentMethodFormValues] {
 
   case object OpenBanking extends ChooseAPaymentMethodFormValues
-  case object TryAgain extends ChooseAPaymentMethodFormValues
+  case object TryAgain    extends ChooseAPaymentMethodFormValues
 
   override val values: immutable.IndexedSeq[ChooseAPaymentMethodFormValues] = findValues
 }

@@ -29,27 +29,27 @@ class OpenBankingConnectorSpec extends ItSpec {
 
   "OpenBankingConnector" - {
     "startOpenBankingJourney" - {
-        def headerCarrierForTest(maybeSessionId: Option[SessionId]) = HeaderCarrier(sessionId = maybeSessionId)
+      def headerCarrierForTest(maybeSessionId: Option[SessionId]) = HeaderCarrier(sessionId = maybeSessionId)
 
       val createSessionDataRequest = CreateSessionDataRequest(AmountInPence(123), pfSaOriginSpecificData, None)
 
       "should fail with error when no session id provided through header carrier" in {
         implicit val hc: HeaderCarrier = headerCarrierForTest(None)
-        val thrown = systemUnderTest.startOpenBankingJourney(createSessionDataRequest).failed.futureValue
+        val thrown                     = systemUnderTest.startOpenBankingJourney(createSessionDataRequest).failed.futureValue
         thrown.getMessage should include("Missing required 'SessionId'")
       }
 
       "propagate a 5xx error when pay-api returns a 5xx" in {
         OpenBankingStub.stubForStartJourney5xx()
         implicit val hc: HeaderCarrier = headerCarrierForTest(Some(uk.gov.hmrc.http.SessionId("some-valid-session-id")))
-        val error: Exception = intercept[Exception](systemUnderTest.startOpenBankingJourney(createSessionDataRequest).futureValue)
+        val error: Exception           = intercept[Exception](systemUnderTest.startOpenBankingJourney(createSessionDataRequest).futureValue)
         error.getCause.getMessage should include(s"POST of 'http://localhost:${wireMockPort.toString}/open-banking/session' returned 503.")
       }
 
       "return a CreateSessionDataResponse if session id provided in the header carrier" in {
         val expectedCreateSessionDataResponse = CreateSessionDataResponse(SessionDataId("test-session-data-id"), "https://www.some-next-url.com")
         OpenBankingStub.stubForStartJourney2xx(expectedCreateSessionDataResponse)
-        implicit val hc: HeaderCarrier = headerCarrierForTest(Some(uk.gov.hmrc.http.SessionId("some-valid-session-id")))
+        implicit val hc: HeaderCarrier        = headerCarrierForTest(Some(uk.gov.hmrc.http.SessionId("some-valid-session-id")))
         systemUnderTest.startOpenBankingJourney(createSessionDataRequest).futureValue shouldBe expectedCreateSessionDataResponse
       }
     }

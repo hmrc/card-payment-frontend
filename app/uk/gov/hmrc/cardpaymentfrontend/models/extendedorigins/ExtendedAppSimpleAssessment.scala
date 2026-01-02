@@ -27,38 +27,43 @@ import uk.gov.hmrc.cardpaymentfrontend.models.{CheckYourAnswersRow, PaymentMetho
 object ExtendedAppSimpleAssessment extends ExtendedOrigin {
 
   override def serviceNameMessageKey: String = "service-name.AppSimpleAssessment"
-  override def taxNameMessageKey: String = "payment-complete.tax-name.AppSimpleAssessment"
+  override def taxNameMessageKey: String     = "payment-complete.tax-name.AppSimpleAssessment"
 
   override def cardFeesPagePaymentMethods: Set[PaymentMethod] = Set(Bacs)
 
   override def paymentMethods(): Set[PaymentMethod] = Set(Card, Bacs)
 
-  override def checkYourAnswersReferenceRow(journeyRequest: JourneyRequest[AnyContent])
-    (payFrontendBaseUrl: String): Option[CheckYourAnswersRow] = {
-    Some(CheckYourAnswersRow(
-      titleMessageKey = "check-your-details.AppSimpleAssessment.reference",
-      value           = Seq(journeyRequest.journey.referenceValue),
-      changeLink      = None
-    ))
+  override def checkYourAnswersReferenceRow(journeyRequest: JourneyRequest[AnyContent])(payFrontendBaseUrl: String): Option[CheckYourAnswersRow] = {
+    Some(
+      CheckYourAnswersRow(
+        titleMessageKey = "check-your-details.AppSimpleAssessment.reference",
+        value = Seq(journeyRequest.journey.referenceValue),
+        changeLink = None
+      )
+    )
   }
 
-  override def checkYourAnswersAdditionalReferenceRow(journeyRequest: JourneyRequest[AnyContent])
-    (payFrontendBaseUrl: String)
-    (implicit messages: Messages): Option[Seq[CheckYourAnswersRow]] = {
+  override def checkYourAnswersAdditionalReferenceRow(
+    journeyRequest: JourneyRequest[AnyContent]
+  )(payFrontendBaseUrl: String)(implicit messages: Messages): Option[Seq[CheckYourAnswersRow]] = {
     journeyRequest.journey.journeySpecificData match {
       case j: JsdAppSimpleAssessment =>
         val adjustedTaxYear = j.taxYear.nextTaxYear
-        Some(Seq(
-          CheckYourAnswersRow(
-            titleMessageKey = "check-your-details.AppSimpleAssessment.tax-year",
-            value           = Seq(messages(
-              "check-your-details.AppSimpleAssessment.tax-year.value",
-              adjustedTaxYear.startYear.toString,
-              adjustedTaxYear.endYear.toString
-            )),
-            changeLink      = None
+        Some(
+          Seq(
+            CheckYourAnswersRow(
+              titleMessageKey = "check-your-details.AppSimpleAssessment.tax-year",
+              value = Seq(
+                messages(
+                  "check-your-details.AppSimpleAssessment.tax-year.value",
+                  adjustedTaxYear.startYear.toString,
+                  adjustedTaxYear.endYear.toString
+                )
+              ),
+              changeLink = None
+            )
           )
-        ))
+        )
 
       case _ => throw new RuntimeException("Incorrect origin found")
     }
@@ -69,10 +74,10 @@ object ExtendedAppSimpleAssessment extends ExtendedOrigin {
     case _                         => throw new RuntimeException("Incorrect origin found")
   }
 
-  override def emailTaxTypeMessageKey: String = "email.tax-name.AppSimpleAssessment"
-  override def surveyAuditName: String = "simple-assessment"
-  override def surveyReturnHref: String = "https://www.gov.uk/government/organisations/hm-revenue-customs"
-  override def surveyReturnMessageKey: String = "payments-survey.other.return-message"
+  override def emailTaxTypeMessageKey: String  = "email.tax-name.AppSimpleAssessment"
+  override def surveyAuditName: String         = "simple-assessment"
+  override def surveyReturnHref: String        = "https://www.gov.uk/government/organisations/hm-revenue-customs"
+  override def surveyReturnMessageKey: String  = "payments-survey.other.return-message"
   override def surveyIsWelshSupported: Boolean = true
-  override def surveyBannerTitle: String = serviceNameMessageKey
+  override def surveyBannerTitle: String       = serviceNameMessageKey
 }

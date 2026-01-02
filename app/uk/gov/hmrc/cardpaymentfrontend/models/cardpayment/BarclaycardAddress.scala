@@ -21,12 +21,12 @@ import uk.gov.hmrc.cardpaymentfrontend.util.SafeEquals.EqualsOps
 
 //barclaycard want field names in a specific way, so we have another case class for it to send to the backend
 final case class BarclaycardAddress(
-    line1:       String,
-    line2:       Option[String] = None,
-    city:        Option[String] = None,
-    county:      Option[String] = None,
-    postCode:    Option[String] = None,
-    countryCode: String
+  line1:       String,
+  line2:       Option[String] = None,
+  city:        Option[String] = None,
+  county:      Option[String] = None,
+  postCode:    Option[String] = None,
+  countryCode: String
 ) {
 
   require(
@@ -34,7 +34,7 @@ final case class BarclaycardAddress(
       if (countryCode === "GBR") postCode.isDefined
       else true
     },
-    message     = "If country code is GBR (United Kingdom) we expect a postcode to be defined."
+    message = "If country code is GBR (United Kingdom) we expect a postcode to be defined."
   )
 
   def hasSelect(maybeString: Option[String]): Boolean = {
@@ -42,13 +42,13 @@ final case class BarclaycardAddress(
       case Some(s) =>
         val selectPattern = "(?i)select".r
         selectPattern.findFirstIn(s).isDefined
-      case None => false
+      case None    => false
     }
   }
 
   // For UK (GBR) addresses only, replace counties containing variations on Select with None.
   def sanitiseCounty(): BarclaycardAddress =
-    if (countryCode.matches("GBR") && hasSelect(this.county)) this.copy (county = None)
+    if (countryCode.matches("GBR") && hasSelect(this.county)) this.copy(county = None)
     else this
 }
 

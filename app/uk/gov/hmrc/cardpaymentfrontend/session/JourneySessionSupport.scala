@@ -22,26 +22,23 @@ import play.api.mvc._
 
 object JourneySessionSupport extends JourneySessionSupport
 
-/**
- * Add/Remove/Replace journey related data to Session. The data are placed under JourneyId key.
- * The data are serialised as Json.
- *
- * See the spec
- */
+/** Add/Remove/Replace journey related data to Session. The data are placed under JourneyId key. The data are serialised as Json.
+  *
+  * See the spec
+  */
 trait JourneySessionSupport {
 
   object Keys {
-    val address = "address"
-    val email = "email"
+    val address              = "address"
+    val email                = "email"
     val transactionReference = "transactionReference"
   }
 
   implicit class ResultOps(r: Result)(implicit request: RequestHeader) {
 
     def placeInSession[T: Format](journeyId: JourneyId, data: (String, T)*): Result = {
-      val newSession = data.foldLeft[Session](r.session) {
-        case (session, (key, value)) =>
-          add(key, value, session, journeyId)
+      val newSession = data.foldLeft[Session](r.session) { case (session, (key, value)) =>
+        add(key, value, session, journeyId)
       }
       r.withSession(newSession)
     }
@@ -67,25 +64,23 @@ trait JourneySessionSupport {
 
   implicit class RequestOps(r: Request[_]) {
 
-    def readFromSession[T: Format](journeyId: JourneyId, key: String): Option[T] = r
-      .session
+    def readFromSession[T: Format](journeyId: JourneyId, key: String): Option[T] = r.session
       .get(journeyId.value)
       .map(allJourneyData => Json.parse(allJourneyData))
       .flatMap(json => (json \ key).toOption)
       .map(_.as[T])
   }
 
-  /**
-   * Adds (replacing existing) values to session in the journey scope.
-   * Technically speaking it creates (if not present) empty json object under journeyId key and adds data to it.
-   */
+  /** Adds (replacing existing) values to session in the journey scope. Technically speaking it creates (if not present) empty json object under journeyId key
+    * and adds data to it.
+    */
   private def add[T: Format](key: String, data: T, session: Session, journeyId: JourneyId): Session = {
     val current: JsObject = session
       .get(journeyId.value)
       .map(jsonString => Json.parse(jsonString).as[JsObject])
       .getOrElse(Json.obj())
 
-    val addon = Json.obj(key -> data)
+    val addon           = Json.obj(key -> data)
     val newSessionEntry = current ++ addon
     session + (journeyId.value -> Json.prettyPrint(newSessionEntry))
   }

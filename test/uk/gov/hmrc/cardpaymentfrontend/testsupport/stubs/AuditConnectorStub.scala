@@ -24,7 +24,7 @@ import play.api.libs.json.JsObject
 
 object AuditConnectorStub extends Eventually {
 
-  val auditUrl: String = "/write/audit"
+  val auditUrl: String       = "/write/audit"
   val auditMergedUrl: String = "/write/audit/merged"
 
   def stubForImplicitAudit(): StubMapping = stubFor(

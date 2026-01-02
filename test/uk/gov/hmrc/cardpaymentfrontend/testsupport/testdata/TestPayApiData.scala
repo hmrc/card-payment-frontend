@@ -31,26 +31,27 @@ import payapi.corcommon.model.times.period.{CalendarQuarterlyPeriod, TaxMonth, T
 object TestPayApiData {
 
   // these three are dependent on each other, don't change them unless you want to refactor a load of tests.
-  val decryptedJourneyId: String = "TestJourneyId-44f9-ad7f-01e1d3d8f151"
-  val encryptedJourneyId: String = "xKyU+Tq+P3cNmsP9vauwAONCgePYrJBWK9bjju74y5gvG/lTsEElJRT9alGv8HJqN32yWd1pwOPJSTxqfBXHG32ZHPI="
-  val base64EncryptedJourneyId: String = "eEt5VStUcStQM2NObXNQOXZhdXdBT05DZ2VQWXJKQldLOWJqanU3NHk1Z3ZHL2xUc0VFbEpSVDlhbEd2OEhKcU4zMnlXZDFwd09QSlNUeHFmQlhIRzMyWkhQST0="
+  val decryptedJourneyId: String       = "TestJourneyId-44f9-ad7f-01e1d3d8f151"
+  val encryptedJourneyId: String       = "xKyU+Tq+P3cNmsP9vauwAONCgePYrJBWK9bjju74y5gvG/lTsEElJRT9alGv8HJqN32yWd1pwOPJSTxqfBXHG32ZHPI="
+  val base64EncryptedJourneyId: String =
+    "eEt5VStUcStQM2NObXNQOXZhdXdBT05DZ2VQWXJKQldLOWJqanU3NHk1Z3ZHL2xUc0VFbEpSVDlhbEd2OEhKcU4zMnlXZDFwd09QSlNUeHFmQlhIRzMyWkhQST0="
 
-  val testSaUtr: SaUtr = SaUtr("1234567895")
-  val testVrn: Vrn = Vrn("999964805")
-  val testAlcoholDutyReference: AlcoholDutyReference = AlcoholDutyReference("XADP123456789")
+  val testSaUtr: SaUtr                                        = SaUtr("1234567895")
+  val testVrn: Vrn                                            = Vrn("999964805")
+  val testAlcoholDutyReference: AlcoholDutyReference          = AlcoholDutyReference("XADP123456789")
   val testEconomicCrimeLevyRef: EconomicCrimeLevyReturnNumber = EconomicCrimeLevyReturnNumber("XADP123456789")
-  val testXRef14Char: XRef14Char = XRef14Char("X123456789123")
-  val testCtUtr: CtUtr = CtUtr("1234567895")
-  val testCtPeriod: CtPeriod = CtPeriod(1)
-  val testCtChargeType: CtChargeType = CtChargeTypes.A
-  val testAccountsOfficeReference: AccountsOfficeReference = AccountsOfficeReference("123PH45678900")
-  val testSubYearlyPeriod: SubYearlyEpayeTaxPeriod = MonthlyEpayeTaxPeriod(TaxMonth.MayJune, TaxYear(2027))
-  val testYearlyPeriod: YearlyEpayeTaxPeriod = YearlyEpayeTaxPeriod(TaxYear(2027))
-  val testXref: XRef = XRef("XE1234567890123")
-  val testCdsRef: CdsRef = CdsRef("CDSI191234567890")
-  val testAmountInPence: AmountInPence = AmountInPence(12345)
-  val testReturnUrl: Option[String] = Some("returnUrl")
-  val testTransactionReference: TransactionReference = TransactionReference("Some-transaction-ref")
-  val testQuarterlyTaxPeriod: CalendarQuarterlyPeriod = CalendarQuarterlyPeriod(OctoberToDecember, 2024)
-  val testCalendarPeriod: CalendarPeriod = CalendarPeriod(6, 2024)
+  val testXRef14Char: XRef14Char                              = XRef14Char("X123456789123")
+  val testCtUtr: CtUtr                                        = CtUtr("1234567895")
+  val testCtPeriod: CtPeriod                                  = CtPeriod(1)
+  val testCtChargeType: CtChargeType                          = CtChargeTypes.A
+  val testAccountsOfficeReference: AccountsOfficeReference    = AccountsOfficeReference("123PH45678900")
+  val testSubYearlyPeriod: SubYearlyEpayeTaxPeriod            = MonthlyEpayeTaxPeriod(TaxMonth.MayJune, TaxYear(2027))
+  val testYearlyPeriod: YearlyEpayeTaxPeriod                  = YearlyEpayeTaxPeriod(TaxYear(2027))
+  val testXref: XRef                                          = XRef("XE1234567890123")
+  val testCdsRef: CdsRef                                      = CdsRef("CDSI191234567890")
+  val testAmountInPence: AmountInPence                        = AmountInPence(12345)
+  val testReturnUrl: Option[String]                           = Some("returnUrl")
+  val testTransactionReference: TransactionReference          = TransactionReference("Some-transaction-ref")
+  val testQuarterlyTaxPeriod: CalendarQuarterlyPeriod         = CalendarQuarterlyPeriod(OctoberToDecember, 2024)
+  val testCalendarPeriod: CalendarPeriod                      = CalendarPeriod(6, 2024)
 }

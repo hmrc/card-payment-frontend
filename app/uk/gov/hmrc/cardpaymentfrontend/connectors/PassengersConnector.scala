@@ -45,10 +45,12 @@ class PassengersConnector @Inject() (appConfig: AppConfig, httpClientV2: HttpCli
           response.status match {
             case s if Status.isSuccessful(s) =>
               logger.info(s"[PassengersConnector] [POST ${notificationUrl.toString}] Successfully sent notification to passengers")
-            case s =>
-              logger.error(s"[PassengersConnector] [POST ${notificationUrl.toString}]  There was a problem sending notification to passengers, got a ${s.toString} status response")
+            case s                           =>
+              logger.error(
+                s"[PassengersConnector] [POST ${notificationUrl.toString}]  There was a problem sending notification to passengers, got a ${s.toString} status response"
+              )
           }
-        case Failure(e) =>
+        case Failure(e)        =>
           logger.error(s"[PassengersConnector] [POST ${notificationUrl.toString}] There was a problem sending notification to passengers", e)
       }
 

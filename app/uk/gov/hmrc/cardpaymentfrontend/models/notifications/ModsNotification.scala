@@ -21,8 +21,8 @@ import payapi.corcommon.model.taxes.mib.MibReference
 import play.api.libs.json.{Json, OFormat}
 
 final case class ModsNotification(
-    chargeReference:    MibReference,
-    amendmentReference: Option[AmendmentReference]
+  chargeReference:    MibReference,
+  amendmentReference: Option[AmendmentReference]
 )
 
 @SuppressWarnings(Array("org.wartremover.warts.Any"))

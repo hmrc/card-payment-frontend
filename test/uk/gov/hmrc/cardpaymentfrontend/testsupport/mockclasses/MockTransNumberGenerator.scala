@@ -19,6 +19,6 @@ package uk.gov.hmrc.cardpaymentfrontend.testsupport.mockclasses
 import payapi.corcommon.model.{Origin, OriginCode, TransNumberGenerator}
 
 class MockTransNumberGenerator extends TransNumberGenerator {
-  //create this instead of the random 9 digits at the end.
+  // create this instead of the random 9 digits at the end.
   override def generate(origin: Origin): String = s"000${OriginCode.codeForOrigin(origin)}999999999"
 }

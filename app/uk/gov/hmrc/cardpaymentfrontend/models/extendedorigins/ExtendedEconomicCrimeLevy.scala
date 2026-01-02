@@ -25,17 +25,19 @@ import uk.gov.hmrc.cardpaymentfrontend.models.openbanking.{EconomicCrimeLevySess
 
 object ExtendedEconomicCrimeLevy extends ExtendedOrigin {
   override val serviceNameMessageKey: String = "service-name.EconomicCrimeLevy"
-  override val taxNameMessageKey: String = "payment-complete.tax-name.EconomicCrimeLevy"
+  override val taxNameMessageKey: String     = "payment-complete.tax-name.EconomicCrimeLevy"
 
   def cardFeesPagePaymentMethods: Set[PaymentMethod] = Set(OpenBanking, OneOffDirectDebit)
-  def paymentMethods(): Set[PaymentMethod] = Set(Card, OpenBanking, OneOffDirectDebit, Bacs)
+  def paymentMethods(): Set[PaymentMethod]           = Set(Card, OpenBanking, OneOffDirectDebit, Bacs)
 
   override def checkYourAnswersReferenceRow(journeyRequest: JourneyRequest[AnyContent])(payFrontendBaseUrl: String): Option[CheckYourAnswersRow] = {
-    Some(CheckYourAnswersRow(
-      titleMessageKey = "check-your-details.EconomicCrimeLevy.reference",
-      value           = Seq(journeyRequest.journey.referenceValue),
-      changeLink      = None
-    ))
+    Some(
+      CheckYourAnswersRow(
+        titleMessageKey = "check-your-details.EconomicCrimeLevy.reference",
+        value = Seq(journeyRequest.journey.referenceValue),
+        changeLink = None
+      )
+    )
   }
 
   override def openBankingOriginSpecificSessionData: JourneySpecificData => Option[OriginSpecificSessionData] = {
@@ -43,11 +45,11 @@ object ExtendedEconomicCrimeLevy extends ExtendedOrigin {
     case _                       => throw new RuntimeException("Incorrect origin found")
   }
 
-  override def surveyAuditName: String = "economic-crime-levy"
-  override def surveyReturnHref: String = "https://www.gov.uk/government/organisations/hm-revenue-customs"
-  override def surveyReturnMessageKey: String = "payments-survey.other.return-message"
+  override def surveyAuditName: String         = "economic-crime-levy"
+  override def surveyReturnHref: String        = "https://www.gov.uk/government/organisations/hm-revenue-customs"
+  override def surveyReturnMessageKey: String  = "payments-survey.other.return-message"
   override def surveyIsWelshSupported: Boolean = true
-  override def surveyBannerTitle: String = serviceNameMessageKey
+  override def surveyBannerTitle: String       = serviceNameMessageKey
 
   override def emailTaxTypeMessageKey: String = "email.tax-name.EconomicCrimeLevy"
 }

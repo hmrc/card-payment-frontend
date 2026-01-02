@@ -29,12 +29,13 @@ import javax.inject.Inject
 
 @Singleton
 final class TimeOutController @Inject() (
-    actions:                Actions,
-    appConfig:              AppConfig,
-    mcc:                    MessagesControllerComponents,
-    deleteAnswersPage:      DeleteAnswersPage,
-    forceDeleteAnswersPage: ForceDeleteAnswersPage
-) extends FrontendController(mcc) with I18nSupport {
+  actions:                Actions,
+  appConfig:              AppConfig,
+  mcc:                    MessagesControllerComponents,
+  deleteAnswersPage:      DeleteAnswersPage,
+  forceDeleteAnswersPage: ForceDeleteAnswersPage
+) extends FrontendController(mcc)
+    with I18nSupport {
 
   def showDeleteAnswersPage: Action[AnyContent] =
     actions.journeyAction { implicit request =>
@@ -50,7 +51,7 @@ final class TimeOutController @Inject() (
   def showForceDeleteAnswersLoggedInPage: Action[AnyContent] =
     actions.default { implicit request =>
       val continueUrl: String = "%2Ffeedback%2Fpay-online"
-      val redirectUrl = Some(Url(s"${appConfig.signOutUrl}?continue=$continueUrl"))
+      val redirectUrl         = Some(Url(s"${appConfig.signOutUrl}?continue=$continueUrl"))
       Ok(forceDeleteAnswersPage(loggedIn = true, redirectUrl)).withNewSession
     }
 

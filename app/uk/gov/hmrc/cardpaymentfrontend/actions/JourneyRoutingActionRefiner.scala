@@ -28,10 +28,9 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class JourneyRoutingActionRefiner @Inject() (implicit ec: ExecutionContext) extends ActionRefiner[JourneyRequest, JourneyRequest] with Logging {
 
-  /**
-   *  Used to determine the first page an origin should land on.
-   *  Most origins go straight to card fees page, but Mib and BcPngr origins skip that page (and the email page) to go straight to address page.
-   */
+  /** Used to determine the first page an origin should land on. Most origins go straight to card fees page, but Mib and BcPngr origins skip that page (and the
+    * email page) to go straight to address page.
+    */
 
   override protected[actions] def refine[A](request: JourneyRequest[A]): Future[Either[Result, JourneyRequest[A]]] = {
     request.journey.origin match {

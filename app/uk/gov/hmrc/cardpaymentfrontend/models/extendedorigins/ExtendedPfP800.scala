@@ -26,26 +26,32 @@ import uk.gov.hmrc.cardpaymentfrontend.models.openbanking.OriginSpecificSessionD
 import uk.gov.hmrc.cardpaymentfrontend.models.{CheckYourAnswersRow, PaymentMethod}
 
 object ExtendedPfP800 extends ExtendedOrigin {
-  override val serviceNameMessageKey: String = "service-name.PfP800"
-  override val taxNameMessageKey: String = "payment-complete.tax-name.PfP800"
+  override val serviceNameMessageKey: String         = "service-name.PfP800"
+  override val taxNameMessageKey: String             = "payment-complete.tax-name.PfP800"
   def cardFeesPagePaymentMethods: Set[PaymentMethod] = Set.empty[PaymentMethod]
-  def paymentMethods(): Set[PaymentMethod] = Set(Card)
+  def paymentMethods(): Set[PaymentMethod]           = Set(Card)
 
   override def checkYourAnswersReferenceRow(journeyRequest: JourneyRequest[AnyContent])(payFrontendBaseUrl: String): Option[CheckYourAnswersRow] = {
-    Some(CheckYourAnswersRow(
-      titleMessageKey = "check-your-details.PfP800.reference",
-      value           = Seq(journeyRequest.journey.referenceValue),
-      changeLink      = None
-    ))
+    Some(
+      CheckYourAnswersRow(
+        titleMessageKey = "check-your-details.PfP800.reference",
+        value = Seq(journeyRequest.journey.referenceValue),
+        changeLink = None
+      )
+    )
   }
 
-  override def checkYourAnswersAdditionalReferenceRow(journeyRequest: JourneyRequest[AnyContent])(payFrontendBaseUrl: String)(implicit messages: Messages): Option[Seq[CheckYourAnswersRow]] = {
+  override def checkYourAnswersAdditionalReferenceRow(
+    journeyRequest: JourneyRequest[AnyContent]
+  )(payFrontendBaseUrl: String)(implicit messages: Messages): Option[Seq[CheckYourAnswersRow]] = {
     additionalReference(journeyRequest.journey.journeySpecificData).map { p800ChargeRef =>
-      Seq(CheckYourAnswersRow(
-        titleMessageKey = "check-your-details.PfP800.charge-reference",
-        value           = Seq(p800ChargeRef.canonicalizedValue),
-        changeLink      = None
-      ))
+      Seq(
+        CheckYourAnswersRow(
+          titleMessageKey = "check-your-details.PfP800.charge-reference",
+          value = Seq(p800ChargeRef.canonicalizedValue),
+          changeLink = None
+        )
+      )
     }
   }
 
@@ -56,11 +62,11 @@ object ExtendedPfP800 extends ExtendedOrigin {
 
   override def openBankingOriginSpecificSessionData: JourneySpecificData => Option[OriginSpecificSessionData] = _ => None
 
-  override def surveyAuditName: String = "p800-or-pa302"
-  override def surveyReturnHref: String = "https://www.gov.uk/government/organisations/hm-revenue-customs"
-  override def surveyReturnMessageKey: String = "payments-survey.other.return-message"
+  override def surveyAuditName: String         = "p800-or-pa302"
+  override def surveyReturnHref: String        = "https://www.gov.uk/government/organisations/hm-revenue-customs"
+  override def surveyReturnMessageKey: String  = "payments-survey.other.return-message"
   override def surveyIsWelshSupported: Boolean = true
-  override def surveyBannerTitle: String = serviceNameMessageKey
+  override def surveyBannerTitle: String       = serviceNameMessageKey
 
   override def emailTaxTypeMessageKey: String = "email.tax-name.PfP800"
 

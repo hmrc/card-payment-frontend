@@ -25,7 +25,7 @@ import java.time.LocalDateTime
 object CardPaymentFinishPaymentResponses {
 
   implicit val format: Format[CardPaymentFinishPaymentResponse] = {
-    val reads: Reads[CardPaymentFinishPaymentResponse] = Reads {
+    val reads: Reads[CardPaymentFinishPaymentResponse]   = Reads {
       case JsString(s) if s === "Successful" => JsSuccess(Successful)
       case JsString(s) if s === "Failed"     => JsSuccess(Failed)
       case JsString(s) if s === "Cancelled"  => JsSuccess(Cancelled)

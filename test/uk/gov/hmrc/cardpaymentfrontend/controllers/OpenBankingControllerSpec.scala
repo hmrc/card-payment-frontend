@@ -35,7 +35,7 @@ class OpenBankingControllerSpec extends ItSpec {
       "should throw an error when a createSessionDataRequest cannot be created" in {
         PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyBeforeBeginWebPayment.copy(journeySpecificData = JsdPfSa(utr = None)))
         val fakeRequest = FakeRequest().withSessionId()
-        val exception = intercept[RuntimeException] {
+        val exception   = intercept[RuntimeException] {
           systemUnderTest.startOpenBankingJourney(fakeRequest).futureValue
         }
         exception.getMessage shouldBe "The future returned an exception of type: java.lang.RuntimeException, with message: Unable to build createSessionDataRequest, so cannot start an OB journey for origin PfSa."
@@ -45,7 +45,7 @@ class OpenBankingControllerSpec extends ItSpec {
         PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyBeforeBeginWebPayment)
         OpenBankingStub.stubForStartJourney2xx(CreateSessionDataResponse(SessionDataId("some-session-data-id"), "http://www.some-redirect-url-for-ob.co.uk"))
         val fakeRequest = FakeRequest().withSessionId()
-        val result = systemUnderTest.startOpenBankingJourney(fakeRequest)
+        val result      = systemUnderTest.startOpenBankingJourney(fakeRequest)
         redirectLocation(result) shouldBe Some("http://www.some-redirect-url-for-ob.co.uk")
         session(result) shouldBe Session(Map("sessionId" -> "some-valid-session-id", "obSessionDataId" -> "some-session-data-id"))
       }

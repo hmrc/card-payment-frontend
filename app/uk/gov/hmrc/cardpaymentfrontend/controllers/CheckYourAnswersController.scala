@@ -39,30 +39,33 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton()
 class CheckYourAnswersController @Inject() (
-    actions:              Actions,
-    appConfig:            AppConfig,
-    cardPaymentService:   CardPaymentService,
-    checkYourAnswersPage: CheckYourAnswersPage,
-    mcc:                  MessagesControllerComponents,
-    requestSupport:       RequestSupport
-)(implicit executionContext: ExecutionContext) extends FrontendController(mcc) with Logging {
+  actions:              Actions,
+  appConfig:            AppConfig,
+  cardPaymentService:   CardPaymentService,
+  checkYourAnswersPage: CheckYourAnswersPage,
+  mcc:                  MessagesControllerComponents,
+  requestSupport:       RequestSupport
+)(implicit executionContext: ExecutionContext)
+    extends FrontendController(mcc)
+    with Logging {
   import requestSupport._
 
   def renderPage: Action[AnyContent] = actions.journeyAction { implicit journeyRequest: JourneyRequest[AnyContent] =>
     val extendedOrigin: ExtendedOrigin = journeyRequest.journey.origin.lift(appConfig)
 
-    val maybePaymentDate: Option[CheckYourAnswersRow] = extendedOrigin.checkYourAnswersPaymentDateRow(journeyRequest)(appConfig.payFrontendBaseUrl)
-    val referenceRow: Option[CheckYourAnswersRow] = extendedOrigin.checkYourAnswersReferenceRow(journeyRequest)(appConfig.payFrontendBaseUrl)
-    val additionalReferenceRows: Option[Seq[CheckYourAnswersRow]] = extendedOrigin.checkYourAnswersAdditionalReferenceRow(journeyRequest)(appConfig.payFrontendBaseUrl)
-    val amountRow: Option[CheckYourAnswersRow] = extendedOrigin.checkYourAnswersAmountSummaryRow(journeyRequest)(appConfig.payFrontendBaseUrl)
-    val cardBillingAddressRow: Option[CheckYourAnswersRow] = extendedOrigin.checkYourAnswersCardBillingAddressRow(journeyRequest)
+    val maybePaymentDate: Option[CheckYourAnswersRow]             = extendedOrigin.checkYourAnswersPaymentDateRow(journeyRequest)(appConfig.payFrontendBaseUrl)
+    val referenceRow: Option[CheckYourAnswersRow]                 = extendedOrigin.checkYourAnswersReferenceRow(journeyRequest)(appConfig.payFrontendBaseUrl)
+    val additionalReferenceRows: Option[Seq[CheckYourAnswersRow]] =
+      extendedOrigin.checkYourAnswersAdditionalReferenceRow(journeyRequest)(appConfig.payFrontendBaseUrl)
+    val amountRow: Option[CheckYourAnswersRow]                    = extendedOrigin.checkYourAnswersAmountSummaryRow(journeyRequest)(appConfig.payFrontendBaseUrl)
+    val cardBillingAddressRow: Option[CheckYourAnswersRow]        = extendedOrigin.checkYourAnswersCardBillingAddressRow(journeyRequest)
     // If no email is present in the session, no Email Row is shown
-    val maybeEmailRow: Option[CheckYourAnswersRow] = extendedOrigin.checkYourAnswersEmailAddressRow(journeyRequest)
+    val maybeEmailRow: Option[CheckYourAnswersRow]                = extendedOrigin.checkYourAnswersEmailAddressRow(journeyRequest)
 
-    //the first two rows, payment date only applies to FDP supported journeys; reference row should always be there.
+    // the first two rows, payment date only applies to FDP supported journeys; reference row should always be there.
     val maybePaymentDateAndReferenceRows: Seq[Option[CheckYourAnswersRow]] = Seq(maybePaymentDate, referenceRow)
 
-    //essentially converts Option[Seq[CheckYourAnswersRow]] => Seq[Option[CheckYourAnswersRow]], in most cases it's empty seq
+    // essentially converts Option[Seq[CheckYourAnswersRow]] => Seq[Option[CheckYourAnswersRow]], in most cases it's empty seq
     val maybeAdditionalReferenceRows: Seq[Option[CheckYourAnswersRow]] =
       additionalReferenceRows
         .map(additionalReferenceRows => additionalReferenceRows.map(Option(_)))
@@ -71,17 +74,16 @@ class CheckYourAnswersController @Inject() (
     // the other rows should always be there (although email row isn't, if they didn't enter an email).
     val mandatoryRows: Seq[Option[CheckYourAnswersRow]] = Seq(amountRow, maybeEmailRow, cardBillingAddressRow)
 
-      /*
-       * Looks weird, but it's so we can display rows in correct order i.e. usually:
-       * - payment date (for fdp supported journeys)
-       * - reference
-       * - additional references/identifiers
-       * - amount, email (if entered), card billing address)
-      */
-      def summaryListRows: Seq[SummaryListRow] =
-        (maybePaymentDateAndReferenceRows ++ maybeAdditionalReferenceRows ++ mandatoryRows)
-          .flatten
-          .map(summarise)
+    /*
+     * Looks weird, but it's so we can display rows in correct order i.e. usually:
+     * - payment date (for fdp supported journeys)
+     * - reference
+     * - additional references/identifiers
+     * - amount, email (if entered), card billing address)
+     */
+    def summaryListRows: Seq[SummaryListRow] =
+      (maybePaymentDateAndReferenceRows ++ maybeAdditionalReferenceRows ++ mandatoryRows).flatten
+        .map(summarise)
 
     if (cardBillingAddressRow.isDefined) Ok(checkYourAnswersPage(SummaryList(summaryListRows)))
     else {
@@ -94,28 +96,28 @@ class CheckYourAnswersController @Inject() (
     journeyRequest.readFromSession[Address](journeyRequest.journeyId, Keys.address) match {
       case Some(address) =>
         def initiatePayment(): Future[Result] = {
-            cardPaymentService
-              .initiatePayment(
-                journey               = journeyRequest.journey,
-                addressFromSession    = address,
-                maybeEmailFromSession = journeyRequest.readFromSession[EmailAddress](journeyRequest.journeyId, Keys.email),
-                language              = requestSupport.usableLanguage
-              )(requestSupport.hc, journeyRequest)
-              .map { response =>
-                Redirect(routes.PaymentStatusController.showIframe(RedirectUrl(response.redirectUrl)))
-              }
-          }
+          cardPaymentService
+            .initiatePayment(
+              journey = journeyRequest.journey,
+              addressFromSession = address,
+              maybeEmailFromSession = journeyRequest.readFromSession[EmailAddress](journeyRequest.journeyId, Keys.email),
+              language = requestSupport.usableLanguage
+            )(requestSupport.hc, journeyRequest)
+            .map { response =>
+              Redirect(routes.PaymentStatusController.showIframe(RedirectUrl(response.redirectUrl)))
+            }
+        }
         // If PaymentStatus is Sent then Redirect to the iFrameUrl from the order.
         journeyRequest.journey.status match {
           case PaymentStatuses.Sent =>
             journeyRequest.journey.order match {
               case Some(order) =>
                 Future.successful(Redirect(routes.PaymentStatusController.showIframe(RedirectUrl(order.iFrameUrl.value))))
-              case None =>
+              case None        =>
                 logger.warn(s"Payment status for journeyId ${journeyRequest.journeyId.toString} was Sent but order was None.")
                 initiatePayment()
             }
-          case _ =>
+          case _                    =>
             initiatePayment()
         }
 

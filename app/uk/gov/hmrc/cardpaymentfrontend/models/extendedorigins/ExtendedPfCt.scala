@@ -28,7 +28,7 @@ import uk.gov.hmrc.cardpaymentfrontend.models.{CheckYourAnswersRow, Link, Paymen
 
 object ExtendedPfCt extends ExtendedOrigin {
   override val serviceNameMessageKey: String = "service-name.PfCt"
-  override val taxNameMessageKey: String = "payment-complete.tax-name.PfCt"
+  override val taxNameMessageKey: String     = "payment-complete.tax-name.PfCt"
 
   def cardFeesPagePaymentMethods: Set[PaymentMethod] = Set(OpenBanking, OneOffDirectDebit)
 
@@ -42,53 +42,61 @@ object ExtendedPfCt extends ExtendedOrigin {
   }
 
   private def payslipReference: JourneySpecificData => Option[Reference] = {
-    case j: JsdPfCt => for {
-      ctUtr <- j.utr
-      ctPeriod <- j.ctPeriod
-      ctChargeType <- j.ctChargeType
-    } yield makeCtReference(ctUtr, ctPeriod, ctChargeType)
-    case _ => throw new RuntimeException("Incorrect origin found")
+    case j: JsdPfCt =>
+      for {
+        ctUtr        <- j.utr
+        ctPeriod     <- j.ctPeriod
+        ctChargeType <- j.ctChargeType
+      } yield makeCtReference(ctUtr, ctPeriod, ctChargeType)
+    case _          => throw new RuntimeException("Incorrect origin found")
   }
 
   override def checkYourAnswersReferenceRow(journeyRequest: JourneyRequest[AnyContent])(payFrontendBaseUrl: String): Option[CheckYourAnswersRow] = {
-    Some(CheckYourAnswersRow(
-      titleMessageKey = "check-your-details.PfCt.reference",
-      value           = Seq(reference(journeyRequest)),
-      changeLink      = None
-    ))
+    Some(
+      CheckYourAnswersRow(
+        titleMessageKey = "check-your-details.PfCt.reference",
+        value = Seq(reference(journeyRequest)),
+        changeLink = None
+      )
+    )
   }
 
-  override def checkYourAnswersAdditionalReferenceRow(journeyRequest: JourneyRequest[AnyContent])
-    (payFrontendBaseUrl: String)
-    (implicit messages: Messages): Option[Seq[CheckYourAnswersRow]] = {
+  override def checkYourAnswersAdditionalReferenceRow(
+    journeyRequest: JourneyRequest[AnyContent]
+  )(payFrontendBaseUrl: String)(implicit messages: Messages): Option[Seq[CheckYourAnswersRow]] = {
     payslipReference(journeyRequest.journey.journeySpecificData).map { payslipReference =>
-      Seq(CheckYourAnswersRow(
-        titleMessageKey = "check-your-details.PfCt.payslip-reference",
-        value           = Seq(payslipReference.value),
-        changeLink      = Some(Link(
-          href       = Call("GET", changeReferenceUrl(payFrontendBaseUrl)),
-          linkId     = "check-your-details-reference-change-link",
-          messageKey = "check-your-details.change"
-        ))
-      ))
+      Seq(
+        CheckYourAnswersRow(
+          titleMessageKey = "check-your-details.PfCt.payslip-reference",
+          value = Seq(payslipReference.value),
+          changeLink = Some(
+            Link(
+              href = Call("GET", changeReferenceUrl(payFrontendBaseUrl)),
+              linkId = "check-your-details-reference-change-link",
+              messageKey = "check-your-details.change"
+            )
+          )
+        )
+      )
     }
   }
 
   override def openBankingOriginSpecificSessionData: JourneySpecificData => Option[OriginSpecificSessionData] = {
-    case j: JsdPfCt => for {
-      ctUtr <- j.utr
-      ctPeriod <- j.ctPeriod
-      ctChargeType <- j.ctChargeType
-    } yield PfCtSessionData(ctUtr, ctPeriod, ctChargeType)
-    case _ => throw new RuntimeException("Incorrect origin found")
+    case j: JsdPfCt =>
+      for {
+        ctUtr        <- j.utr
+        ctPeriod     <- j.ctPeriod
+        ctChargeType <- j.ctChargeType
+      } yield PfCtSessionData(ctUtr, ctPeriod, ctChargeType)
+    case _          => throw new RuntimeException("Incorrect origin found")
 
   }
 
   override def emailTaxTypeMessageKey: String = "email.tax-name.PfCt"
 
-  override def surveyAuditName: String = "corporation-tax"
-  override def surveyReturnHref: String = "https://www.gov.uk/government/organisations/hm-revenue-customs"
-  override def surveyReturnMessageKey: String = "payments-survey.other.return-message"
+  override def surveyAuditName: String         = "corporation-tax"
+  override def surveyReturnHref: String        = "https://www.gov.uk/government/organisations/hm-revenue-customs"
+  override def surveyReturnMessageKey: String  = "payments-survey.other.return-message"
   override def surveyIsWelshSupported: Boolean = true
-  override def surveyBannerTitle: String = serviceNameMessageKey
+  override def surveyBannerTitle: String       = serviceNameMessageKey
 }

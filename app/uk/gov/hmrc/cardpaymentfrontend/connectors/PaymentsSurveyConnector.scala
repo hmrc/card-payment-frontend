@@ -29,11 +29,10 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class PaymentsSurveyConnector @Inject() (
-    appConfig:  AppConfig,
-    httpClient: HttpClientV2
-)(
-    implicit
-    ec: ExecutionContext
+  appConfig:  AppConfig,
+  httpClient: HttpClientV2
+)(implicit
+  ec:         ExecutionContext
 ) {
 
   private val serviceURL: URL = url"${appConfig.paymentsSurveyBaseUrl}/payments-survey/journey/start"

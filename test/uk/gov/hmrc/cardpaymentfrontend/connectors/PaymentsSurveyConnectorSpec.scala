@@ -27,30 +27,30 @@ class PaymentsSurveyConnectorSpec extends ItSpec {
   "PaymentsSurveyConnector" - {
     "startPaySurvey" - {
       val paymentSurveyJourneyRequest = PaymentSurveyJourneyRequest(
-        origin         = "some-origin",
-        returnMsg      = "some-returnMsg",
-        returnHref     = "some-returnHref",
-        auditName      = "some-auditName",
-        audit          = AuditOptions(
-          userType  = "some-userType",
-          journey   = None,
-          orderId   = None,
+        origin = "some-origin",
+        returnMsg = "some-returnMsg",
+        returnHref = "some-returnHref",
+        auditName = "some-auditName",
+        audit = AuditOptions(
+          userType = "some-userType",
+          journey = None,
+          orderId = None,
           liability = None
         ),
         contentOptions = SurveyContentOptions(
           isWelshSupported = true,
-          title            = SurveyBannerTitle("Pay your tax")
+          title = SurveyBannerTitle("Pay your tax")
         )
       )
       "propagate a 5xx error when payments-survey returns a 5xx" in {
         PaymentsSurveyStub.stubForStartJourney5xx()
         implicit val hc: HeaderCarrier = HeaderCarrier()
-        val error: Exception = intercept[Exception](systemUnderTest.startSurvey(paymentSurveyJourneyRequest).futureValue)
+        val error: Exception           = intercept[Exception](systemUnderTest.startSurvey(paymentSurveyJourneyRequest).futureValue)
         error.getCause.getMessage should include(s"POST of 'http://localhost:${wireMockPort.toString}/payments-survey/journey/start' returned 503.")
       }
 
       "return an SsjResponse" in {
-        val ssjResponse = SsjResponse(SurveyJourneyId("test-survey-journey-id"), Url("https://www.some-next-url.com"))
+        val ssjResponse                = SsjResponse(SurveyJourneyId("test-survey-journey-id"), Url("https://www.some-next-url.com"))
         PaymentsSurveyStub.stubForStartJourney2xx(ssjResponse)
         implicit val hc: HeaderCarrier = HeaderCarrier()
         systemUnderTest.startSurvey(paymentSurveyJourneyRequest).futureValue shouldBe ssjResponse

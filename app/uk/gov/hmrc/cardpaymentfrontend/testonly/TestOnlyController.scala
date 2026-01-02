@@ -28,13 +28,15 @@ import uk.gov.hmrc.cardpaymentfrontend.session.JourneySessionSupport._
 
 @Singleton
 class TestOnlyController @Inject() (
-    actions:         Actions,
-    mcc:             MessagesControllerComponents,
-    payApiConnector: PayApiConnector
-)(implicit executionContext: ExecutionContext) extends FrontendController(mcc) {
+  actions:         Actions,
+  mcc:             MessagesControllerComponents,
+  payApiConnector: PayApiConnector
+)(implicit executionContext: ExecutionContext)
+    extends FrontendController(mcc) {
 
   val showJourney: Action[AnyContent] = Action.async { implicit request =>
-    payApiConnector.findLatestJourneyBySessionId()
+    payApiConnector
+      .findLatestJourneyBySessionId()
       .map(maybeJourney => Ok(Json.toJson(maybeJourney)))
   }
 

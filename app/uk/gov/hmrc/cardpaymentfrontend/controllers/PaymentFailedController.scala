@@ -31,35 +31,42 @@ import javax.inject.{Inject, Singleton}
 
 @Singleton
 class PaymentFailedController @Inject() (
-    actions:           Actions,
-    appConfig:         AppConfig,
-    mcc:               MessagesControllerComponents,
-    requestSupport:    RequestSupport,
-    paymentFailedPage: PaymentFailedPage
+  actions:           Actions,
+  appConfig:         AppConfig,
+  mcc:               MessagesControllerComponents,
+  requestSupport:    RequestSupport,
+  paymentFailedPage: PaymentFailedPage
 ) extends FrontendController(mcc) {
 
   import requestSupport._
 
   val renderPage: Action[AnyContent] = actions.journeyAction { implicit journeyRequest: JourneyRequest[AnyContent] =>
-    Ok(paymentFailedPage(
-      origin         = journeyRequest.journey.origin,
-      hasOpenBanking = journeyRequest.journey.origin.lift(appConfig).paymentMethods().contains(OpenBanking),
-      form           = ChooseAPaymentMethodForm.form
-    ))
+    Ok(
+      paymentFailedPage(
+        origin = journeyRequest.journey.origin,
+        hasOpenBanking = journeyRequest.journey.origin.lift(appConfig).paymentMethods().contains(OpenBanking),
+        form = ChooseAPaymentMethodForm.form
+      )
+    )
   }
 
   val submit: Action[AnyContent] = actions.journeyAction { implicit journeyRequest: JourneyRequest[AnyContent] =>
     ChooseAPaymentMethodForm.form
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[ChooseAPaymentMethodFormValues]) => BadRequest(paymentFailedPage(
-          origin         = journeyRequest.journey.origin,
-          hasOpenBanking = journeyRequest.journey.origin.lift(appConfig).paymentMethods().contains(OpenBanking),
-          form           = formWithErrors
-        )),
+        (formWithErrors: Form[ChooseAPaymentMethodFormValues]) =>
+          BadRequest(
+            paymentFailedPage(
+              origin = journeyRequest.journey.origin,
+              hasOpenBanking = journeyRequest.journey.origin.lift(appConfig).paymentMethods().contains(OpenBanking),
+              form = formWithErrors
+            )
+          ),
         {
-          case ChooseAPaymentMethodFormValues.OpenBanking => Redirect(uk.gov.hmrc.cardpaymentfrontend.controllers.routes.OpenBankingController.startOpenBankingJourney)
-          case ChooseAPaymentMethodFormValues.TryAgain    => Redirect(uk.gov.hmrc.cardpaymentfrontend.controllers.routes.EmailAddressController.renderPageAfterReset)
+          case ChooseAPaymentMethodFormValues.OpenBanking =>
+            Redirect(uk.gov.hmrc.cardpaymentfrontend.controllers.routes.OpenBankingController.startOpenBankingJourney)
+          case ChooseAPaymentMethodFormValues.TryAgain    =>
+            Redirect(uk.gov.hmrc.cardpaymentfrontend.controllers.routes.EmailAddressController.renderPageAfterReset)
         }
       )
   }

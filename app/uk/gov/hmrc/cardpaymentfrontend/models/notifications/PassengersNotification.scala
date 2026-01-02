@@ -20,15 +20,15 @@ import payapi.corcommon.model.PaymentStatus
 import play.api.libs.json.{JsObject, Json, OWrites}
 
 final case class PassengersNotification(
-    paymentId:            String,
-    taxType:              String,
-    status:               PaymentStatus,
-    amountInPence:        Long,
-    commissionInPence:    Long,
-    reference:            String,
-    transactionReference: String,
-    notificationData:     JsObject,
-    eventDateTime:        String
+  paymentId:            String,
+  taxType:              String,
+  status:               PaymentStatus,
+  amountInPence:        Long,
+  commissionInPence:    Long,
+  reference:            String,
+  transactionReference: String,
+  notificationData:     JsObject,
+  eventDateTime:        String
 )
 
 object PassengersNotification {

@@ -34,13 +34,15 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class AddressController @Inject() (
-    actions:          Actions,
-    addressPage:      AddressPage,
-    countriesService: CountriesService,
-    mcc:              MessagesControllerComponents,
-    requestSupport:   RequestSupport,
-    paymentService:   PaymentService
-)(implicit executionContext: ExecutionContext) extends FrontendController(mcc) with Logging {
+  actions:          Actions,
+  addressPage:      AddressPage,
+  countriesService: CountriesService,
+  mcc:              MessagesControllerComponents,
+  requestSupport:   RequestSupport,
+  paymentService:   PaymentService
+)(implicit executionContext: ExecutionContext)
+    extends FrontendController(mcc)
+    with Logging {
 
   import requestSupport._
 
@@ -50,7 +52,8 @@ class AddressController @Inject() (
   }
 
   val submit: Action[AnyContent] = actions.journeyAction.async { implicit journeyRequest: JourneyRequest[AnyContent] =>
-    AddressForm.form()
+    AddressForm
+      .form()
       .bindFromRequest()
       .fold(
         (formWithErrors: Form[Address]) => Future.successful(BadRequest(addressPage(form = formWithErrors, countriesService.getCountries))),

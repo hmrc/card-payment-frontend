@@ -20,5 +20,5 @@ sealed trait Language
 
 object Languages {
   case object English extends Language
-  case object Welsh extends Language
+  case object Welsh   extends Language
 }

@@ -24,18 +24,20 @@ import uk.gov.hmrc.cardpaymentfrontend.models.openbanking.{AmlsSessionData, Orig
 import uk.gov.hmrc.cardpaymentfrontend.models.{CheckYourAnswersRow, PaymentMethod}
 
 object ExtendedAmls extends ExtendedOrigin {
-  override val serviceNameMessageKey: String = "service-name.Amls"
-  override val taxNameMessageKey: String = "payment-complete.tax-name.Amls"
+  override val serviceNameMessageKey: String         = "service-name.Amls"
+  override val taxNameMessageKey: String             = "payment-complete.tax-name.Amls"
   def cardFeesPagePaymentMethods: Set[PaymentMethod] = Set(OpenBanking)
 
   def paymentMethods(): Set[PaymentMethod] = Set(Card, OpenBanking, Bacs)
 
   override def checkYourAnswersReferenceRow(journeyRequest: JourneyRequest[AnyContent])(payFrontendBaseUrl: String): Option[CheckYourAnswersRow] = {
-    Some(CheckYourAnswersRow(
-      titleMessageKey = "check-your-details.Amls.reference",
-      value           = Seq(journeyRequest.journey.referenceValue),
-      changeLink      = None
-    ))
+    Some(
+      CheckYourAnswersRow(
+        titleMessageKey = "check-your-details.Amls.reference",
+        value = Seq(journeyRequest.journey.referenceValue),
+        changeLink = None
+      )
+    )
   }
 
   override def openBankingOriginSpecificSessionData: JourneySpecificData => Option[OriginSpecificSessionData] = {
@@ -43,11 +45,11 @@ object ExtendedAmls extends ExtendedOrigin {
     case _          => throw new RuntimeException("Incorrect origin found")
   }
 
-  override def surveyAuditName: String = "anti-money-laundering"
-  override def surveyReturnHref: String = "/personal-account"
-  override def surveyReturnMessageKey: String = "payments-survey.pta.return-message"
+  override def surveyAuditName: String         = "anti-money-laundering"
+  override def surveyReturnHref: String        = "/personal-account"
+  override def surveyReturnMessageKey: String  = "payments-survey.pta.return-message"
   override def surveyIsWelshSupported: Boolean = true
-  override def surveyBannerTitle: String = serviceNameMessageKey
+  override def surveyBannerTitle: String       = serviceNameMessageKey
 
   override def emailTaxTypeMessageKey: String = "email.tax-name.Amls"
 

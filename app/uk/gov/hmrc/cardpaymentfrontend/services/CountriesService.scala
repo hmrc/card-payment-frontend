@@ -54,14 +54,16 @@ class CountriesService @Inject() (requestSupport: RequestSupport, env: Environme
 
     val sourceFromFile = Source.fromFile(env.getFile(filename))
 
-    val countries = sourceFromFile.getLines().map {
-      case pattern(code, name) => Country(name = name, code = code)
-      case _                   => throw new RuntimeException("Failed to read country codes from environment file")
-    }.toSeq
+    val countries = sourceFromFile
+      .getLines()
+      .map {
+        case pattern(code, name) => Country(name = name, code = code)
+        case _                   => throw new RuntimeException("Failed to read country codes from environment file")
+      }
+      .toSeq
 
     sourceFromFile.close()
     countries
 
   }
 }
-

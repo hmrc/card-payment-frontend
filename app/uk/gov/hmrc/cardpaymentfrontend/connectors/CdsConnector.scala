@@ -36,7 +36,7 @@ import scala.util.{Failure, Success}
 class CdsConnector @Inject() (appConfig: AppConfig, httpClientV2: HttpClientV2)(implicit executionContext: ExecutionContext) extends Logging {
 
   private val authHeadersToUse = Seq(("Authorization", s"Bearer ${appConfig.cdsAuthToken}"))
-  private val baseUrl: String = appConfig.cdsBaseUrl + "/accounts"
+  private val baseUrl: String  = appConfig.cdsBaseUrl + "/accounts"
   private def cdsReferenceCheckUrl(cdsRef: CdsRef) = url"$baseUrl/getcashdepositsubscriptiondetails/v1?paymentReference=${cdsRef.value}"
   private val cdsNotificationUrl = url"$baseUrl/notifyimmediatepayment/v1"
 
@@ -46,7 +46,9 @@ class CdsConnector @Inject() (appConfig: AppConfig, httpClientV2: HttpClientV2)(
       .setHeader(authHeadersToUse: _*)
       .execute[CdsResponse]
 
-  def sendNotification(cdsNotification: CdsNotification)(journeyTransactionReference: TransactionReference)(implicit headerCarrier: HeaderCarrier): Future[HttpResponse] = {
+  def sendNotification(
+    cdsNotification: CdsNotification
+  )(journeyTransactionReference: TransactionReference)(implicit headerCarrier: HeaderCarrier): Future[HttpResponse] = {
     val headers: Seq[(String, String)] = authHeadersToUse :+ ("X-Correlation-ID" -> journeyTransactionReference.value) :+ ("Accept" -> "application/json")
     httpClientV2
       .post(cdsNotificationUrl)
@@ -57,12 +59,19 @@ class CdsConnector @Inject() (appConfig: AppConfig, httpClientV2: HttpClientV2)(
         case Success(response) =>
           response.status match {
             case s if Status.isSuccessful(s) =>
-              logger.info(s"[CdsConnector] [POST ${cdsNotificationUrl.toString}] [ackRef:${cdsNotification.notifyImmediatePaymentRequest.requestCommon.acknowledgementReference}] Successfully sent notification to CDS")
-            case s =>
-              logger.error(s"[CdsConnector] [POST ${cdsNotificationUrl.toString}] [ackRef:${cdsNotification.notifyImmediatePaymentRequest.requestCommon.acknowledgementReference}] There was a problem sending notification to CDS, got a ${s.toString} status response")
+              logger.info(
+                s"[CdsConnector] [POST ${cdsNotificationUrl.toString}] [ackRef:${cdsNotification.notifyImmediatePaymentRequest.requestCommon.acknowledgementReference}] Successfully sent notification to CDS"
+              )
+            case s                           =>
+              logger.error(
+                s"[CdsConnector] [POST ${cdsNotificationUrl.toString}] [ackRef:${cdsNotification.notifyImmediatePaymentRequest.requestCommon.acknowledgementReference}] There was a problem sending notification to CDS, got a ${s.toString} status response"
+              )
           }
-        case Failure(e) =>
-          logger.error(s"[CdsConnector] [POST ${cdsNotificationUrl.toString}] [ackRef:${cdsNotification.notifyImmediatePaymentRequest.requestCommon.acknowledgementReference}] There was a problem sending notification to CDS", e)
+        case Failure(e)        =>
+          logger.error(
+            s"[CdsConnector] [POST ${cdsNotificationUrl.toString}] [ackRef:${cdsNotification.notifyImmediatePaymentRequest.requestCommon.acknowledgementReference}] There was a problem sending notification to CDS",
+            e
+          )
       }
   }
 

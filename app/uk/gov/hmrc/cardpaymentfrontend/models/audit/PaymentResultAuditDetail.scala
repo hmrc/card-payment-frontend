@@ -21,16 +21,16 @@ import play.api.libs.json.{Json, OWrites}
 import uk.gov.hmrc.cardpaymentfrontend.models.{Address, EmailAddress}
 
 final case class PaymentResultAuditDetail(
-    address:              Option[Address],
-    emailAddress:         Option[EmailAddress],
-    loggedIn:             Boolean,
-    merchantCode:         String,
-    paymentOrigin:        Origin,
-    paymentStatus:        String,
-    paymentReference:     String,
-    paymentTaxType:       TaxType,
-    paymentTotal:         BigDecimal,
-    transactionReference: String
+  address:              Option[Address],
+  emailAddress:         Option[EmailAddress],
+  loggedIn:             Boolean,
+  merchantCode:         String,
+  paymentOrigin:        Origin,
+  paymentStatus:        String,
+  paymentReference:     String,
+  paymentTaxType:       TaxType,
+  paymentTotal:         BigDecimal,
+  transactionReference: String
 ) extends AuditDetail {
   override val auditType: String = "PaymentResult"
 }

@@ -24,7 +24,9 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class JourneyFinishedActionRefiner @Inject() (errorHandler: ErrorHandler)(implicit ec: ExecutionContext) extends ActionRefiner[JourneyRequest, JourneyRequest] with Logging {
+class JourneyFinishedActionRefiner @Inject() (errorHandler: ErrorHandler)(implicit ec: ExecutionContext)
+    extends ActionRefiner[JourneyRequest, JourneyRequest]
+    with Logging {
 
   override protected[actions] def refine[A](request: JourneyRequest[A]): Future[Either[Result, JourneyRequest[A]]] = {
     if (request.journey.status.isTerminalState) Future.successful(Right(request))

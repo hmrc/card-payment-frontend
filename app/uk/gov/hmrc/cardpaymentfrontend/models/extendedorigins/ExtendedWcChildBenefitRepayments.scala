@@ -25,18 +25,19 @@ import uk.gov.hmrc.cardpaymentfrontend.models.openbanking.{OriginSpecificSession
 
 object ExtendedWcChildBenefitRepayments extends ExtendedOrigin {
 
-  override def serviceNameMessageKey: String = "service-name.WcChildBenefitRepayments"
-  override def taxNameMessageKey: String = "payment-complete.tax-name.WcChildBenefitRepayments"
+  override def serviceNameMessageKey: String                  = "service-name.WcChildBenefitRepayments"
+  override def taxNameMessageKey: String                      = "payment-complete.tax-name.WcChildBenefitRepayments"
   override def cardFeesPagePaymentMethods: Set[PaymentMethod] = Set[PaymentMethod](OpenBanking)
-  override def paymentMethods(): Set[PaymentMethod] = Set(Card, OpenBanking, Bacs)
+  override def paymentMethods(): Set[PaymentMethod]           = Set(Card, OpenBanking, Bacs)
 
-  override def checkYourAnswersReferenceRow(journeyRequest: JourneyRequest[AnyContent])
-    (payFrontendBaseUrl: String): Option[CheckYourAnswersRow] = {
-    Some(CheckYourAnswersRow(
-      titleMessageKey = "check-your-details.WcChildBenefitRepayments.reference",
-      value           = Seq(journeyRequest.journey.referenceValue),
-      changeLink      = None
-    ))
+  override def checkYourAnswersReferenceRow(journeyRequest: JourneyRequest[AnyContent])(payFrontendBaseUrl: String): Option[CheckYourAnswersRow] = {
+    Some(
+      CheckYourAnswersRow(
+        titleMessageKey = "check-your-details.WcChildBenefitRepayments.reference",
+        value = Seq(journeyRequest.journey.referenceValue),
+        changeLink = None
+      )
+    )
   }
 
   override def openBankingOriginSpecificSessionData: JourneySpecificData => Option[OriginSpecificSessionData] = {
@@ -44,10 +45,10 @@ object ExtendedWcChildBenefitRepayments extends ExtendedOrigin {
     case _                              => throw new RuntimeException("Incorrect origin found")
   }
 
-  override def emailTaxTypeMessageKey: String = "email.tax-name.WcChildBenefitRepayments"
-  override def surveyAuditName: String = "child-benefit-repayments"
-  override def surveyReturnHref: String = "https://www.gov.uk/government/organisations/hm-revenue-customs"
-  override def surveyReturnMessageKey: String = "payments-survey.other.return-message"
+  override def emailTaxTypeMessageKey: String  = "email.tax-name.WcChildBenefitRepayments"
+  override def surveyAuditName: String         = "child-benefit-repayments"
+  override def surveyReturnHref: String        = "https://www.gov.uk/government/organisations/hm-revenue-customs"
+  override def surveyReturnMessageKey: String  = "payments-survey.other.return-message"
   override def surveyIsWelshSupported: Boolean = true
-  override def surveyBannerTitle: String = serviceNameMessageKey
+  override def surveyBannerTitle: String       = serviceNameMessageKey
 }

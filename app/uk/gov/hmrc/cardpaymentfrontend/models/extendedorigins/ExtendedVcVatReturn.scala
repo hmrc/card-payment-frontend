@@ -24,17 +24,19 @@ import uk.gov.hmrc.cardpaymentfrontend.models.openbanking.{OriginSpecificSession
 import uk.gov.hmrc.cardpaymentfrontend.models.{CheckYourAnswersRow, PaymentMethod}
 
 object ExtendedVcVatReturn extends ExtendedOrigin {
-  override val serviceNameMessageKey: String = "service-name.VcVatReturn"
-  override val taxNameMessageKey: String = "payment-complete.tax-name.VcVatReturn"
+  override val serviceNameMessageKey: String         = "service-name.VcVatReturn"
+  override val taxNameMessageKey: String             = "payment-complete.tax-name.VcVatReturn"
   def cardFeesPagePaymentMethods: Set[PaymentMethod] = Set(OpenBanking, VariableDirectDebit)
-  def paymentMethods(): Set[PaymentMethod] = Set(Card, OpenBanking, VariableDirectDebit, Bacs)
+  def paymentMethods(): Set[PaymentMethod]           = Set(Card, OpenBanking, VariableDirectDebit, Bacs)
 
   override def checkYourAnswersReferenceRow(journeyRequest: JourneyRequest[AnyContent])(payFrontendBaseUrl: String): Option[CheckYourAnswersRow] = {
-    Some(CheckYourAnswersRow(
-      titleMessageKey = "check-your-details.VcVatReturn.reference",
-      value           = Seq(journeyRequest.journey.referenceValue),
-      changeLink      = None
-    ))
+    Some(
+      CheckYourAnswersRow(
+        titleMessageKey = "check-your-details.VcVatReturn.reference",
+        value = Seq(journeyRequest.journey.referenceValue),
+        changeLink = None
+      )
+    )
   }
 
   override def openBankingOriginSpecificSessionData: JourneySpecificData => Option[OriginSpecificSessionData] = {
@@ -44,9 +46,9 @@ object ExtendedVcVatReturn extends ExtendedOrigin {
 
   override def emailTaxTypeMessageKey: String = "email.tax-name.VcVatReturn"
 
-  override def surveyAuditName: String = "vat"
-  override def surveyReturnHref: String = "/business-account"
-  override def surveyReturnMessageKey: String = "payments-survey.bta.return-message"
+  override def surveyAuditName: String         = "vat"
+  override def surveyReturnHref: String        = "/business-account"
+  override def surveyReturnMessageKey: String  = "payments-survey.bta.return-message"
   override def surveyIsWelshSupported: Boolean = true
-  override def surveyBannerTitle: String = serviceNameMessageKey
+  override def surveyBannerTitle: String       = serviceNameMessageKey
 }

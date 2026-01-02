@@ -131,7 +131,21 @@ object TestHelpers {
     WcClass2Ni
   )
 
-  val webChatOrigins: Seq[Origin] = Seq[Origin](WcSa, WcCt, WcVat, WcSimpleAssessment, WcXref, WcEpayeLpp, WcClass1aNi, WcEpayeNi, WcEpayeLateCis, WcEpayeSeta, WcSdlt, WcClass2Ni, WcChildBenefitRepayments)
+  val webChatOrigins: Seq[Origin] = Seq[Origin](
+    WcSa,
+    WcCt,
+    WcVat,
+    WcSimpleAssessment,
+    WcXref,
+    WcEpayeLpp,
+    WcClass1aNi,
+    WcEpayeNi,
+    WcEpayeLateCis,
+    WcEpayeSeta,
+    WcSdlt,
+    WcClass2Ni,
+    WcChildBenefitRepayments
+  )
 
   def deriveTestDataFromOrigin[jsd <: JourneySpecificData](origin: Origin) = origin match {
     case PfSa                     => TestJourneys.PfSa

@@ -16,9 +16,8 @@
 
 package uk.gov.hmrc.cardpaymentfrontend.util
 
-/**
- * Simple safe equals so we don't have to import cats
- */
+/** Simple safe equals so we don't have to import cats
+  */
 object SafeEquals {
 
   @SuppressWarnings(Array("org.wartremover.warts.Equals"))

@@ -21,15 +21,15 @@ import java.time.format.DateTimeFormatter
 
 object DateUtils {
   private val MonthNamesInWelsh = Map(
-    1 -> "Ionawr",
-    2 -> "Chwefror",
-    3 -> "Mawrth",
-    4 -> "Ebrill",
-    5 -> "Mai",
-    6 -> "Mehefin",
-    7 -> "Gorffennaf",
-    8 -> "Awst",
-    9 -> "Medi",
+    1  -> "Ionawr",
+    2  -> "Chwefror",
+    3  -> "Mawrth",
+    4  -> "Ebrill",
+    5  -> "Mai",
+    6  -> "Mehefin",
+    7  -> "Gorffennaf",
+    8  -> "Awst",
+    9  -> "Medi",
     10 -> "Hydref",
     11 -> "Tachwedd",
     12 -> "Rhagfyr"
@@ -40,6 +40,6 @@ object DateUtils {
     s"${date.getDayOfMonth.toString} ${MonthNamesInWelsh(date.getMonthValue)} ${date.getYear.toString}"
 
   def getDateRangeAsEnglish(startDate: LocalDate, endDate: LocalDate): String = s"${getDateAsEnglish(startDate)} to ${getDateAsEnglish(endDate)}"
-  private def getDateAsEnglish(date: LocalDate): String = date.format(DateTimeFormatter.ofPattern("d MMMM yyyy"))
+  private def getDateAsEnglish(date:   LocalDate): String = date.format(DateTimeFormatter.ofPattern("d MMMM yyyy"))
 
 }

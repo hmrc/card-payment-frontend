@@ -20,8 +20,8 @@ import play.api.libs.json.{Json, OFormat}
 
 //todo should we use types from cor? I'd rather not to stop being tied to it.
 final case class BeginWebPaymentRequest(
-    transactionReference: String,
-    iFrameUrl:            String
+  transactionReference: String,
+  iFrameUrl:            String
 )
 
 object BeginWebPaymentRequest {

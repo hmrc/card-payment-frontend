@@ -27,30 +27,37 @@ object CheckYourAnswersRow {
 
   def summarise(checkYourAnswerRow: CheckYourAnswersRow)(implicit messages: Messages): SummaryListRow = {
     checkYourAnswerRow.value match {
-      case seqOfString if seqOfString.nonEmpty => SummaryListRow(
-        key     = Key(content = Text(Messages(checkYourAnswerRow.titleMessageKey))),
-        value   = Value(content = HtmlContent(Messages(seqOfString.mkString("</br>")))),
-        actions = checkYourAnswerRow.changeLink match {
-          case Some(changeLink) => Some(
-            Actions(items = Seq(ActionItem(
-              href               = changeLink.href.url,
-              content            = Text(Messages(changeLink.messageKey)),
-              visuallyHiddenText = Some(Messages(checkYourAnswerRow.titleMessageKey)),
-              attributes         = Map(
-                "id" -> changeLink.linkId
+      case seqOfString if seqOfString.nonEmpty =>
+        SummaryListRow(
+          key = Key(content = Text(Messages(checkYourAnswerRow.titleMessageKey))),
+          value = Value(content = HtmlContent(Messages(seqOfString.mkString("</br>")))),
+          actions = checkYourAnswerRow.changeLink match {
+            case Some(changeLink) =>
+              Some(
+                Actions(items =
+                  Seq(
+                    ActionItem(
+                      href = changeLink.href.url,
+                      content = Text(Messages(changeLink.messageKey)),
+                      visuallyHiddenText = Some(Messages(checkYourAnswerRow.titleMessageKey)),
+                      attributes = Map(
+                        "id" -> changeLink.linkId
+                      )
+                    )
+                  )
+                )
               )
-            )))
-          )
-          case None => None
-        }
-      )
-      case _ => SummaryListRow(
-        key   = Key(content = Text(Messages(checkYourAnswerRow.titleMessageKey))),
-        value = checkYourAnswerRow.changeLink match {
-          case Some(link) => Value(HtmlContent(s"""<a id="${link.linkId}" href="${link.href.url}" class="govuk-link">${messages(link.messageKey)}</a>"""))
-          case None       => Value()
-        }
-      )
+            case None             => None
+          }
+        )
+      case _                                   =>
+        SummaryListRow(
+          key = Key(content = Text(Messages(checkYourAnswerRow.titleMessageKey))),
+          value = checkYourAnswerRow.changeLink match {
+            case Some(link) => Value(HtmlContent(s"""<a id="${link.linkId}" href="${link.href.url}" class="govuk-link">${messages(link.messageKey)}</a>"""))
+            case None       => Value()
+          }
+        )
     }
   }
 }

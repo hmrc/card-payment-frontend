@@ -27,18 +27,20 @@ import uk.gov.hmrc.cardpaymentfrontend.models.{CheckYourAnswersRow, PaymentMetho
 
 object ExtendedAlcoholDuty extends ExtendedOrigin {
   override val serviceNameMessageKey: String = "service-name.AlcoholDuty"
-  override val taxNameMessageKey: String = "payment-complete.tax-name.AlcoholDuty"
+  override val taxNameMessageKey: String     = "payment-complete.tax-name.AlcoholDuty"
 
   def cardFeesPagePaymentMethods: Set[PaymentMethod] = Set(OpenBanking, Card)
 
   def paymentMethods(): Set[PaymentMethod] = Set(Card, OpenBanking, Bacs)
 
   override def checkYourAnswersReferenceRow(journeyRequest: JourneyRequest[AnyContent])(payFrontendBaseUrl: String): Option[CheckYourAnswersRow] = {
-    Some(CheckYourAnswersRow(
-      titleMessageKey = "check-your-details.AlcoholDuty.reference",
-      value           = Seq(journeyRequest.journey.referenceValue),
-      changeLink      = None
-    ))
+    Some(
+      CheckYourAnswersRow(
+        titleMessageKey = "check-your-details.AlcoholDuty.reference",
+        value = Seq(journeyRequest.journey.referenceValue),
+        changeLink = None
+      )
+    )
   }
 
   private def additionalReference: JourneySpecificData => Option[AlcoholDutyChargeReference] = {
@@ -46,15 +48,17 @@ object ExtendedAlcoholDuty extends ExtendedOrigin {
     case _                 => throw new RuntimeException("Incorrect origin found")
   }
 
-  override def checkYourAnswersAdditionalReferenceRow(journeyRequest: JourneyRequest[AnyContent])
-    (payFrontendBaseUrl: String)
-    (implicit messages: Messages): Option[Seq[CheckYourAnswersRow]] = {
-    additionalReference(journeyRequest.journey.journeySpecificData).map{ alcoholDutyChargeReference =>
-      Seq(CheckYourAnswersRow(
-        titleMessageKey = "check-your-details.AlcoholDuty.charge-reference",
-        value           = Seq(alcoholDutyChargeReference.canonicalizedValue),
-        changeLink      = None
-      ))
+  override def checkYourAnswersAdditionalReferenceRow(
+    journeyRequest: JourneyRequest[AnyContent]
+  )(payFrontendBaseUrl: String)(implicit messages: Messages): Option[Seq[CheckYourAnswersRow]] = {
+    additionalReference(journeyRequest.journey.journeySpecificData).map { alcoholDutyChargeReference =>
+      Seq(
+        CheckYourAnswersRow(
+          titleMessageKey = "check-your-details.AlcoholDuty.charge-reference",
+          value = Seq(alcoholDutyChargeReference.canonicalizedValue),
+          changeLink = None
+        )
+      )
     }
   }
 
@@ -65,9 +69,9 @@ object ExtendedAlcoholDuty extends ExtendedOrigin {
 
   override def emailTaxTypeMessageKey: String = "email.tax-name.AlcoholDuty"
 
-  override def surveyAuditName: String = "alcohol-duty"
-  override def surveyReturnHref: String = "https://www.gov.uk/government/organisations/hm-revenue-customs"
-  override def surveyReturnMessageKey: String = "payments-survey.other.return-message"
+  override def surveyAuditName: String         = "alcohol-duty"
+  override def surveyReturnHref: String        = "https://www.gov.uk/government/organisations/hm-revenue-customs"
+  override def surveyReturnMessageKey: String  = "payments-survey.other.return-message"
   override def surveyIsWelshSupported: Boolean = true
-  override def surveyBannerTitle: String = serviceNameMessageKey
+  override def surveyBannerTitle: String       = serviceNameMessageKey
 }

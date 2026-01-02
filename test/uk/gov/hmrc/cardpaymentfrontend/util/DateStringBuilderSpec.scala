@@ -40,19 +40,17 @@ class DateStringBuilderSpec extends ItSpec {
     ("October", LocalDateTime.of(2024, Month.OCTOBER, 1, 1, 1, 1), "1 October 2024", "1 Hydref 2024"),
     ("November", LocalDateTime.of(2024, Month.NOVEMBER, 1, 1, 1, 1), "1 November 2024", "1 Tachwedd 2024"),
     ("December", LocalDateTime.of(2024, Month.DECEMBER, 1, 1, 1, 1), "1 December 2024", "1 Rhagfyr 2024")
-  ).foreach {
-      case (month, localDate, expectedEnglish, expectedWelsh) =>
-
-        s"DateStringBuilder.getDateAsString should return the correct english message for $month" in {
-          val fakeRequest = FakeRequest("GET", "/blah")
-          DateStringBuilder.getDateAsString(localDate)(messagesApi.preferred(fakeRequest)) shouldBe expectedEnglish withClue s"Wrong date string for $month"
-        }
-
-        s"DateStringBuilder.getDateAsString should return the correct welsh message for $month" in {
-          val fakeRequest = FakeRequest("GET", "/blah").withLangWelsh()
-          DateStringBuilder.getDateAsString(localDate)(messagesApi.preferred(fakeRequest)) shouldBe expectedWelsh withClue s"Wrong date string for $month"
-        }
-
+  ).foreach { case (month, localDate, expectedEnglish, expectedWelsh) =>
+    s"DateStringBuilder.getDateAsString should return the correct english message for $month" in {
+      val fakeRequest = FakeRequest("GET", "/blah")
+      DateStringBuilder.getDateAsString(localDate)(messagesApi.preferred(fakeRequest)) shouldBe expectedEnglish withClue s"Wrong date string for $month"
     }
+
+    s"DateStringBuilder.getDateAsString should return the correct welsh message for $month" in {
+      val fakeRequest = FakeRequest("GET", "/blah").withLangWelsh()
+      DateStringBuilder.getDateAsString(localDate)(messagesApi.preferred(fakeRequest)) shouldBe expectedWelsh withClue s"Wrong date string for $month"
+    }
+
+  }
 
 }

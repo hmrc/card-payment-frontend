@@ -24,17 +24,19 @@ import uk.gov.hmrc.cardpaymentfrontend.models.openbanking.{DdVatSessionData, Ori
 import uk.gov.hmrc.cardpaymentfrontend.models.{CheckYourAnswersRow, PaymentMethod}
 
 object ExtendedDdVat extends ExtendedOrigin {
-  override val serviceNameMessageKey: String = "service-name.DdVat"
-  override val taxNameMessageKey: String = "payment-complete.tax-name.DdVat"
+  override val serviceNameMessageKey: String         = "service-name.DdVat"
+  override val taxNameMessageKey: String             = "payment-complete.tax-name.DdVat"
   def cardFeesPagePaymentMethods: Set[PaymentMethod] = Set(OpenBanking)
-  def paymentMethods(): Set[PaymentMethod] = Set(Card, Bacs, OpenBanking)
+  def paymentMethods(): Set[PaymentMethod]           = Set(Card, Bacs, OpenBanking)
 
   override def checkYourAnswersReferenceRow(journeyRequest: JourneyRequest[AnyContent])(payFrontendBaseUrl: String): Option[CheckYourAnswersRow] = {
-    Some(CheckYourAnswersRow(
-      titleMessageKey = "check-your-details.DdVat.reference",
-      value           = Seq(journeyRequest.journey.referenceValue),
-      changeLink      = None
-    ))
+    Some(
+      CheckYourAnswersRow(
+        titleMessageKey = "check-your-details.DdVat.reference",
+        value = Seq(journeyRequest.journey.referenceValue),
+        changeLink = None
+      )
+    )
   }
 
   override def openBankingOriginSpecificSessionData: JourneySpecificData => Option[OriginSpecificSessionData] = {
@@ -44,9 +46,9 @@ object ExtendedDdVat extends ExtendedOrigin {
 
   override def emailTaxTypeMessageKey: String = "email.tax-name.DdVat"
 
-  override def surveyAuditName: String = "vat"
-  override def surveyReturnHref: String = "/business-account"
-  override def surveyReturnMessageKey: String = "payments-survey.bta.return-message"
+  override def surveyAuditName: String         = "vat"
+  override def surveyReturnHref: String        = "/business-account"
+  override def surveyReturnMessageKey: String  = "payments-survey.bta.return-message"
   override def surveyIsWelshSupported: Boolean = true
-  override def surveyBannerTitle: String = serviceNameMessageKey
+  override def surveyBannerTitle: String       = serviceNameMessageKey
 }

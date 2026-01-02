@@ -37,8 +37,9 @@ class PaymentCancelledControllerSpec extends ItSpec {
 
     "GET /payment-cancelled" - {
 
-      val fakeGetRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/payment-cancelled").withSessionId()
-      val fakeGetRequestInWelsh: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/payment-cancelled").withCookies(Cookie("PLAY_LANG", "cy")).withSessionId()
+      val fakeGetRequest: FakeRequest[AnyContentAsEmpty.type]        = FakeRequest("GET", "/payment-cancelled").withSessionId()
+      val fakeGetRequestInWelsh: FakeRequest[AnyContentAsEmpty.type] =
+        FakeRequest("GET", "/payment-cancelled").withCookies(Cookie("PLAY_LANG", "cy")).withSessionId()
 
       "should return 200 OK" in {
         PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyAfterCancelWebPayment)
@@ -48,44 +49,44 @@ class PaymentCancelledControllerSpec extends ItSpec {
 
       "render the page with the language toggle" in {
         PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyAfterCancelWebPayment)
-        val result = systemUnderTest.renderPage(fakeGetRequest)
-        val document = Jsoup.parse(contentAsString(result))
+        val result                       = systemUnderTest.renderPage(fakeGetRequest)
+        val document                     = Jsoup.parse(contentAsString(result))
         val langToggleText: List[String] = document.select(".hmrc-language-select__list-item").eachText().asScala.toList
-        langToggleText should contain theSameElementsAs List("English", "Newid yr iaith i’r Gymraeg Cymraeg") //checking the visually hidden text, it's simpler
+        langToggleText should contain theSameElementsAs List("English", "Newid yr iaith i’r Gymraeg Cymraeg") // checking the visually hidden text, it's simpler
       }
 
       "show the Title tab correctly in English" in {
         PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyBeforeBeginWebPayment)
-        val result = systemUnderTest.renderPage(fakeGetRequest)
+        val result   = systemUnderTest.renderPage(fakeGetRequest)
         val document = Jsoup.parse(contentAsString(result))
         document.title shouldBe "Payment cancelled - Pay your Self Assessment - GOV.UK"
       }
 
       "show the Title tab correctly in Welsh" in {
         PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyBeforeBeginWebPayment)
-        val result = systemUnderTest.renderPage(fakeGetRequestInWelsh)
+        val result   = systemUnderTest.renderPage(fakeGetRequestInWelsh)
         val document = Jsoup.parse(contentAsString(result))
         document.title shouldBe "Taliad wedi’i ganslo - Talu eich Hunanasesiad - GOV.UK"
       }
 
       "render the page without a back link" in {
         PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyAfterCancelWebPayment)
-        val result = systemUnderTest.renderPage(fakeGetRequest)
-        val document = Jsoup.parse(contentAsString(result))
+        val result             = systemUnderTest.renderPage(fakeGetRequest)
+        val document           = Jsoup.parse(contentAsString(result))
         val backLink: Elements = document.select(".govuk-back-link")
         backLink.size() shouldBe 0
       }
 
       "should render the h1 correctly" in {
         PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyAfterCancelWebPayment)
-        val result = systemUnderTest.renderPage(fakeGetRequest)
+        val result   = systemUnderTest.renderPage(fakeGetRequest)
         val document = Jsoup.parse(contentAsString(result))
         document.select("h1").text() shouldBe "Payment cancelled"
       }
 
       "should render the h1 correctly in welsh" in {
         PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyAfterCancelWebPayment)
-        val result = systemUnderTest.renderPage(fakeGetRequestInWelsh)
+        val result   = systemUnderTest.renderPage(fakeGetRequestInWelsh)
         val document = Jsoup.parse(contentAsString(result))
         document.select("h1").text() shouldBe "Taliad wedi’i ganslo"
       }
@@ -96,9 +97,9 @@ class PaymentCancelledControllerSpec extends ItSpec {
           "No payment has been taken from your account."
         )
         PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyAfterCancelWebPayment)
-        val result = systemUnderTest.renderPage(fakeGetRequest)
-        val document = Jsoup.parse(contentAsString(result))
-        val paragraphs = document.select("#paragraph-wrapper").select("p")
+        val result             = systemUnderTest.renderPage(fakeGetRequest)
+        val document           = Jsoup.parse(contentAsString(result))
+        val paragraphs         = document.select("#paragraph-wrapper").select("p")
         paragraphs.size() shouldBe 2
         paragraphs.asScala.toList.map(_.text()) should contain theSameElementsInOrderAs expectedParagraphs
       }
@@ -109,92 +110,92 @@ class PaymentCancelledControllerSpec extends ItSpec {
           "Nid oes arian wedi’i gymryd allan o’ch cyfrif."
         )
         PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyAfterCancelWebPayment)
-        val result = systemUnderTest.renderPage(fakeGetRequestInWelsh)
-        val document = Jsoup.parse(contentAsString(result))
-        val paragraphs = document.select("#paragraph-wrapper").select("p")
+        val result             = systemUnderTest.renderPage(fakeGetRequestInWelsh)
+        val document           = Jsoup.parse(contentAsString(result))
+        val paragraphs         = document.select("#paragraph-wrapper").select("p")
         paragraphs.size() shouldBe 2
         paragraphs.asScala.toList.map(_.text()) should contain theSameElementsInOrderAs expectedParagraphs
       }
 
       "should render the page with a CTA button promoting them to enter their details again" in {
         PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyAfterCancelWebPayment)
-        val result = systemUnderTest.renderPage(fakeGetRequest)
+        val result   = systemUnderTest.renderPage(fakeGetRequest)
         val document = Jsoup.parse(contentAsString(result))
-        val button = document.select("#enter-details-again-button")
+        val button   = document.select("#enter-details-again-button")
         button.hasClass("govuk-button") shouldBe true
         button.text() shouldBe "Enter your details again"
       }
 
       "should render the page with a CTA button promoting them to enter their details again in welsh" in {
         PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyAfterCancelWebPayment)
-        val result = systemUnderTest.renderPage(fakeGetRequestInWelsh)
+        val result   = systemUnderTest.renderPage(fakeGetRequestInWelsh)
         val document = Jsoup.parse(contentAsString(result))
-        val button = document.select("#enter-details-again-button")
+        val button   = document.select("#enter-details-again-button")
         button.hasClass("govuk-button") shouldBe true
         button.text() shouldBe "Nodwch eich manylion eto"
       }
 
       "the 'Enter details again' button should link to the /email-address-journey-retry page" in {
         PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyAfterCancelWebPayment)
-        val result = systemUnderTest.renderPage(fakeGetRequest)
+        val result   = systemUnderTest.renderPage(fakeGetRequest)
         val document = Jsoup.parse(contentAsString(result))
-        val button = document.select("#enter-details-again-button")
+        val button   = document.select("#enter-details-again-button")
         button.attr("href") shouldBe "/pay-by-card/email-address-journey-retry"
       }
 
       "should render the page with a link to pay another way" in {
         PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyAfterCancelWebPayment)
-        val result = systemUnderTest.renderPage(fakeGetRequest)
+        val result   = systemUnderTest.renderPage(fakeGetRequest)
         val document = Jsoup.parse(contentAsString(result))
-        val link = document.select("#pay-another-way-link")
+        val link     = document.select("#pay-another-way-link")
         link.text() shouldBe "Pay another way"
       }
 
       "should render the page with a link to pay another way in welsh" in {
         PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyAfterCancelWebPayment)
-        val result = systemUnderTest.renderPage(fakeGetRequestInWelsh)
+        val result   = systemUnderTest.renderPage(fakeGetRequestInWelsh)
         val document = Jsoup.parse(contentAsString(result))
-        val link = document.select("#pay-another-way-link")
+        val link     = document.select("#pay-another-way-link")
         link.text() shouldBe "Talu drwy ddull arall"
       }
 
       "the pay another way link should link to X" in {
         PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyAfterCancelWebPayment)
-        val result = systemUnderTest.renderPage(fakeGetRequest)
+        val result   = systemUnderTest.renderPage(fakeGetRequest)
         val document = Jsoup.parse(contentAsString(result))
-        val button = document.select("#pay-another-way-link")
+        val button   = document.select("#pay-another-way-link")
         button.attr("href") shouldBe "https://www.gov.uk/topic/dealing-with-hmrc/paying-hmrc"
       }
 
       "should render the page with a link to exit without paying" in {
         PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyAfterCancelWebPayment)
-        val result = systemUnderTest.renderPage(fakeGetRequest)
+        val result   = systemUnderTest.renderPage(fakeGetRequest)
         val document = Jsoup.parse(contentAsString(result))
-        val link = document.select("#exit-wthout-paying-link")
+        val link     = document.select("#exit-wthout-paying-link")
         link.text() shouldBe "Exit without paying"
       }
 
       "should render the page with a link to exit without paying in welsh" in {
         PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyAfterCancelWebPayment)
-        val result = systemUnderTest.renderPage(fakeGetRequestInWelsh)
+        val result   = systemUnderTest.renderPage(fakeGetRequestInWelsh)
         val document = Jsoup.parse(contentAsString(result))
-        val link = document.select("#exit-wthout-paying-link")
+        val link     = document.select("#exit-wthout-paying-link")
         link.text() shouldBe "Gadewch heb dalu"
       }
 
       "the exit without paying link should link to survey if returnUrl is not set for journey" in {
         PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyAfterCancelWebPayment)
-        val result = systemUnderTest.renderPage(fakeGetRequestInWelsh)
+        val result   = systemUnderTest.renderPage(fakeGetRequestInWelsh)
         val document = Jsoup.parse(contentAsString(result))
-        val link = document.select("#exit-wthout-paying-link")
+        val link     = document.select("#exit-wthout-paying-link")
         link.attr("href") shouldBe "/pay-by-card/start-payment-survey"
       }
 
       "the exit without paying link should link to returnUrl if returnUrl is set for journey" in {
         PayApiStub.stubForFindBySessionId2xx(TestJourneys.BtaSa.journeyAfterCancelWebPayment)
-        val result = systemUnderTest.renderPage(fakeGetRequestInWelsh)
+        val result   = systemUnderTest.renderPage(fakeGetRequestInWelsh)
         val document = Jsoup.parse(contentAsString(result))
-        val link = document.select("#exit-wthout-paying-link")
+        val link     = document.select("#exit-wthout-paying-link")
         link.attr("href") shouldBe "https://www.return-url.com"
       }
     }

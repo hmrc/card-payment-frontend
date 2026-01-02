@@ -24,64 +24,74 @@ import payapi.corcommon.model.barclays.{CardCategories, TransactionReference}
 import java.time.LocalDateTime
 
 object TestDataUtils {
-  //reusable orders
-  val debitCardOrder: Option[BarclaysOrder] = Some(BarclaysOrder(
-    transactionReference = TransactionReference("Some-transaction-ref"),
-    iFrameUrl            = Url("some-url"),
-    cardCategory         = Some(CardCategories.debit),
-    commissionInPence    = None,
-    paidOn               = Some(LocalDateTime.parse("2027-11-02T16:28:55.185"))
-  ))
+  // reusable orders
+  val debitCardOrder: Option[BarclaysOrder] = Some(
+    BarclaysOrder(
+      transactionReference = TransactionReference("Some-transaction-ref"),
+      iFrameUrl = Url("some-url"),
+      cardCategory = Some(CardCategories.debit),
+      commissionInPence = None,
+      paidOn = Some(LocalDateTime.parse("2027-11-02T16:28:55.185"))
+    )
+  )
 
-  val creditCardOrder: Option[BarclaysOrder] = Some(BarclaysOrder(
-    transactionReference = TransactionReference("Some-transaction-ref"),
-    iFrameUrl            = Url("some-url"),
-    cardCategory         = Some(CardCategories.credit),
-    commissionInPence    = Some(AmountInPence(123)),
-    paidOn               = Some(LocalDateTime.parse("2027-11-02T16:28:55.185"))
-  ))
+  val creditCardOrder: Option[BarclaysOrder] = Some(
+    BarclaysOrder(
+      transactionReference = TransactionReference("Some-transaction-ref"),
+      iFrameUrl = Url("some-url"),
+      cardCategory = Some(CardCategories.credit),
+      commissionInPence = Some(AmountInPence(123)),
+      paidOn = Some(LocalDateTime.parse("2027-11-02T16:28:55.185"))
+    )
+  )
 
-  val sentOrder: Option[BarclaysOrder] = Some(BarclaysOrder(
-    transactionReference = TransactionReference("Some-transaction-ref"),
-    iFrameUrl            = Url("some-url"),
-    cardCategory         = None,
-    commissionInPence    = None,
-    paidOn               = None
-  ))
+  val sentOrder: Option[BarclaysOrder] = Some(
+    BarclaysOrder(
+      transactionReference = TransactionReference("Some-transaction-ref"),
+      iFrameUrl = Url("some-url"),
+      cardCategory = None,
+      commissionInPence = None,
+      paidOn = None
+    )
+  )
 
-  val failedOrder: Option[BarclaysOrder] = Some(BarclaysOrder(
-    transactionReference = TransactionReference("Some-transaction-ref"),
-    iFrameUrl            = Url("some-url"),
-    cardCategory         = None,
-    commissionInPence    = None,
-    paidOn               = None
-  ))
+  val failedOrder: Option[BarclaysOrder] = Some(
+    BarclaysOrder(
+      transactionReference = TransactionReference("Some-transaction-ref"),
+      iFrameUrl = Url("some-url"),
+      cardCategory = None,
+      commissionInPence = None,
+      paidOn = None
+    )
+  )
 
-  val cancelledOrder: Option[BarclaysOrder] = Some(BarclaysOrder(
-    transactionReference = TransactionReference("Some-transaction-ref"),
-    iFrameUrl            = Url("some-url"),
-    cardCategory         = None,
-    commissionInPence    = None,
-    paidOn               = None
-  ))
+  val cancelledOrder: Option[BarclaysOrder] = Some(
+    BarclaysOrder(
+      transactionReference = TransactionReference("Some-transaction-ref"),
+      iFrameUrl = Url("some-url"),
+      cardCategory = None,
+      commissionInPence = None,
+      paidOn = None
+    )
+  )
 
-  def intoSentWithOrder[Jsd <: JourneySpecificData]: (Journey[Jsd], Option[BarclaysOrder]) => Journey[Jsd] = {
-    case (journey, maybeOrder) => intoState(journey, maybeOrder, PaymentStatuses.Sent)
+  def intoSentWithOrder[Jsd <: JourneySpecificData]: (Journey[Jsd], Option[BarclaysOrder]) => Journey[Jsd] = { case (journey, maybeOrder) =>
+    intoState(journey, maybeOrder, PaymentStatuses.Sent)
   }
 
-  def intoSuccessWithOrder[Jsd <: JourneySpecificData]: (Journey[Jsd], Option[BarclaysOrder]) => Journey[Jsd] = {
-    case (journey, maybeOrder) => intoState(journey, maybeOrder, PaymentStatuses.Successful)
+  def intoSuccessWithOrder[Jsd <: JourneySpecificData]: (Journey[Jsd], Option[BarclaysOrder]) => Journey[Jsd] = { case (journey, maybeOrder) =>
+    intoState(journey, maybeOrder, PaymentStatuses.Successful)
   }
 
-  def intoFailed[Jsd <: JourneySpecificData]: (Journey[Jsd], Option[BarclaysOrder]) => Journey[Jsd] = {
-    case (journey, maybeOrder) => intoState(journey, maybeOrder, PaymentStatuses.Failed)
+  def intoFailed[Jsd <: JourneySpecificData]: (Journey[Jsd], Option[BarclaysOrder]) => Journey[Jsd] = { case (journey, maybeOrder) =>
+    intoState(journey, maybeOrder, PaymentStatuses.Failed)
   }
 
-  def intoCancelled[Jsd <: JourneySpecificData]: (Journey[Jsd], Option[BarclaysOrder]) => Journey[Jsd] = {
-    case (journey, maybeOrder) => intoState(journey, maybeOrder, PaymentStatuses.Cancelled)
+  def intoCancelled[Jsd <: JourneySpecificData]: (Journey[Jsd], Option[BarclaysOrder]) => Journey[Jsd] = { case (journey, maybeOrder) =>
+    intoState(journey, maybeOrder, PaymentStatuses.Cancelled)
   }
 
   private def intoState[Jsd <: JourneySpecificData]: (Journey[Jsd], Option[BarclaysOrder], PaymentStatus) => Journey[Jsd] = {
-    case (journey, maybeOrder, paymentStatus) => journey.copy(order  = maybeOrder, status = paymentStatus)
+    case (journey, maybeOrder, paymentStatus) => journey.copy(order = maybeOrder, status = paymentStatus)
   }
 }

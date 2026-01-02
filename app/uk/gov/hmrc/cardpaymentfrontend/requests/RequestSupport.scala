@@ -24,16 +24,14 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendHeaderCarrierProvi
 
 import javax.inject.Inject
 
-/**
- * Repeating the pattern which was brought originally by play-framework
- * and putting some more data which can be derived from a request
- *
- * Use it to provide HeaderCarrier, Lang, or Messages
- */
+/** Repeating the pattern which was brought originally by play-framework and putting some more data which can be derived from a request
+  *
+  * Use it to provide HeaderCarrier, Lang, or Messages
+  */
 class RequestSupport @Inject() (override val messagesApi: MessagesApi) extends I18nSupport {
 
   implicit def hc(implicit request: Request[_]): HeaderCarrier = RequestSupport.hc
-  def lang(implicit messages: Messages): Lang = messages.lang
+  def lang(implicit messages:       Messages): Lang            = messages.lang
 
   def usableLanguage(implicit messages: Messages): Language = lang.code match {
     case "cy" => Languages.Welsh
@@ -47,15 +45,13 @@ object RequestSupport {
 
   def isLoggedIn(implicit requestHeader: RequestHeader): Boolean = requestHeader.session.get(SessionKeys.authToken).isDefined
 
-  /**
-   * Naive way of getting session id. Use it in views only.
-   */
+  /** Naive way of getting session id. Use it in views only.
+    */
   def sessionId(implicit requestHeader: RequestHeader): String = requestHeader.session.get(SessionKeys.sessionId).getOrElse("Unknown Session Id")
 
-  /**
-   * This is because we want to give responsibility of creation of HeaderCarrier to the platform code.
-   * If they refactor how hc is created our code will pick it up automatically.
-   */
+  /** This is because we want to give responsibility of creation of HeaderCarrier to the platform code. If they refactor how hc is created our code will pick it
+    * up automatically.
+    */
   private object HcProvider extends FrontendHeaderCarrierProvider {
     def headerCarrier(implicit request: Request[_]): HeaderCarrier = hc(request)
   }

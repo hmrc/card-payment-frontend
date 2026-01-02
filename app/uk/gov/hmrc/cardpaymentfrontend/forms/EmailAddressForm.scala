@@ -27,19 +27,20 @@ object EmailAddressForm {
 
   val emailAddressKey: String = "email-address"
 
-  private[forms] val emailAddressRegex: Regex = """^[a-zA-Z0-9\.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$""".r
+  private[forms] val emailAddressRegex: Regex =
+    """^[a-zA-Z0-9\.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$""".r
 
   def form(): Form[EmailAddress] = {
     val emailAddressMapping = Forms.of(new Formatter[EmailAddress]() {
 
       override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], EmailAddress] = {
-        //trim first as we allow spaces either side for accessibility reasons.
+        // trim first as we allow spaces either side for accessibility reasons.
         data.get(key).map(_.trim) match {
           case Some(email) =>
             if (email.isBlank) Right(EmailAddress(email))
             else if (email.matches(emailAddressRegex.regex)) Right(EmailAddress(email))
             else Left(Seq(FormError(key, "email-address.error.invalid")))
-          case None => Right(EmailAddress(""))
+          case None        => Right(EmailAddress(""))
         }
       }
 

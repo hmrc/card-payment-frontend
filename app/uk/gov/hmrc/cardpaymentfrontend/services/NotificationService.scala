@@ -33,11 +33,12 @@ import scala.util.Try
 
 @Singleton
 class NotificationService @Inject() (
-    cdsConnector:               CdsConnector,
-    clock:                      Clock,
-    passengersConnector:        PassengersConnector,
-    paymentsProcessorConnector: PaymentsProcessorConnector
-)(implicit executionContext: ExecutionContext) extends Logging {
+  cdsConnector:               CdsConnector,
+  clock:                      Clock,
+  passengersConnector:        PassengersConnector,
+  paymentsProcessorConnector: PaymentsProcessorConnector
+)(implicit executionContext: ExecutionContext)
+    extends Logging {
 
   @SuppressWarnings(Array("org.wartremover.warts.AsInstanceOf"))
   def sendNotification(journey: Journey[JourneySpecificData])(implicit headerCarrier: HeaderCarrier): Unit = {
@@ -48,21 +49,25 @@ class NotificationService @Inject() (
         case _: JsdMib    => sendModsNotification(journey.asInstanceOf[Journey[JsdMib]])
         case _            => noOperation(journey)
       }
-    }.recover {
-      case e => logger.error(s"[Problem sending card-payment-notification] [journeyId: ${journey._id.value}] [origin: ${journey.origin.toString}]", e)
+    }.recover { case e =>
+      logger.error(s"[Problem sending card-payment-notification] [journeyId: ${journey._id.value}] [origin: ${journey.origin.toString}]", e)
     }
   }
 
   private[services] def sendCdsNotification(journey: Journey[JsdPfCds])(implicit headerCarrier: HeaderCarrier): Unit = {
     if (journey.status === PaymentStatuses.Successful) {
       val notificationF: Future[Unit] = for {
-        cdsSubscriptionDetails <- cdsConnector.getCashDepositSubscriptionDetails(journey.journeySpecificData.cdsRef.getOrElse(throw new RuntimeException("CDS reference missing for notification, this should never happen")))
-        cdsNotification = buildCdsNotification(journey, LocalDateTime.now(clock), cdsSubscriptionDetails.getCashDepositSubscriptionDetailsResponse.responseDetail.declarationID)
-        _ <- cdsConnector.sendNotification(cdsNotification)(journey.getTransactionReference)
+        cdsSubscriptionDetails <-
+          cdsConnector.getCashDepositSubscriptionDetails(
+            journey.journeySpecificData.cdsRef.getOrElse(throw new RuntimeException("CDS reference missing for notification, this should never happen"))
+          )
+        cdsNotification         =
+          buildCdsNotification(journey, LocalDateTime.now(clock), cdsSubscriptionDetails.getCashDepositSubscriptionDetailsResponse.responseDetail.declarationID)
+        _                      <- cdsConnector.sendNotification(cdsNotification)(journey.getTransactionReference)
       } yield logSuccessfulNotification(journey)("CdsNotification")
 
-      val _ = notificationF.recover {
-        case e => logErrorSendingNotification(journey)("CdsNotification", e)
+      val _ = notificationF.recover { case e =>
+        logErrorSendingNotification(journey)("CdsNotification", e)
       }
     } else {
       noOperation(journey, s"[journey status was: ${journey.status.entryName}]")
@@ -72,12 +77,12 @@ class NotificationService @Inject() (
   private[services] def sendModsNotification(journey: Journey[JsdMib])(implicit headerCarrier: HeaderCarrier): Unit = {
     if (journey.status === PaymentStatuses.Successful) {
       val modsNotification: ModsNotification = buildModsNotification(journey)
-      val notificationF: Future[Unit] = for {
+      val notificationF: Future[Unit]        = for {
         _ <- paymentsProcessorConnector.sendModsNotification(modsNotification)
       } yield logSuccessfulNotification(journey)("ModsNotification")
 
-      val _ = notificationF.recover {
-        case e => logErrorSendingNotification(journey)("ModsNotification", e)
+      val _ = notificationF.recover { case e =>
+        logErrorSendingNotification(journey)("ModsNotification", e)
       }
     } else {
       noOperation(journey, s"[journey status was: ${journey.status.entryName}]")
@@ -86,13 +91,13 @@ class NotificationService @Inject() (
 
   private[services] def sendPassengersNotification(journey: Journey[JsdBcPngr])(implicit headerCarrier: HeaderCarrier): Unit = {
     if (journey.status.isTerminalState) {
-      val passengersNotification = buildPassengersNotification(journey, LocalDateTime.now(clock))
+      val passengersNotification      = buildPassengersNotification(journey, LocalDateTime.now(clock))
       val notificationF: Future[Unit] = for {
         _ <- passengersConnector.sendNotification(passengersNotification)
       } yield logSuccessfulNotification(journey)("PassengersNotification")
 
-      val _ = notificationF.recover {
-        case e => logErrorSendingNotification(journey)("PassengersNotification", e)
+      val _ = notificationF.recover { case e =>
+        logErrorSendingNotification(journey)("PassengersNotification", e)
       }
     } else {
       noOperation(journey, s"[journey was not in terminal state: ${journey.status.entryName}]")
@@ -103,13 +108,14 @@ class NotificationService @Inject() (
     CdsNotification(
       notifyImmediatePaymentRequest = NotifyImmediatePaymentRequest(
         requestCommon = RequestCommon(
-          receiptDate              = eventDateTime.atZone(ZoneId.of("UTC")).format(CdsNotification.cdsEventTimeFormat),
-          acknowledgementReference = journey.order.getOrElse(throw new RuntimeException(s"Expected defined order [${journey.toString}]")).transactionReference.value.replaceAll("-", "")
+          receiptDate = eventDateTime.atZone(ZoneId.of("UTC")).format(CdsNotification.cdsEventTimeFormat),
+          acknowledgementReference =
+            journey.order.getOrElse(throw new RuntimeException(s"Expected defined order [${journey.toString}]")).transactionReference.value.replaceAll("-", "")
         ),
         requestDetail = RequestDetail(
           paymentReference = journey.reference.getOrElse(throw new RuntimeException(s"Expected defined reference [${journey.toString}]")).value,
-          amountPaid       = journey.amountInPence.getOrElse(throw new RuntimeException(s"Expected defined amountInPence [${journey.toString}]")).inPounds.toString(),
-          declarationID    = declarationId
+          amountPaid = journey.amountInPence.getOrElse(throw new RuntimeException(s"Expected defined amountInPence [${journey.toString}]")).inPounds.toString(),
+          declarationID = declarationId
         )
       )
     )
@@ -120,20 +126,19 @@ class NotificationService @Inject() (
 
   private[services] def buildPassengersNotification(journey: Journey[JsdBcPngr], eventDateTime: LocalDateTime): PassengersNotification =
     PassengersNotification(
-      paymentId            = journey._id.value,
-      taxType              = journey.taxType.toString,
-      status               = journey.status,
-      amountInPence        = journey.amountInPence.getOrElse(throw new RuntimeException(s"Expected defined amountInPence [${journey.toString}]")).value,
-      commissionInPence    = journey.order.flatMap(_.commissionInPence.map(_.value)).getOrElse(0L),
-      reference            = journey.reference.getOrElse(throw new RuntimeException(s"Expected defined reference [${journey.toString}]")).value,
+      paymentId = journey._id.value,
+      taxType = journey.taxType.toString,
+      status = journey.status,
+      amountInPence = journey.amountInPence.getOrElse(throw new RuntimeException(s"Expected defined amountInPence [${journey.toString}]")).value,
+      commissionInPence = journey.order.flatMap(_.commissionInPence.map(_.value)).getOrElse(0L),
+      reference = journey.reference.getOrElse(throw new RuntimeException(s"Expected defined reference [${journey.toString}]")).value,
       transactionReference = journey.order.getOrElse(throw new RuntimeException(s"Expected defined order [${journey.toString}]")).transactionReference.value,
-      notificationData     = Json.obj(), // was empty in pay-frontend, is it even used?
-      eventDateTime        = DateTimeFormatter.ISO_LOCAL_DATE_TIME.format(eventDateTime)
+      notificationData = Json.obj(), // was empty in pay-frontend, is it even used?
+      eventDateTime = DateTimeFormatter.ISO_LOCAL_DATE_TIME.format(eventDateTime)
     )
 
-  /**
-   * Inform that you haven't sent notification.
-   */
+  /** Inform that you haven't sent notification.
+    */
   private def noOperation(journey: Journey[JourneySpecificData], extraInfo: String = ""): Unit = {
     logger.info(s"Not sending any card-payment-notification $extraInfo [${journey.origin.toString}] [${journey.status.toString}] [${journey._id.toString}]")
   }

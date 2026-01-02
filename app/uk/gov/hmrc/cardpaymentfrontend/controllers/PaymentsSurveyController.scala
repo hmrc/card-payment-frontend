@@ -26,10 +26,11 @@ import scala.concurrent.ExecutionContext
 
 @Singleton
 class PaymentsSurveyController @Inject() (
-    actions:               Actions,
-    mcc:                   MessagesControllerComponents,
-    paymentsSurveyService: PaymentsSurveyService
-)(implicit executionContext: ExecutionContext) extends FrontendController(mcc) {
+  actions:               Actions,
+  mcc:                   MessagesControllerComponents,
+  paymentsSurveyService: PaymentsSurveyService
+)(implicit executionContext: ExecutionContext)
+    extends FrontendController(mcc) {
 
   def startSurvey(): Action[AnyContent] = actions.journeyFinishedAction.async { implicit journeyRequest: JourneyRequest[AnyContent] =>
     paymentsSurveyService

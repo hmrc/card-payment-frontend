@@ -21,13 +21,13 @@ import play.api.libs.json.{Format, Json}
 import uk.gov.hmrc.cardpaymentfrontend.models.EmailAddress
 
 final case class CardPaymentInitiatePaymentRequest(
-    redirectUrl:         String,
-    clientId:            String,
-    purchaseDescription: String, // i.e. tax reference
-    purchaseAmount:      AmountInPence, //in pennies
-    billingAddress:      BarclaycardAddress,
-    emailAddress:        Option[EmailAddress],
-    transactionNumber:   String
+  redirectUrl:         String,
+  clientId:            String,
+  purchaseDescription: String,        // i.e. tax reference
+  purchaseAmount:      AmountInPence, // in pennies
+  billingAddress:      BarclaycardAddress,
+  emailAddress:        Option[EmailAddress],
+  transactionNumber:   String
 )
 
 object CardPaymentInitiatePaymentRequest {

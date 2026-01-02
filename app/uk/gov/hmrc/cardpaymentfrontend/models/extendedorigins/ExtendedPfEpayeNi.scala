@@ -41,40 +41,51 @@ object ExtendedPfEpayeNi extends ExtendedOrigin {
       case jsd: JsdPfEpayeNi => jsd.accountsOfficeReference
       case _                 => throw new RuntimeException("Incorrect origin found")
     }
-    Some(CheckYourAnswersRow(
-      titleMessageKey = "check-your-details.PfEpayeNi.reference",
-      value           = Seq(accountsOfficeReference.fold("")(_.value)),
-      changeLink      = Some(Link(
-        href       = Call("GET", changeReferenceUrl(payFrontendBaseUrl)),
-        linkId     = "check-your-details-reference-change-link",
-        messageKey = "check-your-details.change"
-      ))
-    ))
+    Some(
+      CheckYourAnswersRow(
+        titleMessageKey = "check-your-details.PfEpayeNi.reference",
+        value = Seq(accountsOfficeReference.fold("")(_.value)),
+        changeLink = Some(
+          Link(
+            href = Call("GET", changeReferenceUrl(payFrontendBaseUrl)),
+            linkId = "check-your-details-reference-change-link",
+            messageKey = "check-your-details.change"
+          )
+        )
+      )
+    )
   }
 
-  override def checkYourAnswersAdditionalReferenceRow(journeyRequest: JourneyRequest[AnyContent])(payFrontendBaseUrl: String)(implicit messages: Messages): Option[Seq[CheckYourAnswersRow]] = {
+  override def checkYourAnswersAdditionalReferenceRow(
+    journeyRequest: JourneyRequest[AnyContent]
+  )(payFrontendBaseUrl: String)(implicit messages: Messages): Option[Seq[CheckYourAnswersRow]] = {
     val period: Option[SubYearlyEpayeTaxPeriod] = journeyRequest.journey.journeySpecificData match {
       case jsd: JsdPfEpayeNi => jsd.period
       case _                 => throw new RuntimeException("Incorrect origin found")
     }
     period.map { period =>
-      Seq(CheckYourAnswersRow(
-        titleMessageKey = "check-your-details.PfEpayeNi.tax-period",
-        value           = Seq(humanReadablePeriod(period)(messages.lang)),
-        changeLink      = Some(Link(
-          href       = Call("GET", s"$payFrontendBaseUrl/change-employers-paye-period?fromCardPayment=true"),
-          linkId     = "check-your-details-period-change-link",
-          messageKey = "check-your-details.change"
-        ))
-      ))
+      Seq(
+        CheckYourAnswersRow(
+          titleMessageKey = "check-your-details.PfEpayeNi.tax-period",
+          value = Seq(humanReadablePeriod(period)(messages.lang)),
+          changeLink = Some(
+            Link(
+              href = Call("GET", s"$payFrontendBaseUrl/change-employers-paye-period?fromCardPayment=true"),
+              linkId = "check-your-details-period-change-link",
+              messageKey = "check-your-details.change"
+            )
+          )
+        )
+      )
     }
   }
 
   override def openBankingOriginSpecificSessionData: JourneySpecificData => Option[OriginSpecificSessionData] = {
-    case j: JsdPfEpayeNi => j.accountsOfficeReference.flatMap { accountsOfficeReference =>
-      j.period.map(PfEpayeNiSessionData(accountsOfficeReference, _))
-    }
-    case _ => throw new RuntimeException("Incorrect origin found")
+    case j: JsdPfEpayeNi =>
+      j.accountsOfficeReference.flatMap { accountsOfficeReference =>
+        j.period.map(PfEpayeNiSessionData(accountsOfficeReference, _))
+      }
+    case _               => throw new RuntimeException("Incorrect origin found")
   }
 
   override def emailTaxTypeMessageKey: String = "email.tax-name.PfEpayeNi"

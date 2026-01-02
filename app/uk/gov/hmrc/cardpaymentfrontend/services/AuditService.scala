@@ -40,72 +40,74 @@ class AuditService @Inject() (auditConnector: AuditConnector)(implicit ec: Execu
     val _ = auditConnector.sendExtendedEvent(
       ExtendedDataEvent(
         auditSource = auditSource,
-        auditType   = a.auditType,
-        eventId     = UUID.randomUUID().toString,
-        tags        = headerCarrier.toAuditTags(),
-        detail      = Json.toJson(a)
+        auditType = a.auditType,
+        eventId = UUID.randomUUID().toString,
+        tags = headerCarrier.toAuditTags(),
+        detail = Json.toJson(a)
       )
     )
   }
 
   private def toPaymentAttempt(
-      address:              Address,
-      merchantCode:         String,
-      transactionReference: String
+    address:              Address,
+    merchantCode:         String,
+    transactionReference: String
   )(implicit journeyRequest: JourneyRequest[_]): PaymentAttemptAuditDetail = {
     PaymentAttemptAuditDetail(
-      address              = address,
-      emailAddress         = journeyRequest.readFromSession[EmailAddress](journeyRequest.journeyId, Keys.email),
-      loggedIn             = RequestSupport.isLoggedIn,
-      merchantCode         = merchantCode,
-      paymentOrigin        = journeyRequest.journey.origin,
-      paymentReference     = journeyRequest.journey.referenceValue,
-      paymentTaxType       = journeyRequest.journey.taxType,
-      paymentTotal         = journeyRequest.journey.getAmountInPence.inPounds,
+      address = address,
+      emailAddress = journeyRequest.readFromSession[EmailAddress](journeyRequest.journeyId, Keys.email),
+      loggedIn = RequestSupport.isLoggedIn,
+      merchantCode = merchantCode,
+      paymentOrigin = journeyRequest.journey.origin,
+      paymentReference = journeyRequest.journey.referenceValue,
+      paymentTaxType = journeyRequest.journey.taxType,
+      paymentTotal = journeyRequest.journey.getAmountInPence.inPounds,
       transactionReference = transactionReference
     )
   }
 
   def auditPaymentAttempt(
-      address:              Address,
-      merchantCode:         String,
-      transactionReference: String
+    address:              Address,
+    merchantCode:         String,
+    transactionReference: String
   )(implicit journeyRequest: JourneyRequest[_], headerCarrier: HeaderCarrier): Unit =
     audit(toPaymentAttempt(address, merchantCode, transactionReference))
 
   private def toPaymentResult(
-      optionalAddress:      Option[Address],
-      merchantCode:         String,
-      transactionReference: String,
-      paymentStatus:        String,
-      journeyRequest:       JourneyRequest[_]
+    optionalAddress:      Option[Address],
+    merchantCode:         String,
+    transactionReference: String,
+    paymentStatus:        String,
+    journeyRequest:       JourneyRequest[_]
   ): PaymentResultAuditDetail = {
     PaymentResultAuditDetail(
       optionalAddress,
       emailAddress = journeyRequest.readFromSession[EmailAddress](journeyRequest.journeyId, Keys.email),
-      loggedIn     = RequestSupport.isLoggedIn(journeyRequest),
+      loggedIn = RequestSupport.isLoggedIn(journeyRequest),
       merchantCode,
-      paymentOrigin    = journeyRequest.journey.origin,
-      paymentStatus    = paymentStatus,
+      paymentOrigin = journeyRequest.journey.origin,
+      paymentStatus = paymentStatus,
       paymentReference = journeyRequest.journey.referenceValue,
-      paymentTaxType   = journeyRequest.journey.taxType,
-      paymentTotal     = journeyRequest.journey.getAmountInPence.inPounds,
+      paymentTaxType = journeyRequest.journey.taxType,
+      paymentTotal = journeyRequest.journey.getAmountInPence.inPounds,
       transactionReference
     )
   }
 
   def auditPaymentResult(
-      merchantCode:         String,
-      transactionReference: String,
-      paymentStatus:        String
+    merchantCode:         String,
+    transactionReference: String,
+    paymentStatus:        String
   )(implicit journeyRequest: JourneyRequest[_], headerCarrier: HeaderCarrier): Unit = {
-    audit(toPaymentResult(
-      optionalAddress      = journeyRequest.readFromSession[Address](journeyRequest.journeyId, Keys.address),
-      merchantCode         = merchantCode,
-      transactionReference = transactionReference,
-      paymentStatus        = paymentStatus,
-      journeyRequest       = journeyRequest
-    ))
+    audit(
+      toPaymentResult(
+        optionalAddress = journeyRequest.readFromSession[Address](journeyRequest.journeyId, Keys.address),
+        merchantCode = merchantCode,
+        transactionReference = transactionReference,
+        paymentStatus = paymentStatus,
+        journeyRequest = journeyRequest
+      )
+    )
   }
 
 }

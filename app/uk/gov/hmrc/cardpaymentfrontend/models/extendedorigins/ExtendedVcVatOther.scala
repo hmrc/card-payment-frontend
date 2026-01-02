@@ -26,17 +26,19 @@ import uk.gov.hmrc.cardpaymentfrontend.models.openbanking.{OriginSpecificSession
 import uk.gov.hmrc.cardpaymentfrontend.models.{CheckYourAnswersRow, PaymentMethod}
 
 object ExtendedVcVatOther extends ExtendedOrigin {
-  override val serviceNameMessageKey: String = "service-name.VcVatOther"
-  override val taxNameMessageKey: String = "payment-complete.tax-name.VcVatOther"
+  override val serviceNameMessageKey: String         = "service-name.VcVatOther"
+  override val taxNameMessageKey: String             = "payment-complete.tax-name.VcVatOther"
   def cardFeesPagePaymentMethods: Set[PaymentMethod] = Set(OpenBanking)
-  def paymentMethods(): Set[PaymentMethod] = Set(Card, OpenBanking, Bacs)
+  def paymentMethods(): Set[PaymentMethod]           = Set(Card, OpenBanking, Bacs)
 
   override def checkYourAnswersReferenceRow(journeyRequest: JourneyRequest[AnyContent])(payFrontendBaseUrl: String): Option[CheckYourAnswersRow] = {
-    Some(CheckYourAnswersRow(
-      titleMessageKey = "check-your-details.VcVatOther.reference",
-      value           = Seq(journeyRequest.journey.referenceValue),
-      changeLink      = None
-    ))
+    Some(
+      CheckYourAnswersRow(
+        titleMessageKey = "check-your-details.VcVatOther.reference",
+        value = Seq(journeyRequest.journey.referenceValue),
+        changeLink = None
+      )
+    )
   }
 
   private def additionalReference: JourneySpecificData => Option[VatChargeReference] = {
@@ -44,13 +46,17 @@ object ExtendedVcVatOther extends ExtendedOrigin {
     case _                => throw new RuntimeException("Incorrect origin found")
   }
 
-  override def checkYourAnswersAdditionalReferenceRow(journeyRequest: JourneyRequest[AnyContent])(payFrontendBaseUrl: String)(implicit messages: Messages): Option[Seq[CheckYourAnswersRow]] = {
+  override def checkYourAnswersAdditionalReferenceRow(
+    journeyRequest: JourneyRequest[AnyContent]
+  )(payFrontendBaseUrl: String)(implicit messages: Messages): Option[Seq[CheckYourAnswersRow]] = {
     additionalReference(journeyRequest.journey.journeySpecificData).map { chargeReference =>
-      Seq(CheckYourAnswersRow(
-        titleMessageKey = "check-your-details.VcVatOther.charge-reference",
-        value           = Seq(chargeReference.reference),
-        changeLink      = None
-      ))
+      Seq(
+        CheckYourAnswersRow(
+          titleMessageKey = "check-your-details.VcVatOther.charge-reference",
+          value = Seq(chargeReference.reference),
+          changeLink = None
+        )
+      )
     }
   }
 
@@ -61,9 +67,9 @@ object ExtendedVcVatOther extends ExtendedOrigin {
 
   override def emailTaxTypeMessageKey: String = "email.tax-name.VcVatOther"
 
-  override def surveyAuditName: String = "vat"
-  override def surveyReturnHref: String = "/business-account"
-  override def surveyReturnMessageKey: String = "payments-survey.bta.return-message"
+  override def surveyAuditName: String         = "vat"
+  override def surveyReturnHref: String        = "/business-account"
+  override def surveyReturnMessageKey: String  = "payments-survey.bta.return-message"
   override def surveyIsWelshSupported: Boolean = true
-  override def surveyBannerTitle: String = serviceNameMessageKey
+  override def surveyBannerTitle: String       = serviceNameMessageKey
 }

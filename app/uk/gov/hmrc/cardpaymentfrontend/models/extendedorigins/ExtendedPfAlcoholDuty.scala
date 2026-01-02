@@ -25,22 +25,26 @@ import uk.gov.hmrc.cardpaymentfrontend.models.{CheckYourAnswersRow, Link, Paymen
 
 object ExtendedPfAlcoholDuty extends ExtendedOrigin {
   override val serviceNameMessageKey: String = "service-name.PfAlcoholDuty"
-  override val taxNameMessageKey: String = "payment-complete.tax-name.PfAlcoholDuty"
+  override val taxNameMessageKey: String     = "payment-complete.tax-name.PfAlcoholDuty"
 
   def cardFeesPagePaymentMethods: Set[PaymentMethod] = Set(OpenBanking, Card)
 
   def paymentMethods(): Set[PaymentMethod] = Set(Card, OpenBanking, Bacs)
 
   override def checkYourAnswersReferenceRow(journeyRequest: JourneyRequest[AnyContent])(payFrontendBaseUrl: String): Option[CheckYourAnswersRow] = {
-    Some(CheckYourAnswersRow(
-      titleMessageKey = "check-your-details.PfAlcoholDuty.reference",
-      value           = Seq(journeyRequest.journey.referenceValue),
-      changeLink      = Some(Link(
-        href       = Call("GET", changeReferenceUrl(payFrontendBaseUrl)),
-        linkId     = "check-your-details-reference-change-link",
-        messageKey = "check-your-details.change"
-      ))
-    ))
+    Some(
+      CheckYourAnswersRow(
+        titleMessageKey = "check-your-details.PfAlcoholDuty.reference",
+        value = Seq(journeyRequest.journey.referenceValue),
+        changeLink = Some(
+          Link(
+            href = Call("GET", changeReferenceUrl(payFrontendBaseUrl)),
+            linkId = "check-your-details-reference-change-link",
+            messageKey = "check-your-details.change"
+          )
+        )
+      )
+    )
   }
 
   override def openBankingOriginSpecificSessionData: JourneySpecificData => Option[OriginSpecificSessionData] = {
@@ -50,9 +54,9 @@ object ExtendedPfAlcoholDuty extends ExtendedOrigin {
 
   override def emailTaxTypeMessageKey: String = "email.tax-name.PfAlcoholDuty"
 
-  override def surveyAuditName: String = "alcohol-duty"
-  override def surveyReturnHref: String = "https://www.gov.uk/government/organisations/hm-revenue-customs"
-  override def surveyReturnMessageKey: String = "payments-survey.other.return-message"
+  override def surveyAuditName: String         = "alcohol-duty"
+  override def surveyReturnHref: String        = "https://www.gov.uk/government/organisations/hm-revenue-customs"
+  override def surveyReturnMessageKey: String  = "payments-survey.other.return-message"
   override def surveyIsWelshSupported: Boolean = true
-  override def surveyBannerTitle: String = serviceNameMessageKey
+  override def surveyBannerTitle: String       = serviceNameMessageKey
 }

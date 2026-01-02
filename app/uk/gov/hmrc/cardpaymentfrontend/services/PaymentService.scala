@@ -33,7 +33,7 @@ class PaymentService @Inject() (payApiConnector: PayApiConnector)(implicit execu
     journeyRequest.journey.order.fold[Future[Unit]](Future.successful(()))(_ => resetWebPayment())
 
   def resetSentJourneyThenResult(r: => Result)(implicit journeyRequest: JourneyRequest[_]): Future[Result] =
-    journeyRequest.journey.order.fold[Future[Result]](Future.successful(r)) (_ => resetWebPayment().map(_ => r))
+    journeyRequest.journey.order.fold[Future[Result]](Future.successful(r))(_ => resetWebPayment().map(_ => r))
 
   // Creates a new journey but copies over stuff like session id and journey specific data.
   // To be used when journeys are cancelled/failed.

@@ -28,7 +28,6 @@ class EmailConnectorSpec extends ItSpec {
   val systemUnderTest: EmailConnector = app.injector.instanceOf[EmailConnector]
 
   val jsonBody: JsValue = Json.parse(
-
     """
         {
           "to" : [ "test@email.com" ],
@@ -49,10 +48,10 @@ class EmailConnectorSpec extends ItSpec {
     ".sendEmail" - {
 
       val emailRequest = EmailRequest(
-        to         = List(EmailAddress("test@email.com")),
+        to = List(EmailAddress("test@email.com")),
         templateId = "payment_successful",
         parameters = EmailParameters("Self Assessment", "ending with 2564K", "transaction-reference", "1,000", None, None),
-        force      = false
+        force = false
       )
 
       "should return a 202 ACCEPTED when endpoint is hit" in {

@@ -30,12 +30,14 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class GetJourneyActionRefiner @Inject() (
-    val messagesApi:        MessagesApi,
-    appConfig:              AppConfig,
-    payApiConnector:        PayApiConnector,
-    requestSupport:         RequestSupport,
-    forceDeleteAnswersPage: ForceDeleteAnswersPage
-)(implicit ec: ExecutionContext) extends ActionRefiner[Request, JourneyRequest] with Logging {
+  val messagesApi:        MessagesApi,
+  appConfig:              AppConfig,
+  payApiConnector:        PayApiConnector,
+  requestSupport:         RequestSupport,
+  forceDeleteAnswersPage: ForceDeleteAnswersPage
+)(implicit ec: ExecutionContext)
+    extends ActionRefiner[Request, JourneyRequest]
+    with Logging {
 
   import requestSupport._
 
@@ -43,12 +45,15 @@ class GetJourneyActionRefiner @Inject() (
 
     implicit val r: Request[A] = request
 
-    payApiConnector.findLatestJourneyBySessionId()(requestSupport.hc)
+    payApiConnector
+      .findLatestJourneyBySessionId()(requestSupport.hc)
       .map {
         case Some(journey) => Right(new JourneyRequest(journey, request))
-        case None =>
+        case None          =>
           logger.warn("No journey found for session id, sending to timed out page.")
-          Left(Results.Unauthorized(forceDeleteAnswersPage(false, Some(Url(appConfig.payFrontendBaseUrl))))) //should probably be a redirect to pay-frontend /pay
+          Left(
+            Results.Unauthorized(forceDeleteAnswersPage(false, Some(Url(appConfig.payFrontendBaseUrl))))
+          ) // should probably be a redirect to pay-frontend /pay
       }
   }
 

@@ -27,39 +27,43 @@ import uk.gov.hmrc.cardpaymentfrontend.util.Period.displayCalendarPeriodMonthAnd
 
 object ExtendedNiEuVatIoss extends ExtendedOrigin {
   override val serviceNameMessageKey: String = "service-name.NiEuVatIoss"
-  override val taxNameMessageKey: String = "payment-complete.tax-name.NiEuVatIoss"
+  override val taxNameMessageKey: String     = "payment-complete.tax-name.NiEuVatIoss"
 
   def cardFeesPagePaymentMethods: Set[PaymentMethod] = Set(OpenBanking)
-  def paymentMethods(): Set[PaymentMethod] = Set(Card, OpenBanking, Bacs)
+  def paymentMethods(): Set[PaymentMethod]           = Set(Card, OpenBanking, Bacs)
 
   override def checkYourAnswersReferenceRow(journeyRequest: JourneyRequest[AnyContent])(payFrontendBaseUrl: String): Option[CheckYourAnswersRow] = {
     journeyRequest.journey.journeySpecificData.reference.map { reference =>
       CheckYourAnswersRow(
         titleMessageKey = "check-your-details.NiEuVatIoss.reference",
-        value           = Seq(reference.value),
-        changeLink      = None
+        value = Seq(reference.value),
+        changeLink = None
       )
     }
   }
 
-  override def checkYourAnswersAdditionalReferenceRow(journeyRequest: JourneyRequest[AnyContent])(payFrontendBaseUrl: String)(implicit messages: Messages): Option[Seq[CheckYourAnswersRow]] = {
+  override def checkYourAnswersAdditionalReferenceRow(
+    journeyRequest: JourneyRequest[AnyContent]
+  )(payFrontendBaseUrl: String)(implicit messages: Messages): Option[Seq[CheckYourAnswersRow]] = {
     journeyRequest.journey.journeySpecificData match {
       case jsd: JsdNiEuVatIoss =>
-        val ioss = jsd.ioss.canonicalizedValue
+        val ioss   = jsd.ioss.canonicalizedValue
         val period = jsd.period
-        Some(Seq(
-          CheckYourAnswersRow(
-            titleMessageKey = "check-your-details.NiEuVatIoss.ioss-number",
-            value           = Seq(ioss),
-            changeLink      = None
-          ),
-          CheckYourAnswersRow(
-            titleMessageKey = "check-your-details.NiEuVatIoss.tax-year",
-            value           = Seq(displayCalendarPeriodMonthAndYear(period)),
-            changeLink      = None
+        Some(
+          Seq(
+            CheckYourAnswersRow(
+              titleMessageKey = "check-your-details.NiEuVatIoss.ioss-number",
+              value = Seq(ioss),
+              changeLink = None
+            ),
+            CheckYourAnswersRow(
+              titleMessageKey = "check-your-details.NiEuVatIoss.tax-year",
+              value = Seq(displayCalendarPeriodMonthAndYear(period)),
+              changeLink = None
+            )
           )
-        ))
-      case _ => None
+        )
+      case _                   => None
     }
   }
 
@@ -68,11 +72,11 @@ object ExtendedNiEuVatIoss extends ExtendedOrigin {
     case _                 => throw new RuntimeException("Incorrect origin found")
   }
 
-  override def surveyAuditName: String = "ni-eu-vat-ioss"
-  override def surveyReturnHref: String = "https://www.gov.uk/government/organisations/hm-revenue-customs"
-  override def surveyReturnMessageKey: String = "payments-survey.other.return-message"
+  override def surveyAuditName: String         = "ni-eu-vat-ioss"
+  override def surveyReturnHref: String        = "https://www.gov.uk/government/organisations/hm-revenue-customs"
+  override def surveyReturnMessageKey: String  = "payments-survey.other.return-message"
   override def surveyIsWelshSupported: Boolean = false
-  override def surveyBannerTitle: String = serviceNameMessageKey
+  override def surveyBannerTitle: String       = serviceNameMessageKey
 
   override def emailTaxTypeMessageKey: String = "email.tax-name.NiEuVatIoss"
 

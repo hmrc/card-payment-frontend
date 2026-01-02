@@ -27,62 +27,66 @@ import uk.gov.hmrc.cardpaymentfrontend.util.Period.displayCalendarPeriodMonthAnd
 
 object ExtendedPfNiEuVatIoss extends ExtendedOrigin {
   override val serviceNameMessageKey: String = "service-name.PfNiEuVatIoss"
-  override val taxNameMessageKey: String = "payment-complete.tax-name.PfNiEuVatIoss"
+  override val taxNameMessageKey: String     = "payment-complete.tax-name.PfNiEuVatIoss"
 
   def cardFeesPagePaymentMethods: Set[PaymentMethod] = Set(OpenBanking)
-  def paymentMethods(): Set[PaymentMethod] = Set(Card, OpenBanking, Bacs)
+  def paymentMethods(): Set[PaymentMethod]           = Set(Card, OpenBanking, Bacs)
 
   override def checkYourAnswersReferenceRow(journeyRequest: JourneyRequest[AnyContent])(payFrontendBaseUrl: String): Option[CheckYourAnswersRow] = {
     journeyRequest.journey.journeySpecificData.reference.map { reference =>
       CheckYourAnswersRow(
         titleMessageKey = "check-your-details.PfNiEuVatIoss.reference",
-        value           = Seq(reference.value),
-        changeLink      = None
+        value = Seq(reference.value),
+        changeLink = None
       )
     }
   }
 
-  override def checkYourAnswersAdditionalReferenceRow(journeyRequest: JourneyRequest[AnyContent])(payFrontendBaseUrl: String)(implicit messages: Messages): Option[Seq[CheckYourAnswersRow]] = {
+  override def checkYourAnswersAdditionalReferenceRow(
+    journeyRequest: JourneyRequest[AnyContent]
+  )(payFrontendBaseUrl: String)(implicit messages: Messages): Option[Seq[CheckYourAnswersRow]] = {
     journeyRequest.journey.journeySpecificData match {
       case jsd: JsdPfNiEuVatIoss =>
         for {
           period <- jsd.period
-          ioss <- jsd.ioss
+          ioss   <- jsd.ioss
         } yield Seq(
           CheckYourAnswersRow(
             titleMessageKey = "check-your-details.PfNiEuVatIoss.ioss-number",
-            value           = Seq(ioss.canonicalizedValue),
-            changeLink      = None
+            value = Seq(ioss.canonicalizedValue),
+            changeLink = None
           ),
           CheckYourAnswersRow(
             titleMessageKey = "check-your-details.PfNiEuVatIoss.tax-year",
-            value           = Seq(displayCalendarPeriodMonthAndYear(period)),
-            changeLink      = Some(Link(
-              href       = Call("GET", s"$payFrontendBaseUrl/change-ioss-vat-period?fromCardPayment=true"),
-              linkId     = "check-your-details-period-change-link",
-              messageKey = "check-your-details.change"
-            ))
+            value = Seq(displayCalendarPeriodMonthAndYear(period)),
+            changeLink = Some(
+              Link(
+                href = Call("GET", s"$payFrontendBaseUrl/change-ioss-vat-period?fromCardPayment=true"),
+                linkId = "check-your-details-period-change-link",
+                messageKey = "check-your-details.change"
+              )
+            )
           )
         )
-      case _ => None
+      case _                     => None
     }
   }
 
   override def openBankingOriginSpecificSessionData: JourneySpecificData => Option[OriginSpecificSessionData] = {
     case j: JsdPfNiEuVatIoss =>
       for {
-        vrn <- j.ioss
+        vrn    <- j.ioss
         period <- j.period
       } yield PfNiEuVatIossSessionData(vrn, period)
-    case _ =>
+    case _                   =>
       throw new RuntimeException("Incorrect origin found")
   }
 
-  override def surveyAuditName: String = "ni-eu-vat-ioss"
-  override def surveyReturnHref: String = "https://www.gov.uk/government/organisations/hm-revenue-customs"
-  override def surveyReturnMessageKey: String = "payments-survey.other.return-message"
+  override def surveyAuditName: String         = "ni-eu-vat-ioss"
+  override def surveyReturnHref: String        = "https://www.gov.uk/government/organisations/hm-revenue-customs"
+  override def surveyReturnMessageKey: String  = "payments-survey.other.return-message"
   override def surveyIsWelshSupported: Boolean = false
-  override def surveyBannerTitle: String = serviceNameMessageKey
+  override def surveyBannerTitle: String       = serviceNameMessageKey
 
   override def emailTaxTypeMessageKey: String = "email.tax-name.PfNiEuVatIoss"
 

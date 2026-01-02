@@ -28,17 +28,18 @@ object ChooseAPaymentMethodForm {
 
     val chooseAPaymentMethodMapping: Mapping[ChooseAPaymentMethodFormValues] = of(
       EnumFormatter.format(
-        `enum`                  = ChooseAPaymentMethodFormValues,
-        errorMessageIfMissing   = "payment-failed.choose-a-payment-method.error",
+        `enum` = ChooseAPaymentMethodFormValues,
+        errorMessageIfMissing = "payment-failed.choose-a-payment-method.error",
         errorMessageIfEnumError = "payment-failed.choose-a-payment-method.error",
-        insensitive             = true
+        insensitive = true
       )
     )
-    Form(mapping(
-      "payment_method" -> chooseAPaymentMethodMapping
-    )(identity)(Some(_)))
+    Form(
+      mapping(
+        "payment_method" -> chooseAPaymentMethodMapping
+      )(identity)(Some(_))
+    )
 
   }
 
 }
-

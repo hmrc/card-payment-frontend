@@ -109,11 +109,10 @@ class ClientIdServiceSpec extends ItSpec {
       (TestJourneys.WcChildBenefitRepayments.journeyBeforeBeginWebPayment, ClientIds.CBEE)
     )
 
-    forAll(scenariosEn) {
-      case (journey, clientId) =>
-        s"should return the correct client id: ${clientId.prodCode} for ${journey.origin.entryName} when language is english" in {
-          systemUnderTest.determineClientId(journey, Languages.English) shouldBe clientId withClue s"check scenario for origin ${journey.origin.toString}"
-        }
+    forAll(scenariosEn) { case (journey, clientId) =>
+      s"should return the correct client id: ${clientId.prodCode} for ${journey.origin.entryName} when language is english" in {
+        systemUnderTest.determineClientId(journey, Languages.English) shouldBe clientId withClue s"check scenario for origin ${journey.origin.toString}"
+      }
     }
 
     implementedOrigins.foreach { origin =>
@@ -199,11 +198,10 @@ class ClientIdServiceSpec extends ItSpec {
       (TestJourneys.WcChildBenefitRepayments.journeyBeforeBeginWebPayment, ClientIds.CBEC)
     )
 
-    forAll(scenariosCy) {
-      case (journey, clientId) =>
-        s"should return the correct client id: ${clientId.prodCode} for ${journey.origin.entryName} when language is welsh" in {
-          systemUnderTest.determineClientId(journey, Languages.Welsh) shouldBe clientId withClue s"check scenario for origin ${journey.origin.toString}"
-        }
+    forAll(scenariosCy) { case (journey, clientId) =>
+      s"should return the correct client id: ${clientId.prodCode} for ${journey.origin.entryName} when language is welsh" in {
+        systemUnderTest.determineClientId(journey, Languages.Welsh) shouldBe clientId withClue s"check scenario for origin ${journey.origin.toString}"
+      }
     }
 
     implementedOrigins

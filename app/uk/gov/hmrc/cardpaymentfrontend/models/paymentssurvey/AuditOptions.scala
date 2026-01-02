@@ -23,10 +23,10 @@ import uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins.ExtendedOrigin
 import uk.gov.hmrc.cardpaymentfrontend.requests.RequestSupport
 
 final case class AuditOptions(
-    userType:  String,
-    journey:   Option[String] = None,
-    orderId:   Option[String] = None,
-    liability: Option[String] = None
+  userType:  String,
+  journey:   Option[String] = None,
+  orderId:   Option[String] = None,
+  liability: Option[String] = None
 )
 
 object AuditOptions {
@@ -40,9 +40,9 @@ object AuditOptions {
 
   def getAuditOptions(journey: Journey[JourneySpecificData], extendedOrigin: ExtendedOrigin)(implicit r: Request[_]): AuditOptions = {
     AuditOptions(
-      userType  = if (RequestSupport.isLoggedIn) "LoggedIn" else "LoggedOut",
-      journey   = Option(journey.status.entryName),
-      orderId   = journey.reference.map(_.value),
+      userType = if (RequestSupport.isLoggedIn) "LoggedIn" else "LoggedOut",
+      journey = Option(journey.status.entryName),
+      orderId = journey.reference.map(_.value),
       liability = Some(extendedOrigin.surveyAuditName)
     )
   }

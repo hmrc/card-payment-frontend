@@ -41,10 +41,12 @@ class ActionRefinerSpec extends ItSpec {
     val fakeRequest: FakeRequest[AnyContent] = FakeRequest("GET", "/who-cares").withSessionId()
 
     val forceDeleteAnswersPage = app.injector.instanceOf[ForceDeleteAnswersPage]
-    val messagesApi = app.injector.instanceOf[MessagesApi]
+    val messagesApi            = app.injector.instanceOf[MessagesApi]
 
     "should return a left with unauthorised Result when pay-api returns no journey" in {
-      systemUnderTest.refine(fakeRequest).futureValue shouldBe Left(Results.Unauthorized(forceDeleteAnswersPage(false, Some(Url("http://localhost:9056/pay")))(fakeRequest, messagesApi.preferred(fakeRequest))))
+      systemUnderTest.refine(fakeRequest).futureValue shouldBe Left(
+        Results.Unauthorized(forceDeleteAnswersPage(false, Some(Url("http://localhost:9056/pay")))(fakeRequest, messagesApi.preferred(fakeRequest)))
+      )
     }
 
     "should return a right with JourneyRequest when pay-api returns a journey" in {
@@ -59,7 +61,7 @@ class ActionRefinerSpec extends ItSpec {
 
     val systemUnderTest: JourneyFinishedActionRefiner = app.injector.instanceOf[JourneyFinishedActionRefiner]
 
-      def fakeRequest(journey: Journey[JourneySpecificData]): JourneyRequest[AnyContent] = new JourneyRequest(journey, FakeRequest())
+    def fakeRequest(journey: Journey[JourneySpecificData]): JourneyRequest[AnyContent] = new JourneyRequest(journey, FakeRequest())
 
     val errorHandler = app.injector.instanceOf[ErrorHandler]
 
@@ -69,7 +71,7 @@ class ActionRefinerSpec extends ItSpec {
     }
 
     "should return a right when journey in JourneyRequest is in a 'terminal state' (i.e. finished)" in {
-      val request = fakeRequest(TestJourneys.PfSa.journeyAfterSucceedDebitWebPayment)
+      val request                                            = fakeRequest(TestJourneys.PfSa.journeyAfterSucceedDebitWebPayment)
       val result: Either[Result, JourneyRequest[AnyContent]] = systemUnderTest.refine(request).futureValue
       result.isRight shouldBe true
       result.map(_.journey) shouldBe Right(TestJourneys.PfSa.journeyAfterSucceedDebitWebPayment)
@@ -79,7 +81,7 @@ class ActionRefinerSpec extends ItSpec {
   "journeyRoutingActionRefiner" - {
     val systemUnderTest: JourneyRoutingActionRefiner = app.injector.instanceOf[JourneyRoutingActionRefiner]
 
-      def fakeRequest(journey: Journey[JourneySpecificData]): JourneyRequest[AnyContent] = new JourneyRequest(journey, FakeRequest())
+    def fakeRequest(journey: Journey[JourneySpecificData]): JourneyRequest[AnyContent] = new JourneyRequest(journey, FakeRequest())
 
     "should return a Left with redirect to address page" - {
       "for Mib origin" in {
@@ -96,7 +98,7 @@ class ActionRefinerSpec extends ItSpec {
       TestHelpers.implementedOrigins
         .diff[Origin](Seq[Origin](Origins.Mib, Origins.BcPngr))
         .foreach { origin =>
-          val request = fakeRequest(TestHelpers.deriveTestDataFromOrigin(origin).journeyBeforeBeginWebPayment)
+          val request                                            = fakeRequest(TestHelpers.deriveTestDataFromOrigin(origin).journeyBeforeBeginWebPayment)
           val result: Either[Result, JourneyRequest[AnyContent]] = systemUnderTest.refine(request).futureValue
           result.isRight shouldBe true withClue s"expected a right for origin: ${origin.entryName}"
         }
@@ -106,23 +108,26 @@ class ActionRefinerSpec extends ItSpec {
   "paymentStatusActionRefiners" - {
 
     val systemUnderTest: PaymentStatusActionRefiners = app.injector.instanceOf[PaymentStatusActionRefiners]
-    val errorHandler: ErrorHandler = app.injector.instanceOf[ErrorHandler]
-    val forceDeleteAnswersPage = app.injector.instanceOf[ForceDeleteAnswersPage]
-    val messagesApi = app.injector.instanceOf[MessagesApi]
+    val errorHandler: ErrorHandler                   = app.injector.instanceOf[ErrorHandler]
+    val forceDeleteAnswersPage                       = app.injector.instanceOf[ForceDeleteAnswersPage]
+    val messagesApi                                  = app.injector.instanceOf[MessagesApi]
 
-      def fakeRequest(journey: Journey[JourneySpecificData]): JourneyRequest[AnyContent] = new JourneyRequest(journey, FakeRequest().withSessionId())
-      def technicalDifficultiesPage(journey: Journey[JourneySpecificData]): HtmlFormat.Appendable = errorHandler.technicalDifficulties()(fakeRequest(journey))
-      def test(
-          journey:        Journey[JourneySpecificData],
-          refiner:        ActionRefiner[JourneyRequest, JourneyRequest],
-          expectedResult: Result
-      ): Assertion = {
-        val request = fakeRequest(journey)
-        val resultFromRefine = refiner.invokeBlock(request, { _: JourneyRequest[_] =>
+    def fakeRequest(journey:               Journey[JourneySpecificData]): JourneyRequest[AnyContent] = new JourneyRequest(journey, FakeRequest().withSessionId())
+    def technicalDifficultiesPage(journey: Journey[JourneySpecificData]): HtmlFormat.Appendable      = errorHandler.technicalDifficulties()(fakeRequest(journey))
+    def test(
+      journey:        Journey[JourneySpecificData],
+      refiner:        ActionRefiner[JourneyRequest, JourneyRequest],
+      expectedResult: Result
+    ): Assertion = {
+      val request          = fakeRequest(journey)
+      val resultFromRefine = refiner.invokeBlock(
+        request,
+        { _: JourneyRequest[_] =>
           Future.successful(Results.Ok("test ok"))
-        })
-        resultFromRefine.futureValue shouldBe expectedResult
-      }
+        }
+      )
+      resultFromRefine.futureValue shouldBe expectedResult
+    }
 
     "findJourneyBySessionIdFallBackToJourneyIdRefiner should" - {
 
@@ -130,8 +135,8 @@ class ActionRefinerSpec extends ItSpec {
         val testJourney = TestJourneys.PfSa.journeyAfterBeginWebPayment
         PayApiStub.stubForFindBySessionId2xx(testJourney)
         test(
-          journey        = testJourney,
-          refiner        = systemUnderTest.findJourneyBySessionIdFallBackToJourneyIdRefiner(TestPayApiData.base64EncryptedJourneyId),
+          journey = testJourney,
+          refiner = systemUnderTest.findJourneyBySessionIdFallBackToJourneyIdRefiner(TestPayApiData.base64EncryptedJourneyId),
           expectedResult = Results.Ok("test ok")
         )
         PayApiStub.verifyFindByJourneyId(0, testJourney._id)
@@ -142,8 +147,8 @@ class ActionRefinerSpec extends ItSpec {
         PayApiStub.stubForFindBySessionId404
         PayApiStub.stubForFindByJourneyId2xx(testJourney._id)(testJourney)
         test(
-          journey        = testJourney,
-          refiner        = systemUnderTest.findJourneyBySessionIdFallBackToJourneyIdRefiner(TestPayApiData.base64EncryptedJourneyId),
+          journey = testJourney,
+          refiner = systemUnderTest.findJourneyBySessionIdFallBackToJourneyIdRefiner(TestPayApiData.base64EncryptedJourneyId),
           expectedResult = Results.Ok("test ok")
         )
       }
@@ -153,9 +158,11 @@ class ActionRefinerSpec extends ItSpec {
         PayApiStub.stubForFindBySessionId404
         PayApiStub.stubForFindByJourneyId404(testJourney._id)
         test(
-          journey        = testJourney,
-          refiner        = systemUnderTest.findJourneyBySessionIdFallBackToJourneyIdRefiner(TestPayApiData.base64EncryptedJourneyId),
-          expectedResult = Results.Unauthorized(forceDeleteAnswersPage(false, Some(Url("http://localhost:9056/pay")))(fakeRequest(testJourney), messagesApi.preferred(fakeRequest(testJourney))))
+          journey = testJourney,
+          refiner = systemUnderTest.findJourneyBySessionIdFallBackToJourneyIdRefiner(TestPayApiData.base64EncryptedJourneyId),
+          expectedResult = Results.Unauthorized(
+            forceDeleteAnswersPage(false, Some(Url("http://localhost:9056/pay")))(fakeRequest(testJourney), messagesApi.preferred(fakeRequest(testJourney)))
+          )
         )
       }
     }
@@ -167,7 +174,11 @@ class ActionRefinerSpec extends ItSpec {
       }
 
       "return redirect to /payment-complete when journey is in completed state" in {
-        test(TestJourneys.PfSa.journeyAfterSucceedDebitWebPayment, systemUnderTest.paymentStatusActionRefiner, Results.Redirect("/pay-by-card/payment-complete"))
+        test(
+          TestJourneys.PfSa.journeyAfterSucceedDebitWebPayment,
+          systemUnderTest.paymentStatusActionRefiner,
+          Results.Redirect("/pay-by-card/payment-complete")
+        )
       }
       "return redirect to /payment-cancelled when journey is in cancelled state" in {
         test(TestJourneys.PfSa.journeyAfterCancelWebPayment, systemUnderTest.paymentStatusActionRefiner, Results.Redirect("/pay-by-card/payment-cancelled"))

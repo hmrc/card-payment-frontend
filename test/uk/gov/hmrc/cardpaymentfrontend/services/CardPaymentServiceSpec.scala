@@ -44,9 +44,9 @@ class CardPaymentServiceSpec extends ItSpec {
   )
 
   val systemUnderTest: CardPaymentService = app.injector.instanceOf[CardPaymentService]
-  val messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
+  val messagesApi: MessagesApi            = app.injector.instanceOf[MessagesApi]
 
-  implicit val headerCarrier: HeaderCarrier = HeaderCarrier()
+  implicit val headerCarrier: HeaderCarrier                     = HeaderCarrier()
   implicit val fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest()
 
   def fakeJourneyRequest(journey: Journey[JourneySpecificData], withEmail: Boolean): JourneyRequest[AnyContent] = {
@@ -54,30 +54,30 @@ class CardPaymentServiceSpec extends ItSpec {
     else new JourneyRequest(journey, FakeRequest().withAddressInSession(journey._id))
   }
 
-  val testJourneyBeforeBeginWebPayment: Journey[JsdPfSa] = TestJourneys.PfSa.journeyBeforeBeginWebPayment
-  val testJourneyAfterBeginWebPayment: Journey[JsdPfSa] = TestJourneys.PfSa.journeyAfterBeginWebPayment
+  val testJourneyBeforeBeginWebPayment: Journey[JsdPfSa]       = TestJourneys.PfSa.journeyBeforeBeginWebPayment
+  val testJourneyAfterBeginWebPayment: Journey[JsdPfSa]        = TestJourneys.PfSa.journeyAfterBeginWebPayment
   val testJourneyAfterSucceedDebitWebPayment: Journey[JsdPfSa] = TestJourneys.PfSa.journeyAfterSucceedDebitWebPayment
-  val testAddress: Address = Address("made up street", postcode = Some("AA11AA"), country = "GBR")
-  val testEmail: EmailAddress = EmailAddress("some@email.com")
+  val testAddress: Address                                     = Address("made up street", postcode = Some("AA11AA"), country = "GBR")
+  val testEmail: EmailAddress                                  = EmailAddress("some@email.com")
 
   "CardPaymentService" - {
 
     "returnToHmrcUrl" - {
 
       "should return a url that matches barclaycards regex for urlAddress, with journeyId encrypted and base64 encoded" in {
-        val testJourney = TestJourneys.PfSa.journeyBeforeBeginWebPayment
+        val testJourney     = TestJourneys.PfSa.journeyBeforeBeginWebPayment
         val returnToHmrcUrl = systemUnderTest.returnToHmrcUrl(testJourney._id)
 
         returnToHmrcUrl matches """^[A-Za-z0-9_ "!@#$&',*+/=()^.:-]{1,1024}$""" shouldBe true
       }
 
       "should return the correct journey, but encrypted and then base64 encoded" in {
-        val cryptoService = app.injector.instanceOf[CryptoService]
-        val testJourney = TestJourneys.PfSa.journeyBeforeBeginWebPayment
-        val returnToHmrcUrl = systemUnderTest.returnToHmrcUrl(testJourney._id)
+        val cryptoService          = app.injector.instanceOf[CryptoService]
+        val testJourney            = TestJourneys.PfSa.journeyBeforeBeginWebPayment
+        val returnToHmrcUrl        = systemUnderTest.returnToHmrcUrl(testJourney._id)
         val journeyIdBase64Encoded = returnToHmrcUrl.split("/return-to-hmrc/").lastOption
-        val decodedJourneyId = journeyIdBase64Encoded.map(s => new String(Base64.getDecoder.decode(s.getBytes)))
-        val decryptedJourneyId = decodedJourneyId.map(cryptoService.decryptString)
+        val decodedJourneyId       = journeyIdBase64Encoded.map(s => new String(Base64.getDecoder.decode(s.getBytes)))
+        val decryptedJourneyId     = decodedJourneyId.map(cryptoService.decryptString)
 
         decryptedJourneyId shouldBe Some(testJourney._id.value)
       }
@@ -86,7 +86,7 @@ class CardPaymentServiceSpec extends ItSpec {
 
     "initiatePayment" - {
 
-      implicit val journeyRequest: JourneyRequest[_] = fakeJourneyRequest(journey   = testJourneyBeforeBeginWebPayment, withEmail = true)
+      implicit val journeyRequest: JourneyRequest[_] = fakeJourneyRequest(journey = testJourneyBeforeBeginWebPayment, withEmail = true)
 
       val expectedCardPaymentInitiatePaymentResponse = CardPaymentInitiatePaymentResponse("someiframeurl", "sometransactionref")
 
@@ -110,9 +110,10 @@ class CardPaymentServiceSpec extends ItSpec {
         systemUnderTest.initiatePayment(testJourneyBeforeBeginWebPayment, testAddress, Some(testEmail), English).futureValue
         PayApiStub.verifyUpdateBeginWebPayment(1, testJourneyBeforeBeginWebPayment._id)
         AuditConnectorStub.verifyEventAudited(
-          auditType  = "PaymentAttempt",
-          auditEvent = Json.parse(
-            """
+          auditType = "PaymentAttempt",
+          auditEvent = Json
+            .parse(
+              """
               |{
               | "address": {
               |   "line1": "made up street",
@@ -128,40 +129,62 @@ class CardPaymentServiceSpec extends ItSpec {
               | "paymentTotal": 12.34,
               | "transactionReference": "sometransactionref"
               |}""".stripMargin
-          ).as[JsObject]
+            )
+            .as[JsObject]
         )
       }
     }
 
     "finishPayment" - {
-      val testTime = LocalDateTime.now(FrozenTime.clock)
-      val testCardPaymentResult = CardPaymentResult(CardPaymentFinishPaymentResponses.Successful, AdditionalPaymentInfo(Some("debit"), Some(123), Some(testTime)))
+      val testTime              = LocalDateTime.now(FrozenTime.clock)
+      val testCardPaymentResult =
+        CardPaymentResult(CardPaymentFinishPaymentResponses.Successful, AdditionalPaymentInfo(Some("debit"), Some(123), Some(testTime)))
 
       "should return Some[CardPaymentResult] when one is returned from card-payment backend" in {
         PayApiStub.stubForUpdateSucceedWebPayment2xx(testJourneyBeforeBeginWebPayment._id)
         CardPaymentStub.AuthAndCapture.stubForAuthAndCapture2xx("sometransactionref", testCardPaymentResult)
-        val result = systemUnderTest.finishPayment("sometransactionref", testJourneyAfterBeginWebPayment._id.value, English)(fakeJourneyRequest(testJourneyAfterBeginWebPayment, withEmail = false), messagesApi).futureValue
+        val result = systemUnderTest
+          .finishPayment("sometransactionref", testJourneyAfterBeginWebPayment._id.value, English)(
+            fakeJourneyRequest(testJourneyAfterBeginWebPayment, withEmail = false),
+            messagesApi
+          )
+          .futureValue
         result shouldBe Some(CardPaymentResult(CardPaymentFinishPaymentResponses.Successful, AdditionalPaymentInfo(Some("debit"), Some(123), Some(testTime))))
       }
 
       "should update pay-api with SucceedWebPaymentRequest when call to card-payment backend succeeds" in {
         PayApiStub.stubForUpdateSucceedWebPayment2xx(testJourneyBeforeBeginWebPayment._id)
         CardPaymentStub.AuthAndCapture.stubForAuthAndCapture2xx("sometransactionref", testCardPaymentResult)
-        systemUnderTest.finishPayment("sometransactionref", testJourneyAfterBeginWebPayment._id.value, English)(fakeJourneyRequest(testJourneyAfterBeginWebPayment, withEmail = false), messagesApi).futureValue
+        systemUnderTest
+          .finishPayment("sometransactionref", testJourneyAfterBeginWebPayment._id.value, English)(
+            fakeJourneyRequest(testJourneyAfterBeginWebPayment, withEmail = false),
+            messagesApi
+          )
+          .futureValue
         PayApiStub.verifyUpdateSucceedWebPayment(1, testJourneyAfterBeginWebPayment._id, testTime)
       }
 
       "should update pay-api with FailWebPaymentRequest when call to card-payment backend indicates failure" in {
         val testCardPaymentResult = CardPaymentResult(CardPaymentFinishPaymentResponses.Failed, AdditionalPaymentInfo(Some("debit"), None, Some(testTime)))
         CardPaymentStub.AuthAndCapture.stubForAuthAndCapture2xx("sometransactionref", testCardPaymentResult)
-        systemUnderTest.finishPayment("sometransactionref", testJourneyAfterBeginWebPayment._id.value, English)(fakeJourneyRequest(testJourneyAfterBeginWebPayment, withEmail = false), messagesApi).futureValue
+        systemUnderTest
+          .finishPayment("sometransactionref", testJourneyAfterBeginWebPayment._id.value, English)(
+            fakeJourneyRequest(testJourneyAfterBeginWebPayment, withEmail = false),
+            messagesApi
+          )
+          .futureValue
         PayApiStub.verifyUpdateFailWebPayment(1, testJourneyAfterBeginWebPayment._id, testTime)
       }
 
       "should update pay-api with CancelWebPaymentRequest when call to card-payment backend indicates Cancelled" in {
         val testCardPaymentResult = CardPaymentResult(CardPaymentFinishPaymentResponses.Cancelled, AdditionalPaymentInfo(None, None, None))
         CardPaymentStub.AuthAndCapture.stubForAuthAndCapture2xx("sometransactionref", testCardPaymentResult)
-        systemUnderTest.finishPayment("sometransactionref", testJourneyAfterBeginWebPayment._id.value, English)(fakeJourneyRequest(testJourneyAfterBeginWebPayment, withEmail = false), messagesApi).futureValue
+        systemUnderTest
+          .finishPayment("sometransactionref", testJourneyAfterBeginWebPayment._id.value, English)(
+            fakeJourneyRequest(testJourneyAfterBeginWebPayment, withEmail = false),
+            messagesApi
+          )
+          .futureValue
         PayApiStub.verifyUpdateCancelWebPayment(1, testJourneyAfterBeginWebPayment._id)
       }
 
@@ -170,7 +193,12 @@ class CardPaymentServiceSpec extends ItSpec {
         PayApiStub.stubForFindByJourneyId2xx(testJourneyAfterSucceedDebitWebPayment._id)(testJourneyAfterSucceedDebitWebPayment)
         EmailStub.stubForSimpleSendEmail()
         CardPaymentStub.AuthAndCapture.stubForAuthAndCapture2xx("sometransactionref", testCardPaymentResult)
-        systemUnderTest.finishPayment("sometransactionref", testJourneyAfterBeginWebPayment._id.value, English)(fakeJourneyRequest(testJourneyAfterBeginWebPayment, withEmail = true), messagesApi).futureValue
+        systemUnderTest
+          .finishPayment("sometransactionref", testJourneyAfterBeginWebPayment._id.value, English)(
+            fakeJourneyRequest(testJourneyAfterBeginWebPayment, withEmail = true),
+            messagesApi
+          )
+          .futureValue
         PayApiStub.verifyUpdateSucceedWebPayment(1, testJourneyAfterBeginWebPayment._id, testTime)
         eventually(Timeout(Span(500, Milliseconds))) { EmailStub.verifySomeEmailWasSent() }
       }
@@ -178,7 +206,12 @@ class CardPaymentServiceSpec extends ItSpec {
       "should not send an email when there isn't one in session" in {
         PayApiStub.stubForUpdateSucceedWebPayment2xx(testJourneyAfterBeginWebPayment._id)
         CardPaymentStub.AuthAndCapture.stubForAuthAndCapture2xx("sometransactionref", testCardPaymentResult)
-        systemUnderTest.finishPayment("sometransactionref", testJourneyAfterBeginWebPayment._id.value, English)(fakeJourneyRequest(testJourneyAfterBeginWebPayment, withEmail = false), messagesApi).futureValue
+        systemUnderTest
+          .finishPayment("sometransactionref", testJourneyAfterBeginWebPayment._id.value, English)(
+            fakeJourneyRequest(testJourneyAfterBeginWebPayment, withEmail = false),
+            messagesApi
+          )
+          .futureValue
         PayApiStub.verifyUpdateSucceedWebPayment(1, testJourneyAfterBeginWebPayment._id, testTime)
         EmailStub.verifyEmailWasNotSent()
       }
@@ -186,18 +219,23 @@ class CardPaymentServiceSpec extends ItSpec {
       "should trigger an explicit paymentStatus audit event" in {
         CardPaymentStub.AuthAndCapture.stubForAuthAndCapture2xx("sometransactionref", testCardPaymentResult)
 
-        systemUnderTest.finishPayment(
-          "sometransactionref", testJourneyAfterBeginWebPayment._id.value, English
-        )(
-            fakeJourneyRequest(testJourneyAfterBeginWebPayment, withEmail = true), messagesApi
+        systemUnderTest
+          .finishPayment(
+            "sometransactionref",
+            testJourneyAfterBeginWebPayment._id.value,
+            English
+          )(
+            fakeJourneyRequest(testJourneyAfterBeginWebPayment, withEmail = true),
+            messagesApi
           )
           .futureValue
 
         PayApiStub.verifyUpdateSucceedWebPayment(1, testJourneyAfterBeginWebPayment._id, testTime)
         AuditConnectorStub.verifyEventAudited(
-          auditType  = "PaymentResult",
-          auditEvent = Json.parse(
-            """
+          auditType = "PaymentResult",
+          auditEvent = Json
+            .parse(
+              """
               |{
               | "address": {
               |  "line1" : "line1",
@@ -214,7 +252,8 @@ class CardPaymentServiceSpec extends ItSpec {
               | "paymentTotal": 12.34,
               | "transactionReference": "sometransactionref"
               |}""".stripMargin
-          ).as[JsObject]
+            )
+            .as[JsObject]
         )
       }
 
@@ -225,18 +264,22 @@ class CardPaymentServiceSpec extends ItSpec {
         CdsStub.stubSimpleNotification2xx()
         PayApiStub.stubForUpdateSucceedWebPayment2xx(testJourney._id)
         PayApiStub.stubForFindByJourneyId2xx(testJourney._id)(testJourney)
-        systemUnderTest.finishPayment("sometransactionref", testJourney._id.value, English)(fakeJourneyRequest(testJourney, withEmail = false), messagesApi).futureValue
-        eventually(Timeout(Span(500, Milliseconds))){ CdsStub.verifySimpleNotificationSent() }
+        systemUnderTest
+          .finishPayment("sometransactionref", testJourney._id.value, English)(fakeJourneyRequest(testJourney, withEmail = false), messagesApi)
+          .futureValue
+        eventually(Timeout(Span(500, Milliseconds))) { CdsStub.verifySimpleNotificationSent() }
       }
 
       "should not trigger a notification to CDS when origins is PfCds but payment was not successful" in {
-        val testJourney = TestJourneys.PfCds.journeyAfterFailWebPayment
+        val testJourney           = TestJourneys.PfCds.journeyAfterFailWebPayment
         PayApiStub.stubForUpdateFailWebPayment2xx(testJourney._id)
         PayApiStub.stubForFindByJourneyId2xx(testJourney._id)(testJourney)
         val testCardPaymentResult = CardPaymentResult(CardPaymentFinishPaymentResponses.Failed, AdditionalPaymentInfo(Some("debit"), None, Some(testTime)))
         CardPaymentStub.AuthAndCapture.stubForAuthAndCapture2xx("sometransactionref", testCardPaymentResult)
-        systemUnderTest.finishPayment("sometransactionref", testJourney._id.value, English)(fakeJourneyRequest(testJourney, withEmail = false), messagesApi).futureValue
-        eventually(Timeout(Span(500, Milliseconds))){ CdsStub.verifyNoNotificationSent() }
+        systemUnderTest
+          .finishPayment("sometransactionref", testJourney._id.value, English)(fakeJourneyRequest(testJourney, withEmail = false), messagesApi)
+          .futureValue
+        eventually(Timeout(Span(500, Milliseconds))) { CdsStub.verifyNoNotificationSent() }
       }
 
       "should trigger a notification to Mods when origins is Mib and payment is successful" in {
@@ -245,25 +288,31 @@ class CardPaymentServiceSpec extends ItSpec {
         ModsStub.stubNotification2xx()
         PayApiStub.stubForUpdateSucceedWebPayment2xx(testJourney._id)
         PayApiStub.stubForFindByJourneyId2xx(testJourney._id)(testJourney)
-        systemUnderTest.finishPayment("sometransactionref", testJourney._id.value, English)(fakeJourneyRequest(testJourney, withEmail = false), messagesApi).futureValue
-        eventually(Timeout(Span(500, Milliseconds))){ ModsStub.verifySimpleNotificationSent() }
+        systemUnderTest
+          .finishPayment("sometransactionref", testJourney._id.value, English)(fakeJourneyRequest(testJourney, withEmail = false), messagesApi)
+          .futureValue
+        eventually(Timeout(Span(500, Milliseconds))) { ModsStub.verifySimpleNotificationSent() }
       }
 
       "should not trigger a notification to Mods when origins is Mib but payment was not successful" in {
-        val testJourney = TestJourneys.Mib.journeyAfterFailWebPayment
+        val testJourney           = TestJourneys.Mib.journeyAfterFailWebPayment
         val testCardPaymentResult = CardPaymentResult(CardPaymentFinishPaymentResponses.Failed, AdditionalPaymentInfo(None, None, None))
         CardPaymentStub.AuthAndCapture.stubForAuthAndCapture2xx("sometransactionref", testCardPaymentResult)
         PayApiStub.stubForUpdateSucceedWebPayment2xx(testJourney._id)
         PayApiStub.stubForFindByJourneyId2xx(testJourney._id)(testJourney)
-        systemUnderTest.finishPayment("sometransactionref", testJourney._id.value, English)(fakeJourneyRequest(testJourney, withEmail = false), messagesApi).futureValue
-        eventually(Timeout(Span(500, Milliseconds))){ ModsStub.verifyNoNotificationSent() }
+        systemUnderTest
+          .finishPayment("sometransactionref", testJourney._id.value, English)(fakeJourneyRequest(testJourney, withEmail = false), messagesApi)
+          .futureValue
+        eventually(Timeout(Span(500, Milliseconds))) { ModsStub.verifyNoNotificationSent() }
       }
 
       "should not send an email for Mib origin as the email is handled by Mods service" in {
         val testJourney = TestJourneys.Mib.journeyAfterSucceedDebitWebPayment
         CardPaymentStub.AuthAndCapture.stubForAuthAndCapture2xx("sometransactionref", testCardPaymentResult)
-        systemUnderTest.finishPayment("sometransactionref", testJourney._id.value, English)(fakeJourneyRequest(testJourney, withEmail = false), messagesApi).futureValue
-        eventually(Timeout(Span(500, Milliseconds))){ EmailStub.verifyEmailWasNotSent() }
+        systemUnderTest
+          .finishPayment("sometransactionref", testJourney._id.value, English)(fakeJourneyRequest(testJourney, withEmail = false), messagesApi)
+          .futureValue
+        eventually(Timeout(Span(500, Milliseconds))) { EmailStub.verifyEmailWasNotSent() }
       }
 
       "should trigger a notification to passngers when origins is BcPngr and payment is successful" in {
@@ -272,8 +321,10 @@ class CardPaymentServiceSpec extends ItSpec {
         PassengersStub.stubNotification2xx()
         PayApiStub.stubForUpdateSucceedWebPayment2xx(testJourney._id)
         PayApiStub.stubForFindByJourneyId2xx(testJourney._id)(testJourney)
-        systemUnderTest.finishPayment("sometransactionref", testJourney._id.value, English)(fakeJourneyRequest(testJourney, withEmail = false), messagesApi).futureValue
-        eventually(Timeout(Span(500, Milliseconds))){ PassengersStub.verifySimpleNotificationSent() }
+        systemUnderTest
+          .finishPayment("sometransactionref", testJourney._id.value, English)(fakeJourneyRequest(testJourney, withEmail = false), messagesApi)
+          .futureValue
+        eventually(Timeout(Span(500, Milliseconds))) { PassengersStub.verifySimpleNotificationSent() }
       }
 
       "should not send an email for BcPngr origin as the email is handled by passengers service" in {
@@ -282,20 +333,24 @@ class CardPaymentServiceSpec extends ItSpec {
         PassengersStub.stubNotification2xx()
         PayApiStub.stubForUpdateSucceedWebPayment2xx(testJourney._id)
         PayApiStub.stubForFindByJourneyId2xx(testJourney._id)(testJourney)
-        systemUnderTest.finishPayment("sometransactionref", testJourney._id.value, English)(fakeJourneyRequest(testJourney, withEmail = false), messagesApi).futureValue
-        eventually(Timeout(Span(500, Milliseconds))){ EmailStub.verifyEmailWasNotSent() }
+        systemUnderTest
+          .finishPayment("sometransactionref", testJourney._id.value, English)(fakeJourneyRequest(testJourney, withEmail = false), messagesApi)
+          .futureValue
+        eventually(Timeout(Span(500, Milliseconds))) { EmailStub.verifyEmailWasNotSent() }
       }
 
       "should trigger a notification to passengers when origins is BcPngr but payment failed" in {
-        val testJourney = TestJourneys.BcPngr.journeyAfterFailWebPayment
+        val testJourney           = TestJourneys.BcPngr.journeyAfterFailWebPayment
         val testCardPaymentResult = CardPaymentResult(CardPaymentFinishPaymentResponses.Failed, AdditionalPaymentInfo(None, None, None))
         CardPaymentStub.AuthAndCapture.stubForAuthAndCapture2xx("sometransactionref", testCardPaymentResult)
         CardPaymentStub.CancelPayment.stubForCancelPayment2xx("sometransactionref", "PSEE")
         PayApiStub.stubForUpdateFailWebPayment2xx(testJourney._id)
         PayApiStub.stubForFindByJourneyId2xx(testJourney._id)(testJourney)
         PassengersStub.stubNotification2xx()
-        systemUnderTest.finishPayment("sometransactionref", testJourney._id.value, English)(fakeJourneyRequest(testJourney, withEmail = false), messagesApi).futureValue
-        eventually(Timeout(Span(1000, Milliseconds))){ PassengersStub.verifySimpleNotificationSent() }
+        systemUnderTest
+          .finishPayment("sometransactionref", testJourney._id.value, English)(fakeJourneyRequest(testJourney, withEmail = false), messagesApi)
+          .futureValue
+        eventually(Timeout(Span(1000, Milliseconds))) { PassengersStub.verifySimpleNotificationSent() }
       }
     }
 
@@ -325,19 +380,25 @@ class CardPaymentServiceSpec extends ItSpec {
     "cardPaymentResultIntoUpdateWebPaymentRequest" - {
       "return None when response inside CardPaymentResult is CardPaymentFinishPaymentResponses.Cancelled" in {
         val testCardPaymentResult = CardPaymentResult(CardPaymentFinishPaymentResponses.Cancelled, AdditionalPaymentInfo(None, None, None))
-        val result = systemUnderTest.cardPaymentResultIntoUpdateWebPaymentRequest(testCardPaymentResult)
+        val result                = systemUnderTest.cardPaymentResultIntoUpdateWebPaymentRequest(testCardPaymentResult)
         result shouldBe None
       }
 
       "return Some[SucceedWebPaymentRequest] with payment info when response inside CardPaymentResult is CardPaymentFinishPaymentResponses.Successful " in {
-        val testCardPaymentResult = CardPaymentResult(CardPaymentFinishPaymentResponses.Successful, AdditionalPaymentInfo(Some("cardcategory"), Some(123), Some(LocalDateTime.now(FrozenTime.clock))))
-        val result = systemUnderTest.cardPaymentResultIntoUpdateWebPaymentRequest(testCardPaymentResult)
+        val testCardPaymentResult = CardPaymentResult(
+          CardPaymentFinishPaymentResponses.Successful,
+          AdditionalPaymentInfo(Some("cardcategory"), Some(123), Some(LocalDateTime.now(FrozenTime.clock)))
+        )
+        val result                = systemUnderTest.cardPaymentResultIntoUpdateWebPaymentRequest(testCardPaymentResult)
         result shouldBe Some(SucceedWebPaymentRequest("cardcategory", Some(123), LocalDateTime.parse("2059-11-25T16:33:51.880")))
       }
 
       "return Some[FailWebPaymentRequest] when response inside CardPaymentResult is CardPaymentFinishPaymentResponses.Failed" in {
-        val testCardPaymentResult = CardPaymentResult(CardPaymentFinishPaymentResponses.Failed, AdditionalPaymentInfo(Some("cardcategory"), None, Some(LocalDateTime.now(FrozenTime.clock))))
-        val result = systemUnderTest.cardPaymentResultIntoUpdateWebPaymentRequest(testCardPaymentResult)
+        val testCardPaymentResult = CardPaymentResult(
+          CardPaymentFinishPaymentResponses.Failed,
+          AdditionalPaymentInfo(Some("cardcategory"), None, Some(LocalDateTime.now(FrozenTime.clock)))
+        )
+        val result                = systemUnderTest.cardPaymentResultIntoUpdateWebPaymentRequest(testCardPaymentResult)
         result shouldBe Some(FailWebPaymentRequest(LocalDateTime.parse("2059-11-25T16:33:51.880"), "cardcategory"))
       }
     }

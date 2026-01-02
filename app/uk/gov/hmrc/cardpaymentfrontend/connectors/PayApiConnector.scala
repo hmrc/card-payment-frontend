@@ -40,7 +40,7 @@ class PayApiConnector @Inject() (appConfig: AppConfig, httpClientV2: HttpClientV
 
   def findLatestJourneyBySessionId()(implicit headerCarrier: HeaderCarrier): Future[Option[Journey[JourneySpecificData]]] = {
     for {
-      _ <- Future(require(headerCarrier.sessionId.isDefined, "Missing required 'SessionId'"))
+      _                  <- Future(require(headerCarrier.sessionId.isDefined, "Missing required 'SessionId'"))
       maybeJourneyResult <- httpClientV2.get(findBySessionIdUrl).execute[Option[Journey[JourneySpecificData]]]
     } yield maybeJourneyResult
   }
