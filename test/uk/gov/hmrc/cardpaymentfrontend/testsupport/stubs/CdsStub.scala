@@ -27,7 +27,9 @@ object CdsStub {
   private def getCashDepositSubscriptionDetailPath(cdsRef: CdsRef) = s"/accounts/getcashdepositsubscriptiondetails/v1?paymentReference=${cdsRef.value}"
   private val notificationPath: String = "/accounts/notifyimmediatepayment/v1"
 
-  val responseJsonRefCheck: JsValue = Json.parse(s"""{"getCashDepositSubscriptionDetailsResponse":{"responseCommon":{"status":"Ok","processingDate":"2018-09-24T11:01:01Z"},"responseDetail":{"declarationID":"16NLIWQ2W3AXAGWD52","paymentReference":"CDSI191234567890","paymentReferenceDate":"2018-09-24T11:01:01Z","isPaymentReferenceActive":false,"paymentReferenceCancelDate":"2018-09-24T11:01:01Z"}}} """)
+  val responseJsonRefCheck: JsValue = Json.parse(
+    s"""{"getCashDepositSubscriptionDetailsResponse":{"responseCommon":{"status":"Ok","processingDate":"2018-09-24T11:01:01Z"},"responseDetail":{"declarationID":"16NLIWQ2W3AXAGWD52","paymentReference":"CDSI191234567890","paymentReferenceDate":"2018-09-24T11:01:01Z","isPaymentReferenceActive":false,"paymentReferenceCancelDate":"2018-09-24T11:01:01Z"}}} """
+  )
 
   def stubGetCashDepositSubscriptionDetail2xx(cdsRef: CdsRef): StubMapping =
     stubFor(

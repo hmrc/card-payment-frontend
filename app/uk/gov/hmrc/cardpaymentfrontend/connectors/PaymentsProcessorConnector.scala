@@ -20,12 +20,12 @@ import com.google.inject.{Inject, Singleton}
 import play.api.Logging
 import play.api.http.Status
 import play.api.libs.json.{Json, Writes}
+import play.api.libs.ws.writeableOf_JsValue
 import uk.gov.hmrc.cardpaymentfrontend.config.AppConfig
 import uk.gov.hmrc.cardpaymentfrontend.models.notifications.{ModsNotification, NotificationLoggingContext}
 import uk.gov.hmrc.http.client.HttpClientV2
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, StringContextOps}
-import uk.gov.hmrc.http.HttpReads.Implicits._
-
+import uk.gov.hmrc.http.HttpReads.Implicits.*
 import java.net.URL
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Failure, Success}
@@ -34,12 +34,14 @@ import scala.util.{Failure, Success}
 class PaymentsProcessorConnector @Inject() (appConfig: AppConfig, httpClientV2: HttpClientV2)(implicit executionContext: ExecutionContext) extends Logging {
 
   private val paymentsProcessorBaseUrl: String = appConfig.paymentsProcessorBaseUrl + "/payments-processor"
-  private val modsNotificationUrl: URL = url"$paymentsProcessorBaseUrl/mib/payment-callback"
+  private val modsNotificationUrl: URL         = url"$paymentsProcessorBaseUrl/mib/payment-callback"
 
   def sendModsNotification(modsNotification: ModsNotification)(implicit headerCarrier: HeaderCarrier): Future[HttpResponse] =
     sendNotificationToPaymentsProcessor(modsNotificationUrl, modsNotification)(NotificationLoggingContext.modsNotificationLoggingContext)
 
-  private def sendNotificationToPaymentsProcessor[N](endpoint: URL, notification: N)(notificationLoggingContext: NotificationLoggingContext)(implicit writes: Writes[N], headerCarrier: HeaderCarrier): Future[HttpResponse] =
+  private def sendNotificationToPaymentsProcessor[N](endpoint: URL, notification: N)(
+    notificationLoggingContext: NotificationLoggingContext
+  )(implicit writes: Writes[N], headerCarrier: HeaderCarrier): Future[HttpResponse] =
     httpClientV2
       .post(endpoint)
       .withBody(Json.toJson(notification))
@@ -49,10 +51,12 @@ class PaymentsProcessorConnector @Inject() (appConfig: AppConfig, httpClientV2: 
           response.status match {
             case s if Status.isSuccessful(s) =>
               logger.info(s"[PaymentsProcessorConnector] [POST ${endpoint.toString}] ${notificationLoggingContext.successMessage}")
-            case s =>
-              logger.error(s"[PaymentsProcessorConnector] [POST ${endpoint.toString}] ${notificationLoggingContext.unexpectedStatusMessage}, got a ${s.toString} status response")
+            case s                           =>
+              logger.error(
+                s"[PaymentsProcessorConnector] [POST ${endpoint.toString}] ${notificationLoggingContext.unexpectedStatusMessage}, got a ${s.toString} status response"
+              )
           }
-        case Failure(e) =>
+        case Failure(e)        =>
           logger.error(s"[PaymentsProcessorConnector] [POST ${endpoint.toString}] ${notificationLoggingContext.failureMessage}", e)
       }
 

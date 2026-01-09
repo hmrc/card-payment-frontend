@@ -17,15 +17,15 @@
 package uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins
 
 import payapi.cardpaymentjourney.model.journey.JourneySpecificData
-import payapi.corcommon.model.Origins._
+import payapi.corcommon.model.Origins.*
 import payapi.corcommon.model.{Origin, Reference}
 import play.api.i18n.Messages
 import play.api.mvc.{AnyContent, Call}
 import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
 import uk.gov.hmrc.cardpaymentfrontend.config.AppConfig
 import uk.gov.hmrc.cardpaymentfrontend.models.openbanking.OriginSpecificSessionData
-import uk.gov.hmrc.cardpaymentfrontend.models._
-import uk.gov.hmrc.cardpaymentfrontend.session.JourneySessionSupport._
+import uk.gov.hmrc.cardpaymentfrontend.models.*
+import uk.gov.hmrc.cardpaymentfrontend.session.JourneySessionSupport.*
 
 import java.time.LocalDate
 
@@ -43,22 +43,26 @@ trait ExtendedOrigin {
     }
   }
 
-  //denotes which links/payment methods to show on the card-fees page.
+  // denotes which links/payment methods to show on the card-fees page.
   def cardFeesPagePaymentMethods: Set[PaymentMethod]
   // This denotes which payment methods are available for the given Origin/TaxRegime
   def paymentMethods(): Set[PaymentMethod]
 
   def checkYourAnswersPaymentDateRow(journeyRequest: JourneyRequest[AnyContent])(payFrontendBaseUrl: String): Option[CheckYourAnswersRow] = {
     if (showFuturePayment(journeyRequest)) {
-      Some(CheckYourAnswersRow(
-        titleMessageKey = "check-your-details.payment-date",
-        value           = Seq("check-your-details.payment-date.today"),
-        changeLink      = Some(Link(
-          href       = Call("GET", s"$payFrontendBaseUrl/change-when-do-you-want-to-pay?toPayFrontendConfirmation=true"),
-          linkId     = "check-your-details-payment-date-change-link",
-          messageKey = "check-your-details.change"
-        ))
-      ))
+      Some(
+        CheckYourAnswersRow(
+          titleMessageKey = "check-your-details.payment-date",
+          value = Seq("check-your-details.payment-date.today"),
+          changeLink = Some(
+            Link(
+              href = Call("GET", s"$payFrontendBaseUrl/change-when-do-you-want-to-pay?toPayFrontendConfirmation=true"),
+              linkId = "check-your-details-payment-date-change-link",
+              messageKey = "check-your-details.change"
+            )
+          )
+        )
+      )
     } else {
       None
     }
@@ -72,33 +76,42 @@ trait ExtendedOrigin {
 
   protected def changeReferenceUrl(payFrontendBaseUrl: String): String = s"$payFrontendBaseUrl/pay-by-card-change-reference-number"
 
-  //hint: the checkYourAnswersReferenceRow should only include a change link when the journey is not prepopulated, i.e., user has manually entered their reference.
+  // hint: the checkYourAnswersReferenceRow should only include a change link when the journey is not prepopulated, i.e., user has manually entered their reference.
   def checkYourAnswersReferenceRow(journeyRequest: JourneyRequest[AnyContent])(payFrontendBaseUrl: String): Option[CheckYourAnswersRow]
 
-  def checkYourAnswersAdditionalReferenceRow(journeyRequest: JourneyRequest[AnyContent])(payFrontendBaseUrl: String)(implicit messages: Messages): Option[Seq[CheckYourAnswersRow]] = None
+  def checkYourAnswersAdditionalReferenceRow(journeyRequest: JourneyRequest[AnyContent])(payFrontendBaseUrl: String)(implicit
+    messages: Messages
+  ): Option[Seq[CheckYourAnswersRow]] = None
 
-  def checkYourAnswersAmountSummaryRow(journeyRequest: JourneyRequest[AnyContent])(payFrontendBaseUrl: String): Option[CheckYourAnswersRow] = Some(CheckYourAnswersRow(
-    titleMessageKey = "check-your-details.total-to-pay",
-    value           = Seq(amount(journeyRequest)),
-    changeLink      = Some(Link(
-      href       = Call("GET", s"$payFrontendBaseUrl/change-amount?showSummary=false&stayOnPayFrontend=false"),
-      linkId     = "check-your-details-amount-change-link",
-      messageKey = "check-your-details.change"
-    ))
-  ))
+  def checkYourAnswersAmountSummaryRow(journeyRequest: JourneyRequest[AnyContent])(payFrontendBaseUrl: String): Option[CheckYourAnswersRow] = Some(
+    CheckYourAnswersRow(
+      titleMessageKey = "check-your-details.total-to-pay",
+      value = Seq(amount(journeyRequest)),
+      changeLink = Some(
+        Link(
+          href = Call("GET", s"$payFrontendBaseUrl/change-amount?showSummary=false&stayOnPayFrontend=false"),
+          linkId = "check-your-details-amount-change-link",
+          messageKey = "check-your-details.change"
+        )
+      )
+    )
+  )
 
   def checkYourAnswersEmailAddressRow(journeyRequest: JourneyRequest[AnyContent]): Option[CheckYourAnswersRow] = {
     val maybeEmail: Option[EmailAddress] = journeyRequest.readFromSession[EmailAddress](journeyRequest.journeyId, Keys.email)
-    maybeEmail.filter(!_.value.isBlank)
+    maybeEmail
+      .filter(!_.value.isBlank)
       .map { email =>
         CheckYourAnswersRow(
           titleMessageKey = "check-your-details.email-address",
-          value           = Seq(email.value),
-          changeLink      = Some(Link(
-            href       = uk.gov.hmrc.cardpaymentfrontend.controllers.routes.EmailAddressController.renderPage,
-            linkId     = "check-your-details-email-address-change-link",
-            messageKey = "check-your-details.change"
-          ))
+          value = Seq(email.value),
+          changeLink = Some(
+            Link(
+              href = uk.gov.hmrc.cardpaymentfrontend.controllers.routes.EmailAddressController.renderPage,
+              linkId = "check-your-details-email-address-change-link",
+              messageKey = "check-your-details.change"
+            )
+          )
         )
       }
   }
@@ -106,35 +119,37 @@ trait ExtendedOrigin {
   // TODO: Update tests to not include country - check doesn't show country
   def checkYourAnswersCardBillingAddressRow(journeyRequest: JourneyRequest[AnyContent]): Option[CheckYourAnswersRow] = {
     val addressFromSession: Option[Address] = journeyRequest.readFromSession[Address](journeyRequest.journeyId, Keys.address)
-    val addressValues: Option[Seq[String]] = {
+    val addressValues: Option[Seq[String]]  = {
       for {
-        line1 <- addressFromSession.map(_.line1)
-        line2 <- addressFromSession.map(_.line2)
-        city <- addressFromSession.map(_.city)
-        county <- addressFromSession.map(_.county)
+        line1    <- addressFromSession.map(_.line1)
+        line2    <- addressFromSession.map(_.line2)
+        city     <- addressFromSession.map(_.city)
+        county   <- addressFromSession.map(_.county)
         postcode <- addressFromSession.map(_.postcode)
       } yield Seq(line1, line2.getOrElse(""), city.getOrElse(""), county.getOrElse(""), postcode.getOrElse(""))
     }.map(_.filter(_.nonEmpty))
 
-    addressValues.map { address: Seq[String] =>
+    addressValues.map { (address: Seq[String]) =>
       CheckYourAnswersRow(
         titleMessageKey = "check-your-details.card-billing-address",
-        value           = address,
-        changeLink      = Some(Link(
-          href       = uk.gov.hmrc.cardpaymentfrontend.controllers.routes.AddressController.renderPage,
-          linkId     = "check-your-details-card-billing-address-change-link",
-          messageKey = "check-your-details.change"
-        ))
+        value = address,
+        changeLink = Some(
+          Link(
+            href = uk.gov.hmrc.cardpaymentfrontend.controllers.routes.AddressController.renderPage,
+            linkId = "check-your-details-card-billing-address-change-link",
+            messageKey = "check-your-details.change"
+          )
+        )
       )
     }
   }
 
   def openBankingOriginSpecificSessionData: JourneySpecificData => Option[OriginSpecificSessionData]
 
-  //email related content
+  // email related content
   def emailTaxTypeMessageKey: String
 
-  //payments survey stuff
+  // payments survey stuff
   def surveyAuditName: String
   def surveyReturnHref: String
   def surveyReturnMessageKey: String
@@ -243,45 +258,31 @@ object ExtendedOrigin {
     }
 
     def isAWebChatOrigin: Boolean = origin match {
-      case PfSa | PfVat | PfCt | PfEpayeNi | PfEpayeLpp | PfEpayeSeta |
-        PfEpayeLateCis | PfEpayeP11d | PfSdlt | PfCds | PfOther | PfP800 |
-        PtaP800 | PfClass2Ni | PfInsurancePremium | PfPsAdmin | BtaSa | AppSa |
-        BtaVat | BtaEpayeBill | BtaEpayePenalty | BtaEpayeInterest | BtaEpayeGeneral |
-        BtaClass1aNi | BtaCt | BtaSdil | BcPngr | Parcels | DdVat |
-        DdSdil | VcVatReturn | VcVatOther | ItSa | Amls | Ppt |
-        PfCdsCash | PfPpt | PfSpiritDrinks | PfInheritanceTax | Mib |
-        PfClass3Ni | PtaSa | PfWineAndCider | PfBioFuels | PfAirPass | PfMgd |
-        PfBeerDuty | PfGamingOrBingoDuty | PfGbPbRgDuty | PfLandfillTax | PfSdil |
-        PfAggregatesLevy | PfClimateChangeLevy | PfSimpleAssessment | PtaSimpleAssessment |
-        AppSimpleAssessment | PfTpes | CapitalGainsTax | EconomicCrimeLevy |
-        PfEconomicCrimeLevy | PfJobRetentionScheme | JrsJobRetentionScheme | PfImportedVehicles |
-        PfChildBenefitRepayments | NiEuVatOss | PfNiEuVatOss | NiEuVatIoss | PfNiEuVatIoss |
-        PfAmls | PfAted | PfCdsDeferment | PfTrust | PtaClass3Ni | AlcoholDuty |
-        PfAlcoholDuty | VatC2c | PfVatC2c | `3psSa` | `3psVat` | Pillar2 |
-        PfPillar2 => false
-      case WcSa | WcCt | WcVat | WcSimpleAssessment | WcXref | WcEpayeLpp
-        | WcClass1aNi | WcEpayeNi | WcEpayeLateCis | WcEpayeSeta | WcSdlt | WcClass2Ni | WcChildBenefitRepayments => true
+      case PfSa | PfVat | PfCt | PfEpayeNi | PfEpayeLpp | PfEpayeSeta | PfEpayeLateCis | PfEpayeP11d | PfSdlt | PfCds | PfOther | PfP800 | PtaP800 |
+          PfClass2Ni | PfInsurancePremium | PfPsAdmin | BtaSa | AppSa | BtaVat | BtaEpayeBill | BtaEpayePenalty | BtaEpayeInterest | BtaEpayeGeneral |
+          BtaClass1aNi | BtaCt | BtaSdil | BcPngr | Parcels | DdVat | DdSdil | VcVatReturn | VcVatOther | ItSa | Amls | Ppt | PfCdsCash | PfPpt |
+          PfSpiritDrinks | PfInheritanceTax | Mib | PfClass3Ni | PtaSa | PfWineAndCider | PfBioFuels | PfAirPass | PfMgd | PfBeerDuty | PfGamingOrBingoDuty |
+          PfGbPbRgDuty | PfLandfillTax | PfSdil | PfAggregatesLevy | PfClimateChangeLevy | PfSimpleAssessment | PtaSimpleAssessment | AppSimpleAssessment |
+          PfTpes | CapitalGainsTax | EconomicCrimeLevy | PfEconomicCrimeLevy | PfJobRetentionScheme | JrsJobRetentionScheme | PfImportedVehicles |
+          PfChildBenefitRepayments | NiEuVatOss | PfNiEuVatOss | NiEuVatIoss | PfNiEuVatIoss | PfAmls | PfAted | PfCdsDeferment | PfTrust | PtaClass3Ni |
+          AlcoholDuty | PfAlcoholDuty | VatC2c | PfVatC2c | `3psSa` | `3psVat` | Pillar2 | PfPillar2 =>
+        false
+      case WcSa | WcCt | WcVat | WcSimpleAssessment | WcXref | WcEpayeLpp | WcClass1aNi | WcEpayeNi | WcEpayeLateCis | WcEpayeSeta | WcSdlt | WcClass2Ni |
+          WcChildBenefitRepayments =>
+        true
     }
 
     def originSupportsWelsh: Boolean = origin match {
-      case PfSa | PfVat | PfCt | PfEpayeNi | PfEpayeLpp | PfEpayeSeta |
-        PfEpayeLateCis | PfEpayeP11d | PfSdlt | PfOther | PfP800 |
-        PtaP800 | PfClass2Ni | PfInsurancePremium | PfPsAdmin | BtaSa | AppSa |
-        BtaVat | BtaEpayeBill | BtaEpayePenalty | BtaEpayeInterest | BtaEpayeGeneral |
-        BtaClass1aNi | BtaCt | BtaSdil | BcPngr | DdVat |
-        DdSdil | VcVatReturn | VcVatOther | ItSa | Amls | Ppt |
-        PfPpt | PfSpiritDrinks | PfInheritanceTax | Mib |
-        PfClass3Ni | PtaSa | PfWineAndCider | PfBioFuels | PfAirPass | PfMgd |
-        PfBeerDuty | PfGamingOrBingoDuty | PfGbPbRgDuty | PfLandfillTax | PfSdil |
-        PfAggregatesLevy | PfClimateChangeLevy | PfSimpleAssessment | PtaSimpleAssessment |
-        AppSimpleAssessment | PfTpes | CapitalGainsTax | EconomicCrimeLevy |
-        PfEconomicCrimeLevy | PfJobRetentionScheme | JrsJobRetentionScheme | PfImportedVehicles |
-        PfChildBenefitRepayments | PfAmls | PfAted | PfTrust | PtaClass3Ni |
-        AlcoholDuty | PfAlcoholDuty | VatC2c | PfVatC2c | `3psSa` | `3psVat` |
-        WcSa | WcCt | WcVat | WcSimpleAssessment | WcXref | WcEpayeLpp |
-        WcClass1aNi | WcEpayeNi | WcEpayeLateCis | WcEpayeSeta | WcSdlt | WcClass2Ni | WcChildBenefitRepayments => true
-      case PfCds | PfCdsCash | PfCdsDeferment | NiEuVatOss | NiEuVatIoss |
-        PfNiEuVatOss | PfNiEuVatIoss | Pillar2 | PfPillar2 | Parcels => false
+      case PfSa | PfVat | PfCt | PfEpayeNi | PfEpayeLpp | PfEpayeSeta | PfEpayeLateCis | PfEpayeP11d | PfSdlt | PfOther | PfP800 | PtaP800 | PfClass2Ni |
+          PfInsurancePremium | PfPsAdmin | BtaSa | AppSa | BtaVat | BtaEpayeBill | BtaEpayePenalty | BtaEpayeInterest | BtaEpayeGeneral | BtaClass1aNi | BtaCt |
+          BtaSdil | BcPngr | DdVat | DdSdil | VcVatReturn | VcVatOther | ItSa | Amls | Ppt | PfPpt | PfSpiritDrinks | PfInheritanceTax | Mib | PfClass3Ni |
+          PtaSa | PfWineAndCider | PfBioFuels | PfAirPass | PfMgd | PfBeerDuty | PfGamingOrBingoDuty | PfGbPbRgDuty | PfLandfillTax | PfSdil |
+          PfAggregatesLevy | PfClimateChangeLevy | PfSimpleAssessment | PtaSimpleAssessment | AppSimpleAssessment | PfTpes | CapitalGainsTax |
+          EconomicCrimeLevy | PfEconomicCrimeLevy | PfJobRetentionScheme | JrsJobRetentionScheme | PfImportedVehicles | PfChildBenefitRepayments | PfAmls |
+          PfAted | PfTrust | PtaClass3Ni | AlcoholDuty | PfAlcoholDuty | VatC2c | PfVatC2c | `3psSa` | `3psVat` | WcSa | WcCt | WcVat | WcSimpleAssessment |
+          WcXref | WcEpayeLpp | WcClass1aNi | WcEpayeNi | WcEpayeLateCis | WcEpayeSeta | WcSdlt | WcClass2Ni | WcChildBenefitRepayments =>
+        true
+      case PfCds | PfCdsCash | PfCdsDeferment | NiEuVatOss | NiEuVatIoss | PfNiEuVatOss | PfNiEuVatIoss | Pillar2 | PfPillar2 | Parcels => false
     }
   }
 }

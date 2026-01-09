@@ -20,7 +20,7 @@ import org.scalatest.AppendedClues.convertToClueful
 import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor3}
 import payapi.corcommon.model.taxes.epaye.{FixedLengthEpayeTaxPeriod, MonthlyEpayeTaxPeriod, QuarterlyEpayeTaxPeriod, YearlyEpayeTaxPeriod}
 import payapi.corcommon.model.taxes.vat.CalendarPeriod
-import payapi.corcommon.model.times.period.TaxMonth._
+import payapi.corcommon.model.times.period.TaxMonth.*
 import payapi.corcommon.model.times.period.TaxQuarter.{AprilJuly, JanuaryApril, JulyOctober, OctoberJanuary}
 import payapi.corcommon.model.times.period.{CalendarQuarter, CalendarQuarterlyPeriod, TaxYear}
 import play.api.i18n.Lang
@@ -34,7 +34,6 @@ class PeriodSpec extends UnitSpec with TableDrivenPropertyChecks {
         ("period", "lang", "expectedResult"),
         (YearlyEpayeTaxPeriod(TaxYear(2025)), Lang("en"), "2024 to 2025"),
         (YearlyEpayeTaxPeriod(TaxYear(2025)), Lang("cy"), "2024 i 2025"),
-
         (MonthlyEpayeTaxPeriod(JanuaryFebruary, TaxYear(2025)), Lang("en"), "6 January 2025 to 5 February 2025 (month 10)"),
         (MonthlyEpayeTaxPeriod(FebruaryMarch, TaxYear(2025)), Lang("en"), "6 February 2025 to 5 March 2025 (month 11)"),
         (MonthlyEpayeTaxPeriod(MarchApril, TaxYear(2025)), Lang("en"), "6 March 2025 to 5 April 2025 (month 12)"),
@@ -59,7 +58,6 @@ class PeriodSpec extends UnitSpec with TableDrivenPropertyChecks {
         (MonthlyEpayeTaxPeriod(OctoberNovember, TaxYear(2025)), Lang("cy"), "6 Hydref 2024 i 5 Tachwedd 2024 (mis 7)"),
         (MonthlyEpayeTaxPeriod(NovemberDecember, TaxYear(2025)), Lang("cy"), "6 Tachwedd 2024 i 5 Rhagfyr 2024 (mis 8)"),
         (MonthlyEpayeTaxPeriod(DecemberJanuary, TaxYear(2025)), Lang("cy"), "6 Rhagfyr 2024 i 5 Ionawr 2025 (mis 9)"),
-
         (QuarterlyEpayeTaxPeriod(AprilJuly, TaxYear(2025)), Lang("en"), "6 April 2024 to 5 July 2024 (first quarter)"),
         (QuarterlyEpayeTaxPeriod(AprilJuly, TaxYear(2025)), Lang("cy"), "6 Ebrill 2024 i 5 Gorffennaf 2024 (chwarter cyntaf)"),
         (QuarterlyEpayeTaxPeriod(JulyOctober, TaxYear(2025)), Lang("en"), "6 July 2024 to 5 October 2024 (second quarter)"),
@@ -68,7 +66,6 @@ class PeriodSpec extends UnitSpec with TableDrivenPropertyChecks {
         (QuarterlyEpayeTaxPeriod(OctoberJanuary, TaxYear(2025)), Lang("cy"), "6 Hydref 2024 i 5 Ionawr 2025 (trydydd chwarter)"),
         (QuarterlyEpayeTaxPeriod(JanuaryApril, TaxYear(2025)), Lang("en"), "6 January 2025 to 5 April 2025 (fourth quarter)"),
         (QuarterlyEpayeTaxPeriod(JanuaryApril, TaxYear(2025)), Lang("cy"), "6 Ionawr 2025 i 5 Ebrill 2025 (pedwerydd chwarter)")
-
       )
 
       forAll(testCases) { (period: FixedLengthEpayeTaxPeriod, lang: Lang, expectedResult: String) =>
@@ -79,10 +76,18 @@ class PeriodSpec extends UnitSpec with TableDrivenPropertyChecks {
 
   "displayCalendarQuarter" - {
     "should return a string indicating the CalendarQuarterlyPeriod" in {
-      Period.displayCalendarQuarterAndYear(CalendarQuarterlyPeriod(CalendarQuarter.JanuaryToMarch, 2027)) shouldBe "January to March 2027" withClue "JanuaryToMarch was wrong"
-      Period.displayCalendarQuarterAndYear(CalendarQuarterlyPeriod(CalendarQuarter.AprilToJune, 2027)) shouldBe "April to June 2027" withClue "AprilToJune was wrong"
-      Period.displayCalendarQuarterAndYear(CalendarQuarterlyPeriod(CalendarQuarter.JulyToSeptember, 2027)) shouldBe "July to September 2027" withClue "JulyToSeptember was wrong"
-      Period.displayCalendarQuarterAndYear(CalendarQuarterlyPeriod(CalendarQuarter.OctoberToDecember, 2027)) shouldBe "October to December 2027" withClue "OctoberToDecember was wrong"
+      Period.displayCalendarQuarterAndYear(
+        CalendarQuarterlyPeriod(CalendarQuarter.JanuaryToMarch, 2027)
+      ) shouldBe "January to March 2027" withClue "JanuaryToMarch was wrong"
+      Period.displayCalendarQuarterAndYear(
+        CalendarQuarterlyPeriod(CalendarQuarter.AprilToJune, 2027)
+      ) shouldBe "April to June 2027" withClue "AprilToJune was wrong"
+      Period.displayCalendarQuarterAndYear(
+        CalendarQuarterlyPeriod(CalendarQuarter.JulyToSeptember, 2027)
+      ) shouldBe "July to September 2027" withClue "JulyToSeptember was wrong"
+      Period.displayCalendarQuarterAndYear(
+        CalendarQuarterlyPeriod(CalendarQuarter.OctoberToDecember, 2027)
+      ) shouldBe "October to December 2027" withClue "OctoberToDecember was wrong"
     }
   }
 

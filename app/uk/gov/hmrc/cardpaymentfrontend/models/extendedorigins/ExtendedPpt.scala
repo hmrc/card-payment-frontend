@@ -25,18 +25,20 @@ import uk.gov.hmrc.cardpaymentfrontend.models.{CheckYourAnswersRow, PaymentMetho
 
 object ExtendedPpt extends ExtendedOrigin {
   override val serviceNameMessageKey: String = "service-name.Ppt"
-  override val taxNameMessageKey: String = "payment-complete.tax-name.Ppt"
+  override val taxNameMessageKey: String     = "payment-complete.tax-name.Ppt"
 
   def cardFeesPagePaymentMethods: Set[PaymentMethod] = Set(OpenBanking, OneOffDirectDebit)
 
   def paymentMethods(): Set[PaymentMethod] = Set(Card, OpenBanking, OneOffDirectDebit, Bacs)
 
   override def checkYourAnswersReferenceRow(journeyRequest: JourneyRequest[AnyContent])(payFrontendBaseUrl: String): Option[CheckYourAnswersRow] = {
-    Some(CheckYourAnswersRow(
-      titleMessageKey = "check-your-details.Ppt.reference",
-      value           = Seq(journeyRequest.journey.referenceValue),
-      changeLink      = None
-    ))
+    Some(
+      CheckYourAnswersRow(
+        titleMessageKey = "check-your-details.Ppt.reference",
+        value = Seq(journeyRequest.journey.referenceValue),
+        changeLink = None
+      )
+    )
   }
 
   override def openBankingOriginSpecificSessionData: JourneySpecificData => Option[OriginSpecificSessionData] = {
@@ -46,9 +48,9 @@ object ExtendedPpt extends ExtendedOrigin {
 
   override def emailTaxTypeMessageKey: String = "email.tax-name.Ppt"
 
-  override def surveyAuditName: String = "plastic-packaging-tax"
-  override def surveyReturnHref: String = "https://www.gov.uk/government/organisations/hm-revenue-customs"
-  override def surveyReturnMessageKey: String = "payments-survey.other.return-message"
+  override def surveyAuditName: String         = "plastic-packaging-tax"
+  override def surveyReturnHref: String        = "https://www.gov.uk/government/organisations/hm-revenue-customs"
+  override def surveyReturnMessageKey: String  = "payments-survey.other.return-message"
   override def surveyIsWelshSupported: Boolean = true
-  override def surveyBannerTitle: String = serviceNameMessageKey
+  override def surveyBannerTitle: String       = serviceNameMessageKey
 }

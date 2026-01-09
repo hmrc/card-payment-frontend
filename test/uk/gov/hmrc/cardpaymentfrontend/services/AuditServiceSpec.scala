@@ -36,15 +36,15 @@ class AuditServiceSpec extends ItSpec {
   val systemUnderTest: AuditService = app.injector.instanceOf[AuditService]
 
   "AuditService" - {
-    val testAddress: Address = Address(
-      line1    = "made up street",
-      line2    = Some("made up line 2"),
+    val testAddress: Address                                   = Address(
+      line1 = "made up street",
+      line2 = Some("made up line 2"),
       postcode = Some("AA11AA"),
-      country  = "GBR",
-      city     = Some("made up city"),
-      county   = Some("East sussex")
+      country = "GBR",
+      city = Some("made up city"),
+      county = Some("East sussex")
     )
-    val fakeRequest = FakeRequest().withEmailInSession(TestJourneys.PfSa.journeyBeforeBeginWebPayment._id)
+    val fakeRequest                                            = FakeRequest().withEmailInSession(TestJourneys.PfSa.journeyBeforeBeginWebPayment._id)
     val journeyRequest: JourneyRequest[AnyContentAsEmpty.type] = new JourneyRequest(TestJourneys.PfSa.journeyBeforeBeginWebPayment, fakeRequest)
 
     "auditPaymentAttempt" - {
@@ -53,8 +53,9 @@ class AuditServiceSpec extends ItSpec {
         eventually {
           AuditConnectorStub.verifyEventAudited(
             "PaymentAttempt",
-            Json.parse(
-              """
+            Json
+              .parse(
+                """
                 |{
                 | "address": {
                 |   "line1" : "made up street",
@@ -73,7 +74,8 @@ class AuditServiceSpec extends ItSpec {
                 | "paymentTotal": 12.34,
                 | "transactionReference": "some-transaction-reference"
                 |}""".stripMargin
-            ).as[JsObject]
+              )
+              .as[JsObject]
           )
         }
       }
@@ -95,8 +97,9 @@ class AuditServiceSpec extends ItSpec {
         eventually {
           AuditConnectorStub.verifyEventAudited(
             "PaymentResult",
-            Json.parse(
-              """
+            Json
+              .parse(
+                """
                 |{
                 | "address": {
                 |   "line1" : "made up street",
@@ -116,7 +119,8 @@ class AuditServiceSpec extends ItSpec {
                 | "paymentTotal": 12.34,
                 | "transactionReference": "some-transaction-reference"
                 |}""".stripMargin
-            ).as[JsObject]
+              )
+              .as[JsObject]
           )
         }
       }

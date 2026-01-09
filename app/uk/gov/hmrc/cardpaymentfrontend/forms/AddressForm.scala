@@ -27,27 +27,27 @@ import scala.util.matching.Regex
 
 object AddressForm {
 
-  private[forms] val addressLineRegex: Regex = "^[\\s\\S]{1,100}$".r
-  private[forms] val addressCityAndCountyRegex: Regex = "^[\\s\\S]{1,50}$".r
-  private[forms] val addressUkPostcodeRegex: Regex = "([Gg][Ii][Rr] 0[Aa]{2})|((([A-Za-z][0-9]{1,2})|(([A-Za-z][A-Ha-hJ-Yj-y][0-9]{1,2})|(([A-Za-z][0-9][A-Za-z])|([A-Za-z][A-Ha-hJ-Yj-y][0-9]?[A-Za-z]))))\\s?[0-9][A-Za-z]{2})".r
+  private[forms] val addressLineRegex: Regex                = "^[\\s\\S]{1,100}$".r
+  private[forms] val addressCityAndCountyRegex: Regex       = "^[\\s\\S]{1,50}$".r
+  private[forms] val addressUkPostcodeRegex: Regex          =
+    "([Gg][Ii][Rr] 0[Aa]{2})|((([A-Za-z][0-9]{1,2})|(([A-Za-z][A-Ha-hJ-Yj-y][0-9]{1,2})|(([A-Za-z][0-9][A-Za-z])|([A-Za-z][A-Ha-hJ-Yj-y][0-9]?[A-Za-z]))))\\s?[0-9][A-Za-z]{2})".r
   private[forms] val addressBarclaycardPostcodeRegex: Regex = "^[\\s\\S]{1,16}$".r
-  private[forms] val addressCountryRegex: Regex = "^[A-Z]{3}$".r
+  private[forms] val addressCountryRegex: Regex             = "^[A-Z]{3}$".r
 
   def form(): Form[Address] = Form(
     mapping(
-      "line1" -> Forms.of(line1Formatter),
-      "line2" -> Forms.of(line2Formatter),
-      "city" -> Forms.of(cityAndCountyFormatter("city")),
-      "county" -> Forms.of(cityAndCountyFormatter("county")),
+      "line1"    -> Forms.of(line1Formatter),
+      "line2"    -> Forms.of(line2Formatter),
+      "city"     -> Forms.of(cityAndCountyFormatter("city")),
+      "county"   -> Forms.of(cityAndCountyFormatter("county")),
       "postcode" -> Forms.of(postcodeFormatter),
-      "country" -> text.verifying(pattern(addressCountryRegex, error = "address.field-name.error.country.invalid-character"))
-
-    )(Address.apply)(Address.unapply)
+      "country"  -> text.verifying(pattern(addressCountryRegex, error = "address.field-name.error.country.invalid-character"))
+    )(Address.apply)(o => Some(Tuple.fromProductTyped(o)))
   )
 
   private[forms] def line1Formatter: Formatter[String] = new Formatter[String] {
     override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], String] = {
-      val line1Key = "line1"
+      val line1Key      = "line1"
       val line1: String = data(line1Key).trim
 
       if (line1.isBlank) {
@@ -63,7 +63,7 @@ object AddressForm {
 
   private[forms] def line2Formatter: Formatter[Option[String]] = new Formatter[Option[String]] {
     override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], Option[String]] = {
-      val line2Key: String = "line2"
+      val line2Key: String           = "line2"
       val maybeLine2: Option[String] = data.get(line2Key).map(_.trim)
 
       maybeLine2.fold[Either[Seq[FormError], Option[String]]](Right(None)) { line2 =>
@@ -103,7 +103,10 @@ object AddressForm {
 
       if (selectedCountryIsGBR && maybePostcode.exists(_.forall(_.isWhitespace)))
         Left(Seq(FormError("postcode", "address.field-name.error.postcode.empty")))
-      else if (selectedCountryIsGBR && (!maybePostcode.exists(_.matches(addressUkPostcodeRegex.regex)) || !maybePostcode.exists(_.matches(addressBarclaycardPostcodeRegex.regex))))
+      else if (
+        selectedCountryIsGBR && (!maybePostcode
+          .exists(_.matches(addressUkPostcodeRegex.regex)) || !maybePostcode.exists(_.matches(addressBarclaycardPostcodeRegex.regex)))
+      )
         Left(Seq(FormError("postcode", "address.field-name.error.postcode.invalid-character")))
       else if (!selectedCountryIsGBR && maybePostcode.exists(_.forall(_.isWhitespace)))
         Right(None)

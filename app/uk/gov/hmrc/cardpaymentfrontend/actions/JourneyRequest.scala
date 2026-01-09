@@ -21,8 +21,8 @@ import payapi.corcommon.model.JourneyId
 import play.api.mvc.{Request, WrappedRequest}
 
 class JourneyRequest[A](
-    val journey: Journey[JourneySpecificData],
-    val request: Request[A]
+  val journey: Journey[JourneySpecificData],
+  val request: Request[A]
 ) extends WrappedRequest[A](request) {
 
   val journeyId: JourneyId = journey._id

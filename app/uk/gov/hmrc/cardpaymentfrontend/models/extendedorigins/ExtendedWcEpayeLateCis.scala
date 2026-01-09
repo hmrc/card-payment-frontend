@@ -20,7 +20,7 @@ import payapi.cardpaymentjourney.model.journey.{JourneySpecificData, JsdWcEpayeL
 import play.api.mvc.AnyContent
 import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
 import uk.gov.hmrc.cardpaymentfrontend.models.PaymentMethod.{Bacs, Card, OpenBanking}
-import uk.gov.hmrc.cardpaymentfrontend.models._
+import uk.gov.hmrc.cardpaymentfrontend.models.*
 import uk.gov.hmrc.cardpaymentfrontend.models.openbanking.{OriginSpecificSessionData, WcEpayeLateCisSessionData}
 
 object ExtendedWcEpayeLateCis extends ExtendedOrigin {
@@ -32,19 +32,22 @@ object ExtendedWcEpayeLateCis extends ExtendedOrigin {
 
   override def paymentMethods(): Set[PaymentMethod] = Set(Card, OpenBanking, Bacs)
 
-  override def checkYourAnswersReferenceRow(journeyRequest: JourneyRequest[AnyContent])
-    (payFrontendBaseUrl: String): Option[CheckYourAnswersRow] =
-    Some(CheckYourAnswersRow(
-      titleMessageKey = "check-your-details.WcEpayeLateCis.reference",
-      value           = Seq(journeyRequest.journey.referenceValue),
-      changeLink      = None
-    ))
+  override def checkYourAnswersReferenceRow(journeyRequest: JourneyRequest[AnyContent])(payFrontendBaseUrl: String): Option[CheckYourAnswersRow] =
+    Some(
+      CheckYourAnswersRow(
+        titleMessageKey = "check-your-details.WcEpayeLateCis.reference",
+        value = Seq(journeyRequest.journey.referenceValue),
+        changeLink = None
+      )
+    )
 
-  override def checkYourAnswersAmountSummaryRow(journeyRequest: JourneyRequest[AnyContent])(payFrontendBaseUrl: String): Option[CheckYourAnswersRow] = Some(CheckYourAnswersRow(
-    titleMessageKey = "check-your-details.total-to-pay",
-    value           = Seq(amount(journeyRequest)),
-    changeLink      = None
-  ))
+  override def checkYourAnswersAmountSummaryRow(journeyRequest: JourneyRequest[AnyContent])(payFrontendBaseUrl: String): Option[CheckYourAnswersRow] = Some(
+    CheckYourAnswersRow(
+      titleMessageKey = "check-your-details.total-to-pay",
+      value = Seq(amount(journeyRequest)),
+      changeLink = None
+    )
+  )
 
   override def openBankingOriginSpecificSessionData: JourneySpecificData => Option[OriginSpecificSessionData] = {
     case j: JsdWcEpayeLateCis => Some(WcEpayeLateCisSessionData(j.chargeReference))

@@ -26,11 +26,12 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
 @Singleton
 class SignOutController @Inject() (
-    actions:      Actions,
-    mcc:          MessagesControllerComponents,
-    appConfig:    AppConfig,
-    timedOutPage: TimedOutPage
-) extends FrontendController(mcc) with I18nSupport {
+  actions:      Actions,
+  mcc:          MessagesControllerComponents,
+  appConfig:    AppConfig,
+  timedOutPage: TimedOutPage
+) extends FrontendController(mcc)
+    with I18nSupport {
 
   private lazy val signOutFromTimeoutRedirect = {
     val continueUrl = s"${appConfig.cardPaymentFrontendBaseUrl}${routes.SignOutController.timedOut.url}"

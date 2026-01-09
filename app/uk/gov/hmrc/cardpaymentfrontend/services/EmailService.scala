@@ -35,16 +35,18 @@ import scala.concurrent.Future
 
 @Singleton
 class EmailService @Inject() (
-    appConfig:      AppConfig,
-    emailConnector: EmailConnector,
-    requestSupport: RequestSupport
+  appConfig:      AppConfig,
+  emailConnector: EmailConnector,
+  requestSupport: RequestSupport
 )(implicit messagesApi: MessagesApi)
-  extends Logging {
+    extends Logging {
 
-  import requestSupport._
+  import requestSupport.*
 
-  def sendEmail(journey: Journey[JourneySpecificData], emailAddress: EmailAddress, isEnglish: Boolean)
-    (implicit headerCarrier: HeaderCarrier, request: Request[_]): Future[Unit] = {
+  def sendEmail(journey: Journey[JourneySpecificData], emailAddress: EmailAddress, isEnglish: Boolean)(implicit
+    headerCarrier: HeaderCarrier,
+    request:       Request[?]
+  ): Future[Unit] = {
     logger.info("Email sent on successful payment")
     emailConnector.sendEmail(
       buildEmailRequest(journey, emailAddress, isEnglish)
@@ -52,40 +54,40 @@ class EmailService @Inject() (
   }
 
   private[services] def buildEmailRequest(
-      journey:      Journey[JourneySpecificData],
-      emailAddress: EmailAddress,
-      isEnglish:    Boolean
-  )(implicit request: Request[_]): EmailRequest = {
+    journey:      Journey[JourneySpecificData],
+    emailAddress: EmailAddress,
+    isEnglish:    Boolean
+  )(implicit request: Request[?]): EmailRequest = {
 
-    val templateId: String = if (isEnglish) "payment_successful" else "payment_successful_cy"
+    val templateId: String          = if (isEnglish) "payment_successful" else "payment_successful_cy"
     val parameters: EmailParameters = buildEmailParameters(journey)
 
     EmailRequest(
-      to         = List(emailAddress),
+      to = List(emailAddress),
       templateId = templateId,
       parameters = parameters,
-      force      = false
+      force = false
     )
   }
 
-  private[services] def buildEmailParameters(journey: Journey[JourneySpecificData])(implicit request: Request[_]): EmailParameters = {
-    val messages: Messages = request.messages
+  private[services] def buildEmailParameters(journey: Journey[JourneySpecificData])(implicit request: Request[?]): EmailParameters = {
+    val messages: Messages             = request.messages
     val extendedOrigin: ExtendedOrigin = journey.origin.lift(appConfig)
-    val maybeCommission = journey.getCommissionInPence
+    val maybeCommission                = journey.getCommissionInPence
 
     EmailParameters(
-      taxType          = messages(extendedOrigin.emailTaxTypeMessageKey),
-      taxReference     = obfuscateReference(journey.referenceValue),
+      taxType = messages(extendedOrigin.emailTaxTypeMessageKey),
+      taxReference = obfuscateReference(journey.referenceValue),
       paymentReference = journey.getTransactionReference.value,
-      amountPaid       = journey.getAmountInPence.formatInDecimal,
-      commission       = if (hasCardFees(maybeCommission)) maybeCommission.map(_.formatInDecimal) else None,
-      totalPaid        = if (hasCardFees(maybeCommission)) maybeCommission.map(commission => (journey.getAmountInPence + commission).formatInDecimal) else None
+      amountPaid = journey.getAmountInPence.formatInDecimal,
+      commission = if (hasCardFees(maybeCommission)) maybeCommission.map(_.formatInDecimal) else None,
+      totalPaid = if (hasCardFees(maybeCommission)) maybeCommission.map(commission => (journey.getAmountInPence + commission).formatInDecimal) else None
     )
   }
 
   private[services] def hasCardFees: Option[AmountInPence] => Boolean = maybeAmount => maybeAmount.exists(_.value > 0)
 
-  private[services] def obfuscateReference(taxReference: String)(implicit request: Request[_]): String = {
+  private[services] def obfuscateReference(taxReference: String)(implicit request: Request[?]): String = {
     request.messages.messages("email.obfuscated-tax-reference", taxReference.takeRight(5))
   }
 

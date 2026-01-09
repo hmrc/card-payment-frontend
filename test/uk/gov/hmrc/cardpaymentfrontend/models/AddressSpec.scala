@@ -19,7 +19,7 @@ package uk.gov.hmrc.cardpaymentfrontend.models
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.UnitSpec
 
 class AddressSpec extends UnitSpec {
-  val address: Address = Address(line1    = "line1", postcode = Some("AA0AA0"), country = "GBR")
+  val address: Address                = Address(line1 = "line1", postcode = Some("AA0AA0"), country = "GBR")
   val badStrings: Seq[Option[String]] = Seq(
     Some("(Select entry)"),
     Some("Select"),
@@ -48,7 +48,7 @@ class AddressSpec extends UnitSpec {
     Some("SELECT * FROM address")
   )
 
-  //Far from a complete list and takes no account of variations
+  // Far from a complete list and takes no account of variations
   val administrativeCounties: Seq[Option[String]] = Seq(
     Some("Bedfordshire"),
     Some("Berkshire"),
@@ -106,17 +106,17 @@ class AddressSpec extends UnitSpec {
   }
 
   "an Address with a uk country and a bad county name should have the countyName replaced with an None value" in {
-    val addressWithBadCounty = Address(line1    = "line1", postcode = Some("AA0AA0"), county = Some("Select ..."), country = "GBR")
+    val addressWithBadCounty = Address(line1 = "line1", postcode = Some("AA0AA0"), county = Some("Select ..."), country = "GBR")
     addressWithBadCounty.sanitiseCounty().county shouldBe None
   }
 
   "an Address with a uk country and a good county name should not have the countyName replaced with an None value" in {
-    val addressWithBadCounty = Address(line1    = "line1", postcode = Some("AA0AA0"), county = Some("West Sussex"), country = "GBR")
+    val addressWithBadCounty = Address(line1 = "line1", postcode = Some("AA0AA0"), county = Some("West Sussex"), country = "GBR")
     addressWithBadCounty.sanitiseCounty().county shouldBe Some("West Sussex")
   }
 
   "an Address with non uk country and a bad county name should not have the countyName replaced with an None value" in {
-    val addressWithBadCounty = Address(line1    = "line1", postcode = Some("AA0AA0"), county = Some("west selectashire"), country = "US")
+    val addressWithBadCounty = Address(line1 = "line1", postcode = Some("AA0AA0"), county = Some("west selectashire"), country = "US")
     addressWithBadCounty.sanitiseCounty().county shouldBe Some("west selectashire")
   }
 

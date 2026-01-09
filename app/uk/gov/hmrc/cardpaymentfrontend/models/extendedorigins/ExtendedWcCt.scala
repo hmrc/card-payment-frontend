@@ -25,7 +25,7 @@ import uk.gov.hmrc.cardpaymentfrontend.models.{CheckYourAnswersRow, PaymentMetho
 
 object ExtendedWcCt extends ExtendedOrigin {
   override val serviceNameMessageKey: String = "service-name.WcCt"
-  override val taxNameMessageKey: String = "payment-complete.tax-name.WcCt"
+  override val taxNameMessageKey: String     = "payment-complete.tax-name.WcCt"
 
   def cardFeesPagePaymentMethods: Set[PaymentMethod] = Set(OpenBanking)
 
@@ -39,18 +39,22 @@ object ExtendedWcCt extends ExtendedOrigin {
   }
 
   override def checkYourAnswersReferenceRow(journeyRequest: JourneyRequest[AnyContent])(payFrontendBaseUrl: String): Option[CheckYourAnswersRow] = {
-    Some(CheckYourAnswersRow(
-      titleMessageKey = "check-your-details.WcCt.reference",
-      value           = Seq(reference(journeyRequest)),
-      changeLink      = None
-    ))
+    Some(
+      CheckYourAnswersRow(
+        titleMessageKey = "check-your-details.WcCt.reference",
+        value = Seq(reference(journeyRequest)),
+        changeLink = None
+      )
+    )
   }
 
-  override def checkYourAnswersAmountSummaryRow(journeyRequest: JourneyRequest[AnyContent])(payFrontendBaseUrl: String): Option[CheckYourAnswersRow] = Some(CheckYourAnswersRow(
-    titleMessageKey = "check-your-details.total-to-pay",
-    value           = Seq(amount(journeyRequest)),
-    changeLink      = None
-  ))
+  override def checkYourAnswersAmountSummaryRow(journeyRequest: JourneyRequest[AnyContent])(payFrontendBaseUrl: String): Option[CheckYourAnswersRow] = Some(
+    CheckYourAnswersRow(
+      titleMessageKey = "check-your-details.total-to-pay",
+      value = Seq(amount(journeyRequest)),
+      changeLink = None
+    )
+  )
 
   override def openBankingOriginSpecificSessionData: JourneySpecificData => Option[OriginSpecificSessionData] = {
     case j: JsdWcCt => Some(WcCtSessionData(j.ctPayslipReference.ctUtr, j.ctPayslipReference.ctPeriod, j.ctPayslipReference.ctChargeType))
@@ -59,9 +63,9 @@ object ExtendedWcCt extends ExtendedOrigin {
 
   override def emailTaxTypeMessageKey: String = "email.tax-name.WcCt"
 
-  override def surveyAuditName: String = "corporation-tax"
-  override def surveyReturnHref: String = "https://www.gov.uk/government/organisations/hm-revenue-customs"
-  override def surveyReturnMessageKey: String = "payments-survey.other.return-message"
+  override def surveyAuditName: String         = "corporation-tax"
+  override def surveyReturnHref: String        = "https://www.gov.uk/government/organisations/hm-revenue-customs"
+  override def surveyReturnMessageKey: String  = "payments-survey.other.return-message"
   override def surveyIsWelshSupported: Boolean = true
-  override def surveyBannerTitle: String = serviceNameMessageKey
+  override def surveyBannerTitle: String       = serviceNameMessageKey
 }

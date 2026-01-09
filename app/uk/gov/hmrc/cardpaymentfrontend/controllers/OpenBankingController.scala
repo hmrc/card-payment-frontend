@@ -31,26 +31,25 @@ import scala.concurrent.ExecutionContext
 
 @Singleton
 class OpenBankingController @Inject() (
-    actions:              Actions,
-    appConfig:            AppConfig,
-    openBankingConnector: OpenBankingConnector,
-    requestSupport:       RequestSupport
+  actions:              Actions,
+  appConfig:            AppConfig,
+  openBankingConnector: OpenBankingConnector,
+  requestSupport:       RequestSupport
 )(implicit executionContext: ExecutionContext) {
 
-  import requestSupport._
-
+  import requestSupport.*
   def startOpenBankingJourney: Action[AnyContent] = actions.journeyAction.async { implicit journeyRequest: JourneyRequest[AnyContent] =>
-    val journey: Journey[JourneySpecificData] = journeyRequest.journey
+    val journey: Journey[JourneySpecificData]              = journeyRequest.journey
     val createSessionDataRequest: CreateSessionDataRequest = {
-      journey
-        .origin
+      journey.origin
         .lift(appConfig)
         .openBankingOriginSpecificSessionData(journey.journeySpecificData)
         .map(originSpecificSessionData => CreateSessionDataRequest(journey.getAmountInPence, originSpecificSessionData, journey.futureDatedPayment))
         .getOrElse(throw new RuntimeException(s"Unable to build createSessionDataRequest, so cannot start an OB journey for origin ${journey.origin.toString}"))
     }
 
-    openBankingConnector.startOpenBankingJourney(createSessionDataRequest)
+    openBankingConnector
+      .startOpenBankingJourney(createSessionDataRequest)
       .map { createSessionDataResponse =>
         Redirect(createSessionDataResponse.nextUrl)
           .addingToSession("obSessionDataId" -> createSessionDataResponse.sessionDataId.value) // required by pay-frontend to update the open-banking-mongo.

@@ -34,22 +34,22 @@ class PaymentsSurveyControllerSpec extends ItSpec {
         PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyAfterSucceedDebitWebPayment)
         PaymentsSurveyStub.stubForStartJourney2xx(TestPaymentsSurveyData.ssJResponse)
         val fakeRequest = FakeRequest().withSessionId()
-        val result = systemUnderTest.startSurvey()(fakeRequest)
+        val result      = systemUnderTest.startSurvey()(fakeRequest)
         redirectLocation(result) shouldBe Some("http://survey-redirect-url.com")
       }
 
       "should return 410 (Gone) when journey is not in terminal state" in {
         PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyBeforeBeginWebPayment)
         val fakeRequest = FakeRequest().withSessionId()
-        val result = systemUnderTest.startSurvey()(fakeRequest)
+        val result      = systemUnderTest.startSurvey()(fakeRequest)
         status(result) shouldBe 410
-        val document = Jsoup.parse(contentAsString(result))
+        val document    = Jsoup.parse(contentAsString(result))
         document.select("h1").html() shouldBe "This page can’t be found"
       }
 
       "should return 401 when journey cannot be found" in {
         val fakeRequest = FakeRequest().withSessionId()
-        val result = systemUnderTest.startSurvey()(fakeRequest)
+        val result      = systemUnderTest.startSurvey()(fakeRequest)
         status(result) shouldBe 401
       }
 
@@ -57,4 +57,3 @@ class PaymentsSurveyControllerSpec extends ItSpec {
   }
 
 }
-

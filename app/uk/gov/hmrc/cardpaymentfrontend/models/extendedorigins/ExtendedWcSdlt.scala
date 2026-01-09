@@ -33,30 +33,33 @@ object ExtendedWcSdlt extends ExtendedOrigin {
 
   def paymentMethods(): Set[PaymentMethod] = Set(Card, OpenBanking, Bacs)
 
-  override def checkYourAnswersReferenceRow(journeyRequest: JourneyRequest[AnyContent])
-    (payFrontendBaseUrl: String): Option[CheckYourAnswersRow] =
-    Some(CheckYourAnswersRow(
-      titleMessageKey = "check-your-details.WcSdlt.reference",
-      value           = Seq(journeyRequest.journey.referenceValue),
-      changeLink      = None
-    ))
+  override def checkYourAnswersReferenceRow(journeyRequest: JourneyRequest[AnyContent])(payFrontendBaseUrl: String): Option[CheckYourAnswersRow] =
+    Some(
+      CheckYourAnswersRow(
+        titleMessageKey = "check-your-details.WcSdlt.reference",
+        value = Seq(journeyRequest.journey.referenceValue),
+        changeLink = None
+      )
+    )
 
-  override def checkYourAnswersAmountSummaryRow(journeyRequest: JourneyRequest[AnyContent])(payFrontendBaseUrl: String): Option[CheckYourAnswersRow] = Some(CheckYourAnswersRow(
-    titleMessageKey = "check-your-details.total-to-pay",
-    value           = Seq(amount(journeyRequest)),
-    changeLink      = None
-  ))
+  override def checkYourAnswersAmountSummaryRow(journeyRequest: JourneyRequest[AnyContent])(payFrontendBaseUrl: String): Option[CheckYourAnswersRow] = Some(
+    CheckYourAnswersRow(
+      titleMessageKey = "check-your-details.total-to-pay",
+      value = Seq(amount(journeyRequest)),
+      changeLink = None
+    )
+  )
 
   override def openBankingOriginSpecificSessionData: JourneySpecificData => Option[OriginSpecificSessionData] = {
     case j: JsdWcSdlt => Some(WcSdltSessionData(j.utrn))
     case _            => throw new RuntimeException("Incorrect origin found")
   }
 
-  override def emailTaxTypeMessageKey: String = "email.tax-name.WcSdlt"
-  override def surveyAuditName: String = "stamp-duty"
-  override def surveyReturnHref: String = "https://www.gov.uk/government/organisations/hm-revenue-customs"
-  override def surveyReturnMessageKey: String = "payments-survey.other.return-message"
+  override def emailTaxTypeMessageKey: String  = "email.tax-name.WcSdlt"
+  override def surveyAuditName: String         = "stamp-duty"
+  override def surveyReturnHref: String        = "https://www.gov.uk/government/organisations/hm-revenue-customs"
+  override def surveyReturnMessageKey: String  = "payments-survey.other.return-message"
   override def surveyIsWelshSupported: Boolean = true
-  override def surveyBannerTitle: String = serviceNameMessageKey
+  override def surveyBannerTitle: String       = serviceNameMessageKey
 
 }

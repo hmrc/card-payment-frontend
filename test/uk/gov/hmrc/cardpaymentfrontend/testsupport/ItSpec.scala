@@ -34,12 +34,9 @@ import java.time.{Clock, Instant, LocalDateTime, ZoneId, ZoneOffset}
 import scala.annotation.unused
 import scala.concurrent.ExecutionContext
 
-trait ItSpec extends AnyFreeSpecLike
-  with GuiceOneServerPerSuite
-  with WireMockSupport
-  with RichMatchers { self =>
+trait ItSpec extends AnyFreeSpecLike with GuiceOneServerPerSuite with WireMockSupport with RichMatchers { self =>
 
-  implicit val ec: ExecutionContext = scala.concurrent.ExecutionContext.Implicits.global
+  implicit val ec: ExecutionContext            = scala.concurrent.ExecutionContext.Implicits.global
   implicit lazy val materializer: Materializer = app.materializer
 
   private val testServerPort: Int = 19001
@@ -47,20 +44,20 @@ trait ItSpec extends AnyFreeSpecLike
   protected lazy val configOverrides: Map[String, Any] = Map()
 
   protected lazy val configMap: Map[String, Any] = Map[String, Any](
-    "play.http.router" -> "testOnlyDoNotUseInAppConf.Routes",
-    "auditing.consumer.baseUri.port" -> self.wireMockPort,
-    "auditing.enabled" -> false,
-    "auditing.traceRequests" -> false,
+    "play.http.router"                                      -> "testOnlyDoNotUseInAppConf.Routes",
+    "auditing.consumer.baseUri.port"                        -> self.wireMockPort,
+    "auditing.enabled"                                      -> false,
+    "auditing.traceRequests"                                -> false,
     "microservice.services.bc-passengers-declarations.port" -> self.wireMockPort,
-    "microservice.services.card-payment.port" -> self.wireMockPort,
-    "microservice.services.cds.port" -> self.wireMockPort,
-    "microservice.services.cds.host" -> "127.0.0.1", // OPS-6346 - this is to trick http verbs into thinking it's an external call
-    "microservice.services.email-service.port" -> self.wireMockPort,
-    "microservice.services.open-banking.port" -> self.wireMockPort,
-    "microservice.services.pay-api.port" -> self.wireMockPort,
-    "microservice.services.payments-processor.port" -> self.wireMockPort,
-    "microservice.services.payments-survey.port" -> self.wireMockPort,
-    "internal-auth.token" -> "testToken"
+    "microservice.services.card-payment.port"               -> self.wireMockPort,
+    "microservice.services.cds.port"                        -> self.wireMockPort,
+    "microservice.services.cds.host"                        -> "127.0.0.1", // OPS-6346 - this is to trick http verbs into thinking it's an external call
+    "microservice.services.email-service.port"              -> self.wireMockPort,
+    "microservice.services.open-banking.port"               -> self.wireMockPort,
+    "microservice.services.pay-api.port"                    -> self.wireMockPort,
+    "microservice.services.payments-processor.port"         -> self.wireMockPort,
+    "microservice.services.payments-survey.port"            -> self.wireMockPort,
+    "internal-auth.token"                                   -> "testToken"
   ) ++ configOverrides
 
   override def beforeEach(): Unit = {
@@ -84,7 +81,7 @@ trait ItSpec extends AnyFreeSpecLike
 
   object TestServerFactory extends DefaultTestServerFactory {
     override protected def serverConfig(app: Application): ServerConfig = {
-      val sc: ServerConfig = ServerConfig(port    = Some(testServerPort), sslPort = None, mode = Mode.Test, rootDir = app.path)
+      val sc: ServerConfig = ServerConfig(port = Some(testServerPort), sslPort = None, mode = Mode.Test, rootDir = app.path)
       sc.copy(configuration = sc.configuration.withFallback(overrideServerConfiguration(app)))
     }
   }
@@ -103,14 +100,14 @@ trait ItSpec extends AnyFreeSpecLike
   }
 
   object FrozenTime {
-    lazy val dateString: String = "2059-11-25"
-    lazy val timeString: String = s"${dateString}T16:33:51.880"
+    lazy val dateString: String           = "2059-11-25"
+    lazy val timeString: String           = s"${dateString}T16:33:51.880"
     lazy val localDateTime: LocalDateTime = {
-      //the frozen time has to be in future otherwise things will disappear from mongodb because of ttl
+      // the frozen time has to be in future otherwise things will disappear from mongodb because of ttl
       LocalDateTime.parse(timeString, DateTimeFormatter.ISO_DATE_TIME)
     }
-    lazy val instant: Instant = localDateTime.toInstant(ZoneOffset.UTC)
-    lazy val frozenInstant: Instant = instant
-    lazy val clock: Clock = Clock.fixed(frozenInstant, ZoneId.of("UTC"))
+    lazy val instant: Instant             = localDateTime.toInstant(ZoneOffset.UTC)
+    lazy val frozenInstant: Instant       = instant
+    lazy val clock: Clock                 = Clock.fixed(frozenInstant, ZoneId.of("UTC"))
   }
 }

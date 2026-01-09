@@ -16,15 +16,15 @@
 
 package uk.gov.hmrc.cardpaymentfrontend.models.paymentssurvey
 
-import play.api.libs.json.{Json, Format}
+import play.api.libs.json.{Format, Json}
 
 final case class PaymentSurveyJourneyRequest(
-    origin:         String,
-    returnMsg:      String,
-    returnHref:     String,
-    auditName:      String,
-    audit:          AuditOptions,
-    contentOptions: SurveyContentOptions
+  origin:         String,
+  returnMsg:      String,
+  returnHref:     String,
+  auditName:      String,
+  audit:          AuditOptions,
+  contentOptions: SurveyContentOptions
 )
 
 @SuppressWarnings(Array("org.wartremover.warts.Any"))

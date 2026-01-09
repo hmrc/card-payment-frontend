@@ -33,17 +33,20 @@ object ExtendedPfJobRetentionScheme extends ExtendedOrigin {
 
   override def paymentMethods(): Set[PaymentMethod] = Set(OneOffDirectDebit, Bacs, Card)
 
-  override def checkYourAnswersReferenceRow(journeyRequest: JourneyRequest[AnyContent])
-    (payFrontendBaseUrl: String): Option[CheckYourAnswersRow] =
-    Some(CheckYourAnswersRow(
-      titleMessageKey = "check-your-details.PfJobRetentionScheme.reference",
-      value           = Seq(journeyRequest.journey.referenceValue),
-      changeLink      = Some(uk.gov.hmrc.cardpaymentfrontend.models.Link(
-        href       = Call("GET", changeReferenceUrl(payFrontendBaseUrl)),
-        linkId     = "check-your-details-reference-change-link",
-        messageKey = "check-your-details.change"
-      ))
-    ))
+  override def checkYourAnswersReferenceRow(journeyRequest: JourneyRequest[AnyContent])(payFrontendBaseUrl: String): Option[CheckYourAnswersRow] =
+    Some(
+      CheckYourAnswersRow(
+        titleMessageKey = "check-your-details.PfJobRetentionScheme.reference",
+        value = Seq(journeyRequest.journey.referenceValue),
+        changeLink = Some(
+          uk.gov.hmrc.cardpaymentfrontend.models.Link(
+            href = Call("GET", changeReferenceUrl(payFrontendBaseUrl)),
+            linkId = "check-your-details-reference-change-link",
+            messageKey = "check-your-details.change"
+          )
+        )
+      )
+    )
 
   override def openBankingOriginSpecificSessionData: JourneySpecificData => Option[OriginSpecificSessionData] = {
     case j: JsdPfJobRetentionScheme => j.prn.map(PfJobRetentionSchemeSessionData(_))

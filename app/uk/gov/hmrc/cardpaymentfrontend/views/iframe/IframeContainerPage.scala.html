@@ -20,7 +20,7 @@
 
 @this(layout: Layout)
 
-@(iframeUrl: String)(implicit journeyRequest: JourneyRequest[_], messages: Messages)
+@(iframeUrl: String)(implicit journeyRequest: JourneyRequest[?], messages: Messages)
 
 @heading = @{messages("iframe.heading")}
 

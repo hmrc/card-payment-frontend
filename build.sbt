@@ -7,7 +7,7 @@ StrictBuilding.strictBuildingSetting
 //---
 
 ThisBuild / majorVersion := 0
-ThisBuild / scalaVersion := "2.13.18"
+ThisBuild / scalaVersion := "3.3.7"
 
 lazy val microservice = Project("card-payment-frontend", file("."))
   .enablePlugins(play.sbt.PlayScala, SbtDistributablesPlugin)
@@ -21,15 +21,15 @@ lazy val microservice = Project("card-payment-frontend", file("."))
     // https://www.scala-lang.org/2021/01/12/configuring-and-suppressing-warnings.html
     // suppress warnings in generated routes files
     scalacOptions += "-Wconf:src=routes/.*:s",
-    scalacOptions += "-Wconf:cat=unused-imports&src=html/.*:s",
+    scalacOptions += "-Wconf:msg=unused import&src=html/.*:s",
     pipelineStages := Seq(gzip),
   )
   .settings(PlayKeys.playDefaultPort := 10155)
   .settings(commands ++= SbtCommands.commands)
   .settings(CodeCoverageSettings.settings *)
   .settings(SbtUpdatesSettings.sbtUpdatesSettings *)
-  .settings(ScalariformSettings.scalariformSettings *)
   .settings(WartRemoverSettings.wartRemoverSettings *)
+  .settings(scalafmtOnCompile := true)
   .settings(
     Compile / unmanagedResourceDirectories += baseDirectory.value / "resources",
     Compile / scalacOptions -= "utf8",

@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.cardpaymentfrontend.testsupport.stubs
 
-import com.github.tomakehurst.wiremock.client.WireMock._
+import com.github.tomakehurst.wiremock.client.WireMock.*
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import org.scalatest.concurrent.Eventually
 import play.api.http.Status
@@ -24,7 +24,7 @@ import play.api.libs.json.JsObject
 
 object AuditConnectorStub extends Eventually {
 
-  val auditUrl: String = "/write/audit"
+  val auditUrl: String       = "/write/audit"
   val auditMergedUrl: String = "/write/audit/merged"
 
   def stubForImplicitAudit(): StubMapping = stubFor(

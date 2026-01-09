@@ -20,7 +20,7 @@ import payapi.cardpaymentjourney.model.journey.{JourneySpecificData, JsdJrsJobRe
 import play.api.mvc.AnyContent
 import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
 import uk.gov.hmrc.cardpaymentfrontend.models.PaymentMethod.{Bacs, Card, OneOffDirectDebit}
-import uk.gov.hmrc.cardpaymentfrontend.models.openbanking.{OriginSpecificSessionData, JrsJobRetentionSchemeSessionData}
+import uk.gov.hmrc.cardpaymentfrontend.models.openbanking.{JrsJobRetentionSchemeSessionData, OriginSpecificSessionData}
 import uk.gov.hmrc.cardpaymentfrontend.models.{CheckYourAnswersRow, PaymentMethod}
 
 object ExtendedJrsJobRetentionScheme extends ExtendedOrigin {
@@ -33,13 +33,14 @@ object ExtendedJrsJobRetentionScheme extends ExtendedOrigin {
 
   override def paymentMethods(): Set[PaymentMethod] = Set(OneOffDirectDebit, Bacs, Card)
 
-  override def checkYourAnswersReferenceRow(journeyRequest: JourneyRequest[AnyContent])
-    (payFrontendBaseUrl: String): Option[CheckYourAnswersRow] =
-    Some(CheckYourAnswersRow(
-      titleMessageKey = "check-your-details.JrsJobRetentionScheme.reference",
-      value           = Seq(journeyRequest.journey.referenceValue),
-      changeLink      = None
-    ))
+  override def checkYourAnswersReferenceRow(journeyRequest: JourneyRequest[AnyContent])(payFrontendBaseUrl: String): Option[CheckYourAnswersRow] =
+    Some(
+      CheckYourAnswersRow(
+        titleMessageKey = "check-your-details.JrsJobRetentionScheme.reference",
+        value = Seq(journeyRequest.journey.referenceValue),
+        changeLink = None
+      )
+    )
 
   override def openBankingOriginSpecificSessionData: JourneySpecificData => Option[OriginSpecificSessionData] = {
     case j: JsdJrsJobRetentionScheme => Some(JrsJobRetentionSchemeSessionData(j.jrsRef))

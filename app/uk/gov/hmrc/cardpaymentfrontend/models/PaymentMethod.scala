@@ -28,7 +28,7 @@ object PaymentMethod {
 
   case object VariableDirectDebit extends PaymentMethod
 
-  //the MDTP oceans 11 service
+  // the MDTP oceans 11 service
   case object DirectDebit extends PaymentMethod
 
   case object PrintableDirectDebit extends PaymentMethod

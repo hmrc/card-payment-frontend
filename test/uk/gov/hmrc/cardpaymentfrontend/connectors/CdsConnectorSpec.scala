@@ -27,19 +27,26 @@ import uk.gov.hmrc.http.HeaderCarrier
 class CdsConnectorSpec extends ItSpec {
 
   private val systemUnderTest: CdsConnector = app.injector.instanceOf[CdsConnector]
-  private val headerCarrier: HeaderCarrier = HeaderCarrier()
+  private val headerCarrier: HeaderCarrier  = HeaderCarrier()
 
   "getCashDepositSubscriptionDetails" - {
     "should return a CdsResponse" in {
       CdsStub.stubGetCashDepositSubscriptionDetail2xx(TestPayApiData.testCdsRef)
       val result = systemUnderTest.getCashDepositSubscriptionDetails(TestPayApiData.testCdsRef)(headerCarrier).futureValue
-      result shouldBe CdsResponse(GetCashDepositSubscriptionDetailsResponse(ResponseCommon("Ok", "2018-09-24T11:01:01Z"), ResponseDetail("16NLIWQ2W3AXAGWD52", "CDSI191234567890", "2018-09-24T11:01:01Z", false, Some("2018-09-24T11:01:01Z"))))
+      result shouldBe CdsResponse(
+        GetCashDepositSubscriptionDetailsResponse(
+          ResponseCommon("Ok", "2018-09-24T11:01:01Z"),
+          ResponseDetail("16NLIWQ2W3AXAGWD52", "CDSI191234567890", "2018-09-24T11:01:01Z", false, Some("2018-09-24T11:01:01Z"))
+        )
+      )
 
     }
     "should error when cds service errors" in {
       CdsStub.stubGetCashDepositSubscriptionDetail5xx(TestPayApiData.testCdsRef)
       val error: Exception = intercept[Exception](systemUnderTest.getCashDepositSubscriptionDetails(TestPayApiData.testCdsRef)(headerCarrier).futureValue)
-      error.getCause.getMessage should include(s"GET of 'http://127.0.0.1:${wireMockPort.toString}/accounts/getcashdepositsubscriptiondetails/v1?paymentReference=CDSI191234567890' returned 503.")
+      error.getCause.getMessage should include(
+        s"GET of 'http://127.0.0.1:${wireMockPort.toString}/accounts/getcashdepositsubscriptiondetails/v1?paymentReference=CDSI191234567890' returned 503."
+      )
     }
   }
 
@@ -48,13 +55,13 @@ class CdsConnectorSpec extends ItSpec {
     val testCdsNotification = CdsNotification(
       notifyImmediatePaymentRequest = NotifyImmediatePaymentRequest(
         requestCommon = RequestCommon(
-          receiptDate              = "testReceiptDate",
+          receiptDate = "testReceiptDate",
           acknowledgementReference = "testAcknowledgementReference"
         ),
         requestDetail = RequestDetail(
           paymentReference = "testPaymentReference",
-          amountPaid       = "testAmountPaid",
-          declarationID    = "testDeclarationID"
+          amountPaid = "testAmountPaid",
+          declarationID = "testDeclarationID"
         )
       )
     )

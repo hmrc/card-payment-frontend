@@ -19,22 +19,24 @@ package uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins
 import payapi.cardpaymentjourney.model.journey.{JourneySpecificData, JsdBtaVat}
 import play.api.mvc.AnyContent
 import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
-import uk.gov.hmrc.cardpaymentfrontend.models.PaymentMethod._
+import uk.gov.hmrc.cardpaymentfrontend.models.PaymentMethod.*
 import uk.gov.hmrc.cardpaymentfrontend.models.openbanking.{BtaVatSessionData, OriginSpecificSessionData}
 import uk.gov.hmrc.cardpaymentfrontend.models.{CheckYourAnswersRow, PaymentMethod}
 
 object ExtendedBtaVat extends ExtendedOrigin {
-  override val serviceNameMessageKey: String = "service-name.BtaVat"
-  override val taxNameMessageKey: String = "payment-complete.tax-name.BtaVat"
+  override val serviceNameMessageKey: String         = "service-name.BtaVat"
+  override val taxNameMessageKey: String             = "payment-complete.tax-name.BtaVat"
   def cardFeesPagePaymentMethods: Set[PaymentMethod] = Set(OpenBanking, VariableDirectDebit)
-  def paymentMethods(): Set[PaymentMethod] = Set(Card, OpenBanking, VariableDirectDebit, Bacs)
+  def paymentMethods(): Set[PaymentMethod]           = Set(Card, OpenBanking, VariableDirectDebit, Bacs)
 
   override def checkYourAnswersReferenceRow(journeyRequest: JourneyRequest[AnyContent])(payFrontendBaseUrl: String): Option[CheckYourAnswersRow] = {
-    Some(CheckYourAnswersRow(
-      titleMessageKey = "check-your-details.BtaVat.reference",
-      value           = Seq(journeyRequest.journey.referenceValue),
-      changeLink      = None
-    ))
+    Some(
+      CheckYourAnswersRow(
+        titleMessageKey = "check-your-details.BtaVat.reference",
+        value = Seq(journeyRequest.journey.referenceValue),
+        changeLink = None
+      )
+    )
   }
 
   override def openBankingOriginSpecificSessionData: JourneySpecificData => Option[OriginSpecificSessionData] = {
@@ -44,9 +46,9 @@ object ExtendedBtaVat extends ExtendedOrigin {
 
   override def emailTaxTypeMessageKey: String = "email.tax-name.BtaVat"
 
-  override def surveyAuditName: String = "vat"
-  override def surveyReturnHref: String = "/business-account"
-  override def surveyReturnMessageKey: String = "payments-survey.bta.return-message"
+  override def surveyAuditName: String         = "vat"
+  override def surveyReturnHref: String        = "/business-account"
+  override def surveyReturnMessageKey: String  = "payments-survey.bta.return-message"
   override def surveyIsWelshSupported: Boolean = true
-  override def surveyBannerTitle: String = serviceNameMessageKey
+  override def surveyBannerTitle: String       = serviceNameMessageKey
 }

@@ -32,13 +32,14 @@ object ExtendedCapitalGainsTax extends ExtendedOrigin {
 
   override def paymentMethods(): Set[PaymentMethod] = Set(OpenBanking, Card)
 
-  override def checkYourAnswersReferenceRow(journeyRequest: JourneyRequest[AnyContent])
-    (payFrontendBaseUrl: String): Option[CheckYourAnswersRow] =
-    Some(CheckYourAnswersRow(
-      titleMessageKey = "check-your-details.CapitalGainsTax.reference",
-      value           = Seq(journeyRequest.journey.referenceValue),
-      changeLink      = None
-    ))
+  override def checkYourAnswersReferenceRow(journeyRequest: JourneyRequest[AnyContent])(payFrontendBaseUrl: String): Option[CheckYourAnswersRow] =
+    Some(
+      CheckYourAnswersRow(
+        titleMessageKey = "check-your-details.CapitalGainsTax.reference",
+        value = Seq(journeyRequest.journey.referenceValue),
+        changeLink = None
+      )
+    )
 
   override def openBankingOriginSpecificSessionData: JourneySpecificData => Option[OriginSpecificSessionData] = {
     case j: JsdCapitalGainsTax => Some(CapitalGainsTaxSessionData(j.cgtReference))
@@ -47,9 +48,9 @@ object ExtendedCapitalGainsTax extends ExtendedOrigin {
 
   override def emailTaxTypeMessageKey: String = "email.tax-name.CapitalGainsTax"
 
-  override def surveyAuditName: String = "capital-gains-tax"
-  override def surveyReturnHref: String = "https://www.gov.uk/government/organisations/hm-revenue-customs"
-  override def surveyReturnMessageKey: String = "payments-survey.other.return-message"
+  override def surveyAuditName: String         = "capital-gains-tax"
+  override def surveyReturnHref: String        = "https://www.gov.uk/government/organisations/hm-revenue-customs"
+  override def surveyReturnMessageKey: String  = "payments-survey.other.return-message"
   override def surveyIsWelshSupported: Boolean = true
-  override def surveyBannerTitle: String = serviceNameMessageKey
+  override def surveyBannerTitle: String       = serviceNameMessageKey
 }

@@ -20,9 +20,9 @@ final case class NotificationLoggingContext(notificationName: String, successMes
 
 object NotificationLoggingContext {
   val modsNotificationLoggingContext: NotificationLoggingContext = NotificationLoggingContext(
-    notificationName        = "MibNotification",
-    successMessage          = "Successfully sent notification to Mods via payments-processor",
+    notificationName = "MibNotification",
+    successMessage = "Successfully sent notification to Mods via payments-processor",
     unexpectedStatusMessage = "There was an unexpected problem sending notification to Mods via payments-processor, status response returned:",
-    failureMessage          = "There was a critical problem sending notification to Mods via payments-processor"
+    failureMessage = "There was a critical problem sending notification to Mods via payments-processor"
   )
 }

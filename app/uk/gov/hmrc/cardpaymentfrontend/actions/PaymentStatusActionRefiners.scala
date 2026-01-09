@@ -32,51 +32,54 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class PaymentStatusActionRefiners @Inject() (
-    appConfig:              AppConfig,
-    cryptoService:          CryptoService,
-    errorHandler:           ErrorHandler,
-    forceDeleteAnswersPage: ForceDeleteAnswersPage,
-    payApiConnector:        PayApiConnector,
-    requestSupport:         RequestSupport
-)(implicit ec: ExecutionContext) extends Logging {
+  appConfig:              AppConfig,
+  cryptoService:          CryptoService,
+  errorHandler:           ErrorHandler,
+  forceDeleteAnswersPage: ForceDeleteAnswersPage,
+  payApiConnector:        PayApiConnector,
+  requestSupport:         RequestSupport
+)(implicit ec: ExecutionContext)
+    extends Logging {
 
-  import requestSupport._
+  import requestSupport.*
 
-  def findJourneyBySessionIdFallBackToJourneyIdRefiner(base64EncodedEncryptedJourneyId: String): ActionRefiner[Request, JourneyRequest] = new ActionRefiner[Request, JourneyRequest] {
+  def findJourneyBySessionIdFallBackToJourneyIdRefiner(base64EncodedEncryptedJourneyId: String): ActionRefiner[Request, JourneyRequest] =
+    new ActionRefiner[Request, JourneyRequest] {
 
-    override protected[actions] def refine[A](request: Request[A]): Future[Either[Result, JourneyRequest[A]]] = {
+      override protected[actions] def refine[A](request: Request[A]): Future[Either[Result, JourneyRequest[A]]] = {
 
-      implicit val r: Request[A] = request
+        implicit val r: Request[A] = request
 
-      payApiConnector.findLatestJourneyBySessionId()(requestSupport.hc)
-        .flatMap {
-          case Some(journey) => Future.successful(Right(new JourneyRequest(journey, request)))
-          case None =>
-            logger.warn("No journey found for session id, attempting to find by journeyId instead.")
-            val decodedJourneyId = new String(Base64.getDecoder.decode(base64EncodedEncryptedJourneyId.getBytes))
-            val decryptedJourneyId: JourneyId = JourneyId(cryptoService.decryptString(decodedJourneyId))
+        payApiConnector
+          .findLatestJourneyBySessionId()(requestSupport.hc)
+          .flatMap {
+            case Some(journey) => Future.successful(Right(new JourneyRequest(journey, request)))
+            case None          =>
+              logger.warn("No journey found for session id, attempting to find by journeyId instead.")
+              val decodedJourneyId              = new String(Base64.getDecoder.decode(base64EncodedEncryptedJourneyId.getBytes))
+              val decryptedJourneyId: JourneyId = JourneyId(cryptoService.decryptString(decodedJourneyId))
 
-            payApiConnector.findJourneyByJourneyId(decryptedJourneyId).map {
-              case Some(journey) => Right(new JourneyRequest(journey, request))
-              case None =>
-                logger.warn("No journey found for journey id, sending to timed out page.")
-                Left(Results.Unauthorized(forceDeleteAnswersPage(false, Some(Url(appConfig.payFrontendBaseUrl)))))
-            }
-        }
+              payApiConnector.findJourneyByJourneyId(decryptedJourneyId).map {
+                case Some(journey) => Right(new JourneyRequest(journey, request))
+                case None          =>
+                  logger.warn("No journey found for journey id, sending to timed out page.")
+                  Left(Results.Unauthorized(forceDeleteAnswersPage(false, Some(Url(appConfig.payFrontendBaseUrl)))))
+              }
+          }
 
+      }
+
+      override protected def executionContext: ExecutionContext = ec
     }
 
-    override protected def executionContext: ExecutionContext = ec
-  }
-
   def paymentStatusActionRefiner: ActionRefiner[JourneyRequest, JourneyRequest] = new ActionRefiner[JourneyRequest, JourneyRequest] {
-    //we don't want to be calling payment status again if we know that the journey is already in finished state
+    // we don't want to be calling payment status again if we know that the journey is already in finished state
     override protected[actions] def refine[A](journeyRequest: JourneyRequest[A]): Future[Either[Result, JourneyRequest[A]]] = {
       journeyRequest.journey.status match {
-        case PaymentStatuses.Sent => Future.successful(Right(journeyRequest))
-        case PaymentStatuses.Successful => redirectToPaymentComplete(journeyRequest)
-        case PaymentStatuses.Failed => redirectToPaymentFailed(journeyRequest)
-        case PaymentStatuses.Cancelled => redirectToPaymentCancelled(journeyRequest)
+        case PaymentStatuses.Sent                                                              => Future.successful(Right(journeyRequest))
+        case PaymentStatuses.Successful                                                        => redirectToPaymentComplete(journeyRequest)
+        case PaymentStatuses.Failed                                                            => redirectToPaymentFailed(journeyRequest)
+        case PaymentStatuses.Cancelled                                                         => redirectToPaymentCancelled(journeyRequest)
         case PaymentStatuses.Created | PaymentStatuses.Validated | PaymentStatuses.SoftDecline => errorOut(journeyRequest)
       }
     }
@@ -85,7 +88,7 @@ class PaymentStatusActionRefiners @Inject() (
   }
 
   def iframePageActionRefiner: ActionRefiner[JourneyRequest, JourneyRequest] = new ActionRefiner[JourneyRequest, JourneyRequest] {
-    //we don't want to be calling show iframe again if we know that the journey is already in finished state
+    // we don't want to be calling show iframe again if we know that the journey is already in finished state
     override protected[actions] def refine[A](journeyRequest: JourneyRequest[A]): Future[Either[Result, JourneyRequest[A]]] = {
       journeyRequest.journey.status match {
         case PaymentStatuses.Created | PaymentStatuses.Sent          => Future.successful(Right(journeyRequest))
@@ -112,7 +115,9 @@ class PaymentStatusActionRefiners @Inject() (
     logAndReturnF(journeyRequest, Results.Redirect(uk.gov.hmrc.cardpaymentfrontend.controllers.routes.PaymentFailedController.renderPage))
 
   private def logAndReturnF[A](journeyRequest: JourneyRequest[A], f: => Result): Future[Left[Result, Nothing]] = {
-    logger.warn(s"Trying to call ${journeyRequest.request.path} endpoint when journey is in state [${journeyRequest.journey.status.entryName}], but it should be in state [Sent]")
+    logger.warn(
+      s"Trying to call ${journeyRequest.request.path} endpoint when journey is in state [${journeyRequest.journey.status.entryName}], but it should be in state [Sent]"
+    )
     Future.successful(Left(f))
   }
 

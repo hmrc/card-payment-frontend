@@ -23,7 +23,7 @@ import java.time.{LocalDateTime, Month}
 object DateStringBuilder {
 
   def getDateAsString(localDate: LocalDateTime)(implicit messages: Messages): String = {
-    val day = localDate.getDayOfMonth
+    val day  = localDate.getDayOfMonth
     val year = localDate.getYear.toString
     localDate.getMonth match {
       case Month.JANUARY   => Messages("date.day-month-year.january", day, year)

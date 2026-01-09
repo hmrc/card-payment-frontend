@@ -32,7 +32,10 @@ class ExternalNavigationSpec extends UnitSpec with TableDrivenPropertyChecks {
       ExternalNavigation.returnUrlCancelled(TestJourneys.PfSa.journeyAfterCancelWebPayment) shouldBe None
     }
     "should return None when navigation in journey is Some but the returnUrlCancelled is None" in {
-      ExternalNavigation.returnUrlCancelled(TestJourneys.BtaSa.journeyAfterCancelWebPayment.copy(navigation = TestJourneys.BtaSa.journeyAfterCancelWebPayment.navigation.map(_.copy(returnUrl = None)))) shouldBe None
+      ExternalNavigation.returnUrlCancelled(
+        TestJourneys.BtaSa.journeyAfterCancelWebPayment
+          .copy(navigation = TestJourneys.BtaSa.journeyAfterCancelWebPayment.navigation.map(_.copy(returnUrl = None)))
+      ) shouldBe None
     }
   }
 }

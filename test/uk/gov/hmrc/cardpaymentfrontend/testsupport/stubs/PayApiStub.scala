@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.cardpaymentfrontend.testsupport.stubs
 
-import com.github.tomakehurst.wiremock.client.WireMock._
+import com.github.tomakehurst.wiremock.client.WireMock.*
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import payapi.cardpaymentjourney.model.journey.{Journey, JourneySpecificData}
 import payapi.corcommon.model.JourneyId
@@ -92,16 +92,18 @@ object PayApiStub {
   def verifyUpdateBeginWebPayment(count: Int = 1, journeyId: JourneyId): Unit = verify(
     count,
     putRequestedFor(urlEqualTo(updateBeginWebPaymentPath(journeyId)))
-      .withRequestBody(equalToJson(
-        """
+      .withRequestBody(
+        equalToJson(
+          """
           |{
           | "transactionReference": "sometransactionref",
           | "iFrameUrl":            "someiframeurl"
           |}
           |""".stripMargin,
-        true,
-        true
-      ))
+          true,
+          true
+        )
+      )
   )
 
   private def updateSucceedWebPaymentPath(journeyId: JourneyId): String = s"/pay-api/journey/${journeyId.value}/update/succeed-web-payment"
@@ -115,17 +117,19 @@ object PayApiStub {
   def verifyUpdateSucceedWebPayment(count: Int = 1, journeyId: JourneyId, expectedTransactionTime: LocalDateTime): Unit = verify(
     count,
     putRequestedFor(urlEqualTo(updateSucceedWebPaymentPath(journeyId)))
-      .withRequestBody(equalToJson(
-        s"""
+      .withRequestBody(
+        equalToJson(
+          s"""
           |{
           | "cardCategory": "debit",
           | "commissionInPence": 123,
           | "transactionTime": "${expectedTransactionTime.format(DateTimeFormatter.ISO_DATE_TIME)}"
           |}
           |""".stripMargin,
-        true,
-        true
-      ))
+          true,
+          true
+        )
+      )
   )
 
   private def updateFailWebPaymentPath(journeyId: JourneyId): String = s"/pay-api/journey/${journeyId.value}/update/fail-web-payment"
@@ -139,16 +143,18 @@ object PayApiStub {
   def verifyUpdateFailWebPayment(count: Int = 1, journeyId: JourneyId, expectedTransactionTime: LocalDateTime): Unit = verify(
     count,
     putRequestedFor(urlEqualTo(updateFailWebPaymentPath(journeyId)))
-      .withRequestBody(equalToJson(
-        s"""
+      .withRequestBody(
+        equalToJson(
+          s"""
           |{
           | "transactionTime": "${expectedTransactionTime.format(DateTimeFormatter.ISO_DATE_TIME)}",
           | "cardCategory": "debit"
           |}
           |""".stripMargin,
-        true,
-        true
-      ))
+          true,
+          true
+        )
+      )
   )
 
   private def updateCancelWebPaymentPath(journeyId: JourneyId): String = s"/pay-api/journey/${journeyId.value}/update/cancel-web-payment"

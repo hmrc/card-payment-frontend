@@ -23,11 +23,11 @@ import uk.gov.hmrc.cardpaymentfrontend.models.openbanking.OriginSpecificSessionD
 import uk.gov.hmrc.cardpaymentfrontend.models.{CheckYourAnswersRow, PaymentMethod}
 
 object DefaultExtendedOrigin extends ExtendedOrigin {
-  override def serviceNameMessageKey = "service-name.generic"
+  override def serviceNameMessageKey     = "service-name.generic"
   override def taxNameMessageKey: String = ""
   override def reference(request: JourneyRequest[AnyContent]): String = ""
   override def cardFeesPagePaymentMethods: Set[PaymentMethod] = Set.empty[PaymentMethod]
-  override def paymentMethods(): Set[PaymentMethod] = Set.empty[PaymentMethod]
+  override def paymentMethods(): Set[PaymentMethod]           = Set.empty[PaymentMethod]
 
   override def checkYourAnswersReferenceRow(journeyRequest: JourneyRequest[AnyContent])(payFrontendBaseUrl: String): Option[CheckYourAnswersRow] = None
 
@@ -35,10 +35,10 @@ object DefaultExtendedOrigin extends ExtendedOrigin {
 
   override def emailTaxTypeMessageKey: String = ""
 
-  override def surveyAuditName: String = ""
-  override def surveyReturnHref: String = "https://www.gov.uk/government/organisations/hm-revenue-customs"
-  override def surveyReturnMessageKey: String = "payments-survey.other.return-message"
+  override def surveyAuditName: String         = ""
+  override def surveyReturnHref: String        = "https://www.gov.uk/government/organisations/hm-revenue-customs"
+  override def surveyReturnMessageKey: String  = "payments-survey.other.return-message"
   override def surveyIsWelshSupported: Boolean = false
-  override def surveyBannerTitle: String = serviceNameMessageKey
+  override def surveyBannerTitle: String       = serviceNameMessageKey
 
 }

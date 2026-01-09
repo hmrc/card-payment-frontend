@@ -17,7 +17,7 @@
 package uk.gov.hmrc.cardpaymentfrontend.controllers
 
 import org.jsoup.Jsoup
-import play.api.http.Status._
+import play.api.http.Status.*
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{contentAsString, defaultAwaitTimeout, redirectLocation, session, status}
@@ -30,13 +30,13 @@ class SignOutControllerSpec extends ItSpec {
 
   "SignOutController should" - {
 
-    val systemUnderTest: SignOutController = app.injector.instanceOf[SignOutController]
+    val systemUnderTest: SignOutController                  = app.injector.instanceOf[SignOutController]
     val fakeGetRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/sign-out").withSessionId()
 
     "signOutFromTimeout should redirect to signOutUrl with continue URL" in {
       PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyBeforeBeginWebPayment)
       val expectedContinueUrl = "http://localhost:10155/pay-by-card/timed-out"
-      val result = systemUnderTest.signOutFromTimeout(fakeGetRequest)
+      val result              = systemUnderTest.signOutFromTimeout(fakeGetRequest)
       status(result) shouldBe SEE_OTHER
       redirectLocation(result) shouldBe Some(s"http://localhost:9553/bas-gateway/sign-out-without-state?continue=$expectedContinueUrl")
     }
@@ -44,14 +44,14 @@ class SignOutControllerSpec extends ItSpec {
     "signOut should redirect to signOutUrl with feedback continue URL" in {
       PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyBeforeBeginWebPayment)
       val expectedContinueUrl = "%2Ffeedback%2Fpay-online"
-      val result = systemUnderTest.signOut(fakeGetRequest)
+      val result              = systemUnderTest.signOut(fakeGetRequest)
 
       status(result) shouldBe SEE_OTHER
       redirectLocation(result) shouldBe Some(s"http://localhost:9553/bas-gateway/sign-out-without-state?continue=${expectedContinueUrl}")
     }
 
     "timedOut should return OK with TimedOutPage and clear session" in {
-      val result = systemUnderTest.timedOut(fakeGetRequest)
+      val result   = systemUnderTest.timedOut(fakeGetRequest)
       val document = Jsoup.parse(contentAsString(result))
 
       document.select(".govuk-button").text() shouldBe "Sign in"

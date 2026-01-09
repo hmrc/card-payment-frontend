@@ -31,37 +31,37 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class PaymentsSurveyService @Inject() (
-    appConfig:               AppConfig,
-    requestSupport:          RequestSupport,
-    paymentsSurveyConnector: PaymentsSurveyConnector
-)(
-    implicit
-    executionContext: ExecutionContext, messagesApi: MessagesApi
+  appConfig:               AppConfig,
+  requestSupport:          RequestSupport,
+  paymentsSurveyConnector: PaymentsSurveyConnector
+)(implicit
+  executionContext:        ExecutionContext,
+  messagesApi:             MessagesApi
 ) {
 
-  import requestSupport._
+  import requestSupport.*
 
-  def startPaySurvey(journey: Journey[JourneySpecificData])(implicit request: Request[_]): Future[Url] = {
+  def startPaySurvey(journey: Journey[JourneySpecificData])(implicit request: Request[?]): Future[Url] = {
     paymentsSurveyConnector
       .startSurvey(makeSsjJourneyRequest(journey))
       .map(_.nextUrl)
   }
 
-  private[services] def makeSsjJourneyRequest(journey: Journey[JourneySpecificData])(implicit request: Request[_]): PaymentSurveyJourneyRequest = {
-    implicit val messages: Messages = request.messages
+  private[services] def makeSsjJourneyRequest(journey: Journey[JourneySpecificData])(implicit request: Request[?]): PaymentSurveyJourneyRequest = {
+    implicit val messages: Messages    = request.messages
     val extendedOrigin: ExtendedOrigin = journey.origin.lift(appConfig)
 
     PaymentSurveyJourneyRequest(
-      origin         = journey.origin.entryName,
-      returnMsg      = messages(extendedOrigin.surveyReturnMessageKey),
-      returnHref     = extendedOrigin.surveyReturnHref,
-      auditName      = extendedOrigin.surveyAuditName,
-      audit          = AuditOptions.getAuditOptions(journey, extendedOrigin),
+      origin = journey.origin.entryName,
+      returnMsg = messages(extendedOrigin.surveyReturnMessageKey),
+      returnHref = extendedOrigin.surveyReturnHref,
+      auditName = extendedOrigin.surveyAuditName,
+      audit = AuditOptions.getAuditOptions(journey, extendedOrigin),
       contentOptions = SurveyContentOptions(
         isWelshSupported = extendedOrigin.surveyIsWelshSupported,
-        title            = SurveyBannerTitle(
+        title = SurveyBannerTitle(
           englishValue = messages(extendedOrigin.surveyBannerTitle),
-          welshValue   = if (extendedOrigin.surveyIsWelshSupported) Some(messagesApi(extendedOrigin.surveyBannerTitle)(Lang("cy"))) else None
+          welshValue = if (extendedOrigin.surveyIsWelshSupported) Some(messagesApi(extendedOrigin.surveyBannerTitle)(Lang("cy"))) else None
         )
       )
     )

@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.cardpaymentfrontend.models
 
-import uk.gov.hmrc.cardpaymentfrontend.models.cardpayment.ClientIds._
+import uk.gov.hmrc.cardpaymentfrontend.models.cardpayment.ClientIds.*
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.UnitSpec
 
 class ClientIdSpec extends UnitSpec {

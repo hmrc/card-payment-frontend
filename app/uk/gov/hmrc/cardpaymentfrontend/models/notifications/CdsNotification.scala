@@ -24,7 +24,7 @@ import java.util.Locale
 final case class CdsNotification(notifyImmediatePaymentRequest: NotifyImmediatePaymentRequest)
 
 object CdsNotification {
-  val cdsEventTimeFormat: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.UK)
+  val cdsEventTimeFormat: DateTimeFormatter     = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.UK)
   implicit val writes: OWrites[CdsNotification] = Json.writes[CdsNotification]
 }
 

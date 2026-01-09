@@ -24,17 +24,18 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
-import uk.gov.hmrc.cardpaymentfrontend.session.JourneySessionSupport._
-
+import uk.gov.hmrc.cardpaymentfrontend.session.JourneySessionSupport.*
 @Singleton
 class TestOnlyController @Inject() (
-    actions:         Actions,
-    mcc:             MessagesControllerComponents,
-    payApiConnector: PayApiConnector
-)(implicit executionContext: ExecutionContext) extends FrontendController(mcc) {
+  actions:         Actions,
+  mcc:             MessagesControllerComponents,
+  payApiConnector: PayApiConnector
+)(implicit executionContext: ExecutionContext)
+    extends FrontendController(mcc) {
 
   val showJourney: Action[AnyContent] = Action.async { implicit request =>
-    payApiConnector.findLatestJourneyBySessionId()
+    payApiConnector
+      .findLatestJourneyBySessionId()
       .map(maybeJourney => Ok(Json.toJson(maybeJourney)))
   }
 

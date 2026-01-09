@@ -38,25 +38,38 @@ object TestOps {
       r.withSession(SessionKeys.authToken -> authToken)
 
     def withEmailInSession(journeyId: JourneyId, email: EmailAddress = EmailAddress("blah@blah.com")): FakeRequest[T] =
-      r.withSession(journeyId.value -> Json.obj(
-        "email" -> email
-      ).toString)
+      r.withSession(
+        journeyId.value -> Json
+          .obj(
+            "email" -> email
+          )
+          .toString
+      )
 
     def withAddressInSession(
-        journeyId: JourneyId,
-        address:   Address   = Address(line1    = "line1", line2 = Some("line2"), city = Some("city"), county = Some("county"), postcode = Some("AA0AA0"), country = "GBR")
+      journeyId: JourneyId,
+      address:   Address =
+        Address(line1 = "line1", line2 = Some("line2"), city = Some("city"), county = Some("county"), postcode = Some("AA0AA0"), country = "GBR")
     ): FakeRequest[T] =
-      r.withSession(journeyId.value -> Json.obj(
-        "address" -> address
-      ).toString)
+      r.withSession(
+        journeyId.value -> Json
+          .obj(
+            "address" -> address
+          )
+          .toString
+      )
 
     def withEmailAndAddressInSession(
-        journeyId:    JourneyId,
-        emailAddress: EmailAddress = EmailAddress("blah@blah.com"),
-        address:      Address      = Address(line1    = "line1", postcode = Some("AA0AA0"), country = "GBR")
-    ): FakeRequest[T] = r.withSession(journeyId.value -> Json.obj(
-      "email" -> emailAddress,
-      "address" -> address
-    ).toString())
+      journeyId:    JourneyId,
+      emailAddress: EmailAddress = EmailAddress("blah@blah.com"),
+      address:      Address = Address(line1 = "line1", postcode = Some("AA0AA0"), country = "GBR")
+    ): FakeRequest[T] = r.withSession(
+      journeyId.value -> Json
+        .obj(
+          "email"   -> emailAddress,
+          "address" -> address
+        )
+        .toString()
+    )
   }
 }

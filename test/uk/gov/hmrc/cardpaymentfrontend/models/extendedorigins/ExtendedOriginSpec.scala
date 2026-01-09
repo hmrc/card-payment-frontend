@@ -30,24 +30,26 @@ import java.time.LocalDate
 
 //todo delete or rewrite, it's kind of pointless
 class ExtendedOriginSpec extends ItSpec {
-  private val systemUnderTest = ExtendedBtaSa //ExtendedBtaSa is a concrete reification of the trait ExtendedOrigin, we use it as a substitute here.
-  private val fakeGetRequest = FakeRequest("GET", "/cya0").withSessionId()
+  private val systemUnderTest = ExtendedBtaSa // ExtendedBtaSa is a concrete reification of the trait ExtendedOrigin, we use it as a substitute here.
+  private val fakeGetRequest  = FakeRequest("GET", "/cya0").withSessionId()
 
-  private val testJourney = TestJourneys.BtaSa.journeyBeforeBeginWebPayment
-  private val testJourneyNoDueDate = TestJourneys.BtaSa.journeyBeforeBeginWebPayment.copy(journeySpecificData = testJourney.journeySpecificData.copy(dueDate = None))
-  private val testJourneyOverdue = TestJourneys.BtaSa.journeyBeforeBeginWebPayment.copy(journeySpecificData = testJourneyNoDueDate.journeySpecificData.copy(dueDate = Some(LocalDate.of(2023, 12, 12))))
+  private val testJourney          = TestJourneys.BtaSa.journeyBeforeBeginWebPayment
+  private val testJourneyNoDueDate =
+    TestJourneys.BtaSa.journeyBeforeBeginWebPayment.copy(journeySpecificData = testJourney.journeySpecificData.copy(dueDate = None))
+  private val testJourneyOverdue   = TestJourneys.BtaSa.journeyBeforeBeginWebPayment
+    .copy(journeySpecificData = testJourneyNoDueDate.journeySpecificData.copy(dueDate = Some(LocalDate.of(2023, 12, 12))))
 
   "A value with pounds and pennies will display the pounds and pennies to 2 decimal places" in {
     PayApiStub.stubForFindBySessionId2xx(testJourney)
     val fakeJourneyRequest: JourneyRequest[AnyContent] = new JourneyRequest(testJourney, fakeGetRequest)
-    val result: String = systemUnderTest.asInstanceOf[ExtendedOrigin].amount(fakeJourneyRequest)
+    val result: String                                 = systemUnderTest.asInstanceOf[ExtendedOrigin].amount(fakeJourneyRequest)
     result shouldBe "£12.34"
   }
 
   "A value with pounds but no pennies will display the pounds only and no decimal places" in {
-    val testJourneyWithFivePounds = testJourney copy (amountInPence = Some(AmountInPence(500)))
+    val testJourneyWithFivePounds                      = testJourney copy (amountInPence = Some(AmountInPence(500)))
     val fakeJourneyRequest: JourneyRequest[AnyContent] = new JourneyRequest(testJourneyWithFivePounds, fakeGetRequest)
-    val result: String = systemUnderTest.asInstanceOf[ExtendedOrigin].amount(fakeJourneyRequest)
+    val result: String                                 = systemUnderTest.asInstanceOf[ExtendedOrigin].amount(fakeJourneyRequest)
     result shouldBe "£5"
   }
 
@@ -70,15 +72,28 @@ class ExtendedOriginSpec extends ItSpec {
 
   "checkYourAnswersPaymentDateRow" - {
     "return Some[CheckYourAnswersRow] when showFuturePayment returns true" in {
-      val testJourneyWithFutureDatedPayment = testJourney copy (futureDatedPayment = Some(FutureDatedPayment(LocalDate.now().plusMonths(1))))
+      val testJourneyWithFutureDatedPayment              = testJourney copy (futureDatedPayment = Some(FutureDatedPayment(LocalDate.now().plusMonths(1))))
       val fakeJourneyRequest: JourneyRequest[AnyContent] = new JourneyRequest(testJourneyWithFutureDatedPayment, fakeGetRequest)
-      val result: Option[CheckYourAnswersRow] = systemUnderTest.checkYourAnswersPaymentDateRow(fakeJourneyRequest)("blah")
-      result shouldBe Some(CheckYourAnswersRow("check-your-details.payment-date", List("check-your-details.payment-date.today"), Some(Link(Call("GET", "blah/change-when-do-you-want-to-pay?toPayFrontendConfirmation=true"), "check-your-details-payment-date-change-link", "check-your-details.change", None))))
+      val result: Option[CheckYourAnswersRow]            = systemUnderTest.checkYourAnswersPaymentDateRow(fakeJourneyRequest)("blah")
+      result shouldBe Some(
+        CheckYourAnswersRow(
+          "check-your-details.payment-date",
+          List("check-your-details.payment-date.today"),
+          Some(
+            Link(
+              Call("GET", "blah/change-when-do-you-want-to-pay?toPayFrontendConfirmation=true"),
+              "check-your-details-payment-date-change-link",
+              "check-your-details.change",
+              None
+            )
+          )
+        )
+      )
 
     }
     "return None when showFuturePayment returns false" in {
       val fakeJourneyRequest: JourneyRequest[AnyContent] = new JourneyRequest(testJourneyNoDueDate, fakeGetRequest)
-      val result: Option[CheckYourAnswersRow] = systemUnderTest.checkYourAnswersPaymentDateRow(fakeJourneyRequest)("blah")
+      val result: Option[CheckYourAnswersRow]            = systemUnderTest.checkYourAnswersPaymentDateRow(fakeJourneyRequest)("blah")
       result shouldBe None
     }
   }
@@ -92,19 +107,25 @@ class ExtendedOriginSpec extends ItSpec {
         |}
         |""".stripMargin
 
-    val sessionMapWithEmail = ("TestJourneyId-44f9-ad7f-01e1d3d8f151", jsonSessionWithEmail)
+    val sessionMapWithEmail     = ("TestJourneyId-44f9-ad7f-01e1d3d8f151", jsonSessionWithEmail)
     val fakeGetRequestWithEmail = FakeRequest("GET", "/cya0").withSession(sessionMapWithEmail)
 
     "return Some[CheckYourAnswersRow] when showEmailAddress returns true" in {
       val fakeJourneyRequest: JourneyRequest[AnyContent] = new JourneyRequest(testJourney, fakeGetRequestWithEmail)
-      val result: Option[CheckYourAnswersRow] = systemUnderTest.checkYourAnswersEmailAddressRow(fakeJourneyRequest)
-      result shouldBe Some(CheckYourAnswersRow("check-your-details.email-address", List("email@gmail.com"), Some(Link(Call("GET", "/pay-by-card/email-address"), "check-your-details-email-address-change-link", "check-your-details.change", None))))
+      val result: Option[CheckYourAnswersRow]            = systemUnderTest.checkYourAnswersEmailAddressRow(fakeJourneyRequest)
+      result shouldBe Some(
+        CheckYourAnswersRow(
+          "check-your-details.email-address",
+          List("email@gmail.com"),
+          Some(Link(Call("GET", "/pay-by-card/email-address"), "check-your-details-email-address-change-link", "check-your-details.change", None))
+        )
+      )
 
     }
     "return None when showEmailAddress returns false" in {
-      val testJourneyEmailAddress = TestJourneys.BtaSa.journeyAfterBeginWebPayment
+      val testJourneyEmailAddress                        = TestJourneys.BtaSa.journeyAfterBeginWebPayment
       val fakeJourneyRequest: JourneyRequest[AnyContent] = new JourneyRequest(testJourneyEmailAddress, fakeGetRequest)
-      val result: Option[CheckYourAnswersRow] = systemUnderTest.checkYourAnswersEmailAddressRow(fakeJourneyRequest)
+      val result: Option[CheckYourAnswersRow]            = systemUnderTest.checkYourAnswersEmailAddressRow(fakeJourneyRequest)
       result shouldBe None
     }
   }

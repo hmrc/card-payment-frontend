@@ -17,8 +17,8 @@
 package uk.gov.hmrc.cardpaymentfrontend.testsupport
 
 import org.scalatest.AppendedClues.convertToClueful
-import payapi.cardpaymentjourney.model.journey._
-import payapi.corcommon.model.Origins._
+import payapi.cardpaymentjourney.model.journey.*
+import payapi.corcommon.model.Origins.*
 import payapi.corcommon.model.{Origin, Origins}
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.testdata.TestJourneys
 
@@ -131,7 +131,21 @@ object TestHelpers {
     WcClass2Ni
   )
 
-  val webChatOrigins: Seq[Origin] = Seq[Origin](WcSa, WcCt, WcVat, WcSimpleAssessment, WcXref, WcEpayeLpp, WcClass1aNi, WcEpayeNi, WcEpayeLateCis, WcEpayeSeta, WcSdlt, WcClass2Ni, WcChildBenefitRepayments)
+  val webChatOrigins: Seq[Origin] = Seq[Origin](
+    WcSa,
+    WcCt,
+    WcVat,
+    WcSimpleAssessment,
+    WcXref,
+    WcEpayeLpp,
+    WcClass1aNi,
+    WcEpayeNi,
+    WcEpayeLateCis,
+    WcEpayeSeta,
+    WcSdlt,
+    WcClass2Ni,
+    WcChildBenefitRepayments
+  )
 
   def deriveTestDataFromOrigin[jsd <: JourneySpecificData](origin: Origin) = origin match {
     case PfSa                     => TestJourneys.PfSa

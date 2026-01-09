@@ -14,7 +14,7 @@
  * limitations under the License.
  *@
 
-@import payapi.corcommon.model.{Origin, Origins}
+@import payapi.corcommon.model.Origins
 @import payapi.corcommon.model.Reference
 @import payapi.corcommon.model.TaxTypes.{cds, mib, vatConsumerToConsumer}
 @import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
@@ -41,7 +41,7 @@
     summaryListRows: Seq[SummaryListRow],
     maybeEmailAddress: Option[EmailAddress],
     maybeReturnUrl: Option[String]
-)(implicit journeyRequest: JourneyRequest[_], messages: Messages)
+)(implicit journeyRequest: JourneyRequest[?], messages: Messages)
 
 @additionalScript = { <script type="module" src="@{controllers.routes.Assets.versioned("javascripts/print-dialogue.js")}" @{CSPNonce.attr}></script> }
 
@@ -141,7 +141,7 @@
 
 @surveyLink = @{
     if(origin === Origins.Mib) appConfig.merchandiseInBaggageSurveyUrl
-    else uk.gov.hmrc.cardpaymentfrontend.controllers.routes.PaymentsSurveyController.startSurvey.url
+    else uk.gov.hmrc.cardpaymentfrontend.controllers.routes.PaymentsSurveyController.startSurvey().url
 }
 
 @layout(

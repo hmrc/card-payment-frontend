@@ -22,11 +22,11 @@ import javax.inject.{Inject, Singleton}
 
 @Singleton
 class Actions @Inject() (
-    actionBuilder:                DefaultActionBuilder,
-    getJourneyActionRefiner:      GetJourneyActionRefiner,
-    journeyFinishedActionRefiner: JourneyFinishedActionRefiner,
-    journeyRoutingActionRefiner:  JourneyRoutingActionRefiner,
-    paymentStatusActionRefiners:  PaymentStatusActionRefiners
+  actionBuilder:                DefaultActionBuilder,
+  getJourneyActionRefiner:      GetJourneyActionRefiner,
+  journeyFinishedActionRefiner: JourneyFinishedActionRefiner,
+  journeyRoutingActionRefiner:  JourneyRoutingActionRefiner,
+  paymentStatusActionRefiners:  PaymentStatusActionRefiners
 ) {
 
   val default: ActionBuilder[Request, AnyContent] = actionBuilder

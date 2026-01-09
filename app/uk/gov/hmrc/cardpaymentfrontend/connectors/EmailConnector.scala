@@ -17,11 +17,12 @@
 package uk.gov.hmrc.cardpaymentfrontend.connectors
 
 import play.api.libs.json.Json
+import play.api.libs.ws.writeableOf_JsValue
 import uk.gov.hmrc.cardpaymentfrontend.config.AppConfig
 import uk.gov.hmrc.cardpaymentfrontend.models.email.EmailRequest
 import uk.gov.hmrc.http.{HeaderCarrier, StringContextOps}
 import uk.gov.hmrc.http.client.HttpClientV2
-import uk.gov.hmrc.http.HttpReadsInstances._
+import uk.gov.hmrc.http.HttpReadsInstances.*
 
 import java.net.URL
 import javax.inject.Inject

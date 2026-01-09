@@ -29,14 +29,14 @@ import scala.jdk.CollectionConverters.CollectionHasAsScala
 
 class LayoutSpec extends ItSpec {
 
-  private val feesController: FeesController = app.injector.instanceOf[FeesController]
+  private val feesController: FeesController       = app.injector.instanceOf[FeesController]
   private val addressController: AddressController = app.injector.instanceOf[AddressController]
 
   "HMRC Standard Header is shown correctly" in {
     val fakeRequest = FakeRequest("GET", "/card-fees").withSessionId()
 
     PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyBeforeBeginWebPayment)
-    val result = feesController.renderPage(fakeRequest)
+    val result   = feesController.renderPage(fakeRequest)
     val document = Jsoup.parse(contentAsString(result))
 
     val govUkLogoLink = document.select(".govuk-header__logo a").first()
@@ -51,7 +51,7 @@ class LayoutSpec extends ItSpec {
     val fakeRequest = FakeRequest("GET", "/card-fees").withSessionId()
 
     PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyBeforeBeginWebPayment)
-    val result = feesController.renderPage(fakeRequest)
+    val result   = feesController.renderPage(fakeRequest)
     val document = Jsoup.parse(contentAsString(result))
 
     val footerLinks = document.select(".govuk-footer__link").asScala
@@ -59,7 +59,9 @@ class LayoutSpec extends ItSpec {
     footerLinks.find(_.text().trim == "Terms and conditions").map(_.attr("href")) shouldBe Some("/help/terms-and-conditions")
     footerLinks.find(_.text().trim == "Help using GOV.UK").map(_.attr("href")) shouldBe Some("https://www.gov.uk/help")
     footerLinks.find(_.text().trim == "Contact").map(_.attr("href")) shouldBe Some("https://www.gov.uk/government/organisations/hm-revenue-customs/contact")
-    footerLinks.find(_.text().trim == "© Crown copyright").map(_.attr("href")) shouldBe Some("https://www.nationalarchives.gov.uk/information-management/re-using-public-sector-information/uk-government-licensing-framework/crown-copyright/")
+    footerLinks.find(_.text().trim == "© Crown copyright").map(_.attr("href")) shouldBe Some(
+      "https://www.nationalarchives.gov.uk/information-management/re-using-public-sector-information/uk-government-licensing-framework/crown-copyright/"
+    )
   }
 
   "Accessibility Statement Link is correct" in {
@@ -67,16 +69,17 @@ class LayoutSpec extends ItSpec {
     val fakeRequest = FakeRequest("GET", "/card-fees").withSessionId()
 
     PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyBeforeBeginWebPayment)
-    val result = feesController.renderPage(fakeRequest)
-    val document = Jsoup.parse(contentAsString(result))
-    val accessibilityItem = document.select("ul.govuk-footer__inline-list li.govuk-footer__inline-list-item a").asScala.find(_.text().trim == "Accessibility statement")
+    val result            = feesController.renderPage(fakeRequest)
+    val document          = Jsoup.parse(contentAsString(result))
+    val accessibilityItem =
+      document.select("ul.govuk-footer__inline-list li.govuk-footer__inline-list-item a").asScala.find(_.text().trim == "Accessibility statement")
     accessibilityItem.flatMap(item => Option(item.attr("href"))) shouldBe Some("http://localhost:12346/accessibility-statement/pay?referrerUrl=%2Fcard-fees")
   }
 
   "render page with a back link" in {
     val fakeRequest = FakeRequest("GET", "/card-fees").withSessionId()
 
-    val result = feesController.renderPage(fakeRequest)
+    val result   = feesController.renderPage(fakeRequest)
     val document = Jsoup.parse(contentAsString(result))
 
     val backLinkElement = document.select(".govuk-back-link").first()
@@ -87,7 +90,7 @@ class LayoutSpec extends ItSpec {
   "render page with a back link in welsh" in {
     val fakeRequestInWelsh = FakeRequest("GET", "/card-fees").withSessionId().withLangWelsh()
 
-    val result = feesController.renderPage(fakeRequestInWelsh)
+    val result   = feesController.renderPage(fakeRequestInWelsh)
     val document = Jsoup.parse(contentAsString(result))
 
     val backLink = document.select(".govuk-back-link")
@@ -99,7 +102,7 @@ class LayoutSpec extends ItSpec {
     val fakeRequest = FakeRequest("GET", "/card-fees").withSessionId()
 
     PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyBeforeBeginWebPayment)
-    val result = feesController.renderPage(fakeRequest)
+    val result   = feesController.renderPage(fakeRequest)
     val document = Jsoup.parse(contentAsString(result))
 
     val techIssueLink = document.select("a.hmrc-report-technical-issue").first()
@@ -111,9 +114,14 @@ class LayoutSpec extends ItSpec {
     val fakeRequest = FakeRequest("GET", "/card-fees").withSessionId()
     TestHelpers.webChatOrigins.diff(TestHelpers.unimplementedOrigins).foreach { o =>
       PayApiStub.stubForFindBySessionId2xx(TestHelpers.deriveTestDataFromOrigin(o).journeyBeforeBeginWebPayment)
-      val result = addressController.renderPage(fakeRequest)
+      val result   = addressController.renderPage(fakeRequest)
       val document = Jsoup.parse(contentAsString(result))
-      document.select(".govuk-header__content").select("a").attr("href") shouldBe "http://localhost:9056/pay/make-a-payment-now" withClue s"expected href to be webchat landing page for implemented webchat origin: ${o.entryName}"
+      document
+        .select(".govuk-header__content")
+        .select("a")
+        .attr(
+          "href"
+        ) shouldBe "http://localhost:9056/pay/make-a-payment-now" withClue s"expected href to be webchat landing page for implemented webchat origin: ${o.entryName}"
     }
   }
 
@@ -121,9 +129,12 @@ class LayoutSpec extends ItSpec {
     val fakeRequest = FakeRequest("GET", "/card-fees").withSessionId()
     TestHelpers.implementedOrigins.diff(TestHelpers.webChatOrigins).foreach { o =>
       PayApiStub.stubForFindBySessionId2xx(TestHelpers.deriveTestDataFromOrigin(o).journeyBeforeBeginWebPayment)
-      val result = addressController.renderPage(fakeRequest)
+      val result   = addressController.renderPage(fakeRequest)
       val document = Jsoup.parse(contentAsString(result))
-      document.select(".govuk-header__content").select("a").attr("href") shouldBe "http://localhost:9056/pay" withClue s"expected href to be /pay for origin: ${o.entryName}"
+      document
+        .select(".govuk-header__content")
+        .select("a")
+        .attr("href") shouldBe "http://localhost:9056/pay" withClue s"expected href to be /pay for origin: ${o.entryName}"
     }
   }
 }

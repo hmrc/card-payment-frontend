@@ -17,11 +17,12 @@
 package uk.gov.hmrc.cardpaymentfrontend.connectors
 
 import play.api.libs.json.Json
+import play.api.libs.ws.writeableOf_JsValue
 import uk.gov.hmrc.cardpaymentfrontend.config.AppConfig
 import uk.gov.hmrc.cardpaymentfrontend.models.openbanking.{CreateSessionDataRequest, CreateSessionDataResponse}
 import uk.gov.hmrc.http.{HeaderCarrier, StringContextOps}
 import uk.gov.hmrc.http.client.HttpClientV2
-import uk.gov.hmrc.http.HttpReads.Implicits._
+import uk.gov.hmrc.http.HttpReads.Implicits.*
 
 import java.net.URL
 import javax.inject.{Inject, Singleton}
@@ -30,15 +31,16 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class OpenBankingConnector @Inject() (appConfig: AppConfig, httpClientV2: HttpClientV2)(implicit executionContext: ExecutionContext) {
 
-  private val openBankingBaseUrl: URL = url"""${appConfig.openBankingBaseUrl}"""
+  private val openBankingBaseUrl: URL          = url"""${appConfig.openBankingBaseUrl}"""
   private val createOpenBankingSessionUrl: URL = url"$openBankingBaseUrl/open-banking/session"
 
   def startOpenBankingJourney(createSessionDataRequest: CreateSessionDataRequest)(implicit hc: HeaderCarrier): Future[CreateSessionDataResponse] = {
     for {
-      _ <- Future(require(hc.sessionId.isDefined, "Missing required 'SessionId'"))
-      result <- httpClientV2.post(createOpenBankingSessionUrl)
-        .withBody(Json.toJson(createSessionDataRequest))
-        .execute[CreateSessionDataResponse]
+      _      <- Future(require(hc.sessionId.isDefined, "Missing required 'SessionId'"))
+      result <- httpClientV2
+                  .post(createOpenBankingSessionUrl)
+                  .withBody(Json.toJson(createSessionDataRequest))
+                  .execute[CreateSessionDataResponse]
     } yield result
   }
 

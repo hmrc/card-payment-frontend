@@ -17,11 +17,12 @@
 package uk.gov.hmrc.cardpaymentfrontend.connectors
 
 import play.api.libs.json.Json
+import play.api.libs.ws.writeableOf_JsValue
 import uk.gov.hmrc.cardpaymentfrontend.config.AppConfig
 import uk.gov.hmrc.cardpaymentfrontend.models.paymentssurvey.{PaymentSurveyJourneyRequest, SsjResponse}
 import uk.gov.hmrc.http.{HeaderCarrier, StringContextOps}
 import uk.gov.hmrc.http.client.HttpClientV2
-import uk.gov.hmrc.http.HttpReads.Implicits._
+import uk.gov.hmrc.http.HttpReads.Implicits.*
 
 import java.net.URL
 import javax.inject.{Inject, Singleton}
@@ -29,11 +30,10 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class PaymentsSurveyConnector @Inject() (
-    appConfig:  AppConfig,
-    httpClient: HttpClientV2
-)(
-    implicit
-    ec: ExecutionContext
+  appConfig:  AppConfig,
+  httpClient: HttpClientV2
+)(implicit
+  ec:         ExecutionContext
 ) {
 
   private val serviceURL: URL = url"${appConfig.paymentsSurveyBaseUrl}/payments-survey/journey/start"

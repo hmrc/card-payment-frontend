@@ -22,16 +22,16 @@ import payapi.corcommon.model.taxes.vat.Vrn
 import play.api.i18n.Messages
 import play.api.mvc.AnyContent
 import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
-import uk.gov.hmrc.cardpaymentfrontend.models.PaymentMethod._
+import uk.gov.hmrc.cardpaymentfrontend.models.PaymentMethod.*
 import uk.gov.hmrc.cardpaymentfrontend.models.openbanking.{OriginSpecificSessionData, PfVatSessionData}
 import uk.gov.hmrc.cardpaymentfrontend.models.{CheckYourAnswersRow, PaymentMethod}
 
 object ExtendedPfVat extends ExtendedOrigin {
   override val serviceNameMessageKey: String = "service-name.PfVat"
-  override val taxNameMessageKey: String = "payment-complete.tax-name.PfVat"
+  override val taxNameMessageKey: String     = "payment-complete.tax-name.PfVat"
 
   def cardFeesPagePaymentMethods: Set[PaymentMethod] = Set(OpenBanking, VariableDirectDebit)
-  def paymentMethods(): Set[PaymentMethod] = Set(Card, OpenBanking, VariableDirectDebit, Bacs)
+  def paymentMethods(): Set[PaymentMethod]           = Set(Card, OpenBanking, VariableDirectDebit, Bacs)
 
   private def vrn: JourneySpecificData => Option[Vrn] = {
     case j: JsdPfVat => j.vrn
@@ -42,8 +42,8 @@ object ExtendedPfVat extends ExtendedOrigin {
     vrn(journeyRequest.journey.journeySpecificData).map { vrn =>
       CheckYourAnswersRow(
         titleMessageKey = "check-your-details.PfVat.reference",
-        value           = Seq(vrn.canonicalizedValue),
-        changeLink      = None
+        value = Seq(vrn.canonicalizedValue),
+        changeLink = None
       )
     }
   }
@@ -53,13 +53,17 @@ object ExtendedPfVat extends ExtendedOrigin {
     case _           => throw new RuntimeException("Incorrect origin found")
   }
 
-  override def checkYourAnswersAdditionalReferenceRow(journeyRequest: JourneyRequest[AnyContent])(payFrontendBaseUrl: String)(implicit messages: Messages): Option[Seq[CheckYourAnswersRow]] = {
+  override def checkYourAnswersAdditionalReferenceRow(
+    journeyRequest: JourneyRequest[AnyContent]
+  )(payFrontendBaseUrl: String)(implicit messages: Messages): Option[Seq[CheckYourAnswersRow]] = {
     chargeReference(journeyRequest.journey.journeySpecificData).map { chargeReference =>
-      Seq(CheckYourAnswersRow(
-        titleMessageKey = "check-your-details.PfVat.charge-reference",
-        value           = Seq(chargeReference.value),
-        changeLink      = None
-      ))
+      Seq(
+        CheckYourAnswersRow(
+          titleMessageKey = "check-your-details.PfVat.charge-reference",
+          value = Seq(chargeReference.value),
+          changeLink = None
+        )
+      )
     }
   }
 
@@ -70,9 +74,9 @@ object ExtendedPfVat extends ExtendedOrigin {
 
   override def emailTaxTypeMessageKey: String = "email.tax-name.PfVat"
 
-  override def surveyAuditName: String = "vat"
-  override def surveyReturnHref: String = "https://www.gov.uk/government/organisations/hm-revenue-customs"
-  override def surveyReturnMessageKey: String = "payments-survey.other.return-message"
+  override def surveyAuditName: String         = "vat"
+  override def surveyReturnHref: String        = "https://www.gov.uk/government/organisations/hm-revenue-customs"
+  override def surveyReturnMessageKey: String  = "payments-survey.other.return-message"
   override def surveyIsWelshSupported: Boolean = true
-  override def surveyBannerTitle: String = serviceNameMessageKey
+  override def surveyBannerTitle: String       = serviceNameMessageKey
 }

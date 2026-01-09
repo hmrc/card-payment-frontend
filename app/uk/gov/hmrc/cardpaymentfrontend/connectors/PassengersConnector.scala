@@ -20,12 +20,12 @@ import com.google.inject.{Inject, Singleton}
 import play.api.Logging
 import play.api.http.Status
 import play.api.libs.json.Json
+import play.api.libs.ws.writeableOf_JsValue
 import uk.gov.hmrc.cardpaymentfrontend.config.AppConfig
 import uk.gov.hmrc.cardpaymentfrontend.models.notifications.PassengersNotification
 import uk.gov.hmrc.http.client.HttpClientV2
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, StringContextOps}
-import uk.gov.hmrc.http.HttpReads.Implicits._
-
+import uk.gov.hmrc.http.HttpReads.Implicits.*
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Failure, Success}
 
@@ -45,10 +45,12 @@ class PassengersConnector @Inject() (appConfig: AppConfig, httpClientV2: HttpCli
           response.status match {
             case s if Status.isSuccessful(s) =>
               logger.info(s"[PassengersConnector] [POST ${notificationUrl.toString}] Successfully sent notification to passengers")
-            case s =>
-              logger.error(s"[PassengersConnector] [POST ${notificationUrl.toString}]  There was a problem sending notification to passengers, got a ${s.toString} status response")
+            case s                           =>
+              logger.error(
+                s"[PassengersConnector] [POST ${notificationUrl.toString}]  There was a problem sending notification to passengers, got a ${s.toString} status response"
+              )
           }
-        case Failure(e) =>
+        case Failure(e)        =>
           logger.error(s"[PassengersConnector] [POST ${notificationUrl.toString}] There was a problem sending notification to passengers", e)
       }
 

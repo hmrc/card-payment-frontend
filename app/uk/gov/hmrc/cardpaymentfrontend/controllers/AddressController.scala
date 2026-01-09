@@ -24,7 +24,7 @@ import uk.gov.hmrc.cardpaymentfrontend.forms.AddressForm
 import uk.gov.hmrc.cardpaymentfrontend.models.Address
 import uk.gov.hmrc.cardpaymentfrontend.requests.RequestSupport
 import uk.gov.hmrc.cardpaymentfrontend.services.{CountriesService, PaymentService}
-import uk.gov.hmrc.cardpaymentfrontend.session.JourneySessionSupport._
+import uk.gov.hmrc.cardpaymentfrontend.session.JourneySessionSupport.*
 import uk.gov.hmrc.cardpaymentfrontend.util.SafeEquals.EqualsOps
 import uk.gov.hmrc.cardpaymentfrontend.views.html.AddressPage
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
@@ -34,23 +34,25 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class AddressController @Inject() (
-    actions:          Actions,
-    addressPage:      AddressPage,
-    countriesService: CountriesService,
-    mcc:              MessagesControllerComponents,
-    requestSupport:   RequestSupport,
-    paymentService:   PaymentService
-)(implicit executionContext: ExecutionContext) extends FrontendController(mcc) with Logging {
+  actions:          Actions,
+  addressPage:      AddressPage,
+  countriesService: CountriesService,
+  mcc:              MessagesControllerComponents,
+  requestSupport:   RequestSupport,
+  paymentService:   PaymentService
+)(implicit executionContext: ExecutionContext)
+    extends FrontendController(mcc)
+    with Logging {
 
-  import requestSupport._
-
+  import requestSupport.*
   val renderPage: Action[AnyContent] = actions.journeyAction { implicit journeyRequest: JourneyRequest[AnyContent] =>
     val form: Form[Address] = addressInSession.fold(AddressForm.form())(address => AddressForm.form().fill(address))
     Ok(addressPage(form, countriesService.getCountries))
   }
 
   val submit: Action[AnyContent] = actions.journeyAction.async { implicit journeyRequest: JourneyRequest[AnyContent] =>
-    AddressForm.form()
+    AddressForm
+      .form()
       .bindFromRequest()
       .fold(
         (formWithErrors: Form[Address]) => Future.successful(BadRequest(addressPage(form = formWithErrors, countriesService.getCountries))),
@@ -71,7 +73,7 @@ class AddressController @Inject() (
       )
   }
 
-  private[controllers] def addressInSession(implicit journeyRequest: JourneyRequest[_]): Option[Address] =
+  private[controllers] def addressInSession(implicit journeyRequest: JourneyRequest[?]): Option[Address] =
     journeyRequest.readFromSession[Address](journeyRequest.journeyId, Keys.address)
 
   private[controllers] def addressIsDifferent(addressA: Address, addressB: Address): Boolean = addressA =!= addressB

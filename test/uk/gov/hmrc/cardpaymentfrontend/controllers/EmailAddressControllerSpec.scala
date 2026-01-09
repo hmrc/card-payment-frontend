@@ -22,11 +22,11 @@ import play.api.http.Status
 import play.api.libs.json.Json
 import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded}
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
 import uk.gov.hmrc.cardpaymentfrontend.models.EmailAddress
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.ItSpec
-import uk.gov.hmrc.cardpaymentfrontend.testsupport.TestOps._
+import uk.gov.hmrc.cardpaymentfrontend.testsupport.TestOps.*
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.stubs.PayApiStub
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.testdata.TestJourneys
 
@@ -46,7 +46,7 @@ class EmailAddressControllerSpec extends ItSpec {
 
     "GET /email-address" - {
 
-      val fakeGetRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/email-address").withSessionId()
+      val fakeGetRequest: FakeRequest[AnyContentAsEmpty.type]        = FakeRequest("GET", "/email-address").withSessionId()
       val fakeGetRequestInWelsh: FakeRequest[AnyContentAsEmpty.type] = fakeGetRequest.withLangWelsh()
 
       "should return 200 OK" in {
@@ -54,7 +54,7 @@ class EmailAddressControllerSpec extends ItSpec {
         status(result) shouldBe Status.OK
       }
 
-      //TODO: check if this should redirect to /pay as well.
+      // TODO: check if this should redirect to /pay as well.
       "should return 401 unauthorised when there is no journey returned from pay-api via action refiner" in {
         PayApiStub.stubForFindBySessionId404
         val result = systemUnderTest.renderPage(fakeGetRequest)
@@ -62,60 +62,60 @@ class EmailAddressControllerSpec extends ItSpec {
       }
 
       "render the page with the hmrc layout" in {
-        val result = systemUnderTest.renderPage(fakeGetRequest)
+        val result   = systemUnderTest.renderPage(fakeGetRequest)
         val document = Jsoup.parse(contentAsString(result))
         document.select("html").hasClass("govuk-template") shouldBe true withClue "no govuk template"
       }
 
       "show the Title tab correctly in English" in {
         PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyBeforeBeginWebPayment)
-        val result = systemUnderTest.renderPage(fakeGetRequest)
+        val result   = systemUnderTest.renderPage(fakeGetRequest)
         val document = Jsoup.parse(contentAsString(result))
         document.title shouldBe "What is your email address? (optional) - Pay your Self Assessment - GOV.UK"
       }
 
       "show the Title tab correctly in Welsh" in {
         PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyBeforeBeginWebPayment)
-        val result = systemUnderTest.renderPage(fakeGetRequestInWelsh)
+        val result   = systemUnderTest.renderPage(fakeGetRequestInWelsh)
         val document = Jsoup.parse(contentAsString(result))
         document.title shouldBe "Beth yw’ch cyfeiriad e-bost? (dewisol) - Talu eich Hunanasesiad - GOV.UK"
       }
 
       "show the Service Name banner title correctly in English" in {
         PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyBeforeBeginWebPayment)
-        val result = systemUnderTest.renderPage(fakeGetRequest)
+        val result   = systemUnderTest.renderPage(fakeGetRequest)
         val document = Jsoup.parse(contentAsString(result))
         document.select(".govuk-header__service-name").html shouldBe "Pay your Self Assessment"
       }
 
       "show the Service Name banner title correctly in Welsh" in {
         PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyBeforeBeginWebPayment)
-        val result = systemUnderTest.renderPage(fakeGetRequestInWelsh)
+        val result   = systemUnderTest.renderPage(fakeGetRequestInWelsh)
         val document = Jsoup.parse(contentAsString(result))
         document.select(".govuk-header__service-name").html shouldBe "Talu eich Hunanasesiad"
       }
 
       "render the page with the h1 correctly in English" in {
-        val result = systemUnderTest.renderPage(fakeGetRequest)
+        val result   = systemUnderTest.renderPage(fakeGetRequest)
         val document = Jsoup.parse(contentAsString(result))
         document.select("h1").text() shouldBe "What is your email address? (optional)" withClue "service name wrong"
       }
 
       "render the page with the h1 correctly in Welsh" in {
-        val result = systemUnderTest.renderPage(fakeGetRequestInWelsh)
+        val result   = systemUnderTest.renderPage(fakeGetRequestInWelsh)
         val document = Jsoup.parse(contentAsString(result))
         document.select("h1").text() shouldBe "Beth yw’ch cyfeiriad e-bost? (dewisol)" withClue "service name wrong in welsh"
       }
 
       "render the page with the language toggle" in {
-        val result = systemUnderTest.renderPage(fakeGetRequest)
-        val document = Jsoup.parse(contentAsString(result))
+        val result                       = systemUnderTest.renderPage(fakeGetRequest)
+        val document                     = Jsoup.parse(contentAsString(result))
         val langToggleText: List[String] = document.select(".hmrc-language-select__list-item").eachText().asScala.toList
-        langToggleText should contain theSameElementsAs List("English", "Newid yr iaith i’r Gymraeg Cymraeg") //checking the visually hidden text, it's simpler
+        langToggleText should contain theSameElementsAs List("English", "Newid yr iaith i’r Gymraeg Cymraeg") // checking the visually hidden text, it's simpler
       }
 
       "render the page with a back link" in {
-        val result = systemUnderTest.renderPage(fakeGetRequest)
+        val result   = systemUnderTest.renderPage(fakeGetRequest)
         val document = Jsoup.parse(contentAsString(result))
         val backLink = document.select(".govuk-back-link")
         backLink.text() shouldBe "Back"
@@ -123,7 +123,7 @@ class EmailAddressControllerSpec extends ItSpec {
       }
 
       "render the page with a back link in welsh" in {
-        val result = systemUnderTest.renderPage(fakeGetRequestInWelsh)
+        val result   = systemUnderTest.renderPage(fakeGetRequestInWelsh)
         val document = Jsoup.parse(contentAsString(result))
         val backLink = document.select(".govuk-back-link")
         backLink.text() shouldBe "Yn ôl"
@@ -131,59 +131,59 @@ class EmailAddressControllerSpec extends ItSpec {
       }
 
       "render the page with a text field" in {
-        val result = systemUnderTest.renderPage(fakeGetRequest)
+        val result   = systemUnderTest.renderPage(fakeGetRequest)
         val document = Jsoup.parse(contentAsString(result))
         document.select("#email-address").size() shouldBe 1
       }
 
       "render page with the correct hint text above the text field" in {
-        val result = systemUnderTest.renderPage(fakeGetRequest)
+        val result   = systemUnderTest.renderPage(fakeGetRequest)
         val document = Jsoup.parse(contentAsString(result))
         document.select("#email-address-hint").text() shouldBe "We’ll only use this to confirm you sent a payment"
       }
 
       "render page with the correct hint text above the text field in welsh" in {
-        val result = systemUnderTest.renderPage(fakeGetRequestInWelsh)
+        val result   = systemUnderTest.renderPage(fakeGetRequestInWelsh)
         val document = Jsoup.parse(contentAsString(result))
         document.select("#email-address-hint").text() shouldBe "Byddwn ond yn defnyddio hwn i gadarnhau’ch bod wedi anfon taliad"
       }
 
       "render page with a Continue button" in {
-        val result = systemUnderTest.renderPage(fakeGetRequest)
+        val result   = systemUnderTest.renderPage(fakeGetRequest)
         val document = Jsoup.parse(contentAsString(result))
         document.select("#submit").html shouldBe "Continue"
       }
 
       "render page with a Continue button in welsh" in {
-        val result = systemUnderTest.renderPage(fakeGetRequestInWelsh)
+        val result   = systemUnderTest.renderPage(fakeGetRequestInWelsh)
         val document = Jsoup.parse(contentAsString(result))
         document.select("#submit").html shouldBe "Yn eich blaen"
       }
 
       "render page with the 'Is this page not working properly?' link" in {
-        val result = systemUnderTest.renderPage(fakeGetRequest)
+        val result   = systemUnderTest.renderPage(fakeGetRequest)
         val document = Jsoup.parse(contentAsString(result))
-        val link = document.select(".hmrc-report-technical-issue")
+        val link     = document.select(".hmrc-report-technical-issue")
         link.text() shouldBe "Is this page not working properly? (opens in new tab)"
         link.attr("target") shouldBe "_blank"
       }
 
       "render page with the 'Is this page not working properly?' link in welsh" in {
-        val result = systemUnderTest.renderPage(fakeGetRequestInWelsh)
+        val result   = systemUnderTest.renderPage(fakeGetRequestInWelsh)
         val document = Jsoup.parse(contentAsString(result))
-        val link = document.select(".hmrc-report-technical-issue")
+        val link     = document.select(".hmrc-report-technical-issue")
         link.text() shouldBe "A yw’r dudalen hon yn gweithio’n iawn? (yn agor tab newydd)"
         link.attr("target") shouldBe "_blank"
       }
 
       "be prepopulated if there is an email address in the session" in {
-          def fakeRequestWithAddressInSession(journeyId: JourneyId = TestJourneys.PfSa.journeyBeforeBeginWebPayment._id): FakeRequest[AnyContentAsEmpty.type] =
-            FakeRequest()
-              .withSessionId()
-              .withEmailInSession(journeyId)
+        def fakeRequestWithAddressInSession(journeyId: JourneyId = TestJourneys.PfSa.journeyBeforeBeginWebPayment._id): FakeRequest[AnyContentAsEmpty.type] =
+          FakeRequest()
+            .withSessionId()
+            .withEmailInSession(journeyId)
         PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyBeforeBeginWebPayment)
 
-        val result = systemUnderTest.renderPage(fakeRequestWithAddressInSession())
+        val result   = systemUnderTest.renderPage(fakeRequestWithAddressInSession())
         val document = Jsoup.parse(contentAsString(result))
 
         document.select("input[name=email-address]").attr("value") shouldBe "blah@blah.com"
@@ -208,7 +208,7 @@ class EmailAddressControllerSpec extends ItSpec {
         val testJourney = TestJourneys.PfSa.journeyAfterBeginWebPayment
         PayApiStub.stubForFindBySessionId2xx(testJourney)
         PayApiStub.stubForResetWebPayment2xx(testJourney._id)
-        val result = systemUnderTest.renderPageAfterReset(fakeGetRequest)
+        val result      = systemUnderTest.renderPageAfterReset(fakeGetRequest)
         status(result) shouldBe Status.SEE_OTHER
         redirectLocation(result) shouldBe Some("/pay-by-card/email-address")
         PayApiStub.verifyResetWebPayment(1, testJourney._id)
@@ -217,7 +217,7 @@ class EmailAddressControllerSpec extends ItSpec {
         val testJourney = TestJourneys.PfSa.journeyAfterFailWebPayment
         PayApiStub.stubForFindBySessionId2xx(testJourney)
         PayApiStub.stubForCloneJourney2xx(testJourney._id)
-        val result = systemUnderTest.renderPageAfterReset(fakeGetRequest)
+        val result      = systemUnderTest.renderPageAfterReset(fakeGetRequest)
         status(result) shouldBe Status.SEE_OTHER
         redirectLocation(result) shouldBe Some("/pay-by-card/email-address")
         PayApiStub.verifyCloneJourney(1, testJourney._id)
@@ -226,7 +226,7 @@ class EmailAddressControllerSpec extends ItSpec {
         val testJourney = TestJourneys.PfSa.journeyAfterCancelWebPayment
         PayApiStub.stubForFindBySessionId2xx(testJourney)
         PayApiStub.stubForCloneJourney2xx(testJourney._id)
-        val result = systemUnderTest.renderPageAfterReset(fakeGetRequest)
+        val result      = systemUnderTest.renderPageAfterReset(fakeGetRequest)
         status(result) shouldBe Status.SEE_OTHER
         redirectLocation(result) shouldBe Some("/pay-by-card/email-address")
         PayApiStub.verifyCloneJourney(1, testJourney._id)
@@ -234,7 +234,7 @@ class EmailAddressControllerSpec extends ItSpec {
       "should not do anything for Created journey and send user to /email-address" in {
         val testJourney = TestJourneys.PfSa.journeyBeforeBeginWebPayment
         PayApiStub.stubForFindBySessionId2xx(testJourney)
-        val result = systemUnderTest.renderPageAfterReset(fakeGetRequest)
+        val result      = systemUnderTest.renderPageAfterReset(fakeGetRequest)
         status(result) shouldBe Status.SEE_OTHER
         redirectLocation(result) shouldBe Some("/pay-by-card/email-address")
         PayApiStub.verifyCloneJourney(0, testJourney._id)
@@ -243,7 +243,7 @@ class EmailAddressControllerSpec extends ItSpec {
       "should not do anything for a Successful journey and send user to /email-address" in {
         val testJourney = TestJourneys.PfSa.journeyAfterSucceedDebitWebPayment
         PayApiStub.stubForFindBySessionId2xx(testJourney)
-        val result = systemUnderTest.renderPageAfterReset(fakeGetRequest)
+        val result      = systemUnderTest.renderPageAfterReset(fakeGetRequest)
         status(result) shouldBe Status.SEE_OTHER
         redirectLocation(result) shouldBe Some("/pay-by-card/email-address")
         PayApiStub.verifyCloneJourney(0, testJourney._id)
@@ -253,18 +253,18 @@ class EmailAddressControllerSpec extends ItSpec {
 
     "POST /email-address" - {
 
-        def fakePostRequest(formData: (String, String)*): FakeRequest[AnyContentAsFormUrlEncoded] =
-          FakeRequest("POST", "/email-address")
-            .withSessionId()
-            .withFormUrlEncodedBody(formData: _*)
+      def fakePostRequest(formData: (String, String)*): FakeRequest[AnyContentAsFormUrlEncoded] =
+        FakeRequest("POST", "/email-address")
+          .withSessionId()
+          .withFormUrlEncodedBody(formData: _*)
 
-        def fakePostRequestInWelsh(formData: (String, String)*): FakeRequest[AnyContentAsFormUrlEncoded] =
-          fakePostRequest(formData: _*)
-            .withLangWelsh()
+      def fakePostRequestInWelsh(formData: (String, String)*): FakeRequest[AnyContentAsFormUrlEncoded] =
+        fakePostRequest(formData: _*)
+          .withLangWelsh()
 
       "should return 303 SEE_OTHER and redirect to /address when a valid email address is submitted and email is added to the session" in {
         val validFormData = ("email-address", "blag@blah.com")
-        val result = systemUnderTest.submit(fakePostRequest(validFormData))
+        val result        = systemUnderTest.submit(fakePostRequest(validFormData))
         status(result) shouldBe Status.SEE_OTHER
         session(result).data.get("TestJourneyId-44f9-ad7f-01e1d3d8f151").map(_.replaceAll("\\s", "")) shouldBe Some("""{"email":"blag@blah.com"}""")
         redirectLocation(result) shouldBe Some("/pay-by-card/address")
@@ -272,41 +272,41 @@ class EmailAddressControllerSpec extends ItSpec {
 
       "should return 303 SEE_OTHER and redirect to /address when no email address to be submitted" in {
         val validFormData = ("email-address", "")
-        val result = systemUnderTest.submit(fakePostRequest(validFormData))
+        val result        = systemUnderTest.submit(fakePostRequest(validFormData))
         status(result) shouldBe Status.SEE_OTHER
         redirectLocation(result) shouldBe Some("/pay-by-card/address")
       }
 
       "should call pay-api and reset order when journey is in Sent state and email submitted is different to what is already in session" in {
-        val testJourney = TestJourneys.PfSa.journeyAfterBeginWebPayment
-        val validFormData = ("email-address", "someemail@email.com")
+        val testJourney         = TestJourneys.PfSa.journeyAfterBeginWebPayment
+        val validFormData       = ("email-address", "someemail@email.com")
         PayApiStub.stubForFindBySessionId2xx(testJourney)
         PayApiStub.stubForResetWebPayment2xx(testJourney._id)
-        val result = systemUnderTest.submit(fakePostRequest(validFormData).withEmailInSession(testJourney._id))
+        val result              = systemUnderTest.submit(fakePostRequest(validFormData).withEmailInSession(testJourney._id))
         status(result) shouldBe Status.SEE_OTHER
         redirectLocation(result) shouldBe Some("/pay-by-card/address")
-        val emailInSession = session(result).get(testJourney._id.value)
+        val emailInSession      = session(result).get(testJourney._id.value)
         val expectedAddressJson = Json.parse("""{"email":"someemail@email.com"}""")
         emailInSession.map(Json.parse) shouldBe Some(expectedAddressJson)
         PayApiStub.verifyResetWebPayment(1, testJourney._id)
       }
 
       "should not call pay-api to reset order if resubmitted email is the same as the one already in session" in {
-        val testJourney = TestJourneys.PfSa.journeyAfterBeginWebPayment
+        val testJourney   = TestJourneys.PfSa.journeyAfterBeginWebPayment
         val validFormData = ("email-address", "someemail@email.com")
         PayApiStub.stubForFindBySessionId2xx(testJourney)
         PayApiStub.stubForResetWebPayment2xx(testJourney._id)
-        val result = systemUnderTest.submit(fakePostRequest(validFormData).withEmailInSession(testJourney._id, EmailAddress("someemail@email.com")))
+        val result        = systemUnderTest.submit(fakePostRequest(validFormData).withEmailInSession(testJourney._id, EmailAddress("someemail@email.com")))
         status(result) shouldBe Status.SEE_OTHER
         redirectLocation(result) shouldBe Some("/pay-by-card/address")
         PayApiStub.verifyResetWebPayment(0, testJourney._id)
       }
 
       "should not call pay-api to reset order when order is null in journey" in {
-        val testJourney = TestJourneys.PfSa.journeyBeforeBeginWebPayment
+        val testJourney   = TestJourneys.PfSa.journeyBeforeBeginWebPayment
         val validFormData = ("email-address", "someemail@email.com")
         PayApiStub.stubForFindBySessionId2xx(testJourney)
-        val result = systemUnderTest.submit(fakePostRequest(validFormData).withEmailInSession(testJourney._id, EmailAddress("someemail@email.com")))
+        val result        = systemUnderTest.submit(fakePostRequest(validFormData).withEmailInSession(testJourney._id, EmailAddress("someemail@email.com")))
         status(result) shouldBe Status.SEE_OTHER
         redirectLocation(result) shouldBe Some("/pay-by-card/address")
         PayApiStub.verifyResetWebPayment(0, testJourney._id)
@@ -314,28 +314,28 @@ class EmailAddressControllerSpec extends ItSpec {
 
       "should return a 400 BAD_REQUEST when an invalid email address is submitted" in {
         val validFormData = ("email-address", "notALegitEmail")
-        val result = systemUnderTest.submit(fakePostRequest(validFormData))
+        val result        = systemUnderTest.submit(fakePostRequest(validFormData))
         status(result) shouldBe Status.BAD_REQUEST
       }
 
       "should return the correct Title when Error invalid email address submitted" in {
         val validFormData = ("email-address", "notALegitEmail")
-        val result = systemUnderTest.submit(fakePostRequest(validFormData))
-        val document = Jsoup.parse(contentAsString(result))
+        val result        = systemUnderTest.submit(fakePostRequest(validFormData))
+        val document      = Jsoup.parse(contentAsString(result))
         document.title() shouldBe "Error: What is your email address? (optional) - Pay your Self Assessment - GOV.UK"
       }
 
       "should return the correct Title when Error invalid email address submitted in Welsh" in {
         val validFormData = ("email-address", "notALegitEmail")
-        val result = systemUnderTest.submit(fakePostRequestInWelsh(validFormData))
-        val document = Jsoup.parse(contentAsString(result))
+        val result        = systemUnderTest.submit(fakePostRequestInWelsh(validFormData))
+        val document      = Jsoup.parse(contentAsString(result))
         document.title() shouldBe "Gwall: Beth yw’ch cyfeiriad e-bost? (dewisol) - Talu eich Hunanasesiad - GOV.UK"
       }
 
       "should return html containing the correct error messages when an invalid email address is submitted" in {
         val validFormData = ("email-address", "notALegitEmail")
-        val result = systemUnderTest.submit(fakePostRequest(validFormData))
-        val document = Jsoup.parse(contentAsString(result))
+        val result        = systemUnderTest.submit(fakePostRequest(validFormData))
+        val document      = Jsoup.parse(contentAsString(result))
         document.select(".govuk-error-summary__title").text() shouldBe "There is a problem"
         document.select(".govuk-error-summary__list").text() shouldBe "Enter a valid email address or leave it blank"
         document.select(".govuk-error-summary__list").select("a").attr("href") shouldBe "#email-address"
@@ -343,8 +343,8 @@ class EmailAddressControllerSpec extends ItSpec {
 
       "should return html containing the correct error messages in welsh when an invalid email address is submitted" in {
         val validFormData = ("email-address", "notALegitEmail")
-        val result = systemUnderTest.submit(fakePostRequestInWelsh(validFormData))
-        val document = Jsoup.parse(contentAsString(result))
+        val result        = systemUnderTest.submit(fakePostRequestInWelsh(validFormData))
+        val document      = Jsoup.parse(contentAsString(result))
         document.select(".govuk-error-summary__title").text() shouldBe "Mae problem wedi codi"
         document.select(".govuk-error-summary__list").text() shouldBe "Nodwch gyfeiriad e-bost dilys neu gadewch yn wag"
         document.select(".govuk-error-summary__list").select("a").attr("href") shouldBe "#email-address"
@@ -353,15 +353,15 @@ class EmailAddressControllerSpec extends ItSpec {
 
     "addressInSession" - {
       "should return Some[Address] when there is one in session and it's associated with the 'address' key" in {
-        val fakeRequest = FakeRequest("GET", "/blah").withEmailInSession(TestJourneys.PfSa.journeyBeforeBeginWebPayment._id)
+        val fakeRequest    = FakeRequest("GET", "/blah").withEmailInSession(TestJourneys.PfSa.journeyBeforeBeginWebPayment._id)
         val journeyRequest = new JourneyRequest(TestJourneys.PfSa.journeyBeforeBeginWebPayment, fakeRequest)
-        val result = systemUnderTest.emailInSession(journeyRequest)
+        val result         = systemUnderTest.emailInSession(journeyRequest)
         result shouldBe Some(EmailAddress("blah@blah.com"))
       }
       "should return None when there is not one in session associated with the 'address' key" in {
-        val fakeRequest = FakeRequest("GET", "/blah")
+        val fakeRequest    = FakeRequest("GET", "/blah")
         val journeyRequest = new JourneyRequest(TestJourneys.PfSa.journeyBeforeBeginWebPayment, fakeRequest)
-        val result = systemUnderTest.emailInSession(journeyRequest)
+        val result         = systemUnderTest.emailInSession(journeyRequest)
         result shouldBe None
       }
     }

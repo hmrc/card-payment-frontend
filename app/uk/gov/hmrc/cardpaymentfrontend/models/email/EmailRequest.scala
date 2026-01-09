@@ -20,10 +20,10 @@ import play.api.libs.json.{Format, Json}
 import uk.gov.hmrc.cardpaymentfrontend.models.EmailAddress
 
 final case class EmailRequest(
-    to:         List[EmailAddress],
-    templateId: String,
-    parameters: EmailParameters,
-    force:      Boolean
+  to:         List[EmailAddress],
+  templateId: String,
+  parameters: EmailParameters,
+  force:      Boolean
 )
 
 @SuppressWarnings(Array("org.wartremover.warts.Any"))

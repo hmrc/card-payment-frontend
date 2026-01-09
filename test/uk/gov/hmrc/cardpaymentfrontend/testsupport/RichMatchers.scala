@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.cardpaymentfrontend.testsupport
 
-import org.scalatest._
+import org.scalatest.*
 import org.scalatest.concurrent.{Eventually, IntegrationPatience, ScalaFutures}
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.diagrams.Diagrams
@@ -24,14 +24,13 @@ import org.scalatest.diagrams.Diagrams
 object RichMatchers extends RichMatchers
 
 trait RichMatchers
-  extends Matchers
-  with Diagrams
-  with TryValues
-  with EitherValues
-  with OptionValues
-  with AppendedClues
-  with ScalaFutures
-  with Inside
-  with Eventually
-  with IntegrationPatience
-
+    extends Matchers
+    with Diagrams
+    with TryValues
+    with EitherValues
+    with OptionValues
+    with AppendedClues
+    with ScalaFutures
+    with Inside
+    with Eventually
+    with IntegrationPatience

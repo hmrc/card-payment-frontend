@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.cardpaymentfrontend.testsupport.stubs
 
-import com.github.tomakehurst.wiremock.client.WireMock._
+import com.github.tomakehurst.wiremock.client.WireMock.*
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.http.Status
 import play.api.libs.json.{JsString, JsValue, Json}
@@ -52,8 +52,8 @@ object CardPaymentStub {
     private def path(transactionReference: String): String = s"/card-payment/auth-and-settle/$transactionReference"
 
     def stubForAuthAndCapture2xx(
-        transactionReference: String,
-        cardPaymentResult:    CardPaymentResult
+      transactionReference: String,
+      cardPaymentResult:    CardPaymentResult
     ): StubMapping = stubFor(
       post(urlPathEqualTo(path(transactionReference)))
         .willReturn(
@@ -64,8 +64,8 @@ object CardPaymentStub {
     )
 
     def stubForAuthAndCaptureCustomJson2xx(
-        transactionReference: String,
-        jsValue:              JsValue
+      transactionReference: String,
+      jsValue:              JsValue
     ): StubMapping = stubFor(
       post(urlPathEqualTo(path(transactionReference)))
         .willReturn(

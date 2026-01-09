@@ -34,56 +34,56 @@ class PaymentServiceSpec extends ItSpec {
   "PaymentService" - {
     "resetSentJourney" - {
       "should trigger a call to pay-api to reset the order when order is present in journey" in {
-        val testJourney = TestJourneys.PfSa.journeyAfterBeginWebPayment
-        val fakeRequest = FakeRequest("GET", "/blah")
+        val testJourney                                                     = TestJourneys.PfSa.journeyAfterBeginWebPayment
+        val fakeRequest                                                     = FakeRequest("GET", "/blah")
         implicit val journeyRequest: JourneyRequest[AnyContentAsEmpty.type] = new JourneyRequest(testJourney, fakeRequest)
-        val _ = systemUnderTest.resetSentJourney().futureValue
+        val _                                                               = systemUnderTest.resetSentJourney().futureValue
         eventually(Timeout(Span(500, Milliseconds))) { PayApiStub.verifyResetWebPayment(1, testJourney._id) }
       }
       "should not trigger a call to pay-api to reset the order when order is None in journey" in {
-        val testJourney = TestJourneys.PfSa.journeyBeforeBeginWebPayment
-        val fakeRequest = FakeRequest("GET", "/blah")
+        val testJourney                                                     = TestJourneys.PfSa.journeyBeforeBeginWebPayment
+        val fakeRequest                                                     = FakeRequest("GET", "/blah")
         implicit val journeyRequest: JourneyRequest[AnyContentAsEmpty.type] = new JourneyRequest(testJourney, fakeRequest)
-        val _ = systemUnderTest.resetSentJourney().futureValue
+        val _                                                               = systemUnderTest.resetSentJourney().futureValue
         eventually(Timeout(Span(500, Milliseconds))) { PayApiStub.verifyResetWebPayment(0, testJourney._id) }
       }
     }
 
     "createCopyOfCancelledOrFailedJourney" - {
 
-        def test(testJourney: Journey[JourneySpecificData], expectPayApiCall: Boolean): Unit = {
-          val fakeRequest = FakeRequest("POST", "/blah")
-          implicit val journeyRequest: JourneyRequest[AnyContentAsEmpty.type] = new JourneyRequest(testJourney, fakeRequest)
-          if (expectPayApiCall) PayApiStub.stubForCloneJourney2xx(testJourney._id)
-          val expectedCallCount: Int = if (expectPayApiCall) 1 else 0
+      def test(testJourney: Journey[JourneySpecificData], expectPayApiCall: Boolean): Unit = {
+        val fakeRequest                                                     = FakeRequest("POST", "/blah")
+        implicit val journeyRequest: JourneyRequest[AnyContentAsEmpty.type] = new JourneyRequest(testJourney, fakeRequest)
+        if (expectPayApiCall) PayApiStub.stubForCloneJourney2xx(testJourney._id)
+        val expectedCallCount: Int                                          = if (expectPayApiCall) 1 else 0
 
-          val _ = systemUnderTest.createCopyOfCancelledOrFailedJourney().futureValue
-          eventually(Timeout(Span(500, Milliseconds))) { PayApiStub.verifyCloneJourney(expectedCallCount, testJourney._id) }
-        }
+        val _ = systemUnderTest.createCopyOfCancelledOrFailedJourney().futureValue
+        eventually(Timeout(Span(500, Milliseconds))) { PayApiStub.verifyCloneJourney(expectedCallCount, testJourney._id) }
+      }
 
       "should trigger a call to pay-api to create a clone of the journey" - {
         "when status is Cancelled" in {
-          test(testJourney      = TestJourneys.PfSa.journeyAfterCancelWebPayment, expectPayApiCall = true)
+          test(testJourney = TestJourneys.PfSa.journeyAfterCancelWebPayment, expectPayApiCall = true)
         }
         "when status is Failed" in {
-          test(testJourney      = TestJourneys.PfSa.journeyAfterFailWebPayment, expectPayApiCall = true)
+          test(testJourney = TestJourneys.PfSa.journeyAfterFailWebPayment, expectPayApiCall = true)
         }
       }
       "should not trigger a call to pay-api to create a clone of the journey" - {
         "when payment status is Created" in {
-          test(testJourney      = TestJourneys.PfSa.journeyBeforeBeginWebPayment, expectPayApiCall = false)
+          test(testJourney = TestJourneys.PfSa.journeyBeforeBeginWebPayment, expectPayApiCall = false)
         }
         "when payment status is Successful" in {
-          test(testJourney      = TestJourneys.PfSa.journeyAfterSucceedDebitWebPayment, expectPayApiCall = false)
+          test(testJourney = TestJourneys.PfSa.journeyAfterSucceedDebitWebPayment, expectPayApiCall = false)
         }
         "when payment status is Sent" in {
-          test(testJourney      = TestJourneys.PfSa.journeyAfterBeginWebPayment, expectPayApiCall = false)
+          test(testJourney = TestJourneys.PfSa.journeyAfterBeginWebPayment, expectPayApiCall = false)
         }
         "when payment status is Validated" in {
-          test(testJourney      = TestJourneys.PfSa.journeyAfterBeginWebPayment.copy(status = PaymentStatuses.Validated), expectPayApiCall = false)
+          test(testJourney = TestJourneys.PfSa.journeyAfterBeginWebPayment.copy(status = PaymentStatuses.Validated), expectPayApiCall = false)
         }
         "when payment status is SoftDecline" in {
-          test(testJourney      = TestJourneys.PfSa.journeyAfterBeginWebPayment.copy(status = PaymentStatuses.SoftDecline), expectPayApiCall = false)
+          test(testJourney = TestJourneys.PfSa.journeyAfterBeginWebPayment.copy(status = PaymentStatuses.SoftDecline), expectPayApiCall = false)
         }
       }
     }

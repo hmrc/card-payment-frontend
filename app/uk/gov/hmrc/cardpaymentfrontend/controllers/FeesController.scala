@@ -32,14 +32,14 @@ import javax.inject.{Inject, Singleton}
 
 @Singleton
 class FeesController @Inject() (
-    actions:        Actions,
-    appConfig:      AppConfig,
-    feesPage:       FeesPage,
-    mcc:            MessagesControllerComponents,
-    requestSupport: RequestSupport
+  actions:        Actions,
+  appConfig:      AppConfig,
+  feesPage:       FeesPage,
+  mcc:            MessagesControllerComponents,
+  requestSupport: RequestSupport
 ) extends FrontendController(mcc) {
 
-  import requestSupport._
+  import requestSupport.*
 
   def renderPage: Action[AnyContent] = actions.routedJourneyAction { implicit journeyRequest: JourneyRequest[AnyContent] =>
     val altPayments = linksAvailableOnFeesPage(journeyRequest.journey.journeySpecificData)
@@ -50,72 +50,84 @@ class FeesController @Inject() (
     Redirect(routes.EmailAddressController.renderPage)
   }
 
-  private[controllers] def paymentMethodToBeShown(paymentMethod: PaymentMethod, paymentMethods: Set[PaymentMethod]): Boolean = paymentMethods.contains(paymentMethod)
+  private[controllers] def paymentMethodToBeShown(paymentMethod: PaymentMethod, paymentMethods: Set[PaymentMethod]): Boolean =
+    paymentMethods.contains(paymentMethod)
 
   private[controllers] def linksAvailableOnFeesPage(jsd: JourneySpecificData): Seq[Link] = {
-    val extendedOrigin = jsd.origin.lift(appConfig)
+    val extendedOrigin                           = jsd.origin.lift(appConfig)
     val paymentMethodsToShow: Set[PaymentMethod] = extendedOrigin.cardFeesPagePaymentMethods
-    val showOpenBankingLink: Boolean = paymentMethodToBeShown(PaymentMethod.OpenBanking, paymentMethodsToShow)
-    val showBankTransferLink: Boolean = paymentMethodToBeShown(PaymentMethod.Bacs, paymentMethodsToShow)
-    val showOneOffDirectDebitLink: Boolean = paymentMethodToBeShown(PaymentMethod.OneOffDirectDebit, paymentMethodsToShow)
-    val showVariableDirectDebitLink: Boolean = paymentMethodToBeShown(PaymentMethod.VariableDirectDebit, paymentMethodsToShow)
-    val showDirectDebitLink: Boolean = paymentMethodToBeShown(PaymentMethod.DirectDebit, paymentMethodsToShow) && journeyShouldShowMdtpDirectDebit(jsd)
+    val showOpenBankingLink: Boolean             = paymentMethodToBeShown(PaymentMethod.OpenBanking, paymentMethodsToShow)
+    val showBankTransferLink: Boolean            = paymentMethodToBeShown(PaymentMethod.Bacs, paymentMethodsToShow)
+    val showOneOffDirectDebitLink: Boolean       = paymentMethodToBeShown(PaymentMethod.OneOffDirectDebit, paymentMethodsToShow)
+    val showVariableDirectDebitLink: Boolean     = paymentMethodToBeShown(PaymentMethod.VariableDirectDebit, paymentMethodsToShow)
+    val showDirectDebitLink: Boolean             = paymentMethodToBeShown(PaymentMethod.DirectDebit, paymentMethodsToShow) && journeyShouldShowMdtpDirectDebit(jsd)
 
-      def pfVatChargeReferenceExists: Boolean = extendedOrigin match {
-        case ExtendedPfVat => ExtendedPfVat.chargeReference.apply(jsd).isDefined
-        case _             => false
-      }
+    def pfVatChargeReferenceExists: Boolean = extendedOrigin match {
+      case ExtendedPfVat => ExtendedPfVat.chargeReference.apply(jsd).isDefined
+      case _             => false
+    }
 
     val maybeOpenBankingLink = if (showOpenBankingLink) {
-      Seq(Link(
-        href       = Call("GET", routes.OpenBankingController.startOpenBankingJourney.url),
-        linkId     = "open-banking-link",
-        messageKey = "card-fees.para2.open-banking"
-      ))
+      Seq(
+        Link(
+          href = Call("GET", routes.OpenBankingController.startOpenBankingJourney.url),
+          linkId = "open-banking-link",
+          messageKey = "card-fees.para2.open-banking"
+        )
+      )
     } else Seq.empty[Link]
 
     val maybeBankTransferLink = if (showBankTransferLink) {
-      Seq(Link(
-        href       = Call("GET", appConfig.payFrontendBaseUrl + appConfig.bankTransferRelativeUrl),
-        linkId     = "bank-transfer-link",
-        messageKey = "card-fees.para2.bank-transfer"
-      ))
+      Seq(
+        Link(
+          href = Call("GET", appConfig.payFrontendBaseUrl + appConfig.bankTransferRelativeUrl),
+          linkId = "bank-transfer-link",
+          messageKey = "card-fees.para2.bank-transfer"
+        )
+      )
     } else Seq.empty[Link]
 
     val maybeVariableDirectDebitLink = if (showVariableDirectDebitLink && !pfVatChargeReferenceExists) {
-      Seq(Link(
-        href       = Call("GET", appConfig.payFrontendBaseUrl + appConfig.variableDirectDebitRelativeUrl),
-        linkId     = "variable-direct-debit-link",
-        messageKey = "card-fees.para2.variable-direct-debit"
-      ))
+      Seq(
+        Link(
+          href = Call("GET", appConfig.payFrontendBaseUrl + appConfig.variableDirectDebitRelativeUrl),
+          linkId = "variable-direct-debit-link",
+          messageKey = "card-fees.para2.variable-direct-debit"
+        )
+      )
     } else Seq.empty[Link]
 
     val maybeOneOffDirectDebitLink = if (showOneOffDirectDebitLink) {
-      Seq(Link(
-        href       = Call("GET", appConfig.payFrontendBaseUrl + appConfig.oneOffDirectDebitRelativeUrl),
-        linkId     = "one-off-direct-debit-link",
-        messageKey = "card-fees.para2.one-off-direct-debit"
-      ))
+      Seq(
+        Link(
+          href = Call("GET", appConfig.payFrontendBaseUrl + appConfig.oneOffDirectDebitRelativeUrl),
+          linkId = "one-off-direct-debit-link",
+          messageKey = "card-fees.para2.one-off-direct-debit"
+        )
+      )
     } else Seq.empty[Link]
 
-    //the one MDTP owned by oceans 11
+    // the one MDTP owned by oceans 11
     val maybeDirectDebitLink = if (showDirectDebitLink) {
-      Seq(Link(
-        href       = Call("GET", appConfig.payFrontendBaseUrl + appConfig.directDebitRelativeUrl),
-        linkId     = "direct-debit-link",
-        messageKey = "card-fees.para2.direct-debit"
-      ))
+      Seq(
+        Link(
+          href = Call("GET", appConfig.payFrontendBaseUrl + appConfig.directDebitRelativeUrl),
+          linkId = "direct-debit-link",
+          messageKey = "card-fees.para2.direct-debit"
+        )
+      )
     } else Seq.empty[Link]
 
     maybeOpenBankingLink ++ maybeBankTransferLink ++ maybeVariableDirectDebitLink ++ maybeOneOffDirectDebitLink ++ maybeDirectDebitLink
   }
 
-  //only required for Sdil currently, because the journey contains two sub types of ref (why?!) we need to check for the subtype of ref, as only one supports dd...
+  // only required for Sdil currently, because the journey contains two sub types of ref (why?!) we need to check for the subtype of ref, as only one supports dd...
   private[controllers] def journeyShouldShowMdtpDirectDebit: JourneySpecificData => Boolean = {
-    case j: JsdPfSdil => j.softDrinksIndustryLevyRef.exists {
-      case r if r.value matches SoftDrinksIndustryLevyRef.softDrinksIndustryLevyRefRegex => true
-      case _ => false
-    }
+    case j: JsdPfSdil  =>
+      j.softDrinksIndustryLevyRef.exists {
+        case r if r.value matches SoftDrinksIndustryLevyRef.softDrinksIndustryLevyRefRegex => true
+        case _                                                                             => false
+      }
     case _: JsdBtaSdil => true
     case _             => false
   }

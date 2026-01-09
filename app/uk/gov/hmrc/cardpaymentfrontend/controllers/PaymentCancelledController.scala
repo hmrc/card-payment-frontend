@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.cardpaymentfrontend.controllers
 
-import payapi.cardpaymentjourney.model.journey._
+import payapi.cardpaymentjourney.model.journey.*
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.cardpaymentfrontend.actions.{Actions, JourneyRequest}
 import uk.gov.hmrc.cardpaymentfrontend.requests.RequestSupport
@@ -27,18 +27,21 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import javax.inject.Inject
 
 class PaymentCancelledController @Inject() (
-    actions:              Actions,
-    mcc:                  MessagesControllerComponents,
-    paymentCancelledPage: PaymentCancelledPage,
-    requestSupport:       RequestSupport
+  actions:              Actions,
+  mcc:                  MessagesControllerComponents,
+  paymentCancelledPage: PaymentCancelledPage,
+  requestSupport:       RequestSupport
 ) extends FrontendController(mcc) {
 
-  import requestSupport._
-
+  import requestSupport.*
   val renderPage: Action[AnyContent] = actions.journeyAction { implicit request: JourneyRequest[AnyContent] =>
-    Ok(paymentCancelledPage(
-      ExternalNavigation.returnUrlCancelled(request.journey)
-        .getOrElse(Url(uk.gov.hmrc.cardpaymentfrontend.controllers.routes.PaymentsSurveyController.startSurvey.url)).value
-    ))
+    Ok(
+      paymentCancelledPage(
+        ExternalNavigation
+          .returnUrlCancelled(request.journey)
+          .getOrElse(Url(uk.gov.hmrc.cardpaymentfrontend.controllers.routes.PaymentsSurveyController.startSurvey().url))
+          .value
+      )
+    )
   }
 }

@@ -25,25 +25,29 @@ import uk.gov.hmrc.cardpaymentfrontend.models.{CheckYourAnswersRow, PaymentMetho
 
 object ExtendedWcSa extends ExtendedOrigin {
   override val serviceNameMessageKey: String = "service-name.WcSa"
-  override val taxNameMessageKey: String = "payment-complete.tax-name.WcSa"
+  override val taxNameMessageKey: String     = "payment-complete.tax-name.WcSa"
 
   def cardFeesPagePaymentMethods: Set[PaymentMethod] = Set(OpenBanking)
 
   def paymentMethods(): Set[PaymentMethod] = Set(Card, OpenBanking, Bacs)
 
   override def checkYourAnswersReferenceRow(journeyRequest: JourneyRequest[AnyContent])(payFrontendBaseUrl: String): Option[CheckYourAnswersRow] = {
-    Some(CheckYourAnswersRow(
-      titleMessageKey = "check-your-details.WcSa.reference",
-      value           = Seq(journeyRequest.journey.referenceValue),
-      changeLink      = None
-    ))
+    Some(
+      CheckYourAnswersRow(
+        titleMessageKey = "check-your-details.WcSa.reference",
+        value = Seq(journeyRequest.journey.referenceValue),
+        changeLink = None
+      )
+    )
   }
 
-  override def checkYourAnswersAmountSummaryRow(journeyRequest: JourneyRequest[AnyContent])(payFrontendBaseUrl: String): Option[CheckYourAnswersRow] = Some(CheckYourAnswersRow(
-    titleMessageKey = "check-your-details.total-to-pay",
-    value           = Seq(amount(journeyRequest)),
-    changeLink      = None
-  ))
+  override def checkYourAnswersAmountSummaryRow(journeyRequest: JourneyRequest[AnyContent])(payFrontendBaseUrl: String): Option[CheckYourAnswersRow] = Some(
+    CheckYourAnswersRow(
+      titleMessageKey = "check-your-details.total-to-pay",
+      value = Seq(amount(journeyRequest)),
+      changeLink = None
+    )
+  )
 
   override def openBankingOriginSpecificSessionData: JourneySpecificData => Option[OriginSpecificSessionData] = {
     case j: JsdWcSa => Some(WcSaSessionData(j.saUtr.parseSaUtr))
@@ -52,9 +56,9 @@ object ExtendedWcSa extends ExtendedOrigin {
 
   override def emailTaxTypeMessageKey: String = "email.tax-name.WcSa"
 
-  override def surveyAuditName: String = "self-assessment"
-  override def surveyReturnHref: String = "/business-account"
-  override def surveyReturnMessageKey: String = "payments-survey.other.return-message"
+  override def surveyAuditName: String         = "self-assessment"
+  override def surveyReturnHref: String        = "/business-account"
+  override def surveyReturnMessageKey: String  = "payments-survey.other.return-message"
   override def surveyIsWelshSupported: Boolean = true
-  override def surveyBannerTitle: String = serviceNameMessageKey
+  override def surveyBannerTitle: String       = serviceNameMessageKey
 }

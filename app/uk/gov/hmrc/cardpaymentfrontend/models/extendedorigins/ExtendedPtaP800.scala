@@ -27,7 +27,7 @@ import uk.gov.hmrc.cardpaymentfrontend.models.{CheckYourAnswersRow, PaymentMetho
 
 class ExtendedPtaP800(appConfig: AppConfig) extends ExtendedOrigin {
   override val serviceNameMessageKey: String = "service-name.PtaP800"
-  override val taxNameMessageKey: String = "payment-complete.tax-name.PtaP800"
+  override val taxNameMessageKey: String     = "payment-complete.tax-name.PtaP800"
 
   def cardFeesPagePaymentMethods: Set[PaymentMethod] =
     if (appConfig.FeatureFlags.ptaP800OpenBankingEnabled) Set[PaymentMethod](OpenBanking)
@@ -38,31 +38,39 @@ class ExtendedPtaP800(appConfig: AppConfig) extends ExtendedOrigin {
     else Set(Card)
 
   override def checkYourAnswersReferenceRow(journeyRequest: JourneyRequest[AnyContent])(payFrontendBaseUrl: String): Option[CheckYourAnswersRow] = {
-    Some(CheckYourAnswersRow(
-      titleMessageKey = "check-your-details.PtaP800.reference",
-      value           = Seq(journeyRequest.journey.referenceValue),
-      changeLink      = None
-    ))
+    Some(
+      CheckYourAnswersRow(
+        titleMessageKey = "check-your-details.PtaP800.reference",
+        value = Seq(journeyRequest.journey.referenceValue),
+        changeLink = None
+      )
+    )
   }
 
-  override def checkYourAnswersAdditionalReferenceRow(journeyRequest: JourneyRequest[AnyContent])(payFrontendBaseUrl: String)(implicit messages: Messages): Option[Seq[CheckYourAnswersRow]] = {
+  override def checkYourAnswersAdditionalReferenceRow(
+    journeyRequest: JourneyRequest[AnyContent]
+  )(payFrontendBaseUrl: String)(implicit messages: Messages): Option[Seq[CheckYourAnswersRow]] = {
     journeyRequest.journey.journeySpecificData match {
       case JsdPtaP800(_, maybeP800ChargeRef, taxYear, _) =>
         val chargeRefRow: Seq[CheckYourAnswersRow] = maybeP800ChargeRef.fold(Seq.empty[CheckYourAnswersRow]) { p800ChargeRef =>
-          Seq(CheckYourAnswersRow(
-            titleMessageKey = "check-your-details.PtaP800.charge-reference",
-            value           = Seq(p800ChargeRef.canonicalizedValue),
-            changeLink      = None
-          ))
+          Seq(
+            CheckYourAnswersRow(
+              titleMessageKey = "check-your-details.PtaP800.charge-reference",
+              value = Seq(p800ChargeRef.canonicalizedValue),
+              changeLink = None
+            )
+          )
         }
         // Pta send us tax year value as start of tax year. TaxYear class in pay-api uses endYear as apply argument. Then startYear: Int = endYear - 1.
         // Therefore for correct displaying, we need to adjust the tax year.
-        val adjustedTaxYear = taxYear.nextTaxYear
-        val taxYearRow = Seq(CheckYourAnswersRow(
-          titleMessageKey = "check-your-details.PtaP800.tax-year",
-          value           = Seq(messages("check-your-details.PtaP800.tax-year.value", adjustedTaxYear.startYear.toString, adjustedTaxYear.endYear.toString)),
-          changeLink      = None
-        ))
+        val adjustedTaxYear                        = taxYear.nextTaxYear
+        val taxYearRow                             = Seq(
+          CheckYourAnswersRow(
+            titleMessageKey = "check-your-details.PtaP800.tax-year",
+            value = Seq(messages("check-your-details.PtaP800.tax-year.value", adjustedTaxYear.startYear.toString, adjustedTaxYear.endYear.toString)),
+            changeLink = None
+          )
+        )
         Some(chargeRefRow ++ taxYearRow)
 
       case _ => throw new RuntimeException("Incorrect origin found")
@@ -74,13 +82,13 @@ class ExtendedPtaP800(appConfig: AppConfig) extends ExtendedOrigin {
       if (appConfig.FeatureFlags.ptaP800OpenBankingEnabled) {
         Some(PtaP800SessionData(j.p800Ref, j.p800ChargeRef, Some(j.taxYear)))
       } else None
-    case _ => throw new RuntimeException("Incorrect origin found")
+    case _             => throw new RuntimeException("Incorrect origin found")
   }
-  override def surveyAuditName: String = "p800-or-pa302"
-  override def surveyReturnHref: String = "https://www.gov.uk/government/organisations/hm-revenue-customs"
-  override def surveyReturnMessageKey: String = "payments-survey.other.return-message"
-  override def surveyIsWelshSupported: Boolean = true
-  override def surveyBannerTitle: String = serviceNameMessageKey
-  override def emailTaxTypeMessageKey: String = "email.tax-name.PfP800"
+  override def surveyAuditName: String                                                                        = "p800-or-pa302"
+  override def surveyReturnHref: String                                                                       = "https://www.gov.uk/government/organisations/hm-revenue-customs"
+  override def surveyReturnMessageKey: String                                                                 = "payments-survey.other.return-message"
+  override def surveyIsWelshSupported: Boolean                                                                = true
+  override def surveyBannerTitle: String                                                                      = serviceNameMessageKey
+  override def emailTaxTypeMessageKey: String                                                                 = "email.tax-name.PfP800"
 
 }

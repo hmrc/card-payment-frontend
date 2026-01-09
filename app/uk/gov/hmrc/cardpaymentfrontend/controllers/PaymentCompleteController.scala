@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.cardpaymentfrontend.controllers
 
-import payapi.cardpaymentjourney.model.journey._
+import payapi.cardpaymentjourney.model.journey.*
 import payapi.corcommon.model.{AmountInPence, Origins}
 import payapi.corcommon.model.Origins.PfMgd
 import payapi.corcommon.model.barclays.CardCategories
@@ -30,11 +30,11 @@ import uk.gov.hmrc.cardpaymentfrontend.config.AppConfig
 import uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins.ExtendedOrigin.OriginExtended
 import uk.gov.hmrc.cardpaymentfrontend.models.{EmailAddress, creditCardCommissionRate}
 import uk.gov.hmrc.cardpaymentfrontend.requests.RequestSupport
-import uk.gov.hmrc.cardpaymentfrontend.session.JourneySessionSupport._
+import uk.gov.hmrc.cardpaymentfrontend.session.JourneySessionSupport.*
 import uk.gov.hmrc.cardpaymentfrontend.util.DateStringBuilder
 import uk.gov.hmrc.cardpaymentfrontend.util.SafeEquals.EqualsOps
 import uk.gov.hmrc.cardpaymentfrontend.views.html.{PassengersPaymentCompletePage, PaymentCompletePage}
-import uk.gov.hmrc.govukfrontend.views.Aliases._
+import uk.gov.hmrc.govukfrontend.views.Aliases.*
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
 import java.time.{Clock, LocalDateTime}
@@ -42,16 +42,16 @@ import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 
 class PaymentCompleteController @Inject() (
-    actions:                       Actions,
-    appConfig:                     AppConfig,
-    clock:                         Clock,
-    mcc:                           MessagesControllerComponents,
-    paymentCompletePage:           PaymentCompletePage,
-    passengersPaymentCompletePage: PassengersPaymentCompletePage,
-    requestSupport:                RequestSupport
+  actions:                       Actions,
+  appConfig:                     AppConfig,
+  clock:                         Clock,
+  mcc:                           MessagesControllerComponents,
+  paymentCompletePage:           PaymentCompletePage,
+  passengersPaymentCompletePage: PassengersPaymentCompletePage,
+  requestSupport:                RequestSupport
 ) extends FrontendController(mcc) {
 
-  import requestSupport._
+  import requestSupport.*
 
   val renderPage: Action[AnyContent] = actions.journeyAction { implicit journeyRequest: JourneyRequest[AnyContent] =>
 
@@ -59,31 +59,35 @@ class PaymentCompleteController @Inject() (
       journeyRequest.readFromSession[EmailAddress](journeyRequest.journeyId, Keys.email).filter(!_.value.isBlank).map(email => EmailAddress(email.value))
 
     journeyRequest.journey.journeySpecificData match {
-      //passengers has a bespoke set of content, so they have their own page for simplicity
+      // passengers has a bespoke set of content, so they have their own page for simplicity
       case jsd: JsdBcPngr         => Ok(passengersPaymentCompletePage(jsd))
       // all other origins utilise the generic page.
       case _: JourneySpecificData => Ok(genericPaymentCompletePage(maybeEmailFromSession))
     }
   }
 
-  private def genericPaymentCompletePage(maybeEmail: Option[EmailAddress])(implicit journeyRequest: JourneyRequest[_]): HtmlFormat.Appendable = {
+  private def genericPaymentCompletePage(maybeEmail: Option[EmailAddress])(implicit journeyRequest: JourneyRequest[?]): HtmlFormat.Appendable = {
     paymentCompletePage(
-      taxReference      = journeyRequest.journey.getReference,
-      summaryListRows   = PaymentCompleteController.buildSummaryListRows(
+      taxReference = journeyRequest.journey.getReference,
+      summaryListRows = PaymentCompleteController.buildSummaryListRows(
         journey = journeyRequest.journey,
         taxType = journeyRequest.journey.origin.lift(appConfig).taxNameMessageKey
       )(journeyRequest.messages),
       maybeEmailAddress = maybeEmail,
-      maybeReturnUrl    = PaymentCompleteController.determineTaxAccountUrl(journeyRequest.journey)(appConfig)
+      maybeReturnUrl = PaymentCompleteController.determineTaxAccountUrl(journeyRequest.journey)(appConfig)
     )(journeyRequest, journeyRequest.messages)
   }
 
-  private def passengersPaymentCompletePage(jsd: JsdBcPngr)(implicit journeyRequest: JourneyRequest[_]): HtmlFormat.Appendable = {
+  private def passengersPaymentCompletePage(jsd: JsdBcPngr)(implicit journeyRequest: JourneyRequest[?]): HtmlFormat.Appendable = {
     passengersPaymentCompletePage(
-      taxReference          = journeyRequest.journey.getReference,
-      leadingSummaryTable   = PaymentCompleteController.buildPassengersSummaryTable(jsd, journeyRequest.journey.getCommissionInPence.getOrElse(AmountInPence.zero), journeyRequest.journey.getAmountInPence)(clock),
-      itemsDeclaredTable    = PaymentCompleteController.buildPassengersItemsDeclaredTable(jsd),
-      paymentBreakdownTable = PaymentCompleteController.buildPassengersTaxBreakdown(jsd),
+      taxReference = journeyRequest.journey.getReference,
+      leadingSummaryTable = PaymentCompleteController.buildPassengersSummaryTable(
+        jsd,
+        journeyRequest.journey.getCommissionInPence.getOrElse(AmountInPence.zero),
+        journeyRequest.journey.getAmountInPence
+      )(clock),
+      itemsDeclaredTable = PaymentCompleteController.buildPassengersItemsDeclaredTable(jsd),
+      paymentBreakdownTable = PaymentCompleteController.buildPassengersTaxBreakdown(jsd)
     )
   }
 }
@@ -93,11 +97,11 @@ object PaymentCompleteController {
   def buildSummaryListRows(journey: Journey[JourneySpecificData], taxType: String)(implicit messages: Messages): Seq[SummaryListRow] = {
     val consistentRows = Seq(
       SummaryListRow(
-        key   = Key(Text(messages({ if (journey.origin === Origins.Mib) "payment-complete.summary-list.payment" else "payment-complete.summary-list.tax" }))),
+        key = Key(Text(messages { if (journey.origin === Origins.Mib) "payment-complete.summary-list.payment" else "payment-complete.summary-list.tax" })),
         value = Value(Text(messages(taxType)))
       ),
       SummaryListRow(
-        key   = Key(Text(messages("payment-complete.summary-list.date"))),
+        key = Key(Text(messages("payment-complete.summary-list.date"))),
         value = Value(Text(messages(DateStringBuilder.getDateAsString(journey.getPaidOn))))
       )
     )
@@ -107,23 +111,25 @@ object PaymentCompleteController {
         alcoholDutyChargeReference.fold[Seq[SummaryListRow]](Seq.empty[SummaryListRow]) { alcoholDutyChargeReference =>
           Seq(
             SummaryListRow(
-              key   = Key(Text(messages("check-your-details.AlcoholDuty.charge-reference"))),
+              key = Key(Text(messages("check-your-details.AlcoholDuty.charge-reference"))),
               value = Value(Text(alcoholDutyChargeReference.canonicalizedValue))
             )
           )
         }
-      case JsdPfP800(p800Ref, p800ChargeRef, _) =>
+      case JsdPfP800(p800Ref, p800ChargeRef, _)             =>
         p800ChargeRef.fold[Seq[SummaryListRow]](Seq.empty[SummaryListRow]) { chargeRef =>
           Seq(
             SummaryListRow(
-              key   = Key(Text(messages("check-your-details.PfP800.charge-reference"))),
+              key = Key(Text(messages("check-your-details.PfP800.charge-reference"))),
               value = Value(Text(chargeRef.canonicalizedValue))
             )
           )
-        } ++ Seq(SummaryListRow(
-          key   = Key(Text(messages("check-your-details.PfP800.reference"))),
-          value = Value(Text(p800Ref.canonicalizedValue))
-        ))
+        } ++ Seq(
+          SummaryListRow(
+            key = Key(Text(messages("check-your-details.PfP800.reference"))),
+            value = Value(Text(p800Ref.canonicalizedValue))
+          )
+        )
 
       case JsdPtaP800(p800Ref, p800ChargeRef, taxYear, _) =>
         // Pta send us tax year value as start of tax year. TaxYear class in pay-api uses endYear as apply argument. Then startYear: Int = endYear - 1.
@@ -132,17 +138,17 @@ object PaymentCompleteController {
         p800ChargeRef.fold[Seq[SummaryListRow]](Seq.empty[SummaryListRow]) { chargeRef =>
           Seq(
             SummaryListRow(
-              key   = Key(Text(messages("check-your-details.PtaP800.charge-reference"))),
+              key = Key(Text(messages("check-your-details.PtaP800.charge-reference"))),
               value = Value(Text(chargeRef.canonicalizedValue))
             )
           )
         } ++ Seq(
           SummaryListRow(
-            key   = Key(Text(messages("check-your-details.PtaP800.reference"))),
+            key = Key(Text(messages("check-your-details.PtaP800.reference"))),
             value = Value(Text(p800Ref.canonicalizedValue))
           ),
           SummaryListRow(
-            key   = Key(Text(messages("check-your-details.PtaP800.tax-year"))),
+            key = Key(Text(messages("check-your-details.PtaP800.tax-year"))),
             value = Value(Text(messages("check-your-details.PtaP800.tax-year.value", adjustedTaxYear.startYear.toString, adjustedTaxYear.endYear.toString)))
           )
         )
@@ -153,12 +159,14 @@ object PaymentCompleteController {
         val adjustedTaxYear: TaxYear = taxYear.nextTaxYear
         Seq(
           SummaryListRow(
-            key   = Key(Text(messages("check-your-details.PtaSimpleAssessment.charge-reference"))),
+            key = Key(Text(messages("check-your-details.PtaSimpleAssessment.charge-reference"))),
             value = Value(Text(p302ChargeRef.canonicalizedValue))
           ),
           SummaryListRow(
-            key   = Key(Text(messages("check-your-details.PtaSimpleAssessment.tax-year"))),
-            value = Value(Text(messages("check-your-details.PtaSimpleAssessment.tax-year.value", adjustedTaxYear.startYear.toString, adjustedTaxYear.endYear.toString)))
+            key = Key(Text(messages("check-your-details.PtaSimpleAssessment.tax-year"))),
+            value = Value(
+              Text(messages("check-your-details.PtaSimpleAssessment.tax-year.value", adjustedTaxYear.startYear.toString, adjustedTaxYear.endYear.toString))
+            )
           )
         )
 
@@ -173,7 +181,7 @@ object PaymentCompleteController {
   def buildAmountsSummaryListRow(journey: Journey[JourneySpecificData])(implicit messages: Messages): Seq[SummaryListRow] = {
 
     val basicAmount = SummaryListRow(
-      key   = Key(Text(messages("payment-complete.summary-list.amount"))),
+      key = Key(Text(messages("payment-complete.summary-list.amount"))),
       value = Value(Text(s"£${journey.getTotalAmountInPence.inPoundsRoundedFormatted}"))
     )
 
@@ -185,15 +193,27 @@ object PaymentCompleteController {
         journey.getCommissionInPence.fold(Seq(basicAmount)) { commissionInPence =>
           Seq(
             SummaryListRow(
-              key   = Key(Text(Messages("payment-complete.amount.paid-to-hmrc"))),
+              key = Key(Text(Messages("payment-complete.amount.paid-to-hmrc"))),
               value = Value(content = Text(s"£${journey.getAmountInPence.inPoundsRoundedFormatted}"))
             ),
             SummaryListRow(
-              key   = Key(HtmlContent(Html(Messages("payment-complete.amount.card-fee", "<nobr>", "%2.2f%%".format(creditCardCommissionRate(journey.getAmountInPence, commissionInPence)), "</nobr><br/><nobr>", "</nobr>")))),
+              key = Key(
+                HtmlContent(
+                  Html(
+                    Messages(
+                      "payment-complete.amount.card-fee",
+                      "<nobr>",
+                      "%2.2f%%".format(creditCardCommissionRate(journey.getAmountInPence, commissionInPence)),
+                      "</nobr><br/><nobr>",
+                      "</nobr>"
+                    )
+                  )
+                )
+              ),
               value = Value(content = Text(s"£${commissionInPence.inPoundsRoundedFormatted}"))
             ),
             SummaryListRow(
-              key   = Key(Text(messages("payment-complete.amount.total-paid"))),
+              key = Key(Text(messages("payment-complete.amount.total-paid"))),
               value = Value(Text(s"£${journey.getTotalAmountInPence.inPoundsRoundedFormatted}"))
             )
           )
@@ -201,7 +221,9 @@ object PaymentCompleteController {
     }
   }
 
-  private def buildPassengersSummaryTable(journeySpecificData: JsdBcPngr, commissionAmount: AmountInPence, totalAmount: AmountInPence)(clock: Clock)(implicit messages: Messages): Seq[Seq[TableRow]] = {
+  private def buildPassengersSummaryTable(journeySpecificData: JsdBcPngr, commissionAmount: AmountInPence, totalAmount: AmountInPence)(
+    clock: Clock
+  )(implicit messages: Messages): Seq[Seq[TableRow]] = {
     val amountsTableRows: Seq[Seq[TableRow]] = {
       if (commissionAmount > AmountInPence.zero) {
         Seq(
@@ -210,7 +232,20 @@ object PaymentCompleteController {
             TableRow(content = Text(s"£${totalAmount.inPoundsRoundedFormatted}"))
           ),
           Seq(
-            TableRow(classes = "govuk-!-font-weight-bold", content = HtmlContent(Html(Messages("payment-complete.amount.card-fee", "<nobr>", "%2.2f%%".format(creditCardCommissionRate(totalAmount, commissionAmount)), "</nobr><br/><nobr>", "</nobr>")))),
+            TableRow(
+              classes = "govuk-!-font-weight-bold",
+              content = HtmlContent(
+                Html(
+                  Messages(
+                    "payment-complete.amount.card-fee",
+                    "<nobr>",
+                    "%2.2f%%".format(creditCardCommissionRate(totalAmount, commissionAmount)),
+                    "</nobr><br/><nobr>",
+                    "</nobr>"
+                  )
+                )
+              )
+            ),
             TableRow(content = Text(s"£${commissionAmount.inPoundsRoundedFormatted}"))
           ),
           Seq(
@@ -219,13 +254,15 @@ object PaymentCompleteController {
           )
         )
       } else {
-        Seq(Seq(
-          TableRow(classes = "govuk-!-font-weight-bold", content = Text(messages("payment-complete.passengers.summary-list.amount-paid"))),
-          TableRow(content = Text({
-            val total: String = "£%,1.2f".format(journeySpecificData.items.map(pngrItem => pngrItem.costInGbp.toDouble).sum)
-            total
-          }))
-        ))
+        Seq(
+          Seq(
+            TableRow(classes = "govuk-!-font-weight-bold", content = Text(messages("payment-complete.passengers.summary-list.amount-paid"))),
+            TableRow(content = Text {
+              val total: String = "£%,1.2f".format(journeySpecificData.items.map(pngrItem => pngrItem.costInGbp.toDouble).sum)
+              total
+            })
+          )
+        )
       }
     }
 
@@ -260,20 +297,29 @@ object PaymentCompleteController {
   }
 
   private def buildPassengersItemsDeclaredTable(journeySpecificData: JsdBcPngr)(implicit messages: Messages): Seq[Seq[TableRow]] = {
-    val leadingRow = Seq(Seq(
-      TableRow(classes = "govuk-!-font-weight-bold", content = Text(Messages("payment-complete.passengers.items-declared.table.item"))),
-      TableRow(classes = "govuk-!-font-weight-bold", content = Text(Messages("payment-complete.passengers.items-declared.table.price"))),
-      TableRow(classes = "govuk-!-font-weight-bold", content = Text(Messages("payment-complete.passengers.items-declared.table.purchased-in"))),
-      TableRow(classes = "govuk-!-font-weight-bold", content = Text(Messages("payment-complete.passengers.items-declared.table.tax-paid")))
-    ))
-    val totalRow = Seq(Seq(
-      TableRow(classes = "govuk-!-font-weight-bold", content = Text(Messages("payment-complete.passengers.items-declared.table.total"))),
-      TableRow(),
-      TableRow(),
-      TableRow(classes = "govuk-!-font-weight-bold", content = Text("£%,1.2f".format(journeySpecificData.items.map(pngrItem => pngrItem.costInGbp.toDouble).sum)))
-    ))
-    val amountPrevious: AmountInPence = journeySpecificData.amountPaidPreviously.map((a: AmountPaidPreviously) => AmountInPence((a.amountPaidPreviously.toDouble * 100).toLong)).getOrElse(AmountInPence.zero)
-    val maybeAmountPaidPreviouslyRow = {
+    val leadingRow                    = Seq(
+      Seq(
+        TableRow(classes = "govuk-!-font-weight-bold", content = Text(Messages("payment-complete.passengers.items-declared.table.item"))),
+        TableRow(classes = "govuk-!-font-weight-bold", content = Text(Messages("payment-complete.passengers.items-declared.table.price"))),
+        TableRow(classes = "govuk-!-font-weight-bold", content = Text(Messages("payment-complete.passengers.items-declared.table.purchased-in"))),
+        TableRow(classes = "govuk-!-font-weight-bold", content = Text(Messages("payment-complete.passengers.items-declared.table.tax-paid")))
+      )
+    )
+    val totalRow                      = Seq(
+      Seq(
+        TableRow(classes = "govuk-!-font-weight-bold", content = Text(Messages("payment-complete.passengers.items-declared.table.total"))),
+        TableRow(),
+        TableRow(),
+        TableRow(
+          classes = "govuk-!-font-weight-bold",
+          content = Text("£%,1.2f".format(journeySpecificData.items.map(pngrItem => pngrItem.costInGbp.toDouble).sum))
+        )
+      )
+    )
+    val amountPrevious: AmountInPence = journeySpecificData.amountPaidPreviously
+      .map((a: AmountPaidPreviously) => AmountInPence((a.amountPaidPreviously.toDouble * 100).toLong))
+      .getOrElse(AmountInPence.zero)
+    val maybeAmountPaidPreviouslyRow  = {
       if (amountPrevious > AmountInPence.zero) {
         Seq(
           Seq(
@@ -282,14 +328,23 @@ object PaymentCompleteController {
             TableRow(content = Text(s"£${amountPrevious.inPoundsRoundedFormatted}"))
           ),
           Seq(
-            TableRow(classes = "govuk-!-font-weight-bold", content = Text(messages("payment-complete.passengers.items-declared.table.total-paid-now")), colspan = Some(2)),
+            TableRow(
+              classes = "govuk-!-font-weight-bold",
+              content = Text(messages("payment-complete.passengers.items-declared.table.total-paid-now")),
+              colspan = Some(2)
+            ),
             TableRow(),
-            TableRow(classes = "govuk-!-font-weight-bold", content = Text(s"£${journeySpecificData.totalPaidNow.map(a => AmountInPence((a.taxPaidNow.toDouble * 100).toLong)).getOrElse(AmountInPence.zero).inPoundsRoundedFormatted}"))
+            TableRow(
+              classes = "govuk-!-font-weight-bold",
+              content = Text(
+                s"£${journeySpecificData.totalPaidNow.map(a => AmountInPence((a.taxPaidNow.toDouble * 100).toLong)).getOrElse(AmountInPence.zero).inPoundsRoundedFormatted}"
+              )
+            )
           )
         )
       } else Seq.empty
     }
-    val itemRows: Seq[Seq[TableRow]] = journeySpecificData.items.map { item =>
+    val itemRows: Seq[Seq[TableRow]]  = journeySpecificData.items.map { item =>
       Seq(
         TableRow(content = Text(item.name)),
         TableRow(content = Text(item.price)),
@@ -320,11 +375,20 @@ object PaymentCompleteController {
     ),
     Seq(
       TableRow(classes = "govuk-!-font-weight-bold", content = Text(Messages("payment-complete.passengers.payment-breakdown.table.total"))),
-      TableRow(classes = "govuk-!-font-weight-bold", content = Text(Messages("£%,1.2f".format(journeySpecificData.taxBreakdown.customsInGbp.toDouble + journeySpecificData.taxBreakdown.exciseInGbp.toDouble + journeySpecificData.taxBreakdown.vatInGbp.toDouble))))
+      TableRow(
+        classes = "govuk-!-font-weight-bold",
+        content = Text(
+          Messages(
+            "£%,1.2f".format(
+              journeySpecificData.taxBreakdown.customsInGbp.toDouble + journeySpecificData.taxBreakdown.exciseInGbp.toDouble + journeySpecificData.taxBreakdown.vatInGbp.toDouble
+            )
+          )
+        )
+      )
     )
   )
 
-  private def determineTaxAccountUrl(journey: Journey[_])(appConfig: AppConfig): Option[String] = {
+  private def determineTaxAccountUrl(journey: Journey[?])(appConfig: AppConfig): Option[String] = {
     if (journey.origin.isAWebChatOrigin) {
       Some(appConfig.businessTaxAccountUrl)
     } else if (journey.origin === PfMgd) {

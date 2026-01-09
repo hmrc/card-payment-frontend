@@ -17,10 +17,11 @@
 package uk.gov.hmrc.cardpaymentfrontend.connectors
 
 import play.api.libs.json.Json
+import play.api.libs.ws.writeableOf_JsValue
 import play.mvc.Http.HeaderNames.AUTHORIZATION
 import uk.gov.hmrc.cardpaymentfrontend.config.AppConfig
 import uk.gov.hmrc.cardpaymentfrontend.models.cardpayment.{CardPaymentInitiatePaymentRequest, CardPaymentInitiatePaymentResponse}
-import uk.gov.hmrc.http.HttpReads.Implicits._
+import uk.gov.hmrc.http.HttpReads.Implicits.*
 import uk.gov.hmrc.http.client.HttpClientV2
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, StringContextOps}
 
@@ -31,13 +32,16 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class CardPaymentConnector @Inject() (appConfig: AppConfig, httpClientV2: HttpClientV2)(implicit executionContext: ExecutionContext) {
 
-  private val cardPaymentBaseUrl: URL = url"""${appConfig.cardPaymentBaseUrl}"""
-  private val initiatePaymentUrl: URL = url"$cardPaymentBaseUrl/card-payment/initiate-payment"
-  private val authAndSettleUrl: String => URL = (transactionReference: String) => url"$cardPaymentBaseUrl/card-payment/auth-and-settle/$transactionReference"
-  private val cancelPaymentUrl: (String, String) => URL = (transactionReference: String, clientId: String) => url"$cardPaymentBaseUrl/card-payment/cancel-payment/$transactionReference/$clientId"
-  private val cardPaymentAuthToken: String = appConfig.cardPaymentInternalAuthToken
+  private val cardPaymentBaseUrl: URL                   = url"""${appConfig.cardPaymentBaseUrl}"""
+  private val initiatePaymentUrl: URL                   = url"$cardPaymentBaseUrl/card-payment/initiate-payment"
+  private val authAndSettleUrl: String => URL           = (transactionReference: String) => url"$cardPaymentBaseUrl/card-payment/auth-and-settle/$transactionReference"
+  private val cancelPaymentUrl: (String, String) => URL = (transactionReference: String, clientId: String) =>
+    url"$cardPaymentBaseUrl/card-payment/cancel-payment/$transactionReference/$clientId"
+  private val cardPaymentAuthToken: String              = appConfig.cardPaymentInternalAuthToken
 
-  def initiatePayment(cardPaymentInitiatePaymentRequest: CardPaymentInitiatePaymentRequest)(implicit headerCarrier: HeaderCarrier): Future[CardPaymentInitiatePaymentResponse] =
+  def initiatePayment(
+    cardPaymentInitiatePaymentRequest: CardPaymentInitiatePaymentRequest
+  )(implicit headerCarrier: HeaderCarrier): Future[CardPaymentInitiatePaymentResponse] =
     httpClientV2
       .post(initiatePaymentUrl)
       .setHeader(AUTHORIZATION -> cardPaymentAuthToken)

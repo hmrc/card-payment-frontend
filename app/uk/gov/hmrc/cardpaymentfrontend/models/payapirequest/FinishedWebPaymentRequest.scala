@@ -23,8 +23,8 @@ import java.time.LocalDateTime
 sealed trait FinishedWebPaymentRequest
 
 final case class FailWebPaymentRequest(
-    transactionTime: LocalDateTime,
-    cardCategory:    String
+  transactionTime: LocalDateTime,
+  cardCategory:    String
 ) extends FinishedWebPaymentRequest
 
 object FailWebPaymentRequest {
@@ -33,9 +33,9 @@ object FailWebPaymentRequest {
 }
 
 final case class SucceedWebPaymentRequest(
-    cardCategory:      String,
-    commissionInPence: Option[Long],
-    transactionTime:   LocalDateTime
+  cardCategory:      String,
+  commissionInPence: Option[Long],
+  transactionTime:   LocalDateTime
 ) extends FinishedWebPaymentRequest
 
 object SucceedWebPaymentRequest {

@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.cardpaymentfrontend.models.paymentssurvey
 
-import play.api.libs.json.{Json, Format}
+import play.api.libs.json.{Format, Json}
 
 final case class SurveyBannerTitle(englishValue: String, welshValue: Option[String] = None)
 

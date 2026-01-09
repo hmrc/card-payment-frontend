@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.cardpaymentfrontend.models.openbanking
 
-import play.api.libs.json.{Json, Format}
+import play.api.libs.json.{Format, Json}
 
 final case class SessionDataId(value: String) extends AnyVal
 

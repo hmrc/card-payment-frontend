@@ -38,17 +38,19 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton()
 class PaymentStatusController @Inject() (
-    actions:                   Actions,
-    appConfig:                 AppConfig,
-    cardPaymentService:        CardPaymentService,
-    mcc:                       MessagesControllerComponents,
-    requestSupport:            RequestSupport,
-    iframeContainer:           IframeContainerPage,
-    redirectToParent:          RedirectToParentPage,
-    technicalDifficultiesPage: TechnicalDifficultiesPage
-)(implicit executionContext: ExecutionContext) extends FrontendController(mcc) with Logging {
+  actions:                   Actions,
+  appConfig:                 AppConfig,
+  cardPaymentService:        CardPaymentService,
+  mcc:                       MessagesControllerComponents,
+  requestSupport:            RequestSupport,
+  iframeContainer:           IframeContainerPage,
+  redirectToParent:          RedirectToParentPage,
+  technicalDifficultiesPage: TechnicalDifficultiesPage
+)(implicit executionContext: ExecutionContext)
+    extends FrontendController(mcc)
+    with Logging {
 
-  import requestSupport._
+  import requestSupport.*
 
   private val redirectUrlPolicy: RedirectUrlPolicy[Id] = AbsoluteWithHostnameFromAllowlist(appConfig.iframeHostNameAllowList)
 
@@ -67,40 +69,50 @@ class PaymentStatusController @Inject() (
 
   def paymentStatus(encryptedJourneyId: String): Action[AnyContent] = actions.paymentStatusAction(encryptedJourneyId).async { implicit journeyRequest =>
     val transactionRefFromJourney: Option[String] = journeyRequest.journey.order.map(_.transactionReference.value)
-    val sessionIdForJourney: SessionId = journeyRequest.journey.sessionId.getOrElse(throw new RuntimeException("SessionId is missing from journey, this should never happen!"))
+    val sessionIdForJourney: SessionId            =
+      journeyRequest.journey.sessionId.getOrElse(throw new RuntimeException("SessionId is missing from journey, this should never happen!"))
 
     val maybeCardPaymentResultF = for {
       authAndCaptureResult <- cardPaymentService.finishPayment(
-        transactionRefFromJourney.getOrElse(throw new RuntimeException("Could not find transaction ref, therefore we can't auth and settle.")),
-        journeyRequest.journeyId.value,
-        requestSupport.usableLanguage
-      )
+                                transactionRefFromJourney
+                                  .getOrElse(throw new RuntimeException("Could not find transaction ref, therefore we can't auth and settle.")),
+                                journeyRequest.journeyId.value,
+                                requestSupport.usableLanguage
+                              )
     } yield authAndCaptureResult
 
-    maybeCardPaymentResultF.flatMap {
-      case Some(cardPaymentResult) => cardPaymentResult.cardPaymentResult match {
-        case CardPaymentFinishPaymentResponses.Successful => Future.successful(Redirect(routes.PaymentCompleteController.renderPage).addingToSession(SessionKeys.sessionId -> sessionIdForJourney.value))
-        case CardPaymentFinishPaymentResponses.Failed     => Future.successful(Redirect(routes.PaymentFailedController.renderPage).addingToSession(SessionKeys.sessionId -> sessionIdForJourney.value))
-        case CardPaymentFinishPaymentResponses.Cancelled  => Future.successful(Redirect(routes.PaymentCancelledController.renderPage).addingToSession(SessionKeys.sessionId -> sessionIdForJourney.value))
+    maybeCardPaymentResultF
+      .flatMap {
+        case Some(cardPaymentResult) =>
+          cardPaymentResult.cardPaymentResult match {
+            case CardPaymentFinishPaymentResponses.Successful =>
+              Future.successful(Redirect(routes.PaymentCompleteController.renderPage).addingToSession(SessionKeys.sessionId -> sessionIdForJourney.value))
+            case CardPaymentFinishPaymentResponses.Failed     =>
+              Future.successful(Redirect(routes.PaymentFailedController.renderPage).addingToSession(SessionKeys.sessionId -> sessionIdForJourney.value))
+            case CardPaymentFinishPaymentResponses.Cancelled  =>
+              Future.successful(Redirect(routes.PaymentCancelledController.renderPage).addingToSession(SessionKeys.sessionId -> sessionIdForJourney.value))
+          }
+        case None                    => tryAndCancelPayment(Some("No cardPaymentResult returned, maybe invalid json returned?"))
       }
-      case None => tryAndCancelPayment(Some("No cardPaymentResult returned, maybe invalid json returned?"))
-    }.recoverWith {
-      case exception =>
+      .recoverWith { case exception =>
         logger.error("something went wrong with auth and capture, attempting to cancel payment.")
         tryAndCancelPayment(Some(exception.getMessage))
-    }
+      }
   }
 
-  private def tryAndCancelPayment(cancelReason: Option[String])(implicit journeyRequest: JourneyRequest[_], messages: Messages): Future[Result] = {
-    cardPaymentService.cancelPayment().map { httpResponse: HttpResponse =>
-      httpResponse.status match {
-        case 200 =>
-          logger.warn(s"Successfully cancelled the transaction, but now erroring gracefully because of: [ ${cancelReason.toString} ]")
-          InternalServerError(technicalDifficultiesPage()(journeyRequest, messages))
-        case _ =>
-          logger.warn(s"Something went wrong trying to cancel the transaction. transactionReference: [ ${journeyRequest.journey.order.map(_.transactionReference.value).toString} ]")
-          InternalServerError(technicalDifficultiesPage()(journeyRequest, messages))
-      }
+  private def tryAndCancelPayment(cancelReason: Option[String])(implicit journeyRequest: JourneyRequest[?], messages: Messages): Future[Result] = {
+    cardPaymentService.cancelPayment().map {
+      (httpResponse: HttpResponse) =>
+        httpResponse.status match {
+          case 200 =>
+            logger.warn(s"Successfully cancelled the transaction, but now erroring gracefully because of: [ ${cancelReason.toString} ]")
+            InternalServerError(technicalDifficultiesPage()(journeyRequest, messages))
+          case _   =>
+            logger.warn(
+              s"Something went wrong trying to cancel the transaction. transactionReference: [ ${journeyRequest.journey.order.map(_.transactionReference.value).toString} ]"
+            )
+            InternalServerError(technicalDifficultiesPage()(journeyRequest, messages))
+        }
     }
   }
 }

@@ -27,7 +27,7 @@ import uk.gov.hmrc.cardpaymentfrontend.requests.RequestSupport
 import uk.gov.hmrc.cardpaymentfrontend.services.PaymentService
 import uk.gov.hmrc.cardpaymentfrontend.views.html.EmailAddressPage
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-import uk.gov.hmrc.cardpaymentfrontend.session.JourneySessionSupport._
+import uk.gov.hmrc.cardpaymentfrontend.session.JourneySessionSupport.*
 import uk.gov.hmrc.cardpaymentfrontend.util.SafeEquals.EqualsOps
 
 import javax.inject.{Inject, Singleton}
@@ -35,15 +35,16 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class EmailAddressController @Inject() (
-    actions:          Actions,
-    requestSupport:   RequestSupport,
-    emailAddressPage: EmailAddressPage,
-    mcc:              MessagesControllerComponents,
-    paymentService:   PaymentService
-)(implicit executionContext: ExecutionContext) extends FrontendController(mcc) with Logging {
+  actions:          Actions,
+  requestSupport:   RequestSupport,
+  emailAddressPage: EmailAddressPage,
+  mcc:              MessagesControllerComponents,
+  paymentService:   PaymentService
+)(implicit executionContext: ExecutionContext)
+    extends FrontendController(mcc)
+    with Logging {
 
-  import requestSupport._
-
+  import requestSupport.*
   val renderPage: Action[AnyContent] = actions.routedJourneyAction { implicit request: JourneyRequest[AnyContent] =>
     val form = emailInSession.fold(EmailAddressForm.form()) { email => EmailAddressForm.form().fill(email) }
     Ok(emailAddressPage(form))
@@ -53,16 +54,17 @@ class EmailAddressController @Inject() (
     request.journey.status match {
       case PaymentStatuses.Created | PaymentStatuses.Successful | PaymentStatuses.SoftDecline | PaymentStatuses.Validated =>
         Future.successful(Redirect(routes.EmailAddressController.renderPage))
-      case PaymentStatuses.Sent =>
+      case PaymentStatuses.Sent                                                                                           =>
         logger.info("User journey in Sent state, attempting to reset order and status.")
         paymentService.resetSentJourneyThenResult(Redirect(routes.EmailAddressController.renderPage))
-      case PaymentStatuses.Failed | PaymentStatuses.Cancelled =>
+      case PaymentStatuses.Failed | PaymentStatuses.Cancelled                                                             =>
         paymentService.createCopyOfCancelledOrFailedJourney().map(_ => Redirect(routes.EmailAddressController.renderPage))
     }
   }
 
   val submit: Action[AnyContent] = actions.journeyAction.async { implicit journeyRequest: JourneyRequest[AnyContent] =>
-    EmailAddressForm.form()
+    EmailAddressForm
+      .form()
       .bindFromRequest()
       .fold(
         (formWithErrors: Form[EmailAddress]) => Future.successful(BadRequest(emailAddressPage(form = formWithErrors))),
@@ -83,7 +85,7 @@ class EmailAddressController @Inject() (
       )
   }
 
-  private[controllers] def emailInSession(implicit journeyRequest: JourneyRequest[_]): Option[EmailAddress] =
+  private[controllers] def emailInSession(implicit journeyRequest: JourneyRequest[?]): Option[EmailAddress] =
     journeyRequest.readFromSession[EmailAddress](journeyRequest.journeyId, Keys.email)
 
   private[controllers] def emailIsDifferent(emailA: EmailAddress, emailB: EmailAddress): Boolean = emailA =!= emailB

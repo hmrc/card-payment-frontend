@@ -40,11 +40,11 @@ object ResponseCommon {
 }
 
 final case class ResponseDetail(
-    declarationID:              String,
-    paymentReference:           String,
-    paymentReferenceDate:       String,
-    isPaymentReferenceActive:   Boolean,
-    paymentReferenceCancelDate: Option[String] = None
+  declarationID:              String,
+  paymentReference:           String,
+  paymentReferenceDate:       String,
+  isPaymentReferenceActive:   Boolean,
+  paymentReferenceCancelDate: Option[String] = None
 )
 
 object ResponseDetail {

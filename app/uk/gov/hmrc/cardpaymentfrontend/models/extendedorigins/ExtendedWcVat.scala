@@ -22,16 +22,16 @@ import payapi.corcommon.model.taxes.vat.Vrn
 import play.api.i18n.Messages
 import play.api.mvc.AnyContent
 import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
-import uk.gov.hmrc.cardpaymentfrontend.models.PaymentMethod._
+import uk.gov.hmrc.cardpaymentfrontend.models.PaymentMethod.*
 import uk.gov.hmrc.cardpaymentfrontend.models.openbanking.{OriginSpecificSessionData, WcVatSessionData}
 import uk.gov.hmrc.cardpaymentfrontend.models.{CheckYourAnswersRow, PaymentMethod}
 
 object ExtendedWcVat extends ExtendedOrigin {
   override val serviceNameMessageKey: String = "service-name.WcVat"
-  override val taxNameMessageKey: String = "payment-complete.tax-name.WcVat"
+  override val taxNameMessageKey: String     = "payment-complete.tax-name.WcVat"
 
   def cardFeesPagePaymentMethods: Set[PaymentMethod] = Set(OpenBanking)
-  def paymentMethods(): Set[PaymentMethod] = Set(Card, OpenBanking, Bacs)
+  def paymentMethods(): Set[PaymentMethod]           = Set(Card, OpenBanking, Bacs)
 
   private def vrn: JourneySpecificData => Option[Vrn] = {
     case j: JsdWcVat => j.vrn
@@ -42,8 +42,8 @@ object ExtendedWcVat extends ExtendedOrigin {
     vrn(journeyRequest.journey.journeySpecificData).map { vrn =>
       CheckYourAnswersRow(
         titleMessageKey = "check-your-details.WcVat.reference",
-        value           = Seq(vrn.canonicalizedValue),
-        changeLink      = None
+        value = Seq(vrn.canonicalizedValue),
+        changeLink = None
       )
     }
   }
@@ -53,21 +53,27 @@ object ExtendedWcVat extends ExtendedOrigin {
     case _           => throw new RuntimeException("Incorrect origin found")
   }
 
-  override def checkYourAnswersAdditionalReferenceRow(journeyRequest: JourneyRequest[AnyContent])(payFrontendBaseUrl: String)(implicit messages: Messages): Option[Seq[CheckYourAnswersRow]] = {
+  override def checkYourAnswersAdditionalReferenceRow(
+    journeyRequest: JourneyRequest[AnyContent]
+  )(payFrontendBaseUrl: String)(implicit messages: Messages): Option[Seq[CheckYourAnswersRow]] = {
     chargeReference(journeyRequest.journey.journeySpecificData).map { chargeReference =>
-      Seq(CheckYourAnswersRow(
-        titleMessageKey = "check-your-details.WcVat.charge-reference",
-        value           = Seq(chargeReference.value),
-        changeLink      = None
-      ))
+      Seq(
+        CheckYourAnswersRow(
+          titleMessageKey = "check-your-details.WcVat.charge-reference",
+          value = Seq(chargeReference.value),
+          changeLink = None
+        )
+      )
     }
   }
 
-  override def checkYourAnswersAmountSummaryRow(journeyRequest: JourneyRequest[AnyContent])(payFrontendBaseUrl: String): Option[CheckYourAnswersRow] = Some(CheckYourAnswersRow(
-    titleMessageKey = "check-your-details.total-to-pay",
-    value           = Seq(amount(journeyRequest)),
-    changeLink      = None
-  ))
+  override def checkYourAnswersAmountSummaryRow(journeyRequest: JourneyRequest[AnyContent])(payFrontendBaseUrl: String): Option[CheckYourAnswersRow] = Some(
+    CheckYourAnswersRow(
+      titleMessageKey = "check-your-details.total-to-pay",
+      value = Seq(amount(journeyRequest)),
+      changeLink = None
+    )
+  )
 
   override def openBankingOriginSpecificSessionData: JourneySpecificData => Option[OriginSpecificSessionData] = {
     case j: JsdWcVat => Some(WcVatSessionData(j.vrn, j.chargeReference))
@@ -76,9 +82,9 @@ object ExtendedWcVat extends ExtendedOrigin {
 
   override def emailTaxTypeMessageKey: String = "email.tax-name.WcVat"
 
-  override def surveyAuditName: String = "vat"
-  override def surveyReturnHref: String = "https://www.gov.uk/government/organisations/hm-revenue-customs"
-  override def surveyReturnMessageKey: String = "payments-survey.other.return-message"
+  override def surveyAuditName: String         = "vat"
+  override def surveyReturnHref: String        = "https://www.gov.uk/government/organisations/hm-revenue-customs"
+  override def surveyReturnMessageKey: String  = "payments-survey.other.return-message"
   override def surveyIsWelshSupported: Boolean = true
-  override def surveyBannerTitle: String = serviceNameMessageKey
+  override def surveyBannerTitle: String       = serviceNameMessageKey
 }

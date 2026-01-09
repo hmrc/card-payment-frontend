@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.cardpaymentfrontend.models
 
-import play.api.libs.json.{Json, Format}
+import play.api.libs.json.{Format, Json}
 
 final case class EmailAddress(value: String) extends AnyVal
 

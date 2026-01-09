@@ -34,7 +34,7 @@
         leadingSummaryTable: Seq[Seq[TableRow]],
         itemsDeclaredTable: Seq[Seq[TableRow]],
         paymentBreakdownTable: Seq[Seq[TableRow]]
-)(implicit journeyRequest: JourneyRequest[_], messages: Messages)
+)(implicit journeyRequest: JourneyRequest[?], messages: Messages)
 
 @heading = @{messages("payment-complete.passengers.panel.title")}
 

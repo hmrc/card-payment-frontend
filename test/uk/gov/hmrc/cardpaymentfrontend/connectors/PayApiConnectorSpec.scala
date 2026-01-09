@@ -31,11 +31,11 @@ class PayApiConnectorSpec extends ItSpec {
 
     "findLatestJourneyBySessionId" - {
 
-        def headerCarrierForTest(maybeSessionId: Option[SessionId]) = HeaderCarrier(sessionId = maybeSessionId)
+      def headerCarrierForTest(maybeSessionId: Option[SessionId]) = HeaderCarrier(sessionId = maybeSessionId)
 
       "should fail with error when no session id provided through header carrier" in {
         implicit val hc: HeaderCarrier = headerCarrierForTest(None)
-        val thrown = systemUnderTest.findLatestJourneyBySessionId().failed.futureValue
+        val thrown                     = systemUnderTest.findLatestJourneyBySessionId().failed.futureValue
         thrown.getMessage should include("Missing required 'SessionId'")
       }
 
@@ -54,13 +54,13 @@ class PayApiConnectorSpec extends ItSpec {
       "propagate a 5xx error when pay-api returns a 5xx" in {
         PayApiStub.stubForFindBySessionId5xx
         implicit val hc: HeaderCarrier = headerCarrierForTest(Some(uk.gov.hmrc.http.SessionId("some-valid-session-id")))
-        val error: Exception = intercept[Exception](systemUnderTest.findLatestJourneyBySessionId().futureValue)
+        val error: Exception           = intercept[Exception](systemUnderTest.findLatestJourneyBySessionId().futureValue)
         error.getCause.getMessage should include(s"GET of 'http://localhost:${wireMockPort.toString}/pay-api/journey/find-latest-by-session-id' returned 503.")
       }
     }
 
     "findJourneyByJourneyId" - {
-        def headerCarrierForTest(maybeSessionId: Option[SessionId]) = HeaderCarrier(sessionId = maybeSessionId)
+      def headerCarrierForTest(maybeSessionId: Option[SessionId]) = HeaderCarrier(sessionId = maybeSessionId)
 
       val testJourney = TestJourneys.PfSa.journeyBeforeBeginWebPayment
 
@@ -79,7 +79,7 @@ class PayApiConnectorSpec extends ItSpec {
       "propagate a 5xx error when pay-api returns a 5xx" in {
         PayApiStub.stubForFindByJourneyId5xx(testJourney._id)
         implicit val hc: HeaderCarrier = headerCarrierForTest(Some(uk.gov.hmrc.http.SessionId("some-valid-session-id")))
-        val error: Exception = intercept[Exception](systemUnderTest.findJourneyByJourneyId(testJourney._id).futureValue)
+        val error: Exception           = intercept[Exception](systemUnderTest.findJourneyByJourneyId(testJourney._id).futureValue)
         error.getCause.getMessage should include(s"GET of 'http://localhost:${wireMockPort.toString}/pay-api/journey/${testJourney._id.value}' returned 503.")
       }
     }
@@ -100,7 +100,9 @@ class PayApiConnectorSpec extends ItSpec {
         "should send a SucceedWebPaymentRequest to pay-api" in {
           val testJourney = TestJourneys.PfSa.journeyAfterBeginWebPayment
           PayApiStub.stubForUpdateSucceedWebPayment2xx(testJourney._id)
-          systemUnderTest.JourneyUpdates.updateSucceedWebPayment(testJourney._id.value, SucceedWebPaymentRequest("debit", Some(123), FrozenTime.localDateTime)).futureValue
+          systemUnderTest.JourneyUpdates
+            .updateSucceedWebPayment(testJourney._id.value, SucceedWebPaymentRequest("debit", Some(123), FrozenTime.localDateTime))
+            .futureValue
           PayApiStub.verifyUpdateSucceedWebPayment(1, testJourney._id, FrozenTime.localDateTime)
         }
       }
@@ -135,8 +137,10 @@ class PayApiConnectorSpec extends ItSpec {
       "propagate a 5xx error when pay-api returns a 5xx" in {
         PayApiStub.stubForCloneJourney5xx(testJourney._id)
         implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId("some-valid-session-id")))
-        val error: Exception = intercept[Exception](systemUnderTest.restartJourneyAsNew(testJourney._id).futureValue)
-        error.getCause.getMessage should include(s"POST of 'http://localhost:6001/pay-api/journey/TestJourneyId-44f9-ad7f-01e1d3d8f151/restart-journey-as-new' returned 500.")
+        val error: Exception           = intercept[Exception](systemUnderTest.restartJourneyAsNew(testJourney._id).futureValue)
+        error.getCause.getMessage should include(
+          s"POST of 'http://localhost:6001/pay-api/journey/TestJourneyId-44f9-ad7f-01e1d3d8f151/restart-journey-as-new' returned 500."
+        )
       }
     }
   }

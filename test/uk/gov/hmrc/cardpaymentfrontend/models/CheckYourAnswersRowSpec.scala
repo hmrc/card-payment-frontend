@@ -19,13 +19,13 @@ package uk.gov.hmrc.cardpaymentfrontend.models
 import play.api.mvc.{AnyContentAsEmpty, Call, Cookie}
 import play.api.test.FakeRequest
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.ItSpec
-import play.api.i18n._
+import play.api.i18n.*
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.{Empty, HtmlContent, Text}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{ActionItem, Actions, Key, SummaryListRow, Value}
 
 class CheckYourAnswersRowSpec extends ItSpec {
-  def messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
-  val fakeGetRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/cya0")
+  def messagesApi: MessagesApi                                   = app.injector.instanceOf[MessagesApi]
+  val fakeGetRequest: FakeRequest[AnyContentAsEmpty.type]        = FakeRequest("GET", "/cya0")
   val fakeGetRequestInWelsh: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/email-address").withCookies(Cookie("PLAY_LANG", "cy"))
 
   "summarise" - {
@@ -33,7 +33,7 @@ class CheckYourAnswersRowSpec extends ItSpec {
       implicit val messages: Messages = messagesApi.preferred(fakeGetRequest)
 
       val checkYourAnswersRow: CheckYourAnswersRow = CheckYourAnswersRow("", Seq.empty, None)
-      val result = CheckYourAnswersRow.summarise(checkYourAnswersRow)
+      val result                                   = CheckYourAnswersRow.summarise(checkYourAnswersRow)
       result shouldBe SummaryListRow(Key(Text("")), Value(Empty))
     }
 
@@ -41,7 +41,7 @@ class CheckYourAnswersRowSpec extends ItSpec {
       implicit val messages: Messages = messagesApi.preferred(fakeGetRequest)
 
       val checkYourAnswersRow: CheckYourAnswersRow = CheckYourAnswersRow("check-your-details.PfSa.reference", Seq.empty, None)
-      val result = CheckYourAnswersRow.summarise(checkYourAnswersRow)
+      val result                                   = CheckYourAnswersRow.summarise(checkYourAnswersRow)
       result shouldBe SummaryListRow(Key(Text("Unique Taxpayer Reference (UTR)")), Value(Empty))
     }
 
@@ -49,7 +49,7 @@ class CheckYourAnswersRowSpec extends ItSpec {
       implicit val messages: Messages = messagesApi.preferred(fakeGetRequestInWelsh)
 
       val checkYourAnswersRow: CheckYourAnswersRow = CheckYourAnswersRow("check-your-details.PfSa.reference", Seq.empty, None)
-      val result = CheckYourAnswersRow.summarise(checkYourAnswersRow)
+      val result                                   = CheckYourAnswersRow.summarise(checkYourAnswersRow)
       result shouldBe SummaryListRow(Key(Text("Cyfeirnod Unigryw y Trethdalwr (UTR)")), Value(Empty))
     }
 
@@ -57,7 +57,7 @@ class CheckYourAnswersRowSpec extends ItSpec {
       implicit val messages: Messages = messagesApi.preferred(fakeGetRequest)
 
       val checkYourAnswersRow: CheckYourAnswersRow = CheckYourAnswersRow("check-your-details.PfSa.reference", Seq("XARefExample"), None)
-      val result = CheckYourAnswersRow.summarise(checkYourAnswersRow)
+      val result                                   = CheckYourAnswersRow.summarise(checkYourAnswersRow)
       result shouldBe SummaryListRow(Key(Text("Unique Taxpayer Reference (UTR)")), Value(HtmlContent("XARefExample")))
     }
 
@@ -65,7 +65,7 @@ class CheckYourAnswersRowSpec extends ItSpec {
       implicit val messages: Messages = messagesApi.preferred(fakeGetRequest)
 
       val checkYourAnswersRow: CheckYourAnswersRow = CheckYourAnswersRow("check-your-details.PfSa.reference", Seq("Line1", "Line2"), None)
-      val result = CheckYourAnswersRow.summarise(checkYourAnswersRow)
+      val result                                   = CheckYourAnswersRow.summarise(checkYourAnswersRow)
       result shouldBe SummaryListRow(Key(Text("Unique Taxpayer Reference (UTR)")), Value(HtmlContent("Line1</br>Line2")))
     }
 
@@ -78,17 +78,23 @@ class CheckYourAnswersRowSpec extends ItSpec {
           Seq("XARefExample"),
           Some(Link(Call("GET", "some-href"), "linkId", "check-your-details.change"))
         )
-      val result = CheckYourAnswersRow.summarise(checkYourAnswersRow)
+      val result                                   = CheckYourAnswersRow.summarise(checkYourAnswersRow)
       result shouldBe
         SummaryListRow(
           Key(Text("Unique Taxpayer Reference (UTR)")),
           Value(HtmlContent("XARefExample")),
-          actions = Some(Actions(items = Seq(ActionItem(
-            "some-href",
-            Text("Change"),
-            Some("Unique Taxpayer Reference (UTR)"),
-            attributes = Map("id" -> "linkId")
-          ))))
+          actions = Some(
+            Actions(items =
+              Seq(
+                ActionItem(
+                  "some-href",
+                  Text("Change"),
+                  Some("Unique Taxpayer Reference (UTR)"),
+                  attributes = Map("id" -> "linkId")
+                )
+              )
+            )
+          )
         )
     }
   }
@@ -102,7 +108,7 @@ class CheckYourAnswersRowSpec extends ItSpec {
         Seq.empty,
         Some(Link(Call("GET", "some-href"), "linkId", "check-your-details.change"))
       )
-    val result = CheckYourAnswersRow.summarise(checkYourAnswersRow)
+    val result                                   = CheckYourAnswersRow.summarise(checkYourAnswersRow)
     result shouldBe
       SummaryListRow(
         Key(Text("Unique Taxpayer Reference (UTR)")),

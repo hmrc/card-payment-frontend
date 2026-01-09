@@ -34,8 +34,8 @@ object Period {
   implicit class FixedLengthEpayeTaxPeriodExt(val period: FixedLengthEpayeTaxPeriod) extends AnyVal {
 
     def humanReadablePeriodInEnglish: String = period match {
-      case p: YearlyEpayeTaxPeriod  => s"${p.taxYear.startYear.toString} to ${p.taxYear.endYear.toString}"
-      case p: MonthlyEpayeTaxPeriod => s"${DateUtils.getDateRangeAsEnglish(p.taxFrom, p.taxTo)} (month ${p.taxMonth.intValue.toString})"
+      case p: YearlyEpayeTaxPeriod    => s"${p.taxYear.startYear.toString} to ${p.taxYear.endYear.toString}"
+      case p: MonthlyEpayeTaxPeriod   => s"${DateUtils.getDateRangeAsEnglish(p.taxFrom, p.taxTo)} (month ${p.taxMonth.intValue.toString})"
       case p: QuarterlyEpayeTaxPeriod =>
         val getQuarterEnglish: String = p.taxQuarter.intValue match {
           case 1 => " (first quarter)"
@@ -47,8 +47,8 @@ object Period {
     }
 
     def humanReadablePeriodInWelsh: String = period match {
-      case p: YearlyEpayeTaxPeriod  => s"${p.taxYear.startYear.toString} i ${p.taxYear.endYear.toString}"
-      case p: MonthlyEpayeTaxPeriod => s"${DateUtils.getDateRangeAsWelsh(p.taxFrom, p.taxTo)} (mis ${p.taxMonth.intValue.toString})"
+      case p: YearlyEpayeTaxPeriod    => s"${p.taxYear.startYear.toString} i ${p.taxYear.endYear.toString}"
+      case p: MonthlyEpayeTaxPeriod   => s"${DateUtils.getDateRangeAsWelsh(p.taxFrom, p.taxTo)} (mis ${p.taxMonth.intValue.toString})"
       case p: QuarterlyEpayeTaxPeriod =>
         val getQuarterWelsh: String = p.taxQuarter.intValue match {
           case 1 => " (chwarter cyntaf)"
@@ -90,4 +90,3 @@ object Period {
   }
 
 }
-

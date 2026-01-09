@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.cardpaymentfrontend.models.cardpayment
 
-import play.api.libs.json._
+import play.api.libs.json.*
 import uk.gov.hmrc.cardpaymentfrontend.models.cardpayment.CardPaymentFinishPaymentResponses.CardPaymentFinishPaymentResponse
 import uk.gov.hmrc.cardpaymentfrontend.util.SafeEquals.EqualsOps
 
@@ -25,7 +25,7 @@ import java.time.LocalDateTime
 object CardPaymentFinishPaymentResponses {
 
   implicit val format: Format[CardPaymentFinishPaymentResponse] = {
-    val reads: Reads[CardPaymentFinishPaymentResponse] = Reads {
+    val reads: Reads[CardPaymentFinishPaymentResponse]   = Reads {
       case JsString(s) if s === "Successful" => JsSuccess(Successful)
       case JsString(s) if s === "Failed"     => JsSuccess(Failed)
       case JsString(s) if s === "Cancelled"  => JsSuccess(Cancelled)
