@@ -246,107 +246,106 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       }
     }
 
-    TestHelpers.implementedOrigins.foreach {
-      (origin: Origin) =>
+    TestHelpers.implementedOrigins.foreach { (origin: Origin) =>
 
-        val tdJourney: Journey[JourneySpecificData] = TestHelpers.deriveTestDataFromOrigin(origin).journeyBeforeBeginWebPayment
+      val tdJourney: Journey[JourneySpecificData] = TestHelpers.deriveTestDataFromOrigin(origin).journeyBeforeBeginWebPayment
 
-        val shouldBeAbleToChangeAmount: Boolean = origin match {
-          case Origins.WcSa               => false
-          case Origins.WcCt               => false
-          case Origins.WcVat              => false
-          case Origins.WcSimpleAssessment => false
-          case Origins.WcXref             => false
-          case Origins.VatC2c             => false
-          case Origins.WcEpayeLpp         => false
-          case Origins.WcClass1aNi        => false
-          case Origins.WcEpayeNi          => false
-          case Origins.WcEpayeLateCis     => false
-          case Origins.WcEpayeSeta        => false
-          case Origins.Mib                => false
-          case Origins.BcPngr             => false
-          case Origins.WcSdlt             => false
-          case _                          => true
-        }
+      val shouldBeAbleToChangeAmount: Boolean = origin match {
+        case Origins.WcSa               => false
+        case Origins.WcCt               => false
+        case Origins.WcVat              => false
+        case Origins.WcSimpleAssessment => false
+        case Origins.WcXref             => false
+        case Origins.VatC2c             => false
+        case Origins.WcEpayeLpp         => false
+        case Origins.WcClass1aNi        => false
+        case Origins.WcEpayeNi          => false
+        case Origins.WcEpayeLateCis     => false
+        case Origins.WcEpayeSeta        => false
+        case Origins.Mib                => false
+        case Origins.BcPngr             => false
+        case Origins.WcSdlt             => false
+        case _                          => true
+      }
 
-        s"[${origin.entryName}] should render the amount row correctly" in {
-          PayApiStub.stubForFindBySessionId2xx(tdJourney)
-          val result         = systemUnderTest.renderPage(fakeRequest(tdJourney._id))
-          val document       = Jsoup.parse(contentAsString(result))
-          val amountRowIndex = deriveAmountRowIndex(origin)
-          val amountRow      = document.select(".govuk-summary-list__row").asScala.toList(amountRowIndex)
-          assertRow(
-            element = amountRow,
-            keyText = "Total to pay",
-            valueText = "£12.34",
-            actionText = if (shouldBeAbleToChangeAmount) Some("Change Total to pay") else None,
-            actionHref = if (shouldBeAbleToChangeAmount) Some("http://localhost:9056/pay/change-amount?showSummary=false&stayOnPayFrontend=false") else None
-          )
-        }
+      s"[${origin.entryName}] should render the amount row correctly" in {
+        PayApiStub.stubForFindBySessionId2xx(tdJourney)
+        val result         = systemUnderTest.renderPage(fakeRequest(tdJourney._id))
+        val document       = Jsoup.parse(contentAsString(result))
+        val amountRowIndex = deriveAmountRowIndex(origin)
+        val amountRow      = document.select(".govuk-summary-list__row").asScala.toList(amountRowIndex)
+        assertRow(
+          element = amountRow,
+          keyText = "Total to pay",
+          valueText = "£12.34",
+          actionText = if (shouldBeAbleToChangeAmount) Some("Change Total to pay") else None,
+          actionHref = if (shouldBeAbleToChangeAmount) Some("http://localhost:9056/pay/change-amount?showSummary=false&stayOnPayFrontend=false") else None
+        )
+      }
 
-        s"[${origin.entryName}] should render the amount row correctly in Welsh" in {
-          PayApiStub.stubForFindBySessionId2xx(tdJourney)
-          val result         = systemUnderTest.renderPage(fakeRequestWelsh(tdJourney._id))
-          val document       = Jsoup.parse(contentAsString(result))
-          val amountRowIndex = deriveAmountRowIndex(origin)
-          val amountRow      = document.select(".govuk-summary-list__row").asScala.toList(amountRowIndex)
-          assertRow(
-            element = amountRow,
-            keyText = "Cyfanswm i’w dalu",
-            valueText = "£12.34",
-            actionText = if (shouldBeAbleToChangeAmount) Some("Newid Cyfanswm i’w dalu") else None,
-            actionHref = if (shouldBeAbleToChangeAmount) Some("http://localhost:9056/pay/change-amount?showSummary=false&stayOnPayFrontend=false") else None
-          )
-        }
+      s"[${origin.entryName}] should render the amount row correctly in Welsh" in {
+        PayApiStub.stubForFindBySessionId2xx(tdJourney)
+        val result         = systemUnderTest.renderPage(fakeRequestWelsh(tdJourney._id))
+        val document       = Jsoup.parse(contentAsString(result))
+        val amountRowIndex = deriveAmountRowIndex(origin)
+        val amountRow      = document.select(".govuk-summary-list__row").asScala.toList(amountRowIndex)
+        assertRow(
+          element = amountRow,
+          keyText = "Cyfanswm i’w dalu",
+          valueText = "£12.34",
+          actionText = if (shouldBeAbleToChangeAmount) Some("Newid Cyfanswm i’w dalu") else None,
+          actionHref = if (shouldBeAbleToChangeAmount) Some("http://localhost:9056/pay/change-amount?showSummary=false&stayOnPayFrontend=false") else None
+        )
+      }
 
-        // hint, this is so test without email address row does not become obsolete if we changed the value. Stops anyone "forgetting" to update the test.
-        val emailAddressKeyText: String      = "Email address"
-        val emailAddressKeyTextWelsh: String = "Cyfeiriad e-bost"
+      // hint, this is so test without email address row does not become obsolete if we changed the value. Stops anyone "forgetting" to update the test.
+      val emailAddressKeyText: String      = "Email address"
+      val emailAddressKeyTextWelsh: String = "Cyfeiriad e-bost"
 
-        s"[${origin.entryName}] render the email address row correctly when there is an email in session" in {
-          PayApiStub.stubForFindBySessionId2xx(tdJourney)
-          val result            = systemUnderTest.renderPage(fakeRequest())
-          val document          = Jsoup.parse(contentAsString(result))
-          val emailRow: Element = document.select(".govuk-summary-list__row").asScala.toList(deriveEmailRowIndex(origin))
-          assertRow(emailRow, emailAddressKeyText, "blah@blah.com", Some("Change Email address"), Some("/pay-by-card/email-address"))
-        }
+      s"[${origin.entryName}] render the email address row correctly when there is an email in session" in {
+        PayApiStub.stubForFindBySessionId2xx(tdJourney)
+        val result            = systemUnderTest.renderPage(fakeRequest())
+        val document          = Jsoup.parse(contentAsString(result))
+        val emailRow: Element = document.select(".govuk-summary-list__row").asScala.toList(deriveEmailRowIndex(origin))
+        assertRow(emailRow, emailAddressKeyText, "blah@blah.com", Some("Change Email address"), Some("/pay-by-card/email-address"))
+      }
 
-        s"[${origin.entryName}] render the email address row correctly when there is an email in session in Welsh" in {
-          PayApiStub.stubForFindBySessionId2xx(tdJourney)
-          val result            = systemUnderTest.renderPage(fakeRequestWelsh())
-          val document          = Jsoup.parse(contentAsString(result))
-          val emailRow: Element = document.select(".govuk-summary-list__row").asScala.toList(deriveEmailRowIndex(origin))
-          assertRow(emailRow, emailAddressKeyTextWelsh, "blah@blah.com", Some("Newid Cyfeiriad e-bost"), Some("/pay-by-card/email-address"))
-        }
+      s"[${origin.entryName}] render the email address row correctly when there is an email in session in Welsh" in {
+        PayApiStub.stubForFindBySessionId2xx(tdJourney)
+        val result            = systemUnderTest.renderPage(fakeRequestWelsh())
+        val document          = Jsoup.parse(contentAsString(result))
+        val emailRow: Element = document.select(".govuk-summary-list__row").asScala.toList(deriveEmailRowIndex(origin))
+        assertRow(emailRow, emailAddressKeyTextWelsh, "blah@blah.com", Some("Newid Cyfeiriad e-bost"), Some("/pay-by-card/email-address"))
+      }
 
-        s"[${origin.entryName}] not render the email address row when there is not an email in session" in {
-          PayApiStub.stubForFindBySessionId2xx(tdJourney)
-          val result = systemUnderTest.renderPage(FakeRequest().withSessionId().withAddressInSession(tdJourney._id))
-          contentAsString(result) shouldNot include(emailAddressKeyText)
-        }
+      s"[${origin.entryName}] not render the email address row when there is not an email in session" in {
+        PayApiStub.stubForFindBySessionId2xx(tdJourney)
+        val result = systemUnderTest.renderPage(FakeRequest().withSessionId().withAddressInSession(tdJourney._id))
+        contentAsString(result) shouldNot include(emailAddressKeyText)
+      }
 
-        s"[${origin.entryName}] render the card billing address row correctly" in {
-          PayApiStub.stubForFindBySessionId2xx(tdJourney)
-          val result                         = systemUnderTest.renderPage(fakeRequest())
-          val document                       = Jsoup.parse(contentAsString(result))
-          val cardBillingAddressRow: Element = document.select(".govuk-summary-list__row").asScala.toList(deriveCardBillingAddressRowIndex(origin))
-          assertRow(cardBillingAddressRow, "Card billing address", "line1 AA0AA0", Some("Change Card billing address"), Some("/pay-by-card/address"))
-        }
+      s"[${origin.entryName}] render the card billing address row correctly" in {
+        PayApiStub.stubForFindBySessionId2xx(tdJourney)
+        val result                         = systemUnderTest.renderPage(fakeRequest())
+        val document                       = Jsoup.parse(contentAsString(result))
+        val cardBillingAddressRow: Element = document.select(".govuk-summary-list__row").asScala.toList(deriveCardBillingAddressRowIndex(origin))
+        assertRow(cardBillingAddressRow, "Card billing address", "line1 AA0AA0", Some("Change Card billing address"), Some("/pay-by-card/address"))
+      }
 
-        s"[${origin.entryName}] render the card billing address row correctly in Welsh" in {
-          PayApiStub.stubForFindBySessionId2xx(tdJourney)
-          val result                         = systemUnderTest.renderPage(fakeRequestWelsh())
-          val document                       = Jsoup.parse(contentAsString(result))
-          val cardBillingAddressRow: Element = document.select(".govuk-summary-list__row").asScala.toList(deriveCardBillingAddressRowIndex(origin))
-          assertRow(cardBillingAddressRow, "Cyfeiriad bilio", "line1 AA0AA0", Some("Newid Cyfeiriad bilio"), Some("/pay-by-card/address"))
-        }
+      s"[${origin.entryName}] render the card billing address row correctly in Welsh" in {
+        PayApiStub.stubForFindBySessionId2xx(tdJourney)
+        val result                         = systemUnderTest.renderPage(fakeRequestWelsh())
+        val document                       = Jsoup.parse(contentAsString(result))
+        val cardBillingAddressRow: Element = document.select(".govuk-summary-list__row").asScala.toList(deriveCardBillingAddressRowIndex(origin))
+        assertRow(cardBillingAddressRow, "Cyfeiriad bilio", "line1 AA0AA0", Some("Newid Cyfeiriad bilio"), Some("/pay-by-card/address"))
+      }
 
-        s"[${origin.entryName}] should redirect to the Address page if no Address in session" in {
-          PayApiStub.stubForFindBySessionId2xx(tdJourney)
-          val result = systemUnderTest.renderPage(FakeRequest().withSessionId())
-          status(result) shouldBe SEE_OTHER
-          redirectLocation(result) shouldBe Some("/pay-by-card/address")
-        }
+      s"[${origin.entryName}] should redirect to the Address page if no Address in session" in {
+        PayApiStub.stubForFindBySessionId2xx(tdJourney)
+        val result = systemUnderTest.renderPage(FakeRequest().withSessionId())
+        status(result) shouldBe SEE_OTHER
+        redirectLocation(result) shouldBe Some("/pay-by-card/address")
+      }
     }
 
     "[PfSa] should render the payment reference row correctly" in {

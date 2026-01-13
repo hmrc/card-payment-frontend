@@ -46,6 +46,7 @@
 
 @serviceUrl = @{
     origin match {
+        case Some(value) if value.isAWebChatOrigin && pageTitle.contains("Payment received by HMRC") => Some(appConfig.cardPaymentPaymentCompleteUrl)
         case Some(value) if value.isAWebChatOrigin => Some(appConfig.payFrontendWebchatLandingUrl)
         case Some(value)                           => Some(appConfig.payFrontendBaseUrl)
         case None                                  => Some(appConfig.payFrontendBaseUrl)

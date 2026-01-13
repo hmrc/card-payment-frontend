@@ -101,18 +101,17 @@ class PaymentStatusController @Inject() (
   }
 
   private def tryAndCancelPayment(cancelReason: Option[String])(implicit journeyRequest: JourneyRequest[?], messages: Messages): Future[Result] = {
-    cardPaymentService.cancelPayment().map {
-      (httpResponse: HttpResponse) =>
-        httpResponse.status match {
-          case 200 =>
-            logger.warn(s"Successfully cancelled the transaction, but now erroring gracefully because of: [ ${cancelReason.toString} ]")
-            InternalServerError(technicalDifficultiesPage()(journeyRequest, messages))
-          case _   =>
-            logger.warn(
-              s"Something went wrong trying to cancel the transaction. transactionReference: [ ${journeyRequest.journey.order.map(_.transactionReference.value).toString} ]"
-            )
-            InternalServerError(technicalDifficultiesPage()(journeyRequest, messages))
-        }
+    cardPaymentService.cancelPayment().map { (httpResponse: HttpResponse) =>
+      httpResponse.status match {
+        case 200 =>
+          logger.warn(s"Successfully cancelled the transaction, but now erroring gracefully because of: [ ${cancelReason.toString} ]")
+          InternalServerError(technicalDifficultiesPage()(journeyRequest, messages))
+        case _   =>
+          logger.warn(
+            s"Something went wrong trying to cancel the transaction. transactionReference: [ ${journeyRequest.journey.order.map(_.transactionReference.value).toString} ]"
+          )
+          InternalServerError(technicalDifficultiesPage()(journeyRequest, messages))
+      }
     }
   }
 }
