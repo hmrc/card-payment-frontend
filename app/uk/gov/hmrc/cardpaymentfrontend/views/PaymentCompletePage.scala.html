@@ -148,7 +148,8 @@
     pageTitle = Some(heading),
     origin = Some(journeyRequest.journey.origin),
     showBackLink = false,
-    additionalScripts = Some(additionalScript)
+    additionalScripts = Some(additionalScript),
+    journey = Some(journeyRequest.journey)
 ) {
 
     @govukPanel(Panel(
