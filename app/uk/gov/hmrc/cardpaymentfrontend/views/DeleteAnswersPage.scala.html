@@ -28,7 +28,7 @@
 
 @heading = @{messages("delete-answers.heading")}
 
-@layout(pageTitle = Some(heading), origin = Some(journeyRequest.journey.origin), showTimeoutDialogue = false,     journey = Some(journeyRequest.journey)
+@layout(pageTitle = Some(heading), showTimeoutDialogue = false,     journeyRequest = Some(journeyRequest)
 ) {
 
     <h1 class="govuk-heading-l govuk-!-margin-bottom-6">@heading</h1>

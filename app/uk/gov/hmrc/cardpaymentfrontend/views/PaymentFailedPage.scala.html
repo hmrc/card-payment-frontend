@@ -87,7 +87,7 @@
     }
 }
 
-@layout(pageTitle = Some(heading), origin = Some(journeyRequest.journey.origin), maybeForm = Some(form),     journey = Some(journeyRequest.journey)
+@layout(pageTitle = Some(heading), maybeForm = Some(form),     journeyRequest = Some(journeyRequest)
 ) {
 
     @if(form.hasErrors) {

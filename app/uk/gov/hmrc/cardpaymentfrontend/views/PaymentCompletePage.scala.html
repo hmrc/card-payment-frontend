@@ -146,10 +146,9 @@
 
 @layout(
     pageTitle = Some(heading),
-    origin = Some(journeyRequest.journey.origin),
     showBackLink = false,
     additionalScripts = Some(additionalScript),
-    journey = Some(journeyRequest.journey)
+    journeyRequest = Some(journeyRequest)
 ) {
 
     @govukPanel(Panel(

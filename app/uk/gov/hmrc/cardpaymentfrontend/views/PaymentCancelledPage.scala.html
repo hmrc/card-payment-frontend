@@ -29,7 +29,7 @@
 
 @heading = @{messages("payment-cancelled.heading")}
 
-@layout(pageTitle = Some(heading), origin = Some(journeyRequest.journey.origin), showBackLink = false,     journey = Some(journeyRequest.journey)
+@layout(pageTitle = Some(heading), showBackLink = false,     journeyRequest = Some(journeyRequest)
 ) {
 
     <h1 class="govuk-heading-l">@heading</h1>

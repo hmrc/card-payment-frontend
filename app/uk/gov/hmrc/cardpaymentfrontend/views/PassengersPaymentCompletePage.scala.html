@@ -40,9 +40,8 @@
 
 @layout(
     pageTitle = Some(heading),
-    origin = Some(journeyRequest.journey.origin),
     showBackLink = false,
-    journey = Some(journeyRequest.journey)
+    journeyRequest = Some(journeyRequest)
 ) {
     @govukPanel(Panel(
         title = Text(heading),
