@@ -322,9 +322,9 @@ class AddressControllerSpec extends ItSpec {
           document.select("#line1-error").text() shouldBe "Gwall: Nodwch linell gyntaf y cyfeiriad bilio"
         }
 
-        "should return html containing the correct error messages when first line of address is more than 100 characters" in {
+        "should return html containing the correct error messages when first line of address is more than 50 characters" in {
           val address  = List(
-            ("line1", "12345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901"),
+            ("line1", "123456789012345678901234567890123456789012345678901"),
             ("line2", "Fake Street"),
             ("city", "Imaginaryshire"),
             ("county", "East Imaginationland"),
@@ -334,14 +334,14 @@ class AddressControllerSpec extends ItSpec {
           val result   = systemUnderTest.submit(fakePostRequest(address: _*))
           val document = Jsoup.parse(contentAsString(result))
           document.select(".govuk-error-summary__title").text() shouldBe "There is a problem"
-          document.select(".govuk-error-summary__list").text() shouldBe "Enter the first line of your address using no more than 100 characters"
+          document.select(".govuk-error-summary__list").text() shouldBe "Enter the first line of your address using no more than 50 characters"
           document.select(".govuk-error-summary__list").select("a").attr("href") shouldBe "#line1"
-          document.select("#line1-error").text() shouldBe "Error: Enter the first line of your address using no more than 100 characters"
+          document.select("#line1-error").text() shouldBe "Error: Enter the first line of your address using no more than 50 characters"
         }
 
-        "should return html containing the correct error messages when first line of address is more than 100 characters in welsh" in {
+        "should return html containing the correct error messages when first line of address is more than 50 characters in welsh" in {
           val address  = List(
-            ("line1", "12345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901"),
+            ("line1", "123456789012345678901234567890123456789012345678901"),
             ("line2", "Fake Street"),
             ("city", "Imaginaryshire"),
             ("county", "East Imaginationland"),
@@ -351,17 +351,17 @@ class AddressControllerSpec extends ItSpec {
           val result   = systemUnderTest.submit(fakePostRequestInWelsh(address: _*))
           val document = Jsoup.parse(contentAsString(result))
           document.select(".govuk-error-summary__title").text() shouldBe "Mae problem wedi codi"
-          document.select(".govuk-error-summary__list").text() shouldBe "Nodwch linell gyntaf eich cyfeiriad gan beidio â defnyddio mwy na 100 o gymeriadau"
+          document.select(".govuk-error-summary__list").text() shouldBe "Nodwch linell gyntaf eich cyfeiriad gan beidio â defnyddio mwy na 50 o gymeriadau"
           document.select(".govuk-error-summary__list").select("a").attr("href") shouldBe "#line1"
-          document.select("#line1-error").text() shouldBe "Gwall: Nodwch linell gyntaf eich cyfeiriad gan beidio â defnyddio mwy na 100 o gymeriadau"
+          document.select("#line1-error").text() shouldBe "Gwall: Nodwch linell gyntaf eich cyfeiriad gan beidio â defnyddio mwy na 50 o gymeriadau"
         }
       }
 
       "for second line of address" - {
-        "should return html containing the correct error messages when second line of address is more than 100 characters" in {
+        "should return html containing the correct error messages when second line of address is more than 50 characters" in {
           val address  = List(
             ("line1", "Fake Street"),
-            ("line2", "12345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901"),
+            ("line2", "123456789012345678901234567890123456789012345678901"),
             ("city", "Imaginaryshire"),
             ("county", "East Imaginationland"),
             ("postcode", "IM2 4HJ"),
@@ -370,15 +370,15 @@ class AddressControllerSpec extends ItSpec {
           val result   = systemUnderTest.submit(fakePostRequest(address: _*))
           val document = Jsoup.parse(contentAsString(result))
           document.select(".govuk-error-summary__title").text() shouldBe "There is a problem"
-          document.select(".govuk-error-summary__list").text() shouldBe "Enter the second line of your address using no more than 100 characters"
+          document.select(".govuk-error-summary__list").text() shouldBe "Enter the second line of your address using no more than 50 characters"
           document.select(".govuk-error-summary__list").select("a").attr("href") shouldBe "#line2"
-          document.select("#line2-error").text() shouldBe "Error: Enter the second line of your address using no more than 100 characters"
+          document.select("#line2-error").text() shouldBe "Error: Enter the second line of your address using no more than 50 characters"
         }
 
-        "should return html containing the correct error messages when second line of address is more than 100 characters in welsh" in {
+        "should return html containing the correct error messages when second line of address is more than 50 characters in welsh" in {
           val address  = List(
             ("line1", "Fake Street"),
-            ("line2", "12345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901"),
+            ("line2", "123456789012345678901234567890123456789012345678901"),
             ("city", "Imaginaryshire"),
             ("county", "East Imaginationland"),
             ("postcode", "IM2 4HJ"),
@@ -387,9 +387,9 @@ class AddressControllerSpec extends ItSpec {
           val result   = systemUnderTest.submit(fakePostRequestInWelsh(address: _*))
           val document = Jsoup.parse(contentAsString(result))
           document.select(".govuk-error-summary__title").text() shouldBe "Mae problem wedi codi"
-          document.select(".govuk-error-summary__list").text() shouldBe "Nodwch ail linell eich cyfeiriad gan beidio â defnyddio mwy na 100 o gymeriadau"
+          document.select(".govuk-error-summary__list").text() shouldBe "Nodwch ail linell eich cyfeiriad gan beidio â defnyddio mwy na 50 o gymeriadau"
           document.select(".govuk-error-summary__list").select("a").attr("href") shouldBe "#line2"
-          document.select("#line2-error").text() shouldBe "Gwall: Nodwch ail linell eich cyfeiriad gan beidio â defnyddio mwy na 100 o gymeriadau"
+          document.select("#line2-error").text() shouldBe "Gwall: Nodwch ail linell eich cyfeiriad gan beidio â defnyddio mwy na 50 o gymeriadau"
         }
       }
 
