@@ -27,7 +27,7 @@ import scala.util.matching.Regex
 
 object AddressForm {
 
-  private[forms] val addressLineRegex: Regex = "^[\\s\\S]{1,100}$".r
+  private[forms] val addressLineRegex: Regex = "^[\\s\\S]{1,50}$".r
   private[forms] val addressCityAndCountyRegex: Regex = "^[\\s\\S]{1,50}$".r
   private[forms] val addressUkPostcodeRegex: Regex = "([Gg][Ii][Rr] 0[Aa]{2})|((([A-Za-z][0-9]{1,2})|(([A-Za-z][A-Ha-hJ-Yj-y][0-9]{1,2})|(([A-Za-z][0-9][A-Za-z])|([A-Za-z][A-Ha-hJ-Yj-y][0-9]?[A-Za-z]))))\\s?[0-9][A-Za-z]{2})".r
   private[forms] val addressBarclaycardPostcodeRegex: Regex = "^[\\s\\S]{1,16}$".r
