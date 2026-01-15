@@ -247,8 +247,8 @@ address.optional.non.uk.address = (optional for non-UK addresses)
 address.postcode.hint = If you are a non-UK resident, this is optional
 
 address.field-name.error.line1.empty = Enter the first line of the billing address
-address.field-name.error.line1.max-length = Enter the first line of your address using no more than 100 characters
-address.field-name.error.line2.max-length = Enter the second line of your address using no more than 100 characters
+address.field-name.error.line1.max-length = Enter the first line of your address using no more than 50 characters
+address.field-name.error.line2.max-length = Enter the second line of your address using no more than 50 characters
 address.field-name.error.city.max-length = Enter your city using no more than 50 characters
 address.field-name.error.county.max-length = Enter your county using no more than 50 characters
 address.field-name.error.postcode.empty = Enter your postcode
