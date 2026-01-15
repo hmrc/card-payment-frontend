@@ -25,8 +25,7 @@
     <script src="@{controllers.routes.Assets.versioned("javascripts/escape-iframe.js")}" @{CSPNonce.attr}></script>
 }
 
-@layout(pageTitle = None, additionalScripts = Some(scripts), hideStyling = true
-) {
+@layout(pageTitle = None, additionalScripts = Some(scripts), hideStyling = true) {
     @*This is how we redirect the user out of the iframe and we can then call auth and settle etc. *@
     <a rel="noreferrer"
     id="returnControlLink"
