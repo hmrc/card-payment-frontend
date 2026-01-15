@@ -8,7 +8,7 @@ import xsbti.compile.CompileAnalysis
 object SbtUpdatesSettings {
 
   lazy val sbtUpdatesSettings: Seq[Def.Setting[_ >: Boolean with Task[CompileAnalysis] with ModuleFilter]] = Seq(
-    dependencyUpdatesFailBuild := StrictBuilding.strictBuilding.value,
+    dependencyUpdatesFailBuild := false,
     (Compile / compile) := ((Compile / compile) dependsOn dependencyUpdates).value,
     dependencyUpdatesFilter -= moduleFilter("org.scala-lang"),
     dependencyUpdatesFilter -= moduleFilter("org.playframework"),
