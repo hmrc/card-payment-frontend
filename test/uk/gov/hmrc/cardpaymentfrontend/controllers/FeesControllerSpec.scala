@@ -2919,7 +2919,7 @@ class FeesControllerSpec extends ItSpec {
           PayApiStub.stubForFindBySessionId2xx(TestJourneys.NiEuVatOss.journeyBeforeBeginWebPayment)
           val result   = systemUnderTest.renderPage(fakeRequest)
           val document = Jsoup.parse(contentAsString(result))
-          document.select(".govuk-header__service-name").html shouldBe "Submit a One Stop Shop VAT return and pay VAT"
+          document.select(".govuk-header__service-name").html shouldBe "Pay your One Stop Shop VAT Return"
           testStaticContentEnglish(document)
         }
 
@@ -2967,7 +2967,7 @@ class FeesControllerSpec extends ItSpec {
           PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfNiEuVatOss.journeyBeforeBeginWebPayment)
           val result   = systemUnderTest.renderPage(fakeRequest)
           val document = Jsoup.parse(contentAsString(result))
-          document.select(".govuk-header__service-name").html shouldBe "Submit a One Stop Shop VAT return and pay VAT"
+          document.select(".govuk-header__service-name").html shouldBe "Pay your One Stop Shop VAT Return"
           testStaticContentEnglish(document)
         }
 
@@ -3015,7 +3015,7 @@ class FeesControllerSpec extends ItSpec {
           PayApiStub.stubForFindBySessionId2xx(TestJourneys.NiEuVatIoss.journeyBeforeBeginWebPayment)
           val result   = systemUnderTest.renderPage(fakeRequest)
           val document = Jsoup.parse(contentAsString(result))
-          document.select(".govuk-header__service-name").html shouldBe "Submit an Import One Stop Shop VAT return and pay VAT"
+          document.select(".govuk-header__service-name").html shouldBe "Pay your Import One Stop Shop VAT Return"
           testStaticContentEnglish(document)
         }
 
@@ -3063,7 +3063,7 @@ class FeesControllerSpec extends ItSpec {
           PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfNiEuVatIoss.journeyBeforeBeginWebPayment)
           val result   = systemUnderTest.renderPage(fakeRequest)
           val document = Jsoup.parse(contentAsString(result))
-          document.select(".govuk-header__service-name").html shouldBe "Submit an Import One Stop Shop VAT return and pay VAT"
+          document.select(".govuk-header__service-name").html shouldBe "Pay your Import One Stop Shop VAT Return"
           testStaticContentEnglish(document)
         }
 
