@@ -39,7 +39,7 @@
     else messages("force-delete-answers.button.logged-out")
 }
 
-@layout(pageTitle = Some(statusMessageHeading), origin = None, showTimeoutDialogue = false) {
+@layout(pageTitle = Some(statusMessageHeading), showTimeoutDialogue = false) {
 
     <h1 class="govuk-heading-l govuk-!-margin-bottom-6">@statusMessageHeading</h1>
     @redirectLink.fold {

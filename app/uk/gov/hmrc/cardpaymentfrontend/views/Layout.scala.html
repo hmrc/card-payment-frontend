@@ -23,6 +23,9 @@
 @import uk.gov.hmrc.hmrcfrontend.views.html.helpers.{HmrcReportTechnicalIssueHelper, HmrcStandardPage, HmrcTimeoutDialogHelper}
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.hmrcstandardpage.{HmrcStandardPageParams, ServiceURLs, TemplateOverrides}
 @import views.html.helper.CSPNonce
+@import payapi.corcommon.model.PaymentStatuses
+@import payapi.cardpaymentjourney.model.journey.{Journey, JourneySpecificData}
+@import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
 
 @this(
         appConfig: AppConfig,
@@ -32,9 +35,9 @@
 )
 @(
         pageTitle: Option[String] = None,
-        origin: Option[Origin] = None,
         maybeForm: Option[Form[?]] = None,
         showBackLink: Boolean = true,
+        journeyRequest: Option[JourneyRequest[?]] = None,
         showTimeoutDialogue: Boolean = true,
         backLinkOverride: Option[BackLink] = None,
         welshSupported: Boolean = true,
@@ -42,17 +45,19 @@
         hideStyling: Boolean = false
 )(contentBlock: Html)(implicit request: RequestHeader, messages: Messages)
 
-@serviceName = @{origin.map(eo => messages(eo.lift(appConfig).serviceNameMessageKey)).getOrElse(messages("service-name.generic"))}
+@serviceName = @{journeyRequest.map(journeyRequest => messages(journeyRequest.journey.origin.lift(appConfig).serviceNameMessageKey)).getOrElse(messages("service-name.generic"))}
 
 @serviceUrl = @{
-    origin match {
-        case Some(value) if value.isAWebChatOrigin => Some(appConfig.payFrontendWebchatLandingUrl)
-        case Some(value)                           => Some(appConfig.payFrontendBaseUrl)
-        case None                                  => Some(appConfig.payFrontendBaseUrl)
+    journeyRequest match {
+        case Some(value) if value.journey.origin.isAWebChatOrigin && value.journey.status == PaymentStatuses.Successful =>
+            Some(uk.gov.hmrc.cardpaymentfrontend.controllers.routes.PaymentCompleteController.renderPage.url)
+        case Some(value) if value.journey.origin.isAWebChatOrigin  => Some(appConfig.payFrontendWebchatLandingUrl)
+        case Some(value)                                     => Some(appConfig.payFrontendBaseUrl)
+        case None                                              => Some(appConfig.payFrontendBaseUrl)
     }
 }
 
-@welshSupportedForOrigin = @{ origin.exists(_.originSupportsWelsh )}
+@welshSupportedForOrigin = @{ journeyRequest.exists(_.journey.origin.originSupportsWelsh) }
 
 @headBlock = {
     @if(showTimeoutDialogue) {
@@ -105,7 +110,7 @@
           signOutUrl = if (isLoggedIn) Some(uk.gov.hmrc.cardpaymentfrontend.controllers.routes.SignOutController.signOut.url) else None,
           serviceUrl = serviceUrl
       ),
-      pageTitle = Some(journeyTitleMaker(h1Key = pageTitle, origin = origin, maybeForm = maybeForm)),
+      pageTitle = Some(journeyTitleMaker(h1Key = pageTitle, origin = journeyRequest.map(_.journey.origin), maybeForm = maybeForm)),
       serviceName = Some(serviceName),
       isWelshTranslationAvailable = welshSupported && welshSupportedForOrigin,
       backLink = {

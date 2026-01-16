@@ -19,7 +19,7 @@ package uk.gov.hmrc.cardpaymentfrontend.views
 import org.jsoup.Jsoup
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{contentAsString, defaultAwaitTimeout}
-import uk.gov.hmrc.cardpaymentfrontend.controllers.{AddressController, FeesController}
+import uk.gov.hmrc.cardpaymentfrontend.controllers.{AddressController, FeesController, PaymentCompleteController}
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.TestOps.FakeRequestOps
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.stubs.PayApiStub
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.testdata.TestJourneys
@@ -31,6 +31,7 @@ class LayoutSpec extends ItSpec {
 
   private val feesController: FeesController       = app.injector.instanceOf[FeesController]
   private val addressController: AddressController = app.injector.instanceOf[AddressController]
+  private val paymentCompleteController            = app.injector.instanceOf[PaymentCompleteController]
 
   "HMRC Standard Header is shown correctly" in {
     val fakeRequest = FakeRequest("GET", "/card-fees").withSessionId()
@@ -122,6 +123,21 @@ class LayoutSpec extends ItSpec {
         .attr(
           "href"
         ) shouldBe "http://localhost:9056/pay/make-a-payment-now" withClue s"expected href to be webchat landing page for implemented webchat origin: ${o.entryName}"
+    }
+  }
+
+  "render payment-complete page as the service url href when origin is a webchat origin and payment is completed" in {
+    val fakeRequest = FakeRequest("GET", "/card-fees").withSessionId()
+    TestHelpers.webChatOrigins.diff(TestHelpers.unimplementedOrigins).foreach { o =>
+      PayApiStub.stubForFindBySessionId2xx(TestHelpers.deriveTestDataFromOrigin(o).journeyAfterSucceedDebitWebPayment)
+      val result   = paymentCompleteController.renderPage(fakeRequest)
+      val document = Jsoup.parse(contentAsString(result))
+      document
+        .select(".govuk-header__content")
+        .select("a")
+        .attr(
+          "href"
+        ) shouldBe "/pay-by-card/payment-complete" withClue s"expected href to be payment-complete page for implemented webchat origin: ${o.entryName}"
     }
   }
 

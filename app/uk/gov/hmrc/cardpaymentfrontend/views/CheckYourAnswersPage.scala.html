@@ -31,7 +31,8 @@
 
 @heading = @{messages("check-your-details.heading")}
 
-@layout(pageTitle = Some(heading), origin = Some(journeyRequest.journey.origin)) {
+@layout(pageTitle = Some(heading),     journeyRequest = Some(journeyRequest)
+) {
 
    <h1 class="govuk-heading-l govuk-!-margin-bottom-6">@heading</h1>
 

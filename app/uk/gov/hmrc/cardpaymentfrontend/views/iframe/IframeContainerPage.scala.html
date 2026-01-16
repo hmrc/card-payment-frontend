@@ -30,9 +30,9 @@
 
 @layout(
     pageTitle = Some(heading),
-    origin = Some(journeyRequest.journey.origin),
     welshSupported = false,
-    additionalScripts = Some(additionalScript)
+    additionalScripts = Some(additionalScript),
+    journeyRequest = Some(journeyRequest)
 ) {
     @Html(s"""<link rel="stylesheet" media="all" type="text/css" href="${controllers.routes.Assets.versioned("stylesheets/barclaycard-iframe.css").toString}">""")
     <h1 class="govuk-heading-l">@heading</h1>
