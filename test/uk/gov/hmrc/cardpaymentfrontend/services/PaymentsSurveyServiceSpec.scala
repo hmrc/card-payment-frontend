@@ -1044,7 +1044,7 @@ class PaymentsSurveyServiceSpec extends ItSpec with TableDrivenPropertyChecks {
               contentOptions = SurveyContentOptions(
                 isWelshSupported = false,
                 title = SurveyBannerTitle(
-                  englishValue = "Submit a One Stop Shop VAT return and pay VAT",
+                  englishValue = "Pay your One Stop Shop VAT Return",
                   welshValue = None
                 )
               )
@@ -1064,7 +1064,7 @@ class PaymentsSurveyServiceSpec extends ItSpec with TableDrivenPropertyChecks {
               contentOptions = SurveyContentOptions(
                 isWelshSupported = false,
                 title = SurveyBannerTitle(
-                  englishValue = "Submit a One Stop Shop VAT return and pay VAT",
+                  englishValue = "Pay your One Stop Shop VAT Return",
                   welshValue = None
                 )
               )
@@ -1084,7 +1084,7 @@ class PaymentsSurveyServiceSpec extends ItSpec with TableDrivenPropertyChecks {
               contentOptions = SurveyContentOptions(
                 isWelshSupported = false,
                 title = SurveyBannerTitle(
-                  englishValue = "Submit an Import One Stop Shop VAT return and pay VAT",
+                  englishValue = "Pay your Import One Stop Shop VAT Return",
                   welshValue = None
                 )
               )
@@ -1104,7 +1104,7 @@ class PaymentsSurveyServiceSpec extends ItSpec with TableDrivenPropertyChecks {
               contentOptions = SurveyContentOptions(
                 isWelshSupported = false,
                 title = SurveyBannerTitle(
-                  englishValue = "Submit an Import One Stop Shop VAT return and pay VAT",
+                  englishValue = "Pay your Import One Stop Shop VAT Return",
                   welshValue = None
                 )
               )
