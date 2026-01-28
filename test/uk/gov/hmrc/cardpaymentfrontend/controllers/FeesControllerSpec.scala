@@ -47,8 +47,6 @@ class FeesControllerSpec extends ItSpec {
         para2.text() shouldBe "There is no fee if you pay by:"
         val para3 = document.select("#para3")
         para3.text() shouldBe "You cannot pay using a personal credit card."
-        val para4 = document.select("#para4")
-        para4.text() shouldBe "Allow 3 working days for your payment to reach HMRC’s bank account."
       }
 
       def testStaticContentWelsh(document: Document): Assertion = {
@@ -59,8 +57,6 @@ class FeesControllerSpec extends ItSpec {
         para2.text() shouldBe "Nid oes ffi yn cael ei chodi os talwch drwy un o’r dulliau canlynol:"
         val para3 = document.select("#para3")
         para3.text() shouldBe "Ni allwch dalu â cherdyn credyd personol."
-        val para4 = document.select("#para4")
-        para4.text() shouldBe "Dylech ganiatáu 3 diwrnod gwaith i’ch taliad gyrraedd cyfrif banc CThEM."
       }
 
       "show the Title tab correctly in English" in {

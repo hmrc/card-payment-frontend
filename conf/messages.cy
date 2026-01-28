@@ -119,7 +119,6 @@ card-fees.para2.one-off-direct-debit = Debyd Uniongyrchol (taliad untro)
 card-fees.para2.variable-direct-debit = Debyd Uniongyrchol (newidiol)
 card-fees.para2.personal-debit-card = cerdyn debyd personol
 card-fees.para3 = Ni allwch dalu â cherdyn credyd personol.
-card-fees.para4 = Dylech ganiatáu 3 diwrnod gwaith i’ch taliad gyrraedd cyfrif banc CThEM.
 
 ## Check your details page
 # common messages across all regimes

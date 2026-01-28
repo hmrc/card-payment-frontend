@@ -118,8 +118,6 @@ card-fees.para2.one-off-direct-debit = Direct Debit (one-off payment)
 card-fees.para2.variable-direct-debit = Direct Debit (variable)
 card-fees.para2.personal-debit-card = personal debit card
 card-fees.para3 = You cannot pay using a personal credit card.
-card-fees.para4 = Allow 3 working days for your payment to reach HMRC’s bank account.
-card-fees.para2.bank-account = bank account
 
 ## Check your details page
 # common messages across all regimes
