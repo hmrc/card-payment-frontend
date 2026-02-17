@@ -44,7 +44,7 @@ class LayoutSpec extends ItSpec {
     govUkLogoLink.attr("href") shouldBe "https://www.gov.uk"
     govUkLogoLink.text().trim shouldBe "GOV.UK"
 
-    val serviceNameLink = document.select(".govuk-header__service-name").first()
+    val serviceNameLink = document.select(".govuk-service-navigation__service-name").first()
     serviceNameLink.text().trim shouldBe "Pay your Self Assessment"
   }
 
@@ -118,7 +118,7 @@ class LayoutSpec extends ItSpec {
       val result   = addressController.renderPage(fakeRequest)
       val document = Jsoup.parse(contentAsString(result))
       document
-        .select(".govuk-header__content")
+        .select(".govuk-service-navigation__service-name")
         .select("a")
         .attr(
           "href"
@@ -133,7 +133,7 @@ class LayoutSpec extends ItSpec {
       val result   = paymentCompleteController.renderPage(fakeRequest)
       val document = Jsoup.parse(contentAsString(result))
       document
-        .select(".govuk-header__content")
+        .select(".govuk-service-navigation__service-name")
         .select("a")
         .attr(
           "href"
@@ -147,8 +147,9 @@ class LayoutSpec extends ItSpec {
       PayApiStub.stubForFindBySessionId2xx(TestHelpers.deriveTestDataFromOrigin(o).journeyBeforeBeginWebPayment)
       val result   = addressController.renderPage(fakeRequest)
       val document = Jsoup.parse(contentAsString(result))
+      println(document)
       document
-        .select(".govuk-header__content")
+        .select(".govuk-service-navigation__service-name")
         .select("a")
         .attr("href") shouldBe "http://localhost:9056/pay" withClue s"expected href to be /pay for origin: ${o.entryName}"
     }

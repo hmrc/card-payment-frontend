@@ -77,7 +77,10 @@ class FeesControllerSpec extends ItSpec {
         PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyBeforeBeginWebPayment)
         val result   = systemUnderTest.renderPage(fakeRequest)
         val document = Jsoup.parse(contentAsString(result))
-        document.select(".govuk-header__content a").attr("href") shouldBe "http://localhost:9056/pay"
+        document
+          .select(".govuk-service-navigation__service-name")
+          .select("a")
+          .attr("href") shouldBe "http://localhost:9056/pay"
       }
 
       "for origin PfSa" - {
@@ -86,7 +89,7 @@ class FeesControllerSpec extends ItSpec {
           PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyBeforeBeginWebPayment)
           val result   = systemUnderTest.renderPage(fakeRequest)
           val document = Jsoup.parse(contentAsString(result))
-          document.select(".govuk-header__service-name").html shouldBe "Pay your Self Assessment"
+          document.select(".govuk-service-navigation__service-name").text() shouldBe "Pay your Self Assessment"
           testStaticContentEnglish(document)
         }
 
@@ -94,7 +97,7 @@ class FeesControllerSpec extends ItSpec {
           PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyBeforeBeginWebPayment)
           val result   = systemUnderTest.renderPage(fakeWelshRequest)
           val document = Jsoup.parse(contentAsString(result))
-          document.select(".govuk-header__service-name").html shouldBe "Talu eich Hunanasesiad"
+          document.select(".govuk-service-navigation__service-name").text() shouldBe "Talu eich Hunanasesiad"
           testStaticContentWelsh(document)
         }
 
@@ -171,7 +174,7 @@ class FeesControllerSpec extends ItSpec {
           PayApiStub.stubForFindBySessionId2xx(TestJourneys.BtaSa.journeyBeforeBeginWebPayment)
           val result   = systemUnderTest.renderPage(fakeRequest)
           val document = Jsoup.parse(contentAsString(result))
-          document.select(".govuk-header__service-name").html shouldBe "Pay your Self Assessment"
+          document.select(".govuk-service-navigation__service-name").text() shouldBe "Pay your Self Assessment"
           testStaticContentEnglish(document)
         }
 
@@ -179,7 +182,7 @@ class FeesControllerSpec extends ItSpec {
           PayApiStub.stubForFindBySessionId2xx(TestJourneys.BtaSa.journeyBeforeBeginWebPayment)
           val result   = systemUnderTest.renderPage(fakeWelshRequest)
           val document = Jsoup.parse(contentAsString(result))
-          document.select(".govuk-header__service-name").html shouldBe "Talu eich Hunanasesiad"
+          document.select(".govuk-service-navigation__service-name").text() shouldBe "Talu eich Hunanasesiad"
           testStaticContentWelsh(document)
         }
 
@@ -256,7 +259,7 @@ class FeesControllerSpec extends ItSpec {
           PayApiStub.stubForFindBySessionId2xx(TestJourneys.PtaSa.journeyBeforeBeginWebPayment)
           val result   = systemUnderTest.renderPage(fakeRequest)
           val document = Jsoup.parse(contentAsString(result))
-          document.select(".govuk-header__service-name").html shouldBe "Pay your Self Assessment"
+          document.select(".govuk-service-navigation__service-name").text() shouldBe "Pay your Self Assessment"
           testStaticContentEnglish(document)
         }
 
@@ -264,7 +267,7 @@ class FeesControllerSpec extends ItSpec {
           PayApiStub.stubForFindBySessionId2xx(TestJourneys.PtaSa.journeyBeforeBeginWebPayment)
           val result   = systemUnderTest.renderPage(fakeWelshRequest)
           val document = Jsoup.parse(contentAsString(result))
-          document.select(".govuk-header__service-name").html shouldBe "Talu eich Hunanasesiad"
+          document.select(".govuk-service-navigation__service-name").text() shouldBe "Talu eich Hunanasesiad"
           testStaticContentWelsh(document)
         }
 
@@ -341,7 +344,7 @@ class FeesControllerSpec extends ItSpec {
           PayApiStub.stubForFindBySessionId2xx(TestJourneys.ItSa.journeyBeforeBeginWebPayment)
           val result   = systemUnderTest.renderPage(fakeRequest)
           val document = Jsoup.parse(contentAsString(result))
-          document.select(".govuk-header__service-name").html shouldBe "Pay your Self Assessment"
+          document.select(".govuk-service-navigation__service-name").text() shouldBe "Pay your Self Assessment"
           testStaticContentEnglish(document)
         }
 
@@ -349,7 +352,7 @@ class FeesControllerSpec extends ItSpec {
           PayApiStub.stubForFindBySessionId2xx(TestJourneys.ItSa.journeyBeforeBeginWebPayment)
           val result   = systemUnderTest.renderPage(fakeWelshRequest)
           val document = Jsoup.parse(contentAsString(result))
-          document.select(".govuk-header__service-name").html shouldBe "Talu eich Hunanasesiad"
+          document.select(".govuk-service-navigation__service-name").text() shouldBe "Talu eich Hunanasesiad"
           testStaticContentWelsh(document)
         }
 
@@ -406,7 +409,7 @@ class FeesControllerSpec extends ItSpec {
           PayApiStub.stubForFindBySessionId2xx(TestJourneys.WcSa.journeyBeforeBeginWebPayment)
           val result   = systemUnderTest.renderPage(fakeRequest)
           val document = Jsoup.parse(contentAsString(result))
-          document.select(".govuk-header__service-name").html shouldBe "Pay your Self Assessment"
+          document.select(".govuk-service-navigation__service-name").text() shouldBe "Pay your Self Assessment"
           testStaticContentEnglish(document)
         }
 
@@ -414,7 +417,7 @@ class FeesControllerSpec extends ItSpec {
           PayApiStub.stubForFindBySessionId2xx(TestJourneys.WcSa.journeyBeforeBeginWebPayment)
           val result   = systemUnderTest.renderPage(fakeWelshRequest)
           val document = Jsoup.parse(contentAsString(result))
-          document.select(".govuk-header__service-name").html shouldBe "Talu eich Hunanasesiad"
+          document.select(".govuk-service-navigation__service-name").text() shouldBe "Talu eich Hunanasesiad"
           testStaticContentWelsh(document)
         }
 
@@ -480,7 +483,7 @@ class FeesControllerSpec extends ItSpec {
           PayApiStub.stubForFindBySessionId2xx(TestJourneys.WcCt.journeyBeforeBeginWebPayment)
           val result   = systemUnderTest.renderPage(fakeRequest)
           val document = Jsoup.parse(contentAsString(result))
-          document.select(".govuk-header__service-name").html shouldBe "Pay your Corporation Tax"
+          document.select(".govuk-service-navigation__service-name").text() shouldBe "Pay your Corporation Tax"
           testStaticContentEnglish(document)
         }
 
@@ -488,7 +491,7 @@ class FeesControllerSpec extends ItSpec {
           PayApiStub.stubForFindBySessionId2xx(TestJourneys.WcCt.journeyBeforeBeginWebPayment)
           val result   = systemUnderTest.renderPage(fakeWelshRequest)
           val document = Jsoup.parse(contentAsString(result))
-          document.select(".govuk-header__service-name").html shouldBe "Talu eich Treth Gorfforaeth"
+          document.select(".govuk-service-navigation__service-name").text() shouldBe "Talu eich Treth Gorfforaeth"
           testStaticContentWelsh(document)
         }
 
@@ -554,7 +557,7 @@ class FeesControllerSpec extends ItSpec {
           PayApiStub.stubForFindBySessionId2xx(TestJourneys.WcVat.journeyBeforeBeginWebPayment)
           val result   = systemUnderTest.renderPage(fakeRequest)
           val document = Jsoup.parse(contentAsString(result))
-          document.select(".govuk-header__service-name").html shouldBe "Pay your VAT"
+          document.select(".govuk-service-navigation__service-name").text() shouldBe "Pay your VAT"
           testStaticContentEnglish(document)
         }
 
@@ -562,7 +565,7 @@ class FeesControllerSpec extends ItSpec {
           PayApiStub.stubForFindBySessionId2xx(TestJourneys.WcVat.journeyBeforeBeginWebPayment)
           val result   = systemUnderTest.renderPage(fakeWelshRequest)
           val document = Jsoup.parse(contentAsString(result))
-          document.select(".govuk-header__service-name").html shouldBe "Talu eich TAW"
+          document.select(".govuk-service-navigation__service-name").text() shouldBe "Talu eich TAW"
           testStaticContentWelsh(document)
         }
 
@@ -628,7 +631,7 @@ class FeesControllerSpec extends ItSpec {
           PayApiStub.stubForFindBySessionId2xx(TestJourneys.WcClass1aNi.journeyBeforeBeginWebPayment)
           val result   = systemUnderTest.renderPage(fakeRequest)
           val document = Jsoup.parse(contentAsString(result))
-          document.select(".govuk-header__service-name").html shouldBe "Pay your employers’ Class 1A National Insurance (P11D bill)"
+          document.select(".govuk-service-navigation__service-name").text() shouldBe "Pay your employers’ Class 1A National Insurance (P11D bill)"
           testStaticContentEnglish(document)
         }
 
@@ -636,7 +639,7 @@ class FeesControllerSpec extends ItSpec {
           PayApiStub.stubForFindBySessionId2xx(TestJourneys.WcClass1aNi.journeyBeforeBeginWebPayment)
           val result   = systemUnderTest.renderPage(fakeWelshRequest)
           val document = Jsoup.parse(contentAsString(result))
-          document.select(".govuk-header__service-name").html shouldBe "Talu’ch Yswiriant Gwladol Dosbarth 1A y cyflogwr (bil P11D)"
+          document.select(".govuk-service-navigation__service-name").text() shouldBe "Talu’ch Yswiriant Gwladol Dosbarth 1A y cyflogwr (bil P11D)"
           testStaticContentWelsh(document)
         }
 
@@ -702,7 +705,7 @@ class FeesControllerSpec extends ItSpec {
           PayApiStub.stubForFindBySessionId2xx(TestJourneys.WcXref.journeyBeforeBeginWebPayment)
           val result   = systemUnderTest.renderPage(fakeRequest)
           val document = Jsoup.parse(contentAsString(result))
-          document.select(".govuk-header__service-name").html shouldBe "Pay your tax"
+          document.select(".govuk-service-navigation__service-name").text() shouldBe "Pay your tax"
           testStaticContentEnglish(document)
         }
 
@@ -710,7 +713,7 @@ class FeesControllerSpec extends ItSpec {
           PayApiStub.stubForFindBySessionId2xx(TestJourneys.WcXref.journeyBeforeBeginWebPayment)
           val result   = systemUnderTest.renderPage(fakeWelshRequest)
           val document = Jsoup.parse(contentAsString(result))
-          document.select(".govuk-header__service-name").html shouldBe "Talwch eich treth"
+          document.select(".govuk-service-navigation__service-name").text() shouldBe "Talwch eich treth"
           testStaticContentWelsh(document)
         }
 
@@ -757,7 +760,7 @@ class FeesControllerSpec extends ItSpec {
           PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfAlcoholDuty.journeyBeforeBeginWebPayment)
           val result   = systemUnderTest.renderPage(fakeRequest)
           val document = Jsoup.parse(contentAsString(result))
-          document.select(".govuk-header__service-name").html shouldBe "Pay your Alcohol Duty"
+          document.select(".govuk-service-navigation__service-name").text() shouldBe "Pay your Alcohol Duty"
           testStaticContentEnglish(document)
         }
 
@@ -765,7 +768,7 @@ class FeesControllerSpec extends ItSpec {
           PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfAlcoholDuty.journeyBeforeBeginWebPayment)
           val result   = systemUnderTest.renderPage(fakeWelshRequest)
           val document = Jsoup.parse(contentAsString(result))
-          document.select(".govuk-header__service-name").html shouldBe "Talu’ch Toll Alcohol"
+          document.select(".govuk-service-navigation__service-name").text() shouldBe "Talu’ch Toll Alcohol"
           testStaticContentWelsh(document)
         }
 
@@ -822,7 +825,7 @@ class FeesControllerSpec extends ItSpec {
           PayApiStub.stubForFindBySessionId2xx(TestJourneys.BtaCt.journeyBeforeBeginWebPayment)
           val result   = systemUnderTest.renderPage(fakeRequest)
           val document = Jsoup.parse(contentAsString(result))
-          document.select(".govuk-header__service-name").html shouldBe "Pay your Corporation Tax"
+          document.select(".govuk-service-navigation__service-name").text() shouldBe "Pay your Corporation Tax"
           testStaticContentEnglish(document)
         }
 
@@ -830,7 +833,7 @@ class FeesControllerSpec extends ItSpec {
           PayApiStub.stubForFindBySessionId2xx(TestJourneys.BtaCt.journeyBeforeBeginWebPayment)
           val result   = systemUnderTest.renderPage(fakeWelshRequest)
           val document = Jsoup.parse(contentAsString(result))
-          document.select(".govuk-header__service-name").html shouldBe "Talu eich Treth Gorfforaeth"
+          document.select(".govuk-service-navigation__service-name").text() shouldBe "Talu eich Treth Gorfforaeth"
           testStaticContentWelsh(document)
         }
 
@@ -907,7 +910,7 @@ class FeesControllerSpec extends ItSpec {
           PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfCt.journeyBeforeBeginWebPayment)
           val result   = systemUnderTest.renderPage(fakeRequest)
           val document = Jsoup.parse(contentAsString(result))
-          document.select(".govuk-header__service-name").html shouldBe "Pay your Corporation Tax"
+          document.select(".govuk-service-navigation__service-name").text() shouldBe "Pay your Corporation Tax"
           testStaticContentEnglish(document)
         }
 
@@ -915,7 +918,7 @@ class FeesControllerSpec extends ItSpec {
           PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfCt.journeyBeforeBeginWebPayment)
           val result   = systemUnderTest.renderPage(fakeWelshRequest)
           val document = Jsoup.parse(contentAsString(result))
-          document.select(".govuk-header__service-name").html shouldBe "Talu eich Treth Gorfforaeth"
+          document.select(".govuk-service-navigation__service-name").text() shouldBe "Talu eich Treth Gorfforaeth"
           testStaticContentWelsh(document)
         }
 
@@ -992,7 +995,7 @@ class FeesControllerSpec extends ItSpec {
           PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfVat.journeyBeforeBeginWebPayment)
           val result   = systemUnderTest.renderPage(fakeRequest)
           val document = Jsoup.parse(contentAsString(result))
-          document.select(".govuk-header__service-name").html shouldBe "Pay your VAT"
+          document.select(".govuk-service-navigation__service-name").text() shouldBe "Pay your VAT"
           testStaticContentEnglish(document)
         }
 
@@ -1000,7 +1003,7 @@ class FeesControllerSpec extends ItSpec {
           PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfVat.journeyBeforeBeginWebPayment)
           val result   = systemUnderTest.renderPage(fakeWelshRequest)
           val document = Jsoup.parse(contentAsString(result))
-          document.select(".govuk-header__service-name").html shouldBe "Talu eich TAW"
+          document.select(".govuk-service-navigation__service-name").text() shouldBe "Talu eich TAW"
           testStaticContentWelsh(document)
         }
 
@@ -1098,7 +1101,7 @@ class FeesControllerSpec extends ItSpec {
           PayApiStub.stubForFindBySessionId2xx(TestJourneys.BtaVat.journeyBeforeBeginWebPayment)
           val result   = systemUnderTest.renderPage(fakeRequest)
           val document = Jsoup.parse(contentAsString(result))
-          document.select(".govuk-header__service-name").html shouldBe "Pay your VAT"
+          document.select(".govuk-service-navigation__service-name").text() shouldBe "Pay your VAT"
           testStaticContentEnglish(document)
         }
 
@@ -1106,7 +1109,7 @@ class FeesControllerSpec extends ItSpec {
           PayApiStub.stubForFindBySessionId2xx(TestJourneys.BtaVat.journeyBeforeBeginWebPayment)
           val result   = systemUnderTest.renderPage(fakeWelshRequest)
           val document = Jsoup.parse(contentAsString(result))
-          document.select(".govuk-header__service-name").html shouldBe "Talu eich TAW"
+          document.select(".govuk-service-navigation__service-name").text() shouldBe "Talu eich TAW"
           testStaticContentWelsh(document)
         }
 
@@ -1184,7 +1187,7 @@ class FeesControllerSpec extends ItSpec {
           PayApiStub.stubForFindBySessionId2xx(TestJourneys.VcVatReturn.journeyBeforeBeginWebPayment)
           val result   = systemUnderTest.renderPage(fakeRequest)
           val document = Jsoup.parse(contentAsString(result))
-          document.select(".govuk-header__service-name").html shouldBe "Business tax account"
+          document.select(".govuk-service-navigation__service-name").text() shouldBe "Business tax account"
           testStaticContentEnglish(document)
         }
 
@@ -1192,7 +1195,7 @@ class FeesControllerSpec extends ItSpec {
           PayApiStub.stubForFindBySessionId2xx(TestJourneys.VcVatReturn.journeyBeforeBeginWebPayment)
           val result   = systemUnderTest.renderPage(fakeWelshRequest)
           val document = Jsoup.parse(contentAsString(result))
-          document.select(".govuk-header__service-name").html shouldBe "Cyfrif treth busnes"
+          document.select(".govuk-service-navigation__service-name").text() shouldBe "Cyfrif treth busnes"
           testStaticContentWelsh(document)
         }
 
@@ -1270,7 +1273,7 @@ class FeesControllerSpec extends ItSpec {
           PayApiStub.stubForFindBySessionId2xx(TestJourneys.VcVatOther.journeyBeforeBeginWebPayment)
           val result   = systemUnderTest.renderPage(fakeRequest)
           val document = Jsoup.parse(contentAsString(result))
-          document.select(".govuk-header__service-name").html shouldBe "Business tax account"
+          document.select(".govuk-service-navigation__service-name").text() shouldBe "Business tax account"
           testStaticContentEnglish(document)
         }
 
@@ -1278,7 +1281,7 @@ class FeesControllerSpec extends ItSpec {
           PayApiStub.stubForFindBySessionId2xx(TestJourneys.VcVatOther.journeyBeforeBeginWebPayment)
           val result   = systemUnderTest.renderPage(fakeWelshRequest)
           val document = Jsoup.parse(contentAsString(result))
-          document.select(".govuk-header__service-name").html shouldBe "Cyfrif treth busnes"
+          document.select(".govuk-service-navigation__service-name").text() shouldBe "Cyfrif treth busnes"
           testStaticContentWelsh(document)
         }
 
@@ -1335,7 +1338,7 @@ class FeesControllerSpec extends ItSpec {
           PayApiStub.stubForFindBySessionId2xx(TestJourneys.Ppt.journeyBeforeBeginWebPayment)
           val result   = systemUnderTest.renderPage(fakeRequest)
           val document = Jsoup.parse(contentAsString(result))
-          document.select(".govuk-header__service-name").html shouldBe "Pay your Plastic Packaging Tax"
+          document.select(".govuk-service-navigation__service-name").text() shouldBe "Pay your Plastic Packaging Tax"
           testStaticContentEnglish(document)
         }
 
@@ -1343,7 +1346,7 @@ class FeesControllerSpec extends ItSpec {
           PayApiStub.stubForFindBySessionId2xx(TestJourneys.Ppt.journeyBeforeBeginWebPayment)
           val result   = systemUnderTest.renderPage(fakeWelshRequest)
           val document = Jsoup.parse(contentAsString(result))
-          document.select(".govuk-header__service-name").html shouldBe "Talu’ch Treth Deunydd Pacio Plastig"
+          document.select(".govuk-service-navigation__service-name").text() shouldBe "Talu’ch Treth Deunydd Pacio Plastig"
           testStaticContentWelsh(document)
         }
 
@@ -1420,7 +1423,7 @@ class FeesControllerSpec extends ItSpec {
           PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfPpt.journeyBeforeBeginWebPayment)
           val result   = systemUnderTest.renderPage(fakeRequest)
           val document = Jsoup.parse(contentAsString(result))
-          document.select(".govuk-header__service-name").html shouldBe "Pay your Plastic Packaging Tax"
+          document.select(".govuk-service-navigation__service-name").text() shouldBe "Pay your Plastic Packaging Tax"
           testStaticContentEnglish(document)
         }
 
@@ -1428,7 +1431,7 @@ class FeesControllerSpec extends ItSpec {
           PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfPpt.journeyBeforeBeginWebPayment)
           val result   = systemUnderTest.renderPage(fakeWelshRequest)
           val document = Jsoup.parse(contentAsString(result))
-          document.select(".govuk-header__service-name").html shouldBe "Talu’ch Treth Deunydd Pacio Plastig"
+          document.select(".govuk-service-navigation__service-name").text() shouldBe "Talu’ch Treth Deunydd Pacio Plastig"
           testStaticContentWelsh(document)
         }
 
@@ -1505,7 +1508,7 @@ class FeesControllerSpec extends ItSpec {
           PayApiStub.stubForFindBySessionId2xx(TestJourneys.BtaEpayeBill.journeyBeforeBeginWebPayment)
           val result   = systemUnderTest.renderPage(fakeRequest)
           val document = Jsoup.parse(contentAsString(result))
-          document.select(".govuk-header__service-name").html shouldBe "Pay your employers’ PAYE and National Insurance"
+          document.select(".govuk-service-navigation__service-name").text() shouldBe "Pay your employers’ PAYE and National Insurance"
           testStaticContentEnglish(document)
         }
 
@@ -1513,7 +1516,7 @@ class FeesControllerSpec extends ItSpec {
           PayApiStub.stubForFindBySessionId2xx(TestJourneys.BtaEpayeBill.journeyBeforeBeginWebPayment)
           val result   = systemUnderTest.renderPage(fakeWelshRequest)
           val document = Jsoup.parse(contentAsString(result))
-          document.select(".govuk-header__service-name").html shouldBe "Talwch eich TWE a’ch Yswiriant Gwladol y cyflogwr"
+          document.select(".govuk-service-navigation__service-name").text() shouldBe "Talwch eich TWE a’ch Yswiriant Gwladol y cyflogwr"
           testStaticContentWelsh(document)
         }
 
@@ -1600,7 +1603,7 @@ class FeesControllerSpec extends ItSpec {
           PayApiStub.stubForFindBySessionId2xx(TestJourneys.BtaEpayeGeneral.journeyBeforeBeginWebPayment)
           val result   = systemUnderTest.renderPage(fakeRequest)
           val document = Jsoup.parse(contentAsString(result))
-          document.select(".govuk-header__service-name").html shouldBe "Pay your employers’ PAYE and National Insurance"
+          document.select(".govuk-service-navigation__service-name").text() shouldBe "Pay your employers’ PAYE and National Insurance"
           testStaticContentEnglish(document)
         }
 
@@ -1608,7 +1611,7 @@ class FeesControllerSpec extends ItSpec {
           PayApiStub.stubForFindBySessionId2xx(TestJourneys.BtaEpayeGeneral.journeyBeforeBeginWebPayment)
           val result   = systemUnderTest.renderPage(fakeWelshRequest)
           val document = Jsoup.parse(contentAsString(result))
-          document.select(".govuk-header__service-name").html shouldBe "Talwch eich TWE a’ch Yswiriant Gwladol y cyflogwr"
+          document.select(".govuk-service-navigation__service-name").text() shouldBe "Talwch eich TWE a’ch Yswiriant Gwladol y cyflogwr"
           testStaticContentWelsh(document)
         }
 
@@ -1685,7 +1688,7 @@ class FeesControllerSpec extends ItSpec {
           PayApiStub.stubForFindBySessionId2xx(TestJourneys.BtaEpayeInterest.journeyBeforeBeginWebPayment)
           val result   = systemUnderTest.renderPage(fakeRequest)
           val document = Jsoup.parse(contentAsString(result))
-          document.select(".govuk-header__service-name").html shouldBe "Pay employers’ PAYE interest"
+          document.select(".govuk-service-navigation__service-name").text() shouldBe "Pay employers’ PAYE interest"
           testStaticContentEnglish(document)
         }
 
@@ -1693,7 +1696,7 @@ class FeesControllerSpec extends ItSpec {
           PayApiStub.stubForFindBySessionId2xx(TestJourneys.BtaEpayeInterest.journeyBeforeBeginWebPayment)
           val result   = systemUnderTest.renderPage(fakeWelshRequest)
           val document = Jsoup.parse(contentAsString(result))
-          document.select(".govuk-header__service-name").html shouldBe "Taliad llog TWE cyflogwr"
+          document.select(".govuk-service-navigation__service-name").text() shouldBe "Taliad llog TWE cyflogwr"
           testStaticContentWelsh(document)
         }
 
@@ -1770,7 +1773,7 @@ class FeesControllerSpec extends ItSpec {
           PayApiStub.stubForFindBySessionId2xx(TestJourneys.BtaEpayePenalty.journeyBeforeBeginWebPayment)
           val result   = systemUnderTest.renderPage(fakeRequest)
           val document = Jsoup.parse(contentAsString(result))
-          document.select(".govuk-header__service-name").html shouldBe "Pay your PAYE late payment or filing penalty"
+          document.select(".govuk-service-navigation__service-name").text() shouldBe "Pay your PAYE late payment or filing penalty"
           testStaticContentEnglish(document)
         }
 
@@ -1778,7 +1781,7 @@ class FeesControllerSpec extends ItSpec {
           PayApiStub.stubForFindBySessionId2xx(TestJourneys.BtaEpayePenalty.journeyBeforeBeginWebPayment)
           val result   = systemUnderTest.renderPage(fakeWelshRequest)
           val document = Jsoup.parse(contentAsString(result))
-          document.select(".govuk-header__service-name").html shouldBe "Talu’ch cosb am dalu neu gyflwyno TWE yn hwyr"
+          document.select(".govuk-service-navigation__service-name").text() shouldBe "Talu’ch cosb am dalu neu gyflwyno TWE yn hwyr"
           testStaticContentWelsh(document)
         }
 
@@ -1855,7 +1858,7 @@ class FeesControllerSpec extends ItSpec {
           PayApiStub.stubForFindBySessionId2xx(TestJourneys.BtaClass1aNi.journeyBeforeBeginWebPayment)
           val result   = systemUnderTest.renderPage(fakeRequest)
           val document = Jsoup.parse(contentAsString(result))
-          document.select(".govuk-header__service-name").html shouldBe "Pay your employers’ Class 1A National Insurance (P11D bill)"
+          document.select(".govuk-service-navigation__service-name").text() shouldBe "Pay your employers’ Class 1A National Insurance (P11D bill)"
           testStaticContentEnglish(document)
         }
 
@@ -1863,7 +1866,7 @@ class FeesControllerSpec extends ItSpec {
           PayApiStub.stubForFindBySessionId2xx(TestJourneys.BtaClass1aNi.journeyBeforeBeginWebPayment)
           val result   = systemUnderTest.renderPage(fakeWelshRequest)
           val document = Jsoup.parse(contentAsString(result))
-          document.select(".govuk-header__service-name").html shouldBe "Talu’ch Yswiriant Gwladol Dosbarth 1A y cyflogwr (bil P11D)"
+          document.select(".govuk-service-navigation__service-name").text() shouldBe "Talu’ch Yswiriant Gwladol Dosbarth 1A y cyflogwr (bil P11D)"
           testStaticContentWelsh(document)
         }
 
@@ -1940,7 +1943,7 @@ class FeesControllerSpec extends ItSpec {
           PayApiStub.stubForFindBySessionId2xx(TestJourneys.Amls.journeyBeforeBeginWebPayment)
           val result   = systemUnderTest.renderPage(fakeRequest)
           val document = Jsoup.parse(contentAsString(result))
-          document.select(".govuk-header__service-name").html shouldBe "Pay Money Laundering Regulations fees"
+          document.select(".govuk-service-navigation__service-name").text() shouldBe "Pay Money Laundering Regulations fees"
           testStaticContentEnglish(document)
         }
 
@@ -1948,7 +1951,7 @@ class FeesControllerSpec extends ItSpec {
           PayApiStub.stubForFindBySessionId2xx(TestJourneys.Amls.journeyBeforeBeginWebPayment)
           val result   = systemUnderTest.renderPage(fakeWelshRequest)
           val document = Jsoup.parse(contentAsString(result))
-          document.select(".govuk-header__service-name").html shouldBe "Talu Ffioedd Rheoliadau Gwyngalchu Arian"
+          document.select(".govuk-service-navigation__service-name").text() shouldBe "Talu Ffioedd Rheoliadau Gwyngalchu Arian"
           testStaticContentWelsh(document)
         }
 
@@ -1987,7 +1990,7 @@ class FeesControllerSpec extends ItSpec {
           PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfAmls.journeyBeforeBeginWebPayment)
           val result   = systemUnderTest.renderPage(fakeRequest)
           val document = Jsoup.parse(contentAsString(result))
-          document.select(".govuk-header__service-name").html shouldBe "Pay Money Laundering Regulations fees"
+          document.select(".govuk-service-navigation__service-name").text() shouldBe "Pay Money Laundering Regulations fees"
           testStaticContentEnglish(document)
         }
 
@@ -1995,7 +1998,7 @@ class FeesControllerSpec extends ItSpec {
           PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfAmls.journeyBeforeBeginWebPayment)
           val result   = systemUnderTest.renderPage(fakeWelshRequest)
           val document = Jsoup.parse(contentAsString(result))
-          document.select(".govuk-header__service-name").html shouldBe "Talu Ffioedd Rheoliadau Gwyngalchu Arian"
+          document.select(".govuk-service-navigation__service-name").text() shouldBe "Talu Ffioedd Rheoliadau Gwyngalchu Arian"
           testStaticContentWelsh(document)
         }
 
@@ -2034,7 +2037,7 @@ class FeesControllerSpec extends ItSpec {
           PayApiStub.stubForFindBySessionId2xx(TestJourneys.VatC2c.journeyBeforeBeginWebPayment)
           val result   = systemUnderTest.renderPage(fakeRequest)
           val document = Jsoup.parse(contentAsString(result))
-          document.select(".govuk-header__service-name").html shouldBe "Pay your import VAT"
+          document.select(".govuk-service-navigation__service-name").text() shouldBe "Pay your import VAT"
           testStaticContentEnglish(document)
         }
 
@@ -2042,7 +2045,7 @@ class FeesControllerSpec extends ItSpec {
           PayApiStub.stubForFindBySessionId2xx(TestJourneys.VatC2c.journeyBeforeBeginWebPayment)
           val result   = systemUnderTest.renderPage(fakeWelshRequest)
           val document = Jsoup.parse(contentAsString(result))
-          document.select(".govuk-header__service-name").html shouldBe "Talu eich TAW fewnforio"
+          document.select(".govuk-service-navigation__service-name").text() shouldBe "Talu eich TAW fewnforio"
           testStaticContentWelsh(document)
         }
 
@@ -2081,7 +2084,7 @@ class FeesControllerSpec extends ItSpec {
           PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfVatC2c.journeyBeforeBeginWebPayment)
           val result   = systemUnderTest.renderPage(fakeRequest)
           val document = Jsoup.parse(contentAsString(result))
-          document.select(".govuk-header__service-name").html shouldBe "Pay your import VAT"
+          document.select(".govuk-service-navigation__service-name").text() shouldBe "Pay your import VAT"
           testStaticContentEnglish(document)
         }
 
@@ -2089,7 +2092,7 @@ class FeesControllerSpec extends ItSpec {
           PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfVatC2c.journeyBeforeBeginWebPayment)
           val result   = systemUnderTest.renderPage(fakeWelshRequest)
           val document = Jsoup.parse(contentAsString(result))
-          document.select(".govuk-header__service-name").html shouldBe "Talu eich TAW fewnforio"
+          document.select(".govuk-service-navigation__service-name").text() shouldBe "Talu eich TAW fewnforio"
           testStaticContentWelsh(document)
         }
 
@@ -2128,7 +2131,7 @@ class FeesControllerSpec extends ItSpec {
           PayApiStub.stubForFindBySessionId2xx(TestJourneys.WcEpayeLpp.journeyBeforeBeginWebPayment)
           val result   = systemUnderTest.renderPage(fakeRequest)
           val document = Jsoup.parse(contentAsString(result))
-          document.select(".govuk-header__service-name").html shouldBe "Pay your PAYE late payment or filing penalty"
+          document.select(".govuk-service-navigation__service-name").text() shouldBe "Pay your PAYE late payment or filing penalty"
           testStaticContentEnglish(document)
         }
 
@@ -2136,7 +2139,7 @@ class FeesControllerSpec extends ItSpec {
           PayApiStub.stubForFindBySessionId2xx(TestJourneys.WcEpayeLpp.journeyBeforeBeginWebPayment)
           val result   = systemUnderTest.renderPage(fakeWelshRequest)
           val document = Jsoup.parse(contentAsString(result))
-          document.select(".govuk-header__service-name").html shouldBe "Talu’ch cosb am dalu neu gyflwyno TWE yn hwyr"
+          document.select(".govuk-service-navigation__service-name").text() shouldBe "Talu’ch cosb am dalu neu gyflwyno TWE yn hwyr"
           testStaticContentWelsh(document)
         }
 
@@ -2202,7 +2205,7 @@ class FeesControllerSpec extends ItSpec {
           PayApiStub.stubForFindBySessionId2xx(TestJourneys.WcEpayeNi.journeyBeforeBeginWebPayment)
           val result   = systemUnderTest.renderPage(fakeRequest)
           val document = Jsoup.parse(contentAsString(result))
-          document.select(".govuk-header__service-name").html shouldBe "Pay your employers’ PAYE and National Insurance"
+          document.select(".govuk-service-navigation__service-name").text() shouldBe "Pay your employers’ PAYE and National Insurance"
           testStaticContentEnglish(document)
         }
 
@@ -2210,7 +2213,7 @@ class FeesControllerSpec extends ItSpec {
           PayApiStub.stubForFindBySessionId2xx(TestJourneys.WcEpayeNi.journeyBeforeBeginWebPayment)
           val result   = systemUnderTest.renderPage(fakeWelshRequest)
           val document = Jsoup.parse(contentAsString(result))
-          document.select(".govuk-header__service-name").html shouldBe "Talwch eich TWE a’ch Yswiriant Gwladol y cyflogwr"
+          document.select(".govuk-service-navigation__service-name").text() shouldBe "Talwch eich TWE a’ch Yswiriant Gwladol y cyflogwr"
           testStaticContentWelsh(document)
         }
 
@@ -2276,7 +2279,7 @@ class FeesControllerSpec extends ItSpec {
           PayApiStub.stubForFindBySessionId2xx(TestJourneys.BtaSdil.journeyBeforeBeginWebPayment)
           val result   = systemUnderTest.renderPage(fakeRequest)
           val document = Jsoup.parse(contentAsString(result))
-          document.select(".govuk-header__service-name").html shouldBe "Pay the Soft Drinks Industry Levy"
+          document.select(".govuk-service-navigation__service-name").text() shouldBe "Pay the Soft Drinks Industry Levy"
           testStaticContentEnglish(document)
         }
 
@@ -2284,7 +2287,7 @@ class FeesControllerSpec extends ItSpec {
           PayApiStub.stubForFindBySessionId2xx(TestJourneys.BtaSdil.journeyBeforeBeginWebPayment)
           val result   = systemUnderTest.renderPage(fakeWelshRequest)
           val document = Jsoup.parse(contentAsString(result))
-          document.select(".govuk-header__service-name").html shouldBe "Talu Ardoll y Diwydiant Diodydd Ysgafn"
+          document.select(".govuk-service-navigation__service-name").text() shouldBe "Talu Ardoll y Diwydiant Diodydd Ysgafn"
           testStaticContentWelsh(document)
         }
 
@@ -2361,7 +2364,7 @@ class FeesControllerSpec extends ItSpec {
           PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSdil.journeyBeforeBeginWebPayment)
           val result   = systemUnderTest.renderPage(fakeRequest)
           val document = Jsoup.parse(contentAsString(result))
-          document.select(".govuk-header__service-name").html shouldBe "Pay the Soft Drinks Industry Levy"
+          document.select(".govuk-service-navigation__service-name").text() shouldBe "Pay the Soft Drinks Industry Levy"
           testStaticContentEnglish(document)
         }
 
@@ -2369,7 +2372,7 @@ class FeesControllerSpec extends ItSpec {
           PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSdil.journeyBeforeBeginWebPayment)
           val result   = systemUnderTest.renderPage(fakeWelshRequest)
           val document = Jsoup.parse(contentAsString(result))
-          document.select(".govuk-header__service-name").html shouldBe "Talu Ardoll y Diwydiant Diodydd Ysgafn"
+          document.select(".govuk-service-navigation__service-name").text() shouldBe "Talu Ardoll y Diwydiant Diodydd Ysgafn"
           testStaticContentWelsh(document)
         }
 
@@ -2473,7 +2476,7 @@ class FeesControllerSpec extends ItSpec {
           PayApiStub.stubForFindBySessionId2xx(TestJourneys.WcEpayeLateCis.journeyBeforeBeginWebPayment)
           val result   = systemUnderTest.renderPage(fakeRequest)
           val document = Jsoup.parse(contentAsString(result))
-          document.select(".govuk-header__service-name").html shouldBe "Pay your Construction Industry Scheme penalty"
+          document.select(".govuk-service-navigation__service-name").text() shouldBe "Pay your Construction Industry Scheme penalty"
           testStaticContentEnglish(document)
         }
 
@@ -2481,7 +2484,7 @@ class FeesControllerSpec extends ItSpec {
           PayApiStub.stubForFindBySessionId2xx(TestJourneys.WcEpayeLateCis.journeyBeforeBeginWebPayment)
           val result   = systemUnderTest.renderPage(fakeWelshRequest)
           val document = Jsoup.parse(contentAsString(result))
-          document.select(".govuk-header__service-name").html shouldBe "Talwch eich cosb - Cynllun y Diwydiant Adeiladu"
+          document.select(".govuk-service-navigation__service-name").text() shouldBe "Talwch eich cosb - Cynllun y Diwydiant Adeiladu"
           testStaticContentWelsh(document)
         }
 
@@ -2547,7 +2550,7 @@ class FeesControllerSpec extends ItSpec {
           PayApiStub.stubForFindBySessionId2xx(TestJourneys.WcEpayeSeta.journeyBeforeBeginWebPayment)
           val result   = systemUnderTest.renderPage(fakeRequest)
           val document = Jsoup.parse(contentAsString(result))
-          document.select(".govuk-header__service-name").html shouldBe "Pay your PAYE Settlement Agreement"
+          document.select(".govuk-service-navigation__service-name").text() shouldBe "Pay your PAYE Settlement Agreement"
           testStaticContentEnglish(document)
         }
 
@@ -2555,7 +2558,7 @@ class FeesControllerSpec extends ItSpec {
           PayApiStub.stubForFindBySessionId2xx(TestJourneys.WcEpayeSeta.journeyBeforeBeginWebPayment)
           val result   = systemUnderTest.renderPage(fakeWelshRequest)
           val document = Jsoup.parse(contentAsString(result))
-          document.select(".govuk-header__service-name").html shouldBe "Talwch eich Cytundeb Setliad TWE y cyflogwr"
+          document.select(".govuk-service-navigation__service-name").text() shouldBe "Talwch eich Cytundeb Setliad TWE y cyflogwr"
           testStaticContentWelsh(document)
         }
 
@@ -2621,7 +2624,7 @@ class FeesControllerSpec extends ItSpec {
           PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfChildBenefitRepayments.journeyBeforeBeginWebPayment)
           val result   = systemUnderTest.renderPage(fakeRequest)
           val document = Jsoup.parse(contentAsString(result))
-          document.select(".govuk-header__service-name").html shouldBe "Repay Child Benefit overpayments"
+          document.select(".govuk-service-navigation__service-name").text() shouldBe "Repay Child Benefit overpayments"
           testStaticContentEnglish(document)
         }
 
@@ -2629,7 +2632,7 @@ class FeesControllerSpec extends ItSpec {
           PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfChildBenefitRepayments.journeyBeforeBeginWebPayment)
           val result   = systemUnderTest.renderPage(fakeWelshRequest)
           val document = Jsoup.parse(contentAsString(result))
-          document.select(".govuk-header__service-name").html shouldBe "Ad-dalu gordaliadau Budd-dal Plant"
+          document.select(".govuk-service-navigation__service-name").text() shouldBe "Ad-dalu gordaliadau Budd-dal Plant"
           testStaticContentWelsh(document)
         }
 
@@ -2695,7 +2698,7 @@ class FeesControllerSpec extends ItSpec {
           PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfJobRetentionScheme.journeyBeforeBeginWebPayment)
           val result   = systemUnderTest.renderPage(fakeRequest)
           val document = Jsoup.parse(contentAsString(result))
-          document.select(".govuk-header__service-name").html shouldBe "Pay Coronavirus Job Retention Scheme grants back"
+          document.select(".govuk-service-navigation__service-name").text() shouldBe "Pay Coronavirus Job Retention Scheme grants back"
           testStaticContentEnglish(document)
         }
 
@@ -2703,7 +2706,7 @@ class FeesControllerSpec extends ItSpec {
           PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfJobRetentionScheme.journeyBeforeBeginWebPayment)
           val result   = systemUnderTest.renderPage(fakeWelshRequest)
           val document = Jsoup.parse(contentAsString(result))
-          document.select(".govuk-header__service-name").html shouldBe "Talu grantiau’r Cynllun Cadw Swyddi yn sgil Coronafeirws yn ôl"
+          document.select(".govuk-service-navigation__service-name").text() shouldBe "Talu grantiau’r Cynllun Cadw Swyddi yn sgil Coronafeirws yn ôl"
           testStaticContentWelsh(document)
         }
 
@@ -2790,7 +2793,7 @@ class FeesControllerSpec extends ItSpec {
           PayApiStub.stubForFindBySessionId2xx(TestJourneys.JrsJobRetentionScheme.journeyBeforeBeginWebPayment)
           val result   = systemUnderTest.renderPage(fakeRequest)
           val document = Jsoup.parse(contentAsString(result))
-          document.select(".govuk-header__service-name").html shouldBe "Pay Coronavirus Job Retention Scheme grants back"
+          document.select(".govuk-service-navigation__service-name").text() shouldBe "Pay Coronavirus Job Retention Scheme grants back"
           testStaticContentEnglish(document)
         }
 
@@ -2798,7 +2801,7 @@ class FeesControllerSpec extends ItSpec {
           PayApiStub.stubForFindBySessionId2xx(TestJourneys.JrsJobRetentionScheme.journeyBeforeBeginWebPayment)
           val result   = systemUnderTest.renderPage(fakeWelshRequest)
           val document = Jsoup.parse(contentAsString(result))
-          document.select(".govuk-header__service-name").html shouldBe "Talu grantiau’r Cynllun Cadw Swyddi yn sgil Coronafeirws yn ôl"
+          document.select(".govuk-service-navigation__service-name").text() shouldBe "Talu grantiau’r Cynllun Cadw Swyddi yn sgil Coronafeirws yn ôl"
           testStaticContentWelsh(document)
         }
 
@@ -2868,7 +2871,7 @@ class FeesControllerSpec extends ItSpec {
           PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfCds.journeyBeforeBeginWebPayment)
           val result   = systemUnderTest.renderPage(fakeRequest)
           val document = Jsoup.parse(contentAsString(result))
-          document.select(".govuk-header__service-name").html shouldBe "Customs Declaration Service"
+          document.select(".govuk-service-navigation__service-name").text() shouldBe "Customs Declaration Service"
           testStaticContentEnglish(document)
         }
 
@@ -2915,7 +2918,7 @@ class FeesControllerSpec extends ItSpec {
           PayApiStub.stubForFindBySessionId2xx(TestJourneys.NiEuVatOss.journeyBeforeBeginWebPayment)
           val result   = systemUnderTest.renderPage(fakeRequest)
           val document = Jsoup.parse(contentAsString(result))
-          document.select(".govuk-header__service-name").html shouldBe "Pay your One Stop Shop VAT Return"
+          document.select(".govuk-service-navigation__service-name").text() shouldBe "Pay your One Stop Shop VAT Return"
           testStaticContentEnglish(document)
         }
 
@@ -2963,7 +2966,7 @@ class FeesControllerSpec extends ItSpec {
           PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfNiEuVatOss.journeyBeforeBeginWebPayment)
           val result   = systemUnderTest.renderPage(fakeRequest)
           val document = Jsoup.parse(contentAsString(result))
-          document.select(".govuk-header__service-name").html shouldBe "Pay your One Stop Shop VAT Return"
+          document.select(".govuk-service-navigation__service-name").text() shouldBe "Pay your One Stop Shop VAT Return"
           testStaticContentEnglish(document)
         }
 
@@ -3011,7 +3014,7 @@ class FeesControllerSpec extends ItSpec {
           PayApiStub.stubForFindBySessionId2xx(TestJourneys.NiEuVatIoss.journeyBeforeBeginWebPayment)
           val result   = systemUnderTest.renderPage(fakeRequest)
           val document = Jsoup.parse(contentAsString(result))
-          document.select(".govuk-header__service-name").html shouldBe "Pay your Import One Stop Shop VAT Return"
+          document.select(".govuk-service-navigation__service-name").text() shouldBe "Pay your Import One Stop Shop VAT Return"
           testStaticContentEnglish(document)
         }
 
@@ -3059,7 +3062,7 @@ class FeesControllerSpec extends ItSpec {
           PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfNiEuVatIoss.journeyBeforeBeginWebPayment)
           val result   = systemUnderTest.renderPage(fakeRequest)
           val document = Jsoup.parse(contentAsString(result))
-          document.select(".govuk-header__service-name").html shouldBe "Pay your Import One Stop Shop VAT Return"
+          document.select(".govuk-service-navigation__service-name").text() shouldBe "Pay your Import One Stop Shop VAT Return"
           testStaticContentEnglish(document)
         }
 
@@ -3105,7 +3108,7 @@ class FeesControllerSpec extends ItSpec {
           PayApiStub.stubForFindBySessionId2xx(TestJourneys.DdSdil.journeyBeforeBeginWebPayment)
           val result   = systemUnderTest.renderPage(fakeRequest)
           val document = Jsoup.parse(contentAsString(result))
-          document.select(".govuk-header__service-name").html shouldBe "Pay the Soft Drinks Industry Levy"
+          document.select(".govuk-service-navigation__service-name").text() shouldBe "Pay the Soft Drinks Industry Levy"
           testStaticContentEnglish(document)
         }
 
@@ -3113,7 +3116,7 @@ class FeesControllerSpec extends ItSpec {
           PayApiStub.stubForFindBySessionId2xx(TestJourneys.DdSdil.journeyBeforeBeginWebPayment)
           val result   = systemUnderTest.renderPage(fakeWelshRequest)
           val document = Jsoup.parse(contentAsString(result))
-          document.select(".govuk-header__service-name").html shouldBe "Talu Ardoll y Diwydiant Diodydd Ysgafn"
+          document.select(".govuk-service-navigation__service-name").text() shouldBe "Talu Ardoll y Diwydiant Diodydd Ysgafn"
           testStaticContentWelsh(document)
         }
 
@@ -3179,7 +3182,7 @@ class FeesControllerSpec extends ItSpec {
           PayApiStub.stubForFindBySessionId2xx(TestJourneys.DdVat.journeyBeforeBeginWebPayment)
           val result   = systemUnderTest.renderPage(fakeRequest)
           val document = Jsoup.parse(contentAsString(result))
-          document.select(".govuk-header__service-name").html shouldBe "Business tax account"
+          document.select(".govuk-service-navigation__service-name").text() shouldBe "Business tax account"
           testStaticContentEnglish(document)
         }
 
@@ -3187,7 +3190,7 @@ class FeesControllerSpec extends ItSpec {
           PayApiStub.stubForFindBySessionId2xx(TestJourneys.DdVat.journeyBeforeBeginWebPayment)
           val result   = systemUnderTest.renderPage(fakeWelshRequest)
           val document = Jsoup.parse(contentAsString(result))
-          document.select(".govuk-header__service-name").html shouldBe "Cyfrif treth busnes"
+          document.select(".govuk-service-navigation__service-name").text() shouldBe "Cyfrif treth busnes"
           testStaticContentWelsh(document)
         }
 

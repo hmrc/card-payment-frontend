@@ -54,7 +54,7 @@ class PaymentStatusControllerSpec extends ItSpec {
         val document = Jsoup.parse(contentAsString(result))
         document.title shouldBe "Make your payment - Pay your Self Assessment - GOV.UK"
         document.select("h1").text() shouldBe "Make your payment"
-        document.select(".govuk-header__service-name").text() shouldBe "Pay your Self Assessment"
+        document.select(".govuk-service-navigation__service-name").text() shouldBe "Pay your Self Assessment"
 
         val iframe = document.select("iframe")
         iframe.attr("title") shouldBe "Make your payment"
@@ -77,7 +77,7 @@ class PaymentStatusControllerSpec extends ItSpec {
         PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyAfterBeginWebPayment)
         val result   = systemUnderTest.showIframe(RedirectUrl("http://localhost:8080"))(fakeRequest)
         val document = Jsoup.parse(contentAsString(result))
-        document.select(".hmrc-language-select__list-item").isEmpty shouldBe true
+        document.select(".hmrc-service-navigation-language-select").isEmpty shouldBe true
       }
 
       "should render the iframe page with the iframe scroll javascript fix" in {

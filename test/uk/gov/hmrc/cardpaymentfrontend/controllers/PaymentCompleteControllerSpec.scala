@@ -57,8 +57,8 @@ class PaymentCompleteControllerSpec extends ItSpec {
         val result                       = systemUnderTest.renderPage(fakeGetRequest)
         status(result) shouldBe Status.OK
         val document                     = Jsoup.parse(contentAsString(result))
-        val langToggleText: List[String] = document.select(".hmrc-language-select__list-item").eachText().asScala.toList
-        langToggleText should contain theSameElementsAs List("English", "Newid yr iaith i’r Gymraeg Cymraeg") // checking the visually hidden text, it's simpler
+        val langToggleText: List[String] = document.select(".hmrc-service-navigation-language-select").eachText().asScala.toList
+        langToggleText should contain theSameElementsAs List("ENG CYM – Newid yr iaith i’r Gymraeg") // checking the visually hidden text, it's simpler
       }
 
       "show the Title tab correctly in English" in {
