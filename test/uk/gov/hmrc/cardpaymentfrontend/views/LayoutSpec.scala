@@ -147,7 +147,6 @@ class LayoutSpec extends ItSpec {
       PayApiStub.stubForFindBySessionId2xx(TestHelpers.deriveTestDataFromOrigin(o).journeyBeforeBeginWebPayment)
       val result   = addressController.renderPage(fakeRequest)
       val document = Jsoup.parse(contentAsString(result))
-      println(document)
       document
         .select(".govuk-header__content")
         .select("a")
@@ -219,7 +218,6 @@ class NewLayoutSpec extends ItSpec {
         PayApiStub.stubForFindBySessionId2xx(TestHelpers.deriveTestDataFromOrigin(o).journeyBeforeBeginWebPayment)
         val result   = addressController.renderPage(fakeRequest)
         val document = Jsoup.parse(contentAsString(result))
-        println(document)
         document
           .select(".govuk-service-navigation__service-name")
           .select("a")
