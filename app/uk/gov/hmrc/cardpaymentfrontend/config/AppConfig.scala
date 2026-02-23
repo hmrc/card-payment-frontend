@@ -71,6 +71,5 @@ class AppConfig @Inject() (config: Configuration, servicesConfig: ServicesConfig
 
   object FeatureFlags {
     val ptaP800OpenBankingEnabled: Boolean          = config.get[Boolean]("feature-flags.pta-p800.open-banking-enabled")
-    val featureNewServiceNavigationEnabled: Boolean = config.get[Boolean]("feature-flags.new-service-navigation-enabled")
   }
 }
