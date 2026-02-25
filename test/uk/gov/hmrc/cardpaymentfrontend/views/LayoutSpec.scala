@@ -156,7 +156,7 @@ class LayoutSpec extends ItSpec {
 
 }
 
-// To be removed when old service navigation is removed as part of TODO: New Ticket ID here
+// To be removed when old service navigation is removed as part of OPS-14658
 class NewLayoutSpec extends ItSpec {
   override lazy val configOverrides: Map[String, Any]              = Map(
     "play-frontend-hmrc.forceServiceNavigation" -> true
