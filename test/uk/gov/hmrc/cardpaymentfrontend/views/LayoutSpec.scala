@@ -29,11 +29,11 @@ import scala.jdk.CollectionConverters.CollectionHasAsScala
 
 class LayoutSpec extends ItSpec {
 
-  private val feesController: FeesController       = app.injector.instanceOf[FeesController]
-  private val addressController: AddressController = app.injector.instanceOf[AddressController]
-  private val paymentCompleteController            = app.injector.instanceOf[PaymentCompleteController]
+  private val feesController: FeesController                       = app.injector.instanceOf[FeesController]
+  private val addressController: AddressController                 = app.injector.instanceOf[AddressController]
+  private val paymentCompleteController: PaymentCompleteController = app.injector.instanceOf[PaymentCompleteController]
 
-  "HMRC Standard Header is shown correctly" in {
+  "HMRC Standard Header is shown correctly for old Service Navigation" in {
     val fakeRequest = FakeRequest("GET", "/card-fees").withSessionId()
 
     PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyBeforeBeginWebPayment)
@@ -111,7 +111,7 @@ class LayoutSpec extends ItSpec {
     techIssueLink.attr("href") should include("/contact/report-technical-problem")
   }
 
-  "render layout with /pay/make-a-payment-now as the service url href when origin is a webchat origin" in {
+  "render layout with /pay/make-a-payment-now as the service url href when origin is a webchat origin using old service navigation" in {
     val fakeRequest = FakeRequest("GET", "/card-fees").withSessionId()
     TestHelpers.webChatOrigins.diff(TestHelpers.unimplementedOrigins).foreach { o =>
       PayApiStub.stubForFindBySessionId2xx(TestHelpers.deriveTestDataFromOrigin(o).journeyBeforeBeginWebPayment)
@@ -126,7 +126,7 @@ class LayoutSpec extends ItSpec {
     }
   }
 
-  "render payment-complete page as the service url href when origin is a webchat origin and payment is completed" in {
+  "render payment-complete page as the service url href when origin is a webchat origin and payment is completed using old service navigation" in {
     val fakeRequest = FakeRequest("GET", "/card-fees").withSessionId()
     TestHelpers.webChatOrigins.diff(TestHelpers.unimplementedOrigins).foreach { o =>
       PayApiStub.stubForFindBySessionId2xx(TestHelpers.deriveTestDataFromOrigin(o).journeyAfterSucceedDebitWebPayment)
@@ -141,7 +141,7 @@ class LayoutSpec extends ItSpec {
     }
   }
 
-  "render layout with /pay as the service url href when origin is not a webchat origin" in {
+  "render layout with /pay as the service url href when origin is not a webchat origin using old service navigation" in {
     val fakeRequest = FakeRequest("GET", "/card-fees").withSessionId()
     TestHelpers.implementedOrigins.diff(TestHelpers.webChatOrigins).foreach { o =>
       PayApiStub.stubForFindBySessionId2xx(TestHelpers.deriveTestDataFromOrigin(o).journeyBeforeBeginWebPayment)
@@ -153,4 +153,77 @@ class LayoutSpec extends ItSpec {
         .attr("href") shouldBe "http://localhost:9056/pay" withClue s"expected href to be /pay for origin: ${o.entryName}"
     }
   }
+
+}
+
+// To be removed when old service navigation is removed as part of OPS-14658
+class NewLayoutSpec extends ItSpec {
+  override lazy val configOverrides: Map[String, Any]              = Map(
+    "play-frontend-hmrc.forceServiceNavigation" -> true
+  )
+  private val feesController: FeesController                       = app.injector.instanceOf[FeesController]
+  private val addressController: AddressController                 = app.injector.instanceOf[AddressController]
+  private val paymentCompleteController: PaymentCompleteController = app.injector.instanceOf[PaymentCompleteController]
+
+  "When New Service Navigation is enabled" - {
+
+    "HMRC Standard Header is shown correctly for new Service Navigation" in {
+      val fakeRequest = FakeRequest("GET", "/card-fees").withSessionId()
+
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyBeforeBeginWebPayment)
+      val result   = feesController.renderPage(fakeRequest)
+      val document = Jsoup.parse(contentAsString(result))
+
+      val govUkLogoLink = document.select(".govuk-header__logo a").first()
+      govUkLogoLink.attr("href") shouldBe "https://www.gov.uk"
+      govUkLogoLink.text().trim shouldBe "GOV.UK"
+
+      val serviceNameLink = document.select(".govuk-service-navigation__service-name").first()
+      serviceNameLink.text().trim shouldBe "Pay your Self Assessment"
+    }
+
+    "render layout with /pay/make-a-payment-now as the service url href when origin is a webchat origin using new service navigation" in {
+      val fakeRequest = FakeRequest("GET", "/card-fees").withSessionId()
+      TestHelpers.webChatOrigins.diff(TestHelpers.unimplementedOrigins).foreach { o =>
+        PayApiStub.stubForFindBySessionId2xx(TestHelpers.deriveTestDataFromOrigin(o).journeyBeforeBeginWebPayment)
+        val result   = addressController.renderPage(fakeRequest)
+        val document = Jsoup.parse(contentAsString(result))
+        document
+          .select(".govuk-service-navigation__service-name")
+          .select("a")
+          .attr(
+            "href"
+          ) shouldBe "http://localhost:9056/pay/make-a-payment-now" withClue s"expected href to be webchat landing page for implemented webchat origin: ${o.entryName}"
+      }
+    }
+
+    "render payment-complete page as the service url href when origin is a webchat origin and payment is completed using new service navigation" in {
+      val fakeRequest = FakeRequest("GET", "/card-fees").withSessionId()
+      TestHelpers.webChatOrigins.diff(TestHelpers.unimplementedOrigins).foreach { o =>
+        PayApiStub.stubForFindBySessionId2xx(TestHelpers.deriveTestDataFromOrigin(o).journeyAfterSucceedDebitWebPayment)
+        val result   = paymentCompleteController.renderPage(fakeRequest)
+        val document = Jsoup.parse(contentAsString(result))
+        document
+          .select(".govuk-service-navigation__service-name")
+          .select("a")
+          .attr(
+            "href"
+          ) shouldBe "/pay-by-card/payment-complete" withClue s"expected href to be payment-complete page for implemented webchat origin: ${o.entryName}"
+      }
+    }
+
+    "render layout with /pay as the service url href when origin is not a webchat origin using new service navigation" in {
+      val fakeRequest = FakeRequest("GET", "/card-fees").withSessionId()
+      TestHelpers.implementedOrigins.diff(TestHelpers.webChatOrigins).foreach { o =>
+        PayApiStub.stubForFindBySessionId2xx(TestHelpers.deriveTestDataFromOrigin(o).journeyBeforeBeginWebPayment)
+        val result   = addressController.renderPage(fakeRequest)
+        val document = Jsoup.parse(contentAsString(result))
+        document
+          .select(".govuk-service-navigation__service-name")
+          .select("a")
+          .attr("href") shouldBe "http://localhost:9056/pay" withClue s"expected href to be /pay for origin: ${o.entryName}"
+      }
+    }
+  }
+
 }

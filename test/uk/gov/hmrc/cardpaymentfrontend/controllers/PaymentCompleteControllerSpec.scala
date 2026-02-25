@@ -546,7 +546,6 @@ class PaymentCompleteControllerSpec extends ItSpec {
         val result                          = systemUnderTest.renderPage(fakeGetRequestInWelsh)
         val document                        = Jsoup.parse(contentAsString(result))
         val panel                           = document.body().select(".govuk-panel--confirmation")
-        println(document.toString)
         panel.select("h1").text() shouldBe "Taliad wedi’i gwblhau"
         panel.select(".govuk-panel__body").html() shouldBe "Cyfeirnod\n<br>\n<strong>XAPR9876543210</strong>"
         document
