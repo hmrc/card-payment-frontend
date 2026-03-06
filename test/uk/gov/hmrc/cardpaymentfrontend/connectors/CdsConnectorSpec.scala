@@ -32,7 +32,7 @@ class CdsConnectorSpec extends ItSpec {
   "getCashDepositSubscriptionDetails" - {
     "should return a CdsResponse" in {
       CdsStub.stubGetCashDepositSubscriptionDetail2xx(TestPayApiData.testCdsRef)
-      val result = systemUnderTest.getCashDepositSubscriptionDetails(TestPayApiData.testCdsRef)(headerCarrier).futureValue
+      val result = systemUnderTest.getCashDepositSubscriptionDetails(TestPayApiData.testCdsRef)(using headerCarrier).futureValue
       result shouldBe CdsResponse(
         GetCashDepositSubscriptionDetailsResponse(
           ResponseCommon("Ok", "2018-09-24T11:01:01Z"),
@@ -43,7 +43,7 @@ class CdsConnectorSpec extends ItSpec {
     }
     "should error when cds service errors" in {
       CdsStub.stubGetCashDepositSubscriptionDetail5xx(TestPayApiData.testCdsRef)
-      val error: Exception = intercept[Exception](systemUnderTest.getCashDepositSubscriptionDetails(TestPayApiData.testCdsRef)(headerCarrier).futureValue)
+      val error: Exception = intercept[Exception](systemUnderTest.getCashDepositSubscriptionDetails(TestPayApiData.testCdsRef)(using headerCarrier).futureValue)
       error.getCause.getMessage should include(
         s"GET of 'http://127.0.0.1:${wireMockPort.toString}/accounts/getcashdepositsubscriptiondetails/v1?paymentReference=CDSI191234567890' returned 503."
       )
@@ -68,12 +68,12 @@ class CdsConnectorSpec extends ItSpec {
 
     "should return a HttpResponse with a status" in {
       CdsStub.stubNotification2xx(Json.toJson(testCdsNotification))
-      val result = systemUnderTest.sendNotification(testCdsNotification)(TestPayApiData.testTransactionReference)(headerCarrier).futureValue
+      val result = systemUnderTest.sendNotification(testCdsNotification)(TestPayApiData.testTransactionReference)(using headerCarrier).futureValue
       result.status shouldBe 200
     }
     "should return HttpResonse with error code status when cds errors" in {
       CdsStub.stubNotification5xx()
-      val result = systemUnderTest.sendNotification(testCdsNotification)(TestPayApiData.testTransactionReference)(headerCarrier).futureValue
+      val result = systemUnderTest.sendNotification(testCdsNotification)(TestPayApiData.testTransactionReference)(using headerCarrier).futureValue
       result.status shouldBe 503
     }
   }
