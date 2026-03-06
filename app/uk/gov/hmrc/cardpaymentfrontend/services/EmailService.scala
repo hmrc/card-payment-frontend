@@ -23,6 +23,7 @@ import play.api.i18n.{Messages, MessagesApi}
 import play.api.mvc.Request
 import uk.gov.hmrc.cardpaymentfrontend.config.AppConfig
 import uk.gov.hmrc.cardpaymentfrontend.connectors.EmailConnector
+import uk.gov.hmrc.cardpaymentfrontend.logging.KibanaLogger
 import uk.gov.hmrc.cardpaymentfrontend.models.EmailAddress
 import uk.gov.hmrc.cardpaymentfrontend.models.email.{EmailParameters, EmailRequest}
 import uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins.ExtendedOrigin
@@ -47,7 +48,7 @@ class EmailService @Inject() (
     headerCarrier: HeaderCarrier,
     request:       Request[?]
   ): Future[Unit] = {
-    logger.info("Email sent on successful payment")
+    KibanaLogger.info("Email sent on successful payment")
     emailConnector.sendEmail(
       buildEmailRequest(journey, emailAddress, isEnglish)
     )(headerCarrier)

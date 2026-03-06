@@ -21,6 +21,7 @@ import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.cardpaymentfrontend.actions.{Actions, JourneyRequest}
 import uk.gov.hmrc.cardpaymentfrontend.forms.AddressForm
+import uk.gov.hmrc.cardpaymentfrontend.logging.KibanaLogger
 import uk.gov.hmrc.cardpaymentfrontend.models.Address
 import uk.gov.hmrc.cardpaymentfrontend.requests.RequestSupport
 import uk.gov.hmrc.cardpaymentfrontend.services.{CountriesService, PaymentService}
@@ -40,11 +41,12 @@ class AddressController @Inject() (
   mcc:              MessagesControllerComponents,
   requestSupport:   RequestSupport,
   paymentService:   PaymentService
-)(implicit executionContext: ExecutionContext)
+)(using executionContext: ExecutionContext)
     extends FrontendController(mcc)
     with Logging {
 
   import requestSupport.*
+
   val renderPage: Action[AnyContent] = actions.journeyAction { implicit journeyRequest: JourneyRequest[AnyContent] =>
     val form: Form[Address] = addressInSession.fold(AddressForm.form())(address => AddressForm.form().fill(address))
     Ok(addressPage(form, countriesService.getCountries))
@@ -63,7 +65,7 @@ class AddressController @Inject() (
           // If an address is not present in session, proceed. If there is one in session, check if it's changed. If it has changed, reset order.
           addressInSession.fold(Future.successful(successResult)) { addressFromSession =>
             if (addressIsDifferent(address, addressFromSession)) {
-              logger.info("Address being submitted differs from what is currently in journey, resetting order.")
+              KibanaLogger.info("Address being submitted differs from what is currently in journey, resetting order.")
               for {
                 _ <- paymentService.resetSentJourney()
               } yield successResult
@@ -73,7 +75,7 @@ class AddressController @Inject() (
       )
   }
 
-  private[controllers] def addressInSession(implicit journeyRequest: JourneyRequest[?]): Option[Address] =
+  private[controllers] def addressInSession(using journeyRequest: JourneyRequest[?]): Option[Address] =
     journeyRequest.readFromSession[Address](journeyRequest.journeyId, Keys.address)
 
   private[controllers] def addressIsDifferent(addressA: Address, addressB: Address): Boolean = addressA =!= addressB

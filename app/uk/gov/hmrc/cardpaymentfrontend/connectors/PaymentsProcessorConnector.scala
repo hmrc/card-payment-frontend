@@ -26,22 +26,23 @@ import uk.gov.hmrc.cardpaymentfrontend.models.notifications.{ModsNotification, N
 import uk.gov.hmrc.http.client.HttpClientV2
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, StringContextOps}
 import uk.gov.hmrc.http.HttpReads.Implicits.*
+
 import java.net.URL
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Failure, Success}
 
 @Singleton
-class PaymentsProcessorConnector @Inject() (appConfig: AppConfig, httpClientV2: HttpClientV2)(implicit executionContext: ExecutionContext) extends Logging {
+class PaymentsProcessorConnector @Inject() (appConfig: AppConfig, httpClientV2: HttpClientV2)(using executionContext: ExecutionContext) extends Logging {
 
   private val paymentsProcessorBaseUrl: String = appConfig.paymentsProcessorBaseUrl + "/payments-processor"
   private val modsNotificationUrl: URL         = url"$paymentsProcessorBaseUrl/mib/payment-callback"
 
-  def sendModsNotification(modsNotification: ModsNotification)(implicit headerCarrier: HeaderCarrier): Future[HttpResponse] =
+  def sendModsNotification(modsNotification: ModsNotification)(using headerCarrier: HeaderCarrier): Future[HttpResponse] =
     sendNotificationToPaymentsProcessor(modsNotificationUrl, modsNotification)(NotificationLoggingContext.modsNotificationLoggingContext)
 
   private def sendNotificationToPaymentsProcessor[N](endpoint: URL, notification: N)(
     notificationLoggingContext: NotificationLoggingContext
-  )(implicit writes: Writes[N], headerCarrier: HeaderCarrier): Future[HttpResponse] =
+  )(using writes: Writes[N], headerCarrier: HeaderCarrier): Future[HttpResponse] =
     httpClientV2
       .post(endpoint)
       .withBody(Json.toJson(notification))

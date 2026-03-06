@@ -34,14 +34,14 @@ import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Failure, Success}
 
 @Singleton
-class CdsConnector @Inject() (appConfig: AppConfig, httpClientV2: HttpClientV2)(implicit executionContext: ExecutionContext) extends Logging {
+class CdsConnector @Inject() (appConfig: AppConfig, httpClientV2: HttpClientV2)(using executionContext: ExecutionContext) extends Logging {
 
   private val authHeadersToUse = Seq(("Authorization", s"Bearer ${appConfig.cdsAuthToken}"))
   private val baseUrl: String  = appConfig.cdsBaseUrl + "/accounts"
   private def cdsReferenceCheckUrl(cdsRef: CdsRef) = url"$baseUrl/getcashdepositsubscriptiondetails/v1?paymentReference=${cdsRef.value}"
   private val cdsNotificationUrl = url"$baseUrl/notifyimmediatepayment/v1"
 
-  def getCashDepositSubscriptionDetails(cdsRef: CdsRef)(implicit headerCarrier: HeaderCarrier): Future[CdsResponse] =
+  def getCashDepositSubscriptionDetails(cdsRef: CdsRef)(using headerCarrier: HeaderCarrier): Future[CdsResponse] =
     httpClientV2
       .get(url"${cdsReferenceCheckUrl(cdsRef)}")
       .setHeader(authHeadersToUse: _*)
@@ -49,7 +49,7 @@ class CdsConnector @Inject() (appConfig: AppConfig, httpClientV2: HttpClientV2)(
 
   def sendNotification(
     cdsNotification: CdsNotification
-  )(journeyTransactionReference: TransactionReference)(implicit headerCarrier: HeaderCarrier): Future[HttpResponse] = {
+  )(journeyTransactionReference: TransactionReference)(using headerCarrier: HeaderCarrier): Future[HttpResponse] = {
     val headers: Seq[(String, String)] = authHeadersToUse :+ ("X-Correlation-ID" -> journeyTransactionReference.value) :+ ("Accept" -> "application/json")
     httpClientV2
       .post(cdsNotificationUrl)

@@ -26,7 +26,7 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class JourneyRoutingActionRefiner @Inject() (implicit ec: ExecutionContext) extends ActionRefiner[JourneyRequest, JourneyRequest] with Logging {
+class JourneyRoutingActionRefiner @Inject() ()(using ec: ExecutionContext) extends ActionRefiner[JourneyRequest, JourneyRequest] with Logging {
 
   /** Used to determine the first page an origin should land on. Most origins go straight to card fees page, but Mib and BcPngr origins skip that page (and the
     * email page) to go straight to address page.

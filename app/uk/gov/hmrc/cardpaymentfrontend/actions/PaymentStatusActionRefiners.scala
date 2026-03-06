@@ -38,7 +38,7 @@ class PaymentStatusActionRefiners @Inject() (
   forceDeleteAnswersPage: ForceDeleteAnswersPage,
   payApiConnector:        PayApiConnector,
   requestSupport:         RequestSupport
-)(implicit ec: ExecutionContext)
+)(using ec: ExecutionContext)
     extends Logging {
 
   import requestSupport.*
@@ -51,7 +51,7 @@ class PaymentStatusActionRefiners @Inject() (
         implicit val r: Request[A] = request
 
         payApiConnector
-          .findLatestJourneyBySessionId()(requestSupport.hc)
+          .findLatestJourneyBySessionId()(using requestSupport.hc)
           .flatMap {
             case Some(journey) => Future.successful(Right(new JourneyRequest(journey, request)))
             case None          =>
