@@ -26,16 +26,17 @@ import uk.gov.hmrc.cardpaymentfrontend.models.notifications.PassengersNotificati
 import uk.gov.hmrc.http.client.HttpClientV2
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, StringContextOps}
 import uk.gov.hmrc.http.HttpReads.Implicits.*
+
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Failure, Success}
 
 @Singleton
-class PassengersConnector @Inject() (appConfig: AppConfig, httpClientV2: HttpClientV2)(implicit executionContext: ExecutionContext) extends Logging {
+class PassengersConnector @Inject() (appConfig: AppConfig, httpClientV2: HttpClientV2)(using executionContext: ExecutionContext) extends Logging {
 
   private val baseUrl: String = appConfig.passengersBaseUrl + "/bc-passengers-declarations"
   private val notificationUrl = url"$baseUrl/update-payment"
 
-  def sendNotification(passengersNotification: PassengersNotification)(implicit headerCarrier: HeaderCarrier): Future[HttpResponse] =
+  def sendNotification(passengersNotification: PassengersNotification)(using headerCarrier: HeaderCarrier): Future[HttpResponse] =
     httpClientV2
       .post(notificationUrl)
       .withBody(Json.toJson(passengersNotification))

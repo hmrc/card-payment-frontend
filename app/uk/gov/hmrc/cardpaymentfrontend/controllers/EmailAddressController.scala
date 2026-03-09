@@ -23,6 +23,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.cardpaymentfrontend.forms.EmailAddressForm
 import uk.gov.hmrc.cardpaymentfrontend.models.EmailAddress
 import uk.gov.hmrc.cardpaymentfrontend.actions.{Actions, JourneyRequest}
+import uk.gov.hmrc.cardpaymentfrontend.logging.KibanaLogger
 import uk.gov.hmrc.cardpaymentfrontend.requests.RequestSupport
 import uk.gov.hmrc.cardpaymentfrontend.services.PaymentService
 import uk.gov.hmrc.cardpaymentfrontend.views.html.EmailAddressPage
@@ -55,7 +56,7 @@ class EmailAddressController @Inject() (
       case PaymentStatuses.Created | PaymentStatuses.Successful | PaymentStatuses.SoftDecline | PaymentStatuses.Validated =>
         Future.successful(Redirect(routes.EmailAddressController.renderPage))
       case PaymentStatuses.Sent                                                                                           =>
-        logger.info("User journey in Sent state, attempting to reset order and status.")
+        KibanaLogger.info("User journey in Sent state, attempting to reset order and status.")
         paymentService.resetSentJourneyThenResult(Redirect(routes.EmailAddressController.renderPage))
       case PaymentStatuses.Failed | PaymentStatuses.Cancelled                                                             =>
         paymentService.createCopyOfCancelledOrFailedJourney().map(_ => Redirect(routes.EmailAddressController.renderPage))
@@ -75,7 +76,7 @@ class EmailAddressController @Inject() (
           // If an email is not present in session, proceed. If there is one in session, check if it's changed. If it has changed, reset order.
           emailInSession.fold(Future.successful(successResult)) { emailFromSession =>
             if (emailIsDifferent(email, emailFromSession)) {
-              logger.info("Email being submitted differs from what is currently in journey, resetting order.")
+              KibanaLogger.info("Email being submitted differs from what is currently in journey, resetting order.")
               for {
                 _ <- paymentService.resetSentJourney()
               } yield successResult

@@ -34,19 +34,19 @@ import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Failure, Success}
 
 @Singleton
-class PayApiConnector @Inject() (appConfig: AppConfig, httpClientV2: HttpClientV2)(implicit executionContext: ExecutionContext) extends Logging {
+class PayApiConnector @Inject() (appConfig: AppConfig, httpClientV2: HttpClientV2)(using executionContext: ExecutionContext) extends Logging {
 
   private val findBySessionIdUrl: URL = url"""${appConfig.payApiBaseUrl}/pay-api/journey/find-latest-by-session-id"""
   private def findJourneyByJourneyIdUrl(journeyId: JourneyId): URL = url"""${appConfig.payApiBaseUrl}/pay-api/journey/${journeyId.value}"""
 
-  def findLatestJourneyBySessionId()(implicit headerCarrier: HeaderCarrier): Future[Option[Journey[JourneySpecificData]]] = {
+  def findLatestJourneyBySessionId()(using headerCarrier: HeaderCarrier): Future[Option[Journey[JourneySpecificData]]] = {
     for {
       _                  <- Future(require(headerCarrier.sessionId.isDefined, "Missing required 'SessionId'"))
       maybeJourneyResult <- httpClientV2.get(findBySessionIdUrl).execute[Option[Journey[JourneySpecificData]]]
     } yield maybeJourneyResult
   }
 
-  def findJourneyByJourneyId(journeyId: JourneyId)(implicit headerCarrier: HeaderCarrier): Future[Option[Journey[JourneySpecificData]]] = {
+  def findJourneyByJourneyId(journeyId: JourneyId)(using headerCarrier: HeaderCarrier): Future[Option[Journey[JourneySpecificData]]] = {
     for {
       maybeJourneyResult <- httpClientV2.get(findJourneyByJourneyIdUrl(journeyId)).execute[Option[Journey[JourneySpecificData]]]
     } yield maybeJourneyResult
@@ -54,7 +54,7 @@ class PayApiConnector @Inject() (appConfig: AppConfig, httpClientV2: HttpClientV
 
   object JourneyUpdates {
 
-    def updateBeginWebPayment(journeyId: String, beginWebPaymentRequest: BeginWebPaymentRequest)(implicit headerCarrier: HeaderCarrier): Future[Unit] =
+    def updateBeginWebPayment(journeyId: String, beginWebPaymentRequest: BeginWebPaymentRequest)(using headerCarrier: HeaderCarrier): Future[Unit] =
       httpClientV2
         .put(url"""${appConfig.payApiBaseUrl}/pay-api/journey/$journeyId/update/begin-web-payment""")
         .withBody(Json.toJson(beginWebPaymentRequest))
@@ -64,7 +64,7 @@ class PayApiConnector @Inject() (appConfig: AppConfig, httpClientV2: HttpClientV
           case Success(_)         => logger.debug("Successfully updated pay-api with BeginWebPaymentRequest")
         }
 
-    def updateSucceedWebPayment(journeyId: String, succeedWebPaymentRequest: SucceedWebPaymentRequest)(implicit headerCarrier: HeaderCarrier): Future[Unit] =
+    def updateSucceedWebPayment(journeyId: String, succeedWebPaymentRequest: SucceedWebPaymentRequest)(using headerCarrier: HeaderCarrier): Future[Unit] =
       httpClientV2
         .put(url"""${appConfig.payApiBaseUrl}/pay-api/journey/$journeyId/update/succeed-web-payment""")
         .withBody(Json.toJson(succeedWebPaymentRequest))
@@ -74,7 +74,7 @@ class PayApiConnector @Inject() (appConfig: AppConfig, httpClientV2: HttpClientV
           case Success(_)         => logger.debug("Successfully updated pay-api with SucceedWebPaymentRequest")
         }
 
-    def updateCancelWebPayment(journeyId: String)(implicit headerCarrier: HeaderCarrier): Future[Unit] =
+    def updateCancelWebPayment(journeyId: String)(using headerCarrier: HeaderCarrier): Future[Unit] =
       httpClientV2
         .put(url"""${appConfig.payApiBaseUrl}/pay-api/journey/$journeyId/update/cancel-web-payment""")
         .execute[Unit]
@@ -83,7 +83,7 @@ class PayApiConnector @Inject() (appConfig: AppConfig, httpClientV2: HttpClientV
           case Success(_)         => logger.debug("Successfully updated pay-api with updateCancelWebPayment")
         }
 
-    def updateFailWebPayment(journeyId: String, failWebPaymentRequest: FailWebPaymentRequest)(implicit headerCarrier: HeaderCarrier): Future[Unit] =
+    def updateFailWebPayment(journeyId: String, failWebPaymentRequest: FailWebPaymentRequest)(using headerCarrier: HeaderCarrier): Future[Unit] =
       httpClientV2
         .put(url"""${appConfig.payApiBaseUrl}/pay-api/journey/$journeyId/update/fail-web-payment""")
         .withBody(Json.toJson(failWebPaymentRequest))
@@ -93,7 +93,7 @@ class PayApiConnector @Inject() (appConfig: AppConfig, httpClientV2: HttpClientV
           case Success(_)         => logger.debug("Successfully updated pay-api with FailWebPaymentRequest")
         }
 
-    def resetWebPayment(journeyId: String)(implicit headerCarrier: HeaderCarrier): Future[Unit] =
+    def resetWebPayment(journeyId: String)(using headerCarrier: HeaderCarrier): Future[Unit] =
       httpClientV2
         .delete(url"${appConfig.payApiBaseUrl}/pay-api/journey/$journeyId/update/reset-web-payment")
         .execute[Unit]
@@ -103,7 +103,7 @@ class PayApiConnector @Inject() (appConfig: AppConfig, httpClientV2: HttpClientV
         }
   }
 
-  def restartJourneyAsNew(journeyId: JourneyId)(implicit headerCarrier: HeaderCarrier): Future[JourneyId] =
+  def restartJourneyAsNew(journeyId: JourneyId)(using headerCarrier: HeaderCarrier): Future[JourneyId] =
     httpClientV2
       .post(url"${appConfig.payApiBaseUrl}/pay-api/journey/${journeyId.value}/restart-journey-as-new")
       .execute[JourneyId]

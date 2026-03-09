@@ -24,6 +24,7 @@ import play.api.mvc.Request
 import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
 import uk.gov.hmrc.cardpaymentfrontend.config.AppConfig
 import uk.gov.hmrc.cardpaymentfrontend.connectors.{CardPaymentConnector, PayApiConnector}
+import uk.gov.hmrc.cardpaymentfrontend.logging.KibanaLogger
 import uk.gov.hmrc.cardpaymentfrontend.models.cardpayment.*
 import uk.gov.hmrc.cardpaymentfrontend.models.payapirequest.{BeginWebPaymentRequest, FailWebPaymentRequest, FinishedWebPaymentRequest, SucceedWebPaymentRequest}
 import uk.gov.hmrc.cardpaymentfrontend.models.{Address, EmailAddress, Language}
@@ -74,7 +75,7 @@ class CardPaymentService @Inject() (
     val clientId: ClientId          = clientIdService.determineClientId(journey, language)
     val clientIdStringToUse: String = if (appConfig.useProductionClientIds) clientId.prodCode else clientId.qaCode
 
-    logger.info(s"Initiating payment for journey ${journey._id.value}")
+    KibanaLogger.info(s"Initiating payment for journey ${journey._id.value}")
 
     // todo eventually we can just use barclaycardaddress model, but we want backwards compatibility with pay-frontend.
     // This way if user ends up on pay-frontend after being on card-payment-frontend (or vice versa) it won't break.
@@ -98,14 +99,14 @@ class CardPaymentService @Inject() (
     )
 
     for {
-      initiatePaymentResponse     <- cardPaymentConnector.initiatePayment(cardPaymentInitiatePaymentRequest)(headerCarrier)
+      initiatePaymentResponse     <- cardPaymentConnector.initiatePayment(cardPaymentInitiatePaymentRequest)(using headerCarrier)
       _                            = auditService.auditPaymentAttempt(addressFromSession, clientIdStringToUse, initiatePaymentResponse.transactionReference)(journeyRequest, headerCarrier)
       payApiBeginWebPaymentRequest = BeginWebPaymentRequest(initiatePaymentResponse.transactionReference, initiatePaymentResponse.redirectUrl)
-      _                           <- payApiConnector.JourneyUpdates.updateBeginWebPayment(journey._id.value, payApiBeginWebPaymentRequest)(
+      _                           <- payApiConnector.JourneyUpdates.updateBeginWebPayment(journey._id.value, payApiBeginWebPaymentRequest)(using
                                        headerCarrier
                                      ) // should we enhance this and error/retry?
     } yield {
-      logger.info(s"Payment initiated for journey ${journey._id.value}.")
+      KibanaLogger.info(s"Payment initiated for journey ${journey._id.value}.")
       initiatePaymentResponse
     }
   }
@@ -117,7 +118,7 @@ class CardPaymentService @Inject() (
   )(implicit journeyRequest: JourneyRequest[?], messagesApi: MessagesApi): Future[Option[CardPaymentResult]] = {
     val clientId: ClientId = clientIdService.determineClientId(journeyRequest.journey, language)
 
-    logger.info(s"Finishing payment for journey $journeyId.")
+    KibanaLogger.info(s"Finishing payment for journey $journeyId.")
 
     val maybeCardPaymentResultF: Future[Option[CardPaymentResult]] = for {
       result                                                   <- cardPaymentConnector.authAndSettle(transactionReference)
@@ -131,18 +132,18 @@ class CardPaymentService @Inject() (
                                                                   }
       maybeWebPaymentRequest: Option[FinishedWebPaymentRequest] = cardPaymentResult.flatMap(cardPaymentResultIntoUpdateWebPaymentRequest)
       _                                                        <- maybeWebPaymentRequest.fold {
-                                                                    logger.info(s"Payment cancelled for journey $journeyId.")
+                                                                    KibanaLogger.info(s"Payment cancelled for journey $journeyId.")
                                                                     payApiConnector.JourneyUpdates
                                                                       .updateCancelWebPayment(journeyId)
                                                                       .map[Option[FinishedWebPaymentRequest]](_ => None)
                                                                   } {
                                                                     case r: FailWebPaymentRequest    =>
-                                                                      logger.info(s"Payment failed for journey $journeyId.")
+                                                                      KibanaLogger.info(s"Payment failed for journey $journeyId.")
                                                                       payApiConnector.JourneyUpdates
                                                                         .updateFailWebPayment(journeyId, r)
                                                                         .map[Option[FinishedWebPaymentRequest]](_ => Some(r))
                                                                     case r: SucceedWebPaymentRequest =>
-                                                                      logger.info(s"Payment finished for journey $journeyId.")
+                                                                      KibanaLogger.info(s"Payment finished for journey $journeyId.")
                                                                       payApiConnector.JourneyUpdates
                                                                         .updateSucceedWebPayment(journeyId, r)
                                                                         .map[Option[FinishedWebPaymentRequest]](_ => Some(r))

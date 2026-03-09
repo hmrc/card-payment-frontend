@@ -35,7 +35,7 @@ class GetJourneyActionRefiner @Inject() (
   payApiConnector:        PayApiConnector,
   requestSupport:         RequestSupport,
   forceDeleteAnswersPage: ForceDeleteAnswersPage
-)(implicit ec: ExecutionContext)
+)(using ec: ExecutionContext)
     extends ActionRefiner[Request, JourneyRequest]
     with Logging {
 
@@ -46,7 +46,7 @@ class GetJourneyActionRefiner @Inject() (
     implicit val r: Request[A] = request
 
     payApiConnector
-      .findLatestJourneyBySessionId()(requestSupport.hc)
+      .findLatestJourneyBySessionId()(using requestSupport.hc)
       .map {
         case Some(journey) => Right(new JourneyRequest(journey, request))
         case None          =>

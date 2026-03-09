@@ -22,7 +22,9 @@ import play.api.Logging
 import play.api.mvc.Result
 import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
 import uk.gov.hmrc.cardpaymentfrontend.connectors.PayApiConnector
+import uk.gov.hmrc.cardpaymentfrontend.logging.KibanaLogger
 import uk.gov.hmrc.cardpaymentfrontend.requests.RequestSupport.*
+
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
@@ -43,7 +45,7 @@ class PaymentService @Inject() (payApiConnector: PayApiConnector)(implicit execu
         Future.successful(())
 
       case ps @ (PaymentStatuses.Cancelled | PaymentStatuses.Failed) =>
-        logger.info(s"Cloning journey as user wants to try again since status is ${ps.entryName} for journeyId ${journeyRequest.journeyId.value}")
+        KibanaLogger.info(s"Cloning journey as user wants to try again since status is ${ps.entryName} for journeyId ${journeyRequest.journeyId.value}")
         payApiConnector.restartJourneyAsNew(journeyRequest.journeyId).map(_ => ())
     }
 

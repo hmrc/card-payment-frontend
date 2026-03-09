@@ -24,7 +24,7 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class JourneyFinishedActionRefiner @Inject() (errorHandler: ErrorHandler)(implicit ec: ExecutionContext)
+class JourneyFinishedActionRefiner @Inject() (errorHandler: ErrorHandler)(using ec: ExecutionContext)
     extends ActionRefiner[JourneyRequest, JourneyRequest]
     with Logging {
 

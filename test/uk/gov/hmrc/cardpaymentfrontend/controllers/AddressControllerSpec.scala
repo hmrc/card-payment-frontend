@@ -584,13 +584,13 @@ class AddressControllerSpec extends ItSpec {
       "should return Some[Address] when there is one in session and it's associated with the 'address' key" in {
         val fakeRequest    = FakeRequest("GET", "/blah").withAddressInSession(TestJourneys.PfSa.journeyBeforeBeginWebPayment._id)
         val journeyRequest = new JourneyRequest(TestJourneys.PfSa.journeyBeforeBeginWebPayment, fakeRequest)
-        val result         = systemUnderTest.addressInSession(journeyRequest)
+        val result         = systemUnderTest.addressInSession(using journeyRequest)
         result shouldBe Some(Address("line1", Some("line2"), Some("city"), Some("county"), Some("AA0AA0"), "GBR"))
       }
       "should return None when there is not one in session associated with the 'address' key" in {
         val fakeRequest    = FakeRequest("GET", "/blah")
         val journeyRequest = new JourneyRequest(TestJourneys.PfSa.journeyBeforeBeginWebPayment, fakeRequest)
-        val result         = systemUnderTest.addressInSession(journeyRequest)
+        val result         = systemUnderTest.addressInSession(using journeyRequest)
         result shouldBe None
       }
     }

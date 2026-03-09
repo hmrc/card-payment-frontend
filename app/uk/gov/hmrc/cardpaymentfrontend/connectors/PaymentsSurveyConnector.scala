@@ -32,13 +32,13 @@ import scala.concurrent.{ExecutionContext, Future}
 class PaymentsSurveyConnector @Inject() (
   appConfig:  AppConfig,
   httpClient: HttpClientV2
-)(implicit
+)(using
   ec:         ExecutionContext
 ) {
 
   private val serviceURL: URL = url"${appConfig.paymentsSurveyBaseUrl}/payments-survey/journey/start"
 
-  def startSurvey(surveyRequest: PaymentSurveyJourneyRequest)(implicit headerCarrier: HeaderCarrier): Future[SsjResponse] = {
+  def startSurvey(surveyRequest: PaymentSurveyJourneyRequest)(using headerCarrier: HeaderCarrier): Future[SsjResponse] = {
     httpClient.post(serviceURL).withBody(Json.toJson(surveyRequest)).execute[SsjResponse]
   }
 }

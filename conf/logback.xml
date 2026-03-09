@@ -10,7 +10,7 @@
 
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
-            <pattern>%date{ISO8601} level=[%highlight(%level)] logger=[%logger] thread=[%thread] rid=[%X{X-Request-ID}] user=[%X{Authorization}] message=[%message] %replace(exception=[%xException]){'^exception=\[\]$',''}%n</pattern>
+            <pattern>%green(%date{ISO8601}) %cyan(level=)[%highlight(%level)] %cyan(message=)[%yellow(%message)] %cyan(logger=)[%white(%logger)] %cyan(sessionId=)[%white(%X{X-Session-ID})] %gray(thread=)[%gray(%thread)] %gray(rid=)[%gray(%X{X-Request-ID})] %gray(user=)[%gray(%X{Authorization})] %replace(exception=[%xException]){'^exception=\[\]$',''}%n</pattern>
         </encoder>
     </appender>
 
@@ -24,9 +24,11 @@
 
     <logger name="com.google.inject" level="INFO"/>
 
-    <logger name="uk.gov" level="INFO"/>
+    <logger name="uk.gov" level="WARN"/>
 
     <logger name="application" level="DEBUG"/>
+
+    <logger name="kibana-logger" level="INFO"/>
 
     <logger name="connector" level="TRACE">
         <appender-ref ref="STDOUT"/>

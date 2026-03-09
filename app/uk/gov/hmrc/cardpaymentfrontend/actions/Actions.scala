@@ -23,24 +23,29 @@ import javax.inject.{Inject, Singleton}
 @Singleton
 class Actions @Inject() (
   actionBuilder:                DefaultActionBuilder,
+  actionFilters:                ActionFilters,
   getJourneyActionRefiner:      GetJourneyActionRefiner,
   journeyFinishedActionRefiner: JourneyFinishedActionRefiner,
   journeyRoutingActionRefiner:  JourneyRoutingActionRefiner,
   paymentStatusActionRefiners:  PaymentStatusActionRefiners
 ) {
 
-  val default: ActionBuilder[Request, AnyContent] = actionBuilder
+  val default: ActionBuilder[Request, AnyContent] = actionBuilder.andThen[Request](actionFilters.defaultKibanaLoggingFilter)
 
-  val journeyAction: ActionBuilder[JourneyRequest, AnyContent] = default.andThen[JourneyRequest](getJourneyActionRefiner)
+  val journeyAction: ActionBuilder[JourneyRequest, AnyContent] =
+    actionBuilder
+      .andThen[JourneyRequest](getJourneyActionRefiner)
+      .andThen[JourneyRequest](actionFilters.journeyKibanaLoggingFilter)
 
   val routedJourneyAction: ActionBuilder[JourneyRequest, AnyContent] = journeyAction.andThen[JourneyRequest](journeyRoutingActionRefiner)
 
   val iframeAction: ActionBuilder[JourneyRequest, AnyContent] = journeyAction.andThen[JourneyRequest](paymentStatusActionRefiners.iframePageActionRefiner)
 
   def paymentStatusAction(encryptedJourneyId: String): ActionBuilder[JourneyRequest, AnyContent] =
-    default
+    actionBuilder
       .andThen[JourneyRequest](paymentStatusActionRefiners.findJourneyBySessionIdFallBackToJourneyIdRefiner(encryptedJourneyId))
       .andThen[JourneyRequest](paymentStatusActionRefiners.paymentStatusActionRefiner)
+      .andThen[JourneyRequest](actionFilters.journeyKibanaLoggingFilter)
 
   val journeyFinishedAction: ActionBuilder[JourneyRequest, AnyContent] = journeyAction.andThen[JourneyRequest](journeyFinishedActionRefiner)
 

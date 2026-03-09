@@ -30,7 +30,7 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class CardPaymentConnector @Inject() (appConfig: AppConfig, httpClientV2: HttpClientV2)(implicit executionContext: ExecutionContext) {
+class CardPaymentConnector @Inject() (appConfig: AppConfig, httpClientV2: HttpClientV2)(using executionContext: ExecutionContext) {
 
   private val cardPaymentBaseUrl: URL                   = url"""${appConfig.cardPaymentBaseUrl}"""
   private val initiatePaymentUrl: URL                   = url"$cardPaymentBaseUrl/card-payment/initiate-payment"
@@ -41,20 +41,20 @@ class CardPaymentConnector @Inject() (appConfig: AppConfig, httpClientV2: HttpCl
 
   def initiatePayment(
     cardPaymentInitiatePaymentRequest: CardPaymentInitiatePaymentRequest
-  )(implicit headerCarrier: HeaderCarrier): Future[CardPaymentInitiatePaymentResponse] =
+  )(using headerCarrier: HeaderCarrier): Future[CardPaymentInitiatePaymentResponse] =
     httpClientV2
       .post(initiatePaymentUrl)
       .setHeader(AUTHORIZATION -> cardPaymentAuthToken)
       .withBody(Json.toJson(cardPaymentInitiatePaymentRequest))
       .execute[CardPaymentInitiatePaymentResponse]
 
-  def authAndSettle(transactionReference: String)(implicit headerCarrier: HeaderCarrier): Future[HttpResponse] =
+  def authAndSettle(transactionReference: String)(using headerCarrier: HeaderCarrier): Future[HttpResponse] =
     httpClientV2
       .post(authAndSettleUrl(transactionReference))
       .setHeader(AUTHORIZATION -> cardPaymentAuthToken)
       .execute[HttpResponse]
 
-  def cancelPayment(transactionReference: String, clientId: String)(implicit headerCarrier: HeaderCarrier): Future[HttpResponse] =
+  def cancelPayment(transactionReference: String, clientId: String)(using headerCarrier: HeaderCarrier): Future[HttpResponse] =
     httpClientV2
       .post(cancelPaymentUrl(transactionReference, clientId))
       .setHeader(AUTHORIZATION -> cardPaymentAuthToken)
