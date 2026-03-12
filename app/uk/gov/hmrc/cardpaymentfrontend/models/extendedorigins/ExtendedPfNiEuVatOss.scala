@@ -54,7 +54,13 @@ object ExtendedPfNiEuVatOss extends ExtendedOrigin {
           CheckYourAnswersRow(
             titleMessageKey = "check-your-details.PfNiEuVatOss.vat-number",
             value = Seq(vrn.canonicalizedValue),
-            changeLink = None
+            changeLink = Some(
+              Link(
+                href = Call("GET", changeReferenceUrl(payFrontendBaseUrl)),
+                linkId = "check-your-details-reference-change-link",
+                messageKey = "check-your-details.change"
+              )
+            )
           ),
           CheckYourAnswersRow(
             titleMessageKey = "check-your-details.PfNiEuVatOss.tax-year",
