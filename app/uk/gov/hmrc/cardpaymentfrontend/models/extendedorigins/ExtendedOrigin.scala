@@ -89,7 +89,7 @@ trait ExtendedOrigin {
       value = Seq(amount(journeyRequest)),
       changeLink = Some(
         Link(
-          href = Call("GET", s"$payFrontendBaseUrl/change-amount?showSummary=false&stayOnPayFrontend=false"),
+          href = Call("GET", s"$payFrontendBaseUrl/change-amount?showSummary=true"),
           linkId = "check-your-details-amount-change-link",
           messageKey = "check-your-details.change"
         )
