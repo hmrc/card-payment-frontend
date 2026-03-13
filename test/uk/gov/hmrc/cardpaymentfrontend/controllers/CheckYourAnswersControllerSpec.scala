@@ -279,7 +279,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
           keyText = "Total to pay",
           valueText = "£12.34",
           actionText = if (shouldBeAbleToChangeAmount) Some("Change Total to pay") else None,
-          actionHref = if (shouldBeAbleToChangeAmount) Some("http://localhost:9056/pay/change-amount?showSummary=false&stayOnPayFrontend=false") else None
+          actionHref = if (shouldBeAbleToChangeAmount) Some("http://localhost:9056/pay/change-amount?showSummary=true") else None
         )
       }
 
@@ -294,7 +294,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
           keyText = "Cyfanswm i’w dalu",
           valueText = "£12.34",
           actionText = if (shouldBeAbleToChangeAmount) Some("Newid Cyfanswm i’w dalu") else None,
-          actionHref = if (shouldBeAbleToChangeAmount) Some("http://localhost:9056/pay/change-amount?showSummary=false&stayOnPayFrontend=false") else None
+          actionHref = if (shouldBeAbleToChangeAmount) Some("http://localhost:9056/pay/change-amount?showSummary=true") else None
         )
       }
 
@@ -1815,7 +1815,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       val result          = systemUnderTest.renderPage(fakeRequest())
       val document        = Jsoup.parse(contentAsString(result))
       val returnPeriodRow = document.select(".govuk-summary-list__row").asScala.toList(1)
-      assertRow(returnPeriodRow, "VAT Number", "101747641", None, None)
+      assertRow(returnPeriodRow, "VAT Number", "101747641", Some("Change VAT Number"), Some("http://localhost:9056/pay/pay-by-card-change-reference-number"))
     }
 
     "[NiEuVatIoss] should render the IOSS Number correctly" in {
@@ -1831,7 +1831,13 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       val result          = systemUnderTest.renderPage(fakeRequest())
       val document        = Jsoup.parse(contentAsString(result))
       val returnPeriodRow = document.select(".govuk-summary-list__row").asScala.toList(1)
-      assertRow(returnPeriodRow, "IOSS Number", "IM1234567890", None, None)
+      assertRow(
+        returnPeriodRow,
+        "IOSS Number",
+        "IM1234567890",
+        Some("Change IOSS Number"),
+        Some("http://localhost:9056/pay/pay-by-card-change-reference-number")
+      )
     }
 
     "[AppSa] should render the payment reference row correctly" in {

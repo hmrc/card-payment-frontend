@@ -54,7 +54,13 @@ object ExtendedPfNiEuVatIoss extends ExtendedOrigin {
           CheckYourAnswersRow(
             titleMessageKey = "check-your-details.PfNiEuVatIoss.ioss-number",
             value = Seq(ioss.canonicalizedValue),
-            changeLink = None
+            changeLink = Some(
+              Link(
+                href = Call("GET", changeReferenceUrl(payFrontendBaseUrl)),
+                linkId = "check-your-details-reference-change-link",
+                messageKey = "check-your-details.change"
+              )
+            )
           ),
           CheckYourAnswersRow(
             titleMessageKey = "check-your-details.PfNiEuVatIoss.tax-year",
