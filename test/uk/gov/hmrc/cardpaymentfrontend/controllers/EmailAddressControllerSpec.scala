@@ -25,6 +25,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers.*
 import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
 import uk.gov.hmrc.cardpaymentfrontend.models.EmailAddress
+import uk.gov.hmrc.cardpaymentfrontend.services.CryptoService
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.ItSpec
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.TestOps.*
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.stubs.PayApiStub
@@ -40,6 +41,7 @@ class EmailAddressControllerSpec extends ItSpec {
     ()
   }
 
+  val cryptoService: CryptoService                    = app.injector.instanceOf[CryptoService]
   private val systemUnderTest: EmailAddressController = app.injector.instanceOf[EmailAddressController]
 
   "EmailController" - {
@@ -85,6 +87,7 @@ class EmailAddressControllerSpec extends ItSpec {
         PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyBeforeBeginWebPayment)
         val result   = systemUnderTest.renderPage(fakeGetRequest)
         val document = Jsoup.parse(contentAsString(result))
+        println(document)
         document.select(".govuk-header__service-name").html shouldBe "Pay your Self Assessment"
       }
 
@@ -180,7 +183,7 @@ class EmailAddressControllerSpec extends ItSpec {
         def fakeRequestWithAddressInSession(journeyId: JourneyId = TestJourneys.PfSa.journeyBeforeBeginWebPayment._id): FakeRequest[AnyContentAsEmpty.type] =
           FakeRequest()
             .withSessionId()
-            .withEmailInSession(journeyId)
+            .withEmailInSession(cryptoService, journeyId)
         PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyBeforeBeginWebPayment)
 
         val result   = systemUnderTest.renderPage(fakeRequestWithAddressInSession())
@@ -263,10 +266,16 @@ class EmailAddressControllerSpec extends ItSpec {
           .withLangWelsh()
 
       "should return 303 SEE_OTHER and redirect to /address when a valid email address is submitted and email is added to the session" in {
-        val validFormData = ("email-address", "blag@blah.com")
-        val result        = systemUnderTest.submit(fakePostRequest(validFormData))
+        val validFormData                = ("email-address", "blag@blah.com")
+        val result                       = systemUnderTest.submit(fakePostRequest(validFormData))
         status(result) shouldBe Status.SEE_OTHER
-        session(result).data.get("TestJourneyId-44f9-ad7f-01e1d3d8f151").map(_.replaceAll("\\s", "")) shouldBe Some("""{"email":"blag@blah.com"}""")
+        val emailInSession: EmailAddress =
+          session(result)
+            .get("TestJourneyId-44f9-ad7f-01e1d3d8f151")
+            .fold(fail("Email Address missing from session")) { jsonStr =>
+              (Json.parse(jsonStr) \ "email").as[EmailAddress]
+            }
+        s"""{"email":"${cryptoService.decryptEmail(emailInSession).value}"}""" shouldBe """{"email":"blag@blah.com"}"""
         redirectLocation(result) shouldBe Some("/pay-by-card/address")
       }
 
@@ -282,7 +291,7 @@ class EmailAddressControllerSpec extends ItSpec {
         val validFormData       = ("email-address", "someemail@email.com")
         PayApiStub.stubForFindBySessionId2xx(testJourney)
         PayApiStub.stubForResetWebPayment2xx(testJourney._id)
-        val result              = systemUnderTest.submit(fakePostRequest(validFormData).withEmailInSession(testJourney._id))
+        val result              = systemUnderTest.submit(fakePostRequest(validFormData).withEmailInSession(cryptoService, testJourney._id))
         status(result) shouldBe Status.SEE_OTHER
         redirectLocation(result) shouldBe Some("/pay-by-card/address")
         val emailInSession      = session(result).get(testJourney._id.value)
@@ -296,7 +305,8 @@ class EmailAddressControllerSpec extends ItSpec {
         val validFormData = ("email-address", "someemail@email.com")
         PayApiStub.stubForFindBySessionId2xx(testJourney)
         PayApiStub.stubForResetWebPayment2xx(testJourney._id)
-        val result        = systemUnderTest.submit(fakePostRequest(validFormData).withEmailInSession(testJourney._id, EmailAddress("someemail@email.com")))
+        val result        =
+          systemUnderTest.submit(fakePostRequest(validFormData).withEmailInSession(cryptoService, testJourney._id, EmailAddress("someemail@email.com")))
         status(result) shouldBe Status.SEE_OTHER
         redirectLocation(result) shouldBe Some("/pay-by-card/address")
         PayApiStub.verifyResetWebPayment(0, testJourney._id)
@@ -306,7 +316,8 @@ class EmailAddressControllerSpec extends ItSpec {
         val testJourney   = TestJourneys.PfSa.journeyBeforeBeginWebPayment
         val validFormData = ("email-address", "someemail@email.com")
         PayApiStub.stubForFindBySessionId2xx(testJourney)
-        val result        = systemUnderTest.submit(fakePostRequest(validFormData).withEmailInSession(testJourney._id, EmailAddress("someemail@email.com")))
+        val result        =
+          systemUnderTest.submit(fakePostRequest(validFormData).withEmailInSession(cryptoService, testJourney._id, EmailAddress("someemail@email.com")))
         status(result) shouldBe Status.SEE_OTHER
         redirectLocation(result) shouldBe Some("/pay-by-card/address")
         PayApiStub.verifyResetWebPayment(0, testJourney._id)
@@ -353,7 +364,8 @@ class EmailAddressControllerSpec extends ItSpec {
 
     "addressInSession" - {
       "should return Some[Address] when there is one in session and it's associated with the 'address' key" in {
-        val fakeRequest    = FakeRequest("GET", "/blah").withEmailInSession(TestJourneys.PfSa.journeyBeforeBeginWebPayment._id)
+        val fakeRequest    = FakeRequest("GET", "/blah").withEmailInSession(cryptoService, TestJourneys.PfSa.journeyBeforeBeginWebPayment._id)
+        println(fakeRequest.session.data)
         val journeyRequest = new JourneyRequest(TestJourneys.PfSa.journeyBeforeBeginWebPayment, fakeRequest)
         val result         = systemUnderTest.emailInSession(journeyRequest)
         result shouldBe Some(EmailAddress("blah@blah.com"))

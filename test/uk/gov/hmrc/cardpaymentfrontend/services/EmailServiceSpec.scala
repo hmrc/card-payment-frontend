@@ -42,6 +42,7 @@ class EmailServiceSpec extends ItSpec with TableDrivenPropertyChecks {
 
   val fakeRequest: FakeRequest[AnyContentAsEmpty.type]        = FakeRequest("GET", "/").withSessionId()
   val fakeRequestInWelsh: FakeRequest[AnyContentAsEmpty.type] = fakeRequest.withLangWelsh()
+  val cryptoService                                           = app.injector.instanceOf[CryptoService]
 
   "buildEmailParameters should return EmailParameters" - {
     val commission = Some("1.23")
@@ -497,7 +498,7 @@ class EmailServiceSpec extends ItSpec with TableDrivenPropertyChecks {
             TestJourneys.PfSa.journeyAfterSucceedDebitWebPayment,
             emailAddress = EmailAddress("joe_bloggs@gmail.com"),
             isEnglish = true
-          )(fakeRequest.withEmailInSession(TestJourneys.PfSa.journeyAfterSucceedDebitWebPayment._id, EmailAddress("joe_bloggs@gmail.com")))
+          )(fakeRequest.withEmailInSession(cryptoService, TestJourneys.PfSa.journeyAfterSucceedDebitWebPayment._id, EmailAddress("joe_bloggs@gmail.com")))
           result shouldBe expectedResult
         }
 
@@ -520,7 +521,9 @@ class EmailServiceSpec extends ItSpec with TableDrivenPropertyChecks {
             TestJourneys.PfSa.journeyAfterSucceedDebitWebPayment,
             emailAddress = EmailAddress("joe_bloggs@gmail.com"),
             isEnglish = false
-          )(fakeRequestInWelsh.withEmailInSession(TestJourneys.PfSa.journeyAfterSucceedDebitWebPayment._id, EmailAddress("joe_bloggs@gmail.com")))
+          )(
+            fakeRequestInWelsh.withEmailInSession(cryptoService, TestJourneys.PfSa.journeyAfterSucceedDebitWebPayment._id, EmailAddress("joe_bloggs@gmail.com"))
+          )
           result shouldBe expectedResult
         }
 
@@ -543,7 +546,7 @@ class EmailServiceSpec extends ItSpec with TableDrivenPropertyChecks {
             TestJourneys.PfSa.journeyAfterSucceedCreditWebPayment,
             emailAddress = EmailAddress("joe_bloggs@gmail.com"),
             isEnglish = true
-          )(fakeRequest.withEmailInSession(TestJourneys.PfSa.journeyAfterSucceedDebitWebPayment._id, EmailAddress("joe_bloggs@gmail.com")))
+          )(fakeRequest.withEmailInSession(cryptoService, TestJourneys.PfSa.journeyAfterSucceedDebitWebPayment._id, EmailAddress("joe_bloggs@gmail.com")))
           result shouldBe expectedResult
         }
       }

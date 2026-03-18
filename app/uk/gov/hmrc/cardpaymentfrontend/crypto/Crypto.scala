@@ -28,4 +28,5 @@ final class Crypto @Inject() (servicesConfig: ServicesConfig) {
   def encrypt(s: String): String = aes.encrypt(PlainText(s)).value
 
   def decrypt(s: String): String = aes.decrypt(Crypted(s)).value
+
 }

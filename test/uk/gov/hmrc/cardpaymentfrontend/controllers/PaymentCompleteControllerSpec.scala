@@ -31,6 +31,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers.*
 import play.mvc.Http.Status
 import uk.gov.hmrc.cardpaymentfrontend.controllers.PaymentCompleteControllerSpec.{TestScenarioInfo, originToTdAndSummaryListRows}
+import uk.gov.hmrc.cardpaymentfrontend.services.CryptoService
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.TestOps.*
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.stubs.{EmailStub, PayApiStub}
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.testdata.{TestDataUtils, TestJourneys}
@@ -47,6 +48,7 @@ class PaymentCompleteControllerSpec extends ItSpec {
   "PaymentCompleteController" - {
 
     val systemUnderTest                                            = app.injector.instanceOf[PaymentCompleteController]
+    val cryptoService                                              = app.injector.instanceOf[CryptoService]
     val fakeGetRequest: FakeRequest[AnyContentAsEmpty.type]        = FakeRequest("GET", "/payment-complete").withSessionId()
     val fakeGetRequestInWelsh: FakeRequest[AnyContentAsEmpty.type] = fakeGetRequest.withLangWelsh()
 
@@ -103,7 +105,7 @@ class PaymentCompleteControllerSpec extends ItSpec {
 
       "render paragraph about email address when email is provided" in {
         PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyAfterSucceedDebitWebPayment)
-        val requestForTest = fakeGetRequest.withEmailInSession(JourneyId("TestJourneyId-44f9-ad7f-01e1d3d8f151"))
+        val requestForTest = fakeGetRequest.withEmailInSession(cryptoService, JourneyId("TestJourneyId-44f9-ad7f-01e1d3d8f151"))
         val result         = systemUnderTest.renderPage(requestForTest)
         val document       = Jsoup.parse(contentAsString(result))
         document.select("#email-paragraph").html() shouldBe "We have sent a confirmation email to <strong>blah@blah.com</strong>"
@@ -111,7 +113,7 @@ class PaymentCompleteControllerSpec extends ItSpec {
 
       "render paragraph about email address in welsh when email is provided" in {
         PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyAfterSucceedDebitWebPayment)
-        val requestForTest = fakeGetRequestInWelsh.withEmailInSession(JourneyId("TestJourneyId-44f9-ad7f-01e1d3d8f151"))
+        val requestForTest = fakeGetRequestInWelsh.withEmailInSession(cryptoService, JourneyId("TestJourneyId-44f9-ad7f-01e1d3d8f151"))
         val result         = systemUnderTest.renderPage(requestForTest)
         val document       = Jsoup.parse(contentAsString(result))
         document.select("#email-paragraph").html() shouldBe "Rydym wedi anfon e-bost cadarnhau <strong>blah@blah.com</strong>"

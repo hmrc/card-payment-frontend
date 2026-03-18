@@ -22,9 +22,11 @@ import play.api.mvc.Cookie
 import play.api.test.FakeRequest
 import uk.gov.hmrc.cardpaymentfrontend.models.{Address, EmailAddress}
 import uk.gov.hmrc.http.SessionKeys
+import uk.gov.hmrc.cardpaymentfrontend.services.CryptoService
 
 object TestOps {
   implicit class FakeRequestOps[T](private val r: FakeRequest[T]) extends AnyVal {
+
     def withLang(language: String = "en"): FakeRequest[T] = r.withCookies(Cookie("PLAY_LANG", language))
 
     def withLangWelsh(): FakeRequest[T] = r.withLang("cy")
@@ -37,37 +39,39 @@ object TestOps {
     def withAuthSession(authToken: String = "some-valid-auth-token"): FakeRequest[T] =
       r.withSession(SessionKeys.authToken -> authToken)
 
-    def withEmailInSession(journeyId: JourneyId, email: EmailAddress = EmailAddress("blah@blah.com")): FakeRequest[T] =
+    def withEmailInSession(cryptoService: CryptoService, journeyId: JourneyId, email: EmailAddress = EmailAddress("blah@blah.com")): FakeRequest[T] =
       r.withSession(
         journeyId.value -> Json
           .obj(
-            "email" -> email
+            "email" -> cryptoService.encryptString(email.value)
           )
           .toString
       )
 
     def withAddressInSession(
-      journeyId: JourneyId,
-      address:   Address =
+      cryptoService: CryptoService,
+      journeyId:     JourneyId,
+      address:       Address =
         Address(line1 = "line1", line2 = Some("line2"), city = Some("city"), county = Some("county"), postcode = Some("AA0AA0"), country = "GBR")
     ): FakeRequest[T] =
       r.withSession(
         journeyId.value -> Json
           .obj(
-            "address" -> address
+            "address" -> cryptoService.encryptAddress(address)
           )
           .toString
       )
 
     def withEmailAndAddressInSession(
-      journeyId:    JourneyId,
-      emailAddress: EmailAddress = EmailAddress("blah@blah.com"),
-      address:      Address = Address(line1 = "line1", postcode = Some("AA0AA0"), country = "GBR")
+      cryptoService: CryptoService,
+      journeyId:     JourneyId,
+      emailAddress:  EmailAddress = EmailAddress("blah@blah.com"),
+      address:       Address = Address(line1 = "line1", postcode = Some("AA0AA0"), country = "GBR")
     ): FakeRequest[T] = r.withSession(
       journeyId.value -> Json
         .obj(
-          "email"   -> emailAddress,
-          "address" -> address
+          "email"   -> cryptoService.encryptString(emailAddress.value),
+          "address" -> cryptoService.encryptAddress(address)
         )
         .toString()
     )

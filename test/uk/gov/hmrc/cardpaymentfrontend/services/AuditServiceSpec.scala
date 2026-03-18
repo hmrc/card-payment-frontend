@@ -20,7 +20,7 @@ import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
-import uk.gov.hmrc.cardpaymentfrontend.models.Address
+import uk.gov.hmrc.cardpaymentfrontend.models.{Address, EmailAddress}
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.ItSpec
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.TestOps.FakeRequestOps
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.stubs.AuditConnectorStub
@@ -34,6 +34,7 @@ class AuditServiceSpec extends ItSpec {
   )
 
   val systemUnderTest: AuditService = app.injector.instanceOf[AuditService]
+  val cryptoService                 = app.injector.instanceOf[CryptoService]
 
   "AuditService" - {
     val testAddress: Address                                   = Address(
@@ -44,7 +45,12 @@ class AuditServiceSpec extends ItSpec {
       city = Some("made up city"),
       county = Some("East sussex")
     )
-    val fakeRequest                                            = FakeRequest().withEmailInSession(TestJourneys.PfSa.journeyBeforeBeginWebPayment._id)
+    val fakeRequest                                            = FakeRequest().withEmailAndAddressInSession(
+      cryptoService,
+      TestJourneys.PfSa.journeyBeforeBeginWebPayment._id,
+      emailAddress = EmailAddress("blah@blah.com"),
+      address = testAddress
+    )
     val journeyRequest: JourneyRequest[AnyContentAsEmpty.type] = new JourneyRequest(TestJourneys.PfSa.journeyBeforeBeginWebPayment, fakeRequest)
 
     "auditPaymentAttempt" - {
@@ -83,16 +89,23 @@ class AuditServiceSpec extends ItSpec {
 
     "auditPaymentResult" - {
       "auditPaymentResult should trigger an audit event for PaymentResult" in {
-        val journeyRequestWithAddress: JourneyRequest[AnyContentAsEmpty.type] = new JourneyRequest(
+        val journeyRequestWithEmailAndAddress: JourneyRequest[AnyContentAsEmpty.type] = new JourneyRequest(
           TestJourneys.PfSa.journeyBeforeBeginWebPayment,
-          fakeRequest.withEmailAndAddressInSession(TestJourneys.PfSa.journeyBeforeBeginWebPayment._id, address = testAddress)
+          fakeRequest.withEmailAndAddressInSession(
+            cryptoService,
+            TestJourneys.PfSa.journeyBeforeBeginWebPayment._id,
+            emailAddress = EmailAddress("blah@blah.com"),
+            address = testAddress
+          )
         )
+        println("------------------------------")
+        println(journeyRequestWithEmailAndAddress.session.data)
 
         systemUnderTest.auditPaymentResult(
           "SAEE",
           "some-transaction-reference",
           "Successful"
-        )(journeyRequestWithAddress, HeaderCarrier())
+        )(journeyRequestWithEmailAndAddress, HeaderCarrier())
 
         eventually {
           AuditConnectorStub.verifyEventAudited(
@@ -109,7 +122,7 @@ class AuditServiceSpec extends ItSpec {
                 |   "postcode" : "AA11AA",
                 |   "country" : "GBR"
                 | },
-                | "emailAddress": "blah@blah.com",
+                | "email": "blah@blah.com",
                 | "loggedIn": false,
                 | "merchantCode": "SAEE",
                 | "paymentOrigin": "PfSa",
