@@ -12,6 +12,8 @@ object SbtUpdatesSettings {
     (Compile / compile) := ((Compile / compile) dependsOn dependencyUpdates).value,
     dependencyUpdatesFilter -= moduleFilter("org.scala-lang"),
     dependencyUpdatesFilter -= moduleFilter("org.playframework"),
+    // remove after upgrading to 13.0.0
+    dependencyUpdatesFilter -= moduleFilter("uk.gov.hmrc", "play-frontend-hmrc-play-30"),
     // ignoring pay-api-cor while 3ps being worked on
     dependencyUpdatesFilter -= moduleFilter("uk.gov.hmrc", "pay-api-cor-card-payment-journey")
   )
