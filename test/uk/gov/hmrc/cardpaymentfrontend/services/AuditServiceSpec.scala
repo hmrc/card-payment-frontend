@@ -20,7 +20,7 @@ import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
-import uk.gov.hmrc.cardpaymentfrontend.models.{Address, EmailAddress}
+import uk.gov.hmrc.cardpaymentfrontend.models.Address
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.ItSpec
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.TestOps.FakeRequestOps
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.stubs.AuditConnectorStub
@@ -45,12 +45,7 @@ class AuditServiceSpec extends ItSpec {
       city = Some("made up city"),
       county = Some("East sussex")
     )
-    val fakeRequest                                            = FakeRequest().withEmailAndAddressInSession(
-      cryptoService,
-      TestJourneys.PfSa.journeyBeforeBeginWebPayment._id,
-      emailAddress = EmailAddress("blah@blah.com"),
-      address = testAddress
-    )
+    val fakeRequest                                            = FakeRequest().withEmailInSession(cryptoService, TestJourneys.PfSa.journeyBeforeBeginWebPayment._id)
     val journeyRequest: JourneyRequest[AnyContentAsEmpty.type] = new JourneyRequest(TestJourneys.PfSa.journeyBeforeBeginWebPayment, fakeRequest)
 
     "auditPaymentAttempt" - {
@@ -62,24 +57,24 @@ class AuditServiceSpec extends ItSpec {
             Json
               .parse(
                 """
-                |{
-                | "address": {
-                |   "line1" : "made up street",
-                |   "line2" : "made up line 2",
-                |   "city" : "made up city",
-                |   "county" : "East sussex",
-                |   "postcode" : "AA11AA",
-                |   "country" : "GBR"
-                | },
-                | "emailAddress": "blah@blah.com",
-                | "loggedIn": false,
-                | "merchantCode": "SAEE",
-                | "paymentOrigin": "PfSa",
-                | "paymentReference": "1234567895K",
-                | "paymentTaxType": "selfAssessment",
-                | "paymentTotal": 12.34,
-                | "transactionReference": "some-transaction-reference"
-                |}""".stripMargin
+                  |{
+                  | "address": {
+                  |   "line1" : "made up street",
+                  |   "line2" : "made up line 2",
+                  |   "city" : "made up city",
+                  |   "county" : "East sussex",
+                  |   "postcode" : "AA11AA",
+                  |   "country" : "GBR"
+                  | },
+                  | "emailAddress": "blah@blah.com",
+                  | "loggedIn": false,
+                  | "merchantCode": "SAEE",
+                  | "paymentOrigin": "PfSa",
+                  | "paymentReference": "1234567895K",
+                  | "paymentTaxType": "selfAssessment",
+                  | "paymentTotal": 12.34,
+                  | "transactionReference": "some-transaction-reference"
+                  |}""".stripMargin
               )
               .as[JsObject]
           )
@@ -89,19 +84,15 @@ class AuditServiceSpec extends ItSpec {
 
     "auditPaymentResult" - {
       "auditPaymentResult should trigger an audit event for PaymentResult" in {
-        val journeyRequestWithEmailAndAddress: JourneyRequest[AnyContentAsEmpty.type] = new JourneyRequest(
+        val journeyRequestWithAddress: JourneyRequest[AnyContentAsEmpty.type] = new JourneyRequest(
           TestJourneys.PfSa.journeyBeforeBeginWebPayment,
-          fakeRequest.withEmailAndAddressInSession(
-            cryptoService,
-            TestJourneys.PfSa.journeyBeforeBeginWebPayment._id,
-            address = testAddress
-          )
+          fakeRequest.withEmailAndAddressInSession(cryptoService, TestJourneys.PfSa.journeyBeforeBeginWebPayment._id, address = testAddress)
         )
         systemUnderTest.auditPaymentResult(
           "SAEE",
           "some-transaction-reference",
           "Successful"
-        )(journeyRequestWithEmailAndAddress, HeaderCarrier())
+        )(journeyRequestWithAddress, HeaderCarrier())
 
         eventually {
           AuditConnectorStub.verifyEventAudited(
@@ -118,7 +109,7 @@ class AuditServiceSpec extends ItSpec {
                 |   "postcode" : "AA11AA",
                 |   "country" : "GBR"
                 | },
-                | "email": "blah@blah.com",
+                | "emailAddress": "blah@blah.com",
                 | "loggedIn": false,
                 | "merchantCode": "SAEE",
                 | "paymentOrigin": "PfSa",

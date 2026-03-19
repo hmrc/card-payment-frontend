@@ -55,7 +55,7 @@ class AuditService @Inject() (auditConnector: AuditConnector, cryptoService: Cry
   )(implicit journeyRequest: JourneyRequest[?]): PaymentAttemptAuditDetail = {
     PaymentAttemptAuditDetail(
       address = address,
-      emailAddress = journeyRequest.readFromSession[EmailAddress](journeyRequest.journeyId, Keys.email),
+      emailAddress = journeyRequest.readFromSession[EmailAddress](journeyRequest.journeyId, Keys.email).map(cryptoService.decryptEmail),
       loggedIn = RequestSupport.isLoggedIn,
       merchantCode = merchantCode,
       paymentOrigin = journeyRequest.journey.origin,

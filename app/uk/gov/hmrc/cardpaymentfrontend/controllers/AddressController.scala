@@ -60,7 +60,6 @@ class AddressController @Inject() (
       .fold(
         (formWithErrors: Form[Address]) => Future.successful(BadRequest(addressPage(form = formWithErrors, countriesService.getCountries))),
         { address =>
-//          val successResult = Redirect(routes.CheckYourAnswersController.renderPage).placeInSession[Address](journeyRequest.journeyId, Keys.address -> address)
           val successResult = Redirect(routes.CheckYourAnswersController.renderPage)
             .placeInSession(journeyRequest.journeyId, Keys.address -> cryptoService.encryptAddress(address))
 
@@ -79,6 +78,5 @@ class AddressController @Inject() (
 
   private[controllers] def addressInSession(using journeyRequest: JourneyRequest[?]): Option[Address] =
     journeyRequest.readFromSession[Address](journeyRequest.journeyId, Keys.address).map(cryptoService.decryptAddress)
-
   private[controllers] def addressIsDifferent(addressA: Address, addressB: Address): Boolean = addressA =!= addressB
 }
