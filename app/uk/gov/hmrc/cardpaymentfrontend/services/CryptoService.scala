@@ -32,7 +32,12 @@ class CryptoService @Inject() (crypto: Crypto) {
   }
 
   def decryptEmail(email: EmailAddress): EmailAddress = {
-    EmailAddress(decryptString(email.value))
+    // TODO: REMOVE TRY CATCH AFTER DEPLOYMENT
+    try {
+      EmailAddress(decryptString(email.value))
+    } catch {
+      case _: Throwable => email
+    }
   }
 
   def encryptAddress(address: Address): Address = {
@@ -47,13 +52,18 @@ class CryptoService @Inject() (crypto: Crypto) {
   }
 
   def decryptAddress(address: Address): Address = {
-    address.copy(
-      line1 = decryptString(address.line1),
-      line2 = address.line2.map(decryptString),
-      city = address.city.map(decryptString),
-      county = address.county.map(decryptString),
-      postcode = address.postcode.map(decryptString),
-      country = decryptString(address.country)
-    )
+    // TODO: REMOVE TRY CATCH AFTER DEPLOYMENT
+    try {
+      address.copy(
+        line1 = decryptString(address.line1),
+        line2 = address.line2.map(decryptString),
+        city = address.city.map(decryptString),
+        county = address.county.map(decryptString),
+        postcode = address.postcode.map(decryptString),
+        country = decryptString(address.country)
+      )
+    } catch {
+      case _: Throwable => address
+    }
   }
 }
