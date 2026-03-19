@@ -87,7 +87,6 @@ class EmailAddressControllerSpec extends ItSpec {
         PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyBeforeBeginWebPayment)
         val result   = systemUnderTest.renderPage(fakeGetRequest)
         val document = Jsoup.parse(contentAsString(result))
-        println(document)
         document.select(".govuk-header__service-name").html shouldBe "Pay your Self Assessment"
       }
 
@@ -266,16 +265,16 @@ class EmailAddressControllerSpec extends ItSpec {
           .withLangWelsh()
 
       "should return 303 SEE_OTHER and redirect to /address when a valid email address is submitted and email is added to the session" in {
-        val validFormData                = ("email-address", "blag@blah.com")
+        val validFormData                = ("email-address", "someemail@email.com")
         val result                       = systemUnderTest.submit(fakePostRequest(validFormData))
         status(result) shouldBe Status.SEE_OTHER
         val emailInSession: EmailAddress =
           session(result)
             .get("TestJourneyId-44f9-ad7f-01e1d3d8f151")
-            .fold(fail("Email Address missing from session")) { jsonStr =>
-              (Json.parse(jsonStr) \ "email").as[EmailAddress]
+            .fold(fail("Email Address missing from session")) { json =>
+              (Json.parse(json) \ "email").as[EmailAddress]
             }
-        s"""{"email":"${cryptoService.decryptEmail(emailInSession).value}"}""" shouldBe """{"email":"blag@blah.com"}"""
+        s"""{"email":"${cryptoService.decryptEmail(emailInSession).value}"}""" shouldBe """{"email":"someemail@email.com"}"""
         redirectLocation(result) shouldBe Some("/pay-by-card/address")
       }
 
@@ -294,9 +293,13 @@ class EmailAddressControllerSpec extends ItSpec {
         val result              = systemUnderTest.submit(fakePostRequest(validFormData).withEmailInSession(cryptoService, testJourney._id))
         status(result) shouldBe Status.SEE_OTHER
         redirectLocation(result) shouldBe Some("/pay-by-card/address")
-        val emailInSession      = session(result).get(testJourney._id.value)
-        val expectedAddressJson = Json.parse("""{"email":"someemail@email.com"}""")
-        emailInSession.map(Json.parse) shouldBe Some(expectedAddressJson)
+        val emailInSession: EmailAddress =
+          session(result)
+            .get("TestJourneyId-44f9-ad7f-01e1d3d8f151")
+            .fold(fail("Email Address missing from session")) { json =>
+              (Json.parse(json) \ "email").as[EmailAddress]
+            }
+        s"""{"email":"${cryptoService.decryptEmail(emailInSession).value}"}""" shouldBe """{"email":"someemail@email.com"}"""        
         PayApiStub.verifyResetWebPayment(1, testJourney._id)
       }
 
@@ -365,7 +368,6 @@ class EmailAddressControllerSpec extends ItSpec {
     "addressInSession" - {
       "should return Some[Address] when there is one in session and it's associated with the 'address' key" in {
         val fakeRequest    = FakeRequest("GET", "/blah").withEmailInSession(cryptoService, TestJourneys.PfSa.journeyBeforeBeginWebPayment._id)
-        println(fakeRequest.session.data)
         val journeyRequest = new JourneyRequest(TestJourneys.PfSa.journeyBeforeBeginWebPayment, fakeRequest)
         val result         = systemUnderTest.emailInSession(journeyRequest)
         result shouldBe Some(EmailAddress("blah@blah.com"))

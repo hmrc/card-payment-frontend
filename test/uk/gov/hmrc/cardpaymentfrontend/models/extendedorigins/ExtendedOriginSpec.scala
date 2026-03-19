@@ -116,7 +116,6 @@ class ExtendedOriginSpec extends ItSpec {
     "return Some[CheckYourAnswersRow] when showEmailAddress returns true" in {
       val fakeJourneyRequest: JourneyRequest[AnyContent] = new JourneyRequest(testJourney, fakeGetRequestWithEmail)
       val result: Option[CheckYourAnswersRow]            = systemUnderTest.checkYourAnswersEmailAddressRow(cryptoService, fakeJourneyRequest)
-      println(result)
       result shouldBe Some(
         CheckYourAnswersRow(
           "check-your-details.email-address",

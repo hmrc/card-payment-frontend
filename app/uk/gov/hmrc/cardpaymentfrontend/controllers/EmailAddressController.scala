@@ -72,7 +72,7 @@ class EmailAddressController @Inject() (
         (formWithErrors: Form[EmailAddress]) => Future.successful(BadRequest(emailAddressPage(form = formWithErrors))),
         { email =>
           val successResult =
-            Redirect(routes.CheckYourAnswersController.renderPage)
+            Redirect(routes.AddressController.renderPage)
               .placeInSession(journeyRequest.journeyId, Keys.email -> cryptoService.encryptEmail(email))
 
           // If an email is not present in session, proceed. If there is one in session, check if it's changed. If it has changed, reset order.

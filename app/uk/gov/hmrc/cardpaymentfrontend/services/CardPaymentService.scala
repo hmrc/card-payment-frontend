@@ -209,6 +209,7 @@ class CardPaymentService @Inject() (
             .readFromSession[EmailAddress](journey._id, Keys.email)
             .map(cryptoService.decryptEmail)
             .filter(e => !e.value.isBlank)
+
         logger.debug("Attempting to build email request and send email")
 
         maybeEmailFromSession.fold(()) { emailAddress =>
