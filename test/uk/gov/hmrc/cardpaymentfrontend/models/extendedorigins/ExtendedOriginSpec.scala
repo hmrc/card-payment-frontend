@@ -20,7 +20,7 @@ import payapi.corcommon.model.{AmountInPence, FutureDatedPayment}
 import play.api.mvc.{AnyContent, Call}
 import play.api.test.FakeRequest
 import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
-import uk.gov.hmrc.cardpaymentfrontend.models.{CheckYourAnswersRow, Link}
+import uk.gov.hmrc.cardpaymentfrontend.models.{CheckYourAnswersRow, EmailAddress, Link}
 import uk.gov.hmrc.cardpaymentfrontend.services.CryptoService
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.ItSpec
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.TestOps.FakeRequestOps
@@ -102,10 +102,11 @@ class ExtendedOriginSpec extends ItSpec {
 
   "checkYourAnswersEmailAddressRow" - {
 
+    val encryptedEmail       = cryptoService.encryptEmail(EmailAddress("email@gmail.com"))
     val jsonSessionWithEmail =
-      """
+      s"""
         |{
-        | "email" : "email@gmail.com"
+        | "email" : "${encryptedEmail.value}"
         |}
         |""".stripMargin
 
@@ -115,6 +116,7 @@ class ExtendedOriginSpec extends ItSpec {
     "return Some[CheckYourAnswersRow] when showEmailAddress returns true" in {
       val fakeJourneyRequest: JourneyRequest[AnyContent] = new JourneyRequest(testJourney, fakeGetRequestWithEmail)
       val result: Option[CheckYourAnswersRow]            = systemUnderTest.checkYourAnswersEmailAddressRow(cryptoService, fakeJourneyRequest)
+      println(result)
       result shouldBe Some(
         CheckYourAnswersRow(
           "check-your-details.email-address",

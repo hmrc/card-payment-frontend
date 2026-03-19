@@ -59,7 +59,7 @@ class CheckYourAnswersController @Inject() (
     val additionalReferenceRows: Option[Seq[CheckYourAnswersRow]] =
       extendedOrigin.checkYourAnswersAdditionalReferenceRow(journeyRequest)(appConfig.payFrontendBaseUrl)
     val amountRow: Option[CheckYourAnswersRow]                    = extendedOrigin.checkYourAnswersAmountSummaryRow(journeyRequest)(appConfig.payFrontendBaseUrl)
-    val cardBillingAddressRow: Option[CheckYourAnswersRow]        = extendedOrigin.checkYourAnswersCardBillingAddressRow(journeyRequest)
+    val cardBillingAddressRow: Option[CheckYourAnswersRow]        = extendedOrigin.checkYourAnswersCardBillingAddressRow(cryptoService, journeyRequest)
     // If no email is present in the session, no Email Row is shown
     val maybeEmailRow: Option[CheckYourAnswersRow]                = extendedOrigin.checkYourAnswersEmailAddressRow(cryptoService, journeyRequest)
 
@@ -101,7 +101,7 @@ class CheckYourAnswersController @Inject() (
             .initiatePayment(
               journey = journeyRequest.journey,
               addressFromSession = address,
-              maybeEmailFromSession = journeyRequest.readFromSession[EmailAddress](journeyRequest.journeyId, Keys.email),
+              maybeEmailFromSession = journeyRequest.readFromSession[EmailAddress](journeyRequest.journeyId, Keys.email).map(cryptoService.decryptEmail),
               language = requestSupport.usableLanguage
             )(requestSupport.hc, journeyRequest)
             .map { response =>

@@ -94,13 +94,9 @@ class AuditServiceSpec extends ItSpec {
           fakeRequest.withEmailAndAddressInSession(
             cryptoService,
             TestJourneys.PfSa.journeyBeforeBeginWebPayment._id,
-            emailAddress = EmailAddress("blah@blah.com"),
             address = testAddress
           )
         )
-        println("------------------------------")
-        println(journeyRequestWithEmailAndAddress.session.data)
-
         systemUnderTest.auditPaymentResult(
           "SAEE",
           "some-transaction-reference",

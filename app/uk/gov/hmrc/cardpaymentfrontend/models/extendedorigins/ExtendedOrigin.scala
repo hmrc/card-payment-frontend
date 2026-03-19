@@ -118,8 +118,8 @@ trait ExtendedOrigin {
   }
 
   // TODO: Update tests to not include country - check doesn't show country
-  def checkYourAnswersCardBillingAddressRow(journeyRequest: JourneyRequest[AnyContent]): Option[CheckYourAnswersRow] = {
-    val addressFromSession: Option[Address] = journeyRequest.readFromSession[Address](journeyRequest.journeyId, Keys.address)
+  def checkYourAnswersCardBillingAddressRow(cryptoService: CryptoService, journeyRequest: JourneyRequest[AnyContent]): Option[CheckYourAnswersRow] = {
+    val addressFromSession: Option[Address] = journeyRequest.readFromSession[Address](journeyRequest.journeyId, Keys.address).map(cryptoService.decryptAddress)
     val addressValues: Option[Seq[String]]  = {
       for {
         line1    <- addressFromSession.map(_.line1)

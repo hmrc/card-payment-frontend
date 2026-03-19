@@ -74,7 +74,6 @@ class CardPaymentService @Inject() (
   )(implicit headerCarrier: HeaderCarrier, journeyRequest: JourneyRequest[?]): Future[CardPaymentInitiatePaymentResponse] = {
     val clientId: ClientId          = clientIdService.determineClientId(journey, language)
     val clientIdStringToUse: String = if (appConfig.useProductionClientIds) clientId.prodCode else clientId.qaCode
-
     KibanaLogger.info(s"Initiating payment for journey ${journey._id.value}")
 
     // todo eventually we can just use barclaycardaddress model, but we want backwards compatibility with pay-frontend.
@@ -208,9 +207,8 @@ class CardPaymentService @Inject() (
         val maybeEmailFromSession: Option[EmailAddress] =
           request
             .readFromSession[EmailAddress](journey._id, Keys.email)
-            .filter(!_.value.isBlank)
-            .map(email => EmailAddress(email.value))
-
+            .map(cryptoService.decryptEmail)
+            .filter(e => !e.value.isBlank)
         logger.debug("Attempting to build email request and send email")
 
         maybeEmailFromSession.fold(()) { emailAddress =>

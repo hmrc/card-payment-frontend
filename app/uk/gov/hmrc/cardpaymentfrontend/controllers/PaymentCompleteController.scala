@@ -30,6 +30,7 @@ import uk.gov.hmrc.cardpaymentfrontend.config.AppConfig
 import uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins.ExtendedOrigin.OriginExtended
 import uk.gov.hmrc.cardpaymentfrontend.models.{EmailAddress, creditCardCommissionRate}
 import uk.gov.hmrc.cardpaymentfrontend.requests.RequestSupport
+import uk.gov.hmrc.cardpaymentfrontend.services.CryptoService
 import uk.gov.hmrc.cardpaymentfrontend.session.JourneySessionSupport.*
 import uk.gov.hmrc.cardpaymentfrontend.util.DateStringBuilder
 import uk.gov.hmrc.cardpaymentfrontend.util.SafeEquals.EqualsOps
@@ -48,7 +49,8 @@ class PaymentCompleteController @Inject() (
   mcc:                           MessagesControllerComponents,
   paymentCompletePage:           PaymentCompletePage,
   passengersPaymentCompletePage: PassengersPaymentCompletePage,
-  requestSupport:                RequestSupport
+  requestSupport:                RequestSupport,
+  cryptoService:                 CryptoService
 ) extends FrontendController(mcc) {
 
   import requestSupport.*
@@ -56,7 +58,11 @@ class PaymentCompleteController @Inject() (
   val renderPage: Action[AnyContent] = actions.journeyAction { implicit journeyRequest: JourneyRequest[AnyContent] =>
 
     val maybeEmailFromSession: Option[EmailAddress] =
-      journeyRequest.readFromSession[EmailAddress](journeyRequest.journeyId, Keys.email).filter(!_.value.isBlank).map(email => EmailAddress(email.value))
+      journeyRequest
+        .readFromSession[EmailAddress](journeyRequest.journeyId, Keys.email)
+        .map(cryptoService.decryptEmail)
+        .filter(!_.value.isBlank)
+        .map(email => EmailAddress(email.value))
 
     journeyRequest.journey.journeySpecificData match {
       // passengers has a bespoke set of content, so they have their own page for simplicity

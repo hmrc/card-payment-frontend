@@ -80,11 +80,9 @@ class AuditService @Inject() (auditConnector: AuditConnector, cryptoService: Cry
     paymentStatus:        String,
     journeyRequest:       JourneyRequest[?]
   ): PaymentResultAuditDetail = {
-    println("toPaymentResult - emailAddress - ")
-    println(journeyRequest.readFromSession[EmailAddress](journeyRequest.journeyId, cryptoService.decryptString(Keys.email)))
     PaymentResultAuditDetail(
       optionalAddress,
-      emailAddress = journeyRequest.readFromSession[EmailAddress](journeyRequest.journeyId, cryptoService.decryptString(Keys.email)),
+      emailAddress = journeyRequest.readFromSession[EmailAddress](journeyRequest.journeyId, Keys.email).map(cryptoService.decryptEmail),
       loggedIn = RequestSupport.isLoggedIn(journeyRequest),
       merchantCode,
       paymentOrigin = journeyRequest.journey.origin,
@@ -101,8 +99,6 @@ class AuditService @Inject() (auditConnector: AuditConnector, cryptoService: Cry
     transactionReference: String,
     paymentStatus:        String
   )(implicit journeyRequest: JourneyRequest[?], headerCarrier: HeaderCarrier): Unit = {
-//    println("auditPaymentResult - optionalAddress - ")
-//    println(journeyRequest.readFromSession[Address](journeyRequest.journeyId, Keys.address).map(cryptoService.decryptAddress))
     audit(
       toPaymentResult(
         optionalAddress = journeyRequest.readFromSession[Address](journeyRequest.journeyId, Keys.address).map(cryptoService.decryptAddress),

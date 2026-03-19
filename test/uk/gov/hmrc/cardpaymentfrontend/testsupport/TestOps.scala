@@ -70,7 +70,7 @@ object TestOps {
     ): FakeRequest[T] = r.withSession(
       journeyId.value -> Json
         .obj(
-          "email"   -> cryptoService.encryptString(emailAddress.value),
+          "email"   -> cryptoService.encryptEmail(emailAddress),
           "address" -> cryptoService.encryptAddress(address)
         )
         .toString()
