@@ -286,11 +286,11 @@ class EmailAddressControllerSpec extends ItSpec {
       }
 
       "should call pay-api and reset order when journey is in Sent state and email submitted is different to what is already in session" in {
-        val testJourney         = TestJourneys.PfSa.journeyAfterBeginWebPayment
-        val validFormData       = ("email-address", "someemail@email.com")
+        val testJourney                  = TestJourneys.PfSa.journeyAfterBeginWebPayment
+        val validFormData                = ("email-address", "someemail@email.com")
         PayApiStub.stubForFindBySessionId2xx(testJourney)
         PayApiStub.stubForResetWebPayment2xx(testJourney._id)
-        val result              = systemUnderTest.submit(fakePostRequest(validFormData).withEmailInSession(cryptoService, testJourney._id))
+        val result                       = systemUnderTest.submit(fakePostRequest(validFormData).withEmailInSession(cryptoService, testJourney._id))
         status(result) shouldBe Status.SEE_OTHER
         redirectLocation(result) shouldBe Some("/pay-by-card/address")
         val emailInSession: EmailAddress =
@@ -299,7 +299,7 @@ class EmailAddressControllerSpec extends ItSpec {
             .fold(fail("Email Address missing from session")) { json =>
               (Json.parse(json) \ "email").as[EmailAddress]
             }
-        s"""{"email":"${cryptoService.decryptEmail(emailInSession).value}"}""" shouldBe """{"email":"someemail@email.com"}"""        
+        s"""{"email":"${cryptoService.decryptEmail(emailInSession).value}"}""" shouldBe """{"email":"someemail@email.com"}"""
         PayApiStub.verifyResetWebPayment(1, testJourney._id)
       }
 
