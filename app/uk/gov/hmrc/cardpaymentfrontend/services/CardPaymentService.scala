@@ -93,7 +93,7 @@ class CardPaymentService @Inject() (
       purchaseDescription = journey.referenceValue,
       purchaseAmount = journey.getAmountInPence,
       billingAddress = addressFromSessionAsBarclaycardAddress,
-      emailAddress = maybeEmailFromSession,
+      emailAddress = maybeEmailFromSession.map(cryptoService.decryptEmail), // we decrypt here as barclaycard needs the email in plain text.
       transactionNumber = transNoGenerator.generate(journey.origin)
     )
 
