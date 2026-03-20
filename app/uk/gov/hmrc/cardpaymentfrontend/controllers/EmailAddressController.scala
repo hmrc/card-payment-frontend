@@ -20,16 +20,16 @@ import payapi.corcommon.model.PaymentStatuses
 import play.api.Logging
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import uk.gov.hmrc.cardpaymentfrontend.forms.EmailAddressForm
-import uk.gov.hmrc.cardpaymentfrontend.models.EmailAddress
 import uk.gov.hmrc.cardpaymentfrontend.actions.{Actions, JourneyRequest}
+import uk.gov.hmrc.cardpaymentfrontend.forms.EmailAddressForm
 import uk.gov.hmrc.cardpaymentfrontend.logging.KibanaLogger
+import uk.gov.hmrc.cardpaymentfrontend.models.EmailAddress
 import uk.gov.hmrc.cardpaymentfrontend.requests.RequestSupport
-import uk.gov.hmrc.cardpaymentfrontend.services.PaymentService
-import uk.gov.hmrc.cardpaymentfrontend.views.html.EmailAddressPage
-import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
+import uk.gov.hmrc.cardpaymentfrontend.services.{CryptoService, PaymentService}
 import uk.gov.hmrc.cardpaymentfrontend.session.JourneySessionSupport.*
 import uk.gov.hmrc.cardpaymentfrontend.util.SafeEquals.EqualsOps
+import uk.gov.hmrc.cardpaymentfrontend.views.html.EmailAddressPage
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -40,7 +40,8 @@ class EmailAddressController @Inject() (
   requestSupport:   RequestSupport,
   emailAddressPage: EmailAddressPage,
   mcc:              MessagesControllerComponents,
-  paymentService:   PaymentService
+  paymentService:   PaymentService,
+  cryptoService:    CryptoService
 )(implicit executionContext: ExecutionContext)
     extends FrontendController(mcc)
     with Logging {
@@ -70,8 +71,9 @@ class EmailAddressController @Inject() (
       .fold(
         (formWithErrors: Form[EmailAddress]) => Future.successful(BadRequest(emailAddressPage(form = formWithErrors))),
         { email =>
-
-          val successResult = Redirect(routes.AddressController.renderPage).placeInSession(journeyRequest.journeyId, Keys.email -> email)
+          val successResult =
+            Redirect(routes.AddressController.renderPage)
+              .placeInSession(journeyRequest.journeyId, Keys.email -> cryptoService.encryptEmail(email))
 
           // If an email is not present in session, proceed. If there is one in session, check if it's changed. If it has changed, reset order.
           emailInSession.fold(Future.successful(successResult)) { emailFromSession =>
@@ -87,8 +89,7 @@ class EmailAddressController @Inject() (
   }
 
   private[controllers] def emailInSession(implicit journeyRequest: JourneyRequest[?]): Option[EmailAddress] =
-    journeyRequest.readFromSession[EmailAddress](journeyRequest.journeyId, Keys.email)
-
+    journeyRequest.readFromSession[EmailAddress](journeyRequest.journeyId, Keys.email).map(cryptoService.decryptEmail)
   private[controllers] def emailIsDifferent(emailA: EmailAddress, emailB: EmailAddress): Boolean = emailA =!= emailB
 
 }

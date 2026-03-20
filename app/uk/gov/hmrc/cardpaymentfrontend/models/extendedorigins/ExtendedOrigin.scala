@@ -25,6 +25,7 @@ import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
 import uk.gov.hmrc.cardpaymentfrontend.config.AppConfig
 import uk.gov.hmrc.cardpaymentfrontend.models.openbanking.OriginSpecificSessionData
 import uk.gov.hmrc.cardpaymentfrontend.models.*
+import uk.gov.hmrc.cardpaymentfrontend.services.CryptoService
 import uk.gov.hmrc.cardpaymentfrontend.session.JourneySessionSupport.*
 
 import java.time.LocalDate
@@ -97,8 +98,8 @@ trait ExtendedOrigin {
     )
   )
 
-  def checkYourAnswersEmailAddressRow(journeyRequest: JourneyRequest[AnyContent]): Option[CheckYourAnswersRow] = {
-    val maybeEmail: Option[EmailAddress] = journeyRequest.readFromSession[EmailAddress](journeyRequest.journeyId, Keys.email)
+  def checkYourAnswersEmailAddressRow(cryptoService: CryptoService, journeyRequest: JourneyRequest[AnyContent]): Option[CheckYourAnswersRow] = {
+    val maybeEmail: Option[EmailAddress] = journeyRequest.readFromSession[EmailAddress](journeyRequest.journeyId, Keys.email).map(cryptoService.decryptEmail)
     maybeEmail
       .filter(!_.value.isBlank)
       .map { email =>
@@ -117,8 +118,8 @@ trait ExtendedOrigin {
   }
 
   // TODO: Update tests to not include country - check doesn't show country
-  def checkYourAnswersCardBillingAddressRow(journeyRequest: JourneyRequest[AnyContent]): Option[CheckYourAnswersRow] = {
-    val addressFromSession: Option[Address] = journeyRequest.readFromSession[Address](journeyRequest.journeyId, Keys.address)
+  def checkYourAnswersCardBillingAddressRow(cryptoService: CryptoService, journeyRequest: JourneyRequest[AnyContent]): Option[CheckYourAnswersRow] = {
+    val addressFromSession: Option[Address] = journeyRequest.readFromSession[Address](journeyRequest.journeyId, Keys.address).map(cryptoService.decryptAddress)
     val addressValues: Option[Seq[String]]  = {
       for {
         line1    <- addressFromSession.map(_.line1)

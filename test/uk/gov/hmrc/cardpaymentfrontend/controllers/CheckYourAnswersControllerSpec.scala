@@ -29,6 +29,7 @@ import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{contentAsString, defaultAwaitTimeout, redirectLocation, status}
 import uk.gov.hmrc.cardpaymentfrontend.models.cardpayment.CardPaymentInitiatePaymentResponse
+import uk.gov.hmrc.cardpaymentfrontend.services.CryptoService
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.TestOps.FakeRequestOps
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.stubs.{CardPaymentStub, PayApiStub}
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.testdata.TestJourneys
@@ -39,11 +40,12 @@ import scala.jdk.CollectionConverters.ListHasAsScala
 class CheckYourAnswersControllerSpec extends ItSpec {
 
   val systemUnderTest: CheckYourAnswersController = app.injector.instanceOf[CheckYourAnswersController]
+  val cryptoService                               = app.injector.instanceOf[CryptoService]
 
   def fakeRequest(journeyId: JourneyId = TestJourneys.PfSa.journeyBeforeBeginWebPayment._id): FakeRequest[AnyContentAsEmpty.type] =
     FakeRequest()
       .withSessionId()
-      .withEmailAndAddressInSession(journeyId)
+      .withEmailAndAddressInSession(cryptoService, journeyId)
 
   def fakeRequestWelsh(journeyId: JourneyId = TestJourneys.PfSa.journeyBeforeBeginWebPayment._id): FakeRequest[AnyContentAsEmpty.type] =
     fakeRequest(journeyId).withLangWelsh()
@@ -320,7 +322,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
 
       s"[${origin.entryName}] not render the email address row when there is not an email in session" in {
         PayApiStub.stubForFindBySessionId2xx(tdJourney)
-        val result = systemUnderTest.renderPage(FakeRequest().withSessionId().withAddressInSession(tdJourney._id))
+        val result = systemUnderTest.renderPage(FakeRequest().withSessionId().withAddressInSession(cryptoService, tdJourney._id))
         contentAsString(result) shouldNot include(emailAddressKeyText)
       }
 
@@ -2077,7 +2079,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
 
     "should redirect to iFrameUrl if PaymentStatus is Sent and there is an order present" in {
       def fakeRequestWithSentPaymentStatus(journeyId: JourneyId = TestJourneys.PfSa.journeyAfterBeginWebPayment._id): FakeRequest[AnyContentAsEmpty.type] =
-        FakeRequest().withSessionId().withEmailAndAddressInSession(journeyId)
+        FakeRequest().withSessionId().withEmailAndAddressInSession(cryptoService, journeyId)
       PayApiStub.stubForFindBySessionId2xx(
         TestJourneys.PfSa.journeyAfterBeginWebPayment.copy(order =
           Some(

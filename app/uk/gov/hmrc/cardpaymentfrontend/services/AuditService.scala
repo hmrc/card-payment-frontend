@@ -32,7 +32,7 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
 
 @Singleton
-class AuditService @Inject() (auditConnector: AuditConnector)(implicit ec: ExecutionContext) {
+class AuditService @Inject() (auditConnector: AuditConnector, cryptoService: CryptoService)(implicit ec: ExecutionContext) {
 
   private val auditSource: String = "card-payment-frontend"
 
@@ -55,7 +55,7 @@ class AuditService @Inject() (auditConnector: AuditConnector)(implicit ec: Execu
   )(implicit journeyRequest: JourneyRequest[?]): PaymentAttemptAuditDetail = {
     PaymentAttemptAuditDetail(
       address = address,
-      emailAddress = journeyRequest.readFromSession[EmailAddress](journeyRequest.journeyId, Keys.email),
+      emailAddress = journeyRequest.readFromSession[EmailAddress](journeyRequest.journeyId, Keys.email).map(cryptoService.decryptEmail),
       loggedIn = RequestSupport.isLoggedIn,
       merchantCode = merchantCode,
       paymentOrigin = journeyRequest.journey.origin,
@@ -82,7 +82,7 @@ class AuditService @Inject() (auditConnector: AuditConnector)(implicit ec: Execu
   ): PaymentResultAuditDetail = {
     PaymentResultAuditDetail(
       optionalAddress,
-      emailAddress = journeyRequest.readFromSession[EmailAddress](journeyRequest.journeyId, Keys.email),
+      emailAddress = journeyRequest.readFromSession[EmailAddress](journeyRequest.journeyId, Keys.email).map(cryptoService.decryptEmail),
       loggedIn = RequestSupport.isLoggedIn(journeyRequest),
       merchantCode,
       paymentOrigin = journeyRequest.journey.origin,
@@ -101,7 +101,7 @@ class AuditService @Inject() (auditConnector: AuditConnector)(implicit ec: Execu
   )(implicit journeyRequest: JourneyRequest[?], headerCarrier: HeaderCarrier): Unit = {
     audit(
       toPaymentResult(
-        optionalAddress = journeyRequest.readFromSession[Address](journeyRequest.journeyId, Keys.address),
+        optionalAddress = journeyRequest.readFromSession[Address](journeyRequest.journeyId, Keys.address).map(cryptoService.decryptAddress),
         merchantCode = merchantCode,
         transactionReference = transactionReference,
         paymentStatus = paymentStatus,

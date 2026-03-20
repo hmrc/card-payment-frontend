@@ -26,7 +26,7 @@ import uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins.ExtendedOrigin
 import uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins.ExtendedOrigin.OriginExtended
 import uk.gov.hmrc.cardpaymentfrontend.models.{Address, CheckYourAnswersRow, EmailAddress}
 import uk.gov.hmrc.cardpaymentfrontend.requests.RequestSupport
-import uk.gov.hmrc.cardpaymentfrontend.services.CardPaymentService
+import uk.gov.hmrc.cardpaymentfrontend.services.{CardPaymentService, CryptoService}
 import uk.gov.hmrc.cardpaymentfrontend.session.JourneySessionSupport.*
 import uk.gov.hmrc.cardpaymentfrontend.views.html.CheckYourAnswersPage
 import uk.gov.hmrc.govukfrontend.views.Aliases.SummaryList
@@ -44,7 +44,8 @@ class CheckYourAnswersController @Inject() (
   cardPaymentService:   CardPaymentService,
   checkYourAnswersPage: CheckYourAnswersPage,
   mcc:                  MessagesControllerComponents,
-  requestSupport:       RequestSupport
+  requestSupport:       RequestSupport,
+  cryptoService:        CryptoService
 )(implicit executionContext: ExecutionContext)
     extends FrontendController(mcc)
     with Logging {
@@ -58,9 +59,9 @@ class CheckYourAnswersController @Inject() (
     val additionalReferenceRows: Option[Seq[CheckYourAnswersRow]] =
       extendedOrigin.checkYourAnswersAdditionalReferenceRow(journeyRequest)(appConfig.payFrontendBaseUrl)
     val amountRow: Option[CheckYourAnswersRow]                    = extendedOrigin.checkYourAnswersAmountSummaryRow(journeyRequest)(appConfig.payFrontendBaseUrl)
-    val cardBillingAddressRow: Option[CheckYourAnswersRow]        = extendedOrigin.checkYourAnswersCardBillingAddressRow(journeyRequest)
+    val cardBillingAddressRow: Option[CheckYourAnswersRow]        = extendedOrigin.checkYourAnswersCardBillingAddressRow(cryptoService, journeyRequest)
     // If no email is present in the session, no Email Row is shown
-    val maybeEmailRow: Option[CheckYourAnswersRow]                = extendedOrigin.checkYourAnswersEmailAddressRow(journeyRequest)
+    val maybeEmailRow: Option[CheckYourAnswersRow]                = extendedOrigin.checkYourAnswersEmailAddressRow(cryptoService, journeyRequest)
 
     // the first two rows, payment date only applies to FDP supported journeys; reference row should always be there.
     val maybePaymentDateAndReferenceRows: Seq[Option[CheckYourAnswersRow]] = Seq(maybePaymentDate, referenceRow)
@@ -100,7 +101,7 @@ class CheckYourAnswersController @Inject() (
             .initiatePayment(
               journey = journeyRequest.journey,
               addressFromSession = address,
-              maybeEmailFromSession = journeyRequest.readFromSession[EmailAddress](journeyRequest.journeyId, Keys.email),
+              maybeEmailFromSession = journeyRequest.readFromSession[EmailAddress](journeyRequest.journeyId, Keys.email).map(cryptoService.decryptEmail),
               language = requestSupport.usableLanguage
             )(requestSupport.hc, journeyRequest)
             .map { response =>

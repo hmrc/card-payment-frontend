@@ -24,7 +24,7 @@ import uk.gov.hmrc.cardpaymentfrontend.forms.AddressForm
 import uk.gov.hmrc.cardpaymentfrontend.logging.KibanaLogger
 import uk.gov.hmrc.cardpaymentfrontend.models.Address
 import uk.gov.hmrc.cardpaymentfrontend.requests.RequestSupport
-import uk.gov.hmrc.cardpaymentfrontend.services.{CountriesService, PaymentService}
+import uk.gov.hmrc.cardpaymentfrontend.services.{CountriesService, CryptoService, PaymentService}
 import uk.gov.hmrc.cardpaymentfrontend.session.JourneySessionSupport.*
 import uk.gov.hmrc.cardpaymentfrontend.util.SafeEquals.EqualsOps
 import uk.gov.hmrc.cardpaymentfrontend.views.html.AddressPage
@@ -40,7 +40,8 @@ class AddressController @Inject() (
   countriesService: CountriesService,
   mcc:              MessagesControllerComponents,
   requestSupport:   RequestSupport,
-  paymentService:   PaymentService
+  paymentService:   PaymentService,
+  cryptoService:    CryptoService
 )(using executionContext: ExecutionContext)
     extends FrontendController(mcc)
     with Logging {
@@ -59,8 +60,8 @@ class AddressController @Inject() (
       .fold(
         (formWithErrors: Form[Address]) => Future.successful(BadRequest(addressPage(form = formWithErrors, countriesService.getCountries))),
         { address =>
-
-          val successResult = Redirect(routes.CheckYourAnswersController.renderPage).placeInSession[Address](journeyRequest.journeyId, Keys.address -> address)
+          val successResult = Redirect(routes.CheckYourAnswersController.renderPage)
+            .placeInSession(journeyRequest.journeyId, Keys.address -> cryptoService.encryptAddress(address))
 
           // If an address is not present in session, proceed. If there is one in session, check if it's changed. If it has changed, reset order.
           addressInSession.fold(Future.successful(successResult)) { addressFromSession =>
@@ -76,7 +77,6 @@ class AddressController @Inject() (
   }
 
   private[controllers] def addressInSession(using journeyRequest: JourneyRequest[?]): Option[Address] =
-    journeyRequest.readFromSession[Address](journeyRequest.journeyId, Keys.address)
-
+    journeyRequest.readFromSession[Address](journeyRequest.journeyId, Keys.address).map(cryptoService.decryptAddress)
   private[controllers] def addressIsDifferent(addressA: Address, addressB: Address): Boolean = addressA =!= addressB
 }

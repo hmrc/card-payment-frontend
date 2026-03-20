@@ -20,7 +20,8 @@ import payapi.corcommon.model.{AmountInPence, FutureDatedPayment}
 import play.api.mvc.{AnyContent, Call}
 import play.api.test.FakeRequest
 import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
-import uk.gov.hmrc.cardpaymentfrontend.models.{CheckYourAnswersRow, Link}
+import uk.gov.hmrc.cardpaymentfrontend.models.{CheckYourAnswersRow, EmailAddress, Link}
+import uk.gov.hmrc.cardpaymentfrontend.services.CryptoService
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.ItSpec
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.TestOps.FakeRequestOps
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.stubs.PayApiStub
@@ -32,6 +33,7 @@ import java.time.LocalDate
 class ExtendedOriginSpec extends ItSpec {
   private val systemUnderTest = ExtendedBtaSa // ExtendedBtaSa is a concrete reification of the trait ExtendedOrigin, we use it as a substitute here.
   private val fakeGetRequest  = FakeRequest("GET", "/cya0").withSessionId()
+  private val cryptoService   = app.injector.instanceOf[CryptoService]
 
   private val testJourney          = TestJourneys.BtaSa.journeyBeforeBeginWebPayment
   private val testJourneyNoDueDate =
@@ -100,10 +102,11 @@ class ExtendedOriginSpec extends ItSpec {
 
   "checkYourAnswersEmailAddressRow" - {
 
+    val encryptedEmail       = cryptoService.encryptEmail(EmailAddress("email@gmail.com"))
     val jsonSessionWithEmail =
-      """
+      s"""
         |{
-        | "email" : "email@gmail.com"
+        | "email" : "${encryptedEmail.value}"
         |}
         |""".stripMargin
 
@@ -112,7 +115,7 @@ class ExtendedOriginSpec extends ItSpec {
 
     "return Some[CheckYourAnswersRow] when showEmailAddress returns true" in {
       val fakeJourneyRequest: JourneyRequest[AnyContent] = new JourneyRequest(testJourney, fakeGetRequestWithEmail)
-      val result: Option[CheckYourAnswersRow]            = systemUnderTest.checkYourAnswersEmailAddressRow(fakeJourneyRequest)
+      val result: Option[CheckYourAnswersRow]            = systemUnderTest.checkYourAnswersEmailAddressRow(cryptoService, fakeJourneyRequest)
       result shouldBe Some(
         CheckYourAnswersRow(
           "check-your-details.email-address",
@@ -125,7 +128,7 @@ class ExtendedOriginSpec extends ItSpec {
     "return None when showEmailAddress returns false" in {
       val testJourneyEmailAddress                        = TestJourneys.BtaSa.journeyAfterBeginWebPayment
       val fakeJourneyRequest: JourneyRequest[AnyContent] = new JourneyRequest(testJourneyEmailAddress, fakeGetRequest)
-      val result: Option[CheckYourAnswersRow]            = systemUnderTest.checkYourAnswersEmailAddressRow(fakeJourneyRequest)
+      val result: Option[CheckYourAnswersRow]            = systemUnderTest.checkYourAnswersEmailAddressRow(cryptoService, fakeJourneyRequest)
       result shouldBe None
     }
   }

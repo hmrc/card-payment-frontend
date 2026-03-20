@@ -45,13 +45,14 @@ class CardPaymentServiceSpec extends ItSpec {
 
   val systemUnderTest: CardPaymentService = app.injector.instanceOf[CardPaymentService]
   val messagesApi: MessagesApi            = app.injector.instanceOf[MessagesApi]
+  val cryptoService                       = app.injector.instanceOf[CryptoService]
 
   implicit val headerCarrier: HeaderCarrier                     = HeaderCarrier()
   implicit val fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest()
 
   def fakeJourneyRequest(journey: Journey[JourneySpecificData], withEmail: Boolean): JourneyRequest[AnyContent] = {
-    if (withEmail) new JourneyRequest(journey, FakeRequest().withEmailAndAddressInSession(journey._id))
-    else new JourneyRequest(journey, FakeRequest().withAddressInSession(journey._id))
+    if (withEmail) new JourneyRequest(journey, FakeRequest().withEmailAndAddressInSession(cryptoService, journey._id))
+    else new JourneyRequest(journey, FakeRequest().withAddressInSession(cryptoService, journey._id))
   }
 
   val testJourneyBeforeBeginWebPayment: Journey[JsdPfSa]       = TestJourneys.PfSa.journeyBeforeBeginWebPayment

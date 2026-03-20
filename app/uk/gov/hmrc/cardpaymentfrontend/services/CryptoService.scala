@@ -18,6 +18,7 @@ package uk.gov.hmrc.cardpaymentfrontend.services
 
 import com.google.inject.{Inject, Singleton}
 import uk.gov.hmrc.cardpaymentfrontend.crypto.Crypto
+import uk.gov.hmrc.cardpaymentfrontend.models.{Address, EmailAddress}
 
 @Singleton
 class CryptoService @Inject() (crypto: Crypto) {
@@ -26,4 +27,43 @@ class CryptoService @Inject() (crypto: Crypto) {
 
   def decryptString(s: String): String = crypto.decrypt(s)
 
+  def encryptEmail(email: EmailAddress): EmailAddress = {
+    EmailAddress(encryptString(email.value))
+  }
+
+  def decryptEmail(email: EmailAddress): EmailAddress = {
+    // TODO: REMOVE TRY CATCH AFTER DEPLOYMENT
+    try {
+      EmailAddress(decryptString(email.value))
+    } catch {
+      case _: Throwable => email
+    }
+  }
+
+  def encryptAddress(address: Address): Address = {
+    address.copy(
+      line1 = encryptString(address.line1),
+      line2 = address.line2.map(encryptString),
+      city = address.city.map(encryptString),
+      county = address.county.map(encryptString),
+      postcode = address.postcode.map(encryptString),
+      country = encryptString(address.country)
+    )
+  }
+
+  def decryptAddress(address: Address): Address = {
+    // TODO: REMOVE TRY CATCH AFTER DEPLOYMENT
+    try {
+      address.copy(
+        line1 = decryptString(address.line1),
+        line2 = address.line2.map(decryptString),
+        city = address.city.map(decryptString),
+        county = address.county.map(decryptString),
+        postcode = address.postcode.map(decryptString),
+        country = decryptString(address.country)
+      )
+    } catch {
+      case _: Throwable => address
+    }
+  }
 }

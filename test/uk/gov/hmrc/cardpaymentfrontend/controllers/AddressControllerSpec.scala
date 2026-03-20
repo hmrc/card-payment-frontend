@@ -25,6 +25,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers.*
 import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
 import uk.gov.hmrc.cardpaymentfrontend.models.Address
+import uk.gov.hmrc.cardpaymentfrontend.services.CryptoService
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.ItSpec
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.TestOps.FakeRequestOps
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.stubs.PayApiStub
@@ -41,6 +42,8 @@ class AddressControllerSpec extends ItSpec {
     wireMockServer.resetRequests()
     ()
   }
+
+  val cryptoService: CryptoService = app.injector.instanceOf[CryptoService]
 
   "AddressController" - {
 
@@ -127,7 +130,7 @@ class AddressControllerSpec extends ItSpec {
         def fakeRequestWithAddressInSession(journeyId: JourneyId = TestJourneys.PfSa.journeyBeforeBeginWebPayment._id): FakeRequest[AnyContentAsEmpty.type] =
           FakeRequest()
             .withSessionId()
-            .withAddressInSession(journeyId)
+            .withAddressInSession(cryptoService, journeyId)
         PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyBeforeBeginWebPayment)
 
         val result   = systemUnderTest.renderPage(fakeRequestWithAddressInSession())
@@ -197,8 +200,8 @@ class AddressControllerSpec extends ItSpec {
       }
 
       "should call pay-api and reset order when journey is in Sent state and address submitted is different to what is already in session" in {
-        val testJourney         = TestJourneys.PfSa.journeyAfterBeginWebPayment
-        val address             = List(
+        val testJourney               = TestJourneys.PfSa.journeyAfterBeginWebPayment
+        val address                   = List(
           ("line1", "20 Fake Cottage"),
           ("line2", "Fake Street"),
           ("city", "Imaginaryshire"),
@@ -208,11 +211,16 @@ class AddressControllerSpec extends ItSpec {
         )
         PayApiStub.stubForFindBySessionId2xx(testJourney)
         PayApiStub.stubForResetWebPayment2xx(testJourney._id)
-        val result              = systemUnderTest.submit(fakePostRequest(address: _*).withAddressInSession(testJourney._id))
+        val result                    = systemUnderTest.submit(fakePostRequest(address: _*).withAddressInSession(cryptoService, testJourney._id))
         status(result) shouldBe Status.SEE_OTHER
         redirectLocation(result) shouldBe Some("/pay-by-card/check-your-details")
-        val addressInSession    = session(result).get(testJourney._id.value)
-        val expectedAddressJson = Json.parse(
+        val addressInSession: Address =
+          session(result)
+            .get(testJourney._id.value)
+            .fold(fail("Address missing from session")) { jsonStr =>
+              (Json.parse(jsonStr) \ "address").as[Address]
+            }
+        val expectedAddressJson       = Json.parse(
           """{
             |"address" : {
             |    "line1" : "20 Fake Cottage",
@@ -225,7 +233,9 @@ class AddressControllerSpec extends ItSpec {
             |}
             |""".stripMargin
         )
-        addressInSession.map(Json.parse) shouldBe Some(expectedAddressJson)
+        val expectedAddress: Address  =
+          (expectedAddressJson \ "address").as[Address]
+        cryptoService.decryptAddress(addressInSession) shouldBe expectedAddress
         PayApiStub.verifyResetWebPayment(1, testJourney._id)
       }
 
@@ -238,7 +248,7 @@ class AddressControllerSpec extends ItSpec {
           ("country", testAddress.country)
         )
         PayApiStub.stubForFindBySessionId2xx(testJourney)
-        val result          = systemUnderTest.submit(fakePostRequest(testAddressList: _*).withAddressInSession(testJourney._id, testAddress))
+        val result          = systemUnderTest.submit(fakePostRequest(testAddressList: _*).withAddressInSession(cryptoService, testJourney._id, testAddress))
         status(result) shouldBe Status.SEE_OTHER
         redirectLocation(result) shouldBe Some("/pay-by-card/check-your-details")
         PayApiStub.verifyResetWebPayment(0, testJourney._id)
@@ -253,7 +263,7 @@ class AddressControllerSpec extends ItSpec {
           ("country", "GBR")
         )
         PayApiStub.stubForFindBySessionId2xx(testJourney)
-        val result      = systemUnderTest.submit(fakePostRequest(address: _*).withAddressInSession(testJourney._id, testAddress))
+        val result      = systemUnderTest.submit(fakePostRequest(address: _*).withAddressInSession(cryptoService, testJourney._id, testAddress))
         status(result) shouldBe Status.SEE_OTHER
         redirectLocation(result) shouldBe Some("/pay-by-card/check-your-details")
         PayApiStub.verifyResetWebPayment(0, testJourney._id)
@@ -582,7 +592,7 @@ class AddressControllerSpec extends ItSpec {
 
     "addressInSession" - {
       "should return Some[Address] when there is one in session and it's associated with the 'address' key" in {
-        val fakeRequest    = FakeRequest("GET", "/blah").withAddressInSession(TestJourneys.PfSa.journeyBeforeBeginWebPayment._id)
+        val fakeRequest    = FakeRequest("GET", "/blah").withAddressInSession(cryptoService, TestJourneys.PfSa.journeyBeforeBeginWebPayment._id)
         val journeyRequest = new JourneyRequest(TestJourneys.PfSa.journeyBeforeBeginWebPayment, fakeRequest)
         val result         = systemUnderTest.addressInSession(using journeyRequest)
         result shouldBe Some(Address("line1", Some("line2"), Some("city"), Some("county"), Some("AA0AA0"), "GBR"))
