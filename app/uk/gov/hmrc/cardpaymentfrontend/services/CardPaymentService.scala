@@ -78,13 +78,14 @@ class CardPaymentService @Inject() (
 
     // todo eventually we can just use barclaycardaddress model, but we want backwards compatibility with pay-frontend.
     // This way if user ends up on pay-frontend after being on card-payment-frontend (or vice versa) it won't break.
+    val decryptedAddressFromSession: Address                       = cryptoService.decryptAddress(addressFromSession)
     val addressFromSessionAsBarclaycardAddress: BarclaycardAddress = BarclaycardAddress(
-      line1 = addressFromSession.line1,
-      line2 = addressFromSession.line2,
-      city = addressFromSession.city,
-      county = addressFromSession.county,
-      postCode = addressFromSession.postcode,
-      countryCode = addressFromSession.country
+      line1 = decryptedAddressFromSession.line1,
+      line2 = decryptedAddressFromSession.line2,
+      city = decryptedAddressFromSession.city,
+      county = decryptedAddressFromSession.county,
+      postCode = decryptedAddressFromSession.postcode,
+      countryCode = decryptedAddressFromSession.country
     )
 
     val cardPaymentInitiatePaymentRequest: CardPaymentInitiatePaymentRequest = CardPaymentInitiatePaymentRequest(
