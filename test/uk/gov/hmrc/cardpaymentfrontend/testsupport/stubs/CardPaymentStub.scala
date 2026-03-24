@@ -108,6 +108,7 @@ object CardPaymentStub {
     def verifyOne(transactionReference: String, clientId: String): Unit = verify(1, postRequestedFor(urlEqualTo(path(transactionReference, clientId))))
 
     def verifyNone(transactionReference: String, clientId: String): Unit = verify(0, postRequestedFor(urlEqualTo(path(transactionReference, clientId))))
+
   }
 
 }

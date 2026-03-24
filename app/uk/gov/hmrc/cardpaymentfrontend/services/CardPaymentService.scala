@@ -76,27 +76,8 @@ class CardPaymentService @Inject() (
     val clientIdStringToUse: String = if (appConfig.useProductionClientIds) clientId.prodCode else clientId.qaCode
     KibanaLogger.info(s"Initiating payment for journey ${journey._id.value}")
 
-    // todo eventually we can just use barclaycardaddress model, but we want backwards compatibility with pay-frontend.
-    // This way if user ends up on pay-frontend after being on card-payment-frontend (or vice versa) it won't break.
-    val decryptedAddressFromSession: Address                       = cryptoService.decryptAddress(addressFromSession)
-    val addressFromSessionAsBarclaycardAddress: BarclaycardAddress = BarclaycardAddress(
-      line1 = decryptedAddressFromSession.line1,
-      line2 = decryptedAddressFromSession.line2,
-      city = decryptedAddressFromSession.city,
-      county = decryptedAddressFromSession.county,
-      postCode = decryptedAddressFromSession.postcode,
-      countryCode = decryptedAddressFromSession.country
-    )
-
-    val cardPaymentInitiatePaymentRequest: CardPaymentInitiatePaymentRequest = CardPaymentInitiatePaymentRequest(
-      redirectUrl = returnToHmrcUrl(journey._id),
-      clientId = clientIdStringToUse,
-      purchaseDescription = journey.referenceValue,
-      purchaseAmount = journey.getAmountInPence,
-      billingAddress = addressFromSessionAsBarclaycardAddress,
-      emailAddress = maybeEmailFromSession.map(cryptoService.decryptEmail), // we decrypt here as barclaycard needs the email in plain text.
-      transactionNumber = transNoGenerator.generate(journey.origin)
-    )
+    val cardPaymentInitiatePaymentRequest: CardPaymentInitiatePaymentRequest =
+      buildCardInitiatePaymentRequest(addressFromSession, maybeEmailFromSession, journey, clientIdStringToUse)
 
     for {
       initiatePaymentResponse     <- cardPaymentConnector.initiatePayment(cardPaymentInitiatePaymentRequest)(using headerCarrier)
@@ -224,6 +205,35 @@ class CardPaymentService @Inject() (
         }
       }
     }
+  }
+
+  private[services] def buildCardInitiatePaymentRequest(
+    address:               Address,
+    maybeEmailFromSession: Option[EmailAddress],
+    journey:               Journey[?],
+    clientIdStringToUse:   String
+  ): CardPaymentInitiatePaymentRequest = {
+    // todo eventually we can just use barclaycardaddress model, but we want backwards compatibility with pay-frontend.
+    // This way if user ends up on pay-frontend after being on card-payment-frontend (or vice versa) it won't break.
+    val decryptedAddressFromSession: Address                       = cryptoService.decryptAddress(address)
+    val addressFromSessionAsBarclaycardAddress: BarclaycardAddress = BarclaycardAddress(
+      line1 = decryptedAddressFromSession.line1,
+      line2 = decryptedAddressFromSession.line2,
+      city = decryptedAddressFromSession.city,
+      county = decryptedAddressFromSession.county,
+      postCode = decryptedAddressFromSession.postcode,
+      countryCode = decryptedAddressFromSession.country
+    )
+    CardPaymentInitiatePaymentRequest(
+      redirectUrl = returnToHmrcUrl(journey._id),
+      clientId = clientIdStringToUse,
+      purchaseDescription = journey.referenceValue,
+      purchaseAmount = journey.getAmountInPence,
+      billingAddress = addressFromSessionAsBarclaycardAddress,
+      emailAddress = maybeEmailFromSession.map(cryptoService.decryptEmail), // we decrypt here as barclaycard needs the email in plain text.
+      transactionNumber = transNoGenerator.generate(journey.origin)
+    )
+
   }
 
 }
