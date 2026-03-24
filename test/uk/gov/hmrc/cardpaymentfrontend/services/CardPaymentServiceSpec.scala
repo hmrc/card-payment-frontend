@@ -19,6 +19,7 @@ package uk.gov.hmrc.cardpaymentfrontend.services
 import org.scalatest.concurrent.PatienceConfiguration.Timeout
 import org.scalatest.time.{Milliseconds, Span}
 import payapi.cardpaymentjourney.model.journey.{Journey, JourneySpecificData, JsdPfSa}
+import payapi.corcommon.model.AmountInPence
 import play.api.i18n.MessagesApi
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.{AnyContent, AnyContentAsEmpty}
@@ -402,6 +403,61 @@ class CardPaymentServiceSpec extends ItSpec {
         val result                = systemUnderTest.cardPaymentResultIntoUpdateWebPaymentRequest(testCardPaymentResult)
         result shouldBe Some(FailWebPaymentRequest(LocalDateTime.parse("2059-11-25T16:33:51.880"), "cardcategory"))
       }
+    }
+  }
+
+  "buildCardInitiatePaymentRequest" - {
+
+    "should build a CardPaymentInitiatePaymentRequest with the correct Email Decrypted" in {
+      val testJourney                                       = TestJourneys.PfSa.journeyBeforeBeginWebPayment
+      val returnToHmrcUrl                                   = systemUnderTest.returnToHmrcUrl(testJourney._id)
+      val testAddress: Address                              = Address(
+        line1 = "made up street",
+        postcode = Some("AA11AA"),
+        country = "GBR"
+      )
+      val expectedOutput: CardPaymentInitiatePaymentRequest = CardPaymentInitiatePaymentRequest(
+        returnToHmrcUrl,
+        "SAEE",
+        "1234567895K",
+        AmountInPence(1234),
+        BarclaycardAddress("made up street", postCode = Some("AA11AA"), countryCode = "GBR"),
+        Some(EmailAddress("some@email.com")),
+        "00001999999999"
+      )
+      val result                                            = systemUnderTest.buildCardInitiatePaymentRequest(
+        address = cryptoService.encryptAddress(testAddress),
+        maybeEmailFromSession = Some(cryptoService.encryptEmail(EmailAddress("some@email.com"))),
+        testJourney,
+        clientIdStringToUse = "SAEE"
+      )
+      result.emailAddress shouldBe expectedOutput.emailAddress
+    }
+
+    "should build a CardPaymentInitiatePaymentRequest with the correct Address Decrypted" in {
+      val testJourney                                       = TestJourneys.PfSa.journeyBeforeBeginWebPayment
+      val returnToHmrcUrl                                   = systemUnderTest.returnToHmrcUrl(testJourney._id)
+      val testAddress: Address                              = Address(
+        line1 = "made up street",
+        postcode = Some("AA11AA"),
+        country = "GBR"
+      )
+      val expectedOutput: CardPaymentInitiatePaymentRequest = CardPaymentInitiatePaymentRequest(
+        returnToHmrcUrl,
+        "SAEE",
+        "1234567895K",
+        AmountInPence(1234),
+        BarclaycardAddress("made up street", postCode = Some("AA11AA"), countryCode = "GBR"),
+        Some(EmailAddress("some@email.com")),
+        "00001999999999"
+      )
+      val result                                            = systemUnderTest.buildCardInitiatePaymentRequest(
+        address = cryptoService.encryptAddress(testAddress),
+        maybeEmailFromSession = Some(cryptoService.encryptEmail(EmailAddress("some@email.com"))),
+        testJourney,
+        clientIdStringToUse = "SAEE"
+      )
+      result.billingAddress shouldBe expectedOutput.billingAddress
     }
   }
 }
