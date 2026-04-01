@@ -66,12 +66,12 @@ class ErrorHandlerSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuit
 
     "render the correct page title in Welsh" in {
       val document = Jsoup.parse(handler.technicalDifficulties()(fakeRequestInWelsh).body)
-      document.title() should include("Mae'n ddrwg gennym, mae problem gyda'r gwasanaeth hwn")
+      document.title() should include("Mae’n ddrwg gennym, mae problem gyda’r gwasanaeth hwn")
     }
 
     "render the correct heading in Welsh" in {
       val document = Jsoup.parse(handler.technicalDifficulties()(fakeRequestInWelsh).body)
-      document.select("h1.govuk-heading-l").text() shouldBe "Mae'n ddrwg gennym, mae problem gyda'r gwasanaeth hwn"
+      document.select("h1.govuk-heading-l").text() shouldBe "Mae’n ddrwg gennym, mae problem gyda’r gwasanaeth hwn"
     }
 
     "render the correct message in Welsh" in {
