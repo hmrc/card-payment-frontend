@@ -16,11 +16,13 @@
 
 package uk.gov.hmrc.cardpaymentfrontend.config
 
+import org.jsoup.Jsoup
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.Application
+import play.api.mvc.Cookie
 import play.api.test.FakeRequest
 import play.api.inject.guice.GuiceApplicationBuilder
 
@@ -30,7 +32,8 @@ class ErrorHandlerSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuit
     new GuiceApplicationBuilder()
       .build()
 
-  private val fakeRequest = FakeRequest("GET", "/")
+  private val fakeRequest        = FakeRequest("GET", "/")
+  private val fakeRequestInWelsh = FakeRequest("GET", "/").withCookies(Cookie("PLAY_LANG", "cy"))
 
   private val handler = app.injector.instanceOf[ErrorHandler]
 
@@ -38,6 +41,42 @@ class ErrorHandlerSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuit
     "render HTML" in {
       val html = handler.standardErrorTemplate("title", "heading", "message")(fakeRequest).futureValue
       html.contentType shouldBe "text/html"
+    }
+  }
+
+  "technicalDifficulties" should {
+    "render HTML" in {
+      handler.technicalDifficulties()(fakeRequest).contentType shouldBe "text/html"
+    }
+
+    "render the correct page title" in {
+      val document = Jsoup.parse(handler.technicalDifficulties()(fakeRequest).body)
+      document.title() should include("Sorry, there is a problem with this service")
+    }
+
+    "render the correct heading" in {
+      val document = Jsoup.parse(handler.technicalDifficulties()(fakeRequest).body)
+      document.select("h1.govuk-heading-l").text() shouldBe "Sorry, there is a problem with this service"
+    }
+
+    "render the correct message" in {
+      val document = Jsoup.parse(handler.technicalDifficulties()(fakeRequest).body)
+      document.select("p.govuk-body").text() shouldBe "Try again in a few minutes."
+    }
+
+    "render the correct page title in Welsh" in {
+      val document = Jsoup.parse(handler.technicalDifficulties()(fakeRequestInWelsh).body)
+      document.title() should include("Mae’n ddrwg gennym, mae problem gyda’r gwasanaeth hwn")
+    }
+
+    "render the correct heading in Welsh" in {
+      val document = Jsoup.parse(handler.technicalDifficulties()(fakeRequestInWelsh).body)
+      document.select("h1.govuk-heading-l").text() shouldBe "Mae’n ddrwg gennym, mae problem gyda’r gwasanaeth hwn"
+    }
+
+    "render the correct message in Welsh" in {
+      val document = Jsoup.parse(handler.technicalDifficulties()(fakeRequestInWelsh).body)
+      document.select("p.govuk-body").text() shouldBe "Rhowch gynnig arall arni mewn ychydig o funudau."
     }
   }
 
