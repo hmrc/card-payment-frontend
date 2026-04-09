@@ -103,6 +103,7 @@ service-name.WcEpayeLpp = Talu’ch cosb am dalu neu gyflwyno TWE yn hwyr
 service-name.WcEpayeNi = Talwch eich TWE a’ch Yswiriant Gwladol y cyflogwr
 service-name.WcEpayeSeta = Talwch eich Cytundeb Setliad TWE y cyflogwr
 
+
 ## Email address page
 email-address.heading = Beth yw’ch cyfeiriad e-bost? (dewisol)
 email-address.hint = Byddwn ond yn defnyddio hwn i gadarnhau’ch bod wedi anfon taliad
@@ -523,6 +524,8 @@ email.tax-name.PfMgd = Toll Peiriannau Hapchwarae
 email.tax-name.PfTrust = Tâl cosb y Gwasanaeth Cofrestru Ymddiriedolaethau
 email.tax-name.PfOther = Trethi, cosbau a setliadau ymholiadau eraill
 email.tax-name.PfPsAdmin = Taliadau treth gynllun pensiwn
+email.tax-name.StampTaxesOnShares = Tâl Trosglwyddo Gwarantau
+
 
 ## Payments survey
 payments-survey.bta.return-message = Dim diolch, dychwelyd i cyfrif treth busnes

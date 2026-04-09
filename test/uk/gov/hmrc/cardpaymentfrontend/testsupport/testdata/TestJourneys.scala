@@ -36,6 +36,8 @@ import payapi.corcommon.model.taxes.ppt.PptReference
 import payapi.corcommon.model.taxes.sa.SaUtr
 import payapi.corcommon.model.taxes.sdil.Zsdl
 import payapi.corcommon.model.taxes.sdlt.Utrn
+import payapi.corcommon.model.taxes.stos.StosChargeType.SecurityTransferCharge
+import payapi.corcommon.model.taxes.stos.{CustomerId, StosBasketDetails, StosBasketItem, StosBasketReference, SubmissionId}
 import payapi.corcommon.model.taxes.trusts.TrustReference
 import payapi.corcommon.model.taxes.vat.{CalendarPeriod, VatChargeReference, Vrn}
 import payapi.corcommon.model.taxes.vatc2c.VatC2cReference
@@ -1420,6 +1422,36 @@ object TestJourneys {
       journeySpecificData = JsdWcSdlt(
         utrn = Utrn("123456789MA"),
         defaultAmountInPence = AmountInPence(1234)
+      ),
+      chosenWayToPay = None
+    )
+  }
+
+  object StampTaxesOnShares extends JourneyStatuses[JsdStampTaxesOnShares] {
+    val journeyBeforeBeginWebPayment: Journey[JsdStampTaxesOnShares] = Journey[JsdStampTaxesOnShares](
+      _id = JourneyId(TestPayApiData.decryptedJourneyId),
+      sessionId = Some(SessionId("TestSession-4b87460d-6f43-4c4c-b810-d6f87c774854")),
+      amountInPence = Some(AmountInPence(1234)),
+      emailTemplateOptions = None,
+      navigation = None,
+      order = None,
+      status = PaymentStatuses.Created,
+      createdOn = LocalDateTime.parse("2027-11-02T16:28:55.185"),
+      journeySpecificData = JsdStampTaxesOnShares(
+        basketReference = Some(StosBasketReference("BASKET1234567890")),
+        customerId = CustomerId("CUSTOMERID"),
+        submissionId = SubmissionId("SUBMISSIONID"),
+        basketDetails = StosBasketDetails(
+          basketItems = List(
+            StosBasketItem(
+              amountInPence = AmountInPence(1234),
+              buyerName = "Tom Cruise",
+              sellerName = "Danny DeVito",
+              chargeReference = "CR123456789012",
+              chargeType = SecurityTransferCharge
+            )
+          )
+        )
       ),
       chosenWayToPay = None
     )

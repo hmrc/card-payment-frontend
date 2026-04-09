@@ -37,6 +37,7 @@ import payapi.corcommon.model.taxes.sa.SaUtr
 import payapi.corcommon.model.taxes.sd.SpiritDrinksReference
 import payapi.corcommon.model.taxes.sdil.Zsdl
 import payapi.corcommon.model.taxes.sdlt.Utrn
+import payapi.corcommon.model.taxes.stos.{CustomerId, StosBasketDetails, StosBasketReference, SubmissionId}
 import payapi.corcommon.model.taxes.trusts.TrustReference
 import payapi.corcommon.model.taxes.vat.{CalendarPeriod, VatChargeReference, Vrn}
 import payapi.corcommon.model.taxes.vatc2c.VatC2cReference
@@ -153,6 +154,7 @@ object OriginSpecificSessionData                                    {
       case WcSdlt                   => Json.format[WcSdltSessionData].reads(json)
       case WcChildBenefitRepayments => Json.format[WcChildBenefitRepaymentsSessionData].reads(json)
       case PtaP800                  => Json.format[PtaP800SessionData].reads(json)
+      case StampTaxesOnShares       => Json.format[StampTaxesOnSharesSessionData].reads(json)
 
       // Todo: Remove PfP800 when PtaP800 is fully available
       case origin @ (PfOther | PfP800 | BcPngr | Parcels | Mib | PfSimpleAssessment | PtaSimpleAssessment | WcXref) =>
@@ -249,6 +251,7 @@ object OriginSpecificSessionData                                    {
       case sessionData: WcSdltSessionData                   => Json.format[WcSdltSessionData].writes(sessionData)
       case sessionData: WcChildBenefitRepaymentsSessionData => Json.format[WcChildBenefitRepaymentsSessionData].writes(sessionData)
       case sessionData: PtaP800SessionData                  => Json.format[PtaP800SessionData].writes(sessionData)
+      case sessionData: StampTaxesOnSharesSessionData       => Json.format[StampTaxesOnSharesSessionData].writes(sessionData)
     }) + ("origin" -> Json.toJson(o.origin))
 
   implicit val format: OFormat[OriginSpecificSessionData] = OFormat(reads, writes)
@@ -790,4 +793,15 @@ final case class JrsJobRetentionSchemeSessionData(jrsRef: JrsRef, returnUrl: Opt
 final case class WcClass2NiSessionData(class2NiReference: Class2NiReference, returnUrl: Option[Url] = None) extends OriginSpecificSessionData(WcClass2Ni) {
   def paymentReference: Reference = ReferenceMaker.makeClass2NiReference(class2NiReference)
   def searchTag: SearchTag        = SearchTag(class2NiReference.canonicalisedValue)
+}
+
+final case class StampTaxesOnSharesSessionData(
+  basketReference: Option[StosBasketReference],
+  customerId:      CustomerId,
+  submissionId:    SubmissionId,
+  basketDetails:   StosBasketDetails,
+  returnUrl:       Option[Url] = None
+) extends OriginSpecificSessionData(StampTaxesOnShares) {
+  def paymentReference: Reference = ReferenceMaker.makeStosReference(submissionId)
+  def searchTag: SearchTag        = SearchTag(submissionId.canonicalizedValue)
 }

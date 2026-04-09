@@ -19,6 +19,7 @@ package uk.gov.hmrc.cardpaymentfrontend.models
 import com.typesafe.config.{Config, ConfigFactory}
 import org.scalatest.AppendedClues.convertToClueful
 import org.scalatest.Assertion
+import payapi.corcommon.model.AmountInPence
 import payapi.corcommon.model.cgt.CgtAccountReference
 import payapi.corcommon.model.p800.P800ChargeRef
 import payapi.corcommon.model.taxes.ad.{AlcoholDutyChargeReference, AlcoholDutyReference}
@@ -34,6 +35,8 @@ import payapi.corcommon.model.taxes.ppt.PptReference
 import payapi.corcommon.model.taxes.sa.SaUtr
 import payapi.corcommon.model.taxes.sdil.Zsdl
 import payapi.corcommon.model.taxes.sdlt.Utrn
+import payapi.corcommon.model.taxes.stos.StosChargeType.SecurityTransferCharge
+import payapi.corcommon.model.taxes.stos.*
 import payapi.corcommon.model.taxes.trusts.TrustReference
 import payapi.corcommon.model.taxes.vat.{CalendarPeriod, VatChargeReference, Vrn}
 import payapi.corcommon.model.taxes.vatc2c.VatC2cReference
@@ -641,10 +644,47 @@ class OpenBankingOriginSpecificSessionDataSpec extends UnitSpec {
       roundTripJsonTest(osd, testJson)
     }
 
+    "StampTaxesOnShares" in {
+      val testJson = Json.parse(
+        // language=JSON
+        """{
+          |  "basketReference": "BASKET1234567890",
+          |  "customerId": "CUSTOMERID",
+          |  "submissionId": "SUBMISSIONID",
+          |  "basketDetails": {
+          |    "basketItems": [
+          |      {
+          |        "amountInPence": 1234,
+          |        "buyerName": "Tom Cruise",
+          |        "sellerName": "Danny DeVito",
+          |        "chargeReference": "CR123456789012",
+          |        "chargeType": "SecurityTransferCharge"
+          |      }
+          |    ]
+          |  },
+          |  "origin": "StampTaxesOnShares"
+          |}""".stripMargin
+      )
+      val osd      =
+        ExtendedStampTaxesOnShares.openBankingOriginSpecificSessionData(TestJourneys.StampTaxesOnShares.journeyBeforeBeginWebPayment.journeySpecificData)
+      testOsd(
+        osd,
+        StampTaxesOnSharesSessionData(
+          Some(StosBasketReference("BASKET1234567890")),
+          CustomerId("CUSTOMERID"),
+          SubmissionId("SUBMISSIONID"),
+          StosBasketDetails(List[StosBasketItem](StosBasketItem(AmountInPence(1234), "Tom Cruise", "Danny DeVito", "CR123456789012", SecurityTransferCharge)))
+        ),
+        "SUBMISSIONID",
+        "SUBMISSIONID"
+      )
+      roundTripJsonTest(osd, testJson)
+    }
+
   }
 
   "sanity check for implemented origins" in {
-    TestHelpers.implementedOrigins.size shouldBe 70 withClue "** This dummy test is here to remind you to update the tests above. Bump up the expected number when an origin is added to implemented origins **"
+    TestHelpers.implementedOrigins.size shouldBe 71 withClue "** This dummy test is here to remind you to update the tests above. Bump up the expected number when an origin is added to implemented origins **"
   }
 
 }
