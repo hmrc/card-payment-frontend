@@ -3,7 +3,7 @@ import sbt.*
 //format: OFF
 object AppDependencies {
 
-  private val payApiCorVersion = "1.295.0-SNAPSHOT"
+  private val payApiCorVersion = "1.296.0"
   private val bootstrapVersion = "10.7.0"
 
   private val payApiExclusionRules: Seq[InclusionRule] = Seq(
