@@ -526,7 +526,6 @@ email.tax-name.PfOther = Trethi, cosbau a setliadau ymholiadau eraill
 email.tax-name.PfPsAdmin = Taliadau treth gynllun pensiwn
 email.tax-name.StampTaxesOnShares = Tâl Trosglwyddo Gwarantau
 
-
 ## Payments survey
 payments-survey.bta.return-message = Dim diolch, dychwelyd i cyfrif treth busnes
 payments-survey.pta.return-message = Dim diolch, dychwelyd i cyfrif treth personol

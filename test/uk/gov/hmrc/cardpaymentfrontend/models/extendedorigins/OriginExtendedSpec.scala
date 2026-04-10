@@ -230,7 +230,7 @@ class OriginExtendedSpec extends UnitSpec {
         `3psSa`                  -> true,
         `3psVat`                 -> true,
         WcSdlt                   -> true,
-        StampTaxesOnShares       -> true
+        StampTaxesOnShares       -> false
       )
       originsSeq.foreach { case (origin, welshIsSupported) =>
         s"welsh supported: ${welshIsSupported.toString} for origin ${origin.toString}" in {

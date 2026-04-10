@@ -282,9 +282,10 @@ object ExtendedOrigin {
           PfAggregatesLevy | PfClimateChangeLevy | PfSimpleAssessment | PtaSimpleAssessment | AppSimpleAssessment | PfTpes | CapitalGainsTax |
           EconomicCrimeLevy | PfEconomicCrimeLevy | PfJobRetentionScheme | JrsJobRetentionScheme | PfImportedVehicles | PfChildBenefitRepayments | PfAmls |
           PfAted | PfTrust | PtaClass3Ni | AlcoholDuty | PfAlcoholDuty | VatC2c | PfVatC2c | `3psSa` | `3psVat` | WcSa | WcCt | WcVat | WcSimpleAssessment |
-          WcXref | WcEpayeLpp | WcClass1aNi | WcEpayeNi | WcEpayeLateCis | WcEpayeSeta | WcSdlt | WcClass2Ni | WcChildBenefitRepayments | StampTaxesOnShares =>
+          WcXref | WcEpayeLpp | WcClass1aNi | WcEpayeNi | WcEpayeLateCis | WcEpayeSeta | WcSdlt | WcClass2Ni | WcChildBenefitRepayments =>
         true
-      case PfCds | PfCdsCash | PfCdsDeferment | NiEuVatOss | NiEuVatIoss | PfNiEuVatOss | PfNiEuVatIoss | Pillar2 | PfPillar2 | Parcels => false
+      case PfCds | PfCdsCash | PfCdsDeferment | NiEuVatOss | NiEuVatIoss | PfNiEuVatOss | PfNiEuVatIoss | Pillar2 | PfPillar2 | Parcels | StampTaxesOnShares =>
+        false
     }
   }
 }
