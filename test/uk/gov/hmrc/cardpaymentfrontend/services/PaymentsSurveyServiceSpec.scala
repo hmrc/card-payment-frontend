@@ -1490,7 +1490,7 @@ class PaymentsSurveyServiceSpec extends ItSpec with TableDrivenPropertyChecks {
               returnHref = "https://www.gov.uk/government/organisations/hm-revenue-customs",
               auditName = "stamp-taxes-on-shares",
               audit = AuditOptions(
-                userType = "LoggedOut",
+                userType = "LoggedIn",
                 journey = Some("Successful"),
                 orderId = Some("SUBMISSIONID"),
                 liability = Some("stamp-taxes-on-shares")
@@ -1502,7 +1502,7 @@ class PaymentsSurveyServiceSpec extends ItSpec with TableDrivenPropertyChecks {
                   welshValue = None
                 )
               )
-            ) -> false
+            ) -> true
           case Origins.Parcels                  => throw new MatchError("Not implemented yet")
           case Origins.PfCdsCash                => throw new MatchError("Not implemented yet")
           case Origins.PfSpiritDrinks           => throw new MatchError("Not implemented yet")

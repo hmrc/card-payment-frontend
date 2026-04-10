@@ -441,7 +441,8 @@ class EmailServiceSpec extends ItSpec with TableDrivenPropertyChecks {
           // for PfP800 and PtaP800, the english can be the same as welsh...
           // for PfCds there is no welsh as it isn't supported...
           if (
-            origin =!= Origins.PfP800 && origin =!= Origins.PtaP800 && origin =!= Origins.PfCds && origin =!= Origins.NiEuVatOss && origin =!= Origins.PfNiEuVatOss && origin =!= Origins.NiEuVatIoss && origin =!= Origins.PfNiEuVatIoss
+            origin =!= Origins.PfP800 && origin =!= Origins.PtaP800 && origin =!= Origins.PfCds && origin =!= Origins.NiEuVatOss && origin =!=
+              Origins.PfNiEuVatOss && origin =!= Origins.NiEuVatIoss && origin =!= Origins.PfNiEuVatIoss && origin =!= Origins.StampTaxesOnShares
           ) {
             messages.preferred(Seq(Lang("en")))(msgKey) should not be messages.preferred(Seq(Lang("cy")))(msgKey)
           }
