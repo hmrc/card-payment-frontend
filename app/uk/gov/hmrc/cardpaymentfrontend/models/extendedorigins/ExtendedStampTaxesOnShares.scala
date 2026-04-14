@@ -41,6 +41,15 @@ object ExtendedStampTaxesOnShares extends ExtendedOrigin {
     )
   }
 
+  override def checkYourAnswersAmountSummaryRow(journeyRequest: JourneyRequest[AnyContent])(payFrontendBaseUrl: String): Option[CheckYourAnswersRow] = Some(
+    CheckYourAnswersRow(
+      titleMessageKey = "check-your-details.total-to-pay",
+      value = Seq(amount(journeyRequest)),
+      changeLink = None
+    )
+  )
+
+
   override def openBankingOriginSpecificSessionData: JourneySpecificData => Option[OriginSpecificSessionData] = {
     case j: JsdStampTaxesOnShares => Some(StampTaxesOnSharesSessionData(j.basketReference, j.customerId, j.submissionId, j.basketDetails))
     case _                        => throw new RuntimeException("Incorrect origin found")

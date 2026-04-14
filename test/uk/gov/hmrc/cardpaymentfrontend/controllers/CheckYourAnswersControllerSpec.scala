@@ -267,6 +267,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
         case Origins.Mib                => false
         case Origins.BcPngr             => false
         case Origins.WcSdlt             => false
+        case Origins.StampTaxesOnShares => false
         case _                          => true
       }
 
