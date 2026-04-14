@@ -49,7 +49,6 @@ object ExtendedStampTaxesOnShares extends ExtendedOrigin {
     )
   )
 
-
   override def openBankingOriginSpecificSessionData: JourneySpecificData => Option[OriginSpecificSessionData] = {
     case j: JsdStampTaxesOnShares => Some(StampTaxesOnSharesSessionData(j.basketReference, j.customerId, j.submissionId, j.basketDetails))
     case _                        => throw new RuntimeException("Incorrect origin found")

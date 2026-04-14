@@ -2052,7 +2052,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.StampTaxesOnShares))
       assertRow(
         referenceRow,
-        "Submission reference",
+        "Submission ID",
         "SUBMISSIONID",
         None,
         None
