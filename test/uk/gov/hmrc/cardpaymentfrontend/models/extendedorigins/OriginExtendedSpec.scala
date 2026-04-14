@@ -119,7 +119,8 @@ class OriginExtendedSpec extends UnitSpec {
         `3psSa`                  -> false,
         `3psVat`                 -> false,
         PfPillar2                -> false,
-        Pillar2                  -> false
+        Pillar2                  -> false,
+        StampTaxesOnShares       -> false
       )
       originsSeq.foreach { case (origin, isAWebChatOrigin) =>
         s"isAWebChatOrigin: ${isAWebChatOrigin.toString} for origin ${origin.toString}" in {
@@ -228,7 +229,8 @@ class OriginExtendedSpec extends UnitSpec {
         PtaClass3Ni              -> true,
         `3psSa`                  -> true,
         `3psVat`                 -> true,
-        WcSdlt                   -> true
+        WcSdlt                   -> true,
+        StampTaxesOnShares       -> false
       )
       originsSeq.foreach { case (origin, welshIsSupported) =>
         s"welsh supported: ${welshIsSupported.toString} for origin ${origin.toString}" in {
