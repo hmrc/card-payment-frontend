@@ -1503,6 +1503,26 @@ class PaymentsSurveyServiceSpec extends ItSpec with TableDrivenPropertyChecks {
                 )
               )
             ) -> true
+          case Origins.PfStampTaxesOnShares     =>
+            PaymentSurveyJourneyRequest(
+              origin = "PfStampTaxesOnShares",
+              returnMsg = "Skip survey",
+              returnHref = "https://www.gov.uk/government/organisations/hm-revenue-customs",
+              auditName = "stamp-taxes-on-shares",
+              audit = AuditOptions(
+                userType = "LoggedOut",
+                journey = Some("Successful"),
+                orderId = Some("XE123456789012"),
+                liability = Some("stamp-taxes-on-shares")
+              ),
+              contentOptions = SurveyContentOptions(
+                isWelshSupported = false,
+                title = SurveyBannerTitle(
+                  englishValue = "Pay for a securities transfer",
+                  welshValue = None
+                )
+              )
+            ) -> false
           case Origins.Parcels                  => throw new MatchError("Not implemented yet")
           case Origins.PfCdsCash                => throw new MatchError("Not implemented yet")
           case Origins.PfSpiritDrinks           => throw new MatchError("Not implemented yet")

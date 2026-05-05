@@ -119,6 +119,7 @@ class EmailServiceSpec extends ItSpec with TableDrivenPropertyChecks {
       with JsdDdSdil
       with JsdWcChildBenefitRepayments
       with JsdStampTaxesOnShares
+      with JsdPfStampTaxesOnShares
 
     val scenarios: TableFor6[JourneyStatuses[_ >: JsdBounds <: JourneySpecificData], String, String, Option[String], Option[String], String] = Table(
       ("Journey", "Tax Type", "Tax Reference", "Commission", "Total Paid", "lang"),
@@ -388,7 +389,9 @@ class EmailServiceSpec extends ItSpec with TableDrivenPropertyChecks {
       (WcSdlt, "Treth Dir y Tollau Stamp", "yn gorffen gyda 789MA", None, None, "cy"),
       (WcSdlt, "Treth Dir y Tollau Stamp", "yn gorffen gyda 789MA", commission, Some("13.57"), "cy"),
       (StampTaxesOnShares, "Securities Transfer Charge", "ending with IONID", None, None, "en"),
-      (StampTaxesOnShares, "Securities Transfer Charge", "ending with IONID", commission, Some("13.57"), "en")
+      (StampTaxesOnShares, "Securities Transfer Charge", "ending with IONID", commission, Some("13.57"), "en"),
+      (PfStampTaxesOnShares, "Securities Transfer Charge", "ending with 89012", None, None, "en"),
+      (PfStampTaxesOnShares, "Securities Transfer Charge", "ending with 89012", commission, Some("13.57"), "en")
     )
 
     forAll(scenarios) { (j, taxType, taxReference, commission, totalPaid, lang) =>
@@ -442,7 +445,7 @@ class EmailServiceSpec extends ItSpec with TableDrivenPropertyChecks {
           // for PfCds there is no welsh as it isn't supported...
           if (
             origin =!= Origins.PfP800 && origin =!= Origins.PtaP800 && origin =!= Origins.PfCds && origin =!= Origins.NiEuVatOss && origin =!=
-              Origins.PfNiEuVatOss && origin =!= Origins.NiEuVatIoss && origin =!= Origins.PfNiEuVatIoss && origin =!= Origins.StampTaxesOnShares
+              Origins.PfNiEuVatOss && origin =!= Origins.NiEuVatIoss && origin =!= Origins.PfNiEuVatIoss && origin =!= Origins.StampTaxesOnShares && origin =!= Origins.PfStampTaxesOnShares
           ) {
             messages.preferred(Seq(Lang("en")))(msgKey) should not be messages.preferred(Seq(Lang("cy")))(msgKey)
           }

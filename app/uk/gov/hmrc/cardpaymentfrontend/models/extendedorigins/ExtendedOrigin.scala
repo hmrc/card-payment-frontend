@@ -257,6 +257,7 @@ object ExtendedOrigin {
       case WcClass2Ni               => DefaultExtendedOrigin
       case WcChildBenefitRepayments => ExtendedWcChildBenefitRepayments
       case StampTaxesOnShares       => ExtendedStampTaxesOnShares
+      case PfStampTaxesOnShares     => ExtendedPfStampTaxesOnShares
     }
 
     def isAWebChatOrigin: Boolean = origin match {
@@ -267,7 +268,7 @@ object ExtendedOrigin {
           PfGbPbRgDuty | PfLandfillTax | PfSdil | PfAggregatesLevy | PfClimateChangeLevy | PfSimpleAssessment | PtaSimpleAssessment | AppSimpleAssessment |
           PfTpes | CapitalGainsTax | EconomicCrimeLevy | PfEconomicCrimeLevy | PfJobRetentionScheme | JrsJobRetentionScheme | PfImportedVehicles |
           PfChildBenefitRepayments | NiEuVatOss | PfNiEuVatOss | NiEuVatIoss | PfNiEuVatIoss | PfAmls | PfAted | PfCdsDeferment | PfTrust | PtaClass3Ni |
-          AlcoholDuty | PfAlcoholDuty | VatC2c | PfVatC2c | `3psSa` | `3psVat` | Pillar2 | PfPillar2 | StampTaxesOnShares =>
+          AlcoholDuty | PfAlcoholDuty | VatC2c | PfVatC2c | `3psSa` | `3psVat` | Pillar2 | PfPillar2 | StampTaxesOnShares | PfStampTaxesOnShares =>
         false
       case WcSa | WcCt | WcVat | WcSimpleAssessment | WcXref | WcEpayeLpp | WcClass1aNi | WcEpayeNi | WcEpayeLateCis | WcEpayeSeta | WcSdlt | WcClass2Ni |
           WcChildBenefitRepayments =>
@@ -284,7 +285,8 @@ object ExtendedOrigin {
           PfAted | PfTrust | PtaClass3Ni | AlcoholDuty | PfAlcoholDuty | VatC2c | PfVatC2c | `3psSa` | `3psVat` | WcSa | WcCt | WcVat | WcSimpleAssessment |
           WcXref | WcEpayeLpp | WcClass1aNi | WcEpayeNi | WcEpayeLateCis | WcEpayeSeta | WcSdlt | WcClass2Ni | WcChildBenefitRepayments =>
         true
-      case PfCds | PfCdsCash | PfCdsDeferment | NiEuVatOss | NiEuVatIoss | PfNiEuVatOss | PfNiEuVatIoss | Pillar2 | PfPillar2 | Parcels | StampTaxesOnShares =>
+      case PfCds | PfCdsCash | PfCdsDeferment | NiEuVatOss | NiEuVatIoss | PfNiEuVatOss | PfNiEuVatIoss | Pillar2 | PfPillar2 | Parcels | StampTaxesOnShares |
+          PfStampTaxesOnShares =>
         false
     }
   }

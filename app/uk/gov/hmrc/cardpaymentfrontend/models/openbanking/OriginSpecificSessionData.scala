@@ -37,7 +37,7 @@ import payapi.corcommon.model.taxes.sa.SaUtr
 import payapi.corcommon.model.taxes.sd.SpiritDrinksReference
 import payapi.corcommon.model.taxes.sdil.Zsdl
 import payapi.corcommon.model.taxes.sdlt.Utrn
-import payapi.corcommon.model.taxes.stos.{CustomerId, StosBasketDetails, StosBasketReference, SubmissionId}
+import payapi.corcommon.model.taxes.stos.{CustomerId, SecuritiesTransferChargeReference, StosBasketDetails, StosBasketReference, SubmissionId}
 import payapi.corcommon.model.taxes.trusts.TrustReference
 import payapi.corcommon.model.taxes.vat.{CalendarPeriod, VatChargeReference, Vrn}
 import payapi.corcommon.model.taxes.vatc2c.VatC2cReference
@@ -155,6 +155,7 @@ object OriginSpecificSessionData                                    {
       case WcChildBenefitRepayments => Json.format[WcChildBenefitRepaymentsSessionData].reads(json)
       case PtaP800                  => Json.format[PtaP800SessionData].reads(json)
       case StampTaxesOnShares       => Json.format[StampTaxesOnSharesSessionData].reads(json)
+      case PfStampTaxesOnShares     => Json.format[PfStampTaxesOnSharesSessionData].reads(json)
 
       // Todo: Remove PfP800 when PtaP800 is fully available
       case origin @ (PfOther | PfP800 | BcPngr | Parcels | Mib | PfSimpleAssessment | PtaSimpleAssessment | WcXref) =>
@@ -252,6 +253,7 @@ object OriginSpecificSessionData                                    {
       case sessionData: WcChildBenefitRepaymentsSessionData => Json.format[WcChildBenefitRepaymentsSessionData].writes(sessionData)
       case sessionData: PtaP800SessionData                  => Json.format[PtaP800SessionData].writes(sessionData)
       case sessionData: StampTaxesOnSharesSessionData       => Json.format[StampTaxesOnSharesSessionData].writes(sessionData)
+      case sessionData: PfStampTaxesOnSharesSessionData     => Json.format[PfStampTaxesOnSharesSessionData].writes(sessionData)
     }) + ("origin" -> Json.toJson(o.origin))
 
   implicit val format: OFormat[OriginSpecificSessionData] = OFormat(reads, writes)
@@ -804,4 +806,25 @@ final case class StampTaxesOnSharesSessionData(
 ) extends OriginSpecificSessionData(StampTaxesOnShares) {
   def paymentReference: Reference = ReferenceMaker.makeStosReference(submissionId)
   def searchTag: SearchTag        = SearchTag(submissionId.canonicalizedValue)
+}
+
+final case class PfStampTaxesOnSharesSessionData(
+  securitiesTransferChargeReference: Option[SecuritiesTransferChargeReference],
+  basketReference:                   Option[StosBasketReference],
+  customerId:                        Option[CustomerId],
+  submissionId:                      Option[SubmissionId],
+  basketDetails:                     Option[StosBasketDetails],
+  returnUrl:                         Option[Url] = None
+) extends OriginSpecificSessionData(PfStampTaxesOnShares) {
+  def paymentReference: Reference = {
+    // I agree this is messy, once we have more of the journey fleshed out, we can simplify/refactor/tidy
+    securitiesTransferChargeReference.fold(
+      basketReference.fold(
+        ReferenceMaker.makeStosReference(
+          submissionId.getOrElse(throw new RuntimeException("we need a reference, we'll fix this later when more of the journey is built"))
+        )
+      )(br => Reference(br.canonicalizedValue))
+    )(securitiesTransferChargeReference => Reference(securitiesTransferChargeReference.canonicalizedValue))
+  } // not sure if this is right atm, we can tweak later
+  def searchTag = SearchTag(paymentReference.value) // not sure if this is right atm, we can tweak later
 }

@@ -37,7 +37,7 @@ import payapi.corcommon.model.taxes.sa.SaUtr
 import payapi.corcommon.model.taxes.sdil.Zsdl
 import payapi.corcommon.model.taxes.sdlt.Utrn
 import payapi.corcommon.model.taxes.stos.StosChargeType.SecurityTransferCharge
-import payapi.corcommon.model.taxes.stos.{CustomerId, StosBasketDetails, StosBasketItem, StosBasketReference, SubmissionId}
+import payapi.corcommon.model.taxes.stos.{CustomerId, SecuritiesTransferChargeReference, StosBasketDetails, StosBasketItem, StosBasketReference, SubmissionId}
 import payapi.corcommon.model.taxes.trusts.TrustReference
 import payapi.corcommon.model.taxes.vat.{CalendarPeriod, VatChargeReference, Vrn}
 import payapi.corcommon.model.taxes.vatc2c.VatC2cReference
@@ -1452,6 +1452,27 @@ object TestJourneys {
             )
           )
         )
+      ),
+      chosenWayToPay = None
+    )
+  }
+
+  object PfStampTaxesOnShares extends JourneyStatuses[JsdPfStampTaxesOnShares] {
+    val journeyBeforeBeginWebPayment: Journey[JsdPfStampTaxesOnShares] = Journey[JsdPfStampTaxesOnShares](
+      _id = JourneyId(TestPayApiData.decryptedJourneyId),
+      sessionId = Some(SessionId("TestSession-4b87460d-6f43-4c4c-b810-d6f87c774854")),
+      amountInPence = Some(AmountInPence(1234)),
+      emailTemplateOptions = None,
+      navigation = None,
+      order = None,
+      status = PaymentStatuses.Created,
+      createdOn = LocalDateTime.parse("2027-11-02T16:28:55.185"),
+      journeySpecificData = JsdPfStampTaxesOnShares(
+        securitiesTransferChargeReference = Some(SecuritiesTransferChargeReference("XE123456789012")),
+        basketReference = None,
+        customerId = None,
+        submissionId = None,
+        basketDetails = None
       ),
       chosenWayToPay = None
     )

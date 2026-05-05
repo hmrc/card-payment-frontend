@@ -3,7 +3,7 @@ import sbt.*
 //format: OFF
 object AppDependencies {
 
-  private val payApiCorVersion = "1.296.0"
+  private val payApiCorVersion = "1.297.0-SNAPSHOT"
   private val bootstrapVersion = "10.7.0"
 
   private val payApiExclusionRules: Seq[InclusionRule] = Seq(
@@ -23,7 +23,7 @@ object AppDependencies {
 
   val test: Seq[ModuleID] = Seq[ModuleID](
     "uk.gov.hmrc" %% "bootstrap-test-play-30" % bootstrapVersion,
-    "org.jsoup"   %  "jsoup"                  % "1.22.1"
+    "org.jsoup"   %  "jsoup"                  % "1.22.2"
   ).map( _ % Test )
 
   val it: Seq[ModuleID] = Seq.empty[ModuleID]

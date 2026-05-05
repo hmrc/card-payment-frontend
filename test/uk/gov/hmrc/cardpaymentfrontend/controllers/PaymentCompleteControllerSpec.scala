@@ -671,7 +671,7 @@ class PaymentCompleteControllerSpec extends ItSpec {
       }
 
       "should have a test for all origins below this one" in {
-        TestHelpers.implementedOrigins.size shouldBe 71 withClue "** This dummy test is here to remind you to update the tests below. Bump up the expected number when an origin is added to implemented origins **"
+        TestHelpers.implementedOrigins.size shouldBe 72 withClue "** This dummy test is here to remind you to update the tests below. Bump up the expected number when an origin is added to implemented origins **"
       }
 
       TestHelpers.implementedOrigins
@@ -3228,7 +3228,7 @@ object PaymentCompleteControllerSpec {
         hasAReturnUrl = false
       )
 
-    case WcSdlt             =>
+    case WcSdlt               =>
       TestScenarioInfo(
         debitCardJourney = TestJourneys.WcSdlt.journeyAfterSucceedDebitWebPayment,
         creditCardJourney = TestJourneys.WcSdlt.journeyAfterSucceedCreditWebPayment,
@@ -3263,10 +3263,31 @@ object PaymentCompleteControllerSpec {
         hasWelshTest = true,
         hasAReturnUrl = false
       )
-    case StampTaxesOnShares =>
+    case StampTaxesOnShares   =>
       TestScenarioInfo(
         debitCardJourney = TestJourneys.StampTaxesOnShares.journeyAfterSucceedDebitWebPayment,
         creditCardJourney = TestJourneys.StampTaxesOnShares.journeyAfterSucceedCreditWebPayment,
+        englishSummaryRowsDebitCard = List(
+          "Tax"    -> "Securities Transfer Charge",
+          "Date"   -> "2 November 2027",
+          "Amount" -> "£12.34"
+        ),
+        maybeWelshSummaryRowsDebitCard = None,
+        englishSummaryRowsCreditCard = List(
+          "Tax"                              -> "Securities Transfer Charge",
+          "Date"                             -> "2 November 2027",
+          "Amount paid to HMRC"              -> "£12.34",
+          "Card fee (9.97%), non-refundable" -> "£1.23",
+          "Total paid"                       -> "£13.57"
+        ),
+        maybeWelshSummaryRowsCreditCard = None,
+        hasWelshTest = false,
+        hasAReturnUrl = false
+      )
+    case PfStampTaxesOnShares =>
+      TestScenarioInfo(
+        debitCardJourney = TestJourneys.PfStampTaxesOnShares.journeyAfterSucceedDebitWebPayment,
+        creditCardJourney = TestJourneys.PfStampTaxesOnShares.journeyAfterSucceedCreditWebPayment,
         englishSummaryRowsDebitCard = List(
           "Tax"    -> "Securities Transfer Charge",
           "Date"   -> "2 November 2027",
