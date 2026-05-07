@@ -102,7 +102,8 @@ object TestHelpers {
     DdVat,
     DdSdil,
     WcChildBenefitRepayments,
-    StampTaxesOnShares
+    StampTaxesOnShares,
+    PfStampTaxesOnShares
   )
 
   val unimplementedOrigins: Seq[Origin] = Seq[Origin](
@@ -220,6 +221,7 @@ object TestHelpers {
     case WcSdlt                   => TestJourneys.WcSdlt
     case WcChildBenefitRepayments => TestJourneys.WcChildBenefitRepayments
     case StampTaxesOnShares       => TestJourneys.StampTaxesOnShares
+    case PfStampTaxesOnShares     => TestJourneys.PfStampTaxesOnShares
     case PfImportedVehicles       => throw new MatchError("Not implemented yet")
     case PfAted                   => throw new MatchError("Not implemented yet")
     case PfCdsDeferment           => throw new MatchError("Not implemented yet")

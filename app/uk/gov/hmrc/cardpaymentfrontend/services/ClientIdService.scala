@@ -102,7 +102,7 @@ class ClientIdService @Inject() {
 
       case Origins.PfCds | PfCdsCash | PfCdsDeferment => ClientIds.CDEE
 
-      case PfP800 | PtaP800 | Ppt | PtaSimpleAssessment | CapitalGainsTax | AlcoholDuty | PfAlcoholDuty | StampTaxesOnShares =>
+      case PfP800 | PtaP800 | Ppt | PtaSimpleAssessment | CapitalGainsTax | AlcoholDuty | PfAlcoholDuty | StampTaxesOnShares | PfStampTaxesOnShares =>
         language match {
           case Languages.English => ClientIds.ETEE
           case Languages.Welsh   => ClientIds.ETEC
