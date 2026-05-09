@@ -21,7 +21,8 @@
 @import uk.gov.hmrc.cardpaymentfrontend.views.helpers.TitleMaker.journeyTitleMaker
 @import uk.gov.hmrc.govukfrontend.views.Aliases.BackLink
 @import uk.gov.hmrc.hmrcfrontend.views.html.helpers.{HmrcReportTechnicalIssueHelper, HmrcStandardPage, HmrcTimeoutDialogHelper}
-@import uk.gov.hmrc.hmrcfrontend.views.viewmodels.hmrcstandardpage.{HmrcStandardPageParams, ServiceURLs, TemplateOverrides}
+@import uk.gov.hmrc.hmrcfrontend.views.viewmodels.hmrcstandardpage.{Banners, HmrcStandardPageParams, ServiceURLs, TemplateOverrides}
+@import uk.gov.hmrc.hmrcfrontend.views.viewmodels.userresearchbanner.UserResearchBanner
 @import views.html.helper.CSPNonce
 @import payapi.corcommon.model.PaymentStatuses
 @import payapi.cardpaymentjourney.model.journey.{Journey, JourneySpecificData}
@@ -33,6 +34,7 @@
         hmrcStandardPage: HmrcStandardPage,
         hmrcTimeoutDialogHelper: HmrcTimeoutDialogHelper
 )
+
 @(
         pageTitle: Option[String] = None,
         maybeForm: Option[Form[?]] = None,
@@ -42,7 +44,8 @@
         backLinkOverride: Option[BackLink] = None,
         welshSupported: Boolean = true,
         additionalScripts: Option[Html] = None,
-        hideStyling: Boolean = false
+        hideStyling: Boolean = false,
+        maybeUserResearchBanner: Option[UserResearchBanner] = None
 )(contentBlock: Html)(implicit request: RequestHeader, messages: Messages)
 
 @serviceName = @{journeyRequest.map(journeyRequest => messages(journeyRequest.journey.origin.lift(appConfig).serviceNameMessageKey)).getOrElse(messages("service-name.generic"))}
@@ -117,5 +120,7 @@
           if (showBackLink) {
               if (backLinkOverride.isDefined) backLinkOverride else Some(BackLink.mimicsBrowserBackButtonViaJavaScript)
           } else None
-      })
+      },
+      banners = Banners(userResearchBanner = maybeUserResearchBanner)
+  )
 )(content)

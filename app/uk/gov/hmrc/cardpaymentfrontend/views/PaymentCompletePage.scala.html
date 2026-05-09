@@ -27,6 +27,7 @@
 @import uk.gov.hmrc.govukfrontend.views.html.components.{GovukPanel, GovukSummaryList, Panel}
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+@import uk.gov.hmrc.hmrcfrontend.views.viewmodels.userresearchbanner.UserResearchBanner
 @import views.html.helper.CSPNonce
 
 @this(
@@ -144,11 +145,19 @@
     else uk.gov.hmrc.cardpaymentfrontend.controllers.routes.PaymentsSurveyController.startSurvey()
 }
 
+@maybeUserResearchBanner = @{
+  if ((origin === Origins.PfCt || origin === Origins.BtaCt) && appConfig.FeatureFlags.corporationTaxResearchBannerEnabled) {
+      Some(UserResearchBanner(url = appConfig.FeatureFlags.corporationTaxResearchBannerUrl))
+  }
+  else None
+}
+
 @layout(
     pageTitle = Some(heading),
     showBackLink = false,
     additionalScripts = Some(additionalScript),
-    journeyRequest = Some(journeyRequest)
+    journeyRequest = Some(journeyRequest),
+    maybeUserResearchBanner = maybeUserResearchBanner
 ) {
 
     @govukPanel(Panel(
