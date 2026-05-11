@@ -21,8 +21,10 @@
 @import uk.gov.hmrc.cardpaymentfrontend.config.AppConfig
 @import uk.gov.hmrc.cardpaymentfrontend.models.EmailAddress
 @import uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins.ExtendedOrigin.OriginExtended
-@import uk.gov.hmrc.cardpaymentfrontend.views.html.Layout
+@import uk.gov.hmrc.cardpaymentfrontend.models.Languages
+@import uk.gov.hmrc.cardpaymentfrontend.requests.RequestSupport
 @import uk.gov.hmrc.cardpaymentfrontend.util.SafeEquals.EqualsOps
+@import uk.gov.hmrc.cardpaymentfrontend.views.html.Layout
 @import uk.gov.hmrc.govukfrontend.views.Aliases.{SummaryList, Text}
 @import uk.gov.hmrc.govukfrontend.views.html.components.{GovukPanel, GovukSummaryList, Panel}
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
@@ -34,7 +36,8 @@
     appConfig: AppConfig,
     govukPanel: GovukPanel,
     govukSummaryList: GovukSummaryList,
-    layout: Layout
+    layout: Layout,
+    requestSupport: RequestSupport
 )
 
 @(
@@ -147,7 +150,13 @@
 
 @maybeUserResearchBanner = @{
   if ((origin === Origins.PfCt || origin === Origins.BtaCt) && appConfig.FeatureFlags.corporationTaxResearchBannerEnabled) {
-      Some(UserResearchBanner(url = appConfig.FeatureFlags.corporationTaxResearchBannerUrl))
+      Some(UserResearchBanner(
+          url = appConfig.FeatureFlags.corporationTaxResearchBannerUrl,
+          language = requestSupport.usableLanguage match {
+              case Languages.English => uk.gov.hmrc.hmrcfrontend.views.viewmodels.language.En
+              case Languages.Welsh => uk.gov.hmrc.hmrcfrontend.views.viewmodels.language.Cy
+          }
+      ))
   }
   else None
 }
