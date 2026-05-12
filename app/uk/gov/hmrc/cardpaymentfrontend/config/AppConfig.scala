@@ -70,6 +70,8 @@ class AppConfig @Inject() (config: Configuration, servicesConfig: ServicesConfig
   val passengersBaseUrl: String        = servicesConfig.baseUrl("bc-passengers-declarations")
 
   object FeatureFlags {
-    val ptaP800OpenBankingEnabled: Boolean = config.get[Boolean]("feature-flags.pta-p800.open-banking-enabled")
+    val ptaP800OpenBankingEnabled: Boolean           = config.get[Boolean]("feature-flags.pta-p800.open-banking-enabled")
+    val corporationTaxResearchBannerEnabled: Boolean = config.get[Boolean]("feature-flags.research-banners.corporation-tax-enabled")
+    val corporationTaxResearchBannerUrl: String      = config.get[String]("feature-flags.research-banners.corporation-tax-url")
   }
 }

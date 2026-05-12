@@ -654,6 +654,44 @@ class PaymentCompleteControllerSpec extends ItSpec {
           .html() shouldBe "<a class=\"govuk-link\" href=\"https://www.tax.service.gov.uk/feedback/passengers\">Rhowch wybod i ni beth yw eich barn am y gwasanaeth hwn</a> (mae’n cymryd 30 eiliad)"
       }
 
+      "a user research banner" - {
+        val userResearchSelector: String = ".hmrc-user-research-banner"
+        "should be shown for BtaCt" in {
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.BtaCt.journeyAfterSucceedDebitWebPayment)
+          val result         = systemUnderTest.renderPage(fakeGetRequest)
+          val document       = Jsoup.parse(contentAsString(result))
+          document.body().select(".govuk-panel--confirmation").select("h1").text() shouldBe "Payment received by HMRC"
+          val researchBanner = document.select(userResearchSelector)
+          researchBanner.asScala.toList.size shouldBe 1
+          researchBanner
+            .select(".hmrc-user-research-banner__link")
+            .attr(
+              "href"
+            ) shouldBe "https://survey.take-part-in-research.service.gov.uk/jfe/form/SV_74GjifgnGv6GsMC?Source=BannerList_HMRC_pay-by-bank/payment-complete"
+        }
+        "should be shown for PfCt" in {
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfCt.journeyAfterSucceedDebitWebPayment)
+          val result         = systemUnderTest.renderPage(fakeGetRequest)
+          val document       = Jsoup.parse(contentAsString(result))
+          document.body().select(".govuk-panel--confirmation").select("h1").text() shouldBe "Payment received by HMRC"
+          val researchBanner = document.select(userResearchSelector)
+          researchBanner.asScala.toList.size shouldBe 1
+          researchBanner
+            .select(".hmrc-user-research-banner__link")
+            .attr(
+              "href"
+            ) shouldBe "https://survey.take-part-in-research.service.gov.uk/jfe/form/SV_74GjifgnGv6GsMC?Source=BannerList_HMRC_pay-by-bank/payment-complete"
+        }
+        "should not be shown for origins that aren't corporation tax related" in {
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.BtaSa.journeyAfterSucceedDebitWebPayment)
+          val result         = systemUnderTest.renderPage(fakeGetRequest)
+          val document       = Jsoup.parse(contentAsString(result))
+          document.body().select(".govuk-panel--confirmation").select("h1").text() shouldBe "Payment received by HMRC"
+          val researchBanner = document.select(userResearchSelector)
+          researchBanner.asScala.toList.size shouldBe 0
+        }
+      }
+
       def testTableRows(tableRows: List[Element], expectedTableData: List[String]): Assertion = {
         val tableData = tableRows.flatMap(_.select("td").asScala.toList.map(_.text()))
         tableData should contain theSameElementsInOrderAs expectedTableData
