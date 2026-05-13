@@ -17,6 +17,5 @@
 package uk.gov.hmrc.cardpaymentfrontend.testsupport
 
 import org.scalatest.freespec.AnyFreeSpecLike
-import org.scalatest.matchers.should.Matchers
 
-trait UnitSpec extends AnyFreeSpecLike with Matchers
+trait UnitSpec extends AnyFreeSpecLike with RichMatchers

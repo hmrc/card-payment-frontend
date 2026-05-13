@@ -16,7 +16,6 @@
 
 package uk.gov.hmrc.cardpaymentfrontend.util
 
-import org.scalatest.AppendedClues.convertToClueful
 import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor3}
 import payapi.corcommon.model.taxes.epaye.{FixedLengthEpayeTaxPeriod, MonthlyEpayeTaxPeriod, QuarterlyEpayeTaxPeriod, YearlyEpayeTaxPeriod}
 import payapi.corcommon.model.taxes.vat.CalendarPeriod

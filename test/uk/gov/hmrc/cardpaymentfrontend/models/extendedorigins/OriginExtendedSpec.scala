@@ -16,7 +16,6 @@
 
 package uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins
 
-import org.scalatest.AppendedClues.convertToClueful
 import payapi.corcommon.model.Origin
 import payapi.corcommon.model.Origins.*
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.{TestHelpers, UnitSpec}

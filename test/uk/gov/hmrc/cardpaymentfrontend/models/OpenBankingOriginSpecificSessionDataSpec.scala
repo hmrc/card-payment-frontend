@@ -17,7 +17,6 @@
 package uk.gov.hmrc.cardpaymentfrontend.models
 
 import com.typesafe.config.{Config, ConfigFactory}
-import org.scalatest.AppendedClues.convertToClueful
 import org.scalatest.Assertion
 import payapi.corcommon.model.AmountInPence
 import payapi.corcommon.model.cgt.CgtAccountReference

@@ -16,7 +16,6 @@
 
 package uk.gov.hmrc.cardpaymentfrontend.forms
 
-import org.scalatest.AppendedClues.convertToClueful
 import org.scalatest.Assertion
 import play.api.data.format.Formatter
 import play.api.data.{Form, FormError}
