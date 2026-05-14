@@ -28,7 +28,7 @@ object EmailAddressForm {
   val emailAddressKey: String = "email-address"
 
   private[forms] val emailAddressRegex: Regex =
-    """^[a-zA-Z0-9\.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$""".r
+    """^(?=[a-zA-Z-0-9@.!#$%&'*+/=?^_`{|}~-]{6,254}\z)(?=[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]{1,64}@)[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:(?=[a-zA-Z0-9-]{1,63}\.)[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?\.)+(?=[a-zA-Z0-9-]{1,63}\z)[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?$""".r
 
   def form(): Form[EmailAddress] = {
     val emailAddressMapping = Forms.of(new Formatter[EmailAddress]() {

@@ -16,13 +16,14 @@
 
 package uk.gov.hmrc.cardpaymentfrontend.forms
 
+import org.scalatest.prop.TableDrivenPropertyChecks
 import play.api.data.{Form, FormError}
 import uk.gov.hmrc.cardpaymentfrontend.models.EmailAddress
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.UnitSpec
 
 import scala.util.matching.Regex
 
-class EmailAddressFormSpec extends UnitSpec {
+class EmailAddressFormSpec extends UnitSpec with TableDrivenPropertyChecks {
 
   val form: Form[EmailAddress] = EmailAddressForm.form()
 
@@ -58,33 +59,51 @@ class EmailAddressFormSpec extends UnitSpec {
 
     val regex: Regex = EmailAddressForm.emailAddressRegex
 
-    "should match a standard email address" in {
-      regex.matches("john.smith@ordinaryemail.com") shouldEqual true
+    "should accept valid email addresses" in {
+      val validTestCases = Table(
+        ("abc@abc.com", "abc@abc.com"),
+        ("% escaped mail route to user@example.com via example.org", "user%example.com@example.org"),
+        ("top level domain", "example@s.example"),
+        ("hyphens", "long.email-address-with-hyphens@and.subdomains.example.com"),
+        ("may be routed to user.name@example.com inbox depending on mail server", "user.name+tag+sorting@example.com"),
+        ("casing", "FirstName.LastName@EasierReading.org"),
+        ("special characters", "abc.!#$%&'*+/=?^_`{|}~-@abc.com"),
+        ("one letter local", "x@example.com"),
+        ("dash at end of local", "user-@example.org")
+      )
+      forAll(validTestCases) { (testScenario, input) =>
+        regex.matches(input) shouldBe true withClue s"failed for $testScenario"
+      }
     }
-    "should reject an email address with an internal space" in {
-      regex.matches("john smith@ordinaryemail.com") shouldEqual false
-    }
-    "should reject an email address with nothing but whitespace" in {
-      regex.matches("\n\t   \r   ") shouldEqual false
-    }
-    "should reject an email address with the empty string" in {
-      regex.matches("") shouldEqual false
-    }
-    "should reject an email where there is no @ symbol" in {
-      regex.matches("johnsmithATordinaryemail.com") shouldEqual false
-    }
-    "should reject an email where there is more than one @" in {
-      regex.matches("johnsmith@abc@abc.com") shouldEqual false
-    }
-    "should reject an email where domain contains non alphanumerics" in {
-      regex.matches("johnsmith@!ordinaryemail.com") shouldEqual false
-    }
-    "should reject an email where there is no domain" in {
-      regex.matches("johnsmith@") shouldEqual false
-    }
-    "should reject an email where part of the domain is more than 63 characters" in {
-      val sixtyFourCharacters: String = (1 to 64).toList.map(_ => "a").mkString
-      regex.matches(s"johnsmith@$sixtyFourCharacters.com") shouldEqual false
+
+    "should reject invalid email addresses" in {
+      val invalidTestCases = Table(
+        ("test scenario", "invalid email input"),
+        // other
+        ("empty string", ""),
+        ("whitespace", "\t "),
+        ("more than one @ symbol", "abc@abc@abc.com"),
+        ("missing @", "abc.example.com"),
+        ("multiple @", "a@b@c@example.com"),
+        ("spaces, quotes, and backslashes may only exist when within quoted strings and preceded by a backslash", "this is\"not\\allowed@example.com"),
+        ("even if escaped backslashes must be contained by quotes", "this\\ still\\\"not\\\\allowed@example.com"),
+        ("emoji", "👻blah@blah.com"),
+        // local part of email
+        ("space within local", "john smith@abc.com"),
+        ("dash at start of local", "-abc@abc!.com"),
+        ("more than 64 characters for local", s"${"a" * 65}@abc.com"),
+        ("full stop at start", "jane.@doe.com"),
+        ("full stop at end", ".jane@doe.com"),
+        ("consecutive full stops", "jane..doe@abc.com"),
+        // domain part of email
+        ("missing . in domain", "a@a"),
+        ("invalid character in domain", "abc@abc!.com"),
+        ("underscore in domain", "i.like.underscores@but_they_are_not_allowed_in_this_part"),
+        ("special characters in domain, not in local", "a\"b(c)d,e:f;g<h>i[j\\k]l@example.com")
+      )
+      forAll(invalidTestCases) { (testScenario, input) =>
+        regex.matches(input) shouldBe false withClue s"failed for $testScenario"
+      }
     }
   }
 }
