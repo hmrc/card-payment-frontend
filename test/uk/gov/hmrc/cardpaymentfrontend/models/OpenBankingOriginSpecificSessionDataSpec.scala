@@ -669,12 +669,13 @@ class OpenBankingOriginSpecificSessionDataSpec extends UnitSpec {
       testOsd(
         osd,
         StampTaxesOnSharesSessionData(
+          securitiesTransferChargeReference = None,
           Some(StosBasketReference("BASKET1234567890")),
           CustomerId("CUSTOMERID"),
           SubmissionId("SUBMISSIONID"),
           StosBasketDetails(List[StosBasketItem](StosBasketItem(AmountInPence(1234), "Tom Cruise", "Danny DeVito", "CR123456789012", SecurityTransferCharge)))
         ),
-        "SUBMISSIONID",
+        "BASKET1234567890",
         "SUBMISSIONID"
       )
       roundTripJsonTest(osd, testJson)

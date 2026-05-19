@@ -1492,7 +1492,7 @@ class PaymentsSurveyServiceSpec extends ItSpec with TableDrivenPropertyChecks {
               audit = AuditOptions(
                 userType = "LoggedIn",
                 journey = Some("Successful"),
-                orderId = Some("SUBMISSIONID"),
+                orderId = Some(TestJourneys.StampTaxesOnShares.journeyAfterSucceedDebitWebPayment.referenceValue),
                 liability = Some("stamp-taxes-on-shares")
               ),
               contentOptions = SurveyContentOptions(

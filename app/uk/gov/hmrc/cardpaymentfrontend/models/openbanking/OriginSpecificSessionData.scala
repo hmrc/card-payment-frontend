@@ -798,13 +798,21 @@ final case class WcClass2NiSessionData(class2NiReference: Class2NiReference, ret
 }
 
 final case class StampTaxesOnSharesSessionData(
-  basketReference: Option[StosBasketReference],
-  customerId:      CustomerId,
-  submissionId:    SubmissionId,
-  basketDetails:   StosBasketDetails,
-  returnUrl:       Option[Url] = None
+  securitiesTransferChargeReference: Option[SecuritiesTransferChargeReference],
+  basketReference:                   Option[StosBasketReference],
+  customerId:                        CustomerId,
+  submissionId:                      SubmissionId,
+  basketDetails:                     StosBasketDetails,
+  returnUrl:                         Option[Url] = None
 ) extends OriginSpecificSessionData(StampTaxesOnShares) {
-  def paymentReference: Reference = ReferenceMaker.makeStosReference(submissionId)
+  def paymentReference: Reference = {
+    // I agree this is messy, once we have more of the journey fleshed out, we can simplify/refactor/tidy
+    securitiesTransferChargeReference.fold(
+      basketReference.fold(
+        ReferenceMaker.makeStosReference(submissionId)
+      )(br => Reference(br.canonicalizedValue))
+    )(securitiesTransferChargeReference => Reference(securitiesTransferChargeReference.canonicalizedValue))
+  }
   def searchTag: SearchTag        = SearchTag(submissionId.canonicalizedValue)
 }
 

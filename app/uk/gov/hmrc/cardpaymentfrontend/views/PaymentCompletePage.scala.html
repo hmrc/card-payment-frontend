@@ -31,6 +31,7 @@
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.userresearchbanner.UserResearchBanner
 @import views.html.helper.CSPNonce
+@import payapi.corcommon.model.taxes.stos.StosBasketReference
 
 @this(
     appConfig: AppConfig,
@@ -44,7 +45,8 @@
     taxReference: Reference,
     summaryListRows: Seq[SummaryListRow],
     maybeEmailAddress: Option[EmailAddress],
-    maybeReturnUrl: Option[String]
+    maybeReturnUrl: Option[String],
+    maybeBasketRef: Option[StosBasketReference]
 )(implicit journeyRequest: JourneyRequest[?], messages: Messages)
 
 @additionalScript = { <script type="module" src="@{controllers.routes.Assets.versioned("javascripts/print-dialogue.js")}" @{CSPNonce.attr}></script> }
@@ -62,8 +64,18 @@
 @panelContent = @{
     origin match {
         case Origins.Mib => Html(messages("payment-complete.mods.panel.content", taxReference.value))
+        case Origins.StampTaxesOnShares => if (maybeBasketRef.isDefined) Html(messages("payment-complete.panel.content", maybeBasketRef.get.value))
+                                            else Html(messages("payment-complete.panel.content", taxReference.value))
         case _           => Html(messages("payment-complete.panel.content", taxReference.value))
     }
+}
+
+@detailsOfStampTaxesOnSharesPayment = {
+    <p id="print-link-wrapper" class="govuk-body js-visible govuk-!-display-none-print">
+        <a id="summary" class="govuk-link" rel="noreferrer noopener" href="#">
+        View everything included in this basket (opens in new tab)
+        </a>
+    </p>
 }
 
 @printLinkContent = @{
@@ -177,6 +189,10 @@
     @maybeEmailContent
 
     @govukSummaryList(SummaryList(summaryListRows))
+
+    @if(origin === Origins.StampTaxesOnShares) {
+        @detailsOfStampTaxesOnSharesPayment
+    }
 
     <p id="print-link-wrapper" class="govuk-body js-visible govuk-!-display-none-print">
         <a id="print-page" class="govuk-link" href="#print-dialogue">
