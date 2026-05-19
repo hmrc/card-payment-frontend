@@ -27,9 +27,9 @@ final case class AuditOptions(
   journey:      Option[String] = None,
   orderId:      Option[String] = None,
   liability:    Option[String] = None,
-  surveySource: Option[String] = None,
-  paymentId:    Option[String] = None,
-  origin:       Option[String] = None
+  surveySource: String,
+  paymentId:    String,
+  origin:       String
 )
 
 object AuditOptions {
@@ -42,9 +42,9 @@ object AuditOptions {
       journey = Some(journey.status.entryName),
       orderId = journey.reference.map(_.value),
       liability = Some(extendedOrigin.surveyAuditName),
-      surveySource = Some("card-payment-frontend"),
-      paymentId = Some(journey.order.map(_.transactionReference.value).getOrElse("unknown")),
-      origin = Some(journey.origin.entryName)
+      surveySource = "card-payment-frontend",
+      paymentId = journey.order.map(_.transactionReference.value).getOrElse("unknown"),
+      origin = journey.origin.entryName
     )
   }
 
