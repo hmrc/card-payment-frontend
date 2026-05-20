@@ -115,17 +115,7 @@ object PaymentCompleteController {
       SummaryListRow(
         key = Key(Text(messages { if (journey.origin === Origins.Mib) "payment-complete.summary-list.payment" else "payment-complete.summary-list.tax" })),
         value = Value(Text(messages(taxType)))
-      )
-    ) ++ (journey.journeySpecificData match {
-      case JsdStampTaxesOnShares(_, _, _, submissionId, _) =>
-        Seq(
-          SummaryListRow(
-            key = Key(Text(messages("payment-complete.summary-list.submissionID"))),
-            value = Value(Text(submissionId.canonicalizedValue))
-          )
-        )
-      case _                                               => Seq.empty
-    }) ++ Seq(
+      ),
       SummaryListRow(
         key = Key(Text(messages("payment-complete.summary-list.date"))),
         value = Value(Text(messages(DateStringBuilder.getDateAsString(journey.getPaidOn))))
@@ -193,6 +183,14 @@ object PaymentCompleteController {
             value = Value(
               Text(messages("check-your-details.PtaSimpleAssessment.tax-year.value", adjustedTaxYear.startYear.toString, adjustedTaxYear.endYear.toString))
             )
+          )
+        )
+
+      case JsdStampTaxesOnShares(_, _, _, submissionId, _) =>
+        Seq(
+          SummaryListRow(
+            key = Key(Text(messages("payment-complete.summary-list.submissionID"))),
+            value = Value(Text(submissionId.canonicalizedValue))
           )
         )
 
