@@ -35,7 +35,10 @@ class PaymentsSurveyConnectorSpec extends ItSpec {
           userType = "some-userType",
           journey = None,
           orderId = None,
-          liability = None
+          liability = None,
+          surveySource = "card-payment-frontend",
+          paymentId = "payment-id",
+          origin = "PfSa"
         ),
         contentOptions = SurveyContentOptions(
           isWelshSupported = true,
