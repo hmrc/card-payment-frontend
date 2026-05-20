@@ -1438,6 +1438,7 @@ object TestJourneys {
       status = PaymentStatuses.Created,
       createdOn = LocalDateTime.parse("2027-11-02T16:28:55.185"),
       journeySpecificData = JsdStampTaxesOnShares(
+        securitiesTransferChargeReference = None,
         basketReference = Some(StosBasketReference("BASKET1234567890")),
         customerId = CustomerId("CUSTOMERID"),
         submissionId = SubmissionId("SUBMISSIONID"),

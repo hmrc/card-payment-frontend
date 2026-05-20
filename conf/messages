@@ -302,6 +302,7 @@ payment-complete.what-happens-next.mgd.p3 = Set up your Direct Debit at least 5 
 payment-complete.mods.panel.title = Declaration complete
 payment-complete.mods.panel.content = Your reference number<br><strong>{0}</strong>
 payment-complete.summary-list.payment = Payment
+payment-complete.summary-list.submissionID = Submission ID
 payment-complete.mods.email.paragraph = We have sent a confirmation email to the address provided.
 payment-complete.mods.what-happens-next.header = What you need to do next
 payment-complete.mods.what-happens-next.make-sure-that-you = Make sure that you:

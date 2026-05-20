@@ -2053,7 +2053,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       assertRow(
         referenceRow,
         "Submission ID",
-        "SUBMISSIONID",
+        TestJourneys.StampTaxesOnShares.journeyBeforeBeginWebPayment.referenceValue,
         None,
         None
       )
