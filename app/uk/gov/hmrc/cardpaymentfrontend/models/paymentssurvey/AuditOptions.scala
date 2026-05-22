@@ -23,27 +23,28 @@ import uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins.ExtendedOrigin
 import uk.gov.hmrc.cardpaymentfrontend.requests.RequestSupport
 
 final case class AuditOptions(
-  userType:  String,
-  journey:   Option[String] = None,
-  orderId:   Option[String] = None,
-  liability: Option[String] = None
+  userType:     String,
+  journey:      Option[String] = None,
+  orderId:      Option[String] = None,
+  liability:    Option[String] = None,
+  surveySource: String,
+  paymentId:    String,
+  origin:       String
 )
 
 object AuditOptions {
 
-  @SuppressWarnings(Array("org.wartremover.warts.Any"))
-  implicit val format: OFormat[AuditOptions] = Json.format[AuditOptions]
-
-  def default(implicit r: Request[?]): AuditOptions = AuditOptions(
-    userType = if (RequestSupport.isLoggedIn) "LoggedIn" else "LoggedOut"
-  )
+  given format: OFormat[AuditOptions] = Json.format[AuditOptions]
 
   def getAuditOptions(journey: Journey[JourneySpecificData], extendedOrigin: ExtendedOrigin)(implicit r: Request[?]): AuditOptions = {
     AuditOptions(
       userType = if (RequestSupport.isLoggedIn) "LoggedIn" else "LoggedOut",
-      journey = Option(journey.status.entryName),
+      journey = Some(journey.status.entryName),
       orderId = journey.reference.map(_.value),
-      liability = Some(extendedOrigin.surveyAuditName)
+      liability = Some(extendedOrigin.surveyAuditName),
+      surveySource = "card-payment-frontend",
+      paymentId = journey.order.map(_.transactionReference.value).getOrElse("unknown"),
+      origin = journey.origin.entryName
     )
   }
 

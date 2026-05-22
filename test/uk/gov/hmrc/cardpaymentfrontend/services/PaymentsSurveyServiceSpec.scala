@@ -79,7 +79,10 @@ class PaymentsSurveyServiceSpec extends ItSpec with TableDrivenPropertyChecks {
                 userType = "LoggedOut",
                 journey = Some("Successful"),
                 orderId = Some("1234567895K"),
-                liability = Some("self-assessment")
+                liability = Some("self-assessment"),
+                surveySource = "card-payment-frontend",
+                paymentId = "Some-transaction-ref",
+                origin = "PfSa"
               ),
               contentOptions = SurveyContentOptions(
                 isWelshSupported = true,
@@ -99,7 +102,10 @@ class PaymentsSurveyServiceSpec extends ItSpec with TableDrivenPropertyChecks {
                 userType = "LoggedOut",
                 journey = Some("Successful"),
                 orderId = Some("999964805"),
-                liability = Some("vat")
+                liability = Some("vat"),
+                surveySource = "card-payment-frontend",
+                paymentId = "Some-transaction-ref",
+                origin = "PfVat"
               ),
               contentOptions = SurveyContentOptions(
                 isWelshSupported = true,
@@ -119,7 +125,10 @@ class PaymentsSurveyServiceSpec extends ItSpec with TableDrivenPropertyChecks {
                 userType = "LoggedOut",
                 journey = Some("Successful"),
                 orderId = Some("1097172564A00101A"),
-                liability = Some("corporation-tax")
+                liability = Some("corporation-tax"),
+                surveySource = "card-payment-frontend",
+                paymentId = "Some-transaction-ref",
+                origin = "PfCt"
               ),
               contentOptions = SurveyContentOptions(
                 isWelshSupported = true,
@@ -139,7 +148,10 @@ class PaymentsSurveyServiceSpec extends ItSpec with TableDrivenPropertyChecks {
                 userType = "LoggedOut",
                 journey = Some("Successful"),
                 orderId = Some("123PH456789002503"),
-                liability = Some("epaye")
+                liability = Some("epaye"),
+                surveySource = "card-payment-frontend",
+                paymentId = "Some-transaction-ref",
+                origin = "PfEpayeNi"
               ),
               contentOptions = SurveyContentOptions(
                 isWelshSupported = true,
@@ -159,7 +171,10 @@ class PaymentsSurveyServiceSpec extends ItSpec with TableDrivenPropertyChecks {
                 userType = "LoggedOut",
                 journey = Some("Successful"),
                 orderId = Some("XE123456789012"),
-                liability = Some("paye-lpp")
+                liability = Some("paye-lpp"),
+                surveySource = "card-payment-frontend",
+                paymentId = "Some-transaction-ref",
+                origin = "PfEpayeLpp"
               ),
               contentOptions = SurveyContentOptions(
                 isWelshSupported = true,
@@ -179,7 +194,10 @@ class PaymentsSurveyServiceSpec extends ItSpec with TableDrivenPropertyChecks {
                 userType = "LoggedOut",
                 journey = Some("Successful"),
                 orderId = Some("XA123456789012"),
-                liability = Some("paye-seta")
+                liability = Some("paye-seta"),
+                surveySource = "card-payment-frontend",
+                paymentId = "Some-transaction-ref",
+                origin = "PfEpayeSeta"
               ),
               contentOptions = SurveyContentOptions(
                 isWelshSupported = true,
@@ -199,7 +217,10 @@ class PaymentsSurveyServiceSpec extends ItSpec with TableDrivenPropertyChecks {
                 userType = "LoggedOut",
                 journey = Some("Successful"),
                 orderId = Some("XE123456789012"),
-                liability = Some("paye-late-cis")
+                liability = Some("paye-late-cis"),
+                surveySource = "card-payment-frontend",
+                paymentId = "Some-transaction-ref",
+                origin = "PfEpayeLateCis"
               ),
               contentOptions = SurveyContentOptions(
                 isWelshSupported = true,
@@ -219,7 +240,10 @@ class PaymentsSurveyServiceSpec extends ItSpec with TableDrivenPropertyChecks {
                 userType = "LoggedOut",
                 journey = Some("Successful"),
                 orderId = Some("123PH456789002513"),
-                liability = Some("paye-p11d")
+                liability = Some("paye-p11d"),
+                surveySource = "card-payment-frontend",
+                paymentId = "Some-transaction-ref",
+                origin = "PfEpayeP11d"
               ),
               contentOptions = SurveyContentOptions(
                 isWelshSupported = true,
@@ -239,7 +263,10 @@ class PaymentsSurveyServiceSpec extends ItSpec with TableDrivenPropertyChecks {
                 userType = "LoggedIn",
                 journey = Some("Successful"),
                 orderId = Some("1234567895K"),
-                liability = Some("self-assessment")
+                liability = Some("self-assessment"),
+                surveySource = "card-payment-frontend",
+                paymentId = "Some-transaction-ref",
+                origin = "BtaSa"
               ),
               contentOptions = SurveyContentOptions(
                 isWelshSupported = true,
@@ -259,7 +286,10 @@ class PaymentsSurveyServiceSpec extends ItSpec with TableDrivenPropertyChecks {
                 userType = "LoggedIn",
                 journey = Some("Successful"),
                 orderId = Some("999964805"),
-                liability = Some("vat")
+                liability = Some("vat"),
+                surveySource = "card-payment-frontend",
+                paymentId = "Some-transaction-ref",
+                origin = "BtaVat"
               ),
               contentOptions = SurveyContentOptions(
                 isWelshSupported = true,
@@ -279,7 +309,10 @@ class PaymentsSurveyServiceSpec extends ItSpec with TableDrivenPropertyChecks {
                 userType = "LoggedIn",
                 journey = Some("Successful"),
                 orderId = Some("999964805"),
-                liability = Some("vat")
+                liability = Some("vat"),
+                surveySource = "card-payment-frontend",
+                paymentId = "Some-transaction-ref",
+                origin = "DdVat"
               ),
               contentOptions = SurveyContentOptions(
                 isWelshSupported = true,
@@ -299,7 +332,10 @@ class PaymentsSurveyServiceSpec extends ItSpec with TableDrivenPropertyChecks {
                 userType = "LoggedIn",
                 journey = Some("Successful"),
                 orderId = Some("123PH456789002702"),
-                liability = Some("epaye")
+                liability = Some("epaye"),
+                surveySource = "card-payment-frontend",
+                paymentId = "Some-transaction-ref",
+                origin = "BtaEpayeBill"
               ),
               contentOptions = SurveyContentOptions(
                 isWelshSupported = true,
@@ -319,7 +355,10 @@ class PaymentsSurveyServiceSpec extends ItSpec with TableDrivenPropertyChecks {
                 userType = "LoggedIn",
                 journey = Some("Successful"),
                 orderId = Some("123PH45678900"),
-                liability = Some("paye-penalty")
+                liability = Some("paye-penalty"),
+                surveySource = "card-payment-frontend",
+                paymentId = "Some-transaction-ref",
+                origin = "BtaEpayePenalty"
               ),
               contentOptions = SurveyContentOptions(
                 isWelshSupported = true,
@@ -339,7 +378,10 @@ class PaymentsSurveyServiceSpec extends ItSpec with TableDrivenPropertyChecks {
                 userType = "LoggedIn",
                 journey = Some("Successful"),
                 orderId = Some("XE123456789012"),
-                liability = Some("paye-interest")
+                liability = Some("paye-interest"),
+                surveySource = "card-payment-frontend",
+                paymentId = "Some-transaction-ref",
+                origin = "BtaEpayeInterest"
               ),
               contentOptions = SurveyContentOptions(
                 isWelshSupported = true,
@@ -359,7 +401,10 @@ class PaymentsSurveyServiceSpec extends ItSpec with TableDrivenPropertyChecks {
                 userType = "LoggedIn",
                 journey = Some("Successful"),
                 orderId = Some("123PH456789002702"),
-                liability = Some("epaye")
+                liability = Some("epaye"),
+                surveySource = "card-payment-frontend",
+                paymentId = "Some-transaction-ref",
+                origin = "BtaEpayeGeneral"
               ),
               contentOptions = SurveyContentOptions(
                 isWelshSupported = true,
@@ -379,7 +424,10 @@ class PaymentsSurveyServiceSpec extends ItSpec with TableDrivenPropertyChecks {
                 userType = "LoggedIn",
                 journey = Some("Successful"),
                 orderId = Some("123PH456789002713"),
-                liability = Some("class-1a-national-insurance")
+                liability = Some("class-1a-national-insurance"),
+                surveySource = "card-payment-frontend",
+                paymentId = "Some-transaction-ref",
+                origin = "BtaClass1aNi"
               ),
               contentOptions = SurveyContentOptions(
                 isWelshSupported = true,
@@ -399,7 +447,10 @@ class PaymentsSurveyServiceSpec extends ItSpec with TableDrivenPropertyChecks {
                 userType = "LoggedIn",
                 journey = Some("Successful"),
                 orderId = Some("1097172564A00101A"),
-                liability = Some("corporation-tax")
+                liability = Some("corporation-tax"),
+                surveySource = "card-payment-frontend",
+                paymentId = "Some-transaction-ref",
+                origin = "BtaCt"
               ),
               contentOptions = SurveyContentOptions(
                 isWelshSupported = true,
@@ -419,7 +470,10 @@ class PaymentsSurveyServiceSpec extends ItSpec with TableDrivenPropertyChecks {
                 userType = "LoggedIn",
                 journey = Some("Successful"),
                 orderId = Some("999964805"),
-                liability = Some("vat")
+                liability = Some("vat"),
+                surveySource = "card-payment-frontend",
+                paymentId = "Some-transaction-ref",
+                origin = "VcVatReturn"
               ),
               contentOptions = SurveyContentOptions(
                 isWelshSupported = true,
@@ -439,7 +493,10 @@ class PaymentsSurveyServiceSpec extends ItSpec with TableDrivenPropertyChecks {
                 userType = "LoggedIn",
                 journey = Some("Successful"),
                 orderId = Some("1234567895K"),
-                liability = Some("self-assessment")
+                liability = Some("self-assessment"),
+                surveySource = "card-payment-frontend",
+                paymentId = "Some-transaction-ref",
+                origin = "ItSa"
               ),
               contentOptions = SurveyContentOptions(
                 isWelshSupported = true,
@@ -459,7 +516,10 @@ class PaymentsSurveyServiceSpec extends ItSpec with TableDrivenPropertyChecks {
                 userType = "LoggedIn",
                 journey = Some("Successful"),
                 orderId = Some("XE123456789012"),
-                liability = Some("anti-money-laundering")
+                liability = Some("anti-money-laundering"),
+                surveySource = "card-payment-frontend",
+                paymentId = "Some-transaction-ref",
+                origin = "Amls"
               ),
               contentOptions = SurveyContentOptions(
                 isWelshSupported = true,
@@ -479,7 +539,10 @@ class PaymentsSurveyServiceSpec extends ItSpec with TableDrivenPropertyChecks {
                 userType = "LoggedIn",
                 journey = Some("Successful"),
                 orderId = Some("XAPPT0000012345"),
-                liability = Some("plastic-packaging-tax")
+                liability = Some("plastic-packaging-tax"),
+                surveySource = "card-payment-frontend",
+                paymentId = "Some-transaction-ref",
+                origin = "Ppt"
               ),
               contentOptions = SurveyContentOptions(
                 isWelshSupported = true,
@@ -499,7 +562,10 @@ class PaymentsSurveyServiceSpec extends ItSpec with TableDrivenPropertyChecks {
                 userType = "LoggedOut",
                 journey = Some("Successful"),
                 orderId = Some("XAPPT0000012345"),
-                liability = Some("plastic-packaging-tax")
+                liability = Some("plastic-packaging-tax"),
+                surveySource = "card-payment-frontend",
+                paymentId = "Some-transaction-ref",
+                origin = "PfPpt"
               ),
               contentOptions = SurveyContentOptions(
                 isWelshSupported = true,
@@ -519,7 +585,10 @@ class PaymentsSurveyServiceSpec extends ItSpec with TableDrivenPropertyChecks {
                 userType = "LoggedIn",
                 journey = Some("Successful"),
                 orderId = Some("1234567895K"),
-                liability = Some("self-assessment")
+                liability = Some("self-assessment"),
+                surveySource = "card-payment-frontend",
+                paymentId = "Some-transaction-ref",
+                origin = "PtaSa"
               ),
               contentOptions = SurveyContentOptions(
                 isWelshSupported = true,
@@ -539,7 +608,10 @@ class PaymentsSurveyServiceSpec extends ItSpec with TableDrivenPropertyChecks {
                 userType = "LoggedOut",
                 journey = Some("Successful"),
                 orderId = Some("XE123456789012"),
-                liability = Some("anti-money-laundering")
+                liability = Some("anti-money-laundering"),
+                surveySource = "card-payment-frontend",
+                paymentId = "Some-transaction-ref",
+                origin = "PfAmls"
               ),
               contentOptions = SurveyContentOptions(
                 isWelshSupported = true,
@@ -559,7 +631,10 @@ class PaymentsSurveyServiceSpec extends ItSpec with TableDrivenPropertyChecks {
                 userType = "LoggedIn",
                 journey = Some("Successful"),
                 orderId = Some("XMADP0123456789"),
-                liability = Some("alcohol-duty")
+                liability = Some("alcohol-duty"),
+                surveySource = "card-payment-frontend",
+                paymentId = "Some-transaction-ref",
+                origin = "AlcoholDuty"
               ),
               contentOptions = SurveyContentOptions(
                 isWelshSupported = true,
@@ -579,7 +654,10 @@ class PaymentsSurveyServiceSpec extends ItSpec with TableDrivenPropertyChecks {
                 userType = "LoggedOut",
                 journey = Some("Successful"),
                 orderId = Some("XMADP0123456789"),
-                liability = Some("alcohol-duty")
+                liability = Some("alcohol-duty"),
+                surveySource = "card-payment-frontend",
+                paymentId = "Some-transaction-ref",
+                origin = "PfAlcoholDuty"
               ),
               contentOptions = SurveyContentOptions(
                 isWelshSupported = true,
@@ -599,7 +677,10 @@ class PaymentsSurveyServiceSpec extends ItSpec with TableDrivenPropertyChecks {
                 userType = "LoggedOut",
                 journey = Some("Successful"),
                 orderId = Some("1234567895K"),
-                liability = Some("self-assessment")
+                liability = Some("self-assessment"),
+                surveySource = "card-payment-frontend",
+                paymentId = "Some-transaction-ref",
+                origin = "WcSa"
               ),
               contentOptions = SurveyContentOptions(
                 isWelshSupported = true,
@@ -619,7 +700,10 @@ class PaymentsSurveyServiceSpec extends ItSpec with TableDrivenPropertyChecks {
                 userType = "LoggedOut",
                 journey = Some("Successful"),
                 orderId = Some("1097172564A00101A"),
-                liability = Some("corporation-tax")
+                liability = Some("corporation-tax"),
+                surveySource = "card-payment-frontend",
+                paymentId = "Some-transaction-ref",
+                origin = "WcCt"
               ),
               contentOptions = SurveyContentOptions(
                 isWelshSupported = true,
@@ -639,7 +723,10 @@ class PaymentsSurveyServiceSpec extends ItSpec with TableDrivenPropertyChecks {
                 userType = "LoggedOut",
                 journey = Some("Successful"),
                 orderId = Some("999964805"),
-                liability = Some("vat")
+                liability = Some("vat"),
+                surveySource = "card-payment-frontend",
+                paymentId = "Some-transaction-ref",
+                origin = "WcVat"
               ),
               contentOptions = SurveyContentOptions(
                 isWelshSupported = true,
@@ -659,7 +746,10 @@ class PaymentsSurveyServiceSpec extends ItSpec with TableDrivenPropertyChecks {
                 userType = "LoggedOut",
                 journey = Some("Successful"),
                 orderId = Some("123PH456789002713"),
-                liability = Some("class-1a-national-insurance")
+                liability = Some("class-1a-national-insurance"),
+                surveySource = "card-payment-frontend",
+                paymentId = "Some-transaction-ref",
+                origin = "WcClass1aNi"
               ),
               contentOptions = SurveyContentOptions(
                 isWelshSupported = true,
@@ -679,7 +769,10 @@ class PaymentsSurveyServiceSpec extends ItSpec with TableDrivenPropertyChecks {
                 userType = "LoggedOut",
                 journey = Some("Successful"),
                 orderId = Some("XE123456789012"),
-                liability = Some("other-taxes")
+                liability = Some("other-taxes"),
+                surveySource = "card-payment-frontend",
+                paymentId = "Some-transaction-ref",
+                origin = "WcXref"
               ),
               contentOptions = SurveyContentOptions(
                 isWelshSupported = true,
@@ -699,7 +792,10 @@ class PaymentsSurveyServiceSpec extends ItSpec with TableDrivenPropertyChecks {
                 userType = "LoggedIn",
                 journey = Some("Successful"),
                 orderId = Some("999964805"),
-                liability = Some("vat")
+                liability = Some("vat"),
+                surveySource = "card-payment-frontend",
+                paymentId = "Some-transaction-ref",
+                origin = "VcVatOther"
               ),
               contentOptions = SurveyContentOptions(
                 isWelshSupported = true,
@@ -719,7 +815,10 @@ class PaymentsSurveyServiceSpec extends ItSpec with TableDrivenPropertyChecks {
                 userType = "LoggedIn",
                 journey = Some("Successful"),
                 orderId = Some("XVCGTP001000290"),
-                liability = Some("capital-gains-tax")
+                liability = Some("capital-gains-tax"),
+                surveySource = "card-payment-frontend",
+                paymentId = "Some-transaction-ref",
+                origin = "CapitalGainsTax"
               ),
               contentOptions = SurveyContentOptions(
                 isWelshSupported = true,
@@ -739,7 +838,10 @@ class PaymentsSurveyServiceSpec extends ItSpec with TableDrivenPropertyChecks {
                 userType = "LoggedIn",
                 journey = Some("Successful"),
                 orderId = Some("XE123456789012"),
-                liability = Some("economic-crime-levy")
+                liability = Some("economic-crime-levy"),
+                surveySource = "card-payment-frontend",
+                paymentId = "Some-transaction-ref",
+                origin = "EconomicCrimeLevy"
               ),
               contentOptions = SurveyContentOptions(
                 isWelshSupported = true,
@@ -759,7 +861,10 @@ class PaymentsSurveyServiceSpec extends ItSpec with TableDrivenPropertyChecks {
                 userType = "LoggedOut",
                 journey = Some("Successful"),
                 orderId = Some("XE123456789012"),
-                liability = Some("economic-crime-levy")
+                liability = Some("economic-crime-levy"),
+                surveySource = "card-payment-frontend",
+                paymentId = "Some-transaction-ref",
+                origin = "PfEconomicCrimeLevy"
               ),
               contentOptions = SurveyContentOptions(
                 isWelshSupported = true,
@@ -779,7 +884,10 @@ class PaymentsSurveyServiceSpec extends ItSpec with TableDrivenPropertyChecks {
                 userType = "LoggedOut",
                 journey = Some("Successful"),
                 orderId = Some("123456789MA"),
-                liability = Some("stamp-duty")
+                liability = Some("stamp-duty"),
+                surveySource = "card-payment-frontend",
+                paymentId = "Some-transaction-ref",
+                origin = "PfSdlt"
               ),
               contentOptions = SurveyContentOptions(
                 isWelshSupported = true,
@@ -799,7 +907,10 @@ class PaymentsSurveyServiceSpec extends ItSpec with TableDrivenPropertyChecks {
                 userType = "LoggedOut",
                 journey = Some("Successful"),
                 orderId = Some("123456789MA"),
-                liability = Some("stamp-duty")
+                liability = Some("stamp-duty"),
+                surveySource = "card-payment-frontend",
+                paymentId = "Some-transaction-ref",
+                origin = "WcSdlt"
               ),
               contentOptions = SurveyContentOptions(
                 isWelshSupported = true,
@@ -819,7 +930,10 @@ class PaymentsSurveyServiceSpec extends ItSpec with TableDrivenPropertyChecks {
                 userType = "LoggedIn",
                 journey = Some("Successful"),
                 orderId = Some("XVC1A2B3C4D5E6F"),
-                liability = Some("vat")
+                liability = Some("vat"),
+                surveySource = "card-payment-frontend",
+                paymentId = "Some-transaction-ref",
+                origin = "VatC2c"
               ),
               contentOptions = SurveyContentOptions(
                 isWelshSupported = true,
@@ -839,7 +953,10 @@ class PaymentsSurveyServiceSpec extends ItSpec with TableDrivenPropertyChecks {
                 userType = "LoggedOut",
                 journey = Some("Successful"),
                 orderId = Some("XVC1A2B3C4D5E6F"),
-                liability = Some("vat")
+                liability = Some("vat"),
+                surveySource = "card-payment-frontend",
+                paymentId = "Some-transaction-ref",
+                origin = "PfVatC2c"
               ),
               contentOptions = SurveyContentOptions(
                 isWelshSupported = true,
@@ -859,7 +976,10 @@ class PaymentsSurveyServiceSpec extends ItSpec with TableDrivenPropertyChecks {
                 userType = "LoggedOut",
                 journey = Some("Successful"),
                 orderId = Some("XE123456789012"),
-                liability = Some("simple-assessment")
+                liability = Some("simple-assessment"),
+                surveySource = "card-payment-frontend",
+                paymentId = "Some-transaction-ref",
+                origin = "WcSimpleAssessment"
               ),
               contentOptions = SurveyContentOptions(
                 isWelshSupported = true,
@@ -879,7 +999,10 @@ class PaymentsSurveyServiceSpec extends ItSpec with TableDrivenPropertyChecks {
                 userType = "LoggedOut",
                 journey = Some("Successful"),
                 orderId = Some("XE123456789012"),
-                liability = Some("epaye-late-payment-penalty")
+                liability = Some("epaye-late-payment-penalty"),
+                surveySource = "card-payment-frontend",
+                paymentId = "Some-transaction-ref",
+                origin = "WcEpayeLpp"
               ),
               contentOptions = SurveyContentOptions(
                 isWelshSupported = true,
@@ -899,7 +1022,10 @@ class PaymentsSurveyServiceSpec extends ItSpec with TableDrivenPropertyChecks {
                 userType = "LoggedOut",
                 journey = Some("Successful"),
                 orderId = Some("123PH456789002501"),
-                liability = Some("epaye")
+                liability = Some("epaye"),
+                surveySource = "card-payment-frontend",
+                paymentId = "Some-transaction-ref",
+                origin = "WcEpayeNi"
               ),
               contentOptions = SurveyContentOptions(
                 isWelshSupported = true,
@@ -919,7 +1045,10 @@ class PaymentsSurveyServiceSpec extends ItSpec with TableDrivenPropertyChecks {
                 userType = "LoggedOut",
                 journey = Some("Successful"),
                 orderId = Some("XE123456789012"),
-                liability = Some("cis-late-filing-penalty")
+                liability = Some("cis-late-filing-penalty"),
+                surveySource = "card-payment-frontend",
+                paymentId = "Some-transaction-ref",
+                origin = "WcEpayeLateCis"
               ),
               contentOptions = SurveyContentOptions(
                 isWelshSupported = true,
@@ -939,7 +1068,10 @@ class PaymentsSurveyServiceSpec extends ItSpec with TableDrivenPropertyChecks {
                 userType = "LoggedOut",
                 journey = Some("Successful"),
                 orderId = Some("XE123456789012"),
-                liability = Some("epaye-settlement-agreement")
+                liability = Some("epaye-settlement-agreement"),
+                surveySource = "card-payment-frontend",
+                paymentId = "Some-transaction-ref",
+                origin = "WcEpayeSeta"
               ),
               contentOptions = SurveyContentOptions(
                 isWelshSupported = true,
@@ -959,7 +1091,10 @@ class PaymentsSurveyServiceSpec extends ItSpec with TableDrivenPropertyChecks {
                 userType = "LoggedOut",
                 journey = Some("Successful"),
                 orderId = Some("YA123456789123"),
-                liability = Some("child-benefit-repayments")
+                liability = Some("child-benefit-repayments"),
+                surveySource = "card-payment-frontend",
+                paymentId = "Some-transaction-ref",
+                origin = "PfChildBenefitRepayments"
               ),
               contentOptions = SurveyContentOptions(
                 isWelshSupported = true,
@@ -979,7 +1114,10 @@ class PaymentsSurveyServiceSpec extends ItSpec with TableDrivenPropertyChecks {
                 userType = "LoggedIn",
                 journey = Some("Successful"),
                 orderId = Some("XE1234567890123"),
-                liability = Some("soft-drinks-industry-levy")
+                liability = Some("soft-drinks-industry-levy"),
+                surveySource = "card-payment-frontend",
+                paymentId = "Some-transaction-ref",
+                origin = "BtaSdil"
               ),
               contentOptions = SurveyContentOptions(
                 isWelshSupported = true,
@@ -999,7 +1137,10 @@ class PaymentsSurveyServiceSpec extends ItSpec with TableDrivenPropertyChecks {
                 userType = "LoggedIn",
                 journey = Some("Successful"),
                 orderId = Some("XE1234567890123"),
-                liability = Some("soft-drinks-industry-levy")
+                liability = Some("soft-drinks-industry-levy"),
+                surveySource = "card-payment-frontend",
+                paymentId = "Some-transaction-ref",
+                origin = "DdSdil"
               ),
               contentOptions = SurveyContentOptions(
                 isWelshSupported = true,
@@ -1019,7 +1160,10 @@ class PaymentsSurveyServiceSpec extends ItSpec with TableDrivenPropertyChecks {
                 userType = "LoggedOut",
                 journey = Some("Successful"),
                 orderId = Some("XE1234567890123"),
-                liability = Some("soft-drinks-industry-levy")
+                liability = Some("soft-drinks-industry-levy"),
+                surveySource = "card-payment-frontend",
+                paymentId = "Some-transaction-ref",
+                origin = "PfSdil"
               ),
               contentOptions = SurveyContentOptions(
                 isWelshSupported = true,
@@ -1039,7 +1183,10 @@ class PaymentsSurveyServiceSpec extends ItSpec with TableDrivenPropertyChecks {
                 userType = "LoggedOut",
                 journey = Some("Successful"),
                 orderId = Some("NI101747641Q424"),
-                liability = Some("ni-eu-vat-oss")
+                liability = Some("ni-eu-vat-oss"),
+                surveySource = "card-payment-frontend",
+                paymentId = "Some-transaction-ref",
+                origin = "NiEuVatOss"
               ),
               contentOptions = SurveyContentOptions(
                 isWelshSupported = false,
@@ -1059,7 +1206,10 @@ class PaymentsSurveyServiceSpec extends ItSpec with TableDrivenPropertyChecks {
                 userType = "LoggedOut",
                 journey = Some("Successful"),
                 orderId = Some("NI101747641Q424"),
-                liability = Some("ni-eu-vat-oss")
+                liability = Some("ni-eu-vat-oss"),
+                surveySource = "card-payment-frontend",
+                paymentId = "Some-transaction-ref",
+                origin = "PfNiEuVatOss"
               ),
               contentOptions = SurveyContentOptions(
                 isWelshSupported = false,
@@ -1079,7 +1229,10 @@ class PaymentsSurveyServiceSpec extends ItSpec with TableDrivenPropertyChecks {
                 userType = "LoggedOut",
                 journey = Some("Successful"),
                 orderId = Some("IM1234567890M0624"),
-                liability = Some("ni-eu-vat-ioss")
+                liability = Some("ni-eu-vat-ioss"),
+                surveySource = "card-payment-frontend",
+                paymentId = "Some-transaction-ref",
+                origin = "NiEuVatIoss"
               ),
               contentOptions = SurveyContentOptions(
                 isWelshSupported = false,
@@ -1099,7 +1252,10 @@ class PaymentsSurveyServiceSpec extends ItSpec with TableDrivenPropertyChecks {
                 userType = "LoggedOut",
                 journey = Some("Successful"),
                 orderId = Some("IM1234567890M0624"),
-                liability = Some("ni-eu-vat-ioss")
+                liability = Some("ni-eu-vat-ioss"),
+                surveySource = "card-payment-frontend",
+                paymentId = "Some-transaction-ref",
+                origin = "PfNiEuVatIoss"
               ),
               contentOptions = SurveyContentOptions(
                 isWelshSupported = false,
@@ -1119,7 +1275,10 @@ class PaymentsSurveyServiceSpec extends ItSpec with TableDrivenPropertyChecks {
                 userType = "LoggedIn",
                 journey = Some("Successful"),
                 orderId = Some("MA000003AP8002027"),
-                liability = Some("p800-or-pa302")
+                liability = Some("p800-or-pa302"),
+                surveySource = "card-payment-frontend",
+                paymentId = "Some-transaction-ref",
+                origin = "PfP800"
               ),
               contentOptions = SurveyContentOptions(
                 isWelshSupported = true,
@@ -1139,7 +1298,10 @@ class PaymentsSurveyServiceSpec extends ItSpec with TableDrivenPropertyChecks {
                 userType = "LoggedIn",
                 journey = Some("Successful"),
                 orderId = Some("MA000003AP8002027"),
-                liability = Some("p800-or-pa302")
+                liability = Some("p800-or-pa302"),
+                surveySource = "card-payment-frontend",
+                paymentId = "Some-transaction-ref",
+                origin = "PtaP800"
               ),
               contentOptions = SurveyContentOptions(
                 isWelshSupported = true,
@@ -1159,7 +1321,10 @@ class PaymentsSurveyServiceSpec extends ItSpec with TableDrivenPropertyChecks {
                 userType = "LoggedOut",
                 journey = Some("Successful"),
                 orderId = Some("XE123456789012"),
-                liability = Some("simple-assessment")
+                liability = Some("simple-assessment"),
+                surveySource = "card-payment-frontend",
+                paymentId = "Some-transaction-ref",
+                origin = "PfSimpleAssessment"
               ),
               contentOptions = SurveyContentOptions(
                 isWelshSupported = true,
@@ -1179,7 +1344,10 @@ class PaymentsSurveyServiceSpec extends ItSpec with TableDrivenPropertyChecks {
                 userType = "LoggedIn",
                 journey = Some("Successful"),
                 orderId = Some("MA000003AP3022027"),
-                liability = Some("p800-or-pa302")
+                liability = Some("p800-or-pa302"),
+                surveySource = "card-payment-frontend",
+                paymentId = "Some-transaction-ref",
+                origin = "PtaSimpleAssessment"
               ),
               contentOptions = SurveyContentOptions(
                 isWelshSupported = true,
@@ -1200,7 +1368,10 @@ class PaymentsSurveyServiceSpec extends ItSpec with TableDrivenPropertyChecks {
                 userType = "LoggedOut",
                 journey = Some("Successful"),
                 orderId = Some("XJRS12345678901"),
-                liability = Some("job-retention-scheme")
+                liability = Some("job-retention-scheme"),
+                surveySource = "card-payment-frontend",
+                paymentId = "Some-transaction-ref",
+                origin = "PfJobRetentionScheme"
               ),
               contentOptions = SurveyContentOptions(
                 isWelshSupported = true,
@@ -1221,7 +1392,10 @@ class PaymentsSurveyServiceSpec extends ItSpec with TableDrivenPropertyChecks {
                 userType = "LoggedIn",
                 journey = Some("Successful"),
                 orderId = Some("XJRS12345678901"),
-                liability = Some("job-retention-scheme")
+                liability = Some("job-retention-scheme"),
+                surveySource = "card-payment-frontend",
+                paymentId = "Some-transaction-ref",
+                origin = "JrsJobRetentionScheme"
               ),
               contentOptions = SurveyContentOptions(
                 isWelshSupported = true,
@@ -1242,7 +1416,10 @@ class PaymentsSurveyServiceSpec extends ItSpec with TableDrivenPropertyChecks {
                 userType = "LoggedOut",
                 journey = Some("Successful"),
                 orderId = Some("CDSI191234567890"),
-                liability = Some("cds")
+                liability = Some("cds"),
+                surveySource = "card-payment-frontend",
+                paymentId = "Some-transaction-ref",
+                origin = "PfCds"
               ),
               contentOptions = SurveyContentOptions(
                 isWelshSupported = false,
@@ -1263,7 +1440,10 @@ class PaymentsSurveyServiceSpec extends ItSpec with TableDrivenPropertyChecks {
                 userType = "LoggedOut",
                 journey = Some("Successful"),
                 orderId = Some("1234567890K"),
-                liability = Some("self-assessment")
+                liability = Some("self-assessment"),
+                surveySource = "card-payment-frontend",
+                paymentId = "Some-transaction-ref",
+                origin = "AppSa"
               ),
               contentOptions = SurveyContentOptions(
                 isWelshSupported = true,
@@ -1284,7 +1464,10 @@ class PaymentsSurveyServiceSpec extends ItSpec with TableDrivenPropertyChecks {
                 userType = "LoggedOut",
                 journey = Some("Successful"),
                 orderId = Some("MA000003AP3022023"),
-                liability = Some("simple-assessment")
+                liability = Some("simple-assessment"),
+                surveySource = "card-payment-frontend",
+                paymentId = "Some-transaction-ref",
+                origin = "AppSimpleAssessment"
               ),
               contentOptions = SurveyContentOptions(
                 isWelshSupported = true,
@@ -1305,7 +1488,10 @@ class PaymentsSurveyServiceSpec extends ItSpec with TableDrivenPropertyChecks {
                 userType = "LoggedIn",
                 journey = Some("Successful"),
                 orderId = Some("MIBI1234567891"),
-                liability = Some("merchandise-in-baggage")
+                liability = Some("merchandise-in-baggage"),
+                surveySource = "card-payment-frontend",
+                paymentId = "Some-transaction-ref",
+                origin = "Mib"
               ),
               contentOptions = SurveyContentOptions(
                 isWelshSupported = true,
@@ -1326,7 +1512,10 @@ class PaymentsSurveyServiceSpec extends ItSpec with TableDrivenPropertyChecks {
                 userType = "LoggedIn",
                 journey = Some("Successful"),
                 orderId = Some("XAPR9876543210"),
-                liability = Some("passengers")
+                liability = Some("passengers"),
+                surveySource = "card-payment-frontend",
+                paymentId = "Some-transaction-ref",
+                origin = "BcPngr"
               ),
               contentOptions = SurveyContentOptions(
                 isWelshSupported = true,
@@ -1347,7 +1536,10 @@ class PaymentsSurveyServiceSpec extends ItSpec with TableDrivenPropertyChecks {
                 userType = "LoggedOut",
                 journey = Some("Successful"),
                 orderId = Some("XE123456789012"),
-                liability = Some("tax-penalties-and-enquiry-settlements")
+                liability = Some("tax-penalties-and-enquiry-settlements"),
+                surveySource = "card-payment-frontend",
+                paymentId = "Some-transaction-ref",
+                origin = "PfTpes"
               ),
               contentOptions = SurveyContentOptions(
                 isWelshSupported = true,
@@ -1368,7 +1560,10 @@ class PaymentsSurveyServiceSpec extends ItSpec with TableDrivenPropertyChecks {
                 userType = "LoggedOut",
                 journey = Some("Successful"),
                 orderId = Some("XE123456789012"),
-                liability = Some("machine-games-duty")
+                liability = Some("machine-games-duty"),
+                surveySource = "card-payment-frontend",
+                paymentId = "Some-transaction-ref",
+                origin = "PfMgd"
               ),
               contentOptions = SurveyContentOptions(
                 isWelshSupported = true,
@@ -1389,7 +1584,10 @@ class PaymentsSurveyServiceSpec extends ItSpec with TableDrivenPropertyChecks {
                 userType = "LoggedOut",
                 journey = Some("Successful"),
                 orderId = Some("XE123456789012"),
-                liability = Some("general-betting-pool-betting-remote-gaming-duty")
+                liability = Some("general-betting-pool-betting-remote-gaming-duty"),
+                surveySource = "card-payment-frontend",
+                paymentId = "Some-transaction-ref",
+                origin = "PfGbPbRgDuty"
               ),
               contentOptions = SurveyContentOptions(
                 isWelshSupported = true,
@@ -1410,7 +1608,10 @@ class PaymentsSurveyServiceSpec extends ItSpec with TableDrivenPropertyChecks {
                 userType = "LoggedOut",
                 journey = Some("Successful"),
                 orderId = Some("XE123456789012"),
-                liability = Some("pf-trust")
+                liability = Some("pf-trust"),
+                surveySource = "card-payment-frontend",
+                paymentId = "Some-transaction-ref",
+                origin = "PfTrust"
               ),
               contentOptions = SurveyContentOptions(
                 isWelshSupported = true,
@@ -1431,7 +1632,10 @@ class PaymentsSurveyServiceSpec extends ItSpec with TableDrivenPropertyChecks {
                 userType = "LoggedOut",
                 journey = Some("Successful"),
                 orderId = Some("XE123456789012"),
-                liability = Some("pension-scheme-administrators")
+                liability = Some("pension-scheme-administrators"),
+                surveySource = "card-payment-frontend",
+                paymentId = "Some-transaction-ref",
+                origin = "PfPsAdmin"
               ),
               contentOptions = SurveyContentOptions(
                 isWelshSupported = true,
@@ -1452,7 +1656,10 @@ class PaymentsSurveyServiceSpec extends ItSpec with TableDrivenPropertyChecks {
                 userType = "LoggedOut",
                 journey = Some("Successful"),
                 orderId = Some("XE123456789012"),
-                liability = Some("other-taxes")
+                liability = Some("other-taxes"),
+                surveySource = "card-payment-frontend",
+                paymentId = "Some-transaction-ref",
+                origin = "PfOther"
               ),
               contentOptions = SurveyContentOptions(
                 isWelshSupported = true,
@@ -1473,7 +1680,10 @@ class PaymentsSurveyServiceSpec extends ItSpec with TableDrivenPropertyChecks {
                 userType = "LoggedOut",
                 journey = Some("Successful"),
                 orderId = Some("YA123456789123"),
-                liability = Some("child-benefit-repayments")
+                liability = Some("child-benefit-repayments"),
+                surveySource = "card-payment-frontend",
+                paymentId = "Some-transaction-ref",
+                origin = "WcChildBenefitRepayments"
               ),
               contentOptions = SurveyContentOptions(
                 isWelshSupported = true,
@@ -1493,7 +1703,10 @@ class PaymentsSurveyServiceSpec extends ItSpec with TableDrivenPropertyChecks {
                 userType = "LoggedIn",
                 journey = Some("Successful"),
                 orderId = Some(TestJourneys.StampTaxesOnShares.journeyAfterSucceedDebitWebPayment.referenceValue),
-                liability = Some("stamp-taxes-on-shares")
+                liability = Some("stamp-taxes-on-shares"),
+                surveySource = "card-payment-frontend",
+                paymentId = "Some-transaction-ref",
+                origin = "StampTaxesOnShares"
               ),
               contentOptions = SurveyContentOptions(
                 isWelshSupported = false,
@@ -1513,7 +1726,10 @@ class PaymentsSurveyServiceSpec extends ItSpec with TableDrivenPropertyChecks {
                 userType = "LoggedOut",
                 journey = Some("Successful"),
                 orderId = Some("XE123456789012"),
-                liability = Some("stamp-taxes-on-shares")
+                liability = Some("stamp-taxes-on-shares"),
+                surveySource = "card-payment-frontend",
+                paymentId = "Some-transaction-ref",
+                origin = "PfStampTaxesOnShares"
               ),
               contentOptions = SurveyContentOptions(
                 isWelshSupported = false,
