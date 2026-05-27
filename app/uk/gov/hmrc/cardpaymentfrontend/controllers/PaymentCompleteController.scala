@@ -21,6 +21,7 @@ import payapi.corcommon.model.{AmountInPence, Origins}
 import payapi.corcommon.model.Origins.PfMgd
 import payapi.corcommon.model.barclays.CardCategories
 import payapi.corcommon.model.taxes.pngr.AmountPaidPreviously
+import payapi.corcommon.model.taxes.stos.StosBasketReference
 import payapi.corcommon.model.times.period.TaxYear
 import play.api.i18n.Messages
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -57,22 +58,30 @@ class PaymentCompleteController @Inject() (
 
   val renderPage: Action[AnyContent] = actions.journeyAction { implicit journeyRequest: JourneyRequest[AnyContent] =>
 
-    val maybeEmailFromSession: Option[EmailAddress] =
+    val maybeEmailFromSession: Option[EmailAddress] = {
       journeyRequest
         .readFromSession[EmailAddress](journeyRequest.journeyId, Keys.email)
         .map(cryptoService.decryptEmail)
         .filter(!_.value.isBlank)
         .map(email => EmailAddress(email.value))
+    }
+
+    val maybeBasketRef: Option[StosBasketReference] = journeyRequest.journey.journeySpecificData match {
+      case jsd: JsdStampTaxesOnShares => jsd.basketReference
+      case _                          => None
+    }
 
     journeyRequest.journey.journeySpecificData match {
       // passengers has a bespoke set of content, so they have their own page for simplicity
       case jsd: JsdBcPngr         => Ok(passengersPaymentCompletePage(jsd))
       // all other origins utilise the generic page.
-      case _: JourneySpecificData => Ok(genericPaymentCompletePage(maybeEmailFromSession))
+      case _: JourneySpecificData => Ok(genericPaymentCompletePage(maybeEmailFromSession, maybeBasketRef))
     }
   }
 
-  private def genericPaymentCompletePage(maybeEmail: Option[EmailAddress])(implicit journeyRequest: JourneyRequest[?]): HtmlFormat.Appendable = {
+  private def genericPaymentCompletePage(maybeEmail: Option[EmailAddress], maybeBasketRef: Option[StosBasketReference])(implicit
+    journeyRequest: JourneyRequest[?]
+  ): HtmlFormat.Appendable = {
     paymentCompletePage(
       taxReference = journeyRequest.journey.getReference,
       summaryListRows = PaymentCompleteController.buildSummaryListRows(
@@ -80,7 +89,8 @@ class PaymentCompleteController @Inject() (
         taxType = journeyRequest.journey.origin.lift(appConfig).taxNameMessageKey
       )(journeyRequest.messages),
       maybeEmailAddress = maybeEmail,
-      maybeReturnUrl = PaymentCompleteController.determineTaxAccountUrl(journeyRequest.journey)(appConfig)
+      maybeReturnUrl = PaymentCompleteController.determineTaxAccountUrl(journeyRequest.journey)(appConfig),
+      maybeBasketRef = maybeBasketRef
     )(journeyRequest, journeyRequest.messages)
   }
 
@@ -173,6 +183,14 @@ object PaymentCompleteController {
             value = Value(
               Text(messages("check-your-details.PtaSimpleAssessment.tax-year.value", adjustedTaxYear.startYear.toString, adjustedTaxYear.endYear.toString))
             )
+          )
+        )
+
+      case JsdStampTaxesOnShares(_, _, _, submissionId, _) =>
+        Seq(
+          SummaryListRow(
+            key = Key(Text(messages("payment-complete.summary-list.submissionID"))),
+            value = Value(Text(submissionId.canonicalizedValue))
           )
         )
 
