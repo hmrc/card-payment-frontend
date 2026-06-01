@@ -29,6 +29,7 @@ import payapi.corcommon.model.taxes.ct.{CtChargeType, CtPeriod, CtUtr}
 import payapi.corcommon.model.taxes.epaye.*
 import payapi.corcommon.model.taxes.ioss.Ioss
 import payapi.corcommon.model.taxes.other.*
+import payapi.corcommon.model.taxes.other.ni.*
 import payapi.corcommon.model.taxes.p302.{P302ChargeRef, P302Ref}
 import payapi.corcommon.model.taxes.p800.P800Ref
 import payapi.corcommon.model.taxes.pillar2.Pillar2Reference
