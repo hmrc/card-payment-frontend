@@ -10,5 +10,5 @@ addSbtPlugin("org.wartremover"    %  "sbt-wartremover"    % "3.4.1")
 addSbtPlugin("org.scalameta"      %  "sbt-scalafmt"       % "2.4.0")
 addSbtPlugin("com.timushev.sbt"   %  "sbt-updates"        % "0.6.3")
 addSbtPlugin("com.github.sbt"     %  "sbt-gzip"           % "2.0.0")
-addSbtPlugin("io.github.irundaia" %  "sbt-sassify"        % "1.5.2")
+addSbtPlugin("uk.gov.hmrc"        %  "sbt-sass-compiler"  % "0.13.0")
 addDependencyTreePlugin
