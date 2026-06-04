@@ -40,7 +40,7 @@ import scala.jdk.CollectionConverters.ListHasAsScala
 class CheckYourAnswersControllerSpec extends ItSpec {
 
   val systemUnderTest: CheckYourAnswersController = app.injector.instanceOf[CheckYourAnswersController]
-  val cryptoService                               = app.injector.instanceOf[CryptoService]
+  val cryptoService: CryptoService                = app.injector.instanceOf[CryptoService]
 
   def fakeRequest(journeyId: JourneyId = TestJourneys.PfSa.journeyBeforeBeginWebPayment._id): FakeRequest[AnyContentAsEmpty.type] =
     FakeRequest()
@@ -62,8 +62,8 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyBeforeBeginWebPayment)
       val result                       = systemUnderTest.renderPage(fakeRequest())
       val document                     = Jsoup.parse(contentAsString(result))
-      val langToggleText: List[String] = document.select(".hmrc-language-select__list-item").eachText().asScala.toList
-      langToggleText should contain theSameElementsAs List("English", "Newid yr iaith i’r Gymraeg Cymraeg") // checking the visually hidden text, it's simpler
+      val langToggleText: List[String] = document.select(".hmrc-service-navigation-language-select__list-item").eachText().asScala.toList
+      langToggleText should contain theSameElementsAs List("ENG", "CYM – Newid yr iaith i’r Gymraeg") // checking the visually hidden text, it's simpler
     }
 
     "show the Title tab correctly in English" in {
@@ -84,14 +84,14 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyBeforeBeginWebPayment)
       val result   = systemUnderTest.renderPage(fakeRequest())
       val document = Jsoup.parse(contentAsString(result))
-      document.select(".govuk-header__service-name").html shouldBe "Pay your Self Assessment"
+      document.select(".govuk-service-navigation__service-name").text() shouldBe "Pay your Self Assessment"
     }
 
     "show the Service Name banner title correctly in Welsh" in {
       PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyBeforeBeginWebPayment)
       val result   = systemUnderTest.renderPage(fakeRequestWelsh())
       val document = Jsoup.parse(contentAsString(result))
-      document.select(".govuk-header__service-name").html shouldBe "Talu eich Hunanasesiad"
+      document.select(".govuk-service-navigation__service-name").text() shouldBe "Talu eich Hunanasesiad"
     }
 
     "should render the h1 correctly" in {
