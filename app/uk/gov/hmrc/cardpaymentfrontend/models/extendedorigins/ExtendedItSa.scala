@@ -19,16 +19,16 @@ package uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins
 import payapi.cardpaymentjourney.model.journey.{JourneySpecificData, JsdItSa}
 import play.api.mvc.AnyContent
 import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
-import uk.gov.hmrc.cardpaymentfrontend.models.PaymentMethod.{Bacs, Card}
+import uk.gov.hmrc.cardpaymentfrontend.models.PaymentMethod.{Bacs, Card, OpenBanking}
 import uk.gov.hmrc.cardpaymentfrontend.models.openbanking.{ItSaSessionData, OriginSpecificSessionData}
 import uk.gov.hmrc.cardpaymentfrontend.models.{CheckYourAnswersRow, PaymentMethod}
 
 object ExtendedItSa extends ExtendedOrigin {
   override val serviceNameMessageKey: String         = "service-name.ItSa"
   override val taxNameMessageKey: String             = "payment-complete.tax-name.ItSa"
-  def cardFeesPagePaymentMethods: Set[PaymentMethod] = Set(Bacs)
+  def cardFeesPagePaymentMethods: Set[PaymentMethod] = Set(OpenBanking)
   // TODO: This is empty in pay-frontend - Placeholder?
-  def paymentMethods(): Set[PaymentMethod]           = Set(Card, Bacs)
+  def paymentMethods(): Set[PaymentMethod]           = Set(Card, Bacs, OpenBanking)
 
   override def checkYourAnswersReferenceRow(journeyRequest: JourneyRequest[AnyContent])(payFrontendUrl: String): Option[CheckYourAnswersRow] = {
     Some(
