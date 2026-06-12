@@ -814,7 +814,7 @@ final case class StampTaxesOnSharesSessionData(
       )(br => Reference(br.canonicalizedValue))
     )(securitiesTransferChargeReference => Reference(securitiesTransferChargeReference.canonicalizedValue))
   }
-  def searchTag: SearchTag        = SearchTag(submissionId.canonicalizedValue)
+  def searchTag: SearchTag        = SearchTag(paymentReference.value)
 }
 
 final case class PfStampTaxesOnSharesSessionData(
