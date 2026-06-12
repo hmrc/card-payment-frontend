@@ -34,7 +34,7 @@ object ExtendedStampTaxesOnShares extends ExtendedOrigin {
   override def checkYourAnswersReferenceRow(journeyRequest: JourneyRequest[AnyContent])(payFrontendBaseUrl: String): Option[CheckYourAnswersRow] = {
     Some(
       CheckYourAnswersRow(
-        titleMessageKey = "check-your-details.StampTaxesOnShares.submissionId",
+        titleMessageKey = "check-your-details.StampTaxesOnShares.reference",
         value = Seq(journeyRequest.journey.referenceValue),
         changeLink = None
       )

@@ -1439,7 +1439,43 @@ object TestJourneys {
       createdOn = LocalDateTime.parse("2027-11-02T16:28:55.185"),
       journeySpecificData = JsdStampTaxesOnShares(
         securitiesTransferChargeReference = None,
-        basketReference = Some(StosBasketReference("BASKET1234567890")),
+        basketReference = Some(StosBasketReference("XBKT123456789")),
+        customerId = CustomerId("CUSTOMERID"),
+        submissionId = SubmissionId("SUBMISSIONID"),
+        basketDetails = StosBasketDetails(
+          basketItems = List(
+            StosBasketItem(
+              amountInPence = AmountInPence(1234),
+              buyerName = "Tom Cruise",
+              sellerName = "Danny DeVito",
+              chargeReference = "CR123456789012",
+              chargeType = SecurityTransferCharge
+            ),
+            StosBasketItem(
+              amountInPence = AmountInPence(1234),
+              buyerName = "Tom Cruise",
+              sellerName = "Bob Ross",
+              chargeReference = "CR123456789013",
+              chargeType = SecurityTransferCharge
+            )
+          )
+        )
+      ),
+      chosenWayToPay = None
+    )
+
+    val journeyBeforeBeginWebpaymentNoBasketReference: Journey[JsdStampTaxesOnShares] = Journey[JsdStampTaxesOnShares](
+      _id = JourneyId(TestPayApiData.decryptedJourneyId),
+      sessionId = Some(SessionId("TestSession-4b87460d-6f43-4c4c-b810-d6f87c774854")),
+      amountInPence = Some(AmountInPence(1234)),
+      emailTemplateOptions = None,
+      navigation = None,
+      order = None,
+      status = PaymentStatuses.Created,
+      createdOn = LocalDateTime.parse("2027-11-02T16:28:55.185"),
+      journeySpecificData = JsdStampTaxesOnShares(
+        securitiesTransferChargeReference = None,
+        basketReference = None,
         customerId = CustomerId("CUSTOMERID"),
         submissionId = SubmissionId("SUBMISSIONID"),
         basketDetails = StosBasketDetails(

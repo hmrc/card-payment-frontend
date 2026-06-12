@@ -2045,18 +2045,35 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       )
     }
 
-    "[StampTaxesOnShares] should render the payment reference row correctly" in {
-      PayApiStub.stubForFindBySessionId2xx(TestJourneys.StampTaxesOnShares.journeyBeforeBeginWebPayment)
-      val result       = systemUnderTest.renderPage(fakeRequest())
-      val document     = Jsoup.parse(contentAsString(result))
-      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.StampTaxesOnShares))
-      assertRow(
-        referenceRow,
-        "Submission ID",
-        TestJourneys.StampTaxesOnShares.journeyBeforeBeginWebPayment.referenceValue,
-        None,
-        None
-      )
+    "[StampTaxesOnShares] should render the payment reference row correctly" - {
+
+      "when reference is a basket reference" in {
+        PayApiStub.stubForFindBySessionId2xx(TestJourneys.StampTaxesOnShares.journeyBeforeBeginWebPayment)
+        val result       = systemUnderTest.renderPage(fakeRequest())
+        val document     = Jsoup.parse(contentAsString(result))
+        val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.StampTaxesOnShares))
+        assertRow(
+          referenceRow,
+          "Payment reference",
+          "XBKT123456789",
+          None,
+          None
+        )
+      }
+
+      "when reference is not basket reference" in {
+        PayApiStub.stubForFindBySessionId2xx(TestJourneys.StampTaxesOnShares.journeyBeforeBeginWebpaymentNoBasketReference)
+        val result       = systemUnderTest.renderPage(fakeRequest())
+        val document     = Jsoup.parse(contentAsString(result))
+        val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.StampTaxesOnShares))
+        assertRow(
+          referenceRow,
+          "Payment reference",
+          "SUBMISSIONID",
+          None,
+          None
+        )
+      }
     }
 
     "[PfStampTaxesOnShares] should render the payment reference row correctly" in {

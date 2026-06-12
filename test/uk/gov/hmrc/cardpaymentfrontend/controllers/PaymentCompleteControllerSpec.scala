@@ -654,6 +654,25 @@ class PaymentCompleteControllerSpec extends ItSpec {
           .html() shouldBe "<a class=\"govuk-link\" href=\"https://www.tax.service.gov.uk/feedback/passengers\">Rhowch wybod i ni beth yw eich barn am y gwasanaeth hwn</a> (mae’n cymryd 30 eiliad)"
       }
 
+      "for StampTaxesOnShares" - {
+        "should render the reference as the basket reference for StampTaxesOnShares when there is one" in {
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.StampTaxesOnShares.journeyAfterSucceedDebitWebPayment)
+          val panel = Jsoup.parse(contentAsString(systemUnderTest.renderPage(fakeGetRequest))).body().select(".govuk-panel--confirmation")
+          panel.select("h1").text() shouldBe "Payment received by HMRC"
+          panel.select(".govuk-panel__body").html() shouldBe "Your payment reference\n<br>\n<strong>XBKT123456789</strong>"
+        }
+        "should render the reference as the submissionId for StampTaxesOnShares when there is no basket reference" in {
+          PayApiStub.stubForFindBySessionId2xx(
+            TestJourneys.StampTaxesOnShares.journeyAfterSucceedDebitWebPayment.copy(
+              journeySpecificData = TestJourneys.StampTaxesOnShares.journeyBeforeBeginWebpaymentNoBasketReference.journeySpecificData
+            )
+          )
+          val panel = Jsoup.parse(contentAsString(systemUnderTest.renderPage(fakeGetRequest))).body().select(".govuk-panel--confirmation")
+          panel.select("h1").text() shouldBe "Payment received by HMRC"
+          panel.select(".govuk-panel__body").html() shouldBe "Your payment reference\n<br>\n<strong>SUBMISSIONID</strong>"
+        }
+      }
+
       "a user research banner" - {
         val userResearchSelector: String = ".hmrc-user-research-banner"
         "should be shown for BtaCt" in {

@@ -135,6 +135,75 @@ class CardPaymentServiceSpec extends ItSpec {
             .as[JsObject]
         )
       }
+
+      "StampTaxes should use" - {
+        "basket reference as the reference sent to Barclaycard when it's available" in {
+          PayApiStub.stubForUpdateBeginWebPayment2xx(TestJourneys.StampTaxesOnShares.journeyBeforeBeginWebPayment._id)
+          implicit val journeyRequest: JourneyRequest[?] =
+            fakeJourneyRequest(journey = TestJourneys.StampTaxesOnShares.journeyBeforeBeginWebPayment, withEmail = true)
+          CardPaymentStub.InitiatePayment.stubForInitiatePayment2xx(expectedCardPaymentInitiatePaymentResponse)
+          systemUnderTest.initiatePayment(TestJourneys.StampTaxesOnShares.journeyBeforeBeginWebPayment, testAddress, Some(testEmail), English).futureValue
+          PayApiStub.verifyUpdateBeginWebPayment(1, TestJourneys.StampTaxesOnShares.journeyBeforeBeginWebPayment._id)
+          AuditConnectorStub.verifyEventAudited(
+            auditType = "PaymentAttempt",
+            auditEvent = Json
+              .parse(
+                """
+                |{
+                | "address": {
+                |   "line1": "made up street",
+                |   "postcode": "AA11AA",
+                |   "country": "GBR"
+                | },
+                | "emailAddress": "blah@blah.com",
+                | "loggedIn": false,
+                | "merchantCode": "ETEE",
+                | "paymentOrigin": "StampTaxesOnShares",
+                | "paymentReference": "XBKT123456789",
+                | "paymentTaxType": "stampTaxesOnShares",
+                | "paymentTotal": 12.34,
+                | "transactionReference": "sometransactionref"
+                |}""".stripMargin
+              )
+              .as[JsObject]
+          )
+        }
+
+        "submissionId as the reference sent to Barclaycard when basket reference is not available" in {
+          val td                                         = TestJourneys.StampTaxesOnShares.journeyBeforeBeginWebPayment
+            .copy(journeySpecificData = TestJourneys.StampTaxesOnShares.journeyBeforeBeginWebpaymentNoBasketReference.journeySpecificData)
+          implicit val journeyRequest: JourneyRequest[?] = fakeJourneyRequest(journey = td, withEmail = true)
+          PayApiStub.stubForUpdateBeginWebPayment2xx(td._id)
+          CardPaymentStub.InitiatePayment.stubForInitiatePayment2xx(expectedCardPaymentInitiatePaymentResponse)
+          systemUnderTest
+            .initiatePayment(td, testAddress, Some(testEmail), English)
+            .futureValue
+          PayApiStub.verifyUpdateBeginWebPayment(1, TestJourneys.StampTaxesOnShares.journeyBeforeBeginWebPayment._id)
+          AuditConnectorStub.verifyEventAudited(
+            auditType = "PaymentAttempt",
+            auditEvent = Json
+              .parse(
+                """
+                  |{
+                  | "address": {
+                  |   "line1": "made up street",
+                  |   "postcode": "AA11AA",
+                  |   "country": "GBR"
+                  | },
+                  | "emailAddress": "blah@blah.com",
+                  | "loggedIn": false,
+                  | "merchantCode": "ETEE",
+                  | "paymentOrigin": "StampTaxesOnShares",
+                  | "paymentReference": "SUBMISSIONID",
+                  | "paymentTaxType": "stampTaxesOnShares",
+                  | "paymentTotal": 12.34,
+                  | "transactionReference": "sometransactionref"
+                  |}""".stripMargin
+              )
+              .as[JsObject]
+          )
+        }
+      }
     }
 
     "finishPayment" - {
