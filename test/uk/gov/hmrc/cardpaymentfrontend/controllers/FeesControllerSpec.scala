@@ -361,24 +361,24 @@ class FeesControllerSpec extends ItSpec {
           listOfMethods.size() shouldBe 2
         }
 
-        "render an option for bank transfer" in {
+        "render an option for open banking" in {
           PayApiStub.stubForFindBySessionId2xx(TestJourneys.ItSa.journeyBeforeBeginWebPayment)
           val result            = systemUnderTest.renderPage(fakeRequest)
           val document          = Jsoup.parse(contentAsString(result))
           val listOfMethods     = document.select("#payment-type-list").select("li")
-          val openBankingBullet = listOfMethods.select("#bank-transfer-link")
-          openBankingBullet.text() shouldBe "bank transfer"
-          openBankingBullet.attr("href") shouldBe "http://localhost:9056/pay/bac"
+          val openBankingBullet = listOfMethods.select("#open-banking-link")
+          openBankingBullet.text() shouldBe "bank account"
+          openBankingBullet.attr("href") shouldBe "/pay-by-card/start-open-banking"
         }
 
-        "render an option for bank transfer in welsh" in {
+        "render an option for open banking in welsh" in {
           PayApiStub.stubForFindBySessionId2xx(TestJourneys.ItSa.journeyBeforeBeginWebPayment)
           val result            = systemUnderTest.renderPage(fakeWelshRequest)
           val document          = Jsoup.parse(contentAsString(result))
           val listOfMethods     = document.select("#payment-type-list").select("li")
-          val openBankingBullet = listOfMethods.select("#bank-transfer-link")
-          openBankingBullet.text() shouldBe "drosglwyddiad banc"
-          openBankingBullet.attr("href") shouldBe "http://localhost:9056/pay/bac"
+          val openBankingBullet = listOfMethods.select("#open-banking-link")
+          openBankingBullet.text() shouldBe "cyfrif banc"
+          openBankingBullet.attr("href") shouldBe "/pay-by-card/start-open-banking"
         }
 
         "render an option for personal debit card" in {
@@ -3414,7 +3414,7 @@ class FeesControllerSpec extends ItSpec {
               case Origins.PfSa                     => Seq(expectedOpenBankingLink, expectedOneOffDirectDebitLink)
               case Origins.BtaSa                    => Seq(expectedOpenBankingLink, expectedOneOffDirectDebitLink)
               case Origins.PtaSa                    => Seq(expectedOpenBankingLink, expectedOneOffDirectDebitLink)
-              case Origins.ItSa                     => Seq(expectedBankTransferLink)
+              case Origins.ItSa                     => Seq(expectedOpenBankingLink)
               case Origins.PfVat                    => Seq(expectedOpenBankingLink, expectedVariableDirectDebitLink)
               case Origins.PfCt                     => Seq(expectedOpenBankingLink, expectedOneOffDirectDebitLink)
               case Origins.PfEpayeNi                => Seq(expectedOpenBankingLink, expectedVariableDirectDebitLink, expectedOneOffDirectDebitLink)
