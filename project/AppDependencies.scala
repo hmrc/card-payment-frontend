@@ -3,7 +3,7 @@ import sbt.*
 //format: OFF
 object AppDependencies {
 
-  private val payApiCorVersion = "1.301.0"
+  private val payApiCorVersion = "1.302.0"
 
   private val bootstrapVersion = "10.7.0"
 
@@ -17,8 +17,8 @@ object AppDependencies {
   val compile: Seq[ModuleID] = Seq[ModuleID](
     "uk.gov.hmrc"  %% "bootstrap-frontend-play-30"       % bootstrapVersion,
     "uk.gov.hmrc"  %% "play-frontend-hmrc-play-30"       % "13.9.0",
-    "com.beachape" %% "enumeratum"                       % "1.9.7",
-    "com.beachape" %% "enumeratum-play"                  % "1.9.7",
+    "com.beachape" %% "enumeratum"                       % "1.9.8",
+    "com.beachape" %% "enumeratum-play"                  % "1.9.8",
     "uk.gov.hmrc"  %% "pay-api-cor-card-payment-journey" % payApiCorVersion excludeAll(payApiExclusionRules *)
   )
 
