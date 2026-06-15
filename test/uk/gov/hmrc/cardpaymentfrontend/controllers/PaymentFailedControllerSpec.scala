@@ -196,10 +196,8 @@ class PaymentFailedControllerSpec extends ItSpec {
           VcVatOther | Amls | Ppt | PfPpt | PfMgd | PfGbPbRgDuty | PfSdil | PfSimpleAssessment | PtaSimpleAssessment | WcSimpleAssessment | PfTpes |
           CapitalGainsTax | EconomicCrimeLevy | PfEconomicCrimeLevy | PfChildBenefitRepayments | NiEuVatOss | PfNiEuVatOss | NiEuVatIoss | PfNiEuVatIoss |
           PfAmls | PfTrust | AlcoholDuty | PfAlcoholDuty | VatC2c | PfVatC2c | WcSa | WcCt | WcVat | WcClass1aNi | WcEpayeLpp | WcEpayeNi | WcEpayeLateCis |
-          WcEpayeSeta | WcSdlt | WcChildBenefitRepayments | StampTaxesOnShares | PfStampTaxesOnShares =>
+          WcEpayeSeta | WcSdlt | WcChildBenefitRepayments | StampTaxesOnShares | PfStampTaxesOnShares | ItSa =>
         openBankingSupportedAssertion(document, welshTest)
-
-      case ItSa                                                                                                 => noOpenBankingSupportedAssertion(document, welshTest) // will be changed to openBankingSupportedAssertion as part of OPS-6528
       case WcXref | PfOther | PfP800 | PfJobRetentionScheme | JrsJobRetentionScheme | AppSimpleAssessment | Mib =>
         noOpenBankingSupportedAssertion(document, welshTest)
 
