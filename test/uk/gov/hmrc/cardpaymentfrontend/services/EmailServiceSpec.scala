@@ -388,8 +388,8 @@ class EmailServiceSpec extends ItSpec with TableDrivenPropertyChecks {
       (WcSdlt, "Stamp Duty Land Tax", "ending with 789MA", commission, Some("13.57"), "en"),
       (WcSdlt, "Treth Dir y Tollau Stamp", "yn gorffen gyda 789MA", None, None, "cy"),
       (WcSdlt, "Treth Dir y Tollau Stamp", "yn gorffen gyda 789MA", commission, Some("13.57"), "cy"),
-      (StampTaxesOnShares, "Securities Transfer Charge", "ending with 67890", None, None, "en"),
-      (StampTaxesOnShares, "Securities Transfer Charge", "ending with 67890", commission, Some("13.57"), "en"),
+      (StampTaxesOnShares, "Securities Transfer Charge", "ending with 56789", None, None, "en"),
+      (StampTaxesOnShares, "Securities Transfer Charge", "ending with 56789", commission, Some("13.57"), "en"),
       (PfStampTaxesOnShares, "Securities Transfer Charge", "ending with 89012", None, None, "en"),
       (PfStampTaxesOnShares, "Securities Transfer Charge", "ending with 89012", commission, Some("13.57"), "en")
     )

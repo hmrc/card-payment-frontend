@@ -229,6 +229,7 @@ check-your-details.PfTrust.reference = Reference number
 check-your-details.PfOther.reference = Payment reference
 check-your-details.PfPsAdmin.reference = Reference number
 check-your-details.StampTaxesOnShares.submissionId = Submission ID
+check-your-details.StampTaxesOnShares.reference = Payment reference
 check-your-details.PfStampTaxesOnShares.reference = Securities transfer charge reference
 
 ## Address Page

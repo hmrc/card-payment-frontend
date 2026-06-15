@@ -647,7 +647,7 @@ class OpenBankingOriginSpecificSessionDataSpec extends UnitSpec {
       val testJson = Json.parse(
         // language=JSON
         """{
-          |  "basketReference": "BASKET1234567890",
+          |  "basketReference": "XBKT123456789",
           |  "customerId": "CUSTOMERID",
           |  "submissionId": "SUBMISSIONID",
           |  "basketDetails": {
@@ -657,6 +657,13 @@ class OpenBankingOriginSpecificSessionDataSpec extends UnitSpec {
           |        "buyerName": "Tom Cruise",
           |        "sellerName": "Danny DeVito",
           |        "chargeReference": "CR123456789012",
+          |        "chargeType": "SecurityTransferCharge"
+          |      },
+          |      {
+          |        "amountInPence": 1234,
+          |        "buyerName": "Tom Cruise",
+          |        "sellerName": "Bob Ross",
+          |        "chargeReference": "CR123456789013",
           |        "chargeType": "SecurityTransferCharge"
           |      }
           |    ]
@@ -670,13 +677,18 @@ class OpenBankingOriginSpecificSessionDataSpec extends UnitSpec {
         osd,
         StampTaxesOnSharesSessionData(
           securitiesTransferChargeReference = None,
-          Some(StosBasketReference("BASKET1234567890")),
+          Some(StosBasketReference("XBKT123456789")),
           CustomerId("CUSTOMERID"),
           SubmissionId("SUBMISSIONID"),
-          StosBasketDetails(List[StosBasketItem](StosBasketItem(AmountInPence(1234), "Tom Cruise", "Danny DeVito", "CR123456789012", SecurityTransferCharge)))
+          StosBasketDetails(
+            List[StosBasketItem](
+              StosBasketItem(AmountInPence(1234), "Tom Cruise", "Danny DeVito", "CR123456789012", SecurityTransferCharge),
+              StosBasketItem(AmountInPence(1234), "Tom Cruise", "Bob Ross", "CR123456789013", SecurityTransferCharge)
+            )
+          )
         ),
-        "BASKET1234567890",
-        "SUBMISSIONID"
+        "XBKT123456789",
+        "XBKT123456789"
       )
       roundTripJsonTest(osd, testJson)
     }
