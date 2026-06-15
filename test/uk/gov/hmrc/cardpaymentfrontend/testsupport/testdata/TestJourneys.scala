@@ -118,7 +118,7 @@ object TestJourneys {
       order = None,
       status = PaymentStatuses.Created,
       createdOn = LocalDateTime.parse("2027-11-02T16:28:55.185"),
-      journeySpecificData = JsdItSa(utr = SaUtr("1234567895"), dueDate = Some(LocalDate.of(2028, 12, 12))),
+      journeySpecificData = JsdItSa(utr = SaUtr("1234567895"), defaultAmountInPence = AmountInPence(1234), dueDate = Some(LocalDate.of(2028, 12, 12))),
       chosenWayToPay = None
     )
   }
