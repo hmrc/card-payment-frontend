@@ -37,15 +37,7 @@ class ExtendedPtaP800(appConfig: AppConfig) extends ExtendedOrigin {
     if (appConfig.FeatureFlags.ptaP800OpenBankingEnabled) Set(Card, OpenBanking, Bacs)
     else Set(Card)
 
-  override def checkYourAnswersReferenceRow(journeyRequest: JourneyRequest[AnyContent])(payFrontendBaseUrl: String): Option[CheckYourAnswersRow] = {
-    Some(
-      CheckYourAnswersRow(
-        titleMessageKey = "check-your-details.PtaP800.reference",
-        value = Seq(journeyRequest.journey.referenceValue),
-        changeLink = None
-      )
-    )
-  }
+  override def checkYourAnswersReferenceRow(journeyRequest: JourneyRequest[AnyContent])(payFrontendBaseUrl: String): Option[CheckYourAnswersRow] = None
 
   override def checkYourAnswersAdditionalReferenceRow(
     journeyRequest: JourneyRequest[AnyContent]

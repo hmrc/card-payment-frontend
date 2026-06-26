@@ -63,7 +63,7 @@ class CheckYourAnswersController @Inject() (
     // If no email is present in the session, no Email Row is shown
     val maybeEmailRow: Option[CheckYourAnswersRow]                = extendedOrigin.checkYourAnswersEmailAddressRow(cryptoService, journeyRequest)
 
-    // the first two rows, payment date only applies to FDP supported journeys; reference row should always be there.
+    // the first two rows, payment date only applies to FDP supported journeys; reference row is only there for logged out journeys.
     val maybePaymentDateAndReferenceRows: Seq[Option[CheckYourAnswersRow]] = Seq(maybePaymentDate, referenceRow)
 
     // essentially converts Option[Seq[CheckYourAnswersRow]] => Seq[Option[CheckYourAnswersRow]], in most cases it's empty seq
@@ -86,7 +86,7 @@ class CheckYourAnswersController @Inject() (
       (maybePaymentDateAndReferenceRows ++ maybeAdditionalReferenceRows ++ mandatoryRows).flatten
         .map(summarise)
 
-    if (cardBillingAddressRow.isDefined) Ok(checkYourAnswersPage(SummaryList(summaryListRows)))
+    if (cardBillingAddressRow.isDefined) Ok(checkYourAnswersPage(SummaryList(summaryListRows), journeyRequest.journey.referenceValue))
     else {
       logger.warn("Missing address from session, redirecting to enter address page.")
       Redirect(routes.AddressController.renderPage)

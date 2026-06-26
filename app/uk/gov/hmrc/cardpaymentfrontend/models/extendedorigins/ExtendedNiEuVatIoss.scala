@@ -32,15 +32,7 @@ object ExtendedNiEuVatIoss extends ExtendedOrigin {
   def cardFeesPagePaymentMethods: Set[PaymentMethod] = Set(OpenBanking)
   def paymentMethods(): Set[PaymentMethod]           = Set(Card, OpenBanking, Bacs)
 
-  override def checkYourAnswersReferenceRow(journeyRequest: JourneyRequest[AnyContent])(payFrontendBaseUrl: String): Option[CheckYourAnswersRow] = {
-    journeyRequest.journey.journeySpecificData.reference.map { reference =>
-      CheckYourAnswersRow(
-        titleMessageKey = "check-your-details.NiEuVatIoss.reference",
-        value = Seq(reference.value),
-        changeLink = None
-      )
-    }
-  }
+  override def checkYourAnswersReferenceRow(journeyRequest: JourneyRequest[AnyContent])(payFrontendBaseUrl: String): Option[CheckYourAnswersRow] = None
 
   override def checkYourAnswersAdditionalReferenceRow(
     journeyRequest: JourneyRequest[AnyContent]

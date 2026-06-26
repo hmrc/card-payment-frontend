@@ -38,19 +38,11 @@ object ExtendedWcCt extends ExtendedOrigin {
     }
   }
 
-  override def checkYourAnswersReferenceRow(journeyRequest: JourneyRequest[AnyContent])(payFrontendBaseUrl: String): Option[CheckYourAnswersRow] = {
-    Some(
-      CheckYourAnswersRow(
-        titleMessageKey = "check-your-details.WcCt.reference",
-        value = Seq(reference(journeyRequest)),
-        changeLink = None
-      )
-    )
-  }
+  override def checkYourAnswersReferenceRow(journeyRequest: JourneyRequest[AnyContent])(payFrontendBaseUrl: String): Option[CheckYourAnswersRow] = None
 
   override def checkYourAnswersAmountSummaryRow(journeyRequest: JourneyRequest[AnyContent])(payFrontendBaseUrl: String): Option[CheckYourAnswersRow] = Some(
     CheckYourAnswersRow(
-      titleMessageKey = "check-your-details.total-to-pay",
+      titleMessageKey = "check-your-details.amount",
       value = Seq(amount(journeyRequest)),
       changeLink = None
     )

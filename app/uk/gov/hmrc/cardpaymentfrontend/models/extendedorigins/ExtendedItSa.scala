@@ -30,15 +30,7 @@ object ExtendedItSa extends ExtendedOrigin {
   // TODO: This is empty in pay-frontend - Placeholder?
   def paymentMethods(): Set[PaymentMethod]           = Set(Card, Bacs, OpenBanking)
 
-  override def checkYourAnswersReferenceRow(journeyRequest: JourneyRequest[AnyContent])(payFrontendUrl: String): Option[CheckYourAnswersRow] = {
-    Some(
-      CheckYourAnswersRow(
-        titleMessageKey = "check-your-details.ItSa.reference",
-        value = Seq(journeyRequest.journey.referenceValue),
-        changeLink = None
-      )
-    )
-  }
+  override def checkYourAnswersReferenceRow(journeyRequest: JourneyRequest[AnyContent])(payFrontendUrl: String): Option[CheckYourAnswersRow] = None
 
   override def openBankingOriginSpecificSessionData: JourneySpecificData => Option[OriginSpecificSessionData] = {
     case j: JsdItSa => Some(ItSaSessionData(j.utr))
