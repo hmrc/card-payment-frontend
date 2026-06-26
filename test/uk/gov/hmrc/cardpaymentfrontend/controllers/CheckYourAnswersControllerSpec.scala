@@ -19,7 +19,7 @@ package uk.gov.hmrc.cardpaymentfrontend.controllers
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Element
 import org.scalatest.Assertion
-import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor2}
+import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor1, TableFor2}
 import payapi.cardpaymentjourney.model.barclays.BarclaysOrder
 import payapi.cardpaymentjourney.model.journey.{Journey, JourneySpecificData, Url}
 import payapi.corcommon.model.barclays.TransactionReference
@@ -121,6 +121,37 @@ class CheckYourAnswersControllerSpec extends ItSpec with TableDrivenPropertyChec
       val result   = systemUnderTest.renderPage(fakeRequestWelsh())
       val document = Jsoup.parse(contentAsString(result))
       document.select("#submit").text() shouldBe "Yn eich blaen"
+    }
+
+    val paymentReferenceParagraphRenderedScenarios: TableFor1[Origin] =
+      Table("origin", TestHelpers.implementedOrigins*)
+
+    "should render the payment reference paragraph in English for all origins" in {
+      forAll(paymentReferenceParagraphRenderedScenarios) { (origin: Origin) =>
+        withClue(s"[${origin.entryName}] ") {
+          val tdJourney  = TestHelpers.deriveTestDataFromOrigin(origin).journeyBeforeBeginWebPayment
+          val expected   = s"The payment reference on your bank statement will be ${tdJourney.referenceValue}."
+          PayApiStub.stubForFindBySessionId2xx(tdJourney)
+          val result     = systemUnderTest.renderPage(fakeRequest(tdJourney._id))
+          val document   = Jsoup.parse(contentAsString(result))
+          val paragraphs = document.select("p.govuk-body").eachText().asScala.toList
+          paragraphs should contain(expected)
+        }
+      }
+    }
+
+    "should render the payment reference paragraph in Welsh for all origins" in {
+      forAll(paymentReferenceParagraphRenderedScenarios) { (origin: Origin) =>
+        withClue(s"[${origin.entryName}] ") {
+          val tdJourney  = TestHelpers.deriveTestDataFromOrigin(origin).journeyBeforeBeginWebPayment
+          val expected   = s"Bydd y taliad hwn yn dangos yn eich banc fel ${tdJourney.referenceValue}."
+          PayApiStub.stubForFindBySessionId2xx(tdJourney)
+          val result     = systemUnderTest.renderPage(fakeRequestWelsh(tdJourney._id))
+          val document   = Jsoup.parse(contentAsString(result))
+          val paragraphs = document.select("p.govuk-body").eachText().asScala.toList
+          paragraphs should contain(expected)
+        }
+      }
     }
 
     // derives correct row in summary list due to Origins that may include FDP.
@@ -474,8 +505,6 @@ class CheckYourAnswersControllerSpec extends ItSpec with TableDrivenPropertyChec
       }
     }
 
-
-
     "[PfAlcoholDuty] should render the payment reference row correctly" in {
       PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfAlcoholDuty.journeyBeforeBeginWebPayment)
       val result       = systemUnderTest.renderPage(fakeRequest())
@@ -503,8 +532,6 @@ class CheckYourAnswersControllerSpec extends ItSpec with TableDrivenPropertyChec
         Some("http://localhost:9056/pay/pay-by-card-change-reference-number")
       )
     }
-
-
 
     "[AlcoholDuty] should render the charge reference row correctly when it's available" in {
       PayApiStub.stubForFindBySessionId2xx(TestJourneys.AlcoholDuty.journeyBeforeBeginWebPayment)
@@ -586,8 +613,6 @@ class CheckYourAnswersControllerSpec extends ItSpec with TableDrivenPropertyChec
       assertRow(referenceRow, "Gordal TAW neu cyfeirnod y gosb", "XE123456789012", None, None)
     }
 
-
-
     "[VcVatOther] should render the charge reference row correctly when it's available" in {
       PayApiStub.stubForFindBySessionId2xx(TestJourneys.VcVatOther.journeyBeforeBeginWebPayment)
       val result       = systemUnderTest.renderPage(fakeRequest())
@@ -603,8 +628,6 @@ class CheckYourAnswersControllerSpec extends ItSpec with TableDrivenPropertyChec
       val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(1)
       assertRow(referenceRow, "Cyfeirnod y tâl", "999964805", None, None)
     }
-
-
 
     "[PfCt] should render the payment reference row correctly" in {
       PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfCt.journeyBeforeBeginWebPayment)
@@ -650,8 +673,6 @@ class CheckYourAnswersControllerSpec extends ItSpec with TableDrivenPropertyChec
       )
     }
 
-
-
     "[PfPpt] should render the payment reference row correctly" in {
       PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfPpt.journeyBeforeBeginWebPayment)
       val result       = systemUnderTest.renderPage(fakeRequest())
@@ -673,8 +694,6 @@ class CheckYourAnswersControllerSpec extends ItSpec with TableDrivenPropertyChec
       val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(0)
       assertRow(referenceRow, "Cyfeirnod", "XAPPT0000012345", Some("Newid Cyfeirnod"), Some("http://localhost:9056/pay/pay-by-card-change-reference-number"))
     }
-
-
 
     "[PfAmls] should render the payment reference row correctly" in {
       PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfAmls.journeyBeforeBeginWebPayment)
@@ -704,8 +723,6 @@ class CheckYourAnswersControllerSpec extends ItSpec with TableDrivenPropertyChec
       )
     }
 
-
-
     "[PfEconomicCrimeLevy] should render the payment reference row correctly" in {
       PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfEconomicCrimeLevy.journeyBeforeBeginWebPayment)
       val result       = systemUnderTest.renderPage(fakeRequest())
@@ -734,8 +751,6 @@ class CheckYourAnswersControllerSpec extends ItSpec with TableDrivenPropertyChec
       )
     }
 
-
-
     "[PfVatC2c] should render the payment reference row correctly" in {
       PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfVatC2c.journeyBeforeBeginWebPayment)
       val result       = systemUnderTest.renderPage(fakeRequest())
@@ -763,8 +778,6 @@ class CheckYourAnswersControllerSpec extends ItSpec with TableDrivenPropertyChec
         Some("http://localhost:9056/pay/pay-by-card-change-reference-number")
       )
     }
-
-
 
     "[BtaSa] should render the payment date row correctly" in {
       PayApiStub.stubForFindBySessionId2xx(TestJourneys.BtaSa.journeyBeforeBeginWebPayment)
@@ -1116,8 +1129,6 @@ class CheckYourAnswersControllerSpec extends ItSpec with TableDrivenPropertyChec
       assertRow(referenceRow, "Cyfeirnod Unigryw y Trafodyn (UTRN)", "123456789MA", None, None)
     }
 
-
-
     "[PfChildBenefitRepayments] should render the payment reference row correctly" in {
       PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfChildBenefitRepayments.journeyBeforeBeginWebPayment)
       val result       = systemUnderTest.renderPage(fakeRequest())
@@ -1145,8 +1156,6 @@ class CheckYourAnswersControllerSpec extends ItSpec with TableDrivenPropertyChec
         Some("http://localhost:9056/pay/pay-by-card-change-reference-number")
       )
     }
-
-
 
     "[PfSdil] should render the payment reference row correctly" in {
       PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSdil.journeyBeforeBeginWebPayment)
@@ -1208,8 +1217,6 @@ class CheckYourAnswersControllerSpec extends ItSpec with TableDrivenPropertyChec
       assertRow(referenceRow, "Cyfeirnod y tâl", "BC007010065114", None, None)
     }
 
-
-
     "[PtaP800] should render the payment reference rows correctly (i.e. show the p800ChargeRef additionally, when there is one)" in {
       PayApiStub.stubForFindBySessionId2xx(TestJourneys.PtaP800.journeyWithP800ChargeRefBeforeBeginWebPayment)
       val result       = systemUnderTest.renderPage(fakeRequest())
@@ -1257,8 +1264,6 @@ class CheckYourAnswersControllerSpec extends ItSpec with TableDrivenPropertyChec
       val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(0)
       assertRow(referenceRow, "Cyfeirnod", "XE123456789012", None, None)
     }
-
-
 
     "[PtaSimpleAssessment] should render the charge reference row correctly" in {
       PayApiStub.stubForFindBySessionId2xx(TestJourneys.PtaSimpleAssessment.journeyBeforeBeginWebPayment)
@@ -1319,8 +1324,6 @@ class CheckYourAnswersControllerSpec extends ItSpec with TableDrivenPropertyChec
         Some("http://localhost:9056/pay/pay-by-card-change-reference-number")
       )
     }
-
-
 
     "[PfCds] should render the payment reference row correctly" in {
       PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfCds.journeyBeforeBeginWebPayment)
