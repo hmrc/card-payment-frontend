@@ -288,6 +288,7 @@ payment-complete.amount.paid-to-hmrc = Amount paid to HMRC
 payment-complete.amount.card-fee = {0}Card fee ({1}),{2}non-refundable{3}
 payment-complete.amount.total-paid = Total paid
 payment-complete.print-link = Print your payment confirmation
+payment-complete.print.summary-link = View everything included in this basket (opens in new tab)
 payment-complete.what-happens-next.header = What happens next
 payment-complete.what-happens-next.p1 = Your payment can take up to 5 days to show in your
 payment-complete.what-happens-next.link = online tax account.

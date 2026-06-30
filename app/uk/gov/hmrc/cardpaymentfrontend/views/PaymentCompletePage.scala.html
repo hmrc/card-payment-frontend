@@ -73,7 +73,7 @@
 @detailsOfStampTaxesOnSharesPayment = {
     <p id="print-link-wrapper" class="govuk-body js-visible govuk-!-display-none-print">
         <a id="summary" class="govuk-link" rel="noreferrer noopener" href="#">
-        View everything included in this basket (opens in new tab)
+            @messages("payment-complete.print.summary-link")
         </a>
     </p>
 }
@@ -190,7 +190,7 @@
 
     @govukSummaryList(SummaryList(summaryListRows))
 
-    @if(origin === Origins.StampTaxesOnShares) {
+    @if(maybeBasketRef.isDefined) {
         @detailsOfStampTaxesOnSharesPayment
     }
 
