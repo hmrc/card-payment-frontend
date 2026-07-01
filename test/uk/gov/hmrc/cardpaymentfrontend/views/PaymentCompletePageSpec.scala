@@ -38,7 +38,7 @@ class PaymentCompletePageSpec extends ItSpec {
       PayApiStub.stubForFindBySessionId2xx(TestJourneys.StampTaxesOnShares.journeyAfterSucceedDebitWebPayment)
 
       val doc = Jsoup.parse(contentAsString(systemUnderTest.renderPage(fakeGetRequest))).body()
-      doc.select("a.govuk-link").asScala.toList.size shouldBe 4
+      doc.select("a.govuk-link").asScala.toList.size shouldBe 5
       doc.select("#summary").text() shouldBe "View everything included in this basket (opens in new tab)"
       doc.select("#summary").attr("href") shouldBe "#"
     }
@@ -51,7 +51,7 @@ class PaymentCompletePageSpec extends ItSpec {
       )
 
       val doc = Jsoup.parse(contentAsString(systemUnderTest.renderPage(fakeGetRequest))).body()
-      doc.select("a.govuk-link").asScala.toList.size shouldBe 3
+      doc.select("a.govuk-link").asScala.toList.size shouldBe 4
       doc.select("#summary").text() shouldBe empty
     }
   }
