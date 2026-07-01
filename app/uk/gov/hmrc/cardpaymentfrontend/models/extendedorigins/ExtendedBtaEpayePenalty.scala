@@ -30,15 +30,7 @@ object ExtendedBtaEpayePenalty extends ExtendedOrigin {
   def cardFeesPagePaymentMethods: Set[PaymentMethod] = Set(OpenBanking, OneOffDirectDebit)
   def paymentMethods(): Set[PaymentMethod]           = Set(Card, OpenBanking, OneOffDirectDebit, Bacs)
 
-  override def checkYourAnswersReferenceRow(journeyRequest: JourneyRequest[AnyContent])(payFrontendBaseUrl: String): Option[CheckYourAnswersRow] = {
-    Some(
-      CheckYourAnswersRow(
-        titleMessageKey = "check-your-details.BtaEpayePenalty.reference",
-        value = Seq(journeyRequest.journey.referenceValue),
-        changeLink = None
-      )
-    )
-  }
+  override def checkYourAnswersReferenceRow(journeyRequest: JourneyRequest[AnyContent])(payFrontendBaseUrl: String): Option[CheckYourAnswersRow] = None
 
   override def openBankingOriginSpecificSessionData: JourneySpecificData => Option[OriginSpecificSessionData] = {
     case j: JsdBtaEpayePenalty => Some(BtaEpayePenaltySessionData(j.epayePenaltyReference))

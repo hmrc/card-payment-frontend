@@ -27,7 +27,7 @@
     summaryListComponent: GovukSummaryList
 )
 
-@(summaryList: SummaryList)(implicit journeyRequest: JourneyRequest[?], messages: Messages)
+@(summaryList: SummaryList, reference: String)(implicit journeyRequest: JourneyRequest[?], messages: Messages)
 
 @heading = @{messages("check-your-details.heading")}
 
@@ -37,6 +37,8 @@
    <h1 class="govuk-heading-l govuk-!-margin-bottom-6">@heading</h1>
 
    @summaryListComponent(summaryList)
+
+  <p class="govuk-body">@{Html(messages("check-your-details.the-payment-reference", reference))}</p>
 
    @formWithCSRF(action = uk.gov.hmrc.cardpaymentfrontend.controllers.routes.CheckYourAnswersController.submit) {
       @govukButton(Button(

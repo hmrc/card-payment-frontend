@@ -30,15 +30,7 @@ object ExtendedBtaSdil extends ExtendedOrigin {
   def cardFeesPagePaymentMethods: Set[PaymentMethod] = Set(OpenBanking, DirectDebit)
   def paymentMethods(): Set[PaymentMethod]           = Set(Card, OpenBanking, DirectDebit, Bacs)
 
-  override def checkYourAnswersReferenceRow(journeyRequest: JourneyRequest[AnyContent])(payFrontendBaseUrl: String): Option[CheckYourAnswersRow] = {
-    Some(
-      CheckYourAnswersRow(
-        titleMessageKey = "check-your-details.BtaSdil.reference",
-        value = Seq(journeyRequest.journey.referenceValue),
-        changeLink = None
-      )
-    )
-  }
+  override def checkYourAnswersReferenceRow(journeyRequest: JourneyRequest[AnyContent])(payFrontendBaseUrl: String): Option[CheckYourAnswersRow] = None
 
   override def openBankingOriginSpecificSessionData: JourneySpecificData => Option[OriginSpecificSessionData] = {
     case j: JsdBtaSdil => Some(BtaSdilSessionData(j.xRef))

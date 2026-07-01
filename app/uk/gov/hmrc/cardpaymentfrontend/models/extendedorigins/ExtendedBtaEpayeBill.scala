@@ -30,15 +30,7 @@ object ExtendedBtaEpayeBill extends ExtendedOrigin {
   def cardFeesPagePaymentMethods: Set[PaymentMethod] = Set(OpenBanking, OneOffDirectDebit, VariableDirectDebit)
   def paymentMethods(): Set[PaymentMethod]           = Set(Card, OpenBanking, OneOffDirectDebit, VariableDirectDebit, Bacs)
 
-  override def checkYourAnswersReferenceRow(journeyRequest: JourneyRequest[AnyContent])(payFrontendBaseUrl: String): Option[CheckYourAnswersRow] = {
-    Some(
-      CheckYourAnswersRow(
-        titleMessageKey = "check-your-details.BtaEpayeBill.reference",
-        value = Seq(journeyRequest.journey.referenceValue),
-        changeLink = None
-      )
-    )
-  }
+  override def checkYourAnswersReferenceRow(journeyRequest: JourneyRequest[AnyContent])(payFrontendBaseUrl: String): Option[CheckYourAnswersRow] = None
 
   override def openBankingOriginSpecificSessionData: JourneySpecificData => Option[OriginSpecificSessionData] = {
     case j: JsdBtaEpayeBill => Some(BtaEpayeBillSessionData(j.accountsOfficeReference, period = j.period))

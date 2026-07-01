@@ -29,15 +29,7 @@ object ExtendedBtaVat extends ExtendedOrigin {
   def cardFeesPagePaymentMethods: Set[PaymentMethod] = Set(OpenBanking, VariableDirectDebit)
   def paymentMethods(): Set[PaymentMethod]           = Set(Card, OpenBanking, VariableDirectDebit, Bacs)
 
-  override def checkYourAnswersReferenceRow(journeyRequest: JourneyRequest[AnyContent])(payFrontendBaseUrl: String): Option[CheckYourAnswersRow] = {
-    Some(
-      CheckYourAnswersRow(
-        titleMessageKey = "check-your-details.BtaVat.reference",
-        value = Seq(journeyRequest.journey.referenceValue),
-        changeLink = None
-      )
-    )
-  }
+  override def checkYourAnswersReferenceRow(journeyRequest: JourneyRequest[AnyContent])(payFrontendBaseUrl: String): Option[CheckYourAnswersRow] = None
 
   override def openBankingOriginSpecificSessionData: JourneySpecificData => Option[OriginSpecificSessionData] = {
     case j: JsdBtaVat => Some(BtaVatSessionData(j.vrn))

@@ -32,15 +32,7 @@ object ExtendedPtaSimpleAssessment extends ExtendedOrigin {
   def cardFeesPagePaymentMethods: Set[PaymentMethod] = Set(OpenBanking)
   def paymentMethods(): Set[PaymentMethod]           = Set(Card, OpenBanking, Bacs)
 
-  override def checkYourAnswersReferenceRow(journeyRequest: JourneyRequest[AnyContent])(payFrontendBaseUrl: String): Option[CheckYourAnswersRow] = {
-    Some(
-      CheckYourAnswersRow(
-        titleMessageKey = "check-your-details.PtaSimpleAssessment.reference",
-        value = Seq(journeyRequest.journey.referenceValue),
-        changeLink = None
-      )
-    )
-  }
+  override def checkYourAnswersReferenceRow(journeyRequest: JourneyRequest[AnyContent])(payFrontendBaseUrl: String): Option[CheckYourAnswersRow] = None
 
   override def checkYourAnswersAdditionalReferenceRow(
     journeyRequest: JourneyRequest[AnyContent]

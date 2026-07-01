@@ -127,9 +127,10 @@ check-your-details.heading = Check your details
 check-your-details.change = Change
 check-your-details.payment-date = Payment date
 check-your-details.payment-date.today = Today
-check-your-details.total-to-pay = Total to pay
+check-your-details.amount = Amount
 check-your-details.email-address = Email address
 check-your-details.card-billing-address = Card billing address
+check-your-details.the-payment-reference = The payment reference on your bank statement will be <strong>{0}</strong>.
 
 #tax regime specific messages
 check-your-details.PfSa.reference = Unique Taxpayer Reference (UTR)

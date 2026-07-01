@@ -127,9 +127,10 @@ check-your-details.heading = Gwiriwch eich manylion
 check-your-details.change = Newid
 check-your-details.payment-date = Dyddiad talu
 check-your-details.payment-date.today = Heddiw
-check-your-details.total-to-pay = Cyfanswm i’w dalu
+check-your-details.amount = Swm
 check-your-details.email-address = Cyfeiriad e-bost
 check-your-details.card-billing-address = Cyfeiriad bilio
+check-your-details.the-payment-reference = Bydd y taliad hwn yn dangos yn eich banc fel <strong>{0}</strong>.
 
 #tax regime specific messages
 check-your-details.PfSa.reference = Cyfeirnod Unigryw y Trethdalwr (UTR)

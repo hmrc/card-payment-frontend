@@ -19,6 +19,7 @@ package uk.gov.hmrc.cardpaymentfrontend.controllers
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Element
 import org.scalatest.Assertion
+import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor1, TableFor2}
 import payapi.cardpaymentjourney.model.barclays.BarclaysOrder
 import payapi.cardpaymentjourney.model.journey.{Journey, JourneySpecificData, Url}
 import payapi.corcommon.model.barclays.TransactionReference
@@ -37,7 +38,7 @@ import uk.gov.hmrc.cardpaymentfrontend.testsupport.{ItSpec, TestHelpers}
 
 import scala.jdk.CollectionConverters.ListHasAsScala
 
-class CheckYourAnswersControllerSpec extends ItSpec {
+class CheckYourAnswersControllerSpec extends ItSpec with TableDrivenPropertyChecks {
 
   val systemUnderTest: CheckYourAnswersController = app.injector.instanceOf[CheckYourAnswersController]
   val cryptoService: CryptoService                = app.injector.instanceOf[CryptoService]
@@ -122,129 +123,148 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       document.select("#submit").text() shouldBe "Yn eich blaen"
     }
 
-    // derives correct row in summary list due to Origins that may include FDP.
-    // The rows show as (with index value):
-    // Payment date (optional) 0 or 1
-    // Payment reference 1 or 2
-    // Email address (optional) 2 or 3
-    // Card billing address 3 or 4 (or 2 if there is no email address)
-    def deriveReferenceRowIndex(origin: Origin): Int = {
-      origin match {
-        case Origins.BtaSa               => 1
-        case Origins.PtaSa               => 1
-        case Origins.ItSa                => 1
-        case Origins.BtaCt               => 1
-        case Origins.BtaVat              => 1
-        case Origins.VcVatReturn         => 1
-        case Origins.VcVatOther          => 1
-        case Origins.Ppt                 => 1
-        case Origins.BtaEpayeBill        => 1
-        case Origins.BtaEpayePenalty     => 1
-        case Origins.BtaEpayeInterest    => 1
-        case Origins.BtaEpayeGeneral     => 1
-        case Origins.BtaClass1aNi        => 1
-        case Origins.EconomicCrimeLevy   => 1
-        case Origins.BtaSdil             => 1
-        case Origins.PtaSimpleAssessment => 1
-        case Origins.NiEuVatOss          => 1
-        case Origins.NiEuVatIoss         => 1
-        case _                           => 0
+    val paymentReferenceParagraphRenderedScenarios: TableFor1[Origin] =
+      Table("origin", TestHelpers.implementedOrigins*)
+
+    "should render the payment reference paragraph in English for all origins" in {
+      forAll(paymentReferenceParagraphRenderedScenarios) { (origin: Origin) =>
+        withClue(s"[${origin.entryName}] ") {
+          val tdJourney  = TestHelpers.deriveTestDataFromOrigin(origin).journeyBeforeBeginWebPayment
+          val expected   = s"The payment reference on your bank statement will be ${tdJourney.referenceValue}."
+          PayApiStub.stubForFindBySessionId2xx(tdJourney)
+          val result     = systemUnderTest.renderPage(fakeRequest(tdJourney._id))
+          val document   = Jsoup.parse(contentAsString(result))
+          val paragraphs = document.select("p.govuk-body").eachText().asScala.toList
+          paragraphs should contain(expected)
+        }
       }
     }
 
+    "should render the payment reference paragraph in Welsh for all origins" in {
+      forAll(paymentReferenceParagraphRenderedScenarios) { (origin: Origin) =>
+        withClue(s"[${origin.entryName}] ") {
+          val tdJourney  = TestHelpers.deriveTestDataFromOrigin(origin).journeyBeforeBeginWebPayment
+          val expected   = s"Bydd y taliad hwn yn dangos yn eich banc fel ${tdJourney.referenceValue}."
+          PayApiStub.stubForFindBySessionId2xx(tdJourney)
+          val result     = systemUnderTest.renderPage(fakeRequestWelsh(tdJourney._id))
+          val document   = Jsoup.parse(contentAsString(result))
+          val paragraphs = document.select("p.govuk-body").eachText().asScala.toList
+          paragraphs should contain(expected)
+        }
+      }
+    }
+
+    // derives correct row in summary list due to Origins that may include FDP.
+    // The rows show as (with index value):
+    // Payment date (optional) 0 or 1
+    // Payment reference 0 or not present at all
+    // Email address (optional) 1 or 2
+    // Card billing address 2 or 3 (or 1 if there is no email address)
+
     def deriveAmountRowIndex(origin: Origin): Int = {
       origin match {
-        case Origins.BtaSa               => 2
-        case Origins.PtaSa               => 2
-        case Origins.ItSa                => 2
-        case Origins.AlcoholDuty         => 2
-        case Origins.BtaCt               => 2
-        case Origins.PfCt                => 2
-        case Origins.PfEpayeNi           => 2
-        case Origins.PfEpayeP11d         => 2
-        case Origins.BtaVat              => 2
-        case Origins.VcVatReturn         => 2
-        case Origins.VcVatOther          => 3
-        case Origins.Ppt                 => 2
-        case Origins.BtaEpayeBill        => 2
-        case Origins.BtaEpayePenalty     => 2
-        case Origins.BtaEpayeInterest    => 2
-        case Origins.BtaEpayeGeneral     => 2
-        case Origins.BtaClass1aNi        => 3
-        case Origins.EconomicCrimeLevy   => 2
-        case Origins.BtaSdil             => 2
-        case Origins.PtaSimpleAssessment => 4
-        case Origins.NiEuVatOss          => 4
-        case Origins.PfNiEuVatOss        => 3
-        case Origins.NiEuVatIoss         => 4
-        case Origins.PfNiEuVatIoss       => 3
-        case Origins.AppSimpleAssessment => 2
-        case Origins.PtaP800             => 2
-        case _                           => 1
+        case Origins.Amls                     => 0
+        case Origins.AppSimpleAssessment      => 2
+        case Origins.BtaClass1aNi             => 2
+        case Origins.BtaCt                    => 1
+        case Origins.CapitalGainsTax          => 0
+        case Origins.DdSdil                   => 0
+        case Origins.DdVat                    => 0
+        case Origins.JrsJobRetentionScheme    => 0
+        case Origins.NiEuVatIoss              => 3
+        case Origins.NiEuVatOss               => 3
+        case Origins.PfCt                     => 2
+        case Origins.PfEpayeNi                => 2
+        case Origins.PfEpayeP11d              => 2
+        case Origins.PfNiEuVatIoss            => 3
+        case Origins.PfNiEuVatOss             => 3
+        case Origins.PtaSimpleAssessment      => 3
+        case Origins.StampTaxesOnShares       => 0
+        case Origins.VatC2c                   => 0
+        case Origins.VcVatOther               => 2
+        case Origins.WcChildBenefitRepayments => 0
+        case Origins.WcClass1aNi              => 0
+        case Origins.WcCt                     => 0
+        case Origins.WcEpayeLateCis           => 0
+        case Origins.WcEpayeLpp               => 0
+        case Origins.WcEpayeNi                => 0
+        case Origins.WcEpayeSeta              => 0
+        case Origins.WcSa                     => 0
+        case Origins.WcSdlt                   => 0
+        case Origins.WcSimpleAssessment       => 0
+        case Origins.WcXref                   => 0
+        case _                                => 1
       }
     }
 
     def deriveEmailRowIndex(origin: Origin): Int = {
       origin match {
-        case Origins.BtaSa               => 3
-        case Origins.PtaSa               => 3
-        case Origins.ItSa                => 3
-        case Origins.AlcoholDuty         => 3
-        case Origins.BtaCt               => 3
-        case Origins.PfCt                => 3
-        case Origins.PfEpayeNi           => 3
-        case Origins.PfEpayeP11d         => 3
-        case Origins.BtaVat              => 3
-        case Origins.VcVatReturn         => 3
-        case Origins.VcVatOther          => 4
-        case Origins.Ppt                 => 3
-        case Origins.BtaEpayeBill        => 3
-        case Origins.BtaEpayePenalty     => 3
-        case Origins.BtaEpayeInterest    => 3
-        case Origins.BtaEpayeGeneral     => 3
-        case Origins.BtaClass1aNi        => 4
-        case Origins.EconomicCrimeLevy   => 3
-        case Origins.BtaSdil             => 3
-        case Origins.PtaSimpleAssessment => 5
-        case Origins.NiEuVatOss          => 5
-        case Origins.PfNiEuVatOss        => 4
-        case Origins.NiEuVatIoss         => 5
-        case Origins.PfNiEuVatIoss       => 4
-        case Origins.AppSimpleAssessment => 3
-        case Origins.PtaP800             => 3
-        case _                           => 2
+        case Origins.Amls                     => 1
+        case Origins.AppSimpleAssessment      => 3
+        case Origins.BtaClass1aNi             => 3
+        case Origins.BtaCt                    => 2
+        case Origins.CapitalGainsTax          => 1
+        case Origins.DdSdil                   => 1
+        case Origins.DdVat                    => 1
+        case Origins.JrsJobRetentionScheme    => 1
+        case Origins.NiEuVatIoss              => 4
+        case Origins.NiEuVatOss               => 4
+        case Origins.PfCt                     => 3
+        case Origins.PfEpayeNi                => 3
+        case Origins.PfEpayeP11d              => 3
+        case Origins.PfNiEuVatIoss            => 4
+        case Origins.PfNiEuVatOss             => 4
+        case Origins.PtaSimpleAssessment      => 4
+        case Origins.StampTaxesOnShares       => 1
+        case Origins.VatC2c                   => 1
+        case Origins.VcVatOther               => 3
+        case Origins.WcChildBenefitRepayments => 1
+        case Origins.WcClass1aNi              => 1
+        case Origins.WcCt                     => 1
+        case Origins.WcEpayeLateCis           => 1
+        case Origins.WcEpayeLpp               => 1
+        case Origins.WcEpayeNi                => 1
+        case Origins.WcEpayeSeta              => 1
+        case Origins.WcSa                     => 1
+        case Origins.WcSdlt                   => 1
+        case Origins.WcSimpleAssessment       => 1
+        case Origins.WcXref                   => 1
+        case _                                => 2
       }
     }
 
     def deriveCardBillingAddressRowIndex(origin: Origin): Int = {
       origin match {
-        case Origins.BtaSa               => 4
-        case Origins.PtaSa               => 4
-        case Origins.ItSa                => 4
-        case Origins.AlcoholDuty         => 4
-        case Origins.BtaCt               => 4
-        case Origins.PfCt                => 4
-        case Origins.PfEpayeNi           => 4
-        case Origins.PfEpayeP11d         => 4
-        case Origins.BtaVat              => 4
-        case Origins.VcVatReturn         => 4
-        case Origins.VcVatOther          => 5
-        case Origins.Ppt                 => 4
-        case Origins.BtaEpayeBill        => 4
-        case Origins.BtaEpayePenalty     => 4
-        case Origins.BtaEpayeInterest    => 4
-        case Origins.BtaEpayeGeneral     => 4
-        case Origins.BtaClass1aNi        => 5
-        case Origins.EconomicCrimeLevy   => 4
-        case Origins.BtaSdil             => 4
-        case Origins.PtaSimpleAssessment => 6
-        case Origins.NiEuVatOss          => 6
-        case Origins.PfNiEuVatOss        => 5
-        case Origins.NiEuVatIoss         => 6
-        case Origins.PfNiEuVatIoss       => 5
-        case Origins.AppSimpleAssessment => 4
-        case Origins.PtaP800             => 4
-        case _                           => 3
+        case Origins.Amls                     => 2
+        case Origins.AppSimpleAssessment      => 4
+        case Origins.BtaClass1aNi             => 4
+        case Origins.CapitalGainsTax          => 2
+        case Origins.DdSdil                   => 2
+        case Origins.DdVat                    => 2
+        case Origins.JrsJobRetentionScheme    => 2
+        case Origins.NiEuVatIoss              => 5
+        case Origins.NiEuVatOss               => 5
+        case Origins.PfCt                     => 4
+        case Origins.PfEpayeNi                => 4
+        case Origins.PfEpayeP11d              => 4
+        case Origins.PfNiEuVatIoss            => 5
+        case Origins.PfNiEuVatOss             => 5
+        case Origins.PtaSimpleAssessment      => 5
+        case Origins.StampTaxesOnShares       => 2
+        case Origins.VatC2c                   => 2
+        case Origins.VcVatOther               => 4
+        case Origins.WcChildBenefitRepayments => 2
+        case Origins.WcClass1aNi              => 2
+        case Origins.WcCt                     => 2
+        case Origins.WcEpayeLateCis           => 2
+        case Origins.WcEpayeLpp               => 2
+        case Origins.WcEpayeNi                => 2
+        case Origins.WcEpayeSeta              => 2
+        case Origins.WcSa                     => 2
+        case Origins.WcSdlt                   => 2
+        case Origins.WcSimpleAssessment       => 2
+        case Origins.WcXref                   => 2
+        case _                                => 3
       }
     }
 
@@ -279,9 +299,9 @@ class CheckYourAnswersControllerSpec extends ItSpec {
         val amountRow      = document.select(".govuk-summary-list__row").asScala.toList(amountRowIndex)
         assertRow(
           element = amountRow,
-          keyText = "Total to pay",
+          keyText = "Amount",
           valueText = "£12.34",
-          actionText = if (shouldBeAbleToChangeAmount) Some("Change Total to pay") else None,
+          actionText = if (shouldBeAbleToChangeAmount) Some("Change Amount") else None,
           actionHref = if (shouldBeAbleToChangeAmount) Some("http://localhost:9056/pay/change-amount?showSummary=true") else None
         )
       }
@@ -294,9 +314,9 @@ class CheckYourAnswersControllerSpec extends ItSpec {
         val amountRow      = document.select(".govuk-summary-list__row").asScala.toList(amountRowIndex)
         assertRow(
           element = amountRow,
-          keyText = "Cyfanswm i’w dalu",
+          keyText = "Swm",
           valueText = "£12.34",
-          actionText = if (shouldBeAbleToChangeAmount) Some("Newid Cyfanswm i’w dalu") else None,
+          actionText = if (shouldBeAbleToChangeAmount) Some("Newid Swm") else None,
           actionHref = if (shouldBeAbleToChangeAmount) Some("http://localhost:9056/pay/change-amount?showSummary=true") else None
         )
       }
@@ -355,7 +375,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyBeforeBeginWebPayment)
       val result       = systemUnderTest.renderPage(fakeRequest())
       val document     = Jsoup.parse(contentAsString(result))
-      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.PfSa))
+      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(0)
       assertRow(
         referenceRow,
         "Unique Taxpayer Reference (UTR)",
@@ -369,7 +389,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSa.journeyBeforeBeginWebPayment)
       val result       = systemUnderTest.renderPage(fakeRequestWelsh())
       val document     = Jsoup.parse(contentAsString(result))
-      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.PfSa))
+      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(0)
       assertRow(
         referenceRow,
         "Cyfeirnod Unigryw y Trethdalwr (UTR)",
@@ -379,43 +399,117 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       )
     }
 
-    "[BtaSa] should render the payment reference row correctly" in {
-      PayApiStub.stubForFindBySessionId2xx(TestJourneys.BtaSa.journeyBeforeBeginWebPayment)
-      val result       = systemUnderTest.renderPage(fakeRequest())
-      val document     = Jsoup.parse(contentAsString(result))
-      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.BtaSa))
-      assertRow(referenceRow, "Unique Taxpayer Reference (UTR)", "1234567895K", None, None)
+    val paymentReferenceNotRenderedScenarios: TableFor2[Origin, String] = Table(
+      ("origin", "keyText"),
+      (Origins.AlcoholDuty, "Payment reference"),
+      (Origins.Amls, "Payment reference"),
+      (Origins.BtaClass1aNi, "Payment reference"),
+      (Origins.BtaCt, "Payment reference"),
+      (Origins.BtaEpayeBill, "Payment reference"),
+      (Origins.BtaEpayeGeneral, "Payment reference"),
+      (Origins.BtaEpayeInterest, "Payment reference"),
+      (Origins.BtaEpayePenalty, "Payment reference"),
+      (Origins.BtaSa, "Unique Taxpayer Reference (UTR)"),
+      (Origins.BtaSdil, "Payment reference"),
+      (Origins.BtaVat, "VAT registration number"),
+      (Origins.CapitalGainsTax, "Payment reference"),
+      (Origins.DdSdil, "Payment reference"),
+      (Origins.DdVat, "VAT registration number"),
+      (Origins.EconomicCrimeLevy, "Reference number"),
+      (Origins.ItSa, "Unique Taxpayer Reference (UTR)"),
+      (Origins.JrsJobRetentionScheme, "Payment reference"),
+      (Origins.NiEuVatIoss, "Payment reference"),
+      (Origins.NiEuVatOss, "Payment reference"),
+      (Origins.Ppt, "Reference number"),
+      (Origins.PtaP800, "Reference number"),
+      (Origins.PtaSa, "Unique Taxpayer Reference (UTR)"),
+      (Origins.PtaSimpleAssessment, "Payment reference"),
+      (Origins.VatC2c, "Reference number"),
+      (Origins.VcVatOther, "VAT registration number"),
+      (Origins.VcVatReturn, "VAT registration number"),
+      (Origins.WcChildBenefitRepayments, "Child benefit overpayment reference"),
+      (Origins.WcClass1aNi, "Payment reference"),
+      (Origins.WcCt, "Payment reference"),
+      (Origins.WcEpayeLateCis, "Penalty reference number"),
+      (Origins.WcEpayeLpp, "Payment reference"),
+      (Origins.WcEpayeNi, "Payment reference"),
+      (Origins.WcEpayeSeta, "Payment reference"),
+      (Origins.WcSa, "Unique Taxpayer Reference (UTR)"),
+      (Origins.WcSdlt, "Unique Transaction Reference Number (UTRN)"),
+      (Origins.WcSimpleAssessment, "Payment reference"),
+      (Origins.WcXref, "Payment reference")
+    )
+
+    val paymentReferenceNotRenderedScenariosWelsh: TableFor2[Origin, String] = Table(
+      ("origin", "keyText"),
+      (Origins.AlcoholDuty, "Cyfeirnod y taliad"),
+      (Origins.Amls, "Cyfeirnod y taliad"),
+      (Origins.BtaClass1aNi, "Cyfeirnod y taliad"),
+      (Origins.BtaCt, "Cyfeirnod y taliad"),
+      (Origins.BtaEpayeBill, "Cyfeirnod y taliad"),
+      (Origins.BtaEpayeGeneral, "Cyfeirnod y taliad"),
+      (Origins.BtaEpayeInterest, "Cyfeirnod y taliad"),
+      (Origins.BtaEpayePenalty, "Cyfeirnod y taliad"),
+      (Origins.BtaSa, "Cyfeirnod Unigryw y Trethdalwr (UTR)"),
+      (Origins.BtaSdil, "Cyfeirnod y taliad"),
+      (Origins.BtaVat, "Rhif cofrestru TAW"),
+      (Origins.CapitalGainsTax, "Cyfeirnod y taliad"),
+      (Origins.DdSdil, "Cyfeirnod y taliad"),
+      (Origins.DdVat, "Rhif cofrestru TAW"),
+      (Origins.EconomicCrimeLevy, "Cyfeirnod y taliad"),
+      (Origins.ItSa, "Cyfeirnod Unigryw y Trethdalwr (UTR)"),
+      (Origins.JrsJobRetentionScheme, "Cyfeirnod y taliad"),
+      (Origins.NiEuVatIoss, "Payment reference"),
+      (Origins.NiEuVatOss, "Payment reference"),
+      (Origins.Ppt, "Cyfeirnod"),
+      (Origins.PtaP800, "Cyfeirnod"),
+      (Origins.PtaSa, "Cyfeirnod Unigryw y Trethdalwr (UTR)"),
+      (Origins.PtaSimpleAssessment, "Cyfeirnod y taliad"),
+      (Origins.VatC2c, "Cyfeirnod y taliad"),
+      (Origins.VcVatOther, "Rhif cofrestru TAW"),
+      (Origins.VcVatReturn, "Rhif cofrestru TAW"),
+      (Origins.WcChildBenefitRepayments, "Cyfeirnod gordaliad Budd-dal Plant"),
+      (Origins.WcClass1aNi, "Cyfeirnod y taliad"),
+      (Origins.WcCt, "Cyfeirnod y taliad"),
+      (Origins.WcEpayeLateCis, "Cyfeirnod y gosb"),
+      (Origins.WcEpayeLpp, "Cyfeirnod y taliad"),
+      (Origins.WcEpayeNi, "Cyfeirnod y taliad"),
+      (Origins.WcEpayeSeta, "Cyfeirnod y taliad"),
+      (Origins.WcSa, "Cyfeirnod Unigryw y Trethdalwr (UTR)"),
+      (Origins.WcSdlt, "Cyfeirnod Unigryw y Trafodyn (UTRN)"),
+      (Origins.WcSimpleAssessment, "Cyfeirnod y taliad"),
+      (Origins.WcXref, "Cyfeirnod y taliad")
+    )
+
+    "should not render the payment reference in first row" in {
+      forAll(paymentReferenceNotRenderedScenarios) { (origin, keyText) =>
+        withClue(s"[${origin.entryName}] ") {
+          PayApiStub.stubForFindBySessionId2xx(TestHelpers.deriveTestDataFromOrigin(origin).journeyBeforeBeginWebPayment)
+          val result       = systemUnderTest.renderPage(fakeRequest())
+          val document     = Jsoup.parse(contentAsString(result))
+          val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(0)
+          assertRowKeyIsNot(referenceRow, keyText)
+        }
+      }
     }
 
-    "[BtaSa] should render the payment reference row correctly in Welsh" in {
-      PayApiStub.stubForFindBySessionId2xx(TestJourneys.BtaSa.journeyBeforeBeginWebPayment)
-      val result       = systemUnderTest.renderPage(fakeRequestWelsh())
-      val document     = Jsoup.parse(contentAsString(result))
-      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.BtaSa))
-      assertRow(referenceRow, "Cyfeirnod Unigryw y Trethdalwr (UTR)", "1234567895K", None, None)
-    }
-
-    "[PtaSa] should render the payment reference row correctly" in {
-      PayApiStub.stubForFindBySessionId2xx(TestJourneys.PtaSa.journeyBeforeBeginWebPayment)
-      val result       = systemUnderTest.renderPage(fakeRequest())
-      val document     = Jsoup.parse(contentAsString(result))
-      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.PtaSa))
-      assertRow(referenceRow, "Unique Taxpayer Reference (UTR)", "1234567895K", None, None)
-    }
-
-    "[PtaSa] should render the payment reference row correctly in Welsh" in {
-      PayApiStub.stubForFindBySessionId2xx(TestJourneys.PtaSa.journeyBeforeBeginWebPayment)
-      val result       = systemUnderTest.renderPage(fakeRequestWelsh())
-      val document     = Jsoup.parse(contentAsString(result))
-      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.PtaSa))
-      assertRow(referenceRow, "Cyfeirnod Unigryw y Trethdalwr (UTR)", "1234567895K", None, None)
+    "should not render the payment reference in first row in Welsh" in {
+      forAll(paymentReferenceNotRenderedScenariosWelsh) { (origin, keyText) =>
+        withClue(s"[${origin.entryName}] ") {
+          PayApiStub.stubForFindBySessionId2xx(TestHelpers.deriveTestDataFromOrigin(origin).journeyBeforeBeginWebPayment)
+          val result       = systemUnderTest.renderPage(fakeRequestWelsh())
+          val document     = Jsoup.parse(contentAsString(result))
+          val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(0)
+          assertRowKeyIsNot(referenceRow, keyText)
+        }
+      }
     }
 
     "[PfAlcoholDuty] should render the payment reference row correctly" in {
       PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfAlcoholDuty.journeyBeforeBeginWebPayment)
       val result       = systemUnderTest.renderPage(fakeRequest())
       val document     = Jsoup.parse(contentAsString(result))
-      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.PfAlcoholDuty))
+      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(0)
       assertRow(
         referenceRow,
         "Payment reference",
@@ -429,7 +523,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfAlcoholDuty.journeyBeforeBeginWebPayment)
       val result       = systemUnderTest.renderPage(fakeRequestWelsh())
       val document     = Jsoup.parse(contentAsString(result))
-      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.PfAlcoholDuty))
+      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(0)
       assertRow(
         referenceRow,
         "Cyfeirnod y taliad",
@@ -439,27 +533,11 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       )
     }
 
-    "[AlcoholDuty] should render the payment reference row correctly" in {
-      PayApiStub.stubForFindBySessionId2xx(TestJourneys.AlcoholDuty.journeyBeforeBeginWebPayment)
-      val result       = systemUnderTest.renderPage(fakeRequest())
-      val document     = Jsoup.parse(contentAsString(result))
-      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.AlcoholDuty))
-      assertRow(referenceRow, "Payment reference", "XMADP0123456789", None, None)
-    }
-
-    "[AlcoholDuty] should render the payment reference row correctly in Welsh" in {
-      PayApiStub.stubForFindBySessionId2xx(TestJourneys.AlcoholDuty.journeyBeforeBeginWebPayment)
-      val result       = systemUnderTest.renderPage(fakeRequestWelsh())
-      val document     = Jsoup.parse(contentAsString(result))
-      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.AlcoholDuty))
-      assertRow(referenceRow, "Cyfeirnod y taliad", "XMADP0123456789", None, None)
-    }
-
     "[AlcoholDuty] should render the charge reference row correctly when it's available" in {
       PayApiStub.stubForFindBySessionId2xx(TestJourneys.AlcoholDuty.journeyBeforeBeginWebPayment)
       val result       = systemUnderTest.renderPage(fakeRequest())
       val document     = Jsoup.parse(contentAsString(result))
-      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(1)
+      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(0)
       assertRow(referenceRow, "Charge reference", "XE1234567890123", None, None)
     }
 
@@ -467,7 +545,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       PayApiStub.stubForFindBySessionId2xx(TestJourneys.AlcoholDuty.journeyBeforeBeginWebPayment)
       val result       = systemUnderTest.renderPage(fakeRequestWelsh())
       val document     = Jsoup.parse(contentAsString(result))
-      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(1)
+      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(0)
       assertRow(referenceRow, "Cyfeirnod y tâl", "XE1234567890123", None, None)
     }
 
@@ -475,7 +553,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfVat.journeyBeforeBeginWebPayment)
       val result       = systemUnderTest.renderPage(fakeRequest())
       val document     = Jsoup.parse(contentAsString(result))
-      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.PfVat))
+      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(0)
       assertRow(referenceRow, "VAT registration number", "999964805", None, None)
     }
 
@@ -483,7 +561,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfVat.journeyBeforeBeginWebPayment)
       val result       = systemUnderTest.renderPage(fakeRequestWelsh())
       val document     = Jsoup.parse(contentAsString(result))
-      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.PfVat))
+      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(0)
       assertRow(referenceRow, "Rhif cofrestru TAW", "999964805", None, None)
     }
 
@@ -507,7 +585,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       PayApiStub.stubForFindBySessionId2xx(TestJourneys.WcVat.journeyBeforeBeginWebPayment)
       val result       = systemUnderTest.renderPage(fakeRequest())
       val document     = Jsoup.parse(contentAsString(result))
-      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.WcVat))
+      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(0)
       assertRow(referenceRow, "VAT registration number", "999964805", None, None)
     }
 
@@ -515,7 +593,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       PayApiStub.stubForFindBySessionId2xx(TestJourneys.WcVat.journeyBeforeBeginWebPayment)
       val result       = systemUnderTest.renderPage(fakeRequestWelsh())
       val document     = Jsoup.parse(contentAsString(result))
-      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.WcVat))
+      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(0)
       assertRow(referenceRow, "Rhif cofrestru TAW", "999964805", None, None)
     }
 
@@ -535,75 +613,11 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       assertRow(referenceRow, "Gordal TAW neu cyfeirnod y gosb", "XE123456789012", None, None)
     }
 
-    "[BtaVat] should render the payment reference row correctly" in {
-      PayApiStub.stubForFindBySessionId2xx(TestJourneys.BtaVat.journeyBeforeBeginWebPayment)
-      val result       = systemUnderTest.renderPage(fakeRequest())
-      val document     = Jsoup.parse(contentAsString(result))
-      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.BtaVat))
-      assertRow(referenceRow, "VAT registration number", "999964805", None, None)
-    }
-
-    "[BtaVat] should render the payment reference row correctly in Welsh" in {
-      PayApiStub.stubForFindBySessionId2xx(TestJourneys.BtaVat.journeyBeforeBeginWebPayment)
-      val result       = systemUnderTest.renderPage(fakeRequestWelsh())
-      val document     = Jsoup.parse(contentAsString(result))
-      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.BtaVat))
-      assertRow(referenceRow, "Rhif cofrestru TAW", "999964805", None, None)
-    }
-
-    "[DdVat] should render the payment reference row correctly" in {
-      PayApiStub.stubForFindBySessionId2xx(TestJourneys.DdVat.journeyBeforeBeginWebPayment)
-      val result       = systemUnderTest.renderPage(fakeRequest())
-      val document     = Jsoup.parse(contentAsString(result))
-      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.DdVat))
-      assertRow(referenceRow, "VAT registration number", "999964805", None, None)
-    }
-
-    "[DdVat] should render the payment reference row correctly in Welsh" in {
-      PayApiStub.stubForFindBySessionId2xx(TestJourneys.DdVat.journeyBeforeBeginWebPayment)
-      val result       = systemUnderTest.renderPage(fakeRequestWelsh())
-      val document     = Jsoup.parse(contentAsString(result))
-      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.DdVat))
-      assertRow(referenceRow, "Rhif cofrestru TAW", "999964805", None, None)
-    }
-
-    "[VcVatReturn] should render the payment reference row correctly" in {
-      PayApiStub.stubForFindBySessionId2xx(TestJourneys.VcVatReturn.journeyBeforeBeginWebPayment)
-      val result       = systemUnderTest.renderPage(fakeRequest())
-      val document     = Jsoup.parse(contentAsString(result))
-      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.VcVatReturn))
-      assertRow(referenceRow, "VAT registration number", "999964805", None, None)
-    }
-
-    "[VcVatReturn] should render the payment reference row correctly in Welsh" in {
-      PayApiStub.stubForFindBySessionId2xx(TestJourneys.VcVatReturn.journeyBeforeBeginWebPayment)
-      val result       = systemUnderTest.renderPage(fakeRequestWelsh())
-      val document     = Jsoup.parse(contentAsString(result))
-      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.VcVatReturn))
-      assertRow(referenceRow, "Rhif cofrestru TAW", "999964805", None, None)
-    }
-
-    "[VcVatOther] should render the payment reference row correctly" in {
-      PayApiStub.stubForFindBySessionId2xx(TestJourneys.VcVatOther.journeyBeforeBeginWebPayment)
-      val result       = systemUnderTest.renderPage(fakeRequest())
-      val document     = Jsoup.parse(contentAsString(result))
-      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.VcVatOther))
-      assertRow(referenceRow, "VAT registration number", "999964805", None, None)
-    }
-
-    "[VcVatOther] should render the payment reference row correctly in Welsh" in {
-      PayApiStub.stubForFindBySessionId2xx(TestJourneys.VcVatOther.journeyBeforeBeginWebPayment)
-      val result       = systemUnderTest.renderPage(fakeRequestWelsh())
-      val document     = Jsoup.parse(contentAsString(result))
-      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.VcVatOther))
-      assertRow(referenceRow, "Rhif cofrestru TAW", "999964805", None, None)
-    }
-
     "[VcVatOther] should render the charge reference row correctly when it's available" in {
       PayApiStub.stubForFindBySessionId2xx(TestJourneys.VcVatOther.journeyBeforeBeginWebPayment)
       val result       = systemUnderTest.renderPage(fakeRequest())
       val document     = Jsoup.parse(contentAsString(result))
-      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(2)
+      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(1)
       assertRow(referenceRow, "Charge reference", "999964805", None, None)
     }
 
@@ -611,79 +625,15 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       PayApiStub.stubForFindBySessionId2xx(TestJourneys.VcVatOther.journeyBeforeBeginWebPayment)
       val result       = systemUnderTest.renderPage(fakeRequestWelsh())
       val document     = Jsoup.parse(contentAsString(result))
-      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(2)
+      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(1)
       assertRow(referenceRow, "Cyfeirnod y tâl", "999964805", None, None)
-    }
-
-    "[ItSa] should render the payment reference row correctly" in {
-      PayApiStub.stubForFindBySessionId2xx(TestJourneys.ItSa.journeyBeforeBeginWebPayment)
-      val result       = systemUnderTest.renderPage(fakeRequest())
-      val document     = Jsoup.parse(contentAsString(result))
-      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.ItSa))
-      assertRow(referenceRow, "Unique Taxpayer Reference (UTR)", "1234567895K", None, None)
-    }
-
-    "[ItSa] should render the payment reference row correctly in Welsh" in {
-      PayApiStub.stubForFindBySessionId2xx(TestJourneys.ItSa.journeyBeforeBeginWebPayment)
-      val result       = systemUnderTest.renderPage(fakeRequestWelsh())
-      val document     = Jsoup.parse(contentAsString(result))
-      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.ItSa))
-      assertRow(referenceRow, "Cyfeirnod Unigryw y Trethdalwr (UTR)", "1234567895K", None, None)
-    }
-
-    "[WcSa] should render the payment reference row correctly" in {
-      PayApiStub.stubForFindBySessionId2xx(TestJourneys.WcSa.journeyBeforeBeginWebPayment)
-      val result       = systemUnderTest.renderPage(fakeRequest())
-      val document     = Jsoup.parse(contentAsString(result))
-      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.WcSa))
-      assertRow(referenceRow, "Unique Taxpayer Reference (UTR)", "1234567895K", None, None)
-    }
-
-    "[WcSa] should render the payment reference row correctly in Welsh" in {
-      PayApiStub.stubForFindBySessionId2xx(TestJourneys.WcSa.journeyBeforeBeginWebPayment)
-      val result       = systemUnderTest.renderPage(fakeRequestWelsh())
-      val document     = Jsoup.parse(contentAsString(result))
-      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.WcSa))
-      assertRow(referenceRow, "Cyfeirnod Unigryw y Trethdalwr (UTR)", "1234567895K", None, None)
-    }
-
-    "[WcCt] should render the payment reference row correctly" in {
-      PayApiStub.stubForFindBySessionId2xx(TestJourneys.WcCt.journeyBeforeBeginWebPayment)
-      val result       = systemUnderTest.renderPage(fakeRequest())
-      val document     = Jsoup.parse(contentAsString(result))
-      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.WcCt))
-      assertRow(referenceRow, "Payment reference", "1097172564A00101A", None, None)
-    }
-
-    "[WcCt] should render the payment reference row correctly in Welsh" in {
-      PayApiStub.stubForFindBySessionId2xx(TestJourneys.WcCt.journeyBeforeBeginWebPayment)
-      val result       = systemUnderTest.renderPage(fakeRequestWelsh())
-      val document     = Jsoup.parse(contentAsString(result))
-      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.WcCt))
-      assertRow(referenceRow, "Cyfeirnod y taliad", "1097172564A00101A", None, None)
-    }
-
-    "[BtaCt] should render the payment reference row correctly" in {
-      PayApiStub.stubForFindBySessionId2xx(TestJourneys.BtaCt.journeyBeforeBeginWebPayment)
-      val result       = systemUnderTest.renderPage(fakeRequest())
-      val document     = Jsoup.parse(contentAsString(result))
-      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.BtaCt))
-      assertRow(referenceRow, "Payment reference", "1097172564A00101A", None, None)
-    }
-
-    "[BtaCt] should render the payment reference row correctly in Welsh" in {
-      PayApiStub.stubForFindBySessionId2xx(TestJourneys.BtaCt.journeyBeforeBeginWebPayment)
-      val result       = systemUnderTest.renderPage(fakeRequestWelsh())
-      val document     = Jsoup.parse(contentAsString(result))
-      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.BtaCt))
-      assertRow(referenceRow, "Cyfeirnod y taliad", "1097172564A00101A", None, None)
     }
 
     "[PfCt] should render the payment reference row correctly" in {
       PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfCt.journeyBeforeBeginWebPayment)
       val result       = systemUnderTest.renderPage(fakeRequest())
       val document     = Jsoup.parse(contentAsString(result))
-      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.PfCt))
+      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(0)
       assertRow(referenceRow, "Unique Taxpayer Reference (UTR)", "1097172564", None, None)
     }
 
@@ -691,7 +641,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfCt.journeyBeforeBeginWebPayment)
       val result       = systemUnderTest.renderPage(fakeRequestWelsh())
       val document     = Jsoup.parse(contentAsString(result))
-      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.PfCt))
+      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(0)
       assertRow(referenceRow, "Cyfeirnod Unigryw y Trethdalwr (UTR)", "1097172564", None, None)
     }
 
@@ -723,27 +673,11 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       )
     }
 
-    "[Ppt] should render the payment reference row correctly" in {
-      PayApiStub.stubForFindBySessionId2xx(TestJourneys.Ppt.journeyBeforeBeginWebPayment)
-      val result       = systemUnderTest.renderPage(fakeRequest())
-      val document     = Jsoup.parse(contentAsString(result))
-      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.Ppt))
-      assertRow(referenceRow, "Reference number", "XAPPT0000012345", None, None)
-    }
-
-    "[Ppt] should render the payment reference row correctly in Welsh" in {
-      PayApiStub.stubForFindBySessionId2xx(TestJourneys.Ppt.journeyBeforeBeginWebPayment)
-      val result       = systemUnderTest.renderPage(fakeRequestWelsh())
-      val document     = Jsoup.parse(contentAsString(result))
-      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.Ppt))
-      assertRow(referenceRow, "Cyfeirnod", "XAPPT0000012345", None, None)
-    }
-
     "[PfPpt] should render the payment reference row correctly" in {
       PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfPpt.journeyBeforeBeginWebPayment)
       val result       = systemUnderTest.renderPage(fakeRequest())
       val document     = Jsoup.parse(contentAsString(result))
-      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.PfPpt))
+      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(0)
       assertRow(
         referenceRow,
         "Reference number",
@@ -757,95 +691,15 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfPpt.journeyBeforeBeginWebPayment)
       val result       = systemUnderTest.renderPage(fakeRequestWelsh())
       val document     = Jsoup.parse(contentAsString(result))
-      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.PfPpt))
+      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(0)
       assertRow(referenceRow, "Cyfeirnod", "XAPPT0000012345", Some("Newid Cyfeirnod"), Some("http://localhost:9056/pay/pay-by-card-change-reference-number"))
-    }
-
-    "[BtaEpayeBill] should render the payment reference row correctly" in {
-      PayApiStub.stubForFindBySessionId2xx(TestJourneys.BtaEpayeBill.journeyBeforeBeginWebPayment)
-      val result       = systemUnderTest.renderPage(fakeRequest())
-      val document     = Jsoup.parse(contentAsString(result))
-      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.BtaEpayeBill))
-      assertRow(referenceRow, "Payment reference", "123PH456789002702", None, None)
-    }
-
-    "[BtaEpayeBill] should render the payment reference row correctly in Welsh" in {
-      PayApiStub.stubForFindBySessionId2xx(TestJourneys.BtaEpayeBill.journeyBeforeBeginWebPayment)
-      val result       = systemUnderTest.renderPage(fakeRequestWelsh())
-      val document     = Jsoup.parse(contentAsString(result))
-      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.BtaEpayeBill))
-      assertRow(referenceRow, "Cyfeirnod y taliad", "123PH456789002702", None, None)
-    }
-
-    "[BtaEpayePenalty] should render the payment reference row correctly" in {
-      PayApiStub.stubForFindBySessionId2xx(TestJourneys.BtaEpayePenalty.journeyBeforeBeginWebPayment)
-      val result       = systemUnderTest.renderPage(fakeRequest())
-      val document     = Jsoup.parse(contentAsString(result))
-      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.BtaEpayePenalty))
-      assertRow(referenceRow, "Payment reference", "123PH45678900", None, None)
-    }
-
-    "[BtaEpayePenalty] should render the payment reference row correctly in Welsh" in {
-      PayApiStub.stubForFindBySessionId2xx(TestJourneys.BtaEpayePenalty.journeyBeforeBeginWebPayment)
-      val result       = systemUnderTest.renderPage(fakeRequestWelsh())
-      val document     = Jsoup.parse(contentAsString(result))
-      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.BtaEpayePenalty))
-      assertRow(referenceRow, "Cyfeirnod y taliad", "123PH45678900", None, None)
-    }
-
-    "[BtaEpayeInterest] should render the payment reference row correctly" in {
-      PayApiStub.stubForFindBySessionId2xx(TestJourneys.BtaEpayeInterest.journeyBeforeBeginWebPayment)
-      val result       = systemUnderTest.renderPage(fakeRequest())
-      val document     = Jsoup.parse(contentAsString(result))
-      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.BtaEpayeInterest))
-      assertRow(referenceRow, "Payment reference", "XE123456789012", None, None)
-    }
-
-    "[BtaEpayeInterest] should render the payment reference row correctly in Welsh" in {
-      PayApiStub.stubForFindBySessionId2xx(TestJourneys.BtaEpayeInterest.journeyBeforeBeginWebPayment)
-      val result       = systemUnderTest.renderPage(fakeRequestWelsh())
-      val document     = Jsoup.parse(contentAsString(result))
-      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.BtaEpayeInterest))
-      assertRow(referenceRow, "Cyfeirnod y taliad", "XE123456789012", None, None)
-    }
-
-    "[BtaEpayeGeneral] should render the payment reference row correctly" in {
-      PayApiStub.stubForFindBySessionId2xx(TestJourneys.BtaEpayeGeneral.journeyBeforeBeginWebPayment)
-      val result       = systemUnderTest.renderPage(fakeRequest())
-      val document     = Jsoup.parse(contentAsString(result))
-      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.BtaEpayeGeneral))
-      assertRow(referenceRow, "Payment reference", "123PH456789002702", None, None)
-    }
-
-    "[BtaEpayeGeneral] should render the payment reference row correctly in Welsh" in {
-      PayApiStub.stubForFindBySessionId2xx(TestJourneys.BtaEpayeGeneral.journeyBeforeBeginWebPayment)
-      val result       = systemUnderTest.renderPage(fakeRequestWelsh())
-      val document     = Jsoup.parse(contentAsString(result))
-      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.BtaEpayeGeneral))
-      assertRow(referenceRow, "Cyfeirnod y taliad", "123PH456789002702", None, None)
-    }
-
-    "[BtaClass1aNi] should render the payment reference row correctly" in {
-      PayApiStub.stubForFindBySessionId2xx(TestJourneys.BtaClass1aNi.journeyBeforeBeginWebPayment)
-      val result       = systemUnderTest.renderPage(fakeRequest())
-      val document     = Jsoup.parse(contentAsString(result))
-      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.BtaClass1aNi))
-      assertRow(referenceRow, "Payment reference", "123PH456789002713", None, None)
-    }
-
-    "[BtaClass1aNi] should render the payment reference row correctly in Welsh" in {
-      PayApiStub.stubForFindBySessionId2xx(TestJourneys.BtaClass1aNi.journeyBeforeBeginWebPayment)
-      val result       = systemUnderTest.renderPage(fakeRequestWelsh())
-      val document     = Jsoup.parse(contentAsString(result))
-      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.BtaClass1aNi))
-      assertRow(referenceRow, "Cyfeirnod y taliad", "123PH456789002713", None, None)
     }
 
     "[PfAmls] should render the payment reference row correctly" in {
       PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfAmls.journeyBeforeBeginWebPayment)
       val result       = systemUnderTest.renderPage(fakeRequest())
       val document     = Jsoup.parse(contentAsString(result))
-      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.PfAmls))
+      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(0)
       assertRow(
         referenceRow,
         "Payment reference",
@@ -859,7 +713,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfAmls.journeyBeforeBeginWebPayment)
       val result       = systemUnderTest.renderPage(fakeRequestWelsh())
       val document     = Jsoup.parse(contentAsString(result))
-      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.PfAmls))
+      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(0)
       assertRow(
         referenceRow,
         "Cyfeirnod y taliad",
@@ -869,27 +723,11 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       )
     }
 
-    "[Amls] should render the payment reference row correctly" in {
-      PayApiStub.stubForFindBySessionId2xx(TestJourneys.Amls.journeyBeforeBeginWebPayment)
-      val result       = systemUnderTest.renderPage(fakeRequest())
-      val document     = Jsoup.parse(contentAsString(result))
-      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.Amls))
-      assertRow(referenceRow, "Payment reference", "XE123456789012", None, None)
-    }
-
-    "[Amls] should render the payment reference row correctly in Welsh" in {
-      PayApiStub.stubForFindBySessionId2xx(TestJourneys.Amls.journeyBeforeBeginWebPayment)
-      val result       = systemUnderTest.renderPage(fakeRequestWelsh())
-      val document     = Jsoup.parse(contentAsString(result))
-      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.Amls))
-      assertRow(referenceRow, "Cyfeirnod y taliad", "XE123456789012", None, None)
-    }
-
     "[PfEconomicCrimeLevy] should render the payment reference row correctly" in {
       PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfEconomicCrimeLevy.journeyBeforeBeginWebPayment)
       val result       = systemUnderTest.renderPage(fakeRequest())
       val document     = Jsoup.parse(contentAsString(result))
-      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.PfEconomicCrimeLevy))
+      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(0)
       assertRow(
         referenceRow,
         "Reference number",
@@ -903,7 +741,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfEconomicCrimeLevy.journeyBeforeBeginWebPayment)
       val result       = systemUnderTest.renderPage(fakeRequestWelsh())
       val document     = Jsoup.parse(contentAsString(result))
-      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.PfEconomicCrimeLevy))
+      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(0)
       assertRow(
         referenceRow,
         "Cyfeirnod y taliad",
@@ -913,27 +751,11 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       )
     }
 
-    "[EconomicCrimeLevy] should render the payment reference row correctly" in {
-      PayApiStub.stubForFindBySessionId2xx(TestJourneys.EconomicCrimeLevy.journeyBeforeBeginWebPayment)
-      val result       = systemUnderTest.renderPage(fakeRequest())
-      val document     = Jsoup.parse(contentAsString(result))
-      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.EconomicCrimeLevy))
-      assertRow(referenceRow, "Reference number", "XE123456789012", None, None)
-    }
-
-    "[EconomicCrimeLevy] should render the payment reference row correctly in Welsh" in {
-      PayApiStub.stubForFindBySessionId2xx(TestJourneys.EconomicCrimeLevy.journeyBeforeBeginWebPayment)
-      val result       = systemUnderTest.renderPage(fakeRequestWelsh())
-      val document     = Jsoup.parse(contentAsString(result))
-      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.EconomicCrimeLevy))
-      assertRow(referenceRow, "Cyfeirnod y taliad", "XE123456789012", None, None)
-    }
-
     "[PfVatC2c] should render the payment reference row correctly" in {
       PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfVatC2c.journeyBeforeBeginWebPayment)
       val result       = systemUnderTest.renderPage(fakeRequest())
       val document     = Jsoup.parse(contentAsString(result))
-      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.PfVatC2c))
+      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(0)
       assertRow(
         referenceRow,
         "Reference number",
@@ -947,7 +769,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfVatC2c.journeyBeforeBeginWebPayment)
       val result       = systemUnderTest.renderPage(fakeRequestWelsh())
       val document     = Jsoup.parse(contentAsString(result))
-      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.PfVatC2c))
+      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(0)
       assertRow(
         referenceRow,
         "Cyfeirnod y taliad",
@@ -955,22 +777,6 @@ class CheckYourAnswersControllerSpec extends ItSpec {
         Some("Newid Cyfeirnod y taliad"),
         Some("http://localhost:9056/pay/pay-by-card-change-reference-number")
       )
-    }
-
-    "[VatC2c] should render the payment reference row correctly" in {
-      PayApiStub.stubForFindBySessionId2xx(TestJourneys.VatC2c.journeyBeforeBeginWebPayment)
-      val result       = systemUnderTest.renderPage(fakeRequest())
-      val document     = Jsoup.parse(contentAsString(result))
-      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.VatC2c))
-      assertRow(referenceRow, "Reference number", "XVC1A2B3C4D5E6F", None, None)
-    }
-
-    "[VatC2c] should render the payment reference row correctly in Welsh" in {
-      PayApiStub.stubForFindBySessionId2xx(TestJourneys.VatC2c.journeyBeforeBeginWebPayment)
-      val result       = systemUnderTest.renderPage(fakeRequestWelsh())
-      val document     = Jsoup.parse(contentAsString(result))
-      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.VatC2c))
-      assertRow(referenceRow, "Cyfeirnod y taliad", "XVC1A2B3C4D5E6F", None, None)
     }
 
     "[BtaSa] should render the payment date row correctly" in {
@@ -1139,7 +945,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       PayApiStub.stubForFindBySessionId2xx(TestJourneys.BtaClass1aNi.journeyBeforeBeginWebPayment)
       val result       = systemUnderTest.renderPage(fakeRequest())
       val document     = Jsoup.parse(contentAsString(result))
-      val taxPeriodRow = document.select(".govuk-summary-list__row").asScala.toList(2)
+      val taxPeriodRow = document.select(".govuk-summary-list__row").asScala.toList(1)
       assertRow(taxPeriodRow, "Tax period", "2026 to 2027", None, None)
     }
 
@@ -1147,7 +953,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       PayApiStub.stubForFindBySessionId2xx(TestJourneys.BtaClass1aNi.journeyBeforeBeginWebPayment)
       val result       = systemUnderTest.renderPage(fakeRequestWelsh())
       val document     = Jsoup.parse(contentAsString(result))
-      val taxPeriodRow = document.select(".govuk-summary-list__row").asScala.toList(2)
+      val taxPeriodRow = document.select(".govuk-summary-list__row").asScala.toList(1)
       assertRow(taxPeriodRow, "Cyfnod talu", "2026 i 2027", None, None)
     }
 
@@ -1155,7 +961,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       PayApiStub.stubForFindBySessionId2xx(TestJourneys.NiEuVatOss.journeyBeforeBeginWebPayment)
       val result          = systemUnderTest.renderPage(fakeRequest())
       val document        = Jsoup.parse(contentAsString(result))
-      val returnPeriodRow = document.select(".govuk-summary-list__row").asScala.toList(3)
+      val returnPeriodRow = document.select(".govuk-summary-list__row").asScala.toList(2)
       assertRow(returnPeriodRow, "Return period", "October to December 2024", None, None)
     }
 
@@ -1177,7 +983,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       PayApiStub.stubForFindBySessionId2xx(TestJourneys.NiEuVatIoss.journeyBeforeBeginWebPayment)
       val result          = systemUnderTest.renderPage(fakeRequest())
       val document        = Jsoup.parse(contentAsString(result))
-      val returnPeriodRow = document.select(".govuk-summary-list__row").asScala.toList(3)
+      val returnPeriodRow = document.select(".govuk-summary-list__row").asScala.toList(2)
       assertRow(returnPeriodRow, "Return period", "June 2024", None, None)
     }
 
@@ -1311,7 +1117,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSdlt.journeyBeforeBeginWebPayment)
       val result       = systemUnderTest.renderPage(fakeRequest())
       val document     = Jsoup.parse(contentAsString(result))
-      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.PfSdlt))
+      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(0)
       assertRow(referenceRow, "Unique Transaction Reference Number (UTRN)", "123456789MA", None, None)
     }
 
@@ -1319,159 +1125,15 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSdlt.journeyBeforeBeginWebPayment)
       val result       = systemUnderTest.renderPage(fakeRequestWelsh())
       val document     = Jsoup.parse(contentAsString(result))
-      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.PfSdlt))
+      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(0)
       assertRow(referenceRow, "Cyfeirnod Unigryw y Trafodyn (UTRN)", "123456789MA", None, None)
-    }
-
-    "[WcSdlt] should render the payment reference row correctly" in {
-      PayApiStub.stubForFindBySessionId2xx(TestJourneys.WcSdlt.journeyBeforeBeginWebPayment)
-      val result       = systemUnderTest.renderPage(fakeRequest())
-      val document     = Jsoup.parse(contentAsString(result))
-      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.WcSdlt))
-      assertRow(referenceRow, "Unique Transaction Reference Number (UTRN)", "123456789MA", None, None)
-    }
-
-    "[WcSdlt] should render the payment reference row correctly in Welsh" in {
-      PayApiStub.stubForFindBySessionId2xx(TestJourneys.WcSdlt.journeyBeforeBeginWebPayment)
-      val result       = systemUnderTest.renderPage(fakeRequestWelsh())
-      val document     = Jsoup.parse(contentAsString(result))
-      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.WcSdlt))
-      assertRow(referenceRow, "Cyfeirnod Unigryw y Trafodyn (UTRN)", "123456789MA", None, None)
-    }
-
-    "[CapitalGainsTax] should render the payment reference row correctly" in {
-      PayApiStub.stubForFindBySessionId2xx(TestJourneys.CapitalGainsTax.journeyBeforeBeginWebPayment)
-      val result       = systemUnderTest.renderPage(fakeRequest())
-      val document     = Jsoup.parse(contentAsString(result))
-      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.CapitalGainsTax))
-      assertRow(referenceRow, "Payment reference", "XVCGTP001000290", None, None)
-    }
-
-    "[CapitalGainsTax] should render the payment reference row correctly in Welsh" in {
-      PayApiStub.stubForFindBySessionId2xx(TestJourneys.CapitalGainsTax.journeyBeforeBeginWebPayment)
-      val result       = systemUnderTest.renderPage(fakeRequestWelsh())
-      val document     = Jsoup.parse(contentAsString(result))
-      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.CapitalGainsTax))
-      assertRow(referenceRow, "Cyfeirnod y taliad", "XVCGTP001000290", None, None)
-    }
-
-    "[WcSimpleAssessment] should render the payment reference row correctly" in {
-      PayApiStub.stubForFindBySessionId2xx(TestJourneys.WcSimpleAssessment.journeyBeforeBeginWebPayment)
-      val result       = systemUnderTest.renderPage(fakeRequest())
-      val document     = Jsoup.parse(contentAsString(result))
-      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.WcSimpleAssessment))
-      assertRow(referenceRow, "Payment reference", "XE123456789012", None, None)
-    }
-
-    "[WcSimpleAssessment] should render the payment reference row correctly in Welsh" in {
-      PayApiStub.stubForFindBySessionId2xx(TestJourneys.WcSimpleAssessment.journeyBeforeBeginWebPayment)
-      val result       = systemUnderTest.renderPage(fakeRequestWelsh())
-      val document     = Jsoup.parse(contentAsString(result))
-      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.WcSimpleAssessment))
-      assertRow(referenceRow, "Cyfeirnod y taliad", "XE123456789012", None, None)
-    }
-
-    "[WcClass1aNi] should render the payment reference row correctly" in {
-      PayApiStub.stubForFindBySessionId2xx(TestJourneys.WcClass1aNi.journeyBeforeBeginWebPayment)
-      val result       = systemUnderTest.renderPage(fakeRequest())
-      val document     = Jsoup.parse(contentAsString(result))
-      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.WcClass1aNi))
-      assertRow(referenceRow, "Payment reference", "123PH456789002713", None, None)
-    }
-
-    "[WcClass1aNi] should render the payment reference row correctly in Welsh" in {
-      PayApiStub.stubForFindBySessionId2xx(TestJourneys.WcClass1aNi.journeyBeforeBeginWebPayment)
-      val result       = systemUnderTest.renderPage(fakeRequestWelsh())
-      val document     = Jsoup.parse(contentAsString(result))
-      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.WcClass1aNi))
-      assertRow(referenceRow, "Cyfeirnod y taliad", "123PH456789002713", None, None)
-    }
-
-    "[WcXref] should render the payment reference row correctly" in {
-      PayApiStub.stubForFindBySessionId2xx(TestJourneys.WcXref.journeyBeforeBeginWebPayment)
-      val result       = systemUnderTest.renderPage(fakeRequest())
-      val document     = Jsoup.parse(contentAsString(result))
-      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.WcXref))
-      assertRow(referenceRow, "Payment reference", "XE123456789012", None, None)
-    }
-
-    "[WcXref] should render the payment reference row correctly in Welsh" in {
-      PayApiStub.stubForFindBySessionId2xx(TestJourneys.WcXref.journeyBeforeBeginWebPayment)
-      val result       = systemUnderTest.renderPage(fakeRequestWelsh())
-      val document     = Jsoup.parse(contentAsString(result))
-      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.WcXref))
-      assertRow(referenceRow, "Cyfeirnod y taliad", "XE123456789012", None, None)
-    }
-
-    "[WcEpayeLpp] should render the payment reference row correctly" in {
-      PayApiStub.stubForFindBySessionId2xx(TestJourneys.WcEpayeLpp.journeyBeforeBeginWebPayment)
-      val result       = systemUnderTest.renderPage(fakeRequest())
-      val document     = Jsoup.parse(contentAsString(result))
-      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.WcEpayeLpp))
-      assertRow(referenceRow, "Payment reference", "XE123456789012", None, None)
-    }
-
-    "[WcEpayeLpp] should render the payment reference row correctly in Welsh" in {
-      PayApiStub.stubForFindBySessionId2xx(TestJourneys.WcEpayeLpp.journeyBeforeBeginWebPayment)
-      val result       = systemUnderTest.renderPage(fakeRequestWelsh())
-      val document     = Jsoup.parse(contentAsString(result))
-      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.WcEpayeLpp))
-      assertRow(referenceRow, "Cyfeirnod y taliad", "XE123456789012", None, None)
-    }
-
-    "[WcEpayeSeta] should render the payment reference row correctly" in {
-      PayApiStub.stubForFindBySessionId2xx(TestJourneys.WcEpayeSeta.journeyBeforeBeginWebPayment)
-      val result       = systemUnderTest.renderPage(fakeRequest())
-      val document     = Jsoup.parse(contentAsString(result))
-      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.WcEpayeSeta))
-      assertRow(referenceRow, "Payment reference", "XE123456789012", None, None)
-    }
-
-    "[WcEpayeSeta] should render the payment reference row correctly in Welsh" in {
-      PayApiStub.stubForFindBySessionId2xx(TestJourneys.WcEpayeSeta.journeyBeforeBeginWebPayment)
-      val result       = systemUnderTest.renderPage(fakeRequestWelsh())
-      val document     = Jsoup.parse(contentAsString(result))
-      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.WcEpayeSeta))
-      assertRow(referenceRow, "Cyfeirnod y taliad", "XE123456789012", None, None)
-    }
-
-    "[WcEpayeNi] should render the payment reference row correctly" in {
-      PayApiStub.stubForFindBySessionId2xx(TestJourneys.WcEpayeNi.journeyBeforeBeginWebPayment)
-      val result       = systemUnderTest.renderPage(fakeRequest())
-      val document     = Jsoup.parse(contentAsString(result))
-      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.WcEpayeNi))
-      assertRow(referenceRow, "Payment reference", "123PH456789002501", None, None)
-    }
-
-    "[WcEpayeNi] should render the payment reference row correctly in Welsh" in {
-      PayApiStub.stubForFindBySessionId2xx(TestJourneys.WcEpayeNi.journeyBeforeBeginWebPayment)
-      val result       = systemUnderTest.renderPage(fakeRequestWelsh())
-      val document     = Jsoup.parse(contentAsString(result))
-      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.WcEpayeNi))
-      assertRow(referenceRow, "Cyfeirnod y taliad", "123PH456789002501", None, None)
-    }
-
-    "[WcEpayeLateCis] should render the payment reference row correctly" in {
-      PayApiStub.stubForFindBySessionId2xx(TestJourneys.WcEpayeLateCis.journeyBeforeBeginWebPayment)
-      val result       = systemUnderTest.renderPage(fakeRequest())
-      val document     = Jsoup.parse(contentAsString(result))
-      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.WcEpayeLateCis))
-      assertRow(referenceRow, "Penalty reference number", "XE123456789012", None, None)
-    }
-
-    "[WcEpayeLateCis] should render the payment reference row correctly in Welsh" in {
-      PayApiStub.stubForFindBySessionId2xx(TestJourneys.WcEpayeLateCis.journeyBeforeBeginWebPayment)
-      val result       = systemUnderTest.renderPage(fakeRequestWelsh())
-      val document     = Jsoup.parse(contentAsString(result))
-      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.WcEpayeLateCis))
-      assertRow(referenceRow, "Cyfeirnod y gosb", "XE123456789012", None, None)
     }
 
     "[PfChildBenefitRepayments] should render the payment reference row correctly" in {
       PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfChildBenefitRepayments.journeyBeforeBeginWebPayment)
       val result       = systemUnderTest.renderPage(fakeRequest())
       val document     = Jsoup.parse(contentAsString(result))
-      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.PfChildBenefitRepayments))
+      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(0)
       assertRow(
         referenceRow,
         "Child benefit overpayment reference",
@@ -1485,7 +1147,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfChildBenefitRepayments.journeyBeforeBeginWebPayment)
       val result       = systemUnderTest.renderPage(fakeRequestWelsh())
       val document     = Jsoup.parse(contentAsString(result))
-      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.PfChildBenefitRepayments))
+      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(0)
       assertRow(
         referenceRow,
         "Cyfeirnod gordaliad Budd-dal Plant",
@@ -1495,59 +1157,11 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       )
     }
 
-    "[WcChildBenefitRepayments] should render the payment reference row correctly" in {
-      PayApiStub.stubForFindBySessionId2xx(TestJourneys.WcChildBenefitRepayments.journeyBeforeBeginWebPayment)
-      val result       = systemUnderTest.renderPage(fakeRequest())
-      val document     = Jsoup.parse(contentAsString(result))
-      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.WcChildBenefitRepayments))
-      assertRow(referenceRow, "Child benefit overpayment reference", "YA123456789123", None, None)
-    }
-
-    "[WcChildBenefitRepayments] should render the payment reference row correctly in Welsh" in {
-      PayApiStub.stubForFindBySessionId2xx(TestJourneys.WcChildBenefitRepayments.journeyBeforeBeginWebPayment)
-      val result       = systemUnderTest.renderPage(fakeRequestWelsh())
-      val document     = Jsoup.parse(contentAsString(result))
-      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.WcChildBenefitRepayments))
-      assertRow(referenceRow, "Cyfeirnod gordaliad Budd-dal Plant", "YA123456789123", None, None)
-    }
-
-    "[BtaSdil] should render the payment reference row correctly" in {
-      PayApiStub.stubForFindBySessionId2xx(TestJourneys.BtaSdil.journeyBeforeBeginWebPayment)
-      val result       = systemUnderTest.renderPage(fakeRequest())
-      val document     = Jsoup.parse(contentAsString(result))
-      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.BtaSdil))
-      assertRow(referenceRow, "Payment reference", "XE1234567890123", None, None)
-    }
-
-    "[BtaSdil] should render the payment reference row correctly in Welsh" in {
-      PayApiStub.stubForFindBySessionId2xx(TestJourneys.BtaSdil.journeyBeforeBeginWebPayment)
-      val result       = systemUnderTest.renderPage(fakeRequestWelsh())
-      val document     = Jsoup.parse(contentAsString(result))
-      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.BtaSdil))
-      assertRow(referenceRow, "Cyfeirnod y taliad", "XE1234567890123", None, None)
-    }
-
-    "[DdSdil] should render the payment reference row correctly" in {
-      PayApiStub.stubForFindBySessionId2xx(TestJourneys.DdSdil.journeyBeforeBeginWebPayment)
-      val result       = systemUnderTest.renderPage(fakeRequest())
-      val document     = Jsoup.parse(contentAsString(result))
-      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.DdSdil))
-      assertRow(referenceRow, "Payment reference", "XE1234567890123", None, None)
-    }
-
-    "[DdSdil] should render the payment reference row correctly in Welsh" in {
-      PayApiStub.stubForFindBySessionId2xx(TestJourneys.DdSdil.journeyBeforeBeginWebPayment)
-      val result       = systemUnderTest.renderPage(fakeRequestWelsh())
-      val document     = Jsoup.parse(contentAsString(result))
-      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.DdSdil))
-      assertRow(referenceRow, "Cyfeirnod y taliad", "XE1234567890123", None, None)
-    }
-
     "[PfSdil] should render the payment reference row correctly" in {
       PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSdil.journeyBeforeBeginWebPayment)
       val result       = systemUnderTest.renderPage(fakeRequest())
       val document     = Jsoup.parse(contentAsString(result))
-      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.PfSdil))
+      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(0)
       assertRow(
         referenceRow,
         "Payment reference",
@@ -1561,7 +1175,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSdil.journeyBeforeBeginWebPayment)
       val result       = systemUnderTest.renderPage(fakeRequestWelsh())
       val document     = Jsoup.parse(contentAsString(result))
-      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.PfSdil))
+      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(0)
       assertRow(
         referenceRow,
         "Cyfeirnod y taliad",
@@ -1575,7 +1189,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfP800.journeyBeforeBeginWebPayment)
       val result       = systemUnderTest.renderPage(fakeRequest())
       val document     = Jsoup.parse(contentAsString(result))
-      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.PfP800))
+      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(0)
       assertRow(referenceRow, "Reference number", "MA000003AP8002027", None, None)
     }
 
@@ -1583,7 +1197,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfP800.journeyBeforeBeginWebPayment)
       val result       = systemUnderTest.renderPage(fakeRequestWelsh())
       val document     = Jsoup.parse(contentAsString(result))
-      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.PfP800))
+      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(0)
       assertRow(referenceRow, "Cyfeirnod", "MA000003AP8002027", None, None)
     }
 
@@ -1603,27 +1217,11 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       assertRow(referenceRow, "Cyfeirnod y tâl", "BC007010065114", None, None)
     }
 
-    "[PtaP800] should render the payment reference row correctly" in {
-      PayApiStub.stubForFindBySessionId2xx(TestJourneys.PtaP800.journeyBeforeBeginWebPayment)
-      val result       = systemUnderTest.renderPage(fakeRequest())
-      val document     = Jsoup.parse(contentAsString(result))
-      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.PtaP800))
-      assertRow(referenceRow, "Reference number", "MA000003AP8002027", None, None)
-    }
-
-    "[PtaP800] should render the payment reference row correctly in welsh" in {
-      PayApiStub.stubForFindBySessionId2xx(TestJourneys.PtaP800.journeyBeforeBeginWebPayment)
-      val result       = systemUnderTest.renderPage(fakeRequestWelsh())
-      val document     = Jsoup.parse(contentAsString(result))
-      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.PtaP800))
-      assertRow(referenceRow, "Cyfeirnod", "MA000003AP8002027", None, None)
-    }
-
     "[PtaP800] should render the payment reference rows correctly (i.e. show the p800ChargeRef additionally, when there is one)" in {
       PayApiStub.stubForFindBySessionId2xx(TestJourneys.PtaP800.journeyWithP800ChargeRefBeforeBeginWebPayment)
       val result       = systemUnderTest.renderPage(fakeRequest())
       val document     = Jsoup.parse(contentAsString(result))
-      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(1)
+      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(0)
       assertRow(referenceRow, "Charge reference", "BC007010065114", None, None)
     }
 
@@ -1631,7 +1229,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       PayApiStub.stubForFindBySessionId2xx(TestJourneys.PtaP800.journeyWithP800ChargeRefBeforeBeginWebPayment)
       val result       = systemUnderTest.renderPage(fakeRequestWelsh())
       val document     = Jsoup.parse(contentAsString(result))
-      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(1)
+      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(0)
       assertRow(referenceRow, "Cyfeirnod y tâl", "BC007010065114", None, None)
     }
 
@@ -1639,7 +1237,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       PayApiStub.stubForFindBySessionId2xx(TestJourneys.PtaP800.journeyBeforeBeginWebPayment)
       val result       = systemUnderTest.renderPage(fakeRequest())
       val document     = Jsoup.parse(contentAsString(result))
-      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(1)
+      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(0)
       assertRow(referenceRow, "Tax year", "6 April 2027 to 5 April 2028", None, None)
     }
 
@@ -1647,7 +1245,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       PayApiStub.stubForFindBySessionId2xx(TestJourneys.PtaP800.journeyBeforeBeginWebPayment)
       val result       = systemUnderTest.renderPage(fakeRequestWelsh())
       val document     = Jsoup.parse(contentAsString(result))
-      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(1)
+      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(0)
       assertRow(referenceRow, "Blwyddyn dreth", "6 Ebrill 2027 i 5 Ebrill 2028", None, None)
     }
 
@@ -1655,7 +1253,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSimpleAssessment.journeyBeforeBeginWebPayment)
       val result       = systemUnderTest.renderPage(fakeRequest())
       val document     = Jsoup.parse(contentAsString(result))
-      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.PfSimpleAssessment))
+      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(0)
       assertRow(referenceRow, "Reference number", "XE123456789012", None, None)
     }
 
@@ -1663,31 +1261,15 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSimpleAssessment.journeyBeforeBeginWebPayment)
       val result       = systemUnderTest.renderPage(fakeRequestWelsh())
       val document     = Jsoup.parse(contentAsString(result))
-      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.PfSimpleAssessment))
+      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(0)
       assertRow(referenceRow, "Cyfeirnod", "XE123456789012", None, None)
-    }
-
-    "[PtaSimpleAssessment] should render the payment reference row correctly" in {
-      PayApiStub.stubForFindBySessionId2xx(TestJourneys.PtaSimpleAssessment.journeyBeforeBeginWebPayment)
-      val result       = systemUnderTest.renderPage(fakeRequest())
-      val document     = Jsoup.parse(contentAsString(result))
-      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.PtaSimpleAssessment))
-      assertRow(referenceRow, "Payment reference", "MA000003AP3022027", None, None)
-    }
-
-    "[PtaSimpleAssessment] should render the payment reference row correctly in welsh" in {
-      PayApiStub.stubForFindBySessionId2xx(TestJourneys.PtaSimpleAssessment.journeyBeforeBeginWebPayment)
-      val result       = systemUnderTest.renderPage(fakeRequestWelsh())
-      val document     = Jsoup.parse(contentAsString(result))
-      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.PtaSimpleAssessment))
-      assertRow(referenceRow, "Cyfeirnod y taliad", "MA000003AP3022027", None, None)
     }
 
     "[PtaSimpleAssessment] should render the charge reference row correctly" in {
       PayApiStub.stubForFindBySessionId2xx(TestJourneys.PtaSimpleAssessment.journeyBeforeBeginWebPayment)
       val result       = systemUnderTest.renderPage(fakeRequest())
       val document     = Jsoup.parse(contentAsString(result))
-      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(2)
+      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(1)
       assertRow(referenceRow, "Charge reference", "BC007010065114", None, None)
     }
 
@@ -1695,7 +1277,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       PayApiStub.stubForFindBySessionId2xx(TestJourneys.PtaSimpleAssessment.journeyBeforeBeginWebPayment)
       val result       = systemUnderTest.renderPage(fakeRequestWelsh())
       val document     = Jsoup.parse(contentAsString(result))
-      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(2)
+      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(1)
       assertRow(referenceRow, "Cyfeirnod y tâl", "BC007010065114", None, None)
     }
 
@@ -1703,7 +1285,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       PayApiStub.stubForFindBySessionId2xx(TestJourneys.PtaSimpleAssessment.journeyBeforeBeginWebPayment)
       val result       = systemUnderTest.renderPage(fakeRequest())
       val document     = Jsoup.parse(contentAsString(result))
-      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(3)
+      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(2)
       assertRow(referenceRow, "Tax year", "6 April 2027 to 5 April 2028", None, None)
     }
 
@@ -1711,7 +1293,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       PayApiStub.stubForFindBySessionId2xx(TestJourneys.PtaSimpleAssessment.journeyBeforeBeginWebPayment)
       val result       = systemUnderTest.renderPage(fakeRequestWelsh())
       val document     = Jsoup.parse(contentAsString(result))
-      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(3)
+      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(2)
       assertRow(referenceRow, "Blwyddyn dreth", "6 Ebrill 2027 i 5 Ebrill 2028", None, None)
     }
 
@@ -1719,7 +1301,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfJobRetentionScheme.journeyBeforeBeginWebPayment)
       val result       = systemUnderTest.renderPage(fakeRequest())
       val document     = Jsoup.parse(contentAsString(result))
-      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.PfJobRetentionScheme))
+      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(0)
       assertRow(
         referenceRow,
         "Payment reference",
@@ -1733,7 +1315,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfJobRetentionScheme.journeyBeforeBeginWebPayment)
       val result       = systemUnderTest.renderPage(fakeRequestWelsh())
       val document     = Jsoup.parse(contentAsString(result))
-      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.PfJobRetentionScheme))
+      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(0)
       assertRow(
         referenceRow,
         "Cyfeirnod y taliad",
@@ -1743,27 +1325,11 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       )
     }
 
-    "[JrsJobRetentionScheme] should render the payment reference row correctly" in {
-      PayApiStub.stubForFindBySessionId2xx(TestJourneys.JrsJobRetentionScheme.journeyBeforeBeginWebPayment)
-      val result       = systemUnderTest.renderPage(fakeRequest())
-      val document     = Jsoup.parse(contentAsString(result))
-      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.JrsJobRetentionScheme))
-      assertRow(referenceRow, "Payment reference", "XJRS12345678901", None, None)
-    }
-
-    "[JrsJobRetentionScheme] should render the payment reference row correctly in Welsh" in {
-      PayApiStub.stubForFindBySessionId2xx(TestJourneys.JrsJobRetentionScheme.journeyBeforeBeginWebPayment)
-      val result       = systemUnderTest.renderPage(fakeRequestWelsh())
-      val document     = Jsoup.parse(contentAsString(result))
-      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.JrsJobRetentionScheme))
-      assertRow(referenceRow, "Cyfeirnod y taliad", "XJRS12345678901", None, None)
-    }
-
     "[PfCds] should render the payment reference row correctly" in {
       PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfCds.journeyBeforeBeginWebPayment)
       val result       = systemUnderTest.renderPage(fakeRequest())
       val document     = Jsoup.parse(contentAsString(result))
-      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.PfCds))
+      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(0)
       assertRow(
         referenceRow,
         "CDS Reference Number",
@@ -1773,35 +1339,19 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       )
     }
 
-    "[NiEuVatOss] should render the payment reference row correctly" in {
-      PayApiStub.stubForFindBySessionId2xx(TestJourneys.NiEuVatOss.journeyBeforeBeginWebPayment)
-      val result       = systemUnderTest.renderPage(fakeRequest())
-      val document     = Jsoup.parse(contentAsString(result))
-      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.NiEuVatOss))
-      assertRow(referenceRow, "Payment reference", "NI101747641Q424", None, None)
-    }
-
     "[PfNiEuVatOss] should render the payment reference row correctly" in {
       PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfNiEuVatOss.journeyBeforeBeginWebPayment)
       val result       = systemUnderTest.renderPage(fakeRequest())
       val document     = Jsoup.parse(contentAsString(result))
-      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.PfNiEuVatOss))
+      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(0)
       assertRow(referenceRow, "Payment reference", "NI101747641Q424", None, None)
-    }
-
-    "[NiEuVatIoss] should render the payment reference row correctly" in {
-      PayApiStub.stubForFindBySessionId2xx(TestJourneys.NiEuVatIoss.journeyBeforeBeginWebPayment)
-      val result       = systemUnderTest.renderPage(fakeRequest())
-      val document     = Jsoup.parse(contentAsString(result))
-      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.NiEuVatIoss))
-      assertRow(referenceRow, "Payment reference", "IM1234567890M0624", None, None)
     }
 
     "[PfNiEuVatIoss] should render the payment reference row correctly" in {
       PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfNiEuVatIoss.journeyBeforeBeginWebPayment)
       val result       = systemUnderTest.renderPage(fakeRequest())
       val document     = Jsoup.parse(contentAsString(result))
-      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.PfNiEuVatIoss))
+      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(0)
       assertRow(referenceRow, "Payment reference", "IM1234567890M0624", None, None)
     }
 
@@ -1809,7 +1359,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       PayApiStub.stubForFindBySessionId2xx(TestJourneys.NiEuVatOss.journeyBeforeBeginWebPayment)
       val result          = systemUnderTest.renderPage(fakeRequest())
       val document        = Jsoup.parse(contentAsString(result))
-      val returnPeriodRow = document.select(".govuk-summary-list__row").asScala.toList(2)
+      val returnPeriodRow = document.select(".govuk-summary-list__row").asScala.toList(1)
       assertRow(returnPeriodRow, "VAT Number", "101747641", None, None)
     }
 
@@ -1825,7 +1375,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       PayApiStub.stubForFindBySessionId2xx(TestJourneys.NiEuVatIoss.journeyBeforeBeginWebPayment)
       val result          = systemUnderTest.renderPage(fakeRequest())
       val document        = Jsoup.parse(contentAsString(result))
-      val returnPeriodRow = document.select(".govuk-summary-list__row").asScala.toList(2)
+      val returnPeriodRow = document.select(".govuk-summary-list__row").asScala.toList(1)
       assertRow(returnPeriodRow, "IOSS Number", "IM1234567890", None, None)
     }
 
@@ -1847,7 +1397,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       PayApiStub.stubForFindBySessionId2xx(TestJourneys.AppSa.journeyBeforeBeginWebPayment)
       val result       = systemUnderTest.renderPage(fakeRequest())
       val document     = Jsoup.parse(contentAsString(result))
-      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.AppSa))
+      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(0)
       assertRow(referenceRow, "Unique Taxpayer Reference (UTR)", "1234567890", None, None)
     }
 
@@ -1855,7 +1405,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       PayApiStub.stubForFindBySessionId2xx(TestJourneys.AppSa.journeyBeforeBeginWebPayment)
       val result       = systemUnderTest.renderPage(fakeRequestWelsh())
       val document     = Jsoup.parse(contentAsString(result))
-      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.AppSa))
+      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(0)
       assertRow(referenceRow, "Cyfeirnod Unigryw y Trethdalwr (UTR)", "1234567890", None, None)
     }
 
@@ -1863,7 +1413,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       PayApiStub.stubForFindBySessionId2xx(TestJourneys.AppSimpleAssessment.journeyBeforeBeginWebPayment)
       val result       = systemUnderTest.renderPage(fakeRequest())
       val document     = Jsoup.parse(contentAsString(result))
-      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.AppSimpleAssessment))
+      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(0)
       assertRow(referenceRow, "Payment reference", "MA000003AP3022023", None, None)
     }
 
@@ -1871,7 +1421,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       PayApiStub.stubForFindBySessionId2xx(TestJourneys.AppSimpleAssessment.journeyBeforeBeginWebPayment)
       val result       = systemUnderTest.renderPage(fakeRequestWelsh())
       val document     = Jsoup.parse(contentAsString(result))
-      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.AppSimpleAssessment))
+      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(0)
       assertRow(referenceRow, "Cyfeirnod y taliad", "MA000003AP3022023", None, None)
     }
 
@@ -1879,7 +1429,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       PayApiStub.stubForFindBySessionId2xx(TestJourneys.Mib.journeyBeforeBeginWebPayment)
       val result       = systemUnderTest.renderPage(fakeRequest())
       val document     = Jsoup.parse(contentAsString(result))
-      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.Mib))
+      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(0)
       assertRow(referenceRow, "Declaration reference", "MIBI1234567891", None, None)
     }
 
@@ -1887,7 +1437,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       PayApiStub.stubForFindBySessionId2xx(TestJourneys.Mib.journeyBeforeBeginWebPayment)
       val result       = systemUnderTest.renderPage(fakeRequestWelsh())
       val document     = Jsoup.parse(contentAsString(result))
-      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.Mib))
+      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(0)
       assertRow(referenceRow, "Cyfeirnod y taliad", "MIBI1234567891", None, None)
     }
 
@@ -1895,7 +1445,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       PayApiStub.stubForFindBySessionId2xx(TestJourneys.BcPngr.journeyBeforeBeginWebPayment)
       val result       = systemUnderTest.renderPage(fakeRequest())
       val document     = Jsoup.parse(contentAsString(result))
-      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.BcPngr))
+      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(0)
       assertRow(referenceRow, "Reference number", "XAPR9876543210", None, None)
     }
 
@@ -1903,7 +1453,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       PayApiStub.stubForFindBySessionId2xx(TestJourneys.BcPngr.journeyBeforeBeginWebPayment)
       val result       = systemUnderTest.renderPage(fakeRequestWelsh())
       val document     = Jsoup.parse(contentAsString(result))
-      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.BcPngr))
+      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(0)
       assertRow(referenceRow, "Cyfeirnod y taliad", "XAPR9876543210", None, None)
     }
 
@@ -1911,7 +1461,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfTpes.journeyBeforeBeginWebPayment)
       val result       = systemUnderTest.renderPage(fakeRequest())
       val document     = Jsoup.parse(contentAsString(result))
-      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.PfTpes))
+      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(0)
       assertRow(
         referenceRow,
         "Reference number",
@@ -1925,7 +1475,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfTpes.journeyBeforeBeginWebPayment)
       val result       = systemUnderTest.renderPage(fakeRequestWelsh())
       val document     = Jsoup.parse(contentAsString(result))
-      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.PfTpes))
+      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(0)
       assertRow(referenceRow, "Cyfeirnod", "XE123456789012", Some("Newid Cyfeirnod"), Some("http://localhost:9056/pay/pay-by-card-change-reference-number"))
     }
 
@@ -1933,7 +1483,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfMgd.journeyBeforeBeginWebPayment)
       val result       = systemUnderTest.renderPage(fakeRequest())
       val document     = Jsoup.parse(contentAsString(result))
-      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.PfMgd))
+      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(0)
       assertRow(
         referenceRow,
         "Reference number",
@@ -1947,7 +1497,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfMgd.journeyBeforeBeginWebPayment)
       val result       = systemUnderTest.renderPage(fakeRequestWelsh())
       val document     = Jsoup.parse(contentAsString(result))
-      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.PfMgd))
+      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(0)
       assertRow(referenceRow, "Cyfeirnod", "XE123456789012", Some("Newid Cyfeirnod"), Some("http://localhost:9056/pay/pay-by-card-change-reference-number"))
     }
 
@@ -1955,7 +1505,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfGbPbRgDuty.journeyBeforeBeginWebPayment)
       val result       = systemUnderTest.renderPage(fakeRequest())
       val document     = Jsoup.parse(contentAsString(result))
-      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.PfGbPbRgDuty))
+      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(0)
       assertRow(
         referenceRow,
         "Reference number",
@@ -1969,7 +1519,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfGbPbRgDuty.journeyBeforeBeginWebPayment)
       val result       = systemUnderTest.renderPage(fakeRequestWelsh())
       val document     = Jsoup.parse(contentAsString(result))
-      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.PfGbPbRgDuty))
+      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(0)
       assertRow(referenceRow, "Cyfeirnod", "XE123456789012", Some("Newid Cyfeirnod"), Some("http://localhost:9056/pay/pay-by-card-change-reference-number"))
     }
 
@@ -1977,7 +1527,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfTrust.journeyBeforeBeginWebPayment)
       val result       = systemUnderTest.renderPage(fakeRequest())
       val document     = Jsoup.parse(contentAsString(result))
-      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.PfTrust))
+      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(0)
       assertRow(
         referenceRow,
         "Reference number",
@@ -1991,7 +1541,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfTrust.journeyBeforeBeginWebPayment)
       val result       = systemUnderTest.renderPage(fakeRequestWelsh())
       val document     = Jsoup.parse(contentAsString(result))
-      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.PfTrust))
+      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(0)
       assertRow(referenceRow, "Cyfeirnod", "XE123456789012", Some("Newid Cyfeirnod"), Some("http://localhost:9056/pay/pay-by-card-change-reference-number"))
     }
 
@@ -1999,7 +1549,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfPsAdmin.journeyBeforeBeginWebPayment)
       val result       = systemUnderTest.renderPage(fakeRequest())
       val document     = Jsoup.parse(contentAsString(result))
-      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.PfPsAdmin))
+      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(0)
       assertRow(
         referenceRow,
         "Reference number",
@@ -2013,7 +1563,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfPsAdmin.journeyBeforeBeginWebPayment)
       val result       = systemUnderTest.renderPage(fakeRequestWelsh())
       val document     = Jsoup.parse(contentAsString(result))
-      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.PfPsAdmin))
+      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(0)
       assertRow(referenceRow, "Cyfeirnod", "XE123456789012", Some("Newid Cyfeirnod"), Some("http://localhost:9056/pay/pay-by-card-change-reference-number"))
     }
 
@@ -2021,7 +1571,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfOther.journeyBeforeBeginWebPayment)
       val result       = systemUnderTest.renderPage(fakeRequest())
       val document     = Jsoup.parse(contentAsString(result))
-      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.PfOther))
+      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(0)
       assertRow(
         referenceRow,
         "Payment reference",
@@ -2035,7 +1585,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfOther.journeyBeforeBeginWebPayment)
       val result       = systemUnderTest.renderPage(fakeRequestWelsh())
       val document     = Jsoup.parse(contentAsString(result))
-      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.PfOther))
+      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(0)
       assertRow(
         referenceRow,
         "Cyfeirnod y taliad",
@@ -2045,34 +1595,22 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       )
     }
 
-    "[StampTaxesOnShares] should render the payment reference row correctly" - {
+    "[StampTaxesOnShares] should not render the payment reference in first row" - {
 
       "when reference is a basket reference" in {
         PayApiStub.stubForFindBySessionId2xx(TestJourneys.StampTaxesOnShares.journeyBeforeBeginWebPayment)
         val result       = systemUnderTest.renderPage(fakeRequest())
         val document     = Jsoup.parse(contentAsString(result))
-        val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.StampTaxesOnShares))
-        assertRow(
-          referenceRow,
-          "Payment reference",
-          "XBKT123456789",
-          None,
-          None
-        )
+        val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(0)
+        assertRowKeyIsNot(referenceRow, "Payment reference")
       }
 
       "when reference is not basket reference" in {
         PayApiStub.stubForFindBySessionId2xx(TestJourneys.StampTaxesOnShares.journeyBeforeBeginWebpaymentNoBasketReference)
         val result       = systemUnderTest.renderPage(fakeRequest())
         val document     = Jsoup.parse(contentAsString(result))
-        val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.StampTaxesOnShares))
-        assertRow(
-          referenceRow,
-          "Payment reference",
-          "SUBMISSIONID",
-          None,
-          None
-        )
+        val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(0)
+        assertRowKeyIsNot(referenceRow, "Payment reference")
       }
     }
 
@@ -2080,7 +1618,7 @@ class CheckYourAnswersControllerSpec extends ItSpec {
       PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfStampTaxesOnShares.journeyBeforeBeginWebPayment)
       val result       = systemUnderTest.renderPage(fakeRequest())
       val document     = Jsoup.parse(contentAsString(result))
-      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(deriveReferenceRowIndex(Origins.StampTaxesOnShares))
+      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(0)
       assertRow(
         referenceRow,
         "Securities transfer charge reference",
@@ -2109,6 +1647,12 @@ class CheckYourAnswersControllerSpec extends ItSpec {
     actionHref.fold(element.select(".govuk-summary-list__actions").select("a").text() shouldBe "")(href =>
       element.select(".govuk-summary-list__actions").select("a").attr("href") shouldBe href
     )
+  }
+
+  private def assertRowKeyIsNot(element: Element, keyText: String): Assertion = {
+    val key = element.select(".govuk-summary-list__key")
+    key.size() shouldBe 1
+    key.text().trim should not be keyText
   }
 
   "POST /check-your-details" - {

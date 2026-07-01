@@ -86,7 +86,7 @@ trait ExtendedOrigin {
 
   def checkYourAnswersAmountSummaryRow(journeyRequest: JourneyRequest[AnyContent])(payFrontendBaseUrl: String): Option[CheckYourAnswersRow] = Some(
     CheckYourAnswersRow(
-      titleMessageKey = "check-your-details.total-to-pay",
+      titleMessageKey = "check-your-details.amount",
       value = Seq(amount(journeyRequest)),
       changeLink = Some(
         Link(
