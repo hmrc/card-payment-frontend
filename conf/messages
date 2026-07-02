@@ -301,6 +301,10 @@ payment-complete.what-happens-next.mgd.link = set up a variable Direct Debit
 payment-complete.what-happens-next.mgd.p1-2 = to make all your future Machine Games Duty payments automatically. Having a Direct Debit means you will not miss deadlines or get late payment charges.
 payment-complete.what-happens-next.mgd.p3 = Set up your Direct Debit at least 5 days before your next payment is due to make sure you meet the payment deadline.
 
+## Payment complete what happens next section stamp-taxes-on-shares
+payment-complete.what-happens-next.p1.stamp-taxes-on-shares.link.defaultText = Your payment can take up to 5 days to show in your
+payment-complete.what-happens-next.stamp-taxes-on-shares.link = submission dashboard.
+
 #custom mib/mods content
 payment-complete.mods.panel.title = Declaration complete
 payment-complete.mods.panel.content = Your reference number<br><strong>{0}</strong>

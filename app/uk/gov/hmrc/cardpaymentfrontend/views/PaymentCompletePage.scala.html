@@ -16,7 +16,7 @@
 
 @import payapi.corcommon.model.Origins
 @import payapi.corcommon.model.Reference
-@import payapi.corcommon.model.TaxTypes.{cds, mib, vatConsumerToConsumer}
+@import payapi.corcommon.model.TaxTypes.{cds, mib, vatConsumerToConsumer, stampTaxesOnShares}
 @import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
 @import uk.gov.hmrc.cardpaymentfrontend.config.AppConfig
 @import uk.gov.hmrc.cardpaymentfrontend.models.EmailAddress
@@ -130,6 +130,14 @@
             <h2 class="govuk-heading-m govuk-!-margin-top-7">@Messages("payment-complete.what-happens-next.header")</h2>
             <p class="govuk-body">@Messages("payment-complete.what-happens-next.p1") @Messages("payment-complete.what-happens-next.link")</p>
         </div>
+    } else if(origin.toTaxType == stampTaxesOnShares && maybeReturnUrl.isDefined) {
+        <div id="what-happens-next-wrapper">
+            <h2 class="govuk-heading-m govuk-!-margin-top-7">@Messages("payment-complete.what-happens-next.header")</h2>
+            <p class="govuk-body">
+                @Messages("payment-complete.what-happens-next.p1.stamp-taxes-on-shares.link.defaultText")
+                <a class="govuk-link" href="@maybeReturnUrl.get">@Messages("payment-complete.what-happens-next.stamp-taxes-on-shares.link")</a>
+            </p>
+        </div>
     } else if(maybeReturnUrl.isDefined) {
         @if(origin === Origins.PfMgd) {
             @defaultWhatHappensNextContent
@@ -150,6 +158,11 @@
                 </p>
             </div>
         }
+    } else if(origin.toTaxType == stampTaxesOnShares) {
+        <div id="what-happens-next-wrapper">
+            <h2 class="govuk-heading-m govuk-!-margin-top-7">@Messages("payment-complete.what-happens-next.header")</h2>
+            <p class="govuk-body">@Messages("payment-complete.what-happens-next.p1.stamp-taxes-on-shares.link.defaultText") @Messages("payment-complete.what-happens-next.stamp-taxes-on-shares.link")</p>
+        </div>
     } else {
         @defaultWhatHappensNextContent
     }

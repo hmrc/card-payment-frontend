@@ -288,6 +288,10 @@ payment-complete.what-happens-next.mgd.link = sefydlu Debyd Uniongyrchol newidio
 payment-complete.what-happens-next.mgd.p1-2 = i wneud eich holl daliadau Toll Peiriannau Hapchwarae yn awtomatig yn y dyfodol. Mae cael Debyd Uniongyrchol yn golygu na fyddwch yn methu dyddiadau cau nac yn wynebu costau am dalu’n hwyr.
 payment-complete.what-happens-next.mgd.p3 = Sefydlwch eich Debyd Uniongyrchol o leiaf 5 diwrnod cyn dyddiad dyledus eich taliad nesaf er mwyn gwneud yn siŵr eich bod yn talu erbyn y dyddiad cau.
 
+## Payment complete what happens next section stamp-taxes-on-shares
+payment-complete.what-happens-next.p1.stamp-taxes-on-shares.link.defaultText = Gall eich taliad gymryd hyd at 5 diwrnod ymddangos yn eich
+payment-complete.what-happens-next.stamp-taxes-on-shares.link = cyfrif treth ar-lein.
+
 #custom mib/mods content
 payment-complete.mods.panel.title = Datganiad wedi’i gwblhau
 payment-complete.mods.panel.content = Eich cyfeirnod<br><strong>MIBI1234567891</strong>

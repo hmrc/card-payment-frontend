@@ -21,7 +21,7 @@ import org.jsoup.nodes.Element
 import org.jsoup.select.Elements
 import org.scalatest.Assertion
 import payapi.cardpaymentjourney.model.barclays.BarclaysOrder
-import payapi.cardpaymentjourney.model.journey.{Journey, JourneySpecificData, JsdBcPngr, JsdMib, JsdPfP800, JsdPtaP800, Url}
+import payapi.cardpaymentjourney.model.journey.*
 import payapi.corcommon.model.Origins.*
 import payapi.corcommon.model.barclays.{CardCategories, TransactionReference}
 import payapi.corcommon.model.{AmountInPence, JourneyId, Origin, Origins}
@@ -220,6 +220,15 @@ class PaymentCompleteControllerSpec extends ItSpec {
         wrapper.select("p").html() shouldBe "Your payment can take up to 5 days to show in your online tax account."
       }
 
+      "render the custom what happens next content for StampTaxesOnShares Journeys" in {
+        PayApiStub.stubForFindBySessionId2xx(TestJourneys.StampTaxesOnShares.journeyAfterSucceedDebitWebPayment.copy(navigation = None))
+        val result   = systemUnderTest.renderPage(fakeGetRequest)
+        val document = Jsoup.parse(contentAsString(result))
+        val wrapper  = document.select("#what-happens-next-wrapper")
+        wrapper.select("h2").text() shouldBe "What happens next"
+        wrapper.select("p").html() shouldBe "Your payment can take up to 5 days to show in your submission dashboard."
+      }
+
       "render the custom what happens next content in welsh for VatC2c Journeys" in {
         PayApiStub.stubForFindBySessionId2xx(TestJourneys.VatC2c.journeyAfterSucceedDebitWebPayment)
         val result   = systemUnderTest.renderPage(fakeGetRequestInWelsh)
@@ -254,6 +263,15 @@ class PaymentCompleteControllerSpec extends ItSpec {
         val wrapper  = document.select("#what-happens-next-wrapper")
         wrapper.select("h2").text() shouldBe "What happens next"
         wrapper.select("p").html() shouldBe "Your payment can take up to 5 days to show in your online tax account."
+      }
+
+      "render custom what happens next content for stamp-taxes-on-shares" in {
+        PayApiStub.stubForFindBySessionId2xx(TestJourneys.StampTaxesOnShares.journeyAfterSucceedDebitWebPayment)
+        val result   = systemUnderTest.renderPage(fakeGetRequest)
+        val document = Jsoup.parse(contentAsString(result))
+        val wrapper  = document.select("#what-happens-next-wrapper")
+        wrapper.select("h2").asList().get(0).text() shouldBe "What happens next"
+        wrapper.select("p").asList().get(0).text() shouldBe "Your payment can take up to 5 days to show in your submission dashboard."
       }
 
       "render custom what happens next content for PfMgd" in {
@@ -782,7 +800,10 @@ class PaymentCompleteControllerSpec extends ItSpec {
                 val document = Jsoup.parse(contentAsString(result))
                 val wrapper  = document.select("#what-happens-next-wrapper")
                 wrapper.select("h2").text() shouldBe "What happens next"
-                wrapper.select("p").html() shouldBe "Your payment can take up to 5 days to show in your <a class=\"govuk-link\" href=\"https://www.return-url.com\">online tax account.</a>"
+                val link     = if (origin == StampTaxesOnShares) "submission dashboard." else "online tax account."
+                wrapper
+                  .select("p")
+                  .html() shouldBe s"Your payment can take up to 5 days to show in your <a class=\"govuk-link\" href=\"https://www.return-url.com\">$link</a>"
               }
 
               "render the custom what happens next content in welsh" in {
@@ -793,7 +814,6 @@ class PaymentCompleteControllerSpec extends ItSpec {
                 wrapper.select("h2").text() shouldBe "Yr hyn sy’n digwydd nesaf"
                 wrapper.select("p").html() shouldBe "Gall eich taliad gymryd hyd at 5 diwrnod ymddangos yn eich <a class=\"govuk-link\" href=\"https://www.return-url.com\">cyfrif treth ar-lein.</a>"
               }
-
             }
           }
         }
@@ -3341,7 +3361,7 @@ object PaymentCompleteControllerSpec {
         ),
         maybeWelshSummaryRowsCreditCard = None,
         hasWelshTest = false,
-        hasAReturnUrl = false
+        hasAReturnUrl = true
       )
     case PfStampTaxesOnShares =>
       TestScenarioInfo(

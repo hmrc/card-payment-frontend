@@ -71,8 +71,7 @@ object TestJourneys {
       order = None,
       status = PaymentStatuses.Created,
       createdOn = LocalDateTime.parse("2027-11-02T16:28:55.185"),
-      journeySpecificData = JsdPfSa(utr = Some(SaUtr("1234567895"))),
-      chosenWayToPay = None
+      journeySpecificData = JsdPfSa(utr = Some(SaUtr("1234567895")))
     )
   }
 
@@ -87,8 +86,7 @@ object TestJourneys {
       status = PaymentStatuses.Created,
       futureDatedPayment = None,
       createdOn = LocalDateTime.parse("2027-11-02T16:28:55.185"),
-      journeySpecificData = JsdBtaSa(utr = SaUtr("1234567895"), defaultAmountInPence = AmountInPence(1234), dueDate = Some(LocalDate.of(2028, 12, 12))),
-      chosenWayToPay = None
+      journeySpecificData = JsdBtaSa(utr = SaUtr("1234567895"), defaultAmountInPence = AmountInPence(1234), dueDate = Some(LocalDate.of(2028, 12, 12)))
     )
   }
 
@@ -103,8 +101,7 @@ object TestJourneys {
       status = PaymentStatuses.Created,
       futureDatedPayment = None,
       createdOn = LocalDateTime.parse("2027-11-02T16:28:55.185"),
-      journeySpecificData = JsdPtaSa(utr = SaUtr("1234567895"), defaultAmountInPence = Some(AmountInPence(1234)), dueDate = Some(LocalDate.of(2028, 12, 12))),
-      chosenWayToPay = None
+      journeySpecificData = JsdPtaSa(utr = SaUtr("1234567895"), defaultAmountInPence = Some(AmountInPence(1234)), dueDate = Some(LocalDate.of(2028, 12, 12)))
     )
   }
 
@@ -118,8 +115,7 @@ object TestJourneys {
       order = None,
       status = PaymentStatuses.Created,
       createdOn = LocalDateTime.parse("2027-11-02T16:28:55.185"),
-      journeySpecificData = JsdItSa(utr = SaUtr("1234567895"), defaultAmountInPence = AmountInPence(1234), dueDate = Some(LocalDate.of(2028, 12, 12))),
-      chosenWayToPay = None
+      journeySpecificData = JsdItSa(utr = SaUtr("1234567895"), defaultAmountInPence = AmountInPence(1234), dueDate = Some(LocalDate.of(2028, 12, 12)))
     )
   }
 
@@ -134,8 +130,7 @@ object TestJourneys {
       status = PaymentStatuses.Created,
       futureDatedPayment = None,
       createdOn = LocalDateTime.parse("2027-11-02T16:28:55.185"),
-      journeySpecificData = JsdWcSa(saUtr = SaUtr("1234567895"), defaultAmountInPence = AmountInPence(1234)),
-      chosenWayToPay = None
+      journeySpecificData = JsdWcSa(saUtr = SaUtr("1234567895"), defaultAmountInPence = AmountInPence(1234))
     )
   }
 
@@ -149,8 +144,7 @@ object TestJourneys {
       order = None,
       status = PaymentStatuses.Created,
       createdOn = LocalDateTime.parse("2027-11-02T16:28:55.185"),
-      journeySpecificData = JsdPfAlcoholDuty(alcoholDutyReference = Some(AlcoholDutyReference("XMADP0123456789"))),
-      chosenWayToPay = None
+      journeySpecificData = JsdPfAlcoholDuty(alcoholDutyReference = Some(AlcoholDutyReference("XMADP0123456789")))
     )
   }
 
@@ -168,8 +162,7 @@ object TestJourneys {
         alcoholDutyReference = AlcoholDutyReference("XMADP0123456789"),
         alcoholDutyChargeReference = Some(AlcoholDutyChargeReference("XE1234567890123")),
         defaultAmountInPence = AmountInPence(1234)
-      ),
-      chosenWayToPay = None
+      )
     )
   }
 
@@ -190,8 +183,7 @@ object TestJourneys {
         defaultAmountInPence = AmountInPence(1234),
         dueDate = Some(LocalDate.of(2028, 12, 12)),
         ctLivePeriods = Some(List(CtLivePeriod(1, LocalDate.of(2028, 11, 12), LocalDate.of(2028, 12, 12))))
-      ),
-      chosenWayToPay = None
+      )
     )
   }
 
@@ -209,8 +201,7 @@ object TestJourneys {
         utr = Some(CtUtr("1097172564")),
         ctPeriod = Some(CtPeriod(1)),
         ctChargeType = Some(CtChargeTypes.A)
-      ),
-      chosenWayToPay = None
+      )
     )
   }
 
@@ -227,8 +218,7 @@ object TestJourneys {
       journeySpecificData = JsdWcCt(
         ctPayslipReference = CtPayslipReference(CtUtr("1097172564"), CtPeriod(1), CtChargeTypes.A),
         defaultAmountInPence = AmountInPence(1234)
-      ),
-      chosenWayToPay = None
+      )
     )
   }
 
@@ -245,8 +235,7 @@ object TestJourneys {
       journeySpecificData = JsdPfEpayeNi(
         Some(AccountsOfficeReference("123PH45678900")),
         Some(QuarterlyEpayeTaxPeriod(AprilJuly, TaxYear(2025)))
-      ),
-      chosenWayToPay = None
+      )
     )
   }
 
@@ -263,8 +252,7 @@ object TestJourneys {
       journeySpecificData = JsdPfEpayeP11d(
         Some(AccountsOfficeReference("123PH45678900")),
         Some(YearlyEpayeTaxPeriod(TaxYear(2025)))
-      ),
-      chosenWayToPay = None
+      )
     )
   }
 
@@ -278,8 +266,7 @@ object TestJourneys {
       order = None,
       status = PaymentStatuses.Created,
       createdOn = LocalDateTime.parse("2027-11-02T16:28:55.185"),
-      journeySpecificData = JsdPfEpayeLpp(prn = Some(XRef("XE123456789012"))),
-      chosenWayToPay = None
+      journeySpecificData = JsdPfEpayeLpp(prn = Some(XRef("XE123456789012")))
     )
   }
 
@@ -293,8 +280,7 @@ object TestJourneys {
       order = None,
       status = PaymentStatuses.Created,
       createdOn = LocalDateTime.parse("2027-11-02T16:28:55.185"),
-      journeySpecificData = JsdPfEpayeLateCis(prn = Some(XRef14Char("XE123456789012"))),
-      chosenWayToPay = None
+      journeySpecificData = JsdPfEpayeLateCis(prn = Some(XRef14Char("XE123456789012")))
     )
   }
 
@@ -308,8 +294,7 @@ object TestJourneys {
       order = None,
       status = PaymentStatuses.Created,
       createdOn = LocalDateTime.parse("2027-11-02T16:28:55.185"),
-      journeySpecificData = JsdPfEpayeSeta(psaNumber = Some(PsaNumber("XA123456789012"))),
-      chosenWayToPay = None
+      journeySpecificData = JsdPfEpayeSeta(psaNumber = Some(PsaNumber("XA123456789012")))
     )
   }
 
@@ -326,8 +311,7 @@ object TestJourneys {
       journeySpecificData = JsdPfVat(
         vrn = Some(Vrn("999964805")),
         chargeRef = None
-      ),
-      chosenWayToPay = None
+      )
     )
   }
 
@@ -344,8 +328,7 @@ object TestJourneys {
       journeySpecificData = JsdPfVat(
         vrn = None,
         chargeRef = Some(XRef14Char("XE123456789012"))
-      ),
-      chosenWayToPay = None
+      )
     )
   }
 
@@ -363,8 +346,7 @@ object TestJourneys {
         vrn = Some(Vrn("999964805")),
         chargeReference = None,
         defaultAmountInPence = AmountInPence(1234)
-      ),
-      chosenWayToPay = None
+      )
     )
   }
 
@@ -382,8 +364,7 @@ object TestJourneys {
         vrn = None,
         chargeReference = Some(XRef14Char("XE123456789012")),
         defaultAmountInPence = AmountInPence(1234)
-      ),
-      chosenWayToPay = None
+      )
     )
   }
 
@@ -397,8 +378,7 @@ object TestJourneys {
       order = None,
       status = PaymentStatuses.Created,
       createdOn = LocalDateTime.parse("2027-11-02T16:28:55.185"),
-      journeySpecificData = JsdBtaVat(vrn = Vrn("999964805"), defaultAmountInPence = AmountInPence(1234), dueDate = Some(LocalDate.of(2028, 12, 12))),
-      chosenWayToPay = None
+      journeySpecificData = JsdBtaVat(vrn = Vrn("999964805"), defaultAmountInPence = AmountInPence(1234), dueDate = Some(LocalDate.of(2028, 12, 12)))
     )
   }
 
@@ -412,8 +392,7 @@ object TestJourneys {
       order = None,
       status = PaymentStatuses.Created,
       createdOn = LocalDateTime.parse("2027-11-02T16:28:55.185"),
-      journeySpecificData = JsdDdVat(vrn = Vrn("999964805"), defaultAmountInPence = AmountInPence(1234), accountingPeriod = testCalendarPeriod),
-      chosenWayToPay = None
+      journeySpecificData = JsdDdVat(vrn = Vrn("999964805"), defaultAmountInPence = AmountInPence(1234), accountingPeriod = testCalendarPeriod)
     )
   }
 
@@ -432,8 +411,7 @@ object TestJourneys {
         defaultAmountInPence = AmountInPence(1234),
         dueDate = Some(LocalDate.of(2028, 12, 12)),
         accountingPeriod = Some(CalendarPeriod(11, 2027))
-      ),
-      chosenWayToPay = None
+      )
     )
   }
 
@@ -453,8 +431,7 @@ object TestJourneys {
         dueDate = Some(LocalDate.of(2028, 12, 12)),
         accountingPeriod = Some(CalendarPeriod(11, 2027)),
         chargeReference = VatChargeReference("999964805")
-      ),
-      chosenWayToPay = None
+      )
     )
   }
 
@@ -472,8 +449,7 @@ object TestJourneys {
         pptReference = PptReference("XAPPT0000012345"),
         defaultAmountInPence = AmountInPence(1234),
         dueDate = Some(LocalDate.of(2028, 12, 12))
-      ),
-      chosenWayToPay = None
+      )
     )
   }
 
@@ -487,8 +463,7 @@ object TestJourneys {
       order = None,
       status = PaymentStatuses.Created,
       createdOn = LocalDateTime.parse("2027-11-02T16:28:55.185"),
-      journeySpecificData = JsdPfPpt(pptReference = Some(PptReference("XAPPT0000012345"))),
-      chosenWayToPay = None
+      journeySpecificData = JsdPfPpt(pptReference = Some(PptReference("XAPPT0000012345")))
     )
   }
 
@@ -507,8 +482,7 @@ object TestJourneys {
         period = testSubYearlyPeriod,
         defaultAmountInPence = AmountInPence(1234),
         dueDate = Some(LocalDate.of(2028, 12, 12))
-      ),
-      chosenWayToPay = None
+      )
     )
   }
 
@@ -528,8 +502,7 @@ object TestJourneys {
         period = testSubYearlyPeriod,
         defaultAmountInPence = AmountInPence(1234),
         dueDate = Some(LocalDate.of(2028, 12, 12))
-      ),
-      chosenWayToPay = None
+      )
     )
   }
 
@@ -549,8 +522,7 @@ object TestJourneys {
         period = testSubYearlyPeriod,
         defaultAmountInPence = AmountInPence(1234),
         dueDate = Some(LocalDate.of(2028, 12, 12))
-      ),
-      chosenWayToPay = None
+      )
     )
   }
 
@@ -568,8 +540,7 @@ object TestJourneys {
         accountsOfficeReference = AccountsOfficeReference("123PH45678900"),
         dueDate = Some(LocalDate.of(2028, 12, 12)),
         period = Some(testSubYearlyPeriod)
-      ),
-      chosenWayToPay = None
+      )
     )
   }
 
@@ -588,8 +559,7 @@ object TestJourneys {
         period = testYearlyPeriod,
         defaultAmountInPence = AmountInPence(1234),
         dueDate = Some(LocalDate.of(2028, 12, 12))
-      ),
-      chosenWayToPay = None
+      )
     )
   }
 
@@ -606,8 +576,7 @@ object TestJourneys {
       journeySpecificData = JsdAmls(
         amlsPaymentReference = AmlsPaymentReference("XE123456789012"),
         defaultAmountInPence = AmountInPence(1234)
-      ),
-      chosenWayToPay = None
+      )
     )
   }
 
@@ -623,8 +592,7 @@ object TestJourneys {
       createdOn = LocalDateTime.parse("2027-11-02T16:28:55.185"),
       journeySpecificData = JsdPfAmls(
         amlsPaymentReference = Some(AmlsPaymentReference("XE123456789012"))
-      ),
-      chosenWayToPay = None
+      )
     )
   }
 
@@ -638,8 +606,7 @@ object TestJourneys {
       order = None,
       status = PaymentStatuses.Created,
       createdOn = LocalDateTime.parse("2027-11-02T16:28:55.185"),
-      journeySpecificData = JsdPfSdlt(utrn = Some(Utrn("123456789MA"))),
-      chosenWayToPay = None
+      journeySpecificData = JsdPfSdlt(utrn = Some(Utrn("123456789MA")))
     )
   }
 
@@ -658,8 +625,7 @@ object TestJourneys {
         cgtChargeReference = None,
         defaultAmountInPence = AmountInPence(1234),
         dueDate = None
-      ),
-      chosenWayToPay = None
+      )
     )
   }
 
@@ -677,8 +643,7 @@ object TestJourneys {
         chargeReference = EconomicCrimeLevyReturnNumber("XE123456789012"),
         defaultAmountInPence = AmountInPence(1234),
         dueDate = Some(LocalDate.of(2028, 12, 12))
-      ),
-      chosenWayToPay = None
+      )
     )
   }
 
@@ -694,8 +659,7 @@ object TestJourneys {
       createdOn = LocalDateTime.parse("2027-11-02T16:28:55.185"),
       journeySpecificData = JsdPfEconomicCrimeLevy(
         chargeReference = Some(EconomicCrimeLevyReturnNumber("XE123456789012"))
-      ),
-      chosenWayToPay = None
+      )
     )
   }
 
@@ -712,8 +676,7 @@ object TestJourneys {
       journeySpecificData = JsdVatC2c(
         vatC2cReference = VatC2cReference("XVC1A2B3C4D5E6F"),
         defaultAmountInPence = AmountInPence(1234)
-      ),
-      chosenWayToPay = None
+      )
     )
   }
 
@@ -729,8 +692,7 @@ object TestJourneys {
       createdOn = LocalDateTime.parse("2027-11-02T16:28:55.185"),
       journeySpecificData = JsdPfVatC2c(
         vatC2cReference = Some(VatC2cReference("XVC1A2B3C4D5E6F"))
-      ),
-      chosenWayToPay = None
+      )
     )
   }
 
@@ -747,8 +709,7 @@ object TestJourneys {
       journeySpecificData = JsdWcSimpleAssessment(
         simpleAssessmentReference = XRef14Char("XE123456789012"),
         defaultAmountInPence = AmountInPence(1234)
-      ),
-      chosenWayToPay = None
+      )
     )
   }
 
@@ -765,8 +726,7 @@ object TestJourneys {
       journeySpecificData = JsdWcClass1aNi(
         paymentReference = WcClass1aNiReference("123PH456789002713"),
         defaultAmountInPence = AmountInPence(1234)
-      ),
-      chosenWayToPay = None
+      )
     )
   }
 
@@ -783,8 +743,7 @@ object TestJourneys {
       journeySpecificData = JsdWcXref(
         chargeReference = XRef("XE123456789012"),
         defaultAmountInPence = AmountInPence(1234)
-      ),
-      chosenWayToPay = None
+      )
     )
   }
 
@@ -801,8 +760,7 @@ object TestJourneys {
       journeySpecificData = JsdWcEpayeLpp(
         chargeReference = XRef("XE123456789012"),
         defaultAmountInPence = AmountInPence(1234)
-      ),
-      chosenWayToPay = None
+      )
     )
   }
 
@@ -819,8 +777,7 @@ object TestJourneys {
       journeySpecificData = JsdWcEpayeNi(
         paymentReference = WcEpayeNiReference("123PH456789002501"),
         defaultAmountInPence = AmountInPence(1234)
-      ),
-      chosenWayToPay = None
+      )
     )
   }
 
@@ -837,8 +794,7 @@ object TestJourneys {
       journeySpecificData = JsdWcEpayeLateCis(
         chargeReference = XRef14Char("XE123456789012"),
         defaultAmountInPence = AmountInPence(1234)
-      ),
-      chosenWayToPay = None
+      )
     )
   }
 
@@ -854,8 +810,7 @@ object TestJourneys {
       createdOn = LocalDateTime.parse("2027-11-02T16:28:55.185"),
       journeySpecificData = JsdPfChildBenefitRepayments(
         yReference = Some(YRef("YA123456789123"))
-      ),
-      chosenWayToPay = None
+      )
     )
   }
 
@@ -872,8 +827,7 @@ object TestJourneys {
       journeySpecificData = JsdWcChildBenefitRepayments(
         yReference = YRef("YA123456789123"),
         defaultAmountInPence = AmountInPence(1234)
-      ),
-      chosenWayToPay = None
+      )
     )
   }
 
@@ -891,8 +845,7 @@ object TestJourneys {
         defaultAmountInPence = AmountInPence(1234),
         xRef = XRef("XE1234567890123"),
         dueDate = Some(LocalDate.of(2028, 12, 12))
-      ),
-      chosenWayToPay = None
+      )
     )
   }
 
@@ -909,8 +862,7 @@ object TestJourneys {
       journeySpecificData = JsdDdSdil(
         defaultAmountInPence = AmountInPence(1234),
         zsdl = Zsdl("XE1234567890123")
-      ),
-      chosenWayToPay = None
+      )
     )
   }
 
@@ -926,8 +878,7 @@ object TestJourneys {
       createdOn = LocalDateTime.parse("2027-11-02T16:28:55.185"),
       journeySpecificData = JsdPfSdil(
         softDrinksIndustryLevyRef = Some(SoftDrinksIndustryLevyRef("XE1234567890123"))
-      ),
-      chosenWayToPay = None
+      )
     )
     val journeyWithPenaltyReferenceBeforeBeginWebPayment: Journey[JsdPfSdil] = Journey[JsdPfSdil](
       _id = JourneyId(TestPayApiData.decryptedJourneyId),
@@ -940,8 +891,7 @@ object TestJourneys {
       createdOn = LocalDateTime.parse("2027-11-02T16:28:55.185"),
       journeySpecificData = JsdPfSdil(
         softDrinksIndustryLevyRef = Some(SoftDrinksIndustryLevyRef("XE123456789012"))
-      ),
-      chosenWayToPay = None
+      )
     )
   }
 
@@ -959,8 +909,7 @@ object TestJourneys {
         p800Ref = P800Ref("MA000003AP8002027"),
         p800ChargeRef = None,
         taxYear = TaxYear(2027)
-      ),
-      chosenWayToPay = None
+      )
     )
     val journeyWithP800ChargeRefBeforeBeginWebPayment: Journey[JsdPfP800] = Journey[JsdPfP800](
       _id = JourneyId(TestPayApiData.decryptedJourneyId),
@@ -975,8 +924,7 @@ object TestJourneys {
         p800Ref = P800Ref("MA000003AP8002027"),
         p800ChargeRef = Some(P800ChargeRef("BC007010065114")),
         taxYear = TaxYear(2027)
-      ),
-      chosenWayToPay = None
+      )
     )
   }
 
@@ -995,8 +943,7 @@ object TestJourneys {
         p800ChargeRef = None,
         taxYear = TaxYear(2027),
         defaultAmountInPence = AmountInPence(1234)
-      ),
-      chosenWayToPay = None
+      )
     )
     val journeyWithP800ChargeRefBeforeBeginWebPayment: Journey[JsdPtaP800] = Journey[JsdPtaP800](
       _id = JourneyId(TestPayApiData.decryptedJourneyId),
@@ -1012,8 +959,7 @@ object TestJourneys {
         p800ChargeRef = Some(P800ChargeRef("BC007010065114")),
         taxYear = TaxYear(2027),
         defaultAmountInPence = AmountInPence(1234)
-      ),
-      chosenWayToPay = None
+      )
     )
   }
 
@@ -1029,8 +975,7 @@ object TestJourneys {
       createdOn = LocalDateTime.parse("2027-11-02T16:28:55.185"),
       journeySpecificData = JsdPfSimpleAssessment(
         simpleAssessmentReference = Some(XRef14Char("XE123456789012"))
-      ),
-      chosenWayToPay = None
+      )
     )
   }
 
@@ -1050,8 +995,7 @@ object TestJourneys {
         taxYear = TaxYear(2027),
         defaultAmountInPence = AmountInPence(1234),
         dueDate = Some(LocalDate.of(2028, 12, 12))
-      ),
-      chosenWayToPay = None
+      )
     )
   }
 
@@ -1068,8 +1012,7 @@ object TestJourneys {
       journeySpecificData = JsdWcEpayeSeta(
         chargeReference = XRef("XE123456789012"),
         defaultAmountInPence = AmountInPence(1234)
-      ),
-      chosenWayToPay = None
+      )
     )
   }
 
@@ -1088,8 +1031,7 @@ object TestJourneys {
         period = testQuarterlyTaxPeriod,
         defaultAmountInPence = AmountInPence(1234),
         dueDate = Some(LocalDate.of(2028, 12, 12))
-      ),
-      chosenWayToPay = None
+      )
     )
   }
 
@@ -1106,8 +1048,7 @@ object TestJourneys {
       journeySpecificData = JsdPfNiEuVatOss(
         vrn = Some(Vrn("101747641")),
         period = Some(testQuarterlyTaxPeriod)
-      ),
-      chosenWayToPay = None
+      )
     )
   }
 
@@ -1126,8 +1067,7 @@ object TestJourneys {
         period = testCalendarPeriod,
         defaultAmountInPence = AmountInPence(1234),
         dueDate = Some(LocalDate.of(2028, 12, 12))
-      ),
-      chosenWayToPay = None
+      )
     )
   }
 
@@ -1144,8 +1084,7 @@ object TestJourneys {
       journeySpecificData = JsdPfNiEuVatIoss(
         ioss = Some(Ioss("IM1234567890")),
         period = Some(testCalendarPeriod)
-      ),
-      chosenWayToPay = None
+      )
     )
   }
 
@@ -1161,8 +1100,7 @@ object TestJourneys {
       createdOn = LocalDateTime.parse("2027-11-02T16:28:55.185"),
       journeySpecificData = JsdPfJobRetentionScheme(
         prn = Some(JrsRef("XJRS12345678901"))
-      ),
-      chosenWayToPay = None
+      )
     )
   }
 
@@ -1179,8 +1117,7 @@ object TestJourneys {
       journeySpecificData = JsdJrsJobRetentionScheme(
         jrsRef = JrsRef("XJRS12345678901"),
         defaultAmountInPence = AmountInPence(1234)
-      ),
-      chosenWayToPay = None
+      )
     )
   }
 
@@ -1198,8 +1135,7 @@ object TestJourneys {
         utr = SaUtr("1234567890"),
         defaultAmountInPence = AmountInPence(1234),
         dueDate = Some(LocalDate.now())
-      ),
-      chosenWayToPay = None
+      )
     )
   }
 
@@ -1218,8 +1154,7 @@ object TestJourneys {
         p302Ref = P800Ref("MA000003AP3022023"),
         taxYear = TaxYear(2023),
         defaultAmountInPence = AmountInPence(1234)
-      ),
-      chosenWayToPay = None
+      )
     )
   }
 
@@ -1238,8 +1173,7 @@ object TestJourneys {
         vatAmountInPence = VatAmount(123),
         dutyAmountInPence = CustomsDutyAmount(123),
         amendmentReference = Some(AmendmentReference(123456789))
-      ),
-      chosenWayToPay = None
+      )
     )
   }
 
@@ -1284,8 +1218,7 @@ object TestJourneys {
         ),
         amountPaidPreviously = Some(AmountPaidPreviously("55")),
         totalPaidNow = Some(TotalPaidNow("1234"))
-      ),
-      chosenWayToPay = None
+      )
     )
   }
 
@@ -1302,8 +1235,7 @@ object TestJourneys {
       journeySpecificData = JsdPfCds(
         cdsRef = Some(TestPayApiData.testCdsRef),
         year4Digits = 2027
-      ),
-      chosenWayToPay = None
+      )
     )
   }
 
@@ -1319,8 +1251,7 @@ object TestJourneys {
       createdOn = LocalDateTime.parse("2027-11-02T16:28:55.185"),
       journeySpecificData = JsdPfTpes(
         xRef = Some(XRef("XE123456789012"))
-      ),
-      chosenWayToPay = None
+      )
     )
   }
 
@@ -1336,8 +1267,7 @@ object TestJourneys {
       createdOn = LocalDateTime.parse("2027-11-02T16:28:55.185"),
       journeySpecificData = JsdPfMgd(
         prn = Some(XRef14Char("XE123456789012"))
-      ),
-      chosenWayToPay = None
+      )
     )
   }
 
@@ -1353,8 +1283,7 @@ object TestJourneys {
       createdOn = LocalDateTime.parse("2027-11-02T16:28:55.185"),
       journeySpecificData = JsdPfGbPbRgDuty(
         prn = Some(XRef14Char("XE123456789012"))
-      ),
-      chosenWayToPay = None
+      )
     )
   }
 
@@ -1370,8 +1299,7 @@ object TestJourneys {
       createdOn = LocalDateTime.parse("2027-11-02T16:28:55.185"),
       journeySpecificData = JsdPfTrust(
         trustsReference = Some(TrustReference("XE123456789012"))
-      ),
-      chosenWayToPay = None
+      )
     )
   }
 
@@ -1387,8 +1315,7 @@ object TestJourneys {
       createdOn = LocalDateTime.parse("2027-11-02T16:28:55.185"),
       journeySpecificData = JsdPfOther(
         otherRef = Some(XRef("XE123456789012"))
-      ),
-      chosenWayToPay = None
+      )
     )
   }
 
@@ -1404,8 +1331,7 @@ object TestJourneys {
       createdOn = LocalDateTime.parse("2027-11-02T16:28:55.185"),
       journeySpecificData = JsdPfPsAdmin(
         xRef = Some(XRef("XE123456789012"))
-      ),
-      chosenWayToPay = None
+      )
     )
   }
 
@@ -1422,8 +1348,7 @@ object TestJourneys {
       journeySpecificData = JsdWcSdlt(
         utrn = Utrn("123456789MA"),
         defaultAmountInPence = AmountInPence(1234)
-      ),
-      chosenWayToPay = None
+      )
     )
   }
 
@@ -1433,7 +1358,7 @@ object TestJourneys {
       sessionId = Some(SessionId("TestSession-4b87460d-6f43-4c4c-b810-d6f87c774854")),
       amountInPence = Some(AmountInPence(1234)),
       emailTemplateOptions = None,
-      navigation = None,
+      navigation = Some(NavigationOptions(returnUrl = Url("https://www.return-url.com"), backUrl = Url("https://www.back-to-pta.com"))),
       order = None,
       status = PaymentStatuses.Created,
       createdOn = LocalDateTime.parse("2027-11-02T16:28:55.185"),
@@ -1460,8 +1385,7 @@ object TestJourneys {
             )
           )
         )
-      ),
-      chosenWayToPay = None
+      )
     )
 
     val journeyBeforeBeginWebpaymentNoBasketReference: Journey[JsdStampTaxesOnShares] = Journey[JsdStampTaxesOnShares](
@@ -1489,8 +1413,7 @@ object TestJourneys {
             )
           )
         )
-      ),
-      chosenWayToPay = None
+      )
     )
   }
 
@@ -1510,9 +1433,7 @@ object TestJourneys {
         customerId = None,
         submissionId = None,
         basketDetails = None
-      ),
-      chosenWayToPay = None
+      )
     )
   }
-
 }
