@@ -14,6 +14,7 @@
  * limitations under the License.
  *@
 
+@import payapi.corcommon.model.TaxTypes
 @import payapi.corcommon.model.Origins
 @import payapi.corcommon.model.Reference
 @import payapi.corcommon.model.TaxTypes.{cds, mib, vatConsumerToConsumer, stampTaxesOnShares}
@@ -125,46 +126,60 @@
     }
     @** end of Mods specific content **@
 
-    @if(origin.toTaxType == vatConsumerToConsumer || origin.toTaxType == cds) {
-        <div id="what-happens-next-wrapper">
-            <h2 class="govuk-heading-m govuk-!-margin-top-7">@Messages("payment-complete.what-happens-next.header")</h2>
-            <p class="govuk-body">@Messages("payment-complete.what-happens-next.p1") @Messages("payment-complete.what-happens-next.link")</p>
-        </div>
-    } else if(origin.toTaxType == stampTaxesOnShares && maybeReturnUrl.isDefined) {
-        <div id="what-happens-next-wrapper">
-            <h2 class="govuk-heading-m govuk-!-margin-top-7">@Messages("payment-complete.what-happens-next.header")</h2>
-            <p class="govuk-body">
-                @Messages("payment-complete.what-happens-next.p1.stamp-taxes-on-shares.link.defaultText")
-                <a class="govuk-link" href="@maybeReturnUrl.get">@Messages("payment-complete.what-happens-next.stamp-taxes-on-shares.link")</a>
-            </p>
-        </div>
-    } else if(maybeReturnUrl.isDefined) {
-        @if(origin === Origins.PfMgd) {
-            @defaultWhatHappensNextContent
-            <div id="what-happens-next-wrapper">
-                <h2 class="govuk-heading-m govuk-!-margin-top-7">@Messages("payment-complete.what-happens-next.mgd.header")</h2>
-                <p class="govuk-body">@Messages("payment-complete.what-happens-next.mgd.p1-1") <a id="dd-button" class="govuk-link" href="@maybeReturnUrl.get">@Messages("payment-complete.what-happens-next.mgd.link")</a> @Messages("payment-complete.what-happens-next.mgd.p1-2")</p>
-                <p class="govuk-body">@Messages("payment-complete.what-happens-next.mgd.p3")</p>
-            </div>
-        } else {
+    @(origin.toTaxType, maybeReturnUrl) match {
+        case (TaxTypes.vatConsumerToConsumer | TaxTypes.cds, _) => {
             <div id="what-happens-next-wrapper">
                 <h2 class="govuk-heading-m govuk-!-margin-top-7">@Messages("payment-complete.what-happens-next.header")</h2>
-                @if(origin.isAWebChatOrigin) {
-                    <p class="govuk-body" id="web-chat-content">@Messages("payment-complete.what-happens-next.web-chat.info")</p>
-                }
+                <p class="govuk-body">@Messages("payment-complete.what-happens-next.p1") @Messages("payment-complete.what-happens-next.link")</p>
+            </div>
+        }
+        case (TaxTypes.stampTaxesOnShares, Some(url)) => {
+            <div id="what-happens-next-wrapper">
+                <h2 class="govuk-heading-m govuk-!-margin-top-7">@Messages("payment-complete.what-happens-next.header")</h2>
                 <p class="govuk-body">
-                    @Messages("payment-complete.what-happens-next.p1")
-                    <a class="govuk-link" href="@maybeReturnUrl.get">@Messages("payment-complete.what-happens-next.link")</a>
+                    @Messages("payment-complete.what-happens-next.p1.stamp-taxes-on-shares.link.defaultText")
+                    <a class="govuk-link" href="@url">@Messages("payment-complete.what-happens-next.stamp-taxes-on-shares.link")</a>
                 </p>
             </div>
         }
-    } else if(origin.toTaxType == stampTaxesOnShares) {
-        <div id="what-happens-next-wrapper">
-            <h2 class="govuk-heading-m govuk-!-margin-top-7">@Messages("payment-complete.what-happens-next.header")</h2>
-            <p class="govuk-body">@Messages("payment-complete.what-happens-next.p1.stamp-taxes-on-shares.link.defaultText") @Messages("payment-complete.what-happens-next.stamp-taxes-on-shares.link")</p>
-        </div>
-    } else {
-        @defaultWhatHappensNextContent
+        case (_, Some(url)) if origin === Origins.PfMgd => {
+            <div>
+                @defaultWhatHappensNextContent
+                <div id="what-happens-next-wrapper">
+                    <h2 class="govuk-heading-m govuk-!-margin-top-7">@Messages("payment-complete.what-happens-next.mgd.header")</h2>
+                    <p class="govuk-body">
+                        @Messages("payment-complete.what-happens-next.mgd.p1-1")
+                        <a id="dd-button" class="govuk-link" href="@url">@Messages("payment-complete.what-happens-next.mgd.link")</a>
+                        @Messages("payment-complete.what-happens-next.mgd.p1-2")
+                    </p>
+                    <p class="govuk-body">@Messages("payment-complete.what-happens-next.mgd.p3")</p>
+                </div>
+            </div>
+        }
+        case (_, Some(url)) => {
+            <div id="what-happens-next-wrapper">
+                <h2 class="govuk-heading-m govuk-!-margin-top-7">@Messages("payment-complete.what-happens-next.header")</h2>
+                @if(origin.isAWebChatOrigin) {
+                <p class="govuk-body" id="web-chat-content">@Messages("payment-complete.what-happens-next.web-chat.info")</p>
+                }
+                <p class="govuk-body">
+                    @Messages("payment-complete.what-happens-next.p1")
+                    <a class="govuk-link" href="@url">@Messages("payment-complete.what-happens-next.link")</a>
+                </p>
+            </div>
+        }
+        case (TaxTypes.stampTaxesOnShares, None) => {
+            <div id="what-happens-next-wrapper">
+                <h2 class="govuk-heading-m govuk-!-margin-top-7">@Messages("payment-complete.what-happens-next.header")</h2>
+                <p class="govuk-body">
+                    @Messages("payment-complete.what-happens-next.p1.stamp-taxes-on-shares.link.defaultText")
+                    @Messages("payment-complete.what-happens-next.stamp-taxes-on-shares.link")
+                </p>
+            </div>
+        }
+        case _ => {
+            @defaultWhatHappensNextContent
+        }
     }
 }
 
