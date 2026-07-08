@@ -120,7 +120,9 @@ class OriginExtendedSpec extends UnitSpec {
         PfPillar2                -> false,
         Pillar2                  -> false,
         StampTaxesOnShares       -> false,
-        PfStampTaxesOnShares     -> false
+        PfStampTaxesOnShares     -> false,
+        BtaVapingProductsDuty    -> false,
+        VpdVapingProductsDuty    -> false
       )
       originsSeq.foreach { case (origin, isAWebChatOrigin) =>
         s"isAWebChatOrigin: ${isAWebChatOrigin.toString} for origin ${origin.toString}" in {
@@ -231,7 +233,9 @@ class OriginExtendedSpec extends UnitSpec {
         `3psVat`                 -> true,
         WcSdlt                   -> true,
         StampTaxesOnShares       -> false,
-        PfStampTaxesOnShares     -> false
+        PfStampTaxesOnShares     -> false,
+        BtaVapingProductsDuty    -> false,
+        VpdVapingProductsDuty    -> false
       )
       originsSeq.foreach { case (origin, welshIsSupported) =>
         s"welsh supported: ${welshIsSupported.toString} for origin ${origin.toString}" in {

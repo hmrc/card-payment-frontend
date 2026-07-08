@@ -30,8 +30,8 @@ import uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins.ExtendedOrigin.Ori
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.TestHelpers.implementedOrigins
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.TestOps.FakeRequestOps
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.stubs.EmailStub
-import uk.gov.hmrc.cardpaymentfrontend.testsupport.testdata.{JourneyStatuses, TestJourneys}
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.testdata.TestJourneys.*
+import uk.gov.hmrc.cardpaymentfrontend.testsupport.testdata.{JourneyStatuses, TestJourneys}
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.{ItSpec, TestHelpers}
 import uk.gov.hmrc.cardpaymentfrontend.util.SafeEquals.EqualsOps
 import uk.gov.hmrc.http.HeaderCarrier
@@ -120,6 +120,8 @@ class EmailServiceSpec extends ItSpec with TableDrivenPropertyChecks {
       with JsdWcChildBenefitRepayments
       with JsdStampTaxesOnShares
       with JsdPfStampTaxesOnShares
+      with JsdBtaVapingProductsDuty
+      with JsdVpdVapingProductsDuty
 
     val scenarios: TableFor6[JourneyStatuses[_ >: JsdBounds <: JourneySpecificData], String, String, Option[String], Option[String], String] = Table(
       ("Journey", "Tax Type", "Tax Reference", "Commission", "Total Paid", "lang"),
@@ -391,7 +393,9 @@ class EmailServiceSpec extends ItSpec with TableDrivenPropertyChecks {
       (StampTaxesOnShares, "Securities Transfer Charge", "ending with 56789", None, None, "en"),
       (StampTaxesOnShares, "Securities Transfer Charge", "ending with 56789", commission, Some("13.57"), "en"),
       (PfStampTaxesOnShares, "Securities Transfer Charge", "ending with 89012", None, None, "en"),
-      (PfStampTaxesOnShares, "Securities Transfer Charge", "ending with 89012", commission, Some("13.57"), "en")
+      (PfStampTaxesOnShares, "Securities Transfer Charge", "ending with 89012", commission, Some("13.57"), "en"),
+      (BtaVapingProductsDuty, "email.tax-name.BtaVapingProductsDuty", "ending with 56789", None, None, "en"),
+      (VpdVapingProductsDuty, "email.tax-name.VpdVapingProductsDuty", "ending with 56789", commission, Some("13.57"), "en")
     )
 
     forAll(scenarios) { (j, taxType, taxReference, commission, totalPaid, lang) =>
