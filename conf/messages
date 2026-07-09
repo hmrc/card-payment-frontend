@@ -453,9 +453,8 @@ payment-complete.tax-name.WcEpayeSeta = Employers’ PAYE Settlement Agreement
 payment-complete.tax-name.Mib = Commercial goods carried in accompanied baggage or small vehicles
 payment-complete.tax-name.StampTaxesOnShares = Securities Transfer Charge
 payment-complete.tax-name.PfStampTaxesOnShares = Securities Transfer Charge
-##TODO Ask
-payment-complete.tax-name.BtaVapingProductsDuty = Securities Transfer Charge
-payment-complete.tax-name.VpdVapingProductsDuty = Securities Transfer Charge
+payment-complete.tax-name.BtaVapingProductsDuty = Vaping Products Duty
+payment-complete.tax-name.VpdVapingProductsDuty = Vaping Products Duty
 
 ## Payment Cancelled page
 

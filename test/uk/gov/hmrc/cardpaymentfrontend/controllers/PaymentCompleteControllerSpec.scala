@@ -3390,13 +3390,13 @@ object PaymentCompleteControllerSpec {
         debitCardJourney = TestJourneys.BtaVapingProductsDuty.journeyAfterSucceedDebitWebPayment,
         creditCardJourney = TestJourneys.BtaVapingProductsDuty.journeyAfterSucceedCreditWebPayment,
         englishSummaryRowsDebitCard = List(
-          "Tax"    -> "Securities Transfer Charge",
+          "Tax"    -> "Vaping Products Duty",
           "Date"   -> "2 November 2027",
           "Amount" -> "£12.34"
         ),
         maybeWelshSummaryRowsDebitCard = None,
         englishSummaryRowsCreditCard = List(
-          "Tax"                              -> "Securities Transfer Charge",
+          "Tax"                              -> "Vaping Products Duty",
           "Date"                             -> "2 November 2027",
           "Amount paid to HMRC"              -> "£12.34",
           "Card fee (9.97%), non-refundable" -> "£1.23",
@@ -3412,13 +3412,13 @@ object PaymentCompleteControllerSpec {
         debitCardJourney = TestJourneys.VpdVapingProductsDuty.journeyAfterSucceedDebitWebPayment,
         creditCardJourney = TestJourneys.VpdVapingProductsDuty.journeyAfterSucceedCreditWebPayment,
         englishSummaryRowsDebitCard = List(
-          "Tax"    -> "Securities Transfer Charge",
+          "Tax"    -> "Vaping Products Duty",
           "Date"   -> "2 November 2027",
           "Amount" -> "£12.34"
         ),
         maybeWelshSummaryRowsDebitCard = None,
         englishSummaryRowsCreditCard = List(
-          "Tax"                              -> "Securities Transfer Charge",
+          "Tax"                              -> "Vaping Products Duty",
           "Date"                             -> "2 November 2027",
           "Amount paid to HMRC"              -> "£12.34",
           "Card fee (9.97%), non-refundable" -> "£1.23",
