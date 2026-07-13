@@ -102,6 +102,8 @@ service-name.PfVatC2c = Talu eich TAW fewnforio
 service-name.WcEpayeLpp = Talu’ch cosb am dalu neu gyflwyno TWE yn hwyr
 service-name.WcEpayeNi = Talwch eich TWE a’ch Yswiriant Gwladol y cyflogwr
 service-name.WcEpayeSeta = Talwch eich Cytundeb Setliad TWE y cyflogwr
+service-name.BtaVapingProductsDuty = Pay your Vaping Products Duty
+service-name.VpdVapingProductsDuty = Pay your Vaping Products Duty
 
 
 ## Email address page
@@ -210,6 +212,8 @@ check-your-details.JrsJobRetentionScheme.reference = Cyfeirnod y taliad
 check-your-details.AppSa.reference = Cyfeirnod Unigryw y Trethdalwr (UTR)
 check-your-details.Mib.reference = Cyfeirnod y taliad
 check-your-details.BcPngr.reference = Cyfeirnod y taliad
+check-your-details.BtaVapingProductsDuty.reference = Cyfeirnod
+check-your-details.VpdVapingProductsDuty.reference = Cyfeirnod
 
 check-your-details.PfGbPbRgDuty.reference = Cyfeirnod
 check-your-details.PfMgd.reference = Cyfeirnod

@@ -1757,7 +1757,7 @@ class PaymentsSurveyServiceSpec extends ItSpec with TableDrivenPropertyChecks {
               contentOptions = SurveyContentOptions(
                 isWelshSupported = false,
                 title = SurveyBannerTitle(
-                  englishValue = "service-name.BtaVapingProductsDuty",
+                  englishValue = "Pay your Vaping Products Duty",
                   welshValue = None
                 )
               )
@@ -1780,7 +1780,7 @@ class PaymentsSurveyServiceSpec extends ItSpec with TableDrivenPropertyChecks {
               contentOptions = SurveyContentOptions(
                 isWelshSupported = false,
                 title = SurveyBannerTitle(
-                  englishValue = "service-name.VpdVapingProductsDuty",
+                  englishValue = "Pay your Vaping Products Duty",
                   welshValue = None
                 )
               )
