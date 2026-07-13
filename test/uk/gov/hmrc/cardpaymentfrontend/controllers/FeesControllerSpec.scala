@@ -3508,7 +3508,7 @@ class FeesControllerSpec extends ItSpec {
               case Origins.WcChildBenefitRepayments                      => Seq(expectedOpenBankingLink)
               case Origins.StampTaxesOnShares                            => Seq(expectedOpenBankingLink)
               case Origins.PfStampTaxesOnShares                          => Seq(expectedOpenBankingLink)
-              case Origins.BtaVapingProductsDuty | VpdVapingProductsDuty => Seq(expectedOpenBankingLink) // TODO PG not sure. Ask
+              case Origins.BtaVapingProductsDuty | VpdVapingProductsDuty => Seq(expectedOpenBankingLink, expectedVariableDirectDebitLink)
             }
 
             val journeySpecificData: JourneySpecificData = TestHelpers.deriveTestDataFromOrigin(origin).journeyBeforeBeginWebPayment.journeySpecificData
