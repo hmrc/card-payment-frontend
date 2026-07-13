@@ -40,7 +40,7 @@ class PaymentCompletePageSpec extends ItSpec {
       val doc = Jsoup.parse(contentAsString(systemUnderTest.renderPage(fakeGetRequest))).body()
       doc.select("a.govuk-link").asScala.toList.size shouldBe 5
       doc.select("#summary").text() shouldBe "View everything included in this basket (opens in new tab)"
-      doc.select("#summary").attr("href") shouldBe "#"
+      doc.select("#summary").attr("href") shouldBe "http://localhost:10158/baskets/payment-summary"
     }
 
     "not render a View everything included in this basket link for StampTaxesOnShares single payment journeys" in {
