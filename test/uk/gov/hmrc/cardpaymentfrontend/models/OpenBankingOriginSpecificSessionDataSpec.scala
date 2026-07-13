@@ -767,10 +767,34 @@ class OpenBankingOriginSpecificSessionDataSpec extends UnitSpec {
       roundTripJsonTest(osd, testJson)
     }
 
+    "PfVapingProductsDuty" in {
+      val testJson = Json.parse(
+        // language=JSON
+        """{
+          |  "vapingDutyReference": "XBKT123456789",
+          |  "amountInPence": 1234,
+          |  "origin": "PfVapingProductsDuty"
+          |}""".stripMargin
+      )
+      val osd      =
+        ExtendedPfVapingProductsDuty.openBankingOriginSpecificSessionData(TestJourneys.PfVapingProductsDuty.journeyBeforeBeginWebPayment.journeySpecificData)
+      testOsd(
+        osd,
+        PfVapingProductsDutySessionData(
+          VapingDutyReference("XBKT123456789"),
+          AmountInPence(1234),
+          returnUrl = None
+        ),
+        "XBKT123456789",
+        "XBKT123456789"
+      )
+      roundTripJsonTest(osd, testJson)
+    }
+
   }
 
   "sanity check for implemented origins" in {
-    TestHelpers.implementedOrigins.size shouldBe 74 withClue "** This dummy test is here to remind you to update the tests above. Bump up the expected number when an origin is added to implemented origins **"
+    TestHelpers.implementedOrigins.size shouldBe 75 withClue "** This dummy test is here to remind you to update the tests above. Bump up the expected number when an origin is added to implemented origins **"
   }
 
 }

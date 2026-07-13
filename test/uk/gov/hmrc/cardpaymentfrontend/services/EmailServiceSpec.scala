@@ -122,6 +122,7 @@ class EmailServiceSpec extends ItSpec with TableDrivenPropertyChecks {
       with JsdPfStampTaxesOnShares
       with JsdBtaVapingProductsDuty
       with JsdVpdVapingProductsDuty
+      with JsdPfVapingProductsDuty
 
     val scenarios: TableFor6[JourneyStatuses[_ >: JsdBounds <: JourneySpecificData], String, String, Option[String], Option[String], String] = Table(
       ("Journey", "Tax Type", "Tax Reference", "Commission", "Total Paid", "lang"),
@@ -395,7 +396,8 @@ class EmailServiceSpec extends ItSpec with TableDrivenPropertyChecks {
       (PfStampTaxesOnShares, "Securities Transfer Charge", "ending with 89012", None, None, "en"),
       (PfStampTaxesOnShares, "Securities Transfer Charge", "ending with 89012", commission, Some("13.57"), "en"),
       (BtaVapingProductsDuty, "Vaping Products Duty", "ending with 56789", None, None, "en"),
-      (VpdVapingProductsDuty, "Vaping Products Duty", "ending with 56789", commission, Some("13.57"), "en")
+      (VpdVapingProductsDuty, "Vaping Products Duty", "ending with 56789", commission, Some("13.57"), "en"),
+      (PfVapingProductsDuty, "Vaping Products Duty", "ending with 56789", commission, Some("13.57"), "en")
     )
 
     forAll(scenarios) { (j, taxType, taxReference, commission, totalPaid, lang) =>

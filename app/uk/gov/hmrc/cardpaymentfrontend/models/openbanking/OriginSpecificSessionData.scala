@@ -160,6 +160,7 @@ object OriginSpecificSessionData                                    {
       case PfStampTaxesOnShares     => Json.format[PfStampTaxesOnSharesSessionData].reads(json)
       case BtaVapingProductsDuty    => Json.format[BtaVapingProductsDutySessionData].reads(json)
       case VpdVapingProductsDuty    => Json.format[VpdVapingProductsDutySessionData].reads(json)
+      case PfVapingProductsDuty     => Json.format[PfVapingProductsDutySessionData].reads(json)
 
       // Todo: Remove PfP800 when PtaP800 is fully available
       case origin @ (PfOther | PfP800 | BcPngr | Parcels | Mib | PfSimpleAssessment | PtaSimpleAssessment | WcXref) =>
@@ -260,6 +261,7 @@ object OriginSpecificSessionData                                    {
       case sessionData: PfStampTaxesOnSharesSessionData     => Json.format[PfStampTaxesOnSharesSessionData].writes(sessionData)
       case sessionData: BtaVapingProductsDutySessionData    => Json.format[BtaVapingProductsDutySessionData].writes(sessionData)
       case sessionData: VpdVapingProductsDutySessionData    => Json.format[VpdVapingProductsDutySessionData].writes(sessionData)
+      case sessionData: PfVapingProductsDutySessionData     => Json.format[PfVapingProductsDutySessionData].writes(sessionData)
 
     }) + ("origin" -> Json.toJson(o.origin))
 
@@ -858,6 +860,15 @@ final case class VpdVapingProductsDutySessionData(
   amountInPence:       AmountInPence,
   returnUrl:           Option[Url]
 ) extends OriginSpecificSessionData(VpdVapingProductsDuty) {
+  def paymentReference: Reference = ReferenceMaker.makeVpdReference(vapingDutyReference) // not sure if this is right atm, we can tweak later
+  def searchTag                   = SearchTag(paymentReference.value)                    // not sure if this is right atm, we can tweak later
+}
+
+final case class PfVapingProductsDutySessionData(
+  vapingDutyReference: VapingDutyReference,
+  amountInPence:       AmountInPence,
+  returnUrl:           Option[Url]
+) extends OriginSpecificSessionData(PfVapingProductsDuty) {
   def paymentReference: Reference = ReferenceMaker.makeVpdReference(vapingDutyReference) // not sure if this is right atm, we can tweak later
   def searchTag                   = SearchTag(paymentReference.value)                    // not sure if this is right atm, we can tweak later
 }

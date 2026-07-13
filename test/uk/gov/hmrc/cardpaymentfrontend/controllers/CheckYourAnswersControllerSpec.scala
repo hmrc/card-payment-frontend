@@ -1634,9 +1634,23 @@ class CheckYourAnswersControllerSpec extends ItSpec with TableDrivenPropertyChec
       )
     }
 
+    "[PfVapingProductsDuty] should render the payment reference row correctly" in {
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfVapingProductsDuty.journeyBeforeBeginWebPayment)
+      val result       = systemUnderTest.renderPage(fakeRequest())
+      val document     = Jsoup.parse(contentAsString(result))
+      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(0)
+      assertRow(
+        referenceRow,
+        "Payment reference",
+        "XBKT123456789",
+        Some("Change Payment reference"),
+        Some("http://localhost:9056/pay/pay-by-card-change-reference-number")
+      )
+    }
+
     "sanity check for implemented origins" in {
       // remember to add the singular tests for reference rows as well as fdp if applicable, they are not covered in the implementedOrigins forall tests
-      TestHelpers.implementedOrigins.size shouldBe 74 withClue "** This dummy test is here to remind you to update the tests above. Bump up the expected number when an origin is added to implemented origins **"
+      TestHelpers.implementedOrigins.size shouldBe 75 withClue "** This dummy test is here to remind you to update the tests above. Bump up the expected number when an origin is added to implemented origins **"
     }
 
   }

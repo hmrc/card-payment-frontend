@@ -236,6 +236,7 @@ check-your-details.StampTaxesOnShares.reference = Payment reference
 check-your-details.PfStampTaxesOnShares.reference = Securities transfer charge reference
 check-your-details.BtaVapingProductsDuty.reference = Reference number
 check-your-details.VpdVapingProductsDuty.reference = Reference number
+check-your-details.PfVapingProductsDuty.reference = Reference number
 
 ## Address Page
 address.heading = Card billing address
@@ -459,6 +460,7 @@ payment-complete.tax-name.StampTaxesOnShares = Securities Transfer Charge
 payment-complete.tax-name.PfStampTaxesOnShares = Securities Transfer Charge
 payment-complete.tax-name.BtaVapingProductsDuty = Vaping Products Duty
 payment-complete.tax-name.VpdVapingProductsDuty = Vaping Products Duty
+payment-complete.tax-name.PfVapingProductsDuty = Vaping Products Duty
 
 ## Payment Cancelled page
 
@@ -561,8 +563,10 @@ email.tax-name.PfOther = Other taxes, penalties and enquiry settlements
 email.tax-name.PfPsAdmin = Pension scheme tax charges
 email.tax-name.StampTaxesOnShares = Securities Transfer Charge
 email.tax-name.PfStampTaxesOnShares = Securities Transfer Charge
+##TODO Ask
 email.tax-name.BtaVapingProductsDuty = Vaping Products Duty
 email.tax-name.VpdVapingProductsDuty = Vaping Products Duty
+email.tax-name.PfVapingProductsDuty = Vaping Products Duty
 
 ## Payments survey
 payments-survey.bta.return-message = Skip survey, return to business tax account
