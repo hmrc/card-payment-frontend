@@ -42,10 +42,11 @@ import payapi.corcommon.model.taxes.stos.{CustomerId, SecuritiesTransferChargeRe
 import payapi.corcommon.model.taxes.trusts.TrustReference
 import payapi.corcommon.model.taxes.vat.{CalendarPeriod, VatChargeReference, Vrn}
 import payapi.corcommon.model.taxes.vatc2c.VatC2cReference
+import payapi.corcommon.model.taxes.vpd.VapingDutyReference
 import payapi.corcommon.model.thirdpartysoftware.{ClientJourneyId, FriendlyName}
 import payapi.corcommon.model.times.period.{CalendarQuarterlyPeriod, TaxYear}
 import payapi.corcommon.model.webchat.WcEpayeNiReference
-import payapi.corcommon.model.{Origin, Reference, SearchTag}
+import payapi.corcommon.model.{AmountInPence, Origin, Reference, SearchTag}
 import play.api.libs.functional.syntax.toFunctionalBuilderOps
 import play.api.libs.json.*
 
@@ -157,6 +158,8 @@ object OriginSpecificSessionData                                    {
       case PtaP800                  => Json.format[PtaP800SessionData].reads(json)
       case StampTaxesOnShares       => Json.format[StampTaxesOnSharesSessionData].reads(json)
       case PfStampTaxesOnShares     => Json.format[PfStampTaxesOnSharesSessionData].reads(json)
+      case BtaVapingProductsDuty    => Json.format[BtaVapingProductsDutySessionData].reads(json)
+      case VpdVapingProductsDuty    => Json.format[VpdVapingProductsDutySessionData].reads(json)
 
       // Todo: Remove PfP800 when PtaP800 is fully available
       case origin @ (PfOther | PfP800 | BcPngr | Parcels | Mib | PfSimpleAssessment | PtaSimpleAssessment | WcXref) =>
@@ -255,6 +258,9 @@ object OriginSpecificSessionData                                    {
       case sessionData: PtaP800SessionData                  => Json.format[PtaP800SessionData].writes(sessionData)
       case sessionData: StampTaxesOnSharesSessionData       => Json.format[StampTaxesOnSharesSessionData].writes(sessionData)
       case sessionData: PfStampTaxesOnSharesSessionData     => Json.format[PfStampTaxesOnSharesSessionData].writes(sessionData)
+      case sessionData: BtaVapingProductsDutySessionData    => Json.format[BtaVapingProductsDutySessionData].writes(sessionData)
+      case sessionData: VpdVapingProductsDutySessionData    => Json.format[VpdVapingProductsDutySessionData].writes(sessionData)
+
     }) + ("origin" -> Json.toJson(o.origin))
 
   implicit val format: OFormat[OriginSpecificSessionData] = OFormat(reads, writes)
@@ -836,4 +842,22 @@ final case class PfStampTaxesOnSharesSessionData(
     )(securitiesTransferChargeReference => Reference(securitiesTransferChargeReference.canonicalizedValue))
   } // not sure if this is right atm, we can tweak later
   def searchTag = SearchTag(paymentReference.value) // not sure if this is right atm, we can tweak later
+}
+
+final case class BtaVapingProductsDutySessionData(
+  vapingDutyReference: VapingDutyReference,
+  amountInPence:       AmountInPence,
+  returnUrl:           Option[Url]
+) extends OriginSpecificSessionData(BtaVapingProductsDuty) {
+  def paymentReference: Reference = ReferenceMaker.makeVpdReference(vapingDutyReference) // not sure if this is right atm, we can tweak later
+  def searchTag                   = SearchTag(paymentReference.value)                    // not sure if this is right atm, we can tweak later
+}
+
+final case class VpdVapingProductsDutySessionData(
+  vapingDutyReference: VapingDutyReference,
+  amountInPence:       AmountInPence,
+  returnUrl:           Option[Url]
+) extends OriginSpecificSessionData(VpdVapingProductsDuty) {
+  def paymentReference: Reference = ReferenceMaker.makeVpdReference(vapingDutyReference) // not sure if this is right atm, we can tweak later
+  def searchTag                   = SearchTag(paymentReference.value)                    // not sure if this is right atm, we can tweak later
 }

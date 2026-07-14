@@ -746,7 +746,7 @@ class PaymentCompleteControllerSpec extends ItSpec {
       }
 
       "should have a test for all origins below this one" in {
-        TestHelpers.implementedOrigins.size shouldBe 72 withClue "** This dummy test is here to remind you to update the tests below. Bump up the expected number when an origin is added to implemented origins **"
+        TestHelpers.implementedOrigins.size shouldBe 74 withClue "** This dummy test is here to remind you to update the tests below. Bump up the expected number when an origin is added to implemented origins **"
       }
 
       TestHelpers.implementedOrigins
@@ -3375,6 +3375,50 @@ object PaymentCompleteControllerSpec {
         maybeWelshSummaryRowsDebitCard = None,
         englishSummaryRowsCreditCard = List(
           "Tax"                              -> "Securities Transfer Charge",
+          "Date"                             -> "2 November 2027",
+          "Amount paid to HMRC"              -> "£12.34",
+          "Card fee (9.97%), non-refundable" -> "£1.23",
+          "Total paid"                       -> "£13.57"
+        ),
+        maybeWelshSummaryRowsCreditCard = None,
+        hasWelshTest = false,
+        hasAReturnUrl = false
+      )
+
+    case BtaVapingProductsDuty =>
+      TestScenarioInfo(
+        debitCardJourney = TestJourneys.BtaVapingProductsDuty.journeyAfterSucceedDebitWebPayment,
+        creditCardJourney = TestJourneys.BtaVapingProductsDuty.journeyAfterSucceedCreditWebPayment,
+        englishSummaryRowsDebitCard = List(
+          "Tax"    -> "Vaping Products Duty",
+          "Date"   -> "2 November 2027",
+          "Amount" -> "£12.34"
+        ),
+        maybeWelshSummaryRowsDebitCard = None,
+        englishSummaryRowsCreditCard = List(
+          "Tax"                              -> "Vaping Products Duty",
+          "Date"                             -> "2 November 2027",
+          "Amount paid to HMRC"              -> "£12.34",
+          "Card fee (9.97%), non-refundable" -> "£1.23",
+          "Total paid"                       -> "£13.57"
+        ),
+        maybeWelshSummaryRowsCreditCard = None,
+        hasWelshTest = false,
+        hasAReturnUrl = false
+      )
+
+    case VpdVapingProductsDuty =>
+      TestScenarioInfo(
+        debitCardJourney = TestJourneys.VpdVapingProductsDuty.journeyAfterSucceedDebitWebPayment,
+        creditCardJourney = TestJourneys.VpdVapingProductsDuty.journeyAfterSucceedCreditWebPayment,
+        englishSummaryRowsDebitCard = List(
+          "Tax"    -> "Vaping Products Duty",
+          "Date"   -> "2 November 2027",
+          "Amount" -> "£12.34"
+        ),
+        maybeWelshSummaryRowsDebitCard = None,
+        englishSummaryRowsCreditCard = List(
+          "Tax"                              -> "Vaping Products Duty",
           "Date"                             -> "2 November 2027",
           "Amount paid to HMRC"              -> "£12.34",
           "Card fee (9.97%), non-refundable" -> "£1.23",

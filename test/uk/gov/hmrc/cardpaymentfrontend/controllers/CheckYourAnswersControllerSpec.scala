@@ -193,6 +193,8 @@ class CheckYourAnswersControllerSpec extends ItSpec with TableDrivenPropertyChec
         case Origins.WcSdlt                   => 0
         case Origins.WcSimpleAssessment       => 0
         case Origins.WcXref                   => 0
+        case Origins.BtaVapingProductsDuty    => 0
+        case Origins.VpdVapingProductsDuty    => 0
         case _                                => 1
       }
     }
@@ -229,6 +231,8 @@ class CheckYourAnswersControllerSpec extends ItSpec with TableDrivenPropertyChec
         case Origins.WcSdlt                   => 1
         case Origins.WcSimpleAssessment       => 1
         case Origins.WcXref                   => 1
+        case Origins.BtaVapingProductsDuty    => 1
+        case Origins.VpdVapingProductsDuty    => 1
         case _                                => 2
       }
     }
@@ -264,6 +268,8 @@ class CheckYourAnswersControllerSpec extends ItSpec with TableDrivenPropertyChec
         case Origins.WcSdlt                   => 2
         case Origins.WcSimpleAssessment       => 2
         case Origins.WcXref                   => 2
+        case Origins.BtaVapingProductsDuty    => 2
+        case Origins.VpdVapingProductsDuty    => 2
         case _                                => 3
       }
     }
@@ -1630,7 +1636,7 @@ class CheckYourAnswersControllerSpec extends ItSpec with TableDrivenPropertyChec
 
     "sanity check for implemented origins" in {
       // remember to add the singular tests for reference rows as well as fdp if applicable, they are not covered in the implementedOrigins forall tests
-      TestHelpers.implementedOrigins.size shouldBe 72 withClue "** This dummy test is here to remind you to update the tests above. Bump up the expected number when an origin is added to implemented origins **"
+      TestHelpers.implementedOrigins.size shouldBe 74 withClue "** This dummy test is here to remind you to update the tests above. Bump up the expected number when an origin is added to implemented origins **"
     }
 
   }

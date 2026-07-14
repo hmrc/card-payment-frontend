@@ -1739,6 +1739,52 @@ class PaymentsSurveyServiceSpec extends ItSpec with TableDrivenPropertyChecks {
                 )
               )
             ) -> false
+          case Origins.BtaVapingProductsDuty    =>
+            PaymentSurveyJourneyRequest(
+              origin = "BtaVapingProductsDuty",
+              returnMsg = "Skip survey",
+              returnHref = "https://www.gov.uk/government/organisations/hm-revenue-customs",
+              auditName = "vaping-products-duty",
+              audit = AuditOptions(
+                userType = "LoggedIn",
+                journey = Some("Successful"),
+                orderId = Some(TestJourneys.StampTaxesOnShares.journeyAfterSucceedDebitWebPayment.referenceValue),
+                liability = Some("vaping-products-duty"),
+                surveySource = "card-payment-frontend",
+                paymentId = "Some-transaction-ref",
+                origin = "BtaVapingProductsDuty"
+              ),
+              contentOptions = SurveyContentOptions(
+                isWelshSupported = false,
+                title = SurveyBannerTitle(
+                  englishValue = "Pay Vaping Products Duty",
+                  welshValue = None
+                )
+              )
+            ) -> true
+          case Origins.VpdVapingProductsDuty    =>
+            PaymentSurveyJourneyRequest(
+              origin = "VpdVapingProductsDuty",
+              returnMsg = "Skip survey",
+              returnHref = "https://www.gov.uk/government/organisations/hm-revenue-customs",
+              auditName = "vaping-products-duty",
+              audit = AuditOptions(
+                userType = "LoggedIn",
+                journey = Some("Successful"),
+                orderId = Some("XBKT123456789"),
+                liability = Some("vaping-products-duty"),
+                surveySource = "card-payment-frontend",
+                paymentId = "Some-transaction-ref",
+                origin = "VpdVapingProductsDuty"
+              ),
+              contentOptions = SurveyContentOptions(
+                isWelshSupported = false,
+                title = SurveyBannerTitle(
+                  englishValue = "Pay Vaping Products Duty",
+                  welshValue = None
+                )
+              )
+            ) -> true
           case Origins.Parcels                  => throw new MatchError("Not implemented yet")
           case Origins.PfCdsCash                => throw new MatchError("Not implemented yet")
           case Origins.PfSpiritDrinks           => throw new MatchError("Not implemented yet")

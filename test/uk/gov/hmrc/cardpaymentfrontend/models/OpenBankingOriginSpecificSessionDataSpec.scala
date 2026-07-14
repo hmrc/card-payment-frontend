@@ -34,11 +34,12 @@ import payapi.corcommon.model.taxes.ppt.PptReference
 import payapi.corcommon.model.taxes.sa.SaUtr
 import payapi.corcommon.model.taxes.sdil.Zsdl
 import payapi.corcommon.model.taxes.sdlt.Utrn
-import payapi.corcommon.model.taxes.stos.StosChargeType.SecurityTransferCharge
 import payapi.corcommon.model.taxes.stos.*
+import payapi.corcommon.model.taxes.stos.StosChargeType.SecurityTransferCharge
 import payapi.corcommon.model.taxes.trusts.TrustReference
 import payapi.corcommon.model.taxes.vat.{CalendarPeriod, VatChargeReference, Vrn}
 import payapi.corcommon.model.taxes.vatc2c.VatC2cReference
+import payapi.corcommon.model.taxes.vpd.VapingDutyReference
 import payapi.corcommon.model.times.period.CalendarQuarter.OctoberToDecember
 import payapi.corcommon.model.times.period.TaxQuarter.AprilJuly
 import payapi.corcommon.model.times.period.{CalendarQuarterlyPeriod, TaxMonth, TaxYear}
@@ -718,10 +719,58 @@ class OpenBankingOriginSpecificSessionDataSpec extends UnitSpec {
       roundTripJsonTest(osd, testJson)
     }
 
+    "BtaVapingProductsDuty" in {
+      val testJson = Json.parse(
+        // language=JSON
+        """{
+          |  "vapingDutyReference": "XBKT123456789",
+          |  "amountInPence": 1234,
+          |  "origin": "BtaVapingProductsDuty"
+          |}""".stripMargin
+      )
+      val osd      =
+        ExtendedBtaVapingProductsDuty.openBankingOriginSpecificSessionData(TestJourneys.BtaVapingProductsDuty.journeyBeforeBeginWebPayment.journeySpecificData)
+      testOsd(
+        osd,
+        BtaVapingProductsDutySessionData(
+          VapingDutyReference("XBKT123456789"),
+          AmountInPence(1234),
+          returnUrl = None
+        ),
+        "XBKT123456789",
+        "XBKT123456789"
+      )
+      roundTripJsonTest(osd, testJson)
+    }
+
+    "VpdVapingProductsDuty" in {
+      val testJson = Json.parse(
+        // language=JSON
+        """{
+          |  "vapingDutyReference": "XBKT123456789",
+          |  "amountInPence": 1234,
+          |  "origin": "VpdVapingProductsDuty"
+          |}""".stripMargin
+      )
+      val osd      =
+        ExtendedVpdVapingProductsDuty.openBankingOriginSpecificSessionData(TestJourneys.VpdVapingProductsDuty.journeyBeforeBeginWebPayment.journeySpecificData)
+      testOsd(
+        osd,
+        VpdVapingProductsDutySessionData(
+          VapingDutyReference("XBKT123456789"),
+          AmountInPence(1234),
+          returnUrl = None
+        ),
+        "XBKT123456789",
+        "XBKT123456789"
+      )
+      roundTripJsonTest(osd, testJson)
+    }
+
   }
 
   "sanity check for implemented origins" in {
-    TestHelpers.implementedOrigins.size shouldBe 72 withClue "** This dummy test is here to remind you to update the tests above. Bump up the expected number when an origin is added to implemented origins **"
+    TestHelpers.implementedOrigins.size shouldBe 74 withClue "** This dummy test is here to remind you to update the tests above. Bump up the expected number when an origin is added to implemented origins **"
   }
 
 }
