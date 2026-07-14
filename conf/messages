@@ -103,8 +103,8 @@ service-name.WcEpayeNi = Pay your employers’ PAYE and National Insurance
 service-name.WcEpayeSeta = Pay your PAYE Settlement Agreement
 service-name.StampTaxesOnShares = Pay for a securities transfer
 service-name.PfStampTaxesOnShares = Pay for a securities transfer
-service-name.BtaVapingProductsDuty = Pay your Vaping Products Duty
-service-name.VpdVapingProductsDuty = Pay your Vaping Products Duty
+service-name.BtaVapingProductsDuty = Pay Vaping Products Duty
+service-name.VpdVapingProductsDuty = Pay Vaping Products Duty
 
 ## Email address page
 email-address.heading = What is your email address? (optional)

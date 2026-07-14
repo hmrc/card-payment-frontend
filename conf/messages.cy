@@ -102,8 +102,8 @@ service-name.PfVatC2c = Talu eich TAW fewnforio
 service-name.WcEpayeLpp = Talu’ch cosb am dalu neu gyflwyno TWE yn hwyr
 service-name.WcEpayeNi = Talwch eich TWE a’ch Yswiriant Gwladol y cyflogwr
 service-name.WcEpayeSeta = Talwch eich Cytundeb Setliad TWE y cyflogwr
-service-name.BtaVapingProductsDuty = Pay your Vaping Products Duty
-service-name.VpdVapingProductsDuty = Pay your Vaping Products Duty
+service-name.BtaVapingProductsDuty = Pay Vaping Products Duty
+service-name.VpdVapingProductsDuty = Pay Vaping Products Duty
 
 
 ## Email address page
