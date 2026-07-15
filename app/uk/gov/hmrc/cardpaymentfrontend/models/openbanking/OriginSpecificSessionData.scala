@@ -866,7 +866,6 @@ final case class VpdVapingProductsDutySessionData(
 
 final case class PfVapingProductsDutySessionData(
   vapingDutyReference: VapingDutyReference,
-  amountInPence:       AmountInPence,
   returnUrl:           Option[Url]
 ) extends OriginSpecificSessionData(PfVapingProductsDuty) {
   def paymentReference: Reference = ReferenceMaker.makeVpdReference(vapingDutyReference) // not sure if this is right atm, we can tweak later

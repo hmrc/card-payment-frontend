@@ -17,40 +17,24 @@
 package uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins
 
 import payapi.cardpaymentjourney.model.journey.{JourneySpecificData, JsdPfVapingProductsDuty}
-import play.api.mvc.{AnyContent, Call}
+import play.api.mvc.AnyContent
 import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
-import uk.gov.hmrc.cardpaymentfrontend.models.{CheckYourAnswersRow, Link, PaymentMethod}
-import uk.gov.hmrc.cardpaymentfrontend.models.PaymentMethod.{Bacs, Card, OpenBanking}
-import uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins.ExtendedPfVapingProductsDuty.changeReferenceUrl
+import uk.gov.hmrc.cardpaymentfrontend.models.PaymentMethod.{Bacs, Card, OpenBanking, VariableDirectDebit}
 import uk.gov.hmrc.cardpaymentfrontend.models.openbanking.{OriginSpecificSessionData, PfVapingProductsDutySessionData}
+import uk.gov.hmrc.cardpaymentfrontend.models.{CheckYourAnswersRow, PaymentMethod}
 
 object ExtendedPfVapingProductsDuty extends ExtendedOrigin:
   override val serviceNameMessageKey: String = "service-name.PfVapingProductsDuty"
   override val taxNameMessageKey: String     = "payment-complete.tax-name.PfVapingProductsDuty"
 
-  def cardFeesPagePaymentMethods: Set[PaymentMethod] = Set(OpenBanking, Card)
+  def cardFeesPagePaymentMethods: Set[PaymentMethod] = Set(OpenBanking, Card, VariableDirectDebit)
 
-  def paymentMethods(): Set[PaymentMethod] = Set(Card, OpenBanking, Bacs)
+  def paymentMethods(): Set[PaymentMethod] = Set(Card, OpenBanking, Bacs, VariableDirectDebit)
 
-  override def checkYourAnswersReferenceRow(journeyRequest: JourneyRequest[AnyContent])(payFrontendBaseUrl: String): Option[CheckYourAnswersRow] = {
-    Some(
-      CheckYourAnswersRow(
-        titleMessageKey = "check-your-details.PfVapingProductsDuty.reference",
-        value = Seq(journeyRequest.journey.referenceValue),
-        changeLink = Some(
-          Link(
-            href = Call("GET", changeReferenceUrl(payFrontendBaseUrl)),
-            linkId = "check-your-details-reference-change-link",
-            messageKey = "check-your-details.change"
-          )
-        )
-      )
-    )
-  }
+  override def checkYourAnswersReferenceRow(journeyRequest: JourneyRequest[AnyContent])(payFrontendBaseUrl: String): Option[CheckYourAnswersRow] = None
 
   override def openBankingOriginSpecificSessionData: JourneySpecificData => Option[OriginSpecificSessionData] = {
-    case j: JsdPfVapingProductsDuty =>
-      Some(PfVapingProductsDutySessionData(j.vapingDutyReference, j.defaultAmountInPence, None))
+    case j: JsdPfVapingProductsDuty => j.vapingDutyReference.map(ref => PfVapingProductsDutySessionData(ref, None))
     case _                          => throw new RuntimeException("Incorrect origin found")
   }
 

@@ -195,6 +195,7 @@ class CheckYourAnswersControllerSpec extends ItSpec with TableDrivenPropertyChec
         case Origins.WcXref                   => 0
         case Origins.BtaVapingProductsDuty    => 0
         case Origins.VpdVapingProductsDuty    => 0
+        case Origins.PfVapingProductsDuty     => 0
         case _                                => 1
       }
     }
@@ -233,6 +234,7 @@ class CheckYourAnswersControllerSpec extends ItSpec with TableDrivenPropertyChec
         case Origins.WcXref                   => 1
         case Origins.BtaVapingProductsDuty    => 1
         case Origins.VpdVapingProductsDuty    => 1
+        case Origins.PfVapingProductsDuty     => 1
         case _                                => 2
       }
     }
@@ -270,6 +272,7 @@ class CheckYourAnswersControllerSpec extends ItSpec with TableDrivenPropertyChec
         case Origins.WcXref                   => 2
         case Origins.BtaVapingProductsDuty    => 2
         case Origins.VpdVapingProductsDuty    => 2
+        case Origins.PfVapingProductsDuty     => 2
         case _                                => 3
       }
     }
@@ -1630,20 +1633,6 @@ class CheckYourAnswersControllerSpec extends ItSpec with TableDrivenPropertyChec
         "Securities transfer charge reference",
         "XE123456789012",
         Some("Change Securities transfer charge reference"),
-        Some("http://localhost:9056/pay/pay-by-card-change-reference-number")
-      )
-    }
-
-    "[PfVapingProductsDuty] should render the payment reference row correctly" in {
-      PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfVapingProductsDuty.journeyBeforeBeginWebPayment)
-      val result       = systemUnderTest.renderPage(fakeRequest())
-      val document     = Jsoup.parse(contentAsString(result))
-      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(0)
-      assertRow(
-        referenceRow,
-        "Payment reference",
-        "XBKT123456789",
-        Some("Change Payment reference"),
         Some("http://localhost:9056/pay/pay-by-card-change-reference-number")
       )
     }

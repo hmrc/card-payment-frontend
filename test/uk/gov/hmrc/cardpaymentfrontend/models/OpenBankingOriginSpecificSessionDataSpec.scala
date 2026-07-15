@@ -772,7 +772,6 @@ class OpenBankingOriginSpecificSessionDataSpec extends UnitSpec {
         // language=JSON
         """{
           |  "vapingDutyReference": "XBKT123456789",
-          |  "amountInPence": 1234,
           |  "origin": "PfVapingProductsDuty"
           |}""".stripMargin
       )
@@ -782,7 +781,6 @@ class OpenBankingOriginSpecificSessionDataSpec extends UnitSpec {
         osd,
         PfVapingProductsDutySessionData(
           VapingDutyReference("XBKT123456789"),
-          AmountInPence(1234),
           returnUrl = None
         ),
         "XBKT123456789",

@@ -1482,8 +1482,7 @@ object TestJourneys {
       status = PaymentStatuses.Created,
       createdOn = LocalDateTime.parse("2027-11-02T16:28:55.185"),
       journeySpecificData = JsdPfVapingProductsDuty(
-        vapingDutyReference = VapingDutyReference("XBKT123456789"),
-        AmountInPence(1234)
+        vapingDutyReference = Some(VapingDutyReference("XBKT123456789"))
       )
     )
   }
