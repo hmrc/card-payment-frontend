@@ -535,9 +535,8 @@ email.tax-name.PfMgd = Toll Peiriannau Hapchwarae
 email.tax-name.PfTrust = Tâl cosb y Gwasanaeth Cofrestru Ymddiriedolaethau
 email.tax-name.PfOther = Trethi, cosbau a setliadau ymholiadau eraill
 email.tax-name.PfPsAdmin = Taliadau treth gynllun pensiwn
-##TODO Ask
-email.tax-name.BtaVapingProductsDuty = email.tax-name.BtaVapingProductsDuty.Welsh
-email.tax-name.VpdVapingProductsDuty = email.tax-name.VpdVapingProductsDuty.Welsh
+email.tax-name.BtaVapingProductsDuty = Vaping Products Duty //TODO Welsh translation needed
+email.tax-name.VpdVapingProductsDuty = Vaping Products Duty //TODO Welsh translation needed
 
 ## Payments survey
 payments-survey.bta.return-message = Dim diolch, dychwelyd i cyfrif treth busnes
