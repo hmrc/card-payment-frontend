@@ -195,7 +195,6 @@ class CheckYourAnswersControllerSpec extends ItSpec with TableDrivenPropertyChec
         case Origins.WcXref                   => 0
         case Origins.BtaVapingProductsDuty    => 0
         case Origins.VpdVapingProductsDuty    => 0
-        case Origins.PfVapingProductsDuty     => 0
         case _                                => 1
       }
     }
@@ -234,7 +233,7 @@ class CheckYourAnswersControllerSpec extends ItSpec with TableDrivenPropertyChec
         case Origins.WcXref                   => 1
         case Origins.BtaVapingProductsDuty    => 1
         case Origins.VpdVapingProductsDuty    => 1
-        case Origins.PfVapingProductsDuty     => 1
+        case Origins.PfVapingProductsDuty     => 2
         case _                                => 2
       }
     }
@@ -272,7 +271,7 @@ class CheckYourAnswersControllerSpec extends ItSpec with TableDrivenPropertyChec
         case Origins.WcXref                   => 2
         case Origins.BtaVapingProductsDuty    => 2
         case Origins.VpdVapingProductsDuty    => 2
-        case Origins.PfVapingProductsDuty     => 2
+        case Origins.PfVapingProductsDuty     => 3
         case _                                => 3
       }
     }

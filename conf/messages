@@ -105,6 +105,7 @@ service-name.StampTaxesOnShares = Pay for a securities transfer
 service-name.PfStampTaxesOnShares = Pay for a securities transfer
 service-name.BtaVapingProductsDuty = Pay Vaping Products Duty
 service-name.VpdVapingProductsDuty = Pay Vaping Products Duty
+service-name.PfVapingProductsDuty = Pay Vaping Products Duty
 
 ## Email address page
 email-address.heading = What is your email address? (optional)

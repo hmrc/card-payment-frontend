@@ -1755,10 +1755,10 @@ class PaymentsSurveyServiceSpec extends ItSpec with TableDrivenPropertyChecks {
                 origin = "BtaVapingProductsDuty"
               ),
               contentOptions = SurveyContentOptions(
-                isWelshSupported = false,
+                isWelshSupported = true,
                 title = SurveyBannerTitle(
                   englishValue = "Pay Vaping Products Duty",
-                  welshValue = None
+                  welshValue = Some("Pay Vaping Products Duty")
                 )
               )
             ) -> true
@@ -1778,10 +1778,10 @@ class PaymentsSurveyServiceSpec extends ItSpec with TableDrivenPropertyChecks {
                 origin = "VpdVapingProductsDuty"
               ),
               contentOptions = SurveyContentOptions(
-                isWelshSupported = false,
+                isWelshSupported = true,
                 title = SurveyBannerTitle(
                   englishValue = "Pay Vaping Products Duty",
-                  welshValue = None
+                  welshValue = Some("Pay Vaping Products Duty")
                 )
               )
             ) -> true
@@ -1801,10 +1801,10 @@ class PaymentsSurveyServiceSpec extends ItSpec with TableDrivenPropertyChecks {
                 origin = "PfVapingProductsDuty"
               ),
               contentOptions = SurveyContentOptions(
-                isWelshSupported = false,
+                isWelshSupported = true,
                 title = SurveyBannerTitle(
-                  englishValue = "service-name.PfVapingProductsDuty",
-                  welshValue = None
+                  englishValue = "Pay Vaping Products Duty",
+                  welshValue = Some("Pay Vaping Products Duty")
                 )
               )
             ) -> true

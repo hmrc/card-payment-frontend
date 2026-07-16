@@ -17,11 +17,11 @@
 package uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins
 
 import payapi.cardpaymentjourney.model.journey.{JourneySpecificData, JsdPfVapingProductsDuty}
-import play.api.mvc.AnyContent
+import play.api.mvc.{AnyContent, Call}
 import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
 import uk.gov.hmrc.cardpaymentfrontend.models.PaymentMethod.{Bacs, Card, OpenBanking, VariableDirectDebit}
 import uk.gov.hmrc.cardpaymentfrontend.models.openbanking.{OriginSpecificSessionData, PfVapingProductsDutySessionData}
-import uk.gov.hmrc.cardpaymentfrontend.models.{CheckYourAnswersRow, PaymentMethod}
+import uk.gov.hmrc.cardpaymentfrontend.models.{CheckYourAnswersRow, Link, PaymentMethod}
 
 object ExtendedPfVapingProductsDuty extends ExtendedOrigin:
   override val serviceNameMessageKey: String = "service-name.PfVapingProductsDuty"
@@ -31,7 +31,20 @@ object ExtendedPfVapingProductsDuty extends ExtendedOrigin:
 
   def paymentMethods(): Set[PaymentMethod] = Set(Card, OpenBanking, Bacs, VariableDirectDebit)
 
-  override def checkYourAnswersReferenceRow(journeyRequest: JourneyRequest[AnyContent])(payFrontendBaseUrl: String): Option[CheckYourAnswersRow] = None
+  override def checkYourAnswersReferenceRow(journeyRequest: JourneyRequest[AnyContent])(payFrontendBaseUrl: String): Option[CheckYourAnswersRow] =
+    Some(
+      CheckYourAnswersRow(
+        titleMessageKey = "check-your-details.PfVapingProductsDuty.reference",
+        value = Seq(journeyRequest.journey.referenceValue),
+        changeLink = Some(
+          Link(
+            href = Call("GET", changeReferenceUrl(payFrontendBaseUrl)),
+            linkId = "check-your-details-reference-change-link",
+            messageKey = "check-your-details.change"
+          )
+        )
+      )
+    )
 
   override def openBankingOriginSpecificSessionData: JourneySpecificData => Option[OriginSpecificSessionData] = {
     case j: JsdPfVapingProductsDuty => j.vapingDutyReference.map(ref => PfVapingProductsDutySessionData(ref, None))
@@ -42,5 +55,5 @@ object ExtendedPfVapingProductsDuty extends ExtendedOrigin:
   override def surveyAuditName: String         = "vaping-products-duty"
   override def surveyReturnHref: String        = "https://www.gov.uk/government/organisations/hm-revenue-customs"
   override def surveyReturnMessageKey: String  = "payments-survey.other.return-message"
-  override def surveyIsWelshSupported: Boolean = false
+  override def surveyIsWelshSupported: Boolean = true
   override def surveyBannerTitle: String       = serviceNameMessageKey

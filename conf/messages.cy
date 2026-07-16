@@ -104,6 +104,7 @@ service-name.WcEpayeNi = Talwch eich TWE a’ch Yswiriant Gwladol y cyflogwr
 service-name.WcEpayeSeta = Talwch eich Cytundeb Setliad TWE y cyflogwr
 service-name.BtaVapingProductsDuty = Pay Vaping Products Duty
 service-name.VpdVapingProductsDuty = Pay Vaping Products Duty
+service-name.PfVapingProductsDuty = Pay Vaping Products Duty
 
 
 ## Email address page
