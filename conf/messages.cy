@@ -104,6 +104,7 @@ service-name.WcEpayeNi = Talwch eich TWE a’ch Yswiriant Gwladol y cyflogwr
 service-name.WcEpayeSeta = Talwch eich Cytundeb Setliad TWE y cyflogwr
 service-name.BtaVapingProductsDuty = Pay Vaping Products Duty
 service-name.VpdVapingProductsDuty = Pay Vaping Products Duty
+service-name.PfVapingProductsDuty = Pay Vaping Products Duty
 
 
 ## Email address page
@@ -443,6 +444,7 @@ payment-complete.tax-name.WcEpayeSeta = Cytundeb Setliad TWE y Cyflogwr
 payment-complete.tax-name.Mib = Nwyddau masnachol sy’n cael eu cario mewn bagiau neu gerbydau bach
 payment-complete.tax-name.BtaVapingProductsDuty = Vaping Products Duty
 payment-complete.tax-name.VpdVapingProductsDuty = Vaping Products Duty
+payment-complete.tax-name.PfVapingProductsDuty = Vaping Products Duty
 
 ## Payment Cancelled page
 payment-cancelled.heading = Taliad wedi’i ganslo
@@ -537,6 +539,7 @@ email.tax-name.PfOther = Trethi, cosbau a setliadau ymholiadau eraill
 email.tax-name.PfPsAdmin = Taliadau treth gynllun pensiwn
 email.tax-name.BtaVapingProductsDuty = Vaping Products Duty //TODO Welsh translation needed
 email.tax-name.VpdVapingProductsDuty = Vaping Products Duty //TODO Welsh translation needed
+email.tax-name.PfVapingProductsDuty = Vaping Products Duty //TODO Welsh translation needed
 
 ## Payments survey
 payments-survey.bta.return-message = Dim diolch, dychwelyd i cyfrif treth busnes

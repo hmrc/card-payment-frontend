@@ -260,6 +260,7 @@ object ExtendedOrigin {
       case PfStampTaxesOnShares     => ExtendedPfStampTaxesOnShares
       case BtaVapingProductsDuty    => ExtendedBtaVapingProductsDuty
       case VpdVapingProductsDuty    => ExtendedVpdVapingProductsDuty
+      case PfVapingProductsDuty     => ExtendedPfVapingProductsDuty
     }
 
     def isAWebChatOrigin: Boolean = origin match {
@@ -271,7 +272,7 @@ object ExtendedOrigin {
           PfTpes | CapitalGainsTax | EconomicCrimeLevy | PfEconomicCrimeLevy | PfJobRetentionScheme | JrsJobRetentionScheme | PfImportedVehicles |
           PfChildBenefitRepayments | NiEuVatOss | PfNiEuVatOss | NiEuVatIoss | PfNiEuVatIoss | PfAmls | PfAted | PfCdsDeferment | PfTrust | PtaClass3Ni |
           AlcoholDuty | PfAlcoholDuty | VatC2c | PfVatC2c | `3psSa` | `3psVat` | Pillar2 | PfPillar2 | StampTaxesOnShares | PfStampTaxesOnShares |
-          BtaVapingProductsDuty | VpdVapingProductsDuty =>
+          BtaVapingProductsDuty | VpdVapingProductsDuty | PfVapingProductsDuty =>
         false
       case WcSa | WcCt | WcVat | WcSimpleAssessment | WcXref | WcEpayeLpp | WcClass1aNi | WcEpayeNi | WcEpayeLateCis | WcEpayeSeta | WcSdlt | WcClass2Ni |
           WcChildBenefitRepayments =>
@@ -286,10 +287,11 @@ object ExtendedOrigin {
           PfAggregatesLevy | PfClimateChangeLevy | PfSimpleAssessment | PtaSimpleAssessment | AppSimpleAssessment | PfTpes | CapitalGainsTax |
           EconomicCrimeLevy | PfEconomicCrimeLevy | PfJobRetentionScheme | JrsJobRetentionScheme | PfImportedVehicles | PfChildBenefitRepayments | PfAmls |
           PfAted | PfTrust | PtaClass3Ni | AlcoholDuty | PfAlcoholDuty | VatC2c | PfVatC2c | `3psSa` | `3psVat` | WcSa | WcCt | WcVat | WcSimpleAssessment |
-          WcXref | WcEpayeLpp | WcClass1aNi | WcEpayeNi | WcEpayeLateCis | WcEpayeSeta | WcSdlt | WcClass2Ni | WcChildBenefitRepayments =>
+          WcXref | WcEpayeLpp | WcClass1aNi | WcEpayeNi | WcEpayeLateCis | WcEpayeSeta | WcSdlt | WcClass2Ni | WcChildBenefitRepayments |
+          BtaVapingProductsDuty | VpdVapingProductsDuty | PfVapingProductsDuty =>
         true
       case PfCds | PfCdsCash | PfCdsDeferment | NiEuVatOss | NiEuVatIoss | PfNiEuVatOss | PfNiEuVatIoss | Pillar2 | PfPillar2 | Parcels | StampTaxesOnShares |
-          PfStampTaxesOnShares | BtaVapingProductsDuty | VpdVapingProductsDuty =>
+          PfStampTaxesOnShares =>
         false
     }
   }

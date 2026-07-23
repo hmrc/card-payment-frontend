@@ -1755,10 +1755,10 @@ class PaymentsSurveyServiceSpec extends ItSpec with TableDrivenPropertyChecks {
                 origin = "BtaVapingProductsDuty"
               ),
               contentOptions = SurveyContentOptions(
-                isWelshSupported = false,
+                isWelshSupported = true,
                 title = SurveyBannerTitle(
                   englishValue = "Pay Vaping Products Duty",
-                  welshValue = None
+                  welshValue = Some("Pay Vaping Products Duty")
                 )
               )
             ) -> true
@@ -1778,10 +1778,33 @@ class PaymentsSurveyServiceSpec extends ItSpec with TableDrivenPropertyChecks {
                 origin = "VpdVapingProductsDuty"
               ),
               contentOptions = SurveyContentOptions(
-                isWelshSupported = false,
+                isWelshSupported = true,
                 title = SurveyBannerTitle(
                   englishValue = "Pay Vaping Products Duty",
-                  welshValue = None
+                  welshValue = Some("Pay Vaping Products Duty")
+                )
+              )
+            ) -> true
+          case Origins.PfVapingProductsDuty     =>
+            PaymentSurveyJourneyRequest(
+              origin = "PfVapingProductsDuty",
+              returnMsg = "Skip survey",
+              returnHref = "https://www.gov.uk/government/organisations/hm-revenue-customs",
+              auditName = "vaping-products-duty",
+              audit = AuditOptions(
+                userType = "LoggedIn",
+                journey = Some("Successful"),
+                orderId = Some("XBKT123456789"),
+                liability = Some("vaping-products-duty"),
+                surveySource = "card-payment-frontend",
+                paymentId = "Some-transaction-ref",
+                origin = "PfVapingProductsDuty"
+              ),
+              contentOptions = SurveyContentOptions(
+                isWelshSupported = true,
+                title = SurveyBannerTitle(
+                  englishValue = "Pay Vaping Products Duty",
+                  welshValue = Some("Pay Vaping Products Duty")
                 )
               )
             ) -> true

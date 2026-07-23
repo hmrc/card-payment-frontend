@@ -1471,4 +1471,19 @@ object TestJourneys {
       )
     )
   }
+  object PfVapingProductsDuty  extends JourneyStatuses[JsdPfVapingProductsDuty]  {
+    val journeyBeforeBeginWebPayment: Journey[JsdPfVapingProductsDuty] = Journey[JsdPfVapingProductsDuty](
+      _id = JourneyId(TestPayApiData.decryptedJourneyId),
+      sessionId = Some(SessionId("TestSession-4b87460d-6f43-4c4c-b810-d6f87c774854")),
+      amountInPence = Some(AmountInPence(1234)),
+      emailTemplateOptions = None,
+      navigation = None,
+      order = None,
+      status = PaymentStatuses.Created,
+      createdOn = LocalDateTime.parse("2027-11-02T16:28:55.185"),
+      journeySpecificData = JsdPfVapingProductsDuty(
+        vapingDutyReference = Some(VapingDutyReference("XBKT123456789"))
+      )
+    )
+  }
 }
