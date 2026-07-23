@@ -564,7 +564,6 @@ email.tax-name.PfOther = Other taxes, penalties and enquiry settlements
 email.tax-name.PfPsAdmin = Pension scheme tax charges
 email.tax-name.StampTaxesOnShares = Securities Transfer Charge
 email.tax-name.PfStampTaxesOnShares = Securities Transfer Charge
-##TODO Ask
 email.tax-name.BtaVapingProductsDuty = Vaping Products Duty
 email.tax-name.VpdVapingProductsDuty = Vaping Products Duty
 email.tax-name.PfVapingProductsDuty = Vaping Products Duty
