@@ -41,7 +41,7 @@ import payapi.corcommon.model.taxes.stos.{CustomerId, SecuritiesTransferChargeRe
 import payapi.corcommon.model.taxes.trusts.TrustReference
 import payapi.corcommon.model.taxes.vat.{CalendarPeriod, VatChargeReference, Vrn}
 import payapi.corcommon.model.taxes.vatc2c.VatC2cReference
-import payapi.corcommon.model.taxes.vpd.VapingDutyReference
+import payapi.corcommon.model.taxes.vpd.{VapingDutyChargeReference, VapingDutyReference}
 import payapi.corcommon.model.times.period.TaxQuarter.AprilJuly
 import payapi.corcommon.model.times.period.TaxYear
 import payapi.corcommon.model.webchat.WcEpayeNiReference
@@ -1450,6 +1450,7 @@ object TestJourneys {
       createdOn = LocalDateTime.parse("2027-11-02T16:28:55.185"),
       journeySpecificData = JsdBtaVapingProductsDuty(
         vapingDutyReference = VapingDutyReference("XBKT123456789"),
+        chargeReferenceNumber = Some(VapingDutyChargeReference("CR123456789012")),
         AmountInPence(1234)
       )
     )
@@ -1467,6 +1468,7 @@ object TestJourneys {
       createdOn = LocalDateTime.parse("2027-11-02T16:28:55.185"),
       journeySpecificData = JsdVpdVapingProductsDuty(
         vapingDutyReference = VapingDutyReference("XBKT123456789"),
+        chargeReferenceNumber = Some(VapingDutyChargeReference("CR123456789012")),
         AmountInPence(1234)
       )
     )
