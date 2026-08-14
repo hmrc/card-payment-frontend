@@ -214,7 +214,9 @@ check-your-details.AppSa.reference = Cyfeirnod Unigryw y Trethdalwr (UTR)
 check-your-details.Mib.reference = Cyfeirnod y taliad
 check-your-details.BcPngr.reference = Cyfeirnod y taliad
 check-your-details.BtaVapingProductsDuty.reference = Cyfeirnod
+check-your-details.BtaVapingProductsDuty.charge-reference = Cyfeirnod y tâl
 check-your-details.VpdVapingProductsDuty.reference = Cyfeirnod
+check-your-details.VpdVapingProductsDuty.charge-reference = Cyfeirnod y tâl
 
 check-your-details.PfGbPbRgDuty.reference = Cyfeirnod
 check-your-details.PfMgd.reference = Cyfeirnod

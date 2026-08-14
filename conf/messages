@@ -236,7 +236,9 @@ check-your-details.StampTaxesOnShares.submissionId = Submission ID
 check-your-details.StampTaxesOnShares.reference = Payment reference
 check-your-details.PfStampTaxesOnShares.reference = Securities transfer charge reference
 check-your-details.BtaVapingProductsDuty.reference = Reference number
+check-your-details.BtaVapingProductsDuty.charge-reference = Charge reference
 check-your-details.VpdVapingProductsDuty.reference = Reference number
+check-your-details.VpdVapingProductsDuty.charge-reference = Charge reference
 check-your-details.PfVapingProductsDuty.reference = Reference number
 
 ## Address Page

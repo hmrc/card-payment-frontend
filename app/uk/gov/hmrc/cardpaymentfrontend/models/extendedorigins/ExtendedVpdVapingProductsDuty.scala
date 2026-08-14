@@ -52,7 +52,7 @@ object ExtendedVpdVapingProductsDuty extends ExtendedOrigin {
     additionalReference(journeyRequest.journey.journeySpecificData).map { vapingDutyReference =>
       Seq(
         CheckYourAnswersRow(
-          titleMessageKey = "check-your-details.AlcoholDuty.charge-reference",
+          titleMessageKey = "check-your-details.VpdVapingProductsDuty.charge-reference",
           value = Seq(vapingDutyReference.canonicalizedValue),
           changeLink = None
         )
