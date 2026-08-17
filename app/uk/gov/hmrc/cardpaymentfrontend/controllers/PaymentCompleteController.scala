@@ -123,7 +123,7 @@ object PaymentCompleteController {
     )
 
     val taxSpecificRows: Seq[SummaryListRow] = journey.journeySpecificData match {
-      case JsdAlcoholDuty(_, alcoholDutyChargeReference, _) =>
+      case JsdAlcoholDuty(_, alcoholDutyChargeReference, _)               =>
         alcoholDutyChargeReference.fold[Seq[SummaryListRow]](Seq.empty[SummaryListRow]) { alcoholDutyChargeReference =>
           Seq(
             SummaryListRow(
@@ -132,7 +132,25 @@ object PaymentCompleteController {
             )
           )
         }
-      case JsdPfP800(p800Ref, p800ChargeRef, _)             =>
+      case JsdVpdVapingProductsDuty(_, maybeVapingDutyChargeReference, _) =>
+        maybeVapingDutyChargeReference.fold[Seq[SummaryListRow]](Seq.empty[SummaryListRow]) { vapingDutyChargeReference =>
+          Seq(
+            SummaryListRow(
+              key = Key(Text(messages("check-your-details.VpdVapingProductsDuty.charge-reference"))),
+              value = Value(Text(vapingDutyChargeReference.canonicalizedValue))
+            )
+          )
+        }
+      case JsdBtaVapingProductsDuty(_, maybeVapingDutyChargeReference, _) =>
+        maybeVapingDutyChargeReference.fold[Seq[SummaryListRow]](Seq.empty[SummaryListRow]) { vapingDutyChargeReference =>
+          Seq(
+            SummaryListRow(
+              key = Key(Text(messages("check-your-details.BtaVapingProductsDuty.charge-reference"))),
+              value = Value(Text(vapingDutyChargeReference.canonicalizedValue))
+            )
+          )
+        }
+      case JsdPfP800(p800Ref, p800ChargeRef, _)                           =>
         p800ChargeRef.fold[Seq[SummaryListRow]](Seq.empty[SummaryListRow]) { chargeRef =>
           Seq(
             SummaryListRow(
