@@ -49,11 +49,11 @@ object ExtendedBtaVapingProductsDuty extends ExtendedOrigin {
   override def checkYourAnswersAdditionalReferenceRow(
     journeyRequest: JourneyRequest[AnyContent]
   )(payFrontendBaseUrl: String)(implicit messages: Messages): Option[Seq[CheckYourAnswersRow]] = {
-    additionalReference(journeyRequest.journey.journeySpecificData).map { vapingDutyReference =>
+    additionalReference(journeyRequest.journey.journeySpecificData).map { chargeReferenceNumber =>
       Seq(
         CheckYourAnswersRow(
           titleMessageKey = "check-your-details.BtaVapingProductsDuty.charge-reference",
-          value = Seq(vapingDutyReference.canonicalizedValue),
+          value = Seq(chargeReferenceNumber.canonicalizedValue),
           changeLink = None
         )
       )
