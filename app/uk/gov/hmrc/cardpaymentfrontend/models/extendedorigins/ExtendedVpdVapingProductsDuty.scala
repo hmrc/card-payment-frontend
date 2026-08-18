@@ -17,6 +17,8 @@
 package uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins
 
 import payapi.cardpaymentjourney.model.journey.{JourneySpecificData, JsdVpdVapingProductsDuty}
+import payapi.corcommon.model.taxes.vpd.VapingDutyChargeReference
+import play.api.i18n.Messages
 import play.api.mvc.AnyContent
 import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
 import uk.gov.hmrc.cardpaymentfrontend.models.PaymentMethod.{Bacs, Card, OpenBanking, VariableDirectDebit}
@@ -37,6 +39,25 @@ object ExtendedVpdVapingProductsDuty extends ExtendedOrigin {
     case j: JsdVpdVapingProductsDuty =>
       Some(VpdVapingProductsDutySessionData(j.vapingDutyReference, j.defaultAmountInPence, None))
     case _                           => throw new RuntimeException("Incorrect origin found")
+  }
+
+  private def additionalReference: JourneySpecificData => Option[VapingDutyChargeReference] = {
+    case j: JsdVpdVapingProductsDuty => j.chargeReferenceNumber
+    case _                           => throw new RuntimeException("Incorrect origin found")
+  }
+
+  override def checkYourAnswersAdditionalReferenceRow(
+    journeyRequest: JourneyRequest[AnyContent]
+  )(payFrontendBaseUrl: String)(implicit messages: Messages): Option[Seq[CheckYourAnswersRow]] = {
+    additionalReference(journeyRequest.journey.journeySpecificData).map { chargeReferenceNumber =>
+      Seq(
+        CheckYourAnswersRow(
+          titleMessageKey = "check-your-details.VpdVapingProductsDuty.charge-reference",
+          value = Seq(chargeReferenceNumber.canonicalizedValue),
+          changeLink = None
+        )
+      )
+    }
   }
 
   override def emailTaxTypeMessageKey: String  = "email.tax-name.VpdVapingProductsDuty"

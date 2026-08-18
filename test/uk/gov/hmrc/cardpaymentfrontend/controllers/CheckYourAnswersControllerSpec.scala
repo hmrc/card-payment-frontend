@@ -193,8 +193,6 @@ class CheckYourAnswersControllerSpec extends ItSpec with TableDrivenPropertyChec
         case Origins.WcSdlt                   => 0
         case Origins.WcSimpleAssessment       => 0
         case Origins.WcXref                   => 0
-        case Origins.BtaVapingProductsDuty    => 0
-        case Origins.VpdVapingProductsDuty    => 0
         case _                                => 1
       }
     }
@@ -231,8 +229,6 @@ class CheckYourAnswersControllerSpec extends ItSpec with TableDrivenPropertyChec
         case Origins.WcSdlt                   => 1
         case Origins.WcSimpleAssessment       => 1
         case Origins.WcXref                   => 1
-        case Origins.BtaVapingProductsDuty    => 1
-        case Origins.VpdVapingProductsDuty    => 1
         case Origins.PfVapingProductsDuty     => 2
         case _                                => 2
       }
@@ -269,8 +265,6 @@ class CheckYourAnswersControllerSpec extends ItSpec with TableDrivenPropertyChec
         case Origins.WcSdlt                   => 2
         case Origins.WcSimpleAssessment       => 2
         case Origins.WcXref                   => 2
-        case Origins.BtaVapingProductsDuty    => 2
-        case Origins.VpdVapingProductsDuty    => 2
         case Origins.PfVapingProductsDuty     => 3
         case _                                => 3
       }
@@ -555,6 +549,38 @@ class CheckYourAnswersControllerSpec extends ItSpec with TableDrivenPropertyChec
       val document     = Jsoup.parse(contentAsString(result))
       val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(0)
       assertRow(referenceRow, "Cyfeirnod y tâl", "XE1234567890123", None, None)
+    }
+
+    "[VpdVaping] should render the charge reference row correctly when it's available" in {
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.VpdVapingProductsDuty.journeyBeforeBeginWebPayment)
+      val result       = systemUnderTest.renderPage(fakeRequest())
+      val document     = Jsoup.parse(contentAsString(result))
+      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(0)
+      assertRow(referenceRow, "Charge reference", "CR123456789012", None, None)
+    }
+
+    "[VpdVaping] should render the charge reference row correctly in welsh when it's available" in {
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.VpdVapingProductsDuty.journeyBeforeBeginWebPayment)
+      val result       = systemUnderTest.renderPage(fakeRequestWelsh())
+      val document     = Jsoup.parse(contentAsString(result))
+      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(0)
+      assertRow(referenceRow, "Cyfeirnod y tâl", "CR123456789012", None, None)
+    }
+
+    "[BtaVaping] should render the charge reference row correctly when it's available" in {
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.BtaVapingProductsDuty.journeyBeforeBeginWebPayment)
+      val result       = systemUnderTest.renderPage(fakeRequest())
+      val document     = Jsoup.parse(contentAsString(result))
+      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(0)
+      assertRow(referenceRow, "Charge reference", "CR123456789012", None, None)
+    }
+
+    "[BtaVaping] should render the charge reference row correctly in welsh when it's available" in {
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.BtaVapingProductsDuty.journeyBeforeBeginWebPayment)
+      val result       = systemUnderTest.renderPage(fakeRequestWelsh())
+      val document     = Jsoup.parse(contentAsString(result))
+      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(0)
+      assertRow(referenceRow, "Cyfeirnod y tâl", "CR123456789012", None, None)
     }
 
     "[PfVat] should render the payment reference row correctly" in {

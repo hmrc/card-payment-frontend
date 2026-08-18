@@ -3390,14 +3390,16 @@ object PaymentCompleteControllerSpec {
         debitCardJourney = TestJourneys.BtaVapingProductsDuty.journeyAfterSucceedDebitWebPayment,
         creditCardJourney = TestJourneys.BtaVapingProductsDuty.journeyAfterSucceedCreditWebPayment,
         englishSummaryRowsDebitCard = List(
-          "Tax"    -> "Vaping Products Duty",
-          "Date"   -> "2 November 2027",
-          "Amount" -> "£12.34"
+          "Tax"              -> "Vaping Products Duty",
+          "Date"             -> "2 November 2027",
+          "Charge reference" -> "CR123456789012",
+          "Amount"           -> "£12.34"
         ),
         maybeWelshSummaryRowsDebitCard = None,
         englishSummaryRowsCreditCard = List(
           "Tax"                              -> "Vaping Products Duty",
           "Date"                             -> "2 November 2027",
+          "Charge reference"                 -> "CR123456789012",
           "Amount paid to HMRC"              -> "£12.34",
           "Card fee (9.97%), non-refundable" -> "£1.23",
           "Total paid"                       -> "£13.57"
@@ -3412,14 +3414,16 @@ object PaymentCompleteControllerSpec {
         debitCardJourney = TestJourneys.VpdVapingProductsDuty.journeyAfterSucceedDebitWebPayment,
         creditCardJourney = TestJourneys.VpdVapingProductsDuty.journeyAfterSucceedCreditWebPayment,
         englishSummaryRowsDebitCard = List(
-          "Tax"    -> "Vaping Products Duty",
-          "Date"   -> "2 November 2027",
-          "Amount" -> "£12.34"
+          "Tax"              -> "Vaping Products Duty",
+          "Date"             -> "2 November 2027",
+          "Charge reference" -> "CR123456789012",
+          "Amount"           -> "£12.34"
         ),
         maybeWelshSummaryRowsDebitCard = None,
         englishSummaryRowsCreditCard = List(
           "Tax"                              -> "Vaping Products Duty",
           "Date"                             -> "2 November 2027",
+          "Charge reference"                 -> "CR123456789012",
           "Amount paid to HMRC"              -> "£12.34",
           "Card fee (9.97%), non-refundable" -> "£1.23",
           "Total paid"                       -> "£13.57"
