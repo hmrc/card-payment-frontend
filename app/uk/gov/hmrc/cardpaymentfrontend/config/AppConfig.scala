@@ -70,6 +70,7 @@ class AppConfig @Inject() (config: Configuration, servicesConfig: ServicesConfig
   val passengersBaseUrl: String        = servicesConfig.baseUrl("bc-passengers-declarations")
 
   val basketSummaryLink: String = config.get[String]("urls.paymentsBasketFrontendSummaryUrl")
+  val paymentsBasketUrl: String = servicesConfig.baseUrl("payments-basket")
 
   object FeatureFlags {
     val ptaP800OpenBankingEnabled: Boolean           = config.get[Boolean]("feature-flags.pta-p800.open-banking-enabled")

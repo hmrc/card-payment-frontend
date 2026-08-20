@@ -32,7 +32,7 @@ import play.api.test.Helpers.{contentAsString, defaultAwaitTimeout, redirectLoca
 import uk.gov.hmrc.cardpaymentfrontend.models.cardpayment.CardPaymentInitiatePaymentResponse
 import uk.gov.hmrc.cardpaymentfrontend.services.CryptoService
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.TestOps.FakeRequestOps
-import uk.gov.hmrc.cardpaymentfrontend.testsupport.stubs.{CardPaymentStub, PayApiStub}
+import uk.gov.hmrc.cardpaymentfrontend.testsupport.stubs.{CardPaymentStub, PayApiStub, PaymentsBasketStub}
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.testdata.TestJourneys
 import uk.gov.hmrc.cardpaymentfrontend.testsupport.{ItSpec, TestHelpers}
 
@@ -42,6 +42,12 @@ class CheckYourAnswersControllerSpec extends ItSpec with TableDrivenPropertyChec
 
   val systemUnderTest: CheckYourAnswersController = app.injector.instanceOf[CheckYourAnswersController]
   val cryptoService: CryptoService                = app.injector.instanceOf[CryptoService]
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    PaymentsBasketStub.notifyEtmp("XBKT123456789")
+    ()
+  }
 
   def fakeRequest(journeyId: JourneyId = TestJourneys.PfSa.journeyBeforeBeginWebPayment._id): FakeRequest[AnyContentAsEmpty.type] =
     FakeRequest()
@@ -1632,8 +1638,9 @@ class CheckYourAnswersControllerSpec extends ItSpec with TableDrivenPropertyChec
     "[StampTaxesOnShares] should not render the payment reference in first row" - {
 
       "when reference is a basket reference" in {
+        PaymentsBasketStub.notifyEtmp("XBKT123456789")
         PayApiStub.stubForFindBySessionId2xx(TestJourneys.StampTaxesOnShares.journeyBeforeBeginWebPayment)
-        val result       = systemUnderTest.renderPage(fakeRequest())
+        val result       = systemUnderTest.renderPage(fakeRequest(TestJourneys.StampTaxesOnShares.journeyBeforeBeginWebPayment._id))
         val document     = Jsoup.parse(contentAsString(result))
         val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(0)
         assertRowKeyIsNot(referenceRow, "Payment reference")
@@ -1641,7 +1648,7 @@ class CheckYourAnswersControllerSpec extends ItSpec with TableDrivenPropertyChec
 
       "when reference is not basket reference" in {
         PayApiStub.stubForFindBySessionId2xx(TestJourneys.StampTaxesOnShares.journeyBeforeBeginWebpaymentNoBasketReference)
-        val result       = systemUnderTest.renderPage(fakeRequest())
+        val result       = systemUnderTest.renderPage(fakeRequest(TestJourneys.StampTaxesOnShares.journeyBeforeBeginWebpaymentNoBasketReference._id))
         val document     = Jsoup.parse(contentAsString(result))
         val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(0)
         assertRowKeyIsNot(referenceRow, "Payment reference")

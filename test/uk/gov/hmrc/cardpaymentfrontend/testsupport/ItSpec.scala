@@ -55,6 +55,7 @@ trait ItSpec extends AnyFreeSpecLike with GuiceOneServerPerSuite with WireMockSu
     "microservice.services.email-service.port"              -> self.wireMockPort,
     "microservice.services.open-banking.port"               -> self.wireMockPort,
     "microservice.services.pay-api.port"                    -> self.wireMockPort,
+    "microservice.services.payments-basket.port"            -> self.wireMockPort,
     "microservice.services.payments-processor.port"         -> self.wireMockPort,
     "microservice.services.payments-survey.port"            -> self.wireMockPort,
     "internal-auth.token"                                   -> "testToken"
