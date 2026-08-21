@@ -1,1 +1,5 @@
 @import "lib/govuk-frontend/dist/govuk/base";
+
+@media print {
+    a[href]::after { content: none !important; }
+}
