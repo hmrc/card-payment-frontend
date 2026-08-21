@@ -207,8 +207,14 @@
         @detailsOfStampTaxesOnSharesPayment
     }
 
-    <p id="print-link-wrapper" class="govuk-body js-visible govuk-!-display-none-print">
-        <a id="print-page" class="govuk-link" href="#print-dialogue">
+<!--    <h2 id="test">THIS is a test</h2>-->
+    <style>
+        @@media print {
+            a[href]::after { content: none !important; }
+        }
+    </style>
+    <p id="print-link-wrapper" class="govuk-body govuk-!-display-none-print">
+        <a id="print-page" class="govuk-link" href="#print-dialogue" style="display:inline;">
             @printLinkContent
         </a>
     </p>

@@ -37,7 +37,7 @@ object ExtendedBtaVapingProductsDuty extends ExtendedOrigin {
 
   override def openBankingOriginSpecificSessionData: JourneySpecificData => Option[OriginSpecificSessionData] = {
     case j: JsdBtaVapingProductsDuty =>
-      Some(BtaVapingProductsDutySessionData(j.vapingDutyReference, j.defaultAmountInPence, None))
+      Some(BtaVapingProductsDutySessionData(j.vapingDutyReference, j.chargeReferenceNumber, j.defaultAmountInPence, None))
     case _                           => throw new RuntimeException("Incorrect origin found")
   }
 
