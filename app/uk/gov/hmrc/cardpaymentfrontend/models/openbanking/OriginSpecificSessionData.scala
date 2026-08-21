@@ -42,7 +42,7 @@ import payapi.corcommon.model.taxes.stos.{CustomerId, SecuritiesTransferChargeRe
 import payapi.corcommon.model.taxes.trusts.TrustReference
 import payapi.corcommon.model.taxes.vat.{CalendarPeriod, VatChargeReference, Vrn}
 import payapi.corcommon.model.taxes.vatc2c.VatC2cReference
-import payapi.corcommon.model.taxes.vpd.VapingDutyReference
+import payapi.corcommon.model.taxes.vpd.{VapingDutyChargeReference, VapingDutyReference}
 import payapi.corcommon.model.thirdpartysoftware.{ClientJourneyId, FriendlyName}
 import payapi.corcommon.model.times.period.{CalendarQuarterlyPeriod, TaxYear}
 import payapi.corcommon.model.webchat.WcEpayeNiReference
@@ -847,21 +847,31 @@ final case class PfStampTaxesOnSharesSessionData(
 }
 
 final case class BtaVapingProductsDutySessionData(
-  vapingDutyReference: VapingDutyReference,
-  amountInPence:       AmountInPence,
-  returnUrl:           Option[Url]
+  vapingDutyReference:       VapingDutyReference,
+  vapingDutyChargeReference: Option[VapingDutyChargeReference],
+  amountInPence:             AmountInPence,
+  returnUrl:                 Option[Url]
 ) extends OriginSpecificSessionData(BtaVapingProductsDuty) {
-  def paymentReference: Reference = ReferenceMaker.makeVapingReference(vapingDutyReference) // not sure if this is right atm, we can tweak later
-  def searchTag                   = SearchTag(paymentReference.value)                       // not sure if this is right atm, we can tweak later
+
+  def paymentReference: Reference =
+    vapingDutyChargeReference.fold(ReferenceMaker.makeVapingReference(vapingDutyReference)) { chargeReference =>
+      ReferenceMaker.makeVapingChargeReference(chargeReference)
+    }
+  def searchTag                   = SearchTag(paymentReference.value) // not sure if this is right atm, we can tweak later
 }
 
 final case class VpdVapingProductsDutySessionData(
-  vapingDutyReference: VapingDutyReference,
-  amountInPence:       AmountInPence,
-  returnUrl:           Option[Url]
+  vapingDutyReference:       VapingDutyReference,
+  vapingDutyChargeReference: Option[VapingDutyChargeReference],
+  amountInPence:             AmountInPence,
+  returnUrl:                 Option[Url]
 ) extends OriginSpecificSessionData(VpdVapingProductsDuty) {
-  def paymentReference: Reference = ReferenceMaker.makeVapingReference(vapingDutyReference) // not sure if this is right atm, we can tweak later
-  def searchTag                   = SearchTag(paymentReference.value)                       // not sure if this is right atm, we can tweak later
+  def paymentReference: Reference =
+    vapingDutyChargeReference.fold(ReferenceMaker.makeVapingReference(vapingDutyReference)) { chargeReference =>
+      ReferenceMaker.makeVapingChargeReference(chargeReference)
+    }
+
+  def searchTag = SearchTag(paymentReference.value) // not sure if this is right atm, we can tweak later
 }
 
 final case class PfVapingProductsDutySessionData(
