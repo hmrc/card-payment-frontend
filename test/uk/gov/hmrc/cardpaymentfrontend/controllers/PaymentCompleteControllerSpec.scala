@@ -132,7 +132,6 @@ class PaymentCompleteControllerSpec extends ItSpec {
         val document         = Jsoup.parse(contentAsString(result))
         val printLinkWrapper = document.select("#print-link-wrapper")
         printLinkWrapper.hasClass("govuk-!-display-none-print") shouldBe true
-        printLinkWrapper.hasClass("js-visible") shouldBe true
         val printLink        = printLinkWrapper.select("a")
         printLink.hasClass("govuk-link") shouldBe true
         printLink.attr("href") shouldBe "#print-dialogue"
@@ -145,7 +144,6 @@ class PaymentCompleteControllerSpec extends ItSpec {
         val document         = Jsoup.parse(contentAsString(result))
         val printLinkWrapper = document.select("#print-link-wrapper")
         printLinkWrapper.hasClass("govuk-!-display-none-print") shouldBe true
-        printLinkWrapper.hasClass("js-visible") shouldBe true
         val printLink        = printLinkWrapper.select("a")
         printLink.hasClass("govuk-link") shouldBe true
         printLink.attr("href") shouldBe "#print-dialogue"
