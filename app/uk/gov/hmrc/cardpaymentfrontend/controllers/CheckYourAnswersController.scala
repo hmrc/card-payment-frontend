@@ -24,9 +24,10 @@ import uk.gov.hmrc.cardpaymentfrontend.config.AppConfig
 import uk.gov.hmrc.cardpaymentfrontend.models.CheckYourAnswersRow.summarise
 import uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins.ExtendedOrigin
 import uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins.ExtendedOrigin.OriginExtended
+import uk.gov.hmrc.cardpaymentfrontend.models.openbanking.StampTaxesOnSharesSessionData
 import uk.gov.hmrc.cardpaymentfrontend.models.{Address, CheckYourAnswersRow, EmailAddress}
 import uk.gov.hmrc.cardpaymentfrontend.requests.RequestSupport
-import uk.gov.hmrc.cardpaymentfrontend.services.{CardPaymentService, CryptoService}
+import uk.gov.hmrc.cardpaymentfrontend.services.{CardPaymentService, CryptoService, PaymentsBasketService}
 import uk.gov.hmrc.cardpaymentfrontend.session.JourneySessionSupport.*
 import uk.gov.hmrc.cardpaymentfrontend.views.html.CheckYourAnswersPage
 import uk.gov.hmrc.govukfrontend.views.Aliases.SummaryList
@@ -39,19 +40,20 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton()
 class CheckYourAnswersController @Inject() (
-  actions:              Actions,
-  appConfig:            AppConfig,
-  cardPaymentService:   CardPaymentService,
-  checkYourAnswersPage: CheckYourAnswersPage,
-  mcc:                  MessagesControllerComponents,
-  requestSupport:       RequestSupport,
-  cryptoService:        CryptoService
+  actions:               Actions,
+  appConfig:             AppConfig,
+  cardPaymentService:    CardPaymentService,
+  checkYourAnswersPage:  CheckYourAnswersPage,
+  mcc:                   MessagesControllerComponents,
+  requestSupport:        RequestSupport,
+  cryptoService:         CryptoService,
+  paymentsBasketService: PaymentsBasketService
 )(implicit executionContext: ExecutionContext)
     extends FrontendController(mcc)
     with Logging {
   import requestSupport.*
 
-  def renderPage: Action[AnyContent] = actions.journeyAction { implicit journeyRequest: JourneyRequest[AnyContent] =>
+  def renderPage: Action[AnyContent] = actions.journeyAction.async { implicit journeyRequest: JourneyRequest[AnyContent] =>
     val extendedOrigin: ExtendedOrigin = journeyRequest.journey.origin.lift(appConfig)
 
     val maybePaymentDate: Option[CheckYourAnswersRow]             = extendedOrigin.checkYourAnswersPaymentDateRow(journeyRequest)(appConfig.payFrontendBaseUrl)
@@ -86,10 +88,28 @@ class CheckYourAnswersController @Inject() (
       (maybePaymentDateAndReferenceRows ++ maybeAdditionalReferenceRows ++ mandatoryRows).flatten
         .map(summarise)
 
-    if (cardBillingAddressRow.isDefined) Ok(checkYourAnswersPage(SummaryList(summaryListRows), journeyRequest.journey.referenceValue))
-    else {
-      logger.warn("Missing address from session, redirecting to enter address page.")
-      Redirect(routes.AddressController.renderPage)
+    /** If the session has a basket reference (only applicable for some tax types), notify ETMP of the basket before rendering the page. If there is no basket
+      * reference then skip the notification and proceed to render the page.
+      */
+    val maybeNotifyEtmp = extendedOrigin.openBankingOriginSpecificSessionData(journeyRequest.journey.journeySpecificData) match {
+      case Some(jsd: StampTaxesOnSharesSessionData) =>
+        jsd.basketReference match {
+          case Some(basketReference) => paymentsBasketService.notifyEtmpIfBasket(basketReference.value)
+          case None                  => Future.successful(Right(()))
+        }
+      case _                                        => Future.successful(Right(()))
+    }
+
+    maybeNotifyEtmp.flatMap {
+      case Left(error) =>
+        Future.failed(new RuntimeException(error))
+
+      case Right(_) =>
+        if (cardBillingAddressRow.isDefined) Future.successful(Ok(checkYourAnswersPage(SummaryList(summaryListRows), journeyRequest.journey.referenceValue)))
+        else {
+          logger.warn("Missing address from session, redirecting to enter address page.")
+          Future.successful(Redirect(routes.AddressController.renderPage))
+        }
     }
   }
 

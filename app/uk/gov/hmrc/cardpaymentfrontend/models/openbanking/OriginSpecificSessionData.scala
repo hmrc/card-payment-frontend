@@ -851,8 +851,8 @@ final case class BtaVapingProductsDutySessionData(
   amountInPence:       AmountInPence,
   returnUrl:           Option[Url]
 ) extends OriginSpecificSessionData(BtaVapingProductsDuty) {
-  def paymentReference: Reference = ReferenceMaker.makeVpdReference(vapingDutyReference) // not sure if this is right atm, we can tweak later
-  def searchTag                   = SearchTag(paymentReference.value)                    // not sure if this is right atm, we can tweak later
+  def paymentReference: Reference = ReferenceMaker.makeVapingReference(vapingDutyReference) // not sure if this is right atm, we can tweak later
+  def searchTag                   = SearchTag(paymentReference.value)                       // not sure if this is right atm, we can tweak later
 }
 
 final case class VpdVapingProductsDutySessionData(
@@ -860,14 +860,14 @@ final case class VpdVapingProductsDutySessionData(
   amountInPence:       AmountInPence,
   returnUrl:           Option[Url]
 ) extends OriginSpecificSessionData(VpdVapingProductsDuty) {
-  def paymentReference: Reference = ReferenceMaker.makeVpdReference(vapingDutyReference) // not sure if this is right atm, we can tweak later
-  def searchTag                   = SearchTag(paymentReference.value)                    // not sure if this is right atm, we can tweak later
+  def paymentReference: Reference = ReferenceMaker.makeVapingReference(vapingDutyReference) // not sure if this is right atm, we can tweak later
+  def searchTag                   = SearchTag(paymentReference.value)                       // not sure if this is right atm, we can tweak later
 }
 
 final case class PfVapingProductsDutySessionData(
   vapingDutyReference: VapingDutyReference,
   returnUrl:           Option[Url]
 ) extends OriginSpecificSessionData(PfVapingProductsDuty) {
-  def paymentReference: Reference = ReferenceMaker.makeVpdReference(vapingDutyReference) // not sure if this is right atm, we can tweak later
-  def searchTag                   = SearchTag(paymentReference.value)                    // not sure if this is right atm, we can tweak later
+  def paymentReference: Reference = ReferenceMaker.makeVapingReference(vapingDutyReference) // not sure if this is right atm, we can tweak later
+  def searchTag                   = SearchTag(paymentReference.value)                       // not sure if this is right atm, we can tweak later
 }
