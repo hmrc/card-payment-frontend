@@ -39,7 +39,7 @@ import payapi.corcommon.model.taxes.stos.StosChargeType.SecurityTransferCharge
 import payapi.corcommon.model.taxes.trusts.TrustReference
 import payapi.corcommon.model.taxes.vat.{CalendarPeriod, VatChargeReference, Vrn}
 import payapi.corcommon.model.taxes.vatc2c.VatC2cReference
-import payapi.corcommon.model.taxes.vpd.VapingDutyReference
+import payapi.corcommon.model.taxes.vpd.{VapingDutyChargeReference, VapingDutyReference}
 import payapi.corcommon.model.times.period.CalendarQuarter.OctoberToDecember
 import payapi.corcommon.model.times.period.TaxQuarter.AprilJuly
 import payapi.corcommon.model.times.period.{CalendarQuarterlyPeriod, TaxMonth, TaxYear}
@@ -725,6 +725,7 @@ class OpenBankingOriginSpecificSessionDataSpec extends UnitSpec {
         """{
           |  "vapingDutyReference": "XBKT123456789",
           |  "amountInPence": 1234,
+          |  "vapingDutyChargeReference":"CR123456789012",
           |  "origin": "BtaVapingProductsDuty"
           |}""".stripMargin
       )
@@ -734,11 +735,12 @@ class OpenBankingOriginSpecificSessionDataSpec extends UnitSpec {
         osd,
         BtaVapingProductsDutySessionData(
           VapingDutyReference("XBKT123456789"),
+          Some(VapingDutyChargeReference("CR123456789012")),
           AmountInPence(1234),
           returnUrl = None
         ),
-        "XBKT123456789",
-        "XBKT123456789"
+        "CR123456789012",
+        "CR123456789012"
       )
       roundTripJsonTest(osd, testJson)
     }
@@ -749,6 +751,7 @@ class OpenBankingOriginSpecificSessionDataSpec extends UnitSpec {
         """{
           |  "vapingDutyReference": "XBKT123456789",
           |  "amountInPence": 1234,
+          |  "vapingDutyChargeReference":"CR123456789012",
           |  "origin": "VpdVapingProductsDuty"
           |}""".stripMargin
       )
@@ -758,11 +761,12 @@ class OpenBankingOriginSpecificSessionDataSpec extends UnitSpec {
         osd,
         VpdVapingProductsDutySessionData(
           VapingDutyReference("XBKT123456789"),
+          Some(VapingDutyChargeReference("CR123456789012")),
           AmountInPence(1234),
           returnUrl = None
         ),
-        "XBKT123456789",
-        "XBKT123456789"
+        "CR123456789012",
+        "CR123456789012"
       )
       roundTripJsonTest(osd, testJson)
     }

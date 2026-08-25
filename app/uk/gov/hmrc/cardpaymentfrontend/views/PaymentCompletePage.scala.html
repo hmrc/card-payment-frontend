@@ -50,6 +50,7 @@
 )(implicit journeyRequest: JourneyRequest[?], messages: Messages)
 
 @additionalScript = { <script type="module" src="@{controllers.routes.Assets.versioned("javascripts/print-dialogue.js")}" @{CSPNonce.attr}></script> }
+<link rel="stylesheet" media="all" href='@{controllers.routes.Assets.versioned("stylesheets/application.css")}'>
 
 @origin = @{journeyRequest.journey.origin}
 
@@ -207,8 +208,8 @@
         @detailsOfStampTaxesOnSharesPayment
     }
 
-    <p id="print-link-wrapper" class="govuk-body js-visible govuk-!-display-none-print">
-        <a id="print-page" class="govuk-link" href="#print-dialogue">
+    <p id="print-link-wrapper" class="govuk-body govuk-!-display-none-print">
+        <a id="print-page" class="govuk-link" href="#print-dialogue" style="display:inline;">
             @printLinkContent
         </a>
     </p>
