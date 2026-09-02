@@ -1048,6 +1048,7 @@ object TestJourneys {
       createdOn = LocalDateTime.parse("2027-11-02T16:28:55.185"),
       journeySpecificData = JsdPfNiEuVatOss(
         vrn = Some(Vrn("101747641")),
+        chargeRef = None,
         period = Some(testQuarterlyTaxPeriod)
       )
     )
