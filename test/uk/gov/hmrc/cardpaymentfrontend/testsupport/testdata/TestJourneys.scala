@@ -1085,6 +1085,7 @@ object TestJourneys {
       createdOn = LocalDateTime.parse("2027-11-02T16:28:55.185"),
       journeySpecificData = JsdPfNiEuVatIoss(
         ioss = Some(Ioss("IM1234567890")),
+        chargeRef = None,
         period = Some(testCalendarPeriod)
       )
     )
