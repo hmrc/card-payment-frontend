@@ -3485,6 +3485,7 @@ class FeesControllerSpec extends ItSpec {
               case Origins.PfCdsDeferment                                                       => Seq.empty
               case Origins.PfTrust                                                              => Seq(expectedOpenBankingLink, expectedOneOffDirectDebitLink)
               case Origins.PtaClass3Ni                                                          => Seq.empty
+              case Origins.PtaCheckYourStatePension                                             => Seq.empty
               case Origins.AlcoholDuty                                                          => Seq(expectedOpenBankingLink)
               case Origins.PfAlcoholDuty                                                        => Seq(expectedOpenBankingLink)
               case Origins.VatC2c                                                               => Seq(expectedOpenBankingLink)
