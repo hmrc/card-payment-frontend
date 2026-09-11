@@ -162,7 +162,6 @@ object OriginSpecificSessionData                                    {
       case BtaVapingProductsDuty    => Json.format[BtaVapingProductsDutySessionData].reads(json)
       case VpdVapingProductsDuty    => Json.format[VpdVapingProductsDutySessionData].reads(json)
       case PfVapingProductsDuty     => Json.format[PfVapingProductsDutySessionData].reads(json)
-      case PtaCheckYourStatePension => Json.format[PtaCheckYourStatePensionSessionData].reads(json)
 
       // Todo: Remove PfP800 when PtaP800 is fully available
       case origin @ (PfOther | PfP800 | BcPngr | Parcels | Mib | PfSimpleAssessment | PtaSimpleAssessment | WcXref) =>
@@ -265,7 +264,6 @@ object OriginSpecificSessionData                                    {
       case sessionData: BtaVapingProductsDutySessionData    => Json.format[BtaVapingProductsDutySessionData].writes(sessionData)
       case sessionData: VpdVapingProductsDutySessionData    => Json.format[VpdVapingProductsDutySessionData].writes(sessionData)
       case sessionData: PfVapingProductsDutySessionData     => Json.format[PfVapingProductsDutySessionData].writes(sessionData)
-      case sessionData: PtaCheckYourStatePensionSessionData => Json.format[PtaCheckYourStatePensionSessionData].writes(sessionData)
 
     }) + ("origin" -> Json.toJson(o.origin))
 
@@ -814,12 +812,6 @@ final case class JrsJobRetentionSchemeSessionData(jrsRef: JrsRef, returnUrl: Opt
 final case class WcClass2NiSessionData(class2NiReference: Class2NiReference, returnUrl: Option[Url] = None) extends OriginSpecificSessionData(WcClass2Ni) {
   def paymentReference: Reference = ReferenceMaker.makeClass2NiReference(class2NiReference)
   def searchTag: SearchTag        = SearchTag(class2NiReference.canonicalisedValue)
-}
-
-final case class PtaCheckYourStatePensionSessionData(ptaNiRef: PtaNiRef, returnUrl: Option[Url] = None)
-    extends OriginSpecificSessionData(PtaCheckYourStatePension) {
-  def paymentReference: Reference = ReferenceMaker.makePtaNiRef(ptaNiRef)
-  def searchTag: SearchTag        = SearchTag(ptaNiRef.canonicalisedValue)
 }
 
 final case class StampTaxesOnSharesSessionData(

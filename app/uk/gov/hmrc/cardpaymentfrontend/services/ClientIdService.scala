@@ -79,7 +79,7 @@ class ClientIdService @Inject() {
           case Languages.Welsh   => ClientIds.COEC
         }
 
-      case PfEpayeNi | PfEpayeP11d | WcEpayeNi | WcClass1aNi | BtaEpayeBill | BtaEpayeGeneral | BtaClass1aNi | PtaCheckYourStatePension =>
+      case PfEpayeNi | PfEpayeP11d | WcEpayeNi | WcClass1aNi | BtaEpayeBill | BtaEpayeGeneral | BtaClass1aNi =>
         language match {
           case Languages.English => ClientIds.PAEE
           case Languages.Welsh   => ClientIds.PAEC
