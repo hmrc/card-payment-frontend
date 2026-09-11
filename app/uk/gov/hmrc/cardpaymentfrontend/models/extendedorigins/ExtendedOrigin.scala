@@ -235,6 +235,7 @@ object ExtendedOrigin {
       case PfCdsDeferment           => DefaultExtendedOrigin
       case PfTrust                  => ExtendedPfTrust
       case PtaClass3Ni              => DefaultExtendedOrigin
+      case PtaCheckYourStatePension => DefaultExtendedOrigin
       case PfAlcoholDuty            => ExtendedPfAlcoholDuty
       case AlcoholDuty              => ExtendedAlcoholDuty
       case VatC2c                   => ExtendedVatC2c
@@ -271,8 +272,8 @@ object ExtendedOrigin {
           PfGbPbRgDuty | PfLandfillTax | PfSdil | PfAggregatesLevy | PfClimateChangeLevy | PfSimpleAssessment | PtaSimpleAssessment | AppSimpleAssessment |
           PfTpes | CapitalGainsTax | EconomicCrimeLevy | PfEconomicCrimeLevy | PfJobRetentionScheme | JrsJobRetentionScheme | PfImportedVehicles |
           PfChildBenefitRepayments | NiEuVatOss | PfNiEuVatOss | NiEuVatIoss | PfNiEuVatIoss | PfAmls | PfAted | PfCdsDeferment | PfTrust | PtaClass3Ni |
-          AlcoholDuty | PfAlcoholDuty | VatC2c | PfVatC2c | `3psSa` | `3psVat` | Pillar2 | PfPillar2 | StampTaxesOnShares | PfStampTaxesOnShares |
-          BtaVapingProductsDuty | VpdVapingProductsDuty | PfVapingProductsDuty =>
+          PtaCheckYourStatePension | AlcoholDuty | PfAlcoholDuty | VatC2c | PfVatC2c | `3psSa` | `3psVat` | Pillar2 | PfPillar2 | StampTaxesOnShares |
+          PfStampTaxesOnShares | BtaVapingProductsDuty | VpdVapingProductsDuty | PfVapingProductsDuty =>
         false
       case WcSa | WcCt | WcVat | WcSimpleAssessment | WcXref | WcEpayeLpp | WcClass1aNi | WcEpayeNi | WcEpayeLateCis | WcEpayeSeta | WcSdlt | WcClass2Ni |
           WcChildBenefitRepayments =>
@@ -286,9 +287,9 @@ object ExtendedOrigin {
           PtaSa | PfWineAndCider | PfBioFuels | PfAirPass | PfMgd | PfBeerDuty | PfGamingOrBingoDuty | PfGbPbRgDuty | PfLandfillTax | PfSdil |
           PfAggregatesLevy | PfClimateChangeLevy | PfSimpleAssessment | PtaSimpleAssessment | AppSimpleAssessment | PfTpes | CapitalGainsTax |
           EconomicCrimeLevy | PfEconomicCrimeLevy | PfJobRetentionScheme | JrsJobRetentionScheme | PfImportedVehicles | PfChildBenefitRepayments | PfAmls |
-          PfAted | PfTrust | PtaClass3Ni | AlcoholDuty | PfAlcoholDuty | VatC2c | PfVatC2c | `3psSa` | `3psVat` | WcSa | WcCt | WcVat | WcSimpleAssessment |
-          WcXref | WcEpayeLpp | WcClass1aNi | WcEpayeNi | WcEpayeLateCis | WcEpayeSeta | WcSdlt | WcClass2Ni | WcChildBenefitRepayments |
-          BtaVapingProductsDuty | VpdVapingProductsDuty | PfVapingProductsDuty =>
+          PfAted | PfTrust | PtaClass3Ni | PtaCheckYourStatePension | AlcoholDuty | PfAlcoholDuty | VatC2c | PfVatC2c | `3psSa` | `3psVat` | WcSa | WcCt |
+          WcVat | WcSimpleAssessment | WcXref | WcEpayeLpp | WcClass1aNi | WcEpayeNi | WcEpayeLateCis | WcEpayeSeta | WcSdlt | WcClass2Ni |
+          WcChildBenefitRepayments | BtaVapingProductsDuty | VpdVapingProductsDuty | PfVapingProductsDuty =>
         true
       case PfCds | PfCdsCash | PfCdsDeferment | NiEuVatOss | NiEuVatIoss | PfNiEuVatOss | PfNiEuVatIoss | Pillar2 | PfPillar2 | Parcels | StampTaxesOnShares |
           PfStampTaxesOnShares =>

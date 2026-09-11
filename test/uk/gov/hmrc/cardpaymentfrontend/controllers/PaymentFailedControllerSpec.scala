@@ -206,7 +206,7 @@ class PaymentFailedControllerSpec extends ItSpec {
 
       case PfImportedVehicles | PfAted | PfCdsDeferment | PfClass2Ni | PfInsurancePremium | Parcels | PfCdsCash | PfSpiritDrinks | PfInheritanceTax |
           PfClass3Ni | PfWineAndCider | PfBioFuels | PfAirPass | PfBeerDuty | PfGamingOrBingoDuty | PfLandfillTax | PfAggregatesLevy | PfClimateChangeLevy |
-          PtaClass3Ni | `3psSa` | `3psVat` | PfPillar2 | Pillar2 | WcClass2Ni =>
+          PtaClass3Ni | PtaCheckYourStatePension | `3psSa` | `3psVat` | PfPillar2 | Pillar2 | WcClass2Ni =>
         throw new MatchError("No card journey expected to be supported for this origin, why is it being tested?")
     }
   }

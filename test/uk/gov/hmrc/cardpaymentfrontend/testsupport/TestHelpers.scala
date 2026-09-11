@@ -128,6 +128,7 @@ object TestHelpers {
     PfAted,
     PfCdsDeferment,
     PtaClass3Ni,
+    PtaCheckYourStatePension,
     `3psSa`,
     `3psVat`,
     PfPillar2,
@@ -246,6 +247,7 @@ object TestHelpers {
     case PfAggregatesLevy         => throw new MatchError("Not implemented yet")
     case PfClimateChangeLevy      => throw new MatchError("Not implemented yet")
     case PtaClass3Ni              => throw new MatchError("Not implemented yet")
+    case PtaCheckYourStatePension => throw new MatchError("Not implemented yet")
     case `3psSa`                  => throw new MatchError("Not implemented yet")
     case `3psVat`                 => throw new MatchError("Not implemented yet")
     case PfPillar2                => throw new MatchError("Not implemented yet")
