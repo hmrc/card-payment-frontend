@@ -676,8 +676,9 @@ final case class PtaClass3NiSessionData(class3NiRef: Class3NiRef, returnUrl: Opt
   def searchTag: SearchTag        = SearchTag(class3NiRef.value)
 }
 
-final case class PtaNiSessionData(niRef: PtaNiRef, returnUrl: Option[Url] = None) extends OriginSpecificSessionData(PtaCheckYourStatePension) {
-  def paymentReference: Reference = ReferenceMaker.makePtaNiRef(niRef)
+final case class PtaNiSessionData(niRef: CheckYourStatePensionReference, returnUrl: Option[Url] = None)
+    extends OriginSpecificSessionData(PtaCheckYourStatePension) {
+  def paymentReference: Reference = ReferenceMaker.makeCheckYourStatePensionRef(niRef)
   def searchTag: SearchTag        = SearchTag(niRef.value)
 }
 
