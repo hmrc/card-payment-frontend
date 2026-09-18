@@ -1450,8 +1450,8 @@ object TestJourneys {
       status = PaymentStatuses.Created,
       createdOn = LocalDateTime.parse("2027-11-02T16:28:55.185"),
       journeySpecificData = JsdBtaVapingProductsDuty(
-        vapingDutyReference = VapingDutyReference("XBKT123456789"),
-        chargeReferenceNumber = Some(VapingDutyChargeReference("CR123456789012")),
+        vapingDutyReference = VapingDutyReference("GBWK1234566WK"),
+        chargeReferenceNumber = Some(VapingDutyChargeReference("XA123456789011")),
         AmountInPence(1234)
       )
     )
@@ -1468,8 +1468,8 @@ object TestJourneys {
       status = PaymentStatuses.Created,
       createdOn = LocalDateTime.parse("2027-11-02T16:28:55.185"),
       journeySpecificData = JsdVpdVapingProductsDuty(
-        vapingDutyReference = VapingDutyReference("XBKT123456789"),
-        chargeReferenceNumber = Some(VapingDutyChargeReference("CR123456789012")),
+        vapingDutyReference = VapingDutyReference("GBWK1234566WK"),
+        chargeReferenceNumber = Some(VapingDutyChargeReference("XA123456789011")),
         AmountInPence(1234)
       )
     )
@@ -1485,7 +1485,7 @@ object TestJourneys {
       status = PaymentStatuses.Created,
       createdOn = LocalDateTime.parse("2027-11-02T16:28:55.185"),
       journeySpecificData = JsdPfVapingProductsDuty(
-        vapingDutyReference = Some(VapingDutyReference("XBKT123456789"))
+        vapingDutyReference = Some(VapingDutyReference("XIWK1234566WK"))
       )
     )
     val journeyBeforeBeginWebPaymentWithGbwkReference: Journey[JsdPfVapingProductsDuty] = Journey[JsdPfVapingProductsDuty](
@@ -1498,7 +1498,7 @@ object TestJourneys {
       status = PaymentStatuses.Created,
       createdOn = LocalDateTime.parse("2027-11-02T16:28:55.185"),
       journeySpecificData = JsdPfVapingProductsDuty(
-        vapingDutyReference = Some(VapingDutyReference("GBWK123456789011"))
+        vapingDutyReference = Some(VapingDutyReference("GBWK1234566WK"))
       )
     )
     val journeyBeforeBeginWebPaymentWithXiwkReference: Journey[JsdPfVapingProductsDuty] = Journey[JsdPfVapingProductsDuty](
@@ -1511,7 +1511,7 @@ object TestJourneys {
       status = PaymentStatuses.Created,
       createdOn = LocalDateTime.parse("2027-11-02T16:28:55.185"),
       journeySpecificData = JsdPfVapingProductsDuty(
-        vapingDutyReference = Some(VapingDutyReference("XIWK123456789011"))
+        vapingDutyReference = Some(VapingDutyReference("XIWK1234566WK"))
       )
     )
   }

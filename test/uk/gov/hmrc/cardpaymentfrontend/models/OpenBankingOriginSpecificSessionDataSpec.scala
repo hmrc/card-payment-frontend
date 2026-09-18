@@ -723,9 +723,9 @@ class OpenBankingOriginSpecificSessionDataSpec extends UnitSpec {
       val testJson = Json.parse(
         // language=JSON
         """{
-          |  "vapingDutyReference": "XBKT123456789",
+          |  "vapingDutyReference": "GBWK1234566WK",
           |  "amountInPence": 1234,
-          |  "vapingDutyChargeReference":"CR123456789012",
+          |  "vapingDutyChargeReference":"XA123456789011",
           |  "origin": "BtaVapingProductsDuty"
           |}""".stripMargin
       )
@@ -734,13 +734,13 @@ class OpenBankingOriginSpecificSessionDataSpec extends UnitSpec {
       testOsd(
         osd,
         BtaVapingProductsDutySessionData(
-          VapingDutyReference("XBKT123456789"),
-          Some(VapingDutyChargeReference("CR123456789012")),
+          VapingDutyReference("GBWK1234566WK"),
+          Some(VapingDutyChargeReference("XA123456789011")),
           AmountInPence(1234),
           returnUrl = None
         ),
-        "CR123456789012",
-        "CR123456789012"
+        "XA123456789011",
+        "XA123456789011"
       )
       roundTripJsonTest(osd, testJson)
     }
@@ -749,9 +749,9 @@ class OpenBankingOriginSpecificSessionDataSpec extends UnitSpec {
       val testJson = Json.parse(
         // language=JSON
         """{
-          |  "vapingDutyReference": "XBKT123456789",
+          |  "vapingDutyReference": "GBWK1234566WK",
           |  "amountInPence": 1234,
-          |  "vapingDutyChargeReference":"CR123456789012",
+          |  "vapingDutyChargeReference":"XA123456789011",
           |  "origin": "VpdVapingProductsDuty"
           |}""".stripMargin
       )
@@ -760,13 +760,13 @@ class OpenBankingOriginSpecificSessionDataSpec extends UnitSpec {
       testOsd(
         osd,
         VpdVapingProductsDutySessionData(
-          VapingDutyReference("XBKT123456789"),
-          Some(VapingDutyChargeReference("CR123456789012")),
+          VapingDutyReference("GBWK1234566WK"),
+          Some(VapingDutyChargeReference("XA123456789011")),
           AmountInPence(1234),
           returnUrl = None
         ),
-        "CR123456789012",
-        "CR123456789012"
+        "XA123456789011",
+        "XA123456789011"
       )
       roundTripJsonTest(osd, testJson)
     }
@@ -775,20 +775,22 @@ class OpenBankingOriginSpecificSessionDataSpec extends UnitSpec {
       val testJson = Json.parse(
         // language=JSON
         """{
-          |  "vapingDutyReference": "XBKT123456789",
+          |  "vapingDutyReference": "GBWK1234566WK",
           |  "origin": "PfVapingProductsDuty"
           |}""".stripMargin
       )
       val osd      =
-        ExtendedPfVapingProductsDuty.openBankingOriginSpecificSessionData(TestJourneys.PfVapingProductsDuty.journeyBeforeBeginWebPayment.journeySpecificData)
+        ExtendedPfVapingProductsDuty.openBankingOriginSpecificSessionData(
+          TestJourneys.PfVapingProductsDuty.journeyBeforeBeginWebPaymentWithGbwkReference.journeySpecificData
+        )
       testOsd(
         osd,
         PfVapingProductsDutySessionData(
-          VapingDutyReference("XBKT123456789"),
+          VapingDutyReference("GBWK1234566WK"),
           returnUrl = None
         ),
-        "XBKT123456789",
-        "XBKT123456789"
+        "GBWK1234566WK",
+        "GBWK1234566WK"
       )
       roundTripJsonTest(osd, testJson)
     }
