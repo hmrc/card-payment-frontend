@@ -1669,6 +1669,48 @@ class CheckYourAnswersControllerSpec extends ItSpec with TableDrivenPropertyChec
       )
     }
 
+    "[PfVapingProductsDuty] should render the reference row with change link to select-what-you-want-to-pay when reference does not start with GBWK or XIWK" in {
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfVapingProductsDuty.journeyBeforeBeginWebPayment)
+      val result       = systemUnderTest.renderPage(fakeRequest())
+      val document     = Jsoup.parse(contentAsString(result))
+      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(0)
+      assertRow(
+        referenceRow,
+        "Reference number",
+        "XBKT123456789",
+        Some("Change Reference number"),
+        Some("http://localhost:9056/pay/vaping-products-duty/select-what-you-want-to-pay")
+      )
+    }
+
+    "[PfVapingProductsDuty] should render the reference row with change link to change-reference-number when reference starts with GBWK" in {
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfVapingProductsDuty.journeyBeforeBeginWebPaymentWithGbwkReference)
+      val result       = systemUnderTest.renderPage(fakeRequest())
+      val document     = Jsoup.parse(contentAsString(result))
+      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(0)
+      assertRow(
+        referenceRow,
+        "Reference number",
+        "GBWK123456789011",
+        Some("Change Reference number"),
+        Some("http://localhost:9056/pay/pay-by-card-change-reference-number")
+      )
+    }
+
+    "[PfVapingProductsDuty] should render the reference row with change link to change-reference-number when reference starts with XIWK" in {
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfVapingProductsDuty.journeyBeforeBeginWebPaymentWithXiwkReference)
+      val result       = systemUnderTest.renderPage(fakeRequest())
+      val document     = Jsoup.parse(contentAsString(result))
+      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(0)
+      assertRow(
+        referenceRow,
+        "Reference number",
+        "XIWK123456789011",
+        Some("Change Reference number"),
+        Some("http://localhost:9056/pay/pay-by-card-change-reference-number")
+      )
+    }
+
     "sanity check for implemented origins" in {
       // remember to add the singular tests for reference rows as well as fdp if applicable, they are not covered in the implementedOrigins forall tests
       TestHelpers.implementedOrigins.size shouldBe 75 withClue "** This dummy test is here to remind you to update the tests above. Bump up the expected number when an origin is added to implemented origins **"
