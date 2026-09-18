@@ -62,8 +62,8 @@ object ExtendedBtaVapingProductsDuty extends ExtendedOrigin {
 
   override def emailTaxTypeMessageKey: String  = "email.tax-name.BtaVapingProductsDuty"
   override def surveyAuditName: String         = "vaping-products-duty"
-  override def surveyReturnHref: String        = "https://www.gov.uk/government/organisations/hm-revenue-customs"
-  override def surveyReturnMessageKey: String  = "payments-survey.other.return-message"
+  override def surveyReturnHref: String        = "/business-account"
+  override def surveyReturnMessageKey: String  = "payments-survey.bta.return-message"
   override def surveyIsWelshSupported: Boolean = true
   override def surveyBannerTitle: String       = serviceNameMessageKey
 }

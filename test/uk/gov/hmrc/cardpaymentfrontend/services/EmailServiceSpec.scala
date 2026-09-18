@@ -395,9 +395,9 @@ class EmailServiceSpec extends ItSpec with TableDrivenPropertyChecks {
       (StampTaxesOnShares, "Securities Transfer Charge", "ending with 56789", commission, Some("13.57"), "en"),
       (PfStampTaxesOnShares, "Securities Transfer Charge", "ending with 89012", None, None, "en"),
       (PfStampTaxesOnShares, "Securities Transfer Charge", "ending with 89012", commission, Some("13.57"), "en"),
-      (BtaVapingProductsDuty, "Vaping Products Duty", "ending with 56789", None, None, "en"),
-      (VpdVapingProductsDuty, "Vaping Products Duty", "ending with 56789", commission, Some("13.57"), "en"),
-      (PfVapingProductsDuty, "Vaping Products Duty", "ending with 56789", commission, Some("13.57"), "en")
+      (BtaVapingProductsDuty, "Vaping Products Duty", "ending with 566WK", None, None, "en"),
+      (VpdVapingProductsDuty, "Vaping Products Duty", "ending with 566WK", commission, Some("13.57"), "en"),
+      (PfVapingProductsDuty, "Vaping Products Duty", "ending with 566WK", commission, Some("13.57"), "en")
     )
 
     forAll(scenarios) { (j, taxType, taxReference, commission, totalPaid, lang) =>

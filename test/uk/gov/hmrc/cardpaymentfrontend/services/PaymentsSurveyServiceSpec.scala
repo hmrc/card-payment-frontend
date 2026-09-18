@@ -1742,13 +1742,13 @@ class PaymentsSurveyServiceSpec extends ItSpec with TableDrivenPropertyChecks {
           case Origins.BtaVapingProductsDuty    =>
             PaymentSurveyJourneyRequest(
               origin = "BtaVapingProductsDuty",
-              returnMsg = "Skip survey",
-              returnHref = "https://www.gov.uk/government/organisations/hm-revenue-customs",
+              returnMsg = "Skip survey, return to business tax account",
+              returnHref = "/business-account",
               auditName = "vaping-products-duty",
               audit = AuditOptions(
                 userType = "LoggedIn",
                 journey = Some("Successful"),
-                orderId = Some(TestJourneys.StampTaxesOnShares.journeyAfterSucceedDebitWebPayment.referenceValue),
+                orderId = Some("GBWK1234566WK"),
                 liability = Some("vaping-products-duty"),
                 surveySource = "card-payment-frontend",
                 paymentId = "Some-transaction-ref",
@@ -1771,7 +1771,7 @@ class PaymentsSurveyServiceSpec extends ItSpec with TableDrivenPropertyChecks {
               audit = AuditOptions(
                 userType = "LoggedIn",
                 journey = Some("Successful"),
-                orderId = Some("XBKT123456789"),
+                orderId = Some("GBWK1234566WK"),
                 liability = Some("vaping-products-duty"),
                 surveySource = "card-payment-frontend",
                 paymentId = "Some-transaction-ref",
@@ -1792,9 +1792,9 @@ class PaymentsSurveyServiceSpec extends ItSpec with TableDrivenPropertyChecks {
               returnHref = "https://www.gov.uk/government/organisations/hm-revenue-customs",
               auditName = "vaping-products-duty",
               audit = AuditOptions(
-                userType = "LoggedIn",
+                userType = "LoggedOut",
                 journey = Some("Successful"),
-                orderId = Some("XBKT123456789"),
+                orderId = Some("XIWK1234566WK"),
                 liability = Some("vaping-products-duty"),
                 surveySource = "card-payment-frontend",
                 paymentId = "Some-transaction-ref",
@@ -1807,7 +1807,7 @@ class PaymentsSurveyServiceSpec extends ItSpec with TableDrivenPropertyChecks {
                   welshValue = Some("Pay Vaping Products Duty")
                 )
               )
-            ) -> true
+            ) -> false
           case Origins.Parcels                  => throw new MatchError("Not implemented yet")
           case Origins.PfCdsCash                => throw new MatchError("Not implemented yet")
           case Origins.PfSpiritDrinks           => throw new MatchError("Not implemented yet")
