@@ -1691,7 +1691,7 @@ class CheckYourAnswersControllerSpec extends ItSpec with TableDrivenPropertyChec
         "Reference number",
         "XIWK1234566WK",
         Some("Change Reference number"),
-        Some("http://localhost:9056/pay/pay-by-card-change-reference-number")
+        Some("http://localhost:9056/pay/vaping-products-duty/select-what-you-want-to-pay")
       )
     }
 
@@ -1705,7 +1705,7 @@ class CheckYourAnswersControllerSpec extends ItSpec with TableDrivenPropertyChec
         "Reference number",
         "GBWK1234566WK",
         Some("Change Reference number"),
-        Some("http://localhost:9056/pay/pay-by-card-change-reference-number")
+        Some("http://localhost:9056/pay/vaping-products-duty/select-what-you-want-to-pay")
       )
     }
 
@@ -1719,7 +1719,7 @@ class CheckYourAnswersControllerSpec extends ItSpec with TableDrivenPropertyChec
         "Reference number",
         "XIWK1234566WK",
         Some("Change Reference number"),
-        Some("http://localhost:9056/pay/pay-by-card-change-reference-number")
+        Some("http://localhost:9056/pay/vaping-products-duty/select-what-you-want-to-pay")
       )
     }
 

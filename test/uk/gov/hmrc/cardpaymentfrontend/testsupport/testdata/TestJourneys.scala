@@ -1486,7 +1486,8 @@ object TestJourneys {
       status = PaymentStatuses.Created,
       createdOn = LocalDateTime.parse("2027-11-02T16:28:55.185"),
       journeySpecificData = JsdPfVapingProductsDuty(
-        vapingDutyReference = Some(VapingDutyReference("XIWK1234566WK"))
+        vapingDutyReference = Some(VapingDutyReference("XIWK1234566WK")),
+        None
       )
     )
     val journeyBeforeBeginWebPaymentWithGbwkReference: Journey[JsdPfVapingProductsDuty] = Journey[JsdPfVapingProductsDuty](
@@ -1499,7 +1500,8 @@ object TestJourneys {
       status = PaymentStatuses.Created,
       createdOn = LocalDateTime.parse("2027-11-02T16:28:55.185"),
       journeySpecificData = JsdPfVapingProductsDuty(
-        vapingDutyReference = Some(VapingDutyReference("GBWK1234566WK"))
+        vapingDutyReference = Some(VapingDutyReference("GBWK1234566WK")),
+        None
       )
     )
     val journeyBeforeBeginWebPaymentWithXiwkReference: Journey[JsdPfVapingProductsDuty] = Journey[JsdPfVapingProductsDuty](
@@ -1512,7 +1514,8 @@ object TestJourneys {
       status = PaymentStatuses.Created,
       createdOn = LocalDateTime.parse("2027-11-02T16:28:55.185"),
       journeySpecificData = JsdPfVapingProductsDuty(
-        vapingDutyReference = Some(VapingDutyReference("XIWK1234566WK"))
+        vapingDutyReference = Some(VapingDutyReference("XIWK1234566WK")),
+        None
       )
     )
   }
