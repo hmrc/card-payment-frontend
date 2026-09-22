@@ -562,7 +562,7 @@ class CheckYourAnswersControllerSpec extends ItSpec with TableDrivenPropertyChec
       val result       = systemUnderTest.renderPage(fakeRequest())
       val document     = Jsoup.parse(contentAsString(result))
       val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(0)
-      assertRow(referenceRow, "Charge reference", "CR123456789012", None, None)
+      assertRow(referenceRow, "Charge reference", "XA123456789011", None, None)
     }
 
     "[VpdVaping] should render the charge reference row correctly in welsh when it's available" in {
@@ -570,7 +570,7 @@ class CheckYourAnswersControllerSpec extends ItSpec with TableDrivenPropertyChec
       val result       = systemUnderTest.renderPage(fakeRequestWelsh())
       val document     = Jsoup.parse(contentAsString(result))
       val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(0)
-      assertRow(referenceRow, "Cyfeirnod y tâl", "CR123456789012", None, None)
+      assertRow(referenceRow, "Cyfeirnod y tâl", "XA123456789011", None, None)
     }
 
     "[BtaVaping] should render the charge reference row correctly when it's available" in {
@@ -578,7 +578,7 @@ class CheckYourAnswersControllerSpec extends ItSpec with TableDrivenPropertyChec
       val result       = systemUnderTest.renderPage(fakeRequest())
       val document     = Jsoup.parse(contentAsString(result))
       val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(0)
-      assertRow(referenceRow, "Charge reference", "CR123456789012", None, None)
+      assertRow(referenceRow, "Charge reference", "XA123456789011", None, None)
     }
 
     "[BtaVaping] should render the charge reference row correctly in welsh when it's available" in {
@@ -586,7 +586,7 @@ class CheckYourAnswersControllerSpec extends ItSpec with TableDrivenPropertyChec
       val result       = systemUnderTest.renderPage(fakeRequestWelsh())
       val document     = Jsoup.parse(contentAsString(result))
       val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(0)
-      assertRow(referenceRow, "Cyfeirnod y tâl", "CR123456789012", None, None)
+      assertRow(referenceRow, "Cyfeirnod y tâl", "XA123456789011", None, None)
     }
 
     "[PfVat] should render the payment reference row correctly" in {
@@ -1666,6 +1666,48 @@ class CheckYourAnswersControllerSpec extends ItSpec with TableDrivenPropertyChec
         "XE123456789012",
         Some("Change Securities transfer charge reference"),
         Some("http://localhost:9056/pay/pay-by-card-change-reference-number")
+      )
+    }
+
+    "[PfVapingProductsDuty] should render the reference row with change link to select-what-you-want-to-pay when reference does not start with GBWK or XIWK" in {
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfVapingProductsDuty.journeyBeforeBeginWebPayment)
+      val result       = systemUnderTest.renderPage(fakeRequest())
+      val document     = Jsoup.parse(contentAsString(result))
+      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(0)
+      assertRow(
+        referenceRow,
+        "Reference number",
+        "XIWK1234566WK",
+        Some("Change Reference number"),
+        Some("http://localhost:9056/pay/vaping-products-duty/select-what-you-want-to-pay")
+      )
+    }
+
+    "[PfVapingProductsDuty] should render the reference row with change link to change-reference-number when reference starts with GBWK" in {
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfVapingProductsDuty.journeyBeforeBeginWebPaymentWithGbwkReference)
+      val result       = systemUnderTest.renderPage(fakeRequest())
+      val document     = Jsoup.parse(contentAsString(result))
+      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(0)
+      assertRow(
+        referenceRow,
+        "Reference number",
+        "GBWK1234566WK",
+        Some("Change Reference number"),
+        Some("http://localhost:9056/pay/vaping-products-duty/select-what-you-want-to-pay")
+      )
+    }
+
+    "[PfVapingProductsDuty] should render the reference row with change link to change-reference-number when reference starts with XIWK" in {
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfVapingProductsDuty.journeyBeforeBeginWebPaymentWithXiwkReference)
+      val result       = systemUnderTest.renderPage(fakeRequest())
+      val document     = Jsoup.parse(contentAsString(result))
+      val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(0)
+      assertRow(
+        referenceRow,
+        "Reference number",
+        "XIWK1234566WK",
+        Some("Change Reference number"),
+        Some("http://localhost:9056/pay/vaping-products-duty/select-what-you-want-to-pay")
       )
     }
 
