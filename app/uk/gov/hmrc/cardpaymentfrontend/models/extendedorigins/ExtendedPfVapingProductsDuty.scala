@@ -32,17 +32,13 @@ object ExtendedPfVapingProductsDuty extends ExtendedOrigin:
   def paymentMethods(): Set[PaymentMethod] = Set(Card, OpenBanking, Bacs, VariableDirectDebit)
 
   override def checkYourAnswersReferenceRow(journeyRequest: JourneyRequest[AnyContent])(payFrontendBaseUrl: String): Option[CheckYourAnswersRow] =
-    val isVpdReference: Boolean = journeyRequest.journey.getReference.value.startsWith("GBWK") | journeyRequest.journey.getReference.value.startsWith("XIWK")
-
     Some(
       CheckYourAnswersRow(
         titleMessageKey = "check-your-details.PfVapingProductsDuty.reference",
         value = Seq(journeyRequest.journey.referenceValue),
         changeLink = Some(
           Link(
-            href =
-              if (isVpdReference) Call("GET", changeReferenceUrl(payFrontendBaseUrl))
-              else Call("GET", s"${payFrontendBaseUrl}/vaping-products-duty/select-what-you-want-to-pay"),
+            href = Call("GET", s"${payFrontendBaseUrl}/vaping-products-duty/select-what-you-want-to-pay"),
             linkId = "check-your-details-reference-change-link",
             messageKey = "check-your-details.change"
           )
