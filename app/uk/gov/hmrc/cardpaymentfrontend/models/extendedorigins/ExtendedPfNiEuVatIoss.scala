@@ -37,7 +37,13 @@ object ExtendedPfNiEuVatIoss extends ExtendedOrigin {
       CheckYourAnswersRow(
         titleMessageKey = "check-your-details.PfNiEuVatIoss.reference",
         value = Seq(reference.value),
-        changeLink = None
+        changeLink = Some(
+          Link(
+            href = Call("GET", changeReferenceUrl(payFrontendBaseUrl)),
+            linkId = "check-your-details-reference-change-link",
+            messageKey = "check-your-details.change"
+          )
+        )
       )
     }
   }

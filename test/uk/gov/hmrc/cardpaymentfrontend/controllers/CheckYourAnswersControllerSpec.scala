@@ -1384,7 +1384,13 @@ class CheckYourAnswersControllerSpec extends ItSpec with TableDrivenPropertyChec
       val result       = systemUnderTest.renderPage(fakeRequest())
       val document     = Jsoup.parse(contentAsString(result))
       val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(0)
-      assertRow(referenceRow, "Payment reference", "NI101747641Q424", None, None)
+      assertRow(
+        referenceRow,
+        "Payment reference",
+        "NI101747641Q424",
+        Some("Change Payment reference"),
+        Some("http://localhost:9056/pay/pay-by-card-change-reference-number")
+      )
     }
 
     "[PfNiEuVatIoss] should render the payment reference row correctly" in {
@@ -1392,7 +1398,13 @@ class CheckYourAnswersControllerSpec extends ItSpec with TableDrivenPropertyChec
       val result       = systemUnderTest.renderPage(fakeRequest())
       val document     = Jsoup.parse(contentAsString(result))
       val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(0)
-      assertRow(referenceRow, "Payment reference", "IM1234567890M0624", None, None)
+      assertRow(
+        referenceRow,
+        "Payment reference",
+        "IM1234567890M0624",
+        Some("Change Payment reference"),
+        Some("http://localhost:9056/pay/pay-by-card-change-reference-number")
+      )
     }
 
     "[NiEuVatOss] should render the VAT Number correctly" in {
