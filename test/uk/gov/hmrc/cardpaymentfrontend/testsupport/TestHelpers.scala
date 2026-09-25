@@ -116,6 +116,7 @@ object TestHelpers {
     PfSpiritDrinks,
     PfInheritanceTax,
     PfClass3Ni,
+    PfCheckYourStatePension,
     PfWineAndCider,
     PfBioFuels,
     PfAirPass,
@@ -238,6 +239,7 @@ object TestHelpers {
     case PfSpiritDrinks           => throw new MatchError("Not implemented yet")
     case PfInheritanceTax         => throw new MatchError("Not implemented yet")
     case PfClass3Ni               => throw new MatchError("Not implemented yet")
+    case PfCheckYourStatePension  => throw new MatchError("Not implemented yet")
     case PfWineAndCider           => throw new MatchError("Not implemented yet")
     case PfBioFuels               => throw new MatchError("Not implemented yet")
     case PfAirPass                => throw new MatchError("Not implemented yet")

@@ -3454,6 +3454,7 @@ class FeesControllerSpec extends ItSpec {
               case Origins.PfInheritanceTax                                                     => Seq.empty
               case Origins.Mib                                                                  => Seq.empty[Link]
               case Origins.PfClass3Ni                                                           => Seq.empty
+              case Origins.PfCheckYourStatePension                                              => Seq.empty
               case Origins.PfWineAndCider                                                       => Seq.empty
               case Origins.PfBioFuels                                                           => Seq.empty
               case Origins.PfAirPass                                                            => Seq.empty

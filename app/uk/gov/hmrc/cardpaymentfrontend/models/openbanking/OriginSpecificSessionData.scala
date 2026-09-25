@@ -115,6 +115,7 @@ object OriginSpecificSessionData                                    {
       case PfBeerDuty               => Json.format[PfBeerDutySessionData].reads(json)
       case PfPsAdmin                => Json.format[PfPsAdminSessionData].reads(json)
       case PfClass3Ni               => Json.format[PfClass3NiSessionData].reads(json)
+      case PfCheckYourStatePension  => Json.format[PfCheckYourStatePensionSessionData].reads(json)
       case PtaClass3Ni              => Json.format[PtaClass3NiSessionData].reads(json)
       case PtaCheckYourStatePension => Json.format[PtaNiSessionData].reads(json)
       case Ppt                      => Json.format[PptSessionData].reads(json)
@@ -217,6 +218,7 @@ object OriginSpecificSessionData                                    {
       case sessionData: PfBeerDutySessionData               => Json.format[PfBeerDutySessionData].writes(sessionData)
       case sessionData: PfPsAdminSessionData                => Json.format[PfPsAdminSessionData].writes(sessionData)
       case sessionData: PfClass3NiSessionData               => Json.format[PfClass3NiSessionData].writes(sessionData)
+      case sessionData: PfCheckYourStatePensionSessionData  => Json.format[PfCheckYourStatePensionSessionData].writes(sessionData)
       case sessionData: PtaClass3NiSessionData              => Json.format[PtaClass3NiSessionData].writes(sessionData)
       case sessionData: PtaNiSessionData                    => Json.format[PtaNiSessionData].writes(sessionData)
       case sessionData: PptSessionData                      => Json.format[PptSessionData].writes(sessionData)
@@ -669,6 +671,12 @@ final case class PfPptSessionData(pptReference: PptReference, returnUrl: Option[
 final case class PfClass3NiSessionData(class3Ref: Class3NiRef, returnUrl: Option[Url] = None) extends OriginSpecificSessionData(PfClass3Ni) {
   def paymentReference: Reference = ReferenceMaker.makeClass3NiRef(class3Ref)
   def searchTag: SearchTag        = SearchTag(class3Ref.canonicalisedValue)
+}
+
+final case class PfCheckYourStatePensionSessionData(ref: CheckYourStatePensionReference, returnUrl: Option[Url] = None)
+    extends OriginSpecificSessionData(PfCheckYourStatePension) {
+  def paymentReference: Reference = ReferenceMaker.makeCheckYourStatePensionRef(ref)
+  def searchTag: SearchTag        = SearchTag(ref.canonicalisedValue)
 }
 
 final case class PtaClass3NiSessionData(class3NiRef: Class3NiRef, returnUrl: Option[Url] = None) extends OriginSpecificSessionData(PtaClass3Ni) {

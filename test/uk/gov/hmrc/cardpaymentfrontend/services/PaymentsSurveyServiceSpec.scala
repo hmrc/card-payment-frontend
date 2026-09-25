@@ -1813,6 +1813,7 @@ class PaymentsSurveyServiceSpec extends ItSpec with TableDrivenPropertyChecks {
           case Origins.PfSpiritDrinks           => throw new MatchError("Not implemented yet")
           case Origins.PfInheritanceTax         => throw new MatchError("Not implemented yet")
           case Origins.PfClass3Ni               => throw new MatchError("Not implemented yet")
+          case Origins.PfCheckYourStatePension  => throw new MatchError("Not implemented yet")
           case Origins.PfWineAndCider           => throw new MatchError("Not implemented yet")
           case Origins.PfBioFuels               => throw new MatchError("Not implemented yet")
           case Origins.PfAirPass                => throw new MatchError("Not implemented yet")

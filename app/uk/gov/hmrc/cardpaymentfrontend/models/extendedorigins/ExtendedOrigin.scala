@@ -203,6 +203,7 @@ object ExtendedOrigin {
       case PfInheritanceTax         => DefaultExtendedOrigin
       case Mib                      => ExtendedMib
       case PfClass3Ni               => DefaultExtendedOrigin
+      case PfCheckYourStatePension  => DefaultExtendedOrigin
       case PtaSa                    => ExtendedPtaSa
       case PfWineAndCider           => DefaultExtendedOrigin
       case PfBioFuels               => DefaultExtendedOrigin
@@ -268,12 +269,12 @@ object ExtendedOrigin {
       case PfSa | PfVat | PfCt | PfEpayeNi | PfEpayeLpp | PfEpayeSeta | PfEpayeLateCis | PfEpayeP11d | PfSdlt | PfCds | PfOther | PfP800 | PtaP800 |
           PfClass2Ni | PfInsurancePremium | PfPsAdmin | BtaSa | AppSa | BtaVat | BtaEpayeBill | BtaEpayePenalty | BtaEpayeInterest | BtaEpayeGeneral |
           BtaClass1aNi | BtaCt | BtaSdil | BcPngr | Parcels | DdVat | DdSdil | VcVatReturn | VcVatOther | ItSa | Amls | Ppt | PfCdsCash | PfPpt |
-          PfSpiritDrinks | PfInheritanceTax | Mib | PfClass3Ni | PtaSa | PfWineAndCider | PfBioFuels | PfAirPass | PfMgd | PfBeerDuty | PfGamingOrBingoDuty |
-          PfGbPbRgDuty | PfLandfillTax | PfSdil | PfAggregatesLevy | PfClimateChangeLevy | PfSimpleAssessment | PtaSimpleAssessment | AppSimpleAssessment |
-          PfTpes | CapitalGainsTax | EconomicCrimeLevy | PfEconomicCrimeLevy | PfJobRetentionScheme | JrsJobRetentionScheme | PfImportedVehicles |
-          PfChildBenefitRepayments | NiEuVatOss | PfNiEuVatOss | NiEuVatIoss | PfNiEuVatIoss | PfAmls | PfAted | PfCdsDeferment | PfTrust | PtaClass3Ni |
-          PtaCheckYourStatePension | AlcoholDuty | PfAlcoholDuty | VatC2c | PfVatC2c | `3psSa` | `3psVat` | Pillar2 | PfPillar2 | StampTaxesOnShares |
-          PfStampTaxesOnShares | BtaVapingProductsDuty | VpdVapingProductsDuty | PfVapingProductsDuty =>
+          PfSpiritDrinks | PfInheritanceTax | Mib | PfClass3Ni | PfCheckYourStatePension | PtaSa | PfWineAndCider | PfBioFuels | PfAirPass | PfMgd |
+          PfBeerDuty | PfGamingOrBingoDuty | PfGbPbRgDuty | PfLandfillTax | PfSdil | PfAggregatesLevy | PfClimateChangeLevy | PfSimpleAssessment |
+          PtaSimpleAssessment | AppSimpleAssessment | PfTpes | CapitalGainsTax | EconomicCrimeLevy | PfEconomicCrimeLevy | PfJobRetentionScheme |
+          JrsJobRetentionScheme | PfImportedVehicles | PfChildBenefitRepayments | NiEuVatOss | PfNiEuVatOss | NiEuVatIoss | PfNiEuVatIoss | PfAmls | PfAted |
+          PfCdsDeferment | PfTrust | PtaClass3Ni | PtaCheckYourStatePension | AlcoholDuty | PfAlcoholDuty | VatC2c | PfVatC2c | `3psSa` | `3psVat` | Pillar2 |
+          PfPillar2 | StampTaxesOnShares | PfStampTaxesOnShares | BtaVapingProductsDuty | VpdVapingProductsDuty | PfVapingProductsDuty =>
         false
       case WcSa | WcCt | WcVat | WcSimpleAssessment | WcXref | WcEpayeLpp | WcClass1aNi | WcEpayeNi | WcEpayeLateCis | WcEpayeSeta | WcSdlt | WcClass2Ni |
           WcChildBenefitRepayments =>
@@ -284,8 +285,8 @@ object ExtendedOrigin {
       case PfSa | PfVat | PfCt | PfEpayeNi | PfEpayeLpp | PfEpayeSeta | PfEpayeLateCis | PfEpayeP11d | PfSdlt | PfOther | PfP800 | PtaP800 | PfClass2Ni |
           PfInsurancePremium | PfPsAdmin | BtaSa | AppSa | BtaVat | BtaEpayeBill | BtaEpayePenalty | BtaEpayeInterest | BtaEpayeGeneral | BtaClass1aNi | BtaCt |
           BtaSdil | BcPngr | DdVat | DdSdil | VcVatReturn | VcVatOther | ItSa | Amls | Ppt | PfPpt | PfSpiritDrinks | PfInheritanceTax | Mib | PfClass3Ni |
-          PtaSa | PfWineAndCider | PfBioFuels | PfAirPass | PfMgd | PfBeerDuty | PfGamingOrBingoDuty | PfGbPbRgDuty | PfLandfillTax | PfSdil |
-          PfAggregatesLevy | PfClimateChangeLevy | PfSimpleAssessment | PtaSimpleAssessment | AppSimpleAssessment | PfTpes | CapitalGainsTax |
+          PfCheckYourStatePension | PtaSa | PfWineAndCider | PfBioFuels | PfAirPass | PfMgd | PfBeerDuty | PfGamingOrBingoDuty | PfGbPbRgDuty | PfLandfillTax |
+          PfSdil | PfAggregatesLevy | PfClimateChangeLevy | PfSimpleAssessment | PtaSimpleAssessment | AppSimpleAssessment | PfTpes | CapitalGainsTax |
           EconomicCrimeLevy | PfEconomicCrimeLevy | PfJobRetentionScheme | JrsJobRetentionScheme | PfImportedVehicles | PfChildBenefitRepayments | PfAmls |
           PfAted | PfTrust | PtaClass3Ni | PtaCheckYourStatePension | AlcoholDuty | PfAlcoholDuty | VatC2c | PfVatC2c | `3psSa` | `3psVat` | WcSa | WcCt |
           WcVat | WcSimpleAssessment | WcXref | WcEpayeLpp | WcClass1aNi | WcEpayeNi | WcEpayeLateCis | WcEpayeSeta | WcSdlt | WcClass2Ni |
