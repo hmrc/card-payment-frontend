@@ -3390,14 +3390,14 @@ object PaymentCompleteControllerSpec {
         englishSummaryRowsDebitCard = List(
           "Tax"              -> "Vaping Products Duty",
           "Date"             -> "2 November 2027",
-          "Charge reference" -> "CR123456789012",
+          "Charge reference" -> "XA123456789011",
           "Amount"           -> "£12.34"
         ),
         maybeWelshSummaryRowsDebitCard = None,
         englishSummaryRowsCreditCard = List(
           "Tax"                              -> "Vaping Products Duty",
           "Date"                             -> "2 November 2027",
-          "Charge reference"                 -> "CR123456789012",
+          "Charge reference"                 -> "XA123456789011",
           "Amount paid to HMRC"              -> "£12.34",
           "Card fee (9.97%), non-refundable" -> "£1.23",
           "Total paid"                       -> "£13.57"
@@ -3414,14 +3414,14 @@ object PaymentCompleteControllerSpec {
         englishSummaryRowsDebitCard = List(
           "Tax"              -> "Vaping Products Duty",
           "Date"             -> "2 November 2027",
-          "Charge reference" -> "CR123456789012",
+          "Charge reference" -> "XA123456789011",
           "Amount"           -> "£12.34"
         ),
         maybeWelshSummaryRowsDebitCard = None,
         englishSummaryRowsCreditCard = List(
           "Tax"                              -> "Vaping Products Duty",
           "Date"                             -> "2 November 2027",
-          "Charge reference"                 -> "CR123456789012",
+          "Charge reference"                 -> "XA123456789011",
           "Amount paid to HMRC"              -> "£12.34",
           "Card fee (9.97%), non-refundable" -> "£1.23",
           "Total paid"                       -> "£13.57"

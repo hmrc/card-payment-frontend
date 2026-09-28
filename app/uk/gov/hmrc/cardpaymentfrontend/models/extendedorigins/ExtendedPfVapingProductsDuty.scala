@@ -38,7 +38,7 @@ object ExtendedPfVapingProductsDuty extends ExtendedOrigin:
         value = Seq(journeyRequest.journey.referenceValue),
         changeLink = Some(
           Link(
-            href = Call("GET", changeReferenceUrl(payFrontendBaseUrl)),
+            href = Call("GET", s"${payFrontendBaseUrl}/vaping-products-duty/select-what-you-want-to-pay"),
             linkId = "check-your-details-reference-change-link",
             messageKey = "check-your-details.change"
           )
