@@ -16,16 +16,16 @@
 
 package uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins
 
-import payapi.cardpaymentjourney.model.journey.{JourneySpecificData, JsdPfStampTaxesOnShares}
+import payapi.cardpaymentjourney.model.journey.{JourneySpecificData, JsdPfSecuritiesTransferTax}
 import play.api.mvc.{AnyContent, Call}
 import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
 import uk.gov.hmrc.cardpaymentfrontend.models.PaymentMethod.{Bacs, Card, OpenBanking}
-import uk.gov.hmrc.cardpaymentfrontend.models.openbanking.{OriginSpecificSessionData, PfStampTaxesOnSharesSessionData}
+import uk.gov.hmrc.cardpaymentfrontend.models.openbanking.{OriginSpecificSessionData, PfSecuritiesTransferTaxSessionData}
 import uk.gov.hmrc.cardpaymentfrontend.models.{CheckYourAnswersRow, Link, PaymentMethod}
 
-object ExtendedPfStampTaxesOnShares extends ExtendedOrigin {
-  override val serviceNameMessageKey: String = "service-name.PfStampTaxesOnShares"
-  override val taxNameMessageKey: String     = "payment-complete.tax-name.PfStampTaxesOnShares"
+object ExtendedPfSecuritiesTransferTax extends ExtendedOrigin {
+  override val serviceNameMessageKey: String = "service-name.PfSecuritiesTransferTax"
+  override val taxNameMessageKey: String     = "payment-complete.tax-name.PfSecuritiesTransferTax"
 
   def cardFeesPagePaymentMethods: Set[PaymentMethod] = Set(OpenBanking, Card)
 
@@ -34,7 +34,7 @@ object ExtendedPfStampTaxesOnShares extends ExtendedOrigin {
   override def checkYourAnswersReferenceRow(journeyRequest: JourneyRequest[AnyContent])(payFrontendBaseUrl: String): Option[CheckYourAnswersRow] = {
     Some(
       CheckYourAnswersRow(
-        titleMessageKey = "check-your-details.PfStampTaxesOnShares.reference",
+        titleMessageKey = "check-your-details.PfSecuritiesTransferTax.reference",
         value = Seq(journeyRequest.journey.referenceValue),
         changeLink = Some(
           Link(
@@ -48,13 +48,13 @@ object ExtendedPfStampTaxesOnShares extends ExtendedOrigin {
   }
 
   override def openBankingOriginSpecificSessionData: JourneySpecificData => Option[OriginSpecificSessionData] = {
-    case j: JsdPfStampTaxesOnShares =>
-      Some(PfStampTaxesOnSharesSessionData(j.securitiesTransferChargeReference, j.basketReference, j.customerId, j.submissionId, j.basketDetails))
-    case _                          => throw new RuntimeException("Incorrect origin found")
+    case j: JsdPfSecuritiesTransferTax =>
+      Some(PfSecuritiesTransferTaxSessionData(j.securitiesTransferChargeReference, j.basketReference, j.customerId, j.submissionId, j.basketDetails))
+    case _                             => throw new RuntimeException("Incorrect origin found")
   }
 
-  override def emailTaxTypeMessageKey: String  = "email.tax-name.PfStampTaxesOnShares"
-  override def surveyAuditName: String         = "stamp-taxes-on-shares"
+  override def emailTaxTypeMessageKey: String  = "email.tax-name.PfSecuritiesTransferTax"
+  override def surveyAuditName: String         = "securities-transfer-tax"
   override def surveyReturnHref: String        = "https://www.gov.uk/government/organisations/hm-revenue-customs"
   override def surveyReturnMessageKey: String  = "payments-survey.other.return-message"
   override def surveyIsWelshSupported: Boolean = false

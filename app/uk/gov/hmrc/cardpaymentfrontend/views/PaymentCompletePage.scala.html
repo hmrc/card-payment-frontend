@@ -16,7 +16,7 @@
 
 @import payapi.corcommon.model.Origins
 @import payapi.corcommon.model.Reference
-@import payapi.corcommon.model.TaxTypes.{cds, mib, vatConsumerToConsumer, stampTaxesOnShares}
+@import payapi.corcommon.model.TaxTypes.{cds, mib, vatConsumerToConsumer, securitiesTransferTax}
 @import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
 @import uk.gov.hmrc.cardpaymentfrontend.config.AppConfig
 @import uk.gov.hmrc.cardpaymentfrontend.models.EmailAddress
@@ -65,7 +65,7 @@
 @panelContent = @{
     origin match {
         case Origins.Mib => Html(messages("payment-complete.mods.panel.content", taxReference.value))
-        case Origins.StampTaxesOnShares => if (maybeBasketRef.isDefined) Html(messages("payment-complete.panel.content", maybeBasketRef.get.value))
+        case Origins.SecuritiesTransferTax => if (maybeBasketRef.isDefined) Html(messages("payment-complete.panel.content", maybeBasketRef.get.value))
                                             else Html(messages("payment-complete.panel.content", taxReference.value))
         case _           => Html(messages("payment-complete.panel.content", taxReference.value))
     }
@@ -131,12 +131,12 @@
             <h2 class="govuk-heading-m govuk-!-margin-top-7">@Messages("payment-complete.what-happens-next.header")</h2>
             <p class="govuk-body">@Messages("payment-complete.what-happens-next.p1") @Messages("payment-complete.what-happens-next.link")</p>
         </div>
-    } else if(origin.toTaxType == stampTaxesOnShares && maybeReturnUrl.isDefined) {
+    } else if(origin.toTaxType == securitiesTransferTax && maybeReturnUrl.isDefined) {
         <div id="what-happens-next-wrapper">
             <h2 class="govuk-heading-m govuk-!-margin-top-7">@Messages("payment-complete.what-happens-next.header")</h2>
             <p class="govuk-body">
-                @Messages("payment-complete.what-happens-next.p1.stamp-taxes-on-shares.link.defaultText")
-                <a class="govuk-link" href="@maybeReturnUrl.get">@Messages("payment-complete.what-happens-next.stamp-taxes-on-shares.link")</a>
+                @Messages("payment-complete.what-happens-next.p1.securities-transfer-tax.link.defaultText")
+                <a class="govuk-link" href="@maybeReturnUrl.get">@Messages("payment-complete.what-happens-next.securities-transfer-tax.link")</a>
             </p>
         </div>
     } else if(maybeReturnUrl.isDefined) {
@@ -159,10 +159,10 @@
                 </p>
             </div>
         }
-    } else if(origin.toTaxType == stampTaxesOnShares) {
+    } else if(origin.toTaxType == securitiesTransferTax) {
         <div id="what-happens-next-wrapper">
             <h2 class="govuk-heading-m govuk-!-margin-top-7">@Messages("payment-complete.what-happens-next.header")</h2>
-            <p class="govuk-body">@Messages("payment-complete.what-happens-next.p1.stamp-taxes-on-shares.link.defaultText") @Messages("payment-complete.what-happens-next.stamp-taxes-on-shares.link")</p>
+            <p class="govuk-body">@Messages("payment-complete.what-happens-next.p1.securities-transfer-tax.link.defaultText") @Messages("payment-complete.what-happens-next.securities-transfer-tax.link")</p>
         </div>
     } else {
         @defaultWhatHappensNextContent

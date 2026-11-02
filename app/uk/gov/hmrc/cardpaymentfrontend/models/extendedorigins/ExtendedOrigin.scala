@@ -258,8 +258,8 @@ object ExtendedOrigin {
       case WcSdlt                   => ExtendedWcSdlt
       case WcClass2Ni               => DefaultExtendedOrigin
       case WcChildBenefitRepayments => ExtendedWcChildBenefitRepayments
-      case StampTaxesOnShares       => ExtendedStampTaxesOnShares
-      case PfStampTaxesOnShares     => ExtendedPfStampTaxesOnShares
+      case SecuritiesTransferTax    => ExtendedStampTaxesOnShares
+      case PfSecuritiesTransferTax  => ExtendedPfSecuritiesTransferTax
       case BtaVapingProductsDuty    => ExtendedBtaVapingProductsDuty
       case VpdVapingProductsDuty    => ExtendedVpdVapingProductsDuty
       case PfVapingProductsDuty     => ExtendedPfVapingProductsDuty
@@ -274,7 +274,7 @@ object ExtendedOrigin {
           PtaSimpleAssessment | AppSimpleAssessment | PfTpes | CapitalGainsTax | EconomicCrimeLevy | PfEconomicCrimeLevy | PfJobRetentionScheme |
           JrsJobRetentionScheme | PfImportedVehicles | PfChildBenefitRepayments | NiEuVatOss | PfNiEuVatOss | NiEuVatIoss | PfNiEuVatIoss | PfAmls | PfAted |
           PfCdsDeferment | PfTrust | PtaClass3Ni | PtaCheckYourStatePension | AlcoholDuty | PfAlcoholDuty | VatC2c | PfVatC2c | `3psSa` | `3psVat` | Pillar2 |
-          PfPillar2 | StampTaxesOnShares | PfStampTaxesOnShares | BtaVapingProductsDuty | VpdVapingProductsDuty | PfVapingProductsDuty =>
+          PfPillar2 | SecuritiesTransferTax | PfSecuritiesTransferTax | BtaVapingProductsDuty | VpdVapingProductsDuty | PfVapingProductsDuty =>
         false
       case WcSa | WcCt | WcVat | WcSimpleAssessment | WcXref | WcEpayeLpp | WcClass1aNi | WcEpayeNi | WcEpayeLateCis | WcEpayeSeta | WcSdlt | WcClass2Ni |
           WcChildBenefitRepayments =>
@@ -292,8 +292,8 @@ object ExtendedOrigin {
           WcVat | WcSimpleAssessment | WcXref | WcEpayeLpp | WcClass1aNi | WcEpayeNi | WcEpayeLateCis | WcEpayeSeta | WcSdlt | WcClass2Ni |
           WcChildBenefitRepayments | BtaVapingProductsDuty | VpdVapingProductsDuty | PfVapingProductsDuty =>
         true
-      case PfCds | PfCdsCash | PfCdsDeferment | NiEuVatOss | NiEuVatIoss | PfNiEuVatOss | PfNiEuVatIoss | Pillar2 | PfPillar2 | Parcels | StampTaxesOnShares |
-          PfStampTaxesOnShares =>
+      case PfCds | PfCdsCash | PfCdsDeferment | NiEuVatOss | NiEuVatIoss | PfNiEuVatOss | PfNiEuVatIoss | Pillar2 | PfPillar2 | Parcels |
+          SecuritiesTransferTax | PfSecuritiesTransferTax =>
         false
     }
   }

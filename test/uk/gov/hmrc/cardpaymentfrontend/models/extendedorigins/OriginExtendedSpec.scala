@@ -121,8 +121,8 @@ class OriginExtendedSpec extends UnitSpec {
         `3psVat`                 -> false,
         PfPillar2                -> false,
         Pillar2                  -> false,
-        StampTaxesOnShares       -> false,
-        PfStampTaxesOnShares     -> false,
+        SecuritiesTransferTax    -> false,
+        PfSecuritiesTransferTax  -> false,
         BtaVapingProductsDuty    -> false,
         VpdVapingProductsDuty    -> false,
         PfVapingProductsDuty     -> false
@@ -237,8 +237,8 @@ class OriginExtendedSpec extends UnitSpec {
         `3psSa`                  -> true,
         `3psVat`                 -> true,
         WcSdlt                   -> true,
-        StampTaxesOnShares       -> false,
-        PfStampTaxesOnShares     -> false,
+        SecuritiesTransferTax    -> false,
+        PfSecuritiesTransferTax  -> false,
         BtaVapingProductsDuty    -> true,
         VpdVapingProductsDuty    -> true,
         PfVapingProductsDuty     -> true

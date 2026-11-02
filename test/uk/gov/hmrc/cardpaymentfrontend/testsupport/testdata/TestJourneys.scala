@@ -1355,8 +1355,8 @@ object TestJourneys {
     )
   }
 
-  object StampTaxesOnShares extends JourneyStatuses[JsdStampTaxesOnShares] {
-    val journeyBeforeBeginWebPayment: Journey[JsdStampTaxesOnShares] = Journey[JsdStampTaxesOnShares](
+  object SecuritiesTransferTax extends JourneyStatuses[JsdSecuritiesTransferTax] {
+    val journeyBeforeBeginWebPayment: Journey[JsdSecuritiesTransferTax] = Journey[JsdSecuritiesTransferTax](
       _id = JourneyId(TestPayApiData.decryptedJourneyId),
       sessionId = Some(SessionId("TestSession-4b87460d-6f43-4c4c-b810-d6f87c774854")),
       amountInPence = Some(AmountInPence(1234)),
@@ -1365,7 +1365,7 @@ object TestJourneys {
       order = None,
       status = PaymentStatuses.Created,
       createdOn = LocalDateTime.parse("2027-11-02T16:28:55.185"),
-      journeySpecificData = JsdStampTaxesOnShares(
+      journeySpecificData = JsdSecuritiesTransferTax(
         securitiesTransferChargeReference = None,
         basketReference = Some(StosBasketReference("XBKT123456789")),
         customerId = CustomerId("CUSTOMERID"),
@@ -1391,7 +1391,7 @@ object TestJourneys {
       )
     )
 
-    val journeyBeforeBeginWebpaymentNoBasketReference: Journey[JsdStampTaxesOnShares] = Journey[JsdStampTaxesOnShares](
+    val journeyBeforeBeginWebpaymentNoBasketReference: Journey[JsdSecuritiesTransferTax] = Journey[JsdSecuritiesTransferTax](
       _id = JourneyId(TestPayApiData.decryptedJourneyId),
       sessionId = Some(SessionId("TestSession-4b87460d-6f43-4c4c-b810-d6f87c774854")),
       amountInPence = Some(AmountInPence(1234)),
@@ -1400,7 +1400,7 @@ object TestJourneys {
       order = None,
       status = PaymentStatuses.Created,
       createdOn = LocalDateTime.parse("2027-11-02T16:28:55.185"),
-      journeySpecificData = JsdStampTaxesOnShares(
+      journeySpecificData = JsdSecuritiesTransferTax(
         securitiesTransferChargeReference = None,
         basketReference = None,
         customerId = CustomerId("CUSTOMERID"),
@@ -1420,8 +1420,8 @@ object TestJourneys {
     )
   }
 
-  object PfStampTaxesOnShares extends JourneyStatuses[JsdPfStampTaxesOnShares] {
-    val journeyBeforeBeginWebPayment: Journey[JsdPfStampTaxesOnShares] = Journey[JsdPfStampTaxesOnShares](
+  object PfSecuritiesTransferTax extends JourneyStatuses[JsdPfSecuritiesTransferTax] {
+    val journeyBeforeBeginWebPayment: Journey[JsdPfSecuritiesTransferTax] = Journey[JsdPfSecuritiesTransferTax](
       _id = JourneyId(TestPayApiData.decryptedJourneyId),
       sessionId = Some(SessionId("TestSession-4b87460d-6f43-4c4c-b810-d6f87c774854")),
       amountInPence = Some(AmountInPence(1234)),
@@ -1430,7 +1430,7 @@ object TestJourneys {
       order = None,
       status = PaymentStatuses.Created,
       createdOn = LocalDateTime.parse("2027-11-02T16:28:55.185"),
-      journeySpecificData = JsdPfStampTaxesOnShares(
+      journeySpecificData = JsdPfSecuritiesTransferTax(
         securitiesTransferChargeReference = Some(SecuritiesTransferChargeReference("XE123456789012")),
         basketReference = None,
         customerId = None,

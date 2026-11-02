@@ -138,12 +138,12 @@ class CardPaymentServiceSpec extends ItSpec {
 
       "StampTaxes should use" - {
         "basket reference as the reference sent to Barclaycard when it's available" in {
-          PayApiStub.stubForUpdateBeginWebPayment2xx(TestJourneys.StampTaxesOnShares.journeyBeforeBeginWebPayment._id)
+          PayApiStub.stubForUpdateBeginWebPayment2xx(TestJourneys.SecuritiesTransferTax.journeyBeforeBeginWebPayment._id)
           implicit val journeyRequest: JourneyRequest[?] =
-            fakeJourneyRequest(journey = TestJourneys.StampTaxesOnShares.journeyBeforeBeginWebPayment, withEmail = true)
+            fakeJourneyRequest(journey = TestJourneys.SecuritiesTransferTax.journeyBeforeBeginWebPayment, withEmail = true)
           CardPaymentStub.InitiatePayment.stubForInitiatePayment2xx(expectedCardPaymentInitiatePaymentResponse)
-          systemUnderTest.initiatePayment(TestJourneys.StampTaxesOnShares.journeyBeforeBeginWebPayment, testAddress, Some(testEmail), English).futureValue
-          PayApiStub.verifyUpdateBeginWebPayment(1, TestJourneys.StampTaxesOnShares.journeyBeforeBeginWebPayment._id)
+          systemUnderTest.initiatePayment(TestJourneys.SecuritiesTransferTax.journeyBeforeBeginWebPayment, testAddress, Some(testEmail), English).futureValue
+          PayApiStub.verifyUpdateBeginWebPayment(1, TestJourneys.SecuritiesTransferTax.journeyBeforeBeginWebPayment._id)
           AuditConnectorStub.verifyEventAudited(
             auditType = "PaymentAttempt",
             auditEvent = Json
@@ -158,9 +158,9 @@ class CardPaymentServiceSpec extends ItSpec {
                 | "emailAddress": "blah@blah.com",
                 | "loggedIn": false,
                 | "merchantCode": "ETEE",
-                | "paymentOrigin": "StampTaxesOnShares",
+                | "paymentOrigin": "SecuritiesTransferTax",
                 | "paymentReference": "XBKT123456789",
-                | "paymentTaxType": "stampTaxesOnShares",
+                | "paymentTaxType": "securitiesTransferTax",
                 | "paymentTotal": 12.34,
                 | "transactionReference": "sometransactionref"
                 |}""".stripMargin
@@ -170,15 +170,15 @@ class CardPaymentServiceSpec extends ItSpec {
         }
 
         "submissionId as the reference sent to Barclaycard when basket reference is not available" in {
-          val td                                         = TestJourneys.StampTaxesOnShares.journeyBeforeBeginWebPayment
-            .copy(journeySpecificData = TestJourneys.StampTaxesOnShares.journeyBeforeBeginWebpaymentNoBasketReference.journeySpecificData)
+          val td                                         = TestJourneys.SecuritiesTransferTax.journeyBeforeBeginWebPayment
+            .copy(journeySpecificData = TestJourneys.SecuritiesTransferTax.journeyBeforeBeginWebpaymentNoBasketReference.journeySpecificData)
           implicit val journeyRequest: JourneyRequest[?] = fakeJourneyRequest(journey = td, withEmail = true)
           PayApiStub.stubForUpdateBeginWebPayment2xx(td._id)
           CardPaymentStub.InitiatePayment.stubForInitiatePayment2xx(expectedCardPaymentInitiatePaymentResponse)
           systemUnderTest
             .initiatePayment(td, testAddress, Some(testEmail), English)
             .futureValue
-          PayApiStub.verifyUpdateBeginWebPayment(1, TestJourneys.StampTaxesOnShares.journeyBeforeBeginWebPayment._id)
+          PayApiStub.verifyUpdateBeginWebPayment(1, TestJourneys.SecuritiesTransferTax.journeyBeforeBeginWebPayment._id)
           AuditConnectorStub.verifyEventAudited(
             auditType = "PaymentAttempt",
             auditEvent = Json
@@ -193,9 +193,9 @@ class CardPaymentServiceSpec extends ItSpec {
                   | "emailAddress": "blah@blah.com",
                   | "loggedIn": false,
                   | "merchantCode": "ETEE",
-                  | "paymentOrigin": "StampTaxesOnShares",
+                  | "paymentOrigin": "SecuritiesTransferTax",
                   | "paymentReference": "SUBMISSIONID",
-                  | "paymentTaxType": "stampTaxesOnShares",
+                  | "paymentTaxType": "securitiesTransferTax",
                   | "paymentTotal": 12.34,
                   | "transactionReference": "sometransactionref"
                   |}""".stripMargin
