@@ -673,7 +673,7 @@ class OpenBankingOriginSpecificSessionDataSpec extends UnitSpec {
           |}""".stripMargin
       )
       val osd      =
-        ExtendedStampTaxesOnShares.openBankingOriginSpecificSessionData(TestJourneys.SecuritiesTransferTax.journeyBeforeBeginWebPayment.journeySpecificData)
+        ExtendedSecuritiesTransferTax.openBankingOriginSpecificSessionData(TestJourneys.SecuritiesTransferTax.journeyBeforeBeginWebPayment.journeySpecificData)
       testOsd(
         osd,
         StampTaxesOnSharesSessionData(

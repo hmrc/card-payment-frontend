@@ -23,7 +23,7 @@ import uk.gov.hmrc.cardpaymentfrontend.models.PaymentMethod.{Bacs, Card, OpenBan
 import uk.gov.hmrc.cardpaymentfrontend.models.openbanking.{OriginSpecificSessionData, StampTaxesOnSharesSessionData}
 import uk.gov.hmrc.cardpaymentfrontend.models.{CheckYourAnswersRow, PaymentMethod}
 
-object ExtendedStampTaxesOnShares extends ExtendedOrigin {
+object ExtendedSecuritiesTransferTax extends ExtendedOrigin {
   override val serviceNameMessageKey: String = "service-name.SecuritiesTransferTax"
   override val taxNameMessageKey: String     = "payment-complete.tax-name.SecuritiesTransferTax"
 

@@ -258,7 +258,7 @@ object ExtendedOrigin {
       case WcSdlt                   => ExtendedWcSdlt
       case WcClass2Ni               => DefaultExtendedOrigin
       case WcChildBenefitRepayments => ExtendedWcChildBenefitRepayments
-      case SecuritiesTransferTax    => ExtendedStampTaxesOnShares
+      case SecuritiesTransferTax    => ExtendedSecuritiesTransferTax
       case PfSecuritiesTransferTax  => ExtendedPfSecuritiesTransferTax
       case BtaVapingProductsDuty    => ExtendedBtaVapingProductsDuty
       case VpdVapingProductsDuty    => ExtendedVpdVapingProductsDuty
