@@ -34,8 +34,8 @@ class PaymentCompletePageSpec extends ItSpec {
     val systemUnderTest                                     = app.injector.instanceOf[PaymentCompleteController]
     val fakeGetRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/payment-complete").withSessionId()
 
-    "render a View everything included in this basket link for StampTaxesOnShares basket journeys" in {
-      PayApiStub.stubForFindBySessionId2xx(TestJourneys.StampTaxesOnShares.journeyAfterSucceedDebitWebPayment)
+    "render a View everything included in this basket link for SecuritiesTransferTax basket journeys" in {
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.SecuritiesTransferTax.journeyAfterSucceedDebitWebPayment)
 
       val doc = Jsoup.parse(contentAsString(systemUnderTest.renderPage(fakeGetRequest))).body()
       doc.select("a.govuk-link").asScala.toList.size shouldBe 5
@@ -43,10 +43,10 @@ class PaymentCompletePageSpec extends ItSpec {
       doc.select("#summary").attr("href") shouldBe "http://localhost:10158/baskets/payment-summary"
     }
 
-    "not render a View everything included in this basket link for StampTaxesOnShares single payment journeys" in {
+    "not render a View everything included in this basket link for SecuritiesTransferTax single payment journeys" in {
       PayApiStub.stubForFindBySessionId2xx(
-        TestJourneys.StampTaxesOnShares.journeyAfterSucceedDebitWebPayment.copy(
-          journeySpecificData = TestJourneys.StampTaxesOnShares.journeyBeforeBeginWebpaymentNoBasketReference.journeySpecificData
+        TestJourneys.SecuritiesTransferTax.journeyAfterSucceedDebitWebPayment.copy(
+          journeySpecificData = TestJourneys.SecuritiesTransferTax.journeyBeforeBeginWebpaymentNoBasketReference.journeySpecificData
         )
       )
 

@@ -3265,10 +3265,10 @@ class FeesControllerSpec extends ItSpec {
         }
       }
 
-      "for origin StampTaxesOnShares" - {
+      "for origin SecuritiesTransferTax" - {
 
         "render the static content correctly" in {
-          PayApiStub.stubForFindBySessionId2xx(TestJourneys.StampTaxesOnShares.journeyBeforeBeginWebPayment)
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.SecuritiesTransferTax.journeyBeforeBeginWebPayment)
           val result   = systemUnderTest.renderPage(fakeRequest)
           val document = Jsoup.parse(contentAsString(result))
           document.select(".govuk-service-navigation__service-name").text() shouldBe "Pay for a securities transfer"
@@ -3276,7 +3276,7 @@ class FeesControllerSpec extends ItSpec {
         }
 
         "render two options for other ways to pay" in {
-          PayApiStub.stubForFindBySessionId2xx(TestJourneys.StampTaxesOnShares.journeyBeforeBeginWebPayment)
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.SecuritiesTransferTax.journeyBeforeBeginWebPayment)
           val result        = systemUnderTest.renderPage(fakeRequest)
           val document      = Jsoup.parse(contentAsString(result))
           val listOfMethods = document.select("#payment-type-list").select("li")
@@ -3284,7 +3284,7 @@ class FeesControllerSpec extends ItSpec {
         }
 
         "render an option for open banking" in {
-          PayApiStub.stubForFindBySessionId2xx(TestJourneys.StampTaxesOnShares.journeyBeforeBeginWebPayment)
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.SecuritiesTransferTax.journeyBeforeBeginWebPayment)
           val result            = systemUnderTest.renderPage(fakeRequest)
           val document          = Jsoup.parse(contentAsString(result))
           val listOfMethods     = document.select("#payment-type-list").select("li")
@@ -3294,7 +3294,7 @@ class FeesControllerSpec extends ItSpec {
         }
 
         "not render an option for one off direct debit" in {
-          PayApiStub.stubForFindBySessionId2xx(TestJourneys.StampTaxesOnShares.journeyBeforeBeginWebPayment)
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.SecuritiesTransferTax.journeyBeforeBeginWebPayment)
           val result                  = systemUnderTest.renderPage(fakeRequest)
           val document                = Jsoup.parse(contentAsString(result))
           val listOfMethods           = document.select("#payment-type-list").select("li")
@@ -3303,7 +3303,7 @@ class FeesControllerSpec extends ItSpec {
         }
 
         "render an option for personal debit card" in {
-          PayApiStub.stubForFindBySessionId2xx(TestJourneys.StampTaxesOnShares.journeyBeforeBeginWebPayment)
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.SecuritiesTransferTax.journeyBeforeBeginWebPayment)
           val result        = systemUnderTest.renderPage(fakeRequest)
           val document      = Jsoup.parse(contentAsString(result))
           val listOfMethods = document.select("#payment-type-list").select("li")
@@ -3508,8 +3508,8 @@ class FeesControllerSpec extends ItSpec {
               case Origins.WcSdlt                                                               => Seq(expectedOpenBankingLink)
               case Origins.WcClass2Ni                                                           => Seq.empty
               case Origins.WcChildBenefitRepayments                                             => Seq(expectedOpenBankingLink)
-              case Origins.StampTaxesOnShares                                                   => Seq(expectedOpenBankingLink)
-              case Origins.PfStampTaxesOnShares                                                 => Seq(expectedOpenBankingLink)
+              case Origins.SecuritiesTransferTax                                                => Seq(expectedOpenBankingLink)
+              case Origins.PfSecuritiesTransferTax                                              => Seq(expectedOpenBankingLink)
               case Origins.BtaVapingProductsDuty | VpdVapingProductsDuty | PfVapingProductsDuty => Seq(expectedOpenBankingLink, expectedVariableDirectDebitLink)
             }
 

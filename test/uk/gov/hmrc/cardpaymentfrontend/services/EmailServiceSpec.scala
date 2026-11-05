@@ -118,8 +118,8 @@ class EmailServiceSpec extends ItSpec with TableDrivenPropertyChecks {
       with JsdDdVat
       with JsdDdSdil
       with JsdWcChildBenefitRepayments
-      with JsdStampTaxesOnShares
-      with JsdPfStampTaxesOnShares
+      with JsdSecuritiesTransferTax
+      with JsdPfSecuritiesTransferTax
       with JsdBtaVapingProductsDuty
       with JsdVpdVapingProductsDuty
       with JsdPfVapingProductsDuty
@@ -391,10 +391,10 @@ class EmailServiceSpec extends ItSpec with TableDrivenPropertyChecks {
       (WcSdlt, "Stamp Duty Land Tax", "ending with 789MA", commission, Some("13.57"), "en"),
       (WcSdlt, "Treth Dir y Tollau Stamp", "yn gorffen gyda 789MA", None, None, "cy"),
       (WcSdlt, "Treth Dir y Tollau Stamp", "yn gorffen gyda 789MA", commission, Some("13.57"), "cy"),
-      (StampTaxesOnShares, "Securities Transfer Charge", "ending with 56789", None, None, "en"),
-      (StampTaxesOnShares, "Securities Transfer Charge", "ending with 56789", commission, Some("13.57"), "en"),
-      (PfStampTaxesOnShares, "Securities Transfer Charge", "ending with 89012", None, None, "en"),
-      (PfStampTaxesOnShares, "Securities Transfer Charge", "ending with 89012", commission, Some("13.57"), "en"),
+      (SecuritiesTransferTax, "Securities Transfer Tax", "ending with 56789", None, None, "en"),
+      (SecuritiesTransferTax, "Securities Transfer Tax", "ending with 56789", commission, Some("13.57"), "en"),
+      (PfSecuritiesTransferTax, "Securities Transfer Tax", "ending with 89012", None, None, "en"),
+      (PfSecuritiesTransferTax, "Securities Transfer Tax", "ending with 89012", commission, Some("13.57"), "en"),
       (BtaVapingProductsDuty, "Vaping Products Duty", "ending with 566WK", None, None, "en"),
       (VpdVapingProductsDuty, "Vaping Products Duty", "ending with 566WK", commission, Some("13.57"), "en"),
       (PfVapingProductsDuty, "Vaping Products Duty", "ending with 566WK", commission, Some("13.57"), "en")
@@ -451,7 +451,7 @@ class EmailServiceSpec extends ItSpec with TableDrivenPropertyChecks {
           // for PfCds there is no welsh as it isn't supported...
           if (
             origin =!= Origins.PfP800 && origin =!= Origins.PtaP800 && origin =!= Origins.PfCds && origin =!= Origins.NiEuVatOss && origin =!=
-              Origins.PfNiEuVatOss && origin =!= Origins.NiEuVatIoss && origin =!= Origins.PfNiEuVatIoss && origin =!= Origins.StampTaxesOnShares && origin =!= Origins.PfStampTaxesOnShares
+              Origins.PfNiEuVatOss && origin =!= Origins.NiEuVatIoss && origin =!= Origins.PfNiEuVatIoss && origin =!= Origins.SecuritiesTransferTax && origin =!= Origins.PfSecuritiesTransferTax
           ) {
             messages.preferred(Seq(Lang("en")))(msgKey) should not be messages.preferred(Seq(Lang("cy")))(msgKey)
           }

@@ -158,8 +158,8 @@ object OriginSpecificSessionData                                    {
       case WcSdlt                   => Json.format[WcSdltSessionData].reads(json)
       case WcChildBenefitRepayments => Json.format[WcChildBenefitRepaymentsSessionData].reads(json)
       case PtaP800                  => Json.format[PtaP800SessionData].reads(json)
-      case StampTaxesOnShares       => Json.format[StampTaxesOnSharesSessionData].reads(json)
-      case PfStampTaxesOnShares     => Json.format[PfStampTaxesOnSharesSessionData].reads(json)
+      case SecuritiesTransferTax    => Json.format[StampTaxesOnSharesSessionData].reads(json)
+      case PfSecuritiesTransferTax  => Json.format[PfSecuritiesTransferTaxSessionData].reads(json)
       case BtaVapingProductsDuty    => Json.format[BtaVapingProductsDutySessionData].reads(json)
       case VpdVapingProductsDuty    => Json.format[VpdVapingProductsDutySessionData].reads(json)
       case PfVapingProductsDuty     => Json.format[PfVapingProductsDutySessionData].reads(json)
@@ -262,7 +262,7 @@ object OriginSpecificSessionData                                    {
       case sessionData: WcChildBenefitRepaymentsSessionData => Json.format[WcChildBenefitRepaymentsSessionData].writes(sessionData)
       case sessionData: PtaP800SessionData                  => Json.format[PtaP800SessionData].writes(sessionData)
       case sessionData: StampTaxesOnSharesSessionData       => Json.format[StampTaxesOnSharesSessionData].writes(sessionData)
-      case sessionData: PfStampTaxesOnSharesSessionData     => Json.format[PfStampTaxesOnSharesSessionData].writes(sessionData)
+      case sessionData: PfSecuritiesTransferTaxSessionData  => Json.format[PfSecuritiesTransferTaxSessionData].writes(sessionData)
       case sessionData: BtaVapingProductsDutySessionData    => Json.format[BtaVapingProductsDutySessionData].writes(sessionData)
       case sessionData: VpdVapingProductsDutySessionData    => Json.format[VpdVapingProductsDutySessionData].writes(sessionData)
       case sessionData: PfVapingProductsDutySessionData     => Json.format[PfVapingProductsDutySessionData].writes(sessionData)
@@ -636,21 +636,21 @@ final case class PfClimateChangeLevySessionData(climateChangeLevyRef: ClimateCha
 final case class PfInsurancePremiumSessionData(insurancePremiumRef: InsurancePremiumRef, returnUrl: Option[Url] = None)
     extends OriginSpecificSessionData(PfInsurancePremium) {
   def paymentReference: Reference = ReferenceMaker.makeInsurancePremiumRef(insurancePremiumRef)
-  def searchTag: SearchTag        = SearchTag(insurancePremiumRef.canonicalisedValue)
+  def searchTag: SearchTag        = SearchTag(insurancePremiumRef.canonicalizedValue)
 }
 final case class PfAirPassSessionData(airPassRef: AirPassReference, returnUrl: Option[Url] = None) extends OriginSpecificSessionData(PfAirPass) {
   def paymentReference: Reference = ReferenceMaker.makeAirPassReference(airPassRef)
-  def searchTag: SearchTag        = SearchTag(airPassRef.canonicalisedValue)
+  def searchTag: SearchTag        = SearchTag(airPassRef.canonicalizedValue)
 }
 
 final case class PfClass2NiSessionData(class2NiReference: Class2NiReference, returnUrl: Option[Url] = None) extends OriginSpecificSessionData(PfClass2Ni) {
   def paymentReference: Reference = ReferenceMaker.makeClass2NiReference(class2NiReference)
-  def searchTag: SearchTag        = SearchTag(class2NiReference.canonicalisedValue)
+  def searchTag: SearchTag        = SearchTag(class2NiReference.canonicalizedValue)
 }
 
 final case class PfBeerDutySessionData(beerDutyRef: BeerDutyRef, returnUrl: Option[Url] = None) extends OriginSpecificSessionData(PfBeerDuty) {
   def paymentReference: Reference = ReferenceMaker.makeBeerDutyRef(beerDutyRef)
-  def searchTag: SearchTag        = SearchTag(beerDutyRef.canonicalisedValue)
+  def searchTag: SearchTag        = SearchTag(beerDutyRef.canonicalizedValue)
 }
 
 final case class PfPsAdminSessionData(xRef: XRef, returnUrl: Option[Url] = None) extends OriginSpecificSessionData(PfPsAdmin) {
@@ -670,13 +670,13 @@ final case class PfPptSessionData(pptReference: PptReference, returnUrl: Option[
 
 final case class PfClass3NiSessionData(class3Ref: Class3NiRef, returnUrl: Option[Url] = None) extends OriginSpecificSessionData(PfClass3Ni) {
   def paymentReference: Reference = ReferenceMaker.makeClass3NiRef(class3Ref)
-  def searchTag: SearchTag        = SearchTag(class3Ref.canonicalisedValue)
+  def searchTag: SearchTag        = SearchTag(class3Ref.canonicalizedValue)
 }
 
 final case class PfCheckYourStatePensionSessionData(ref: CheckYourStatePensionReference, returnUrl: Option[Url] = None)
     extends OriginSpecificSessionData(PfCheckYourStatePension) {
   def paymentReference: Reference = ReferenceMaker.makeCheckYourStatePensionRef(ref)
-  def searchTag: SearchTag        = SearchTag(ref.canonicalisedValue)
+  def searchTag: SearchTag        = SearchTag(ref.canonicalizedValue)
 }
 
 final case class PtaClass3NiSessionData(class3NiRef: Class3NiRef, returnUrl: Option[Url] = None) extends OriginSpecificSessionData(PtaClass3Ni) {
@@ -819,7 +819,7 @@ final case class JrsJobRetentionSchemeSessionData(jrsRef: JrsRef, returnUrl: Opt
 
 final case class WcClass2NiSessionData(class2NiReference: Class2NiReference, returnUrl: Option[Url] = None) extends OriginSpecificSessionData(WcClass2Ni) {
   def paymentReference: Reference = ReferenceMaker.makeClass2NiReference(class2NiReference)
-  def searchTag: SearchTag        = SearchTag(class2NiReference.canonicalisedValue)
+  def searchTag: SearchTag        = SearchTag(class2NiReference.canonicalizedValue)
 }
 
 final case class StampTaxesOnSharesSessionData(
@@ -829,7 +829,7 @@ final case class StampTaxesOnSharesSessionData(
   submissionId:                      SubmissionId,
   basketDetails:                     StosBasketDetails,
   returnUrl:                         Option[Url] = None
-) extends OriginSpecificSessionData(StampTaxesOnShares) {
+) extends OriginSpecificSessionData(SecuritiesTransferTax) {
   def paymentReference: Reference = {
     // I agree this is messy, once we have more of the journey fleshed out, we can simplify/refactor/tidy
     securitiesTransferChargeReference.fold(
@@ -841,14 +841,14 @@ final case class StampTaxesOnSharesSessionData(
   def searchTag: SearchTag        = SearchTag(paymentReference.value)
 }
 
-final case class PfStampTaxesOnSharesSessionData(
+final case class PfSecuritiesTransferTaxSessionData(
   securitiesTransferChargeReference: Option[SecuritiesTransferChargeReference],
   basketReference:                   Option[StosBasketReference],
   customerId:                        Option[CustomerId],
   submissionId:                      Option[SubmissionId],
   basketDetails:                     Option[StosBasketDetails],
   returnUrl:                         Option[Url] = None
-) extends OriginSpecificSessionData(PfStampTaxesOnShares) {
+) extends OriginSpecificSessionData(PfSecuritiesTransferTax) {
   def paymentReference: Reference = {
     // I agree this is messy, once we have more of the journey fleshed out, we can simplify/refactor/tidy
     securitiesTransferChargeReference.fold(

@@ -218,8 +218,8 @@ class PaymentCompleteControllerSpec extends ItSpec {
         wrapper.select("p").html() shouldBe "Your payment can take up to 5 days to show in your online tax account."
       }
 
-      "render the custom what happens next content for StampTaxesOnShares Journeys" in {
-        PayApiStub.stubForFindBySessionId2xx(TestJourneys.StampTaxesOnShares.journeyAfterSucceedDebitWebPayment.copy(navigation = None))
+      "render the custom what happens next content for SecuritiesTransferTax Journeys" in {
+        PayApiStub.stubForFindBySessionId2xx(TestJourneys.SecuritiesTransferTax.journeyAfterSucceedDebitWebPayment.copy(navigation = None))
         val result   = systemUnderTest.renderPage(fakeGetRequest)
         val document = Jsoup.parse(contentAsString(result))
         val wrapper  = document.select("#what-happens-next-wrapper")
@@ -263,8 +263,8 @@ class PaymentCompleteControllerSpec extends ItSpec {
         wrapper.select("p").html() shouldBe "Your payment can take up to 5 days to show in your online tax account."
       }
 
-      "render custom what happens next content for stamp-taxes-on-shares" in {
-        PayApiStub.stubForFindBySessionId2xx(TestJourneys.StampTaxesOnShares.journeyAfterSucceedDebitWebPayment)
+      "render custom what happens next content for securities-transfer-tax" in {
+        PayApiStub.stubForFindBySessionId2xx(TestJourneys.SecuritiesTransferTax.journeyAfterSucceedDebitWebPayment)
         val result   = systemUnderTest.renderPage(fakeGetRequest)
         val document = Jsoup.parse(contentAsString(result))
         val wrapper  = document.select("#what-happens-next-wrapper")
@@ -670,17 +670,17 @@ class PaymentCompleteControllerSpec extends ItSpec {
           .html() shouldBe "<a class=\"govuk-link\" href=\"https://www.tax.service.gov.uk/feedback/passengers\">Rhowch wybod i ni beth yw eich barn am y gwasanaeth hwn</a> (mae’n cymryd 30 eiliad)"
       }
 
-      "for StampTaxesOnShares" - {
-        "should render the reference as the basket reference for StampTaxesOnShares when there is one" in {
-          PayApiStub.stubForFindBySessionId2xx(TestJourneys.StampTaxesOnShares.journeyAfterSucceedDebitWebPayment)
+      "for SecuritiesTransferTax" - {
+        "should render the reference as the basket reference for SecuritiesTransferTax when there is one" in {
+          PayApiStub.stubForFindBySessionId2xx(TestJourneys.SecuritiesTransferTax.journeyAfterSucceedDebitWebPayment)
           val panel = Jsoup.parse(contentAsString(systemUnderTest.renderPage(fakeGetRequest))).body().select(".govuk-panel--confirmation")
           panel.select("h1").text() shouldBe "Payment received by HMRC"
           panel.select(".govuk-panel__body").html() shouldBe "Your payment reference\n<br>\n<strong>XBKT123456789</strong>"
         }
-        "should render the reference as the submissionId for StampTaxesOnShares when there is no basket reference" in {
+        "should render the reference as the submissionId for SecuritiesTransferTax when there is no basket reference" in {
           PayApiStub.stubForFindBySessionId2xx(
-            TestJourneys.StampTaxesOnShares.journeyAfterSucceedDebitWebPayment.copy(
-              journeySpecificData = TestJourneys.StampTaxesOnShares.journeyBeforeBeginWebpaymentNoBasketReference.journeySpecificData
+            TestJourneys.SecuritiesTransferTax.journeyAfterSucceedDebitWebPayment.copy(
+              journeySpecificData = TestJourneys.SecuritiesTransferTax.journeyBeforeBeginWebpaymentNoBasketReference.journeySpecificData
             )
           )
           val panel = Jsoup.parse(contentAsString(systemUnderTest.renderPage(fakeGetRequest))).body().select(".govuk-panel--confirmation")
@@ -798,7 +798,7 @@ class PaymentCompleteControllerSpec extends ItSpec {
                 val document = Jsoup.parse(contentAsString(result))
                 val wrapper  = document.select("#what-happens-next-wrapper")
                 wrapper.select("h2").text() shouldBe "What happens next"
-                val link     = if (origin == StampTaxesOnShares) "submission dashboard." else "online tax account."
+                val link     = if (origin == SecuritiesTransferTax) "submission dashboard." else "online tax account."
                 wrapper
                   .select("p")
                   .html() shouldBe s"Your payment can take up to 5 days to show in your <a class=\"govuk-link\" href=\"https://www.return-url.com\">$link</a>"
@@ -3303,7 +3303,7 @@ object PaymentCompleteControllerSpec {
         hasAReturnUrl = false
       )
 
-    case WcSdlt               =>
+    case WcSdlt                  =>
       TestScenarioInfo(
         debitCardJourney = TestJourneys.WcSdlt.journeyAfterSucceedDebitWebPayment,
         creditCardJourney = TestJourneys.WcSdlt.journeyAfterSucceedCreditWebPayment,
@@ -3338,19 +3338,19 @@ object PaymentCompleteControllerSpec {
         hasWelshTest = true,
         hasAReturnUrl = false
       )
-    case StampTaxesOnShares   =>
+    case SecuritiesTransferTax   =>
       TestScenarioInfo(
-        debitCardJourney = TestJourneys.StampTaxesOnShares.journeyAfterSucceedDebitWebPayment,
-        creditCardJourney = TestJourneys.StampTaxesOnShares.journeyAfterSucceedCreditWebPayment,
+        debitCardJourney = TestJourneys.SecuritiesTransferTax.journeyAfterSucceedDebitWebPayment,
+        creditCardJourney = TestJourneys.SecuritiesTransferTax.journeyAfterSucceedCreditWebPayment,
         englishSummaryRowsDebitCard = List(
-          "Tax"           -> "Securities Transfer Charge",
+          "Tax"           -> "Securities Transfer Tax",
           "Date"          -> "2 November 2027",
           "Submission ID" -> "SUBMISSIONID",
           "Amount"        -> "£12.34"
         ),
         maybeWelshSummaryRowsDebitCard = None,
         englishSummaryRowsCreditCard = List(
-          "Tax"                              -> "Securities Transfer Charge",
+          "Tax"                              -> "Securities Transfer Tax",
           "Date"                             -> "2 November 2027",
           "Submission ID"                    -> "SUBMISSIONID",
           "Amount paid to HMRC"              -> "£12.34",
@@ -3361,18 +3361,18 @@ object PaymentCompleteControllerSpec {
         hasWelshTest = false,
         hasAReturnUrl = true
       )
-    case PfStampTaxesOnShares =>
+    case PfSecuritiesTransferTax =>
       TestScenarioInfo(
-        debitCardJourney = TestJourneys.PfStampTaxesOnShares.journeyAfterSucceedDebitWebPayment,
-        creditCardJourney = TestJourneys.PfStampTaxesOnShares.journeyAfterSucceedCreditWebPayment,
+        debitCardJourney = TestJourneys.PfSecuritiesTransferTax.journeyAfterSucceedDebitWebPayment,
+        creditCardJourney = TestJourneys.PfSecuritiesTransferTax.journeyAfterSucceedCreditWebPayment,
         englishSummaryRowsDebitCard = List(
-          "Tax"    -> "Securities Transfer Charge",
+          "Tax"    -> "Securities Transfer Tax",
           "Date"   -> "2 November 2027",
           "Amount" -> "£12.34"
         ),
         maybeWelshSummaryRowsDebitCard = None,
         englishSummaryRowsCreditCard = List(
-          "Tax"                              -> "Securities Transfer Charge",
+          "Tax"                              -> "Securities Transfer Tax",
           "Date"                             -> "2 November 2027",
           "Amount paid to HMRC"              -> "£12.34",
           "Card fee (9.97%), non-refundable" -> "£1.23",

@@ -644,7 +644,7 @@ class OpenBankingOriginSpecificSessionDataSpec extends UnitSpec {
       roundTripJsonTest(osd, testJson)
     }
 
-    "StampTaxesOnShares" in {
+    "SecuritiesTransferTax" in {
       val testJson = Json.parse(
         // language=JSON
         """{
@@ -669,11 +669,11 @@ class OpenBankingOriginSpecificSessionDataSpec extends UnitSpec {
           |      }
           |    ]
           |  },
-          |  "origin": "StampTaxesOnShares"
+          |  "origin": "SecuritiesTransferTax"
           |}""".stripMargin
       )
       val osd      =
-        ExtendedStampTaxesOnShares.openBankingOriginSpecificSessionData(TestJourneys.StampTaxesOnShares.journeyBeforeBeginWebPayment.journeySpecificData)
+        ExtendedSecuritiesTransferTax.openBankingOriginSpecificSessionData(TestJourneys.SecuritiesTransferTax.journeyBeforeBeginWebPayment.journeySpecificData)
       testOsd(
         osd,
         StampTaxesOnSharesSessionData(
@@ -694,19 +694,21 @@ class OpenBankingOriginSpecificSessionDataSpec extends UnitSpec {
       roundTripJsonTest(osd, testJson)
     }
 
-    "PfStampTaxesOnShares" in {
+    "PfSecuritiesTransferTax" in {
       val testJson = Json.parse(
         // language=JSON
         """{
           |  "securitiesTransferChargeReference": "XE123456789012",
-          |  "origin": "PfStampTaxesOnShares"
+          |  "origin": "PfSecuritiesTransferTax"
           |}""".stripMargin
       )
       val osd      =
-        ExtendedPfStampTaxesOnShares.openBankingOriginSpecificSessionData(TestJourneys.PfStampTaxesOnShares.journeyBeforeBeginWebPayment.journeySpecificData)
+        ExtendedPfSecuritiesTransferTax.openBankingOriginSpecificSessionData(
+          TestJourneys.PfSecuritiesTransferTax.journeyBeforeBeginWebPayment.journeySpecificData
+        )
       testOsd(
         osd,
-        PfStampTaxesOnSharesSessionData(
+        PfSecuritiesTransferTaxSessionData(
           securitiesTransferChargeReference = Some(SecuritiesTransferChargeReference("XE123456789012")),
           basketReference = None,
           customerId = None,

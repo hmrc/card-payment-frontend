@@ -67,8 +67,8 @@ class PaymentCompleteController @Inject() (
     }
 
     val maybeBasketRef: Option[StosBasketReference] = journeyRequest.journey.journeySpecificData match {
-      case jsd: JsdStampTaxesOnShares => jsd.basketReference
-      case _                          => None
+      case jsd: JsdSecuritiesTransferTax => jsd.basketReference
+      case _                             => None
     }
 
     journeyRequest.journey.journeySpecificData match {
@@ -204,7 +204,7 @@ object PaymentCompleteController {
           )
         )
 
-      case JsdStampTaxesOnShares(_, _, _, submissionId, _) =>
+      case JsdSecuritiesTransferTax(_, _, _, submissionId, _) =>
         Seq(
           SummaryListRow(
             key = Key(Text(messages("payment-complete.summary-list.submissionID"))),

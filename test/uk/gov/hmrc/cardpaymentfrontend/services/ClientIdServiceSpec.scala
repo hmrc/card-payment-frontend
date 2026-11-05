@@ -107,8 +107,8 @@ class ClientIdServiceSpec extends ItSpec {
       (TestJourneys.PfPsAdmin.journeyBeforeBeginWebPayment, ClientIds.MIEE),
       (TestJourneys.PfOther.journeyBeforeBeginWebPayment, ClientIds.MIEE),
       (TestJourneys.WcChildBenefitRepayments.journeyBeforeBeginWebPayment, ClientIds.CBEE),
-      (TestJourneys.StampTaxesOnShares.journeyBeforeBeginWebPayment, ClientIds.ETEE),
-      (TestJourneys.PfStampTaxesOnShares.journeyBeforeBeginWebPayment, ClientIds.ETEE),
+      (TestJourneys.SecuritiesTransferTax.journeyBeforeBeginWebPayment, ClientIds.ETEE),
+      (TestJourneys.PfSecuritiesTransferTax.journeyBeforeBeginWebPayment, ClientIds.ETEE),
       (TestJourneys.BtaVapingProductsDuty.journeyBeforeBeginWebPayment, ClientIds.ETEE),
       (TestJourneys.VpdVapingProductsDuty.journeyBeforeBeginWebPayment, ClientIds.ETEE),
       (TestJourneys.PfVapingProductsDuty.journeyBeforeBeginWebPayment, ClientIds.ETEE)
@@ -201,8 +201,8 @@ class ClientIdServiceSpec extends ItSpec {
       (TestJourneys.PfPsAdmin.journeyBeforeBeginWebPayment, ClientIds.MIEC),
       (TestJourneys.PfOther.journeyBeforeBeginWebPayment, ClientIds.MIEC),
       (TestJourneys.WcChildBenefitRepayments.journeyBeforeBeginWebPayment, ClientIds.CBEC),
-      (TestJourneys.StampTaxesOnShares.journeyBeforeBeginWebPayment, ClientIds.ETEC),
-      (TestJourneys.PfStampTaxesOnShares.journeyBeforeBeginWebPayment, ClientIds.ETEC),
+      (TestJourneys.SecuritiesTransferTax.journeyBeforeBeginWebPayment, ClientIds.ETEC),
+      (TestJourneys.PfSecuritiesTransferTax.journeyBeforeBeginWebPayment, ClientIds.ETEC),
       (TestJourneys.BtaVapingProductsDuty.journeyBeforeBeginWebPayment, ClientIds.ETEC),
       (TestJourneys.VpdVapingProductsDuty.journeyBeforeBeginWebPayment, ClientIds.ETEC),
       (TestJourneys.PfVapingProductsDuty.journeyBeforeBeginWebPayment, ClientIds.ETEC)

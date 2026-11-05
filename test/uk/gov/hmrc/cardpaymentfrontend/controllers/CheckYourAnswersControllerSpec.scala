@@ -185,7 +185,7 @@ class CheckYourAnswersControllerSpec extends ItSpec with TableDrivenPropertyChec
         case Origins.PfNiEuVatIoss            => 3
         case Origins.PfNiEuVatOss             => 3
         case Origins.PtaSimpleAssessment      => 3
-        case Origins.StampTaxesOnShares       => 0
+        case Origins.SecuritiesTransferTax    => 0
         case Origins.VatC2c                   => 0
         case Origins.VcVatOther               => 2
         case Origins.WcChildBenefitRepayments => 0
@@ -221,7 +221,7 @@ class CheckYourAnswersControllerSpec extends ItSpec with TableDrivenPropertyChec
         case Origins.PfNiEuVatIoss            => 4
         case Origins.PfNiEuVatOss             => 4
         case Origins.PtaSimpleAssessment      => 4
-        case Origins.StampTaxesOnShares       => 1
+        case Origins.SecuritiesTransferTax    => 1
         case Origins.VatC2c                   => 1
         case Origins.VcVatOther               => 3
         case Origins.WcChildBenefitRepayments => 1
@@ -257,7 +257,7 @@ class CheckYourAnswersControllerSpec extends ItSpec with TableDrivenPropertyChec
         case Origins.PfNiEuVatIoss            => 5
         case Origins.PfNiEuVatOss             => 5
         case Origins.PtaSimpleAssessment      => 5
-        case Origins.StampTaxesOnShares       => 2
+        case Origins.SecuritiesTransferTax    => 2
         case Origins.VatC2c                   => 2
         case Origins.VcVatOther               => 4
         case Origins.WcChildBenefitRepayments => 2
@@ -281,22 +281,22 @@ class CheckYourAnswersControllerSpec extends ItSpec with TableDrivenPropertyChec
       val tdJourney: Journey[JourneySpecificData] = TestHelpers.deriveTestDataFromOrigin(origin).journeyBeforeBeginWebPayment
 
       val shouldBeAbleToChangeAmount: Boolean = origin match {
-        case Origins.WcSa               => false
-        case Origins.WcCt               => false
-        case Origins.WcVat              => false
-        case Origins.WcSimpleAssessment => false
-        case Origins.WcXref             => false
-        case Origins.VatC2c             => false
-        case Origins.WcEpayeLpp         => false
-        case Origins.WcClass1aNi        => false
-        case Origins.WcEpayeNi          => false
-        case Origins.WcEpayeLateCis     => false
-        case Origins.WcEpayeSeta        => false
-        case Origins.Mib                => false
-        case Origins.BcPngr             => false
-        case Origins.WcSdlt             => false
-        case Origins.StampTaxesOnShares => false
-        case _                          => true
+        case Origins.WcSa                  => false
+        case Origins.WcCt                  => false
+        case Origins.WcVat                 => false
+        case Origins.WcSimpleAssessment    => false
+        case Origins.WcXref                => false
+        case Origins.VatC2c                => false
+        case Origins.WcEpayeLpp            => false
+        case Origins.WcClass1aNi           => false
+        case Origins.WcEpayeNi             => false
+        case Origins.WcEpayeLateCis        => false
+        case Origins.WcEpayeSeta           => false
+        case Origins.Mib                   => false
+        case Origins.BcPngr                => false
+        case Origins.WcSdlt                => false
+        case Origins.SecuritiesTransferTax => false
+        case _                             => true
       }
 
       s"[${origin.entryName}] should render the amount row correctly" in {
@@ -1647,28 +1647,28 @@ class CheckYourAnswersControllerSpec extends ItSpec with TableDrivenPropertyChec
       )
     }
 
-    "[StampTaxesOnShares] should not render the payment reference in first row" - {
+    "[SecuritiesTransferTax] should not render the payment reference in first row" - {
 
       "when reference is a basket reference" in {
         PaymentsBasketStub.notifyEtmp("XBKT123456789")
-        PayApiStub.stubForFindBySessionId2xx(TestJourneys.StampTaxesOnShares.journeyBeforeBeginWebPayment)
-        val result       = systemUnderTest.renderPage(fakeRequest(TestJourneys.StampTaxesOnShares.journeyBeforeBeginWebPayment._id))
+        PayApiStub.stubForFindBySessionId2xx(TestJourneys.SecuritiesTransferTax.journeyBeforeBeginWebPayment)
+        val result       = systemUnderTest.renderPage(fakeRequest(TestJourneys.SecuritiesTransferTax.journeyBeforeBeginWebPayment._id))
         val document     = Jsoup.parse(contentAsString(result))
         val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(0)
         assertRowKeyIsNot(referenceRow, "Payment reference")
       }
 
       "when reference is not basket reference" in {
-        PayApiStub.stubForFindBySessionId2xx(TestJourneys.StampTaxesOnShares.journeyBeforeBeginWebpaymentNoBasketReference)
-        val result       = systemUnderTest.renderPage(fakeRequest(TestJourneys.StampTaxesOnShares.journeyBeforeBeginWebpaymentNoBasketReference._id))
+        PayApiStub.stubForFindBySessionId2xx(TestJourneys.SecuritiesTransferTax.journeyBeforeBeginWebpaymentNoBasketReference)
+        val result       = systemUnderTest.renderPage(fakeRequest(TestJourneys.SecuritiesTransferTax.journeyBeforeBeginWebpaymentNoBasketReference._id))
         val document     = Jsoup.parse(contentAsString(result))
         val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(0)
         assertRowKeyIsNot(referenceRow, "Payment reference")
       }
     }
 
-    "[PfStampTaxesOnShares] should render the payment reference row correctly" in {
-      PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfStampTaxesOnShares.journeyBeforeBeginWebPayment)
+    "[PfSecuritiesTransferTax] should render the payment reference row correctly" in {
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.PfSecuritiesTransferTax.journeyBeforeBeginWebPayment)
       val result       = systemUnderTest.renderPage(fakeRequest())
       val document     = Jsoup.parse(contentAsString(result))
       val referenceRow = document.select(".govuk-summary-list__row").asScala.toList(0)

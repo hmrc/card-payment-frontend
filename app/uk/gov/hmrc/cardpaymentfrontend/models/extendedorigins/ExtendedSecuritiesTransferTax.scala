@@ -16,16 +16,16 @@
 
 package uk.gov.hmrc.cardpaymentfrontend.models.extendedorigins
 
-import payapi.cardpaymentjourney.model.journey.{JourneySpecificData, JsdStampTaxesOnShares}
+import payapi.cardpaymentjourney.model.journey.{JourneySpecificData, JsdSecuritiesTransferTax}
 import play.api.mvc.AnyContent
 import uk.gov.hmrc.cardpaymentfrontend.actions.JourneyRequest
 import uk.gov.hmrc.cardpaymentfrontend.models.PaymentMethod.{Bacs, Card, OpenBanking}
 import uk.gov.hmrc.cardpaymentfrontend.models.openbanking.{OriginSpecificSessionData, StampTaxesOnSharesSessionData}
 import uk.gov.hmrc.cardpaymentfrontend.models.{CheckYourAnswersRow, PaymentMethod}
 
-object ExtendedStampTaxesOnShares extends ExtendedOrigin {
-  override val serviceNameMessageKey: String = "service-name.StampTaxesOnShares"
-  override val taxNameMessageKey: String     = "payment-complete.tax-name.StampTaxesOnShares"
+object ExtendedSecuritiesTransferTax extends ExtendedOrigin {
+  override val serviceNameMessageKey: String = "service-name.SecuritiesTransferTax"
+  override val taxNameMessageKey: String     = "payment-complete.tax-name.SecuritiesTransferTax"
 
   def cardFeesPagePaymentMethods: Set[PaymentMethod] = Set(OpenBanking, Card)
 
@@ -42,14 +42,14 @@ object ExtendedStampTaxesOnShares extends ExtendedOrigin {
   )
 
   override def openBankingOriginSpecificSessionData: JourneySpecificData => Option[OriginSpecificSessionData] = {
-    case j: JsdStampTaxesOnShares =>
+    case j: JsdSecuritiesTransferTax =>
       Some(StampTaxesOnSharesSessionData(j.securitiesTransferChargeReference, j.basketReference, j.customerId, j.submissionId, j.basketDetails))
-    case _                        => throw new RuntimeException("Incorrect origin found")
+    case _                           => throw new RuntimeException("Incorrect origin found")
   }
 
-  override def emailTaxTypeMessageKey: String = "email.tax-name.StampTaxesOnShares"
+  override def emailTaxTypeMessageKey: String = "email.tax-name.SecuritiesTransferTax"
 
-  override def surveyAuditName: String         = "stamp-taxes-on-shares"
+  override def surveyAuditName: String         = "securities-transfer-tax"
   override def surveyReturnHref: String        = "https://www.gov.uk/government/organisations/hm-revenue-customs"
   override def surveyReturnMessageKey: String  = "payments-survey.other.return-message"
   override def surveyIsWelshSupported: Boolean = false

@@ -1693,20 +1693,20 @@ class PaymentsSurveyServiceSpec extends ItSpec with TableDrivenPropertyChecks {
                 )
               )
             ) -> false
-          case Origins.StampTaxesOnShares       =>
+          case Origins.SecuritiesTransferTax    =>
             PaymentSurveyJourneyRequest(
-              origin = "StampTaxesOnShares",
+              origin = "SecuritiesTransferTax",
               returnMsg = "Skip survey",
               returnHref = "https://www.gov.uk/government/organisations/hm-revenue-customs",
-              auditName = "stamp-taxes-on-shares",
+              auditName = "securities-transfer-tax",
               audit = AuditOptions(
                 userType = "LoggedIn",
                 journey = Some("Successful"),
-                orderId = Some(TestJourneys.StampTaxesOnShares.journeyAfterSucceedDebitWebPayment.referenceValue),
-                liability = Some("stamp-taxes-on-shares"),
+                orderId = Some(TestJourneys.SecuritiesTransferTax.journeyAfterSucceedDebitWebPayment.referenceValue),
+                liability = Some("securities-transfer-tax"),
                 surveySource = "card-payment-frontend",
                 paymentId = "Some-transaction-ref",
-                origin = "StampTaxesOnShares"
+                origin = "SecuritiesTransferTax"
               ),
               contentOptions = SurveyContentOptions(
                 isWelshSupported = false,
@@ -1716,20 +1716,20 @@ class PaymentsSurveyServiceSpec extends ItSpec with TableDrivenPropertyChecks {
                 )
               )
             ) -> true
-          case Origins.PfStampTaxesOnShares     =>
+          case Origins.PfSecuritiesTransferTax  =>
             PaymentSurveyJourneyRequest(
-              origin = "PfStampTaxesOnShares",
+              origin = "PfSecuritiesTransferTax",
               returnMsg = "Skip survey",
               returnHref = "https://www.gov.uk/government/organisations/hm-revenue-customs",
-              auditName = "stamp-taxes-on-shares",
+              auditName = "securities-transfer-tax",
               audit = AuditOptions(
                 userType = "LoggedOut",
                 journey = Some("Successful"),
                 orderId = Some("XE123456789012"),
-                liability = Some("stamp-taxes-on-shares"),
+                liability = Some("securities-transfer-tax"),
                 surveySource = "card-payment-frontend",
                 paymentId = "Some-transaction-ref",
-                origin = "PfStampTaxesOnShares"
+                origin = "PfSecuritiesTransferTax"
               ),
               contentOptions = SurveyContentOptions(
                 isWelshSupported = false,

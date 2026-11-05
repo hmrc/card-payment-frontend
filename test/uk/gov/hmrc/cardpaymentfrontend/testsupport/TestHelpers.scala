@@ -101,8 +101,8 @@ object TestHelpers {
     DdVat,
     DdSdil,
     WcChildBenefitRepayments,
-    StampTaxesOnShares,
-    PfStampTaxesOnShares,
+    SecuritiesTransferTax,
+    PfSecuritiesTransferTax,
     BtaVapingProductsDuty,
     VpdVapingProductsDuty,
     PfVapingProductsDuty
@@ -224,8 +224,8 @@ object TestHelpers {
     case WcEpayeSeta              => TestJourneys.WcEpayeSeta
     case WcSdlt                   => TestJourneys.WcSdlt
     case WcChildBenefitRepayments => TestJourneys.WcChildBenefitRepayments
-    case StampTaxesOnShares       => TestJourneys.StampTaxesOnShares
-    case PfStampTaxesOnShares     => TestJourneys.PfStampTaxesOnShares
+    case SecuritiesTransferTax    => TestJourneys.SecuritiesTransferTax
+    case PfSecuritiesTransferTax  => TestJourneys.PfSecuritiesTransferTax
     case BtaVapingProductsDuty    => TestJourneys.BtaVapingProductsDuty
     case VpdVapingProductsDuty    => TestJourneys.VpdVapingProductsDuty
     case PfVapingProductsDuty     => TestJourneys.PfVapingProductsDuty
