@@ -165,6 +165,17 @@ class ActionRefinerSpec extends ItSpec {
           )
         )
       }
+
+      "handle URL-encoded base64 parameter correctly when journey is found by journey id" in {
+        val testJourney = TestJourneys.PfSa.journeyAfterBeginWebPayment
+        PayApiStub.stubForFindBySessionId404
+        PayApiStub.stubForFindByJourneyId2xx(testJourney._id)(testJourney)
+        test(
+          journey = testJourney,
+          refiner = systemUnderTest.findJourneyBySessionIdFallBackToJourneyIdRefiner(TestPayApiData.urlEncodedBase64EncryptedJourneyId),
+          expectedResult = Results.Ok("test ok")
+        )
+      }
     }
 
     "paymentStatusActionRefiner should" - {

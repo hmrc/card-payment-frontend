@@ -26,6 +26,7 @@ import uk.gov.hmrc.cardpaymentfrontend.requests.RequestSupport
 import uk.gov.hmrc.cardpaymentfrontend.services.CryptoService
 import uk.gov.hmrc.cardpaymentfrontend.views.html.ForceDeleteAnswersPage
 
+import java.net.URLDecoder
 import java.util.Base64
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -56,8 +57,9 @@ class PaymentStatusActionRefiners @Inject() (
             case Some(journey) => Future.successful(Right(new JourneyRequest(journey, request)))
             case None          =>
               logger.warn("No journey found for session id, attempting to find by journeyId instead.")
-              val decodedJourneyId              = new String(Base64.getDecoder.decode(base64EncodedEncryptedJourneyId.getBytes))
-              val decryptedJourneyId: JourneyId = JourneyId(cryptoService.decryptString(decodedJourneyId))
+              val urlDecodedJourneyId           = URLDecoder.decode(base64EncodedEncryptedJourneyId, "UTF-8")
+              val base64decodedJourneyId        = new String(Base64.getDecoder.decode(urlDecodedJourneyId.getBytes))
+              val decryptedJourneyId: JourneyId = JourneyId(cryptoService.decryptString(base64decodedJourneyId))
 
               payApiConnector.findJourneyByJourneyId(decryptedJourneyId).map {
                 case Some(journey) => Right(new JourneyRequest(journey, request))
