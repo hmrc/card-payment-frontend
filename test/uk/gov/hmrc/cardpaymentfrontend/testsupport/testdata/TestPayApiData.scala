@@ -31,10 +31,12 @@ import payapi.corcommon.model.times.period.{CalendarQuarterlyPeriod, TaxMonth, T
 object TestPayApiData {
 
   // these three are dependent on each other, don't change them unless you want to refactor a load of tests.
-  val decryptedJourneyId: String       = "TestJourneyId-44f9-ad7f-01e1d3d8f151"
-  val encryptedJourneyId: String       = "xKyU+Tq+P3cNmsP9vauwAONCgePYrJBWK9bjju74y5gvG/lTsEElJRT9alGv8HJqN32yWd1pwOPJSTxqfBXHG32ZHPI="
-  val base64EncryptedJourneyId: String =
+  val decryptedJourneyId: String                 = "TestJourneyId-44f9-ad7f-01e1d3d8f151"
+  val encryptedJourneyId: String                 = "xKyU+Tq+P3cNmsP9vauwAONCgePYrJBWK9bjju74y5gvG/lTsEElJRT9alGv8HJqN32yWd1pwOPJSTxqfBXHG32ZHPI="
+  val base64EncryptedJourneyId: String           =
     "eEt5VStUcStQM2NObXNQOXZhdXdBT05DZ2VQWXJKQldLOWJqanU3NHk1Z3ZHL2xUc0VFbEpSVDlhbEd2OEhKcU4zMnlXZDFwd09QSlNUeHFmQlhIRzMyWkhQST0="
+  val urlEncodedBase64EncryptedJourneyId: String =
+    "eEt5VStUcStQM2NObXNQOXZhdXdBT05DZ2VQWXJKQldLOWJqanU3NHk1Z3ZHL2xUc0VFbEpSVDlhbEd2OEhKcU4zMnlXZDFwd09QSlNUeHFmQlhIRzMyWkhQST0%3D"
 
   val testSaUtr: SaUtr                                        = SaUtr("1234567895")
   val testVrn: Vrn                                            = Vrn("999964805")
