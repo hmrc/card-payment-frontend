@@ -41,7 +41,7 @@ object TestOps {
 
     def withEmailInSession(cryptoService: CryptoService, journeyId: JourneyId, email: EmailAddress = EmailAddress("blah@blah.com")): FakeRequest[T] =
       r.withSession(
-        journeyId.value -> Json
+        s"onlinePaymentsService_${journeyId.value}" -> Json
           .obj(
             "email" -> cryptoService.encryptString(email.value)
           )
@@ -55,7 +55,7 @@ object TestOps {
         Address(line1 = "line1", line2 = Some("line2"), city = Some("city"), county = Some("county"), postcode = Some("AA0AA0"), country = "GBR")
     ): FakeRequest[T] =
       r.withSession(
-        journeyId.value -> Json
+        s"onlinePaymentsService_${journeyId.value}" -> Json
           .obj(
             "address" -> cryptoService.encryptAddress(address)
           )
@@ -68,7 +68,7 @@ object TestOps {
       emailAddress:  EmailAddress = EmailAddress("blah@blah.com"),
       address:       Address = Address(line1 = "line1", postcode = Some("AA0AA0"), country = "GBR")
     ): FakeRequest[T] = r.withSession(
-      journeyId.value -> Json
+      s"onlinePaymentsService_${journeyId.value}" -> Json
         .obj(
           "email"   -> cryptoService.encryptEmail(emailAddress),
           "address" -> cryptoService.encryptAddress(address)

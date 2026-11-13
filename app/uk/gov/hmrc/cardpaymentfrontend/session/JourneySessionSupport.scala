@@ -29,9 +29,11 @@ object JourneySessionSupport extends JourneySessionSupport
 trait JourneySessionSupport {
 
   object Keys {
-    val address              = "address"
-    val email                = "email"
-    val transactionReference = "transactionReference"
+    val address               = "address"
+    val email                 = "email"
+    val transactionReference  = "transactionReference"
+    // note, this key prefix is used also on pay-frontend, so if you change it here, you must change it there too
+    val onlinePaymentsService = "onlinePaymentsService_"
   }
 
   implicit class ResultOps(r: Result)(implicit request: RequestHeader) {
@@ -56,7 +58,9 @@ trait JourneySessionSupport {
 
     def readFromSession[T: Format](journeyId: JourneyId, key: String): Option[T] =
       r.session
-        .get(journeyId.value)
+        .get(Keys.onlinePaymentsService + journeyId.value)
+        // todo remove the fold once we've deployed using the new session keys with onlinePaymentsService_ prefix
+        .fold(r.session.get(journeyId.value))(there => Some(there))
         .map(allJourneyData => Json.parse(allJourneyData))
         .flatMap(json => (json \ key).toOption)
         .map(_.as[T])
@@ -65,7 +69,9 @@ trait JourneySessionSupport {
   implicit class RequestOps(r: Request[?]) {
 
     def readFromSession[T: Format](journeyId: JourneyId, key: String): Option[T] = r.session
-      .get(journeyId.value)
+      .get(Keys.onlinePaymentsService + journeyId.value)
+      // todo remove the fold once we've deployed using the new session keys with onlinePaymentsService_ prefix
+      .fold(r.session.get(journeyId.value))(there => Some(there))
       .map(allJourneyData => Json.parse(allJourneyData))
       .flatMap(json => (json \ key).toOption)
       .map(_.as[T])
@@ -74,25 +80,32 @@ trait JourneySessionSupport {
   /** Adds (replacing existing) values to session in the journey scope. Technically speaking it creates (if not present) empty json object under journeyId key
     * and adds data to it.
     */
-  private def add[T: Format](key: String, data: T, session: Session, journeyId: JourneyId): Session = {
+  private[session] def add[T: Format](key: String, data: T, session: Session, journeyId: JourneyId): Session = {
     val current: JsObject = session
-      .get(journeyId.value)
+      .get(Keys.onlinePaymentsService + journeyId.value)
       .map(jsonString => Json.parse(jsonString).as[JsObject])
       .getOrElse(Json.obj())
 
     val addon           = Json.obj(key -> data)
     val newSessionEntry = current ++ addon
-    session + (journeyId.value -> Json.prettyPrint(newSessionEntry))
+    removeStaleJourneysFromSession(session + (Keys.onlinePaymentsService + journeyId.value -> Json.prettyPrint(newSessionEntry)), journeyId)
   }
 
-  private def remove(key: String, session: Session, journeyId: JourneyId): Session = {
+  private[session] def remove(key: String, session: Session, journeyId: JourneyId): Session = {
     val current: JsObject = session
       .get(journeyId.value)
       .map(jsonString => Json.parse(jsonString).as[JsObject])
       .getOrElse(Json.obj())
 
     val newSessionEntry = current - key
-    session + (journeyId.value -> Json.prettyPrint(newSessionEntry))
+    removeStaleJourneysFromSession(session + (Keys.onlinePaymentsService + journeyId.value -> Json.prettyPrint(newSessionEntry)), journeyId)
+  }
+
+  private[session] def removeStaleJourneysFromSession(session: Session, currentJourneyId: JourneyId): Session = {
+    val staleSessions: Map[String, String] = {
+      session.data.filter(keyValuePair => keyValuePair._1.startsWith(Keys.onlinePaymentsService) && !keyValuePair._1.contains(currentJourneyId.value))
+    }
+    session -- staleSessions.keySet
   }
 
 }
