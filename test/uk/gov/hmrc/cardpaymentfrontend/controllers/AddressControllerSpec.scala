@@ -216,7 +216,7 @@ class AddressControllerSpec extends ItSpec {
         redirectLocation(result) shouldBe Some("/pay-by-card/check-your-details")
         val addressInSession: Address =
           session(result)
-            .get(testJourney._id.value)
+            .get(s"onlinePaymentsService_${testJourney._id.value}")
             .fold(fail("Address missing from session")) { jsonStr =>
               (Json.parse(jsonStr) \ "address").as[Address]
             }

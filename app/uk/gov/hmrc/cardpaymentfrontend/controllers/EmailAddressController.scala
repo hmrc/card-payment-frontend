@@ -89,7 +89,9 @@ class EmailAddressController @Inject() (
   }
 
   private[controllers] def emailInSession(implicit journeyRequest: JourneyRequest[?]): Option[EmailAddress] =
-    journeyRequest.readFromSession[EmailAddress](journeyRequest.journeyId, Keys.email).map(cryptoService.decryptEmail)
+    journeyRequest
+      .readFromSession[EmailAddress](journeyRequest.journeyId, Keys.email)
+      .map(cryptoService.decryptEmail)
   private[controllers] def emailIsDifferent(emailA: EmailAddress, emailB: EmailAddress): Boolean = emailA =!= emailB
 
 }

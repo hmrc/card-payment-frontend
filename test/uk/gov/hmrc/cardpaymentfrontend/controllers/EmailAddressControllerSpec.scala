@@ -265,12 +265,13 @@ class EmailAddressControllerSpec extends ItSpec {
           .withLangWelsh()
 
       "should return 303 SEE_OTHER and redirect to /address when a valid email address is submitted and email is added to the session" in {
+        val testJourney                  = TestJourneys.PfSa.journeyAfterBeginWebPayment
         val validFormData                = ("email-address", "someemail@email.com")
         val result                       = systemUnderTest.submit(fakePostRequest(validFormData))
         status(result) shouldBe Status.SEE_OTHER
         val emailInSession: EmailAddress =
           session(result)
-            .get("TestJourneyId-44f9-ad7f-01e1d3d8f151")
+            .get(s"onlinePaymentsService_${testJourney._id.value}")
             .fold(fail("Email Address missing from session")) { json =>
               (Json.parse(json) \ "email").as[EmailAddress]
             }
@@ -295,7 +296,7 @@ class EmailAddressControllerSpec extends ItSpec {
         redirectLocation(result) shouldBe Some("/pay-by-card/address")
         val emailInSession: EmailAddress =
           session(result)
-            .get("TestJourneyId-44f9-ad7f-01e1d3d8f151")
+            .get(s"onlinePaymentsService_${testJourney._id.value}")
             .fold(fail("Email Address missing from session")) { json =>
               (Json.parse(json) \ "email").as[EmailAddress]
             }

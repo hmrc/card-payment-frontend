@@ -52,10 +52,12 @@ trait JourneySessionSupport {
       r.withSession(newSession)
     }
 
+    // Not used anywhere
     def removeAllFromSession(journeyId: JourneyId): Result = {
       r.withSession(r.session - journeyId.value)
     }
 
+    // Not used anywhere
     def readFromSession[T: Format](journeyId: JourneyId, key: String): Option[T] =
       r.session
         .get(Keys.onlinePaymentsService + journeyId.value)
