@@ -21,7 +21,7 @@ import payapi.corcommon.model.{AmountInPence, Origins}
 import payapi.corcommon.model.Origins.PfMgd
 import payapi.corcommon.model.barclays.CardCategories
 import payapi.corcommon.model.taxes.pngr.AmountPaidPreviously
-import payapi.corcommon.model.taxes.stos.StosBasketReference
+import payapi.corcommon.model.taxes.stt.SttBasketReference
 import payapi.corcommon.model.times.period.TaxYear
 import play.api.i18n.Messages
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -66,7 +66,7 @@ class PaymentCompleteController @Inject() (
         .map(email => EmailAddress(email.value))
     }
 
-    val maybeBasketRef: Option[StosBasketReference] = journeyRequest.journey.journeySpecificData match {
+    val maybeBasketRef: Option[SttBasketReference] = journeyRequest.journey.journeySpecificData match {
       case jsd: JsdSecuritiesTransferTax => jsd.basketReference
       case _                             => None
     }
@@ -79,7 +79,7 @@ class PaymentCompleteController @Inject() (
     }
   }
 
-  private def genericPaymentCompletePage(maybeEmail: Option[EmailAddress], maybeBasketRef: Option[StosBasketReference])(implicit
+  private def genericPaymentCompletePage(maybeEmail: Option[EmailAddress], maybeBasketRef: Option[SttBasketReference])(implicit
     journeyRequest: JourneyRequest[?]
   ): HtmlFormat.Appendable = {
     paymentCompletePage(

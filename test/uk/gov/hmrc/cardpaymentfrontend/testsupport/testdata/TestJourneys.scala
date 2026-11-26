@@ -36,8 +36,8 @@ import payapi.corcommon.model.taxes.ppt.PptReference
 import payapi.corcommon.model.taxes.sa.SaUtr
 import payapi.corcommon.model.taxes.sdil.Zsdl
 import payapi.corcommon.model.taxes.sdlt.Utrn
-import payapi.corcommon.model.taxes.stos.StosChargeType.SecurityTransferCharge
-import payapi.corcommon.model.taxes.stos.{CustomerId, SecuritiesTransferChargeReference, StosBasketDetails, StosBasketItem, StosBasketReference, SubmissionId}
+import payapi.corcommon.model.taxes.stt.SecuritiesTransferTaxChargeType.SecurityTransferCharge
+import payapi.corcommon.model.taxes.stt.{CustomerId, SecuritiesTransferChargeReference, SttBasketDetails, SttBasketItem, SttBasketReference, SubmissionId}
 import payapi.corcommon.model.taxes.trusts.TrustReference
 import payapi.corcommon.model.taxes.vat.{CalendarPeriod, VatChargeReference, Vrn}
 import payapi.corcommon.model.taxes.vatc2c.VatC2cReference
@@ -1031,7 +1031,8 @@ object TestJourneys {
         vrn = Vrn("101747641"),
         period = testQuarterlyTaxPeriod,
         defaultAmountInPence = AmountInPence(1234),
-        dueDate = Some(LocalDate.of(2028, 12, 12))
+        dueDate = Some(LocalDate.of(2028, 12, 12)),
+        clientName = None
       )
     )
   }
@@ -1068,7 +1069,8 @@ object TestJourneys {
         ioss = Ioss("IM1234567890"),
         period = testCalendarPeriod,
         defaultAmountInPence = AmountInPence(1234),
-        dueDate = Some(LocalDate.of(2028, 12, 12))
+        dueDate = Some(LocalDate.of(2028, 12, 12)),
+        clientName = None
       )
     )
   }
@@ -1367,19 +1369,19 @@ object TestJourneys {
       createdOn = LocalDateTime.parse("2027-11-02T16:28:55.185"),
       journeySpecificData = JsdSecuritiesTransferTax(
         securitiesTransferChargeReference = None,
-        basketReference = Some(StosBasketReference("XBKT123456789")),
+        basketReference = Some(SttBasketReference("XBKT123456789")),
         customerId = CustomerId("CUSTOMERID"),
         submissionId = SubmissionId("SUBMISSIONID"),
-        basketDetails = StosBasketDetails(
+        basketDetails = SttBasketDetails(
           basketItems = List(
-            StosBasketItem(
+            SttBasketItem(
               amountInPence = AmountInPence(1234),
               buyerName = "Tom Cruise",
               sellerName = "Danny DeVito",
               chargeReference = "CR123456789012",
               chargeType = SecurityTransferCharge
             ),
-            StosBasketItem(
+            SttBasketItem(
               amountInPence = AmountInPence(1234),
               buyerName = "Tom Cruise",
               sellerName = "Bob Ross",
@@ -1405,9 +1407,9 @@ object TestJourneys {
         basketReference = None,
         customerId = CustomerId("CUSTOMERID"),
         submissionId = SubmissionId("SUBMISSIONID"),
-        basketDetails = StosBasketDetails(
+        basketDetails = SttBasketDetails(
           basketItems = List(
-            StosBasketItem(
+            SttBasketItem(
               amountInPence = AmountInPence(1234),
               buyerName = "Tom Cruise",
               sellerName = "Danny DeVito",

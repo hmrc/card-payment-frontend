@@ -34,8 +34,8 @@ import payapi.corcommon.model.taxes.ppt.PptReference
 import payapi.corcommon.model.taxes.sa.SaUtr
 import payapi.corcommon.model.taxes.sdil.Zsdl
 import payapi.corcommon.model.taxes.sdlt.Utrn
-import payapi.corcommon.model.taxes.stos.*
-import payapi.corcommon.model.taxes.stos.StosChargeType.SecurityTransferCharge
+import payapi.corcommon.model.taxes.stt.*
+import payapi.corcommon.model.taxes.stt.SecuritiesTransferTaxChargeType.SecurityTransferCharge
 import payapi.corcommon.model.taxes.trusts.TrustReference
 import payapi.corcommon.model.taxes.vat.{CalendarPeriod, VatChargeReference, Vrn}
 import payapi.corcommon.model.taxes.vatc2c.VatC2cReference
@@ -678,13 +678,13 @@ class OpenBankingOriginSpecificSessionDataSpec extends UnitSpec {
         osd,
         StampTaxesOnSharesSessionData(
           securitiesTransferChargeReference = None,
-          Some(StosBasketReference("XBKT123456789")),
+          Some(SttBasketReference("XBKT123456789")),
           CustomerId("CUSTOMERID"),
           SubmissionId("SUBMISSIONID"),
-          StosBasketDetails(
-            List[StosBasketItem](
-              StosBasketItem(AmountInPence(1234), "Tom Cruise", "Danny DeVito", "CR123456789012", SecurityTransferCharge),
-              StosBasketItem(AmountInPence(1234), "Tom Cruise", "Bob Ross", "CR123456789013", SecurityTransferCharge)
+          SttBasketDetails(
+            List[SttBasketItem](
+              SttBasketItem(AmountInPence(1234), "Tom Cruise", "Danny DeVito", "CR123456789012", SecurityTransferCharge),
+              SttBasketItem(AmountInPence(1234), "Tom Cruise", "Bob Ross", "CR123456789013", SecurityTransferCharge)
             )
           )
         ),

@@ -3,23 +3,16 @@ import sbt.*
 //format: OFF
 object AppDependencies {
 
-  private val payApiCorVersion = "1.328.0"
-
+  private val payApiCorVersion = "1.331.0-SNAPSHOT"
   private val bootstrapVersion = "10.9.0"
-
-  private val payApiExclusionRules: Seq[InclusionRule] = Seq(
-    ExclusionRule(organization = "uk.gov.hmrc", name = "bootstrap-backend-play-29_2.13"),
-    ExclusionRule(organization = "uk.gov.hmrc", name = "reference-checker_2.13"),
-    ExclusionRule(organization = "uk.gov.hmrc.mongo", name = "hmrc-mongo-play-29_2.13"),
-    ExclusionRule(organization = "com.typesafe.play")
-  )
+  private val enumeratumVersion = "1.9.9"
 
   val compile: Seq[ModuleID] = Seq[ModuleID](
     "uk.gov.hmrc"  %% "bootstrap-frontend-play-30"       % bootstrapVersion,
-    "uk.gov.hmrc"  %% "play-frontend-hmrc-play-30"       % "13.17.0",
-    "com.beachape" %% "enumeratum"                       % "1.9.8",
-    "com.beachape" %% "enumeratum-play"                  % "1.9.8",
-    "uk.gov.hmrc"  %% "pay-api-cor-card-payment-journey" % payApiCorVersion excludeAll(payApiExclusionRules *)
+    "uk.gov.hmrc"  %% "play-frontend-hmrc-play-30"       % "13.18.0",
+    "com.beachape" %% "enumeratum"                       % enumeratumVersion,
+    "com.beachape" %% "enumeratum-play"                  % enumeratumVersion,
+    "uk.gov.hmrc"  %% "pay-api-cor-card-payment-journey" % payApiCorVersion
   )
 
   val test: Seq[ModuleID] = Seq[ModuleID](
