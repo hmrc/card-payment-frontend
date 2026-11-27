@@ -31,7 +31,7 @@
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.userresearchbanner.UserResearchBanner
 @import views.html.helper.CSPNonce
-@import payapi.corcommon.model.taxes.stos.StosBasketReference
+@import payapi.corcommon.model.taxes.stt.SttBasketReference
 
 @this(
     appConfig: AppConfig,
@@ -46,7 +46,7 @@
     summaryListRows: Seq[SummaryListRow],
     maybeEmailAddress: Option[EmailAddress],
     maybeReturnUrl: Option[String],
-    maybeBasketRef: Option[StosBasketReference]
+    maybeBasketRef: Option[SttBasketReference]
 )(implicit journeyRequest: JourneyRequest[?], messages: Messages)
 
 @additionalScript = { <script type="module" src="@{controllers.routes.Assets.versioned("javascripts/print-dialogue.js")}" @{CSPNonce.attr}></script> }

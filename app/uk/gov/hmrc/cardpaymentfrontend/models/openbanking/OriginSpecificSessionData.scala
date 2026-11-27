@@ -38,7 +38,7 @@ import payapi.corcommon.model.taxes.sa.SaUtr
 import payapi.corcommon.model.taxes.sd.SpiritDrinksReference
 import payapi.corcommon.model.taxes.sdil.Zsdl
 import payapi.corcommon.model.taxes.sdlt.Utrn
-import payapi.corcommon.model.taxes.stos.{CustomerId, SecuritiesTransferChargeReference, StosBasketDetails, StosBasketReference, SubmissionId}
+import payapi.corcommon.model.taxes.stt.{CustomerId, SecuritiesTransferChargeReference, SttBasketDetails, SttBasketReference, SubmissionId}
 import payapi.corcommon.model.taxes.trusts.TrustReference
 import payapi.corcommon.model.taxes.vat.{CalendarPeriod, VatChargeReference, Vrn}
 import payapi.corcommon.model.taxes.vatc2c.VatC2cReference
@@ -824,17 +824,17 @@ final case class WcClass2NiSessionData(class2NiReference: Class2NiReference, ret
 
 final case class StampTaxesOnSharesSessionData(
   securitiesTransferChargeReference: Option[SecuritiesTransferChargeReference],
-  basketReference:                   Option[StosBasketReference],
+  basketReference:                   Option[SttBasketReference],
   customerId:                        CustomerId,
   submissionId:                      SubmissionId,
-  basketDetails:                     StosBasketDetails,
+  basketDetails:                     SttBasketDetails,
   returnUrl:                         Option[Url] = None
 ) extends OriginSpecificSessionData(SecuritiesTransferTax) {
   def paymentReference: Reference = {
     // I agree this is messy, once we have more of the journey fleshed out, we can simplify/refactor/tidy
     securitiesTransferChargeReference.fold(
       basketReference.fold(
-        ReferenceMaker.makeStosReference(submissionId)
+        ReferenceMaker.makeSttReference(submissionId)
       )(br => Reference(br.canonicalizedValue))
     )(securitiesTransferChargeReference => Reference(securitiesTransferChargeReference.canonicalizedValue))
   }
@@ -843,17 +843,17 @@ final case class StampTaxesOnSharesSessionData(
 
 final case class PfSecuritiesTransferTaxSessionData(
   securitiesTransferChargeReference: Option[SecuritiesTransferChargeReference],
-  basketReference:                   Option[StosBasketReference],
+  basketReference:                   Option[SttBasketReference],
   customerId:                        Option[CustomerId],
   submissionId:                      Option[SubmissionId],
-  basketDetails:                     Option[StosBasketDetails],
+  basketDetails:                     Option[SttBasketDetails],
   returnUrl:                         Option[Url] = None
 ) extends OriginSpecificSessionData(PfSecuritiesTransferTax) {
   def paymentReference: Reference = {
     // I agree this is messy, once we have more of the journey fleshed out, we can simplify/refactor/tidy
     securitiesTransferChargeReference.fold(
       basketReference.fold(
-        ReferenceMaker.makeStosReference(
+        ReferenceMaker.makeSttReference(
           submissionId.getOrElse(throw new RuntimeException("we need a reference, we'll fix this later when more of the journey is built"))
         )
       )(br => Reference(br.canonicalizedValue))
