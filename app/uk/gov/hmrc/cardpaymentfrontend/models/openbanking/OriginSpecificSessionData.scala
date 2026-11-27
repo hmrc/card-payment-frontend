@@ -40,7 +40,7 @@ import payapi.corcommon.model.taxes.sdil.Zsdl
 import payapi.corcommon.model.taxes.sdlt.Utrn
 import payapi.corcommon.model.taxes.stt.{CustomerId, SecuritiesTransferChargeReference, SttBasketDetails, SttBasketReference, SubmissionId}
 import payapi.corcommon.model.taxes.trusts.TrustReference
-import payapi.corcommon.model.taxes.vat.{CalendarPeriod, VatChargeReference, Vrn}
+import payapi.corcommon.model.taxes.vat.{CalendarPeriod, ClientName, VatChargeReference, Vrn}
 import payapi.corcommon.model.taxes.vatc2c.VatC2cReference
 import payapi.corcommon.model.taxes.vpd.{VapingDutyChargeReference, VapingDutyReference}
 import payapi.corcommon.model.thirdpartysoftware.{ClientJourneyId, FriendlyName}
@@ -507,7 +507,8 @@ final case class CapitalGainsTaxSessionData(cgtReference: CgtAccountReference, r
   def searchTag: SearchTag        = SearchTag(cgtReference.canonicalizedValue)
 }
 
-final case class NiEuVatOssSessionData(vrn: Vrn, period: CalendarQuarterlyPeriod, returnUrl: Option[Url] = None) extends OriginSpecificSessionData(NiEuVatOss) {
+final case class NiEuVatOssSessionData(vrn: Vrn, period: CalendarQuarterlyPeriod, clientName: Option[ClientName], returnUrl: Option[Url] = None)
+    extends OriginSpecificSessionData(NiEuVatOss) {
   def paymentReference: Reference = ReferenceMaker.makeNiEuVatOssReference(vrn, period)
   def searchTag: SearchTag        = SearchTag(vrn.value)
 }
@@ -518,7 +519,8 @@ final case class PfNiEuVatOssSessionData(vrn: Vrn, period: CalendarQuarterlyPeri
   def searchTag: SearchTag        = SearchTag(vrn.value)
 }
 
-final case class NiEuVatIossSessionData(ioss: Ioss, period: CalendarPeriod, returnUrl: Option[Url] = None) extends OriginSpecificSessionData(NiEuVatIoss) {
+final case class NiEuVatIossSessionData(ioss: Ioss, period: CalendarPeriod, clientName: Option[ClientName], returnUrl: Option[Url] = None)
+    extends OriginSpecificSessionData(NiEuVatIoss) {
   def paymentReference: Reference = ReferenceMaker.makeNiEuVatIossReference(ioss, period)
 
   def searchTag: SearchTag = SearchTag(ioss.value)

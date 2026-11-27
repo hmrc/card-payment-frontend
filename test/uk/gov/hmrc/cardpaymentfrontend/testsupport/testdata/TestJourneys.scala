@@ -39,7 +39,7 @@ import payapi.corcommon.model.taxes.sdlt.Utrn
 import payapi.corcommon.model.taxes.stt.SecuritiesTransferTaxChargeType.SecurityTransferCharge
 import payapi.corcommon.model.taxes.stt.{CustomerId, SecuritiesTransferChargeReference, SttBasketDetails, SttBasketItem, SttBasketReference, SubmissionId}
 import payapi.corcommon.model.taxes.trusts.TrustReference
-import payapi.corcommon.model.taxes.vat.{CalendarPeriod, VatChargeReference, Vrn}
+import payapi.corcommon.model.taxes.vat.{CalendarPeriod, ClientName, VatChargeReference, Vrn}
 import payapi.corcommon.model.taxes.vatc2c.VatC2cReference
 import payapi.corcommon.model.taxes.vpd.{VapingDutyChargeReference, VapingDutyReference}
 import payapi.corcommon.model.times.period.TaxQuarter.AprilJuly
@@ -1032,7 +1032,7 @@ object TestJourneys {
         period = testQuarterlyTaxPeriod,
         defaultAmountInPence = AmountInPence(1234),
         dueDate = Some(LocalDate.of(2028, 12, 12)),
-        clientName = None
+        clientName = Some(ClientName("Test Client"))
       )
     )
   }
@@ -1070,7 +1070,7 @@ object TestJourneys {
         period = testCalendarPeriod,
         defaultAmountInPence = AmountInPence(1234),
         dueDate = Some(LocalDate.of(2028, 12, 12)),
-        clientName = None
+        clientName = Some(ClientName("Test Client"))
       )
     )
   }

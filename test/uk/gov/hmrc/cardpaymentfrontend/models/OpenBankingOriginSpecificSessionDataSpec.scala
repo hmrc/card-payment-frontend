@@ -37,7 +37,7 @@ import payapi.corcommon.model.taxes.sdlt.Utrn
 import payapi.corcommon.model.taxes.stt.*
 import payapi.corcommon.model.taxes.stt.SecuritiesTransferTaxChargeType.SecurityTransferCharge
 import payapi.corcommon.model.taxes.trusts.TrustReference
-import payapi.corcommon.model.taxes.vat.{CalendarPeriod, VatChargeReference, Vrn}
+import payapi.corcommon.model.taxes.vat.{CalendarPeriod, ClientName, VatChargeReference, Vrn}
 import payapi.corcommon.model.taxes.vatc2c.VatC2cReference
 import payapi.corcommon.model.taxes.vpd.{VapingDutyChargeReference, VapingDutyReference}
 import payapi.corcommon.model.times.period.CalendarQuarter.OctoberToDecember
@@ -532,9 +532,15 @@ class OpenBankingOriginSpecificSessionDataSpec extends UnitSpec {
     }
 
     "NiEuVatOss" in {
-      val testJson = Json.parse("""{"vrn":"101747641","period":{"quarter":"OctoberToDecember","year":2024},"origin":"NiEuVatOss"}""")
+      val testJson =
+        Json.parse("""{"vrn":"101747641","period":{"quarter":"OctoberToDecember","year":2024},"origin":"NiEuVatOss", "clientName":"Test Client"}""")
       val osd      = ExtendedNiEuVatOss.openBankingOriginSpecificSessionData(TestJourneys.NiEuVatOss.journeyBeforeBeginWebPayment.journeySpecificData)
-      testOsd(osd, NiEuVatOssSessionData(Vrn("101747641"), CalendarQuarterlyPeriod(OctoberToDecember, 2024)), "NI101747641Q424", "101747641")
+      testOsd(
+        osd,
+        NiEuVatOssSessionData(Vrn("101747641"), CalendarQuarterlyPeriod(OctoberToDecember, 2024), Some(ClientName("Test Client"))),
+        "NI101747641Q424",
+        "101747641"
+      )
       roundTripJsonTest(osd, testJson)
     }
 
@@ -546,9 +552,9 @@ class OpenBankingOriginSpecificSessionDataSpec extends UnitSpec {
     }
 
     "NiEuVatIoss" in {
-      val testJson = Json.parse("""{"ioss":"IM1234567890","period":{"month":6,"year":2024},"origin":"NiEuVatIoss"}""")
+      val testJson = Json.parse("""{"ioss":"IM1234567890","period":{"month":6,"year":2024},"origin":"NiEuVatIoss", "clientName":"Test Client"}""")
       val osd      = ExtendedNiEuVatIoss.openBankingOriginSpecificSessionData(TestJourneys.NiEuVatIoss.journeyBeforeBeginWebPayment.journeySpecificData)
-      testOsd(osd, NiEuVatIossSessionData(Ioss("IM1234567890"), CalendarPeriod(6, 2024)), "IM1234567890M0624", "IM1234567890")
+      testOsd(osd, NiEuVatIossSessionData(Ioss("IM1234567890"), CalendarPeriod(6, 2024), Some(ClientName("Test Client"))), "IM1234567890M0624", "IM1234567890")
       roundTripJsonTest(osd, testJson)
     }
 

@@ -177,8 +177,8 @@ class CheckYourAnswersControllerSpec extends ItSpec with TableDrivenPropertyChec
         case Origins.DdSdil                   => 0
         case Origins.DdVat                    => 0
         case Origins.JrsJobRetentionScheme    => 0
-        case Origins.NiEuVatIoss              => 3
-        case Origins.NiEuVatOss               => 3
+        case Origins.NiEuVatIoss              => 4
+        case Origins.NiEuVatOss               => 4
         case Origins.PfCt                     => 2
         case Origins.PfEpayeNi                => 2
         case Origins.PfEpayeP11d              => 2
@@ -213,8 +213,8 @@ class CheckYourAnswersControllerSpec extends ItSpec with TableDrivenPropertyChec
         case Origins.DdSdil                   => 1
         case Origins.DdVat                    => 1
         case Origins.JrsJobRetentionScheme    => 1
-        case Origins.NiEuVatIoss              => 4
-        case Origins.NiEuVatOss               => 4
+        case Origins.NiEuVatIoss              => 5
+        case Origins.NiEuVatOss               => 5
         case Origins.PfCt                     => 3
         case Origins.PfEpayeNi                => 3
         case Origins.PfEpayeP11d              => 3
@@ -249,8 +249,8 @@ class CheckYourAnswersControllerSpec extends ItSpec with TableDrivenPropertyChec
         case Origins.DdSdil                   => 2
         case Origins.DdVat                    => 2
         case Origins.JrsJobRetentionScheme    => 2
-        case Origins.NiEuVatIoss              => 5
-        case Origins.NiEuVatOss               => 5
+        case Origins.NiEuVatIoss              => 6
+        case Origins.NiEuVatOss               => 6
         case Origins.PfCt                     => 4
         case Origins.PfEpayeNi                => 4
         case Origins.PfEpayeP11d              => 4
@@ -1001,7 +1001,7 @@ class CheckYourAnswersControllerSpec extends ItSpec with TableDrivenPropertyChec
       PayApiStub.stubForFindBySessionId2xx(TestJourneys.NiEuVatOss.journeyBeforeBeginWebPayment)
       val result          = systemUnderTest.renderPage(fakeRequest())
       val document        = Jsoup.parse(contentAsString(result))
-      val returnPeriodRow = document.select(".govuk-summary-list__row").asScala.toList(2)
+      val returnPeriodRow = document.select(".govuk-summary-list__row").asScala.toList(3)
       assertRow(returnPeriodRow, "Return period", "October to December 2024", None, None)
     }
 
@@ -1023,7 +1023,7 @@ class CheckYourAnswersControllerSpec extends ItSpec with TableDrivenPropertyChec
       PayApiStub.stubForFindBySessionId2xx(TestJourneys.NiEuVatIoss.journeyBeforeBeginWebPayment)
       val result          = systemUnderTest.renderPage(fakeRequest())
       val document        = Jsoup.parse(contentAsString(result))
-      val returnPeriodRow = document.select(".govuk-summary-list__row").asScala.toList(2)
+      val returnPeriodRow = document.select(".govuk-summary-list__row").asScala.toList(3)
       assertRow(returnPeriodRow, "Return period", "June 2024", None, None)
     }
 
@@ -1411,8 +1411,16 @@ class CheckYourAnswersControllerSpec extends ItSpec with TableDrivenPropertyChec
       PayApiStub.stubForFindBySessionId2xx(TestJourneys.NiEuVatOss.journeyBeforeBeginWebPayment)
       val result          = systemUnderTest.renderPage(fakeRequest())
       val document        = Jsoup.parse(contentAsString(result))
-      val returnPeriodRow = document.select(".govuk-summary-list__row").asScala.toList(1)
+      val returnPeriodRow = document.select(".govuk-summary-list__row").asScala.toList(2)
       assertRow(returnPeriodRow, "VAT Number", "101747641", None, None)
+    }
+
+    "[NiEuVatOss] should render the VAT Client correctly" in {
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.NiEuVatOss.journeyBeforeBeginWebPayment)
+      val result          = systemUnderTest.renderPage(fakeRequest())
+      val document        = Jsoup.parse(contentAsString(result))
+      val returnPeriodRow = document.select(".govuk-summary-list__row").asScala.toList(0)
+      assertRow(returnPeriodRow, "Client", "Test Client", None, None)
     }
 
     "[PfNiEuVatOss] should render the VAT Number correctly" in {
@@ -1427,8 +1435,16 @@ class CheckYourAnswersControllerSpec extends ItSpec with TableDrivenPropertyChec
       PayApiStub.stubForFindBySessionId2xx(TestJourneys.NiEuVatIoss.journeyBeforeBeginWebPayment)
       val result          = systemUnderTest.renderPage(fakeRequest())
       val document        = Jsoup.parse(contentAsString(result))
-      val returnPeriodRow = document.select(".govuk-summary-list__row").asScala.toList(1)
+      val returnPeriodRow = document.select(".govuk-summary-list__row").asScala.toList(2)
       assertRow(returnPeriodRow, "IOSS Number", "IM1234567890", None, None)
+    }
+
+    "[NiEuVatIoss] should render the IOSS Client correctly" in {
+      PayApiStub.stubForFindBySessionId2xx(TestJourneys.NiEuVatIoss.journeyBeforeBeginWebPayment)
+      val result          = systemUnderTest.renderPage(fakeRequest())
+      val document        = Jsoup.parse(contentAsString(result))
+      val returnPeriodRow = document.select(".govuk-summary-list__row").asScala.toList(0)
+      assertRow(returnPeriodRow, "Client", "Test Client", None, None)
     }
 
     "[PfNiEuVatIoss] should render the IOSS Number correctly" in {

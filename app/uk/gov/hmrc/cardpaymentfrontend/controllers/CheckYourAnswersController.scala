@@ -77,6 +77,8 @@ class CheckYourAnswersController @Inject() (
     // the other rows should always be there (although email row isn't, if they didn't enter an email).
     val mandatoryRows: Seq[Option[CheckYourAnswersRow]] = Seq(amountRow, maybeEmailRow, cardBillingAddressRow)
 
+    val maybeClientNameRow: Option[CheckYourAnswersRow] = extendedOrigin.checkYourAnswersClientNameRow(journeyRequest)
+
     /*
      * Looks weird, but it's so we can display rows in correct order i.e. usually:
      * - payment date (for fdp supported journeys)
@@ -85,7 +87,7 @@ class CheckYourAnswersController @Inject() (
      * - amount, email (if entered), card billing address)
      */
     def summaryListRows: Seq[SummaryListRow] =
-      (maybePaymentDateAndReferenceRows ++ maybeAdditionalReferenceRows ++ mandatoryRows).flatten
+      ((maybeClientNameRow +: maybePaymentDateAndReferenceRows) ++ maybeAdditionalReferenceRows ++ mandatoryRows).flatten
         .map(summarise)
 
     /** If the session has a basket reference (only applicable for some tax types), notify ETMP of the basket before rendering the page. If there is no basket

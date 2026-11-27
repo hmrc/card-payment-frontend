@@ -34,6 +34,19 @@ object ExtendedNiEuVatOss extends ExtendedOrigin {
 
   override def checkYourAnswersReferenceRow(journeyRequest: JourneyRequest[AnyContent])(payFrontendBaseUrl: String): Option[CheckYourAnswersRow] = None
 
+  override def checkYourAnswersClientNameRow(journeyRequest: JourneyRequest[AnyContent])(implicit messages: Messages): Option[CheckYourAnswersRow] =
+    journeyRequest.journey.journeySpecificData match {
+      case jsd: JsdNiEuVatOss =>
+        jsd.clientName.map { clientName =>
+          CheckYourAnswersRow(
+            titleMessageKey = "check-your-details.NiEuVatOss.client-name",
+            value = Seq(clientName.value),
+            changeLink = None
+          )
+        }
+      case _                  => None
+    }
+
   override def checkYourAnswersAdditionalReferenceRow(
     journeyRequest: JourneyRequest[AnyContent]
   )(payFrontendBaseUrl: String)(implicit messages: Messages): Option[Seq[CheckYourAnswersRow]] = {
@@ -60,7 +73,7 @@ object ExtendedNiEuVatOss extends ExtendedOrigin {
   }
 
   override def openBankingOriginSpecificSessionData: JourneySpecificData => Option[OriginSpecificSessionData] = {
-    case j: JsdNiEuVatOss => Some(NiEuVatOssSessionData(j.vrn, j.period))
+    case j: JsdNiEuVatOss => Some(NiEuVatOssSessionData(j.vrn, j.period, j.clientName))
     case _                => throw new RuntimeException("Incorrect origin found")
   }
 
